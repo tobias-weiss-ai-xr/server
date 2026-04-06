@@ -8,9 +8,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <!-- ============================================================
-       BANNER: "World-Office"
-       A wide README banner extending the Deconstructivist Prism
-       identity into a horizontal composition for project headers.
+        BANNER: "World Office"
+        A wide README banner extending the Deconstructivist Prism
+        identity into a horizontal composition for project headers.
 
        Prism positioned right-of-center, text anchored left.
        ============================================================ -->
@@ -368,33 +368,27 @@
      stroke-width="0.5"
      opacity="0.1" />
 
-  <!-- === TITLE TEXT: World-Office === -->
-  <!-- Positioned left-of-center for dynamic balance with prism on right -->
-  <text
-     x="80"
-     y="178"
-     id="title"
-     style="font-weight:300;font-size:72px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;letter-spacing:8;fill:#ffffff;opacity:0.95"
-     filter="url(#textGlowFilter)">euro</text>
-  <text
-     x="334"
-     y="178"
-     id="title2"
-     style="font-weight:300;font-size:72px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;letter-spacing:8;fill:#00d4ff;opacity:0.9"
-     filter="url(#textGlowFilter)">_</text>
-  <text
-     x="358"
-     y="178"
-     id="title3"
-     style="font-weight:300;font-size:72px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;letter-spacing:8;fill:#ffffff;opacity:0.95"
-     filter="url(#textGlowFilter)">Office</text>
+   <!-- === TITLE TEXT: World Office === -->
+   <!-- Positioned left-of-center for dynamic balance with prism on right -->
+   <text
+      x="80"
+      y="178"
+      id="title"
+      style="font-weight:300;font-size:72px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;letter-spacing:8;fill:#ffffff;opacity:0.95"
+      filter="url(#textGlowFilter)">World</text>
+   <text
+      x="382"
+      y="178"
+      id="title2"
+      style="font-weight:300;font-size:72px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;letter-spacing:8;fill:#ffffff;opacity:0.95"
+      filter="url(#textGlowFilter)"> Office</text>
 
   <!-- === SUBTITLE === -->
   <text
      x="82"
      y="210"
      id="subtitle"
-     style="font-weight:300;font-size:13px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;letter-spacing:6;fill:#00d4ff;opacity:0.35">OPEN SOURCE DOCUMENT SUITE</text>
+      style="font-weight:300;font-size:13px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;letter-spacing:6;fill:#00d4ff;opacity:0.35">INDEPENDENT DOCUMENT SUITE</text>
 
   <!-- === DECORATIVE ACCENT LINE under title === -->
   <line

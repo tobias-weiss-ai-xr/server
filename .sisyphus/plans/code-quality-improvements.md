@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Fix verified code quality issues across world-office-nextcloud, document-server-integration, and core repos.
+**Goal:** Fix verified code quality issues across word-office-nextcloud, document-server-integration, and core repos.
 
 **Architecture:** Three repos, three languages (PHP, Java/JS, C++). Changes are isolated — no cross-repo dependencies. Each task is a single-file or single-repo fix.
 
@@ -10,17 +10,17 @@
 
 ---
 
-## world-office-nextcloud
+## word-office-nextcloud
 
 ### Task 1: Fix preg_replace missing delimiters in DocumentService.php
 
 **Files:**
-- Modify: `world-office-nextcloud/lib/DocumentService.php:62`
+- Modify: `word-office-nextcloud/lib/DocumentService.php:62`
 
 **Context:** `preg_replace("[^0-9-.a-zA-Z_=]", "_", ...)` is missing regex delimiters. PHP requires delimiters like `/pattern/` or `~pattern~`. This causes a PHP warning at runtime and breaks revision ID generation for all document conversions and thumbnail requests.
 
 **Step 1: Read the file**
-Read `world-office-nextcloud/lib/DocumentService.php` lines 55-65 to confirm current code.
+Read `word-office-nextcloud/lib/DocumentService.php` lines 55-65 to confirm current code.
 
 **Step 2: Fix the regex pattern**
 Change line 62 from:
@@ -47,12 +47,12 @@ breaking revision ID generation for document conversions."
 ### Task 2: Fix array_map syntax error in EditorController.php
 
 **Files:**
-- Modify: `world-office-nextcloud/lib/Controller/EditorController.php:1532`
+- Modify: `word-office-nextcloud/lib/Controller/EditorController.php:1532`
 
 **Context:** `array_map(urlencode(...), explode("/", $path))` uses PHP 8.4's first-class callable syntax with spread — but this is not valid when the callable takes a single argument and `array_map` passes arrays. The correct form for PHP 8.1+ compatibility is `array_map('urlencode', ...)`.
 
 **Step 1: Read the file**
-Read `world-office-nextcloud/lib/Controller/EditorController.php` lines 1527-1545 to confirm current code.
+Read `word-office-nextcloud/lib/Controller/EditorController.php` lines 1527-1545 to confirm current code.
 
 **Step 2: Fix the array_map call**
 Change line 1532 from:
@@ -140,7 +140,7 @@ git commit -m "fix: remove prototype pollution, add CORS config, TLS warning
 ### Task 4: Fix Java Spring unsafe enum parsing and parseInt in EditorController.java
 
 **Files:**
-- Modify: `document-server-integration/web/documentserver-example/java-spring/src/main/java/com/world-office/integration/controllers/EditorController.java`
+- Modify: `document-server-integration/web/documentserver-example/java-spring/src/main/java/com/Word Office/integration/controllers/EditorController.java`
 
 **Context:**
 - Line 99: `Action.valueOf(actionParam)` throws `IllegalArgumentException` on invalid input → 500 error
@@ -175,7 +175,7 @@ Optional<User> optionalUser = userService.findUserById(userId);
 
 **Step 4: Commit**
 ```
-git add web/documentserver-example/java-spring/src/main/java/com/world-office/integration/controllers/EditorController.java
+git add web/documentserver-example/java-spring/src/main/java/com/Word Office/integration/controllers/EditorController.java
 git commit -m "fix: add safe enum/integer parsing in EditorController
 
 Wrap Action.valueOf, Type.valueOf, and Integer.parseInt in
@@ -187,7 +187,7 @@ try/catch to prevent 500 errors from invalid input."
 ### Task 5: Fix Java Spring printStackTrace in ForgottenController.java
 
 **Files:**
-- Modify: `document-server-integration/web/documentserver-example/java-spring/src/main/java/com/world-office/integration/controllers/ForgottenController.java`
+- Modify: `document-server-integration/web/documentserver-example/java-spring/src/main/java/com/Word Office/integration/controllers/ForgottenController.java`
 
 **Context:** `catch (Exception e) { e.printStackTrace(); }` — prints to stdout instead of using proper logger. Noisy in production, not traceable.
 
@@ -204,7 +204,7 @@ Then replace `e.printStackTrace()` with `logger.error("Error message", e);`
 
 **Step 3: Commit**
 ```
-git add web/documentserver-example/java-spring/src/main/java/com/world-office/integration/controllers/ForgottenController.java
+git add web/documentserver-example/java-spring/src/main/java/com/Word Office/integration/controllers/ForgottenController.java
 git commit -m "fix: replace printStackTrace with logger in ForgottenController
 
 Use proper structured logging instead of stdout stack traces."
@@ -252,24 +252,24 @@ for automatic memory management."
 
 ### Task 7: Push all changes to Codeberg
 
-**Step 1: Push world-office-nextcloud**
+**Step 1: Push word-office-nextcloud**
 ```bash
-cd world-office-nextcloud
-git remote add ssh git@codeberg.org:World-Office/world-office-nextcloud.git 2>/dev/null || true
+cd word-office-nextcloud
+git remote add ssh git@codeberg.org:Word-Office/word-office-nextcloud.git 2>/dev/null || true
 git push ssh main
 ```
 
 **Step 2: Push document-server-integration**
 ```bash
 cd document-server-integration
-git remote add ssh git@codeberg.org:World-Office/document-server-integration.git 2>/dev/null || true
+git remote add ssh git@codeberg.org:Word-Office/document-server-integration.git 2>/dev/null || true
 git push ssh main
 ```
 
 **Step 3: Push core**
 ```bash
 cd core
-git remote add ssh git@codeberg.org:World-Office/core.git 2>/dev/null || true
+git remote add ssh git@codeberg.org:Word-Office/core.git 2>/dev/null || true
 git push ssh main
 ```
 
@@ -277,7 +277,7 @@ git push ssh main
 
 ## Final Verification Wave
 
-### F1: Verify world-office-nextcloud PHP syntax
+### F1: Verify word-office-nextcloud PHP syntax
 Run `php -l lib/DocumentService.php lib/Controller/EditorController.php` to confirm no syntax errors.
 
 ### F2: Verify document-server-integration changes

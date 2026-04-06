@@ -4,12 +4,12 @@ Describing Task 1 - Script Scaffold
       Expected: {True}
       But was:  {False}
       69:             Test-Path $ScriptPath | Should Be $true
-      at <ScriptBlock>, C:\Users\Tobias\git\world-office\tests\Sync-Remotes.Tests.ps1: line 69
+      at <ScriptBlock>, C:\Users\Tobias\git\Word Office\tests\Sync-Remotes.Tests.ps1: line 69
    Context Help output
     [-] Should have help output available 1.82s
       Expected: value to not be empty
       77:             $help | Should Not BeNullOrEmpty
-      at <ScriptBlock>, C:\Users\Tobias\git\world-office\tests\Sync-Remotes.Tests.ps1: line 77
+      at <ScriptBlock>, C:\Users\Tobias\git\Word Office\tests\Sync-Remotes.Tests.ps1: line 77
    Context Default execution mode
     [+] Should default to dry-run mode 40ms
 Describing Task 2 - Invoke-Utility

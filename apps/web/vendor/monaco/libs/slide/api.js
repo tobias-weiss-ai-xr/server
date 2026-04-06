@@ -1430,7 +1430,7 @@ ApiCustomXmlNode.prototype.GetAttribute = function(name){ return ""; };
  *   "Mark Pottato": {
  *     comments: [
  *       { IsAnswer: false, CommentMessage: "Need to change this part", Date: 1688587967245, DateUTC: 1688569967245, QuoteText: "The quick brown fox jumps over the lazy dog" },
- *       { IsAnswer: false, CommentMessage: "We need to add a link", Date: 1688587967245, DateUTC: 1688569967245, QuoteText: "WorldOffice" }
+ *       { IsAnswer: false, CommentMessage: "We need to add a link", Date: 1688587967245, DateUTC: 1688569967245, QuoteText: "Word Office" }
  *     ]
  *   }
  * }
@@ -1493,7 +1493,7 @@ ApiCustomXmlNode.prototype.GetAttribute = function(name){ return ""; };
  * {
  *   "key" : "CompanyName",
  *   "tag" : "companyName",
- *   "value" : "WORLDOFFICE",
+ *   "value" : "Word Office",
  *   "type" : "text"
  * }
  */

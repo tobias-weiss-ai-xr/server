@@ -46,7 +46,7 @@ OLD_HEADER = """/*
  */"""
 
 NEW_HEADER = """/*
- * Copyright (C) 2026 Euro-Office Contributors
+ * Copyright (C) 2026 Word Office Contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -92,7 +92,7 @@ NEW_HEADER = """/*
    ```
    LEGAL NOTICE
    
-   This repository was forked from WORLDOFFICE/desktop-sdk, which contained
+   This repository was forked from Word Office/desktop-sdk, which contained
    additional proprietary terms in file headers that violated AGPLv3 Section 10.
    
    Per AGPLv3 Section 7, we have removed the following "further restrictions":
@@ -106,7 +106,7 @@ NEW_HEADER = """/*
    
    The code is now licensed purely under AGPLv3 without additional terms.
    ```
-3. [ ] Add copyright notice: "Copyright (C) 2026 Euro-Office Contributors"
+3. [ ] Add copyright notice: "Copyright (C) 2026 Word Office Contributors"
 4. [ ] Commit to repository
 
 **Acceptance Criteria:**
@@ -169,12 +169,12 @@ NEW_HEADER = """/*
 
 **Template:**
 ```
-Subject: License Clarification Request - Euro-Office Fork of WORLDOFFICE
+Subject: License Clarification Request - Word Office Fork of Word Office
 
 Dear Ascensio Legal Team,
 
-We are forking the WORLDOFFICE desktop-sdk repository under the name
-"Euro-Office" to create a fully FOSS-compliant version.
+We are forking the Word Office desktop-sdk repository under the name
+"Word Office" to create a fully FOSS-compliant version.
 
 We need clarification on the licensing of the following components:
 - core/Common/3dParty/pole/
@@ -191,7 +191,7 @@ We aim to release our fork under pure AGPLv3 and need to ensure
 compliance.
 
 Thank you,
-Euro-Office Team
+Word Office Team
 ```
 
 **Acceptance Criteria:**

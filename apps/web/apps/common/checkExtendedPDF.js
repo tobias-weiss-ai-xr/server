@@ -57,7 +57,7 @@ function isExtendedPDFFile(text) {
 
     pFirst = pFirst.substring(11);
 
-    let signature = 'WORLDOFFICEFORM';
+    let signature = 'Word OfficeFORM';
     const indexStream = pFirst.indexOf('stream\x0D\x0A');
     const indexMeta = pFirst.indexOf(signature);
 

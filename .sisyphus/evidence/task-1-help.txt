@@ -1,21 +1,21 @@
 
 NAME
-    C:\Users\Tobias\git\world-office\scripts\Sync-Remotes.ps1
+    C:\Users\Tobias\git\Word Office\scripts\Sync-Remotes.ps1
     
 SYNOPSIS
-    Sync git remotes for Euro-Office workspace repositories.
+    Sync git remotes for Word Office workspace repositories.
     
     
 SYNTAX
-    C:\Users\Tobias\git\world-office\scripts\Sync-Remotes.ps1 [-DryRun] [-Execute] [-AllowDirty] [-AutoAddRemotes] 
+    C:\Users\Tobias\git\Word Office\scripts\Sync-Remotes.ps1 [-DryRun] [-Execute] [-AllowDirty] [-AutoAddRemotes] 
     [-AutoOurs] [-Force] [-Json] [[-RepoRoot] <String>] [-Help] [-ListRepos] [<CommonParameters>]
     
     
 DESCRIPTION
-    This script synchronizes git repositories in the Euro-Office workspace by:
-    - Fetching from both upstream (world-office) and source (world-office) remotes
+    This script synchronizes git repositories in the Word Office workspace by:
+    - Fetching from both upstream (Word Office) and source (Word Office) remotes
     - Merging changes from source remote into local branches
-    - Pushing updates to world-office remote (Codeberg)
+    - Pushing updates to Word Office remote (Codeberg)
     
     By default, operates in dry-run mode to preview actions before execution.
     
@@ -52,7 +52,7 @@ PARAMETERS
         Accept wildcard characters?  false
         
     -AutoAddRemotes [<SwitchParameter>]
-        Automatically add world-office and world-office remotes if they don't exist.
+        Automatically add Word Office and Word Office remotes if they don't exist.
         
         Required?                    false
         Position?                    named
@@ -72,7 +72,7 @@ PARAMETERS
         Accept wildcard characters?  false
         
     -Force [<SwitchParameter>]
-        Force push to world-office remote. Use with caution.
+        Force push to Word Office remote. Use with caution.
         
         Required?                    false
         Position?                    named

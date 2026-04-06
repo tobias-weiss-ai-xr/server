@@ -1,8 +1,8 @@
 {
-  "name": "world-office",
+  "name": "word-office",
   "version": "0.1.0",
   "private": true,
-  "description": "World-Office — Modern document editing suite",
+  "description": "Word Office — Modern document editing suite",
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {

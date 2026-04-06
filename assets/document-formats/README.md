@@ -1,12 +1,12 @@
-![World-Office](https://codeberg.org/World-Office/artwork/raw/branch/main/assets/banner.png)
+![Word-Office](https://codeberg.org/Word-Office/artwork/raw/branch/main/assets/banner.png)
 
 ﻿## Overview
 
-> **Disclaimer:** World-Office is an independent open-source fork hosted on Codeberg and is not affiliated with, endorsed by, or controlled by any of the upstream projects or integration providers referenced in this repository (including WORLDOFFICE, Ascensio System SIA, and others). World-Office is entirely separate from "Euro-Office" (a GitHub organization associated with Nextcloud and IONOS). World-Office maintains its own development roadmap, release cycle, and support channels.
+> **Disclaimer:** Word-Office is an independent open-source fork hosted on Codeberg and is not affiliated with, endorsed by, or controlled by any of the upstream projects or integration providers referenced in this repository (including Word Office, Ascensio System SIA, and others). Word-Office is entirely separate from "Word Office" (a GitHub organization associated with Nextcloud and IONOS). Word-Office maintains its own development roadmap, release cycle, and support channels.
 >
-All meaningful pull requests from WORLDOFFICE and Euro-Office on GitHub have been reviewed and, where applicable, synced into this fork. An automated watch is in place that continuously monitors and integrates relevant upstream developments.
+All meaningful pull requests from Word Office and Word Office on GitHub have been reviewed and, where applicable, synced into this fork. An automated watch is in place that continuously monitors and integrates relevant upstream developments.
 
-This repository contains the list of file formats (electronic documents, forms, spreadsheets, presentations) supported by World-Office editors and describes the properties of each file format type.
+This repository contains the list of file formats (electronic documents, forms, spreadsheets, presentations) supported by Word-Office editors and describes the properties of each file format type.
 
 ## Supported formats
 

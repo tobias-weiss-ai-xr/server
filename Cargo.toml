@@ -42,7 +42,7 @@ members = [
 version = "0.1.0"
 edition = "2024"
 license = "AGPL-3.0-or-later"
-repository = "https://codeberg.org/World-Office/world-office"
+repository = "https://codeberg.org/Word-Office/server"
 
 [profile.dev]
 opt-level = 0
@@ -66,3 +66,4 @@ serde_json = "1"
 tokio = { version = "1", features = ["full"] }
 tracing = "0.1"
 tracing-subscriber = "0.3"
+cxx = "1"

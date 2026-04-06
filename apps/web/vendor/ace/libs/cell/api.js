@@ -854,7 +854,7 @@ ApiDocument.prototype.CreateNewHistoryPoint = function(){};
  *      {IsAnswer: true, CommentMessage: "I don't think so", Date: 1688588012661, DateUTC: 1688570012661}],
  *
  *    "Mark Pottato" : [{IsAnswer: false, CommentMessage: 'Need to change this part', Date: 1688587967245, DateUTC: 1688569967245, QuoteText: 'The quick brown fox jumps over the lazy dog'},
- *      {IsAnswer: false, CommentMessage: 'We need to add a link', Date: 1688587967245, DateUTC: 1688569967245, QuoteText: 'WorldOffice'}]
+ *      {IsAnswer: false, CommentMessage: 'We need to add a link', Date: 1688587967245, DateUTC: 1688569967245, QuoteText: 'Word Office'}]
  *  }
  */
 
@@ -900,7 +900,7 @@ ApiDocument.prototype.CreateNewHistoryPoint = function(){};
  * {
  *   "key" : "CompanyName",
  *   "tag" : "companyName",
- *   "value" : "WORLDOFFICE",
+ *   "value" : "Word Office",
  *   "type" : "text"
  * }
  */
@@ -8899,7 +8899,7 @@ ApiRange.prototype.Areas = ApiRange.prototype.GetAreas ();
  * Copies the range to the specified range or to the Clipboard.
  * @memberof ApiRange
  * @typeofeditors ["CSE"]
- * @param {ApiRange} [destination] - Specifies the new range to which the specified range will be copied. If this argument is omitted, WorldOffice copies the range to the Clipboard.
+ * @param {ApiRange} [destination] - Specifies the new range to which the specified range will be copied. If this argument is omitted, Word Office copies the range to the Clipboard.
  */
 ApiRange.prototype.Copy = function (destination) {};
 
@@ -8907,7 +8907,7 @@ ApiRange.prototype.Copy = function (destination) {};
  * Cuts the range to the specified range or to the Clipboard.
  * @memberof ApiRange
  * @typeofeditors ["CSE"]
- * @param {ApiRange} [destination] - Specifies the new range to which the specified range will be cuted. If this argument is omitted, WorldOffice copies the range to the Clipboard.
+ * @param {ApiRange} [destination] - Specifies the new range to which the specified range will be cuted. If this argument is omitted, Word Office copies the range to the Clipboard.
  */
 ApiRange.prototype.Cut = function (destination) {};
 

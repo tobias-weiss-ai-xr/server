@@ -133,7 +133,7 @@ class CommentsController extends Component {
     changeCommentData (id, data) {
         const changeComment = {};
 
-        const date = (data.asc_getWorldOfficeTime()) ? new Date(stringOOToLocalDate(data.asc_getWorldOfficeTime())) :
+        const date = (data.asc_getWord OfficeTime()) ? new Date(stringOOToLocalDate(data.asc_getWord OfficeTime())) :
             ((data.asc_getTime() === '') ? new Date() : new Date(stringUtcToLocalDate(data.asc_getTime())));
 
         const userId = data.asc_getUserId()
@@ -161,7 +161,7 @@ class CommentsController extends Component {
         const repliesCount = data.asc_getRepliesCount();
         for (let i = 0; i < repliesCount; ++i) {
 
-            dateReply = (data.asc_getReply(i).asc_getWorldOfficeTime()) ? new Date(stringOOToLocalDate(data.asc_getReply(i).asc_getWorldOfficeTime())) :
+            dateReply = (data.asc_getReply(i).asc_getWord OfficeTime()) ? new Date(stringOOToLocalDate(data.asc_getReply(i).asc_getWord OfficeTime())) :
                 ((data.asc_getReply(i).asc_getTime() === '') ? new Date() : new Date(stringUtcToLocalDate(data.asc_getReply(i).asc_getTime())));
 
             const userId = data.asc_getReply(i).asc_getUserId();
@@ -191,7 +191,7 @@ class CommentsController extends Component {
         this.storeComments.changeFilter(filter);
     }
     readSDKComment (id, data) {
-        const date = (data.asc_getWorldOfficeTime()) ? new Date(stringOOToLocalDate(data.asc_getWorldOfficeTime())) :
+        const date = (data.asc_getWord OfficeTime()) ? new Date(stringOOToLocalDate(data.asc_getWord OfficeTime())) :
             ((data.asc_getTime() === '') ? new Date() : new Date(stringUtcToLocalDate(data.asc_getTime())));
         const userId = data.asc_getUserId();
         const user = this.usersStore.searchUserById(userId);
@@ -232,7 +232,7 @@ class CommentsController extends Component {
         let date = null;
         if (repliesCount) {
             for (i = 0; i < repliesCount; ++i) {
-                date = (data.asc_getReply(i).asc_getWorldOfficeTime()) ? new Date(stringOOToLocalDate(data.asc_getReply(i).asc_getWorldOfficeTime())) :
+                date = (data.asc_getReply(i).asc_getWord OfficeTime()) ? new Date(stringOOToLocalDate(data.asc_getReply(i).asc_getWord OfficeTime())) :
                     ((data.asc_getReply(i).asc_getTime() === '') ? new Date() : new Date(stringUtcToLocalDate(data.asc_getReply(i).asc_getTime())));
                 const userId = data.asc_getReply(i).asc_getUserId();
                 const user = this.usersStore.searchUserById(userId);
@@ -303,7 +303,7 @@ class AddCommentController extends Component {
         if (commentText.length > 0) {
             comment.asc_putText(commentText);
             comment.asc_putTime(utcDateToString(new Date()));
-            comment.asc_putWorldOfficeTime(ooDateToString(new Date()));
+            comment.asc_putWord OfficeTime(ooDateToString(new Date()));
             comment.asc_putUserId(this.currentUser.asc_getIdOriginal());
             comment.asc_putUserName(this.currentUser.asc_getUserName());
             comment.asc_putSolved(false);
@@ -343,7 +343,7 @@ class EditCommentController extends Component {
             ascComment.asc_putText(comment.comment);
             ascComment.asc_putQuoteText(comment.quote);
             ascComment.asc_putTime(utcDateToString(new Date(comment.time)));
-            ascComment.asc_putWorldOfficeTime(ooDateToString(new Date(comment.time)));
+            ascComment.asc_putWord OfficeTime(ooDateToString(new Date(comment.time)));
             ascComment.asc_putUserId(comment.userId);
             ascComment.asc_putUserName(comment.userName);
             ascComment.asc_putSolved(comment.resolved);
@@ -360,7 +360,7 @@ class EditCommentController extends Component {
                     if (addReply) {
                         addReply.asc_putText(reply.reply);
                         addReply.asc_putTime(utcDateToString(new Date(reply.time)));
-                        addReply.asc_putWorldOfficeTime(ooDateToString(new Date(reply.time)));
+                        addReply.asc_putWord OfficeTime(ooDateToString(new Date(reply.time)));
                         addReply.asc_putUserId(reply.userId);
                         addReply.asc_putUserName(reply.userName);
 
@@ -389,7 +389,7 @@ class EditCommentController extends Component {
             ascComment.asc_putText(comment.comment);
             ascComment.asc_putQuoteText(comment.quote);
             ascComment.asc_putTime(utcDateToString(new Date(comment.time)));
-            ascComment.asc_putWorldOfficeTime(ooDateToString(new Date(comment.time)));
+            ascComment.asc_putWord OfficeTime(ooDateToString(new Date(comment.time)));
             ascComment.asc_putUserId(comment.userId);
             ascComment.asc_putUserName(comment.userName);
             ascComment.asc_putSolved(comment.resolved);
@@ -407,7 +407,7 @@ class EditCommentController extends Component {
                     if (addReply) {
                         addReply.asc_putText(reply.reply);
                         addReply.asc_putTime(utcDateToString(new Date(reply.time)));
-                        addReply.asc_putWorldOfficeTime(ooDateToString(new Date(reply.time)));
+                        addReply.asc_putWord OfficeTime(ooDateToString(new Date(reply.time)));
                         addReply.asc_putUserId(reply.userId);
                         addReply.asc_putUserName(reply.userName);
 
@@ -420,7 +420,7 @@ class EditCommentController extends Component {
             if (addReply) {
                 addReply.asc_putText(replyVal);
                 addReply.asc_putTime(utcDateToString(new Date()));
-                addReply.asc_putWorldOfficeTime(ooDateToString(new Date()));
+                addReply.asc_putWord OfficeTime(ooDateToString(new Date()));
                 const currentUser = this.props.users.currentUser;
                 addReply.asc_putUserId(currentUser.asc_getIdOriginal());
                 addReply.asc_putUserName(currentUser.asc_getUserName());
@@ -491,7 +491,7 @@ class ViewCommentsController extends Component {
             ascComment.asc_putText(comment.comment);
             ascComment.asc_putQuoteText(comment.quote);
             ascComment.asc_putTime(utcDateToString(new Date(comment.time)));
-            ascComment.asc_putWorldOfficeTime(ooDateToString(new Date(comment.time)));
+            ascComment.asc_putWord OfficeTime(ooDateToString(new Date(comment.time)));
             ascComment.asc_putUserId(comment.userId);
             ascComment.asc_putUserName(comment.userName);
             ascComment.asc_putSolved(!comment.resolved);
@@ -508,7 +508,7 @@ class ViewCommentsController extends Component {
                     if (addReply) {
                         addReply.asc_putText(reply.reply);
                         addReply.asc_putTime(utcDateToString(new Date(reply.time)));
-                        addReply.asc_putWorldOfficeTime(ooDateToString(new Date(reply.time)));
+                        addReply.asc_putWord OfficeTime(ooDateToString(new Date(reply.time)));
                         addReply.asc_putUserId(reply.userId);
                         addReply.asc_putUserName(reply.userName);
 
@@ -540,7 +540,7 @@ class ViewCommentsController extends Component {
             ascComment.asc_putText(comment.comment);
             ascComment.asc_putQuoteText(comment.quote);
             ascComment.asc_putTime(utcDateToString(new Date(comment.time)));
-            ascComment.asc_putWorldOfficeTime(ooDateToString(new Date(comment.time)));
+            ascComment.asc_putWord OfficeTime(ooDateToString(new Date(comment.time)));
             ascComment.asc_putUserId(comment.userId);
             ascComment.asc_putUserName(comment.userName);
             ascComment.asc_putSolved(comment.resolved);
@@ -558,7 +558,7 @@ class ViewCommentsController extends Component {
                         if (addReply) {
                             addReply.asc_putText(reply.reply);
                             addReply.asc_putTime(utcDateToString(new Date(reply.time)));
-                            addReply.asc_putWorldOfficeTime(ooDateToString(new Date(reply.time)));
+                            addReply.asc_putWord OfficeTime(ooDateToString(new Date(reply.time)));
                             addReply.asc_putUserId(reply.userId);
                             addReply.asc_putUserName(reply.userName);
 

@@ -1,0 +1,75 @@
+# World-Office Development Infrastructure
+# ========================================
+# Provides the backing services needed by all World-Office microservices:
+#   - PostgreSQL: primary relational store for identity, session, audit, storage, coauthoring
+#   - Redis: pub/sub for coauthoring real-time sync, session caching, rate limiting
+#   - RabbitMQ: async job queue for conversion service, webhook delivery, event bus
+#
+# Usage:
+#   docker compose up -d              (start all)
+#   docker compose up -d postgres     (start single service)
+#   docker compose logs -f rabbitmq   (follow logs)
+#   docker compose down -v            (stop and remove volumes)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: world-office-postgres
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-world_office}
+      POSTGRES_USER: ${POSTGRES_USER:-worldoffice}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-worldoffice_dev}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-worldoffice} -d ${POSTGRES_DB:-world_office}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    container_name: world-office-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: world-office-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "${RABBITMQ_AMQP_PORT:-5672}:5672"
+      - "${RABBITMQ_MGMT_PORT:-15672}:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  rabbitmq_data:
+    driver: local

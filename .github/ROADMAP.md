@@ -1,11 +1,11 @@
 <!--
-SPDX-FileCopyrightText: 2026 Euro-Office contributors
+SPDX-FileCopyrightText: 2026 Word Office contributors
 SPDX-License-Identifier: CC0-1.0
 -->
 
-# Euro-Office Roadmap
+# Word Office Roadmap
 
-This document outlines the high-level goals and planned milestones for the Euro-Office project. It is a living document â€” priorities may shift as the project evolves.
+This document outlines the high-level goals and planned milestones for the Word Office project. It is a living document â€” priorities may shift as the project evolves.
 
 For how the repos fit together, see [ARCHITECTURE.md](ARCHITECTURE.md). For contributor setup, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -13,7 +13,7 @@ For how the repos fit together, see [ARCHITECTURE.md](ARCHITECTURE.md). For cont
 
 ## Vision
 
-Euro-Office aims to provide a truly open, transparent, and sovereign online office suite for collaborative document editing, free from the governance and transparency concerns that led to the fork from WORLDOFFICE.
+Word Office aims to provide a truly open, transparent, and sovereign online office suite for collaborative document editing, free from the governance and transparency concerns that led to the built from scratch.
 
 ## Guiding Principles
 
@@ -32,14 +32,14 @@ Euro-Office aims to provide a truly open, transparent, and sovereign online offi
 
 - [ ] **Remove or replace binary blobs** â€” ~400-500 MB of non-source content:
   - `core/Common/3dParty/libvlc/build/` â€” ~1,500 precompiled VLC binaries (302 MB across 5 platforms). Move to separate package or Git LFS.
-  - 6 emscripten WASM + JS fallback pairs in [sdkjs](https://codeberg.org/World-Office/sdkjs) and [core](https://codeberg.org/World-Office/core) (~45 MB). These are build outputs of C/C++ source in the repo.
+  - 6 emscripten WASM + JS fallback pairs in [sdkjs](https://codeberg.org/word-office/sdkjs) and [core](https://codeberg.org/word-office/core) (~45 MB). These are build outputs of C/C++ source in the repo.
   - `core/Test/Applications/` â€” compiled .exe/.dll test build artifacts.
   - No Git LFS tracking configured in any repo.
 - [ ] **Translate Russian code comments** â€” ~22,500 lines identified:
-  - [sdkjs](https://codeberg.org/World-Office/sdkjs) â€” ~15,300 lines (JavaScript, highest priority)
-  - [core](https://codeberg.org/World-Office/core) â€” ~7,000 lines (C++, concentrated in XLS/XLSB/PPT binary format handling)
-  - [web-apps](https://codeberg.org/World-Office/web-apps) â€” ~200 lines (quick wins)
-  - [server](https://codeberg.org/World-Office/server) â€” 9 lines (negligible)
+  - [sdkjs](https://codeberg.org/word-office/sdkjs) â€” ~15,300 lines (JavaScript, highest priority)
+  - [core](https://codeberg.org/word-office/core) â€” ~7,000 lines (C++, concentrated in XLS/XLSB/PPT binary format handling)
+  - [web-apps](https://codeberg.org/word-office/web-apps) â€” ~200 lines (quick wins)
+  - [server](https://codeberg.org/word-office/server) â€” 9 lines (negligible)
   - Exclude: native language names in i18n data, regex Cyrillic patterns, 3rd-party vendored code.
 - [ ] **Audit third-party dependencies** with unclear licensing (in progress)
 - [x] Establish code style guide and contribution guidelines ([CONTRIBUTING.md](CONTRIBUTING.md))
@@ -63,11 +63,11 @@ Euro-Office aims to provide a truly open, transparent, and sovereign online offi
 
 ## Phase 2 â€” Feature Parity & Restoration
 
-> Goal: Restore features that were removed or closed off in the WORLDOFFICE upstream.
+> Goal: Restore features that were removed or closed off in the legacy codebase.
 
 ### Administrator Panel
 
-- [x] **Already built by Euro-Office.** The [server](https://codeberg.org/World-Office/server) `AdminPanel/` is a complete React 18 SPA + Express.js backend (707 files, 14 admin pages). Does NOT exist in WORLDOFFICE upstream.
+- [x] **Already built by Word Office.** The [server](https://codeberg.org/word-office/server) `AdminPanel/` is a complete React 18 SPA + Express.js backend (707 files, 14 admin pages). Does NOT exist in legacy codebase.
 - [ ] Enable the admin panel by default in packaged deployments (currently `autostart=false`)
 - [ ] Build the admin panel client (`npm run build` in `server/AdminPanel/client/`)
 - [ ] Add tests for the admin panel
@@ -95,7 +95,7 @@ Euro-Office aims to provide a truly open, transparent, and sovereign online offi
 
 ### Desktop Editors
 
-- [ ] Stabilize the Chromium-based desktop editor framework ([DesktopEditors](https://codeberg.org/World-Office/DesktopEditors), [desktop-apps](https://codeberg.org/World-Office/desktop-apps))
+- [ ] Stabilize the Chromium-based desktop editor framework ([DesktopEditors](https://codeberg.org/word-office/DesktopEditors), [desktop-apps](https://codeberg.org/word-office/desktop-apps))
 - [ ] Add Flatpak packaging
 - [ ] Add Snap packaging
 - [ ] Add AppImage packaging
@@ -104,21 +104,21 @@ Euro-Office aims to provide a truly open, transparent, and sovereign online offi
 
 ### Desktop SDK
 
-- [ ] Document the [desktop-sdk](https://codeberg.org/World-Office/desktop-sdk) for third-party integrations
+- [ ] Document the [desktop-sdk](https://codeberg.org/word-office/desktop-sdk) for third-party integrations
 - [ ] Publish SDK packages and examples
 
 ---
 
 ## Phase 4 â€” Integration Ecosystem
 
-> Goal: Make Euro-Office the default document editing component for European digital workplace solutions.
+> Goal: Make Word Office the default document editing component for European digital workplace solutions.
 
 ### Platform Integrations
 
-- [x] **Mature.** [world-office-nextcloud](https://codeberg.org/World-Office/world-office-nextcloud) â€” 46 PHP files covering editing, sharing, templates, collaboration, federation, admin settings.
+- [x] **Mature.** [word-office-nextcloud](https://codeberg.org/word-office/word-office-nextcloud) â€” 46 PHP files covering editing, sharing, templates, collaboration, federation, admin settings.
 - [ ] Provide first-class integration guides for XWiki, OpenProject, Proton
 - [ ] Build integration SDKs for common platforms (Web, REST API, WOPI)
-- [ ] Expand language support for [integration examples](https://codeberg.org/World-Office/document-server-integration) (Go, Python, PHP, Java, C#, Node.js, Ruby)
+- [ ] Expand language support for [integration examples](https://codeberg.org/word-office/document-server-integration) (Go, Python, PHP, Java, C#, Node.js, Ruby)
 - [ ] Integrate into OpenCloud
 - [ ] Integrate into SOGo
 - [ ] Integrate into Open-Xchange
@@ -127,18 +127,18 @@ Euro-Office aims to provide a truly open, transparent, and sovereign online offi
 ### Collaboration with LibreOffice/Collabora
 
 - [ ] Explore collaboration opportunities (e.g., shared document converter)
-- [ ] Investigate interoperability testing between Euro-Office and LibreOffice
+- [ ] Investigate interoperability testing between Word Office and LibreOffice
 
 ---
 
 ## Phase 5 â€” Innovation
 
-> Goal: Differentiate Euro-Office with modern features.
+> Goal: Differentiate Word Office with modern features.
 
 ### AI-Powered Features
 
-- [x] **Production (v1.0.0).** [plugin-aiautofill](https://codeberg.org/World-Office/plugin-aiautofill) â€” AI form field mapping for Word/PDF forms.
-- [x] **Production (v1.1.0).** AI agent plugin in [desktop-sdk](https://codeberg.org/World-Office/desktop-sdk) â€” 11 provider support (OpenAI, Anthropic, Gemini, DeepSeek, xAI, Mistral, Together, OpenRouter, Ollama, LM Studio, OpenAI-Compatible), MCP protocol, web search.
+- [x] **Production (v1.0.0).** [plugin-aiautofill](https://codeberg.org/word-office/plugin-aiautofill) â€” AI form field mapping for Word/PDF forms.
+- [x] **Production (v1.1.0).** AI agent plugin in [desktop-sdk](https://codeberg.org/word-office/desktop-sdk) â€” 11 provider support (OpenAI, Anthropic, Gemini, DeepSeek, xAI, Mistral, Together, OpenRouter, Ollama, LM Studio, OpenAI-Compatible), MCP protocol, web search.
 - [x] **On-device AI already supported.** Ollama and LM Studio are first-class providers.
 - [ ] Add RAG (Retrieval-Augmented Generation) for in-editor AI to use document context
 - [ ] Bundle a lightweight local model for offline desktop AI
@@ -147,13 +147,13 @@ Euro-Office aims to provide a truly open, transparent, and sovereign online offi
 
 ### User Experience
 
-- [ ] Modernize the web-based editor UI ([web-apps](https://codeberg.org/World-Office/web-apps))
+- [ ] Modernize the web-based editor UI ([web-apps](https://codeberg.org/word-office/web-apps))
 - [ ] Improve accessibility (WCAG 2.1 AA compliance)
 - [ ] Add real-time collaboration enhancements (presence indicators, comments, version history)
 
 ### Performance
 
-- [ ] Optimize document rendering engine ([core](https://codeberg.org/World-Office/core), [sdkjs](https://codeberg.org/World-Office/sdkjs))
+- [ ] Optimize document rendering engine ([core](https://codeberg.org/word-office/core), [sdkjs](https://codeberg.org/word-office/sdkjs))
 - [ ] Reduce memory footprint for large documents
 - [ ] Improve WebSocket-based real-time editing performance
 
@@ -161,16 +161,16 @@ Euro-Office aims to provide a truly open, transparent, and sovereign online offi
 
 ## How to Get Involved
 
-- **File issues** â€” [DocumentServer/issues](https://codeberg.org/World-Office/DocumentServer/issues)
+- **File issues** â€” [DocumentServer/issues](https://codeberg.org/word-office/DocumentServer/issues)
 - **Submit PRs** â€” See the [contributing guide](CONTRIBUTING.md) for branch, commit, and PR conventions
-- **Join the discussion** â€” Check the [organization page](https://codeberg.org/World-Office) for community channels
+- **Join the discussion** â€” Check the [organization page](https://codeberg.org/word-office) for community channels
 - **Spread the word** â€” Star the repos, share with your network
 
 ---
 
 ## Partners & Supporters
 
-Euro-Office is driven by a growing consortium of European organizations committed to digital sovereignty.
+Word Office is driven by a growing consortium of European organizations committed to digital sovereignty.
 
 ### Corporate & Non-Profit Partners
 
@@ -204,7 +204,7 @@ Findings from the initial codebase audit (March 2026):
 |------|---------|--------|
 | Binary blobs | ~400-500 MB, dominated by VLC precompiled binaries (302 MB) | High |
 | Russian comments | ~22,500 lines across core (7K), sdkjs (15K), web-apps (200) | High |
-| Admin panel | Already built by Euro-Office (not from upstream) | Done |
+| Admin panel | Already built by Word Office (not from upstream) | Done |
 | Mobile web UI | Complete for all 4 editors (306 JS files) | Done |
 | Mobile native shells | None exist â€” must be built | Medium |
 | AI features | 4 production features, on-device AI supported | Done |
@@ -217,7 +217,7 @@ Findings from the initial codebase audit (March 2026):
 
 | Dependency | Location | License | Problem |
 |---|---|---|---|
-| x265 (HEIF codec) | `core/Common/3dParty/heif/` | GPLv2 | ~~Disabled~~ - AGPL incompatible. See [core PR](https://codeberg.org/World-Office/core/pulls/1) for fix.
+| x265 (HEIF codec) | `core/Common/3dParty/heif/` | GPLv2 | ~~Disabled~~ - AGPL incompatible. See [core PR](https://codeberg.org/word-office/core/pulls/1) for fix.
 | dmdb (DaMeng DB driver) | `server/DocService/` | None / Proprietary | No license declared. Proprietary code in AGPL project. Remove or isolate. |
 
 ### Medium License Concerns

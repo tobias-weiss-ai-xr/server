@@ -5,7 +5,7 @@
 
 ## Executive Summary
 
-The `desktop-sdk` repository is the **primary blocker** preventing full FOSS compliance of the Euro-Office fork. Despite claiming AGPLv3 licensing in the README, the actual licensing terms contain **proprietary restrictions** from Ascensio System SIA that violate AGPLv3 Section 10.
+The `desktop-sdk` repository is the **primary blocker** preventing full FOSS compliance of the Word Office fork. Despite claiming AGPLv3 licensing in the README, the actual licensing terms contain **proprietary restrictions** from Ascensio System SIA that violate AGPLv3 Section 10.
 
 ### Critical Issues Identified
 
@@ -159,7 +159,7 @@ core/Common/3dParty/
 1. Replace all file headers with clean AGPLv3 boilerplate
 2. Remove Ascensio-specific warranty exclusions
 3. Remove CC BY-SA 4.0 GUI restrictions
-4. Update copyright notices to "Euro-Office Contributors"
+4. Update copyright notices to "Word Office Contributors"
 5. Add legal justification document
 
 **Files to modify:** ~4,900 source files

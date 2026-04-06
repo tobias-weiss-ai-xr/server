@@ -1,11 +1,11 @@
 <!--
-SPDX-FileCopyrightText: 2026 Euro-Office contributors
+SPDX-FileCopyrightText: 2026 Word Office contributors
 SPDX-License-Identifier: CC0-1.0
 -->
 
-# Euro-Office Architecture
+# Word Office Architecture
 
-This document describes the architecture of the Euro-Office workspace, a multi-repo fork of the WORLDOFFICE document suite. It maps the 22 repositories, their dependencies, build order, and provides guidance on where to find specific functionality.
+This document describes the architecture of the Word Office workspace, a multi-repo independent document suite. It maps the 22 repositories, their dependencies, build order, and provides guidance on where to find specific functionality.
 
 ## Dependency Graph
 
@@ -62,7 +62,7 @@ DESKTOP STACK (Native)
 
 INTEGRATION ECOSYSTEM
 ----------------------------------------------------
-  world-office-         world-office-         document-server-    documents-app-
+  word-office-         word-office-         document-server-    documents-app-
   nextcloud/          opencloud/          integration/         android/
   (PHP + Vue 3)       (Node.js + EJS)     (Go,Python,PHP,     (Kotlin)
   NC 33-34 app        Cloud storage +     Java,C#,Node,Ruby)  Android shell
@@ -114,7 +114,7 @@ Phase 6 - Desktop (parallel):
   DesktopEditors/ (depends on desktop-sdk/ + desktop-apps/)
 
 Phase 7 - Integrations (parallel):
-  world-office-nextcloud/ → world-office-opencloud/ → document-server-integration/
+  word-office-nextcloud/ → word-office-opencloud/ → document-server-integration/
   documents-app-android/ → document-server-package/
 ```
 
@@ -124,33 +124,33 @@ Phase 7 - Integrations (parallel):
 
 | Repo | Language | Purpose | State |
 |------|----------|---------|-------|
-| core/ | C++ | Document rendering, OOXML/ODF/PDF conversion, font engine | Fork |
-| sdkjs/ | JavaScript | JS SDK for editor (1287 files, actively maintained) | Fork |
-| server/ | JavaScript (Node.js) | DocService, Converter, Command, Metrics, AdminPanel | Fork |
-| web-apps/ | HTML/JS/CSS | Editor UI for document, spreadsheet, presentation, PDF | Fork |
+| core/ | C++ | Document rendering, OOXML/ODF/PDF conversion, font engine | Source |
+| sdkjs/ | JavaScript | JS SDK for editor (1287 files, actively maintained) | Source |
+| server/ | JavaScript (Node.js) | DocService, Converter, Command, Metrics, AdminPanel | Source |
+| web-apps/ | HTML/JS/CSS | Editor UI for document, spreadsheet, presentation, PDF | Source |
 
 ### Tier 2: Assembly & Deployment
 
 | Repo | Language | Purpose | Assembles | State |
 |------|----------|---------|----------|-------|
-| DocumentServer/ | Shell/Make | Docker/Debian package assembly, CI/CD | core/ + server/ + sdkjs/ + web-apps/ + core-fonts/ + dictionaries/ | Fork |
-| docker-ci/ | Dockerfile | CI build images (Ubuntu 24.04, Node 20, JDK 21, Grunt) | DocumentServer/ | Fork |
-| document-server-package/ | Shell/Inno Setup | Debian/RPM packaging for DocumentServer | DocumentServer/ | Fork |
+| DocumentServer/ | Shell/Make | Docker/Debian package assembly, CI/CD | core/ + server/ + sdkjs/ + web-apps/ + core-fonts/ + dictionaries/ | Source |
+| docker-ci/ | Dockerfile | CI build images (Ubuntu 24.04, Node 20, JDK 21, Grunt) | DocumentServer/ | Source |
+| document-server-package/ | Shell/Inno Setup | Debian/RPM packaging for DocumentServer | DocumentServer/ | Source |
 
 ### Tier 3: Desktop Stack
 
 | Repo | Language | Purpose | State |
 |------|----------|---------|-------|
-| desktop-sdk/ | C++ | SDK for third-party desktop integrations, CEF wrapper, AI plugins | Fork |
-| desktop-apps/ | C++/JS/Make | Desktop packaging, build orchestration, resources, localization | Fork |
-| DesktopEditors/ | C++ | Main desktop editor application (Chromium-based) | Fork |
+| desktop-sdk/ | C++ | SDK for third-party desktop integrations, CEF wrapper, AI plugins | Source |
+| desktop-apps/ | C++/JS/Make | Desktop packaging, build orchestration, resources, localization | Source |
+| DesktopEditors/ | C++ | Main desktop editor application (Chromium-based) | Source |
 
 ### Tier 4: Integration Ecosystem
 
 | Repo | Language | Purpose | State |
 |------|----------|---------|-------|
-| world-office-nextcloud/ | PHP + Vue 3 | Nextcloud app for editing docs from NC (46 PHP files) | Production |
-| world-office-opencloud/ | Node.js + EJS | Cloud storage + document editing (1-commit prototype) | WIP |
+| word-office-nextcloud/ | PHP + Vue 3 | Nextcloud app for editing docs from NC (46 PHP files) | Production |
+| word-office-opencloud/ | Node.js + EJS | Cloud storage + document editing (1-commit prototype) | WIP |
 | document-server-integration/ | Go,Python,PHP,Java,C#,Node,Ruby | Integration examples for 7 languages | Reference |
 | documents-app-android/ | Kotlin | Android mobile app shell (850 Kotlin files, no EO changes) | WIP |
 
@@ -159,11 +159,11 @@ Phase 7 - Integrations (parallel):
 | Repo | Language | Purpose | State |
 |------|----------|---------|-------|
 | artwork/ | SVG/PNG | Branding assets (logo, teaser) | Original |
-| core-fonts/ | TTF/OTF | Bundled fonts for rendering (~100 font files) | Fork |
-| dictionaries/ | Text | Hunspell spell-check (103 locales) | Fork |
-| document-formats/ | XML | Open XML format documentation | Fork |
-| document-templates/ | Binary | Sample Office templates (.xlsx, .pptx, .pdf) | Fork |
-| sdkjs-forms/ | JavaScript | Forms plugin for JS SDK | Fork |
+| core-fonts/ | TTF/OTF | Bundled fonts for rendering (~100 font files) | Source |
+| dictionaries/ | Text | Hunspell spell-check (103 locales) | Source |
+| document-formats/ | XML | Open XML format documentation | Source |
+| document-templates/ | Binary | Sample Office templates (.xlsx, .pptx, .pdf) | Source |
+| sdkjs-forms/ | JavaScript | Forms plugin for JS SDK | Source |
 | plugin-aiautofill/ | JavaScript | AI auto-fill plugin (v1.0.0, Pipedrive + LLM) | Production |
 
 ### Tier 6: Organization
@@ -177,7 +177,7 @@ Phase 7 - Integrations (parallel):
 | License | Repos |
 |---------|-------|
 | AGPL-3.0 | core, server, web-apps, desktop-apps, DocumentServer, document-server-integration, document-templates, plugin-aiautofill, sdkjs-forms, desktop-sdk |
-| Apache-2.0 | DesktopEditors, document-formats, document-server-package, world-office-nextcloud |
+| Apache-2.0 | DesktopEditors, document-formats, document-server-package, word-office-nextcloud |
 | CC0-1.0 | .github/ (ROADMAP, CONTRIBUTING) |
 | Various per-font | core-fonts |
 
@@ -196,4 +196,4 @@ Quick reference for finding specific functionality.
 | Document builder | server/ | DocBuilder/ |
 | Branding/theming | web-apps/ | build/ |
 
-All repositories are hosted at codeberg.org/World-Office.
+All repositories are hosted at codeberg.org/word-office.

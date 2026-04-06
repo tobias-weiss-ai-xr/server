@@ -2,7 +2,7 @@
 
 **Created:** 2026-04-06  
 **Updated:** 2026-04-06 (v3: Oracle-reviewed, enterprise plan added)  
-**Brand:** World-Office (successor to Euro-Office, fork of WORLDOFFICE)  
+**Brand:** World-Office (successor to Word Office, fork of Word Office)  
 **License:** Dual — AGPL-3.0 (Community) + Commercial (Enterprise)  
 **Status:** Revised — Oracle-verified, enterprise architecture added  
 **Scope:** 22 repos, ~100k files, 5 languages → Rust + TypeScript monorepo  
@@ -27,8 +27,8 @@
 | **Assembly** | `DocumentServer/` | Shell | — | Makefiles, Nginx, systemd | Stable |
 | **CI** | `docker-ci/` | Docker | — | Ubuntu 24.04, Node 20, JDK 21 | Healthy |
 | **Packaging** | `document-server-package/` | Shell | — | Inno Setup, deb/rpm | Stable |
-| **Nextcloud** | `world-office-nextcloud/` | PHP+Vue3 | 46 PHP | Vue 3, Vite, Nextcloud SDK | Healthy |
-| **OpenCloud** | `world-office-opencloud/` | Node.js | — | EJS, Express | WIP |
+| **Nextcloud** | `word-office-nextcloud/` | PHP+Vue3 | 46 PHP | Vue 3, Vite, Nextcloud SDK | Healthy |
+| **OpenCloud** | `word-office-opencloud/` | Node.js | — | EJS, Express | WIP |
 | **Android** | `documents-app-android/` | Kotlin | — | Framework7, React | WIP |
 | **Integration** | `document-server-integration/` | Multi | — | Go, Python, PHP, Java, C#, Node, Ruby | Reference |
 | **Assets** | fonts, dictionaries, artwork, templates, plugins, forms, formats | Various | — | Static assets | Stable |
@@ -382,7 +382,7 @@ When a module is fully rewritten in Rust, the cxx bridge is removed and the Rust
    - All supported formats (DOCX, XLSX, PPTX, PDF, ODT, ODS, ODP, DOC, XLS, PPT, RTF, EPUB, etc.)
    - Edge cases: corrupted files, password-protected, embedded objects, macros, complex layouts
    - Real-world documents from bug reports
-   - **Golden master documents:** Original Office files (not WORLDOFFICE output) as ground truth
+   - **Golden master documents:** Original Office files (not Word Office output) as ground truth
 
 2. **Create roundtrip test harness:**
    ```
@@ -661,7 +661,7 @@ When a module is fully rewritten in Rust, the cxx bridge is removed and the Rust
 |------|--------|----------|----------|
 | WOPI server (Rust, replace document-server-integration) | 3 weeks | deep | No |
 | Migrate Nextcloud app to new WOPI + API | 2 weeks | unspecified-high | After WOPI |
-| Modernize world-office-opencloud (Node.js → Rust) | 3 weeks | deep | Parallel |
+| Modernize word-office-opencloud (Node.js → Rust) | 3 weeks | deep | Parallel |
 | WebDAV support | 2 weeks | deep | Parallel |
 | Security audit (external) | 2 weeks | — | After all services |
 | Load testing (conversion + co-authoring under load) | 2 weeks | deep | After security |
@@ -683,7 +683,7 @@ When a module is fully rewritten in Rust, the cxx bridge is removed and the Rust
 
 | Task | Effort | Category | Parallel |
 |------|--------|----------|----------|
-| Migration guide (from WORLDOFFICE to Euro-Office) | 2 weeks | writing | No |
+| Migration guide (from Word Office to Word Office) | 2 weeks | writing | No |
 | Deployment guide (Docker, Kubernetes, bare metal) | 2 weeks | writing | Parallel |
 | Remove all C++ code from monorepo (except V8 + HarfBuzz) | 2 weeks | deep | After Phase 6-8 confirmed |
 | Remove cxx bridges | 1 week | quick | After C++ removal |
@@ -774,7 +774,7 @@ Phase 10: Launch + Buffer          ░░░░░░░░░░░░░░░
 | **cxx bridge becomes permanent** | Medium | Medium | Lint rule: bridge removed within 6 months of Rust module shipping. Escalation review if not. |
 | **Key person risk** — single engineer understands a critical module | High | Critical | Pair programming on all format modules; documentation-first; no siloed knowledge |
 | **License compliance** (AGPL + Apache-2.0 + 29 third-party deps) | Medium | High | Legal review phase (Phase 0.5). SPDX headers. Audit all Rust crate licenses. |
-| **Patent risk** in format parsers (OOXML, PDF algorithms) | Low | High | Legal review. C++ code may have implicit patent licenses from WORLDOFFICE; Rust rewrite needs its own analysis. |
+| **Patent risk** in format parsers (OOXML, PDF algorithms) | Low | High | Legal review. C++ code may have implicit patent licenses from Word Office; Rust rewrite needs its own analysis. |
 | **Data loss liability** — Rust version corrupts documents | Low | Critical | Roundtrip tests against golden masters. Feature flag: Rust conversion off by default until 100% parity proven. Rollback plan (Section 9). |
 | **V8 dependency** — JavaScript macros require V8, no Rust equivalent | Certain | Medium | V8 stays as permanent C++ dependency via cxx bridge. Accept this. Boa is not production-ready. |
 | **HarfBuzz FFI** — no pure Rust text shaping alternative | Certain | Low | HarfBuzz is a thin C library, well-maintained. FFI overhead is negligible for text shaping. |
@@ -881,7 +881,7 @@ World-Office uses a **dual license** model:
 
 **Why AGPL for Community, not Apache-2.0:**
 - Protects against cloud SaaS competitors taking the code, hosting it, and selling it without contributing back
-- Consistent with upstream WORLDOFFICE licensing (AGPL-3.0)
+- Consistent with upstream Word Office licensing (AGPL-3.0)
 - AGPL requires network use to trigger source disclosure — critical for a document server
 - Commercial license provides an escape hatch for companies that find AGPL unacceptable
 

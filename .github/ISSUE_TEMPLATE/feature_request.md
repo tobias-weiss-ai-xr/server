@@ -7,7 +7,7 @@ assignees: ''
 ---
 
 <!--
-SPDX-FileCopyrightText: 2026 Euro-Office contributors
+SPDX-FileCopyrightText: 2026 Word Office contributors
 SPDX-License-Identifier: CC0-1.0
 -->
 

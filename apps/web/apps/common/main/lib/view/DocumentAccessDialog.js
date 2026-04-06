@@ -106,7 +106,7 @@ define([], function () { 'use strict';
         },
 
         _onMessage: function(msg) {
-            if (msg && msg.Referer == "world-office") {
+            if (msg && msg.Referer == "Word Office") {
                 if (msg.needUpdate)
                     this.trigger('accessrights', this, msg.sharingSettings);
                 Common.NotificationCenter.trigger('window:close', this);

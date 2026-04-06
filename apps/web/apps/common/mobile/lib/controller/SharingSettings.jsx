@@ -23,7 +23,7 @@ const SharingSettingsController = props => {
         if(msg) {
             const msgData = JSON.parse(msg.data);
 
-            if (msgData && msgData?.Referer == "world-office") {
+            if (msgData && msgData?.Referer == "Word Office") {
                 if (msgData?.needUpdate) {
                     setSharingSettings(msgData.sharingSettings);
                 }

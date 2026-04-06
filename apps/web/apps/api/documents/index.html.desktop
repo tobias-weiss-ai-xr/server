@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>WORLDOFFICE Documents</title>
+    <title>Word Office Documents</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=IE8"/>
     <meta name="description" content="" />
@@ -104,9 +104,9 @@
             function getEditorConfig(urlParams) {
                 return {
                     customization   : {
-                        goback: { url: "world-office.com" }
+                        goback: { url: "Word Office.com" }
                         , feedback: {
-                            url: "https://helpdesk.world-office.com/?desktop=true"
+                            url: "https://helpdesk.Word Office.com/?desktop=true"
                         }
                         , uiTheme: urlParams["uitheme"]
                     },

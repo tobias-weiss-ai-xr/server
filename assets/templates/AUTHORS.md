@@ -1,3 +1,3 @@
 # Authors
 
-* Ascensio System SIA: <integration@world-office.com>
+* Ascensio System SIA: <integration@Word Office.com>

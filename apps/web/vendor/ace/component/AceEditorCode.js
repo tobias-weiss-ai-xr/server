@@ -31,7 +31,7 @@ function on_init_server(type)
     window.initCounter |= type;
     if (window.initCounter === 3)
     {
-        load_library("world-office", "../libs/" + window.editorType + "/api.js");
+        load_library("Word Office", "../libs/" + window.editorType + "/api.js");
         _postMessage({
             command: 'aceEditorReady',
             referer: 'ace-editor'

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2026 Euro-Office contributors
+SPDX-FileCopyrightText: 2026 Word Office contributors
 SPDX-License-Identifier: CC0-1.0
 -->
 
@@ -7,7 +7,7 @@ SPDX-License-Identifier: CC0-1.0
 
 ## Supported Versions
 
-Euro-Office is under active development. Security fixes are applied to the main branch and included in the latest nightly builds.
+Word Office is under active development. Security fixes are applied to the main branch and included in the latest nightly builds.
 
 ## Reporting a Vulnerability
 
@@ -17,7 +17,7 @@ We take security seriously. If you discover a vulnerability, please report it re
 
 Instead, please report vulnerabilities by:
 
-1. **Email**: Contact the Euro-Office security team via the Codeberg organization or through one of the contributing partner organizations.
+1. **Email**: Contact the Word Office security team via the Codeberg organization or through one of the contributing partner organizations.
 2. **Private vulnerability reporting**: Use Codeberg's private vulnerability reporting feature if available.
 
 ### What to Include
@@ -38,10 +38,10 @@ Instead, please report vulnerabilities by:
 
 - **Keep deployments updated**: Subscribe to the repository releases and update promptly.
 - **Review access controls**: Ensure DocumentServer is not publicly accessible without authentication.
-- **Use HTTPS**: Always serve Euro-Office over HTTPS in production.
+- **Use HTTPS**: Always serve Word Office over HTTPS in production.
 - **Docker security**: Keep Docker and the host system updated. Review container permissions.
 
 ## Dependency Security
 
-Euro-Office uses automated security scanning via Forgejo Actions CI.
+Word Office uses automated security scanning via Forgejo Actions CI.
 Report suspicious dependencies via the vulnerability reporting channels above.

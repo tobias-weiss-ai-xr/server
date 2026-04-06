@@ -103,7 +103,7 @@ define([], function () { 'use strict';
         },
 
         _onMessage: function(msg) {
-            if (msg && msg.Referer == "world-office" && msg.file !== undefined) {
+            if (msg && msg.Referer == "Word Office" && msg.file !== undefined) {
                 Common.NotificationCenter.trigger('window:close', this);
                 var me = this;
                 setTimeout(function() {

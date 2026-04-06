@@ -253,7 +253,7 @@ define([
         },
 
         onDragOver: function (listview, event) {
-            if (event.originalEvent.dataTransfer.types[0] === 'world-office' || (this.pivotIndex === -2 && (this.enterListView === 'pivot-list-filters' || this.enterListView === 'pivot-list-values')) ||
+            if (event.originalEvent.dataTransfer.types[0] === 'Word Office' || (this.pivotIndex === -2 && (this.enterListView === 'pivot-list-filters' || this.enterListView === 'pivot-list-values')) ||
                 (this.fromListView === 'pivot-list-fields' && this.enterListView === 'pivot-list-fields')) {
                 event.originalEvent.dataTransfer.dropEffect = 'none';
             } else {

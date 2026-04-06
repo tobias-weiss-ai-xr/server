@@ -1,9 +1,9 @@
-# Draft: Euro-Office Architecture Map & Roadmap Plan
+# Draft: Word Office Architecture Map & Roadmap Plan
 
 ## Requirements (confirmed)
 - Create detailed architecture map of all 22 repos
 - Use PR #2 ROADMAP.md as blueprint format
-- Target deployment: Codeberg (`World-Office/.github` repo)
+- Target deployment: Codeberg (`Word-Office/.github` repo)
 - Must include dependency graph, repo roles, and build flow
 
 ## Architecture Map
@@ -87,7 +87,7 @@
 │                  INTEGRATION ECOSYSTEM                            │
 │                                                                   │
 │  ┌─────────────────────┐  ┌─────────────────────┐               │
-│  │ world-office-         │  │ world-office-         │               │
+│  │ word-office-         │  │ word-office-         │               │
 │  │ nextcloud/          │  │ opencloud/          │               │
 │  │ (PHP + Vue 3)       │  │ (Node.js + EJS)     │               │
 │  │                     │  │                     │               │
@@ -165,7 +165,7 @@ Phase 6 - Desktop (parallel):
   desktop-sdk/ (depends on core/) → desktop-apps/ (depends on desktop-sdk/) → DesktopEditors/ (depends on desktop-sdk/ + desktop-apps/)
 
 Phase 7 - Integrations (parallel):
-  world-office-nextcloud/ → world-office-opencloud/ → document-server-integration/
+  word-office-nextcloud/ → word-office-opencloud/ → document-server-integration/
   documents-app-android/ → document-server-package/
 ```
 
@@ -196,15 +196,15 @@ Phase 7 - Integrations (parallel):
 #### Tier 4: Integration Ecosystem
 | Repo | Language | Purpose | Depends On | State |
 |------|----------|---------|------------|-------|
-| **world-office-nextcloud/** | PHP + Vue 3 (46 PHP files) | Nextcloud app for editing docs from NC | DocumentServer/ (via WOPI/JWT) | ✅ Production |
-| **world-office-opencloud/** | Node.js + EJS | Cloud storage + document editing | DocumentServer/ (via HTTP) | 🟡 WIP |
+| **word-office-nextcloud/** | PHP + Vue 3 (46 PHP files) | Nextcloud app for editing docs from NC | DocumentServer/ (via WOPI/JWT) | ✅ Production |
+| **word-office-opencloud/** | Node.js + EJS | Cloud storage + document editing | DocumentServer/ (via HTTP) | 🟡 WIP |
 | **document-server-integration/** | Go,Python,PHP,Java,C#,Node,Ruby | Integration examples for 7 languages | DocumentServer/ (via REST/WOPI) | ✅ Reference |
 | **documents-app-android/** | Kotlin | Android mobile app shell (Framework7 + React) | DocumentServer/ (via window.Android bridge) | 🟡 Fork needs work |
 
 #### Tier 5: Assets & Plugins
 | Repo | Language | Purpose | State |
 |------|----------|---------|-------|
-| **artwork/** | SVG/PNG | Branding assets (logo, teaser) | ✅ Original Euro-Office |
+| **artwork/** | SVG/PNG | Branding assets (logo, teaser) | ✅ Original Word Office |
 | **core-fonts/** | TTF/OTF | Bundled fonts for rendering (~100 font files) | ✅ Fork |
 | **dictionaries/** | Text | Hunspell spell-check (103 locales) | ✅ Fork |
 | **document-formats/** | XML | Open XML format documentation | ✅ Fork |
@@ -224,14 +224,14 @@ Phase 7 - Integrations (parallel):
 `core/` → `desktop-sdk/` → `desktop-apps/` → `DesktopEditors/` → native packages
 
 ### Codeberg vs Local Gaps
-- 3 repos on Codeberg not in original AGENTS.md: `artwork/`, `world-office-opencloud/`, `documents-app-android/`
+- 3 repos on Codeberg not in original AGENTS.md: `artwork/`, `word-office-opencloud/`, `documents-app-android/`
 - Now all cloned locally ✅
 
 ### Licensing Summary
 | License | Repos |
 |---------|-------|
 | AGPL-3.0 | core, server, web-apps, desktop-apps, DocumentServer, document-server-integration, document-templates, plugin-aiautofill, sdkjs-forms, server, desktop-sdk (proprietariness resolved) |
-| Apache-2.0 | DesktopEditors, document-formats, document-server-package, world-office-nextcloud |
+| Apache-2.0 | DesktopEditors, document-formats, document-server-package, word-office-nextcloud |
 | CC0-1.0 | .github/ (ROADMAP, CONTRIBUTING) |
 | Various per-font | core-fonts |
 | Proprietary freeware | desktop-sdk (AGENTS.md says so, but LICENSE says AGPLv3) |

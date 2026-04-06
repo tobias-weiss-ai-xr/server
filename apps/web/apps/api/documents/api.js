@@ -1,7 +1,7 @@
 /**
  * Copyright (c) Ascensio System SIA 2013. All rights reserved
  *
- * http://www.world-office.com
+ * http://www.Word Office.com
  */
 
 ;(function(DocsAPI, window, document, undefined) {

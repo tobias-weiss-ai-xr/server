@@ -1,0 +1,27 @@
+# World-Office Development Override
+# ===================================
+# This file is automatically merged with docker-compose.yml by Docker Compose.
+# It adds optional development tools — DO NOT commit this file.
+#
+# pgAdmin: web-based PostgreSQL admin UI for inspecting databases,
+#   running queries, and debugging during development.
+
+services:
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: world-office-pgadmin
+    restart: unless-stopped
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@world-office.dev}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  pgadmin_data:
+    driver: local

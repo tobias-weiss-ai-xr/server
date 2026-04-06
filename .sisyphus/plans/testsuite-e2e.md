@@ -2,13 +2,13 @@
 
 ## TL;DR
 
-> **Quick Summary**: Create a new testsuite repo at `codeberg.org/World-Office/testsuite` with an end-to-end test that spins up OCIS + Document Server (built from our core/ fork) + world-office-opencloud companion via Docker Compose, then validates health checks, API endpoints, and WOPI discovery.
+> **Quick Summary**: Create a new testsuite repo at `codeberg.org/Word-Office/testsuite` with an end-to-end test that spins up OCIS + Document Server (built from our core/ fork) + word-office-opencloud companion via Docker Compose, then validates health checks, API endpoints, and WOPI discovery.
 > 
 > **Deliverables**:
-> - New Codeberg repository `World-Office/testsuite`
+> - New Codeberg repository `Word-Office/testsuite`
 > - Jest-based E2E test suite with Docker Compose orchestration
 > - Forgejo Actions CI workflow for automated test runs
-> - Document Server Docker image built from World-Office core/ fork
+> - Document Server Docker image built from Word-Office core/ fork
 > - Test scenarios: service health, API endpoints, WOPI discovery XML, OCIS accessibility
 > 
 > **Estimated Effort**: Large
@@ -20,7 +20,7 @@
 ## Context
 
 ### Original Request
-"setup a testsuite (https://codeberg.org/World-Office/testsuite) and test all components end2end (at least start planning it and then, as first task, create a opencoud setup that tests the World-Office integration end2end!"
+"setup a testsuite (https://codeberg.org/Word-Office/testsuite) and test all components end2end (at least start planning it and then, as first task, create a opencoud setup that tests the Word-Office integration end2end!"
 
 ### Interview Summary
 **Key Discussions**:
@@ -32,7 +32,7 @@
 
 **Research Findings**:
 - server/ has Jest test suite + Forgejo CI workflows (lint, unit, postgres, mysql tests)
-- world-office-opencloud has setup wizard, dashboard, health API, Docker Compose generation, WOPI config
+- word-office-opencloud has setup wizard, dashboard, health API, Docker Compose generation, WOPI config
 - DocumentServer/ has deployment configs (Nginx, systemd)
 - document-server-integration/ has example docker-compose.yml
 - sdkjs repo is EMPTY (submodule not initialized) — build will require submodule init or alternative approach
@@ -50,11 +50,11 @@ Self-review performed (Metis agent timed out). Key gaps identified and addressed
 ## Work Objectives
 
 ### Core Objective
-Create a testsuite repository with automated E2E tests that validate the full World-Office ownCloud integration stack: OCIS + Document Server + world-office-opencloud companion, connected via WOPI protocol.
+Create a testsuite repository with automated E2E tests that validate the full Word-Office ownCloud integration stack: OCIS + Document Server + word-office-opencloud companion, connected via WOPI protocol.
 
 ### Concrete Deliverables
-- Codeberg repo `World-Office/testsuite` with proper README, .gitignore, package.json
-- Docker Compose file that spins up: OCIS, Document Server (from core/), world-office-opencloud companion
+- Codeberg repo `Word-Office/testsuite` with proper README, .gitignore, package.json
+- Docker Compose file that spins up: OCIS, Document Server (from core/), word-office-opencloud companion
 - Document Server Dockerfile that builds from our core/ fork
 - Jest test suite covering: service health, API endpoints, WOPI discovery
 - Forgejo Actions workflow for CI
@@ -74,14 +74,14 @@ Create a testsuite repository with automated E2E tests that validate the full Wo
 - Companion API endpoint tests (/api/health, /api/config, /api/health/wopi)
 - Forgejo Actions CI workflow
 - Tests runnable both locally and in CI
-- Document Server built from World-Office core/ fork
+- Document Server built from Word-Office core/ fork
 
 ### Must NOT Have (Guardrails)
 - NO document editing tests (deferred to follow-up)
 - NO Nextcloud integration tests (out of scope)
 - NO performance/load tests (out of scope)
 - NO modifications to existing repos (only create new testsuite repo)
-- NO use of upstream `world-office/documentserver` image — must build from our fork
+- NO use of upstream `Word Office/documentserver` image — must build from our fork
 - NO hardcoded secrets in test files — use env vars or generated values
 - NO tests that require manual human intervention
 - NO modification of docs/DESIGN.md or .sisyphus/ plan files
@@ -174,15 +174,15 @@ Max Concurrent: 3 (Wave 1)
 - [ ] 1. Create testsuite repository on Codeberg + local clone
 
   **What to do**:
-  - Create repo `World-Office/testsuite` via Codeberg API using token `2874a6ea3d58e33b1a86067290d623150af74857`
-  - Set description to "End-to-end test suite for World-Office integration components"
+  - Create repo `Word-Office/testsuite` via Codeberg API using token `2874a6ea3d58e33b1a86067290d623150af74857`
+  - Set description to "End-to-end test suite for Word-Office integration components"
   - Set visibility to public
-  - Clone to `C:\Users\Tobias\git\world-office\testsuite` via SSH
+  - Clone to `C:\Users\Tobias\git\Word Office\testsuite` via SSH
   - Initialize with a `main` branch and initial commit
 
   **Must NOT do**:
   - Do NOT create the repo via web UI — use API
-  - Do NOT use HTTPS clone — use SSH (`git@codeberg.org:World-Office/testsuite.git`)
+  - Do NOT use HTTPS clone — use SSH (`git@codeberg.org:Word-Office/testsuite.git`)
 
   **Recommended Agent Profile**:
   - **Category**: `quick`
@@ -220,7 +220,7 @@ Max Concurrent: 3 (Wave 1)
     Tool: Bash (curl)
     Preconditions: Codeberg API token is valid
     Steps:
-      1. curl -s -H "Authorization: token 2874a6ea3d58e33b1a86067290d623150af74857" https://codeberg.org/api/v1/repos/World-Office/testsuite
+      1. curl -s -H "Authorization: token 2874a6ea3d58e33b1a86067290d623150af74857" https://codeberg.org/api/v1/repos/Word-Office/testsuite
       2. Assert HTTP status 200
       3. Assert response JSON contains "name": "testsuite"
       4. Assert "private" is false
@@ -232,10 +232,10 @@ Max Concurrent: 3 (Wave 1)
     Tool: Bash
     Preconditions: Repo exists on Codeberg
     Steps:
-      1. git -C C:\Users\Tobias\git\world-office\testsuite status
+      1. git -C C:\Users\Tobias\git\Word Office\testsuite status
       2. Assert exit code 0
-      3. git -C C:\Users\Tobias\git\world-office\testsuite remote -v
-      4. Assert output contains "codeberg.org:World-Office/testsuite"
+      3. git -C C:\Users\Tobias\git\Word Office\testsuite remote -v
+      4. Assert output contains "codeberg.org:Word-Office/testsuite"
     Expected Result: Clean git repo with Codeberg remote
     Failure Indicators: Non-zero exit, missing remote
     Evidence: .sisyphus/evidence/task-1-local-clone.txt
@@ -244,7 +244,7 @@ Max Concurrent: 3 (Wave 1)
     Tool: Bash
     Preconditions: Clone exists
     Steps:
-      1. git -C C:\Users\Tobias\git\world-office\testsuite log --oneline
+      1. git -C C:\Users\Tobias\git\Word Office\testsuite log --oneline
       2. Assert at least 1 commit exists
     Expected Result: At least the initial commit present
     Failure Indicators: "fatal: your current branch does not have any commits yet"
@@ -260,7 +260,7 @@ Max Concurrent: 3 (Wave 1)
 
   **What to do**:
   - Create `package.json` with:
-    - name: `@world-office/testsuite`
+    - name: `@Word Office/testsuite`
     - scripts: `test` (jest), `test:e2e` (jest --testPathPattern=tests/e2e), `test:health` (jest --testPathPattern=tests/e2e/health), `lint` (eslint)
     - dependencies: jest, @jest/globals, dotenv, axios, dockerode (for Docker API), wait-on (for service readiness)
     - devDependencies: eslint
@@ -352,8 +352,8 @@ Max Concurrent: 3 (Wave 1)
     Tool: Bash (node)
     Preconditions: testsuite/ directory exists
     Steps:
-      1. node -e "const p = require('C:/Users/Tobias/git/world-office/testsuite/package.json'); console.log(p.name, p.scripts.test)"
-      2. Assert output contains "@world-office/testsuite" and "jest"
+      1. node -e "const p = require('C:/Users/Tobias/git/Word Office/testsuite/package.json'); console.log(p.name, p.scripts.test)"
+      2. Assert output contains "@Word Office/testsuite" and "jest"
     Expected Result: Package name and test script present
     Failure Indicators: Parse error, missing fields
     Evidence: .sisyphus/evidence/task-2-package.json
@@ -362,7 +362,7 @@ Max Concurrent: 3 (Wave 1)
     Tool: Bash (node)
     Preconditions: jest.config.js exists
     Steps:
-      1. node -e "const c = require('C:/Users/Tobias/git/world-office/testsuite/jest.config.js'); console.log(c.testTimeout)"
+      1. node -e "const c = require('C:/Users/Tobias/git/Word Office/testsuite/jest.config.js'); console.log(c.testTimeout)"
       2. Assert output contains "300000"
     Expected Result: testTimeout = 300000
     Failure Indicators: Parse error, wrong timeout value
@@ -397,12 +397,12 @@ Max Concurrent: 3 (Wave 1)
 - [ ] 3. Document Server Dockerfile (build from core/ fork)
 
   **What to do**:
-  - Create `docker/documentserver/Dockerfile` that builds Document Server from `World-Office/core/`
+  - Create `docker/documentserver/Dockerfile` that builds Document Server from `Word-Office/core/`
   - This is a multi-stage build:
     - **Stage 1 (Builder)**: Use `ubuntu:24.04` base, install build deps (build-essential, cmake, qtbase5-dev, libboost-all-dev, etc.), clone & build core/
     - **Stage 2 (Runtime)**: Use `ubuntu:24.04`, copy built artifacts, install runtime deps (nginx, nodejs, postgresql, rabbitmq), configure Document Server services
   - Key build steps for core/:
-    - `git init && git remote add origin https://codeberg.org/World-Office/core.git`
+    - `git init && git remote add origin https://codeberg.org/Word-Office/core.git`
     - `git fetch origin && git checkout main`
     - Initialize submodules: `git submodule update --init --recursive` (critical: sdkjs is a submodule)
     - `cmake -B build -DCMAKE_BUILD_TYPE=Release`
@@ -418,11 +418,11 @@ Max Concurrent: 3 (Wave 1)
   **CRITICAL NOTE**: The sdkjs submodule is currently EMPTY in the workspace. The Dockerfile MUST handle this by:
   1. Cloning core/ fresh from Codeberg (not copying from workspace)
   2. Running `git submodule update --init --recursive` to fetch sdkjs
-  3. If that fails, clone sdkjs separately from `https://codeberg.org/World-Office/sdkjs.git`
+  3. If that fails, clone sdkjs separately from `https://codeberg.org/Word-Office/sdkjs.git`
 
   **Must NOT do**:
   - Do NOT copy core/ from the local workspace (it's a shallow clone with empty submodules)
-  - Do NOT use `world-office/documentserver:latest` — must build from our fork
+  - Do NOT use `Word Office/documentserver:latest` — must build from our fork
   - Do NOT hardcode JWT secrets — use ARG/ENV for runtime injection
   - Do NOT skip the sdkjs submodule — it's required for JS editor components
 
@@ -450,16 +450,16 @@ Max Concurrent: 3 (Wave 1)
   **API/Type References** (contracts to implement against):
   - `core/CMakeLists.txt` — CMake build configuration, dependencies, build targets
   - `core/.gitmodules` — Submodule definitions (sdkjs path)
-  - `world-office-opencloud/lib/compose.js` — Expected Document Server service config (port, env vars, volumes)
+  - `word-office-opencloud/lib/compose.js` — Expected Document Server service config (port, env vars, volumes)
 
   **External References** (libraries and frameworks):
-  - WORLDOFFICE Document Server build docs: https://api.world-office.com/docs/docs-api/additional-api-configuration/document-server-integration/
+  - Word Office Document Server build docs: https://api.Word Office.com/docs/docs-api/additional-api-configuration/document-server-integration/
   - Docker multi-stage build: https://docs.docker.com/build/building/multi-stage/
 
   **WHY Each Reference Matters**:
   - `docker-ci/ds-base/Dockerfile` shows exactly what base packages are needed for the build
   - `core/CMakeLists.txt` defines the actual build targets and dependencies
-  - `world-office-opencloud/lib/compose.js` defines what ports and env vars the companion expects
+  - `word-office-opencloud/lib/compose.js` defines what ports and env vars the companion expects
 
   **Acceptance Criteria**:
 
@@ -480,11 +480,11 @@ Max Concurrent: 3 (Wave 1)
     Tool: Bash (grep)
     Preconditions: Dockerfile exists
     Steps:
-      1. grep -i "codeberg.org/World-Office/core" docker/documentserver/Dockerfile
+      1. grep -i "codeberg.org/Word-Office/core" docker/documentserver/Dockerfile
       2. Assert match found
-      3. grep -i "world-office/documentserver" docker/documentserver/Dockerfile
+      3. grep -i "Word Office/documentserver" docker/documentserver/Dockerfile
       4. Assert NO match (not using upstream image)
-    Expected Result: References World-Office/core, NOT upstream image
+    Expected Result: References Word-Office/core, NOT upstream image
     Failure Indicators: Upstream image reference found
     Evidence: .sisyphus/evidence/task-3-fork-reference.txt
 
@@ -515,7 +515,7 @@ Max Concurrent: 3 (Wave 1)
   **Commit**: YES
   - Message: `feat(testsuite): add Document Server Dockerfile built from core/ fork`
   - Files: docker/documentserver/Dockerfile, docker/documentserver/build.sh
-  - Pre-commit: `grep -q "codeberg.org/World-Office/core" docker/documentserver/Dockerfile` (verify fork reference)
+  - Pre-commit: `grep -q "codeberg.org/Word-Office/core" docker/documentserver/Dockerfile` (verify fork reference)
 
 - [ ] 4. OCIS test configuration (env vars, JWT secrets, Docker image)
 
@@ -533,7 +533,7 @@ Max Concurrent: 3 (Wave 1)
     - `WEB_UI_CONFIG_FILE=/etc/ocis/web-ui.json`
   - Create `docker/ocis/web-ui.json` with WOPI handler configuration:
     - mimeTypeHandlers for office file extensions pointing to `/wopi`
-    - Editor app name set to "World-Office Document Server"
+    - Editor app name set to "Word-Office Document Server"
   - Pin OCIS Docker image to `owncloud/ocis:5.0` or latest stable (document the version choice)
   - Create a helper script `docker/ocis/generate-secrets.sh` that generates random JWT secrets for test env
 
@@ -558,9 +558,9 @@ Max Concurrent: 3 (Wave 1)
   **References**:
 
   **Pattern References** (existing code to follow):
-  - `world-office-opencloud/lib/ocis-config.js` — OCIS configuration structure (web-ui.json format, env vars)
-  - `world-office-opencloud/lib/config.js` — Required env vars and their defaults
-  - `world-office-opencloud/.env.example` — Example .env with all config options
+  - `word-office-opencloud/lib/ocis-config.js` — OCIS configuration structure (web-ui.json format, env vars)
+  - `word-office-opencloud/lib/config.js` — Required env vars and their defaults
+  - `word-office-opencloud/.env.example` — Example .env with all config options
 
   **WHY Each Reference Matters**:
   - `ocis-config.js` defines the exact web-ui.json structure the companion generates — our test must match
@@ -606,10 +606,10 @@ Max Concurrent: 3 (Wave 1)
   - Files: docker/ocis/.env, docker/ocis/web-ui.json, docker/ocis/generate-secrets.sh
   - Pre-commit: `node -e "JSON.parse(require('fs').readFileSync('docker/ocis/web-ui.json'))"`
 
-- [ ] 5. Companion app test configuration (world-office-opencloud setup for testing)
+- [ ] 5. Companion app test configuration (word-office-opencloud setup for testing)
 
   **What to do**:
-  - Create `docker/companion/.env` with test configuration for the world-office-opencloud companion:
+  - Create `docker/companion/.env` with test configuration for the word-office-opencloud companion:
     - `PORT=3000`
     - `NODE_ENV=test`
     - `OCIS_DOMAIN=localhost`
@@ -631,7 +631,7 @@ Max Concurrent: 3 (Wave 1)
     - Expose port 3000
 
   **Must NOT do**:
-  - Do NOT modify the actual world-office-opencloud repo — all test config stays in testsuite/
+  - Do NOT modify the actual word-office-opencloud repo — all test config stays in testsuite/
   - Do NOT use production domains or real secrets
   - Do NOT enable SSL in test mode
 
@@ -651,9 +651,9 @@ Max Concurrent: 3 (Wave 1)
   **References**:
 
   **Pattern References** (existing code to follow):
-  - `world-office-opencloud/.env.example` — All available config variables
-  - `world-office-opencloud/Dockerfile` — Existing companion Dockerfile pattern
-  - `world-office-opencloud/lib/config.js` — Required vs optional config, validation rules
+  - `word-office-opencloud/.env.example` — All available config variables
+  - `word-office-opencloud/Dockerfile` — Existing companion Dockerfile pattern
+  - `word-office-opencloud/lib/config.js` — Required vs optional config, validation rules
 
   **WHY Each Reference Matters**:
   - The companion's config.js validates env vars at startup — our test .env must satisfy all validation rules
@@ -665,10 +665,10 @@ Max Concurrent: 3 (Wave 1)
   ```
   Scenario: Companion env satisfies config.js validation
     Tool: Bash (node)
-    Preconditions: docker/companion/.env exists, world-office-opencloud/lib/config.js exists
+    Preconditions: docker/companion/.env exists, word-office-opencloud/lib/config.js exists
     Steps:
       1. Load docker/companion/.env vars into environment
-      2. Try to require world-office-opencloud/lib/config.js with those vars
+      2. Try to require word-office-opencloud/lib/config.js with those vars
       3. Assert no error thrown
     Expected Result: Config loads without validation errors
     Failure Indicators: "Missing required configuration", "must be at least 32 characters"
@@ -713,7 +713,7 @@ Max Concurrent: 3 (Wave 1)
     - environment: all vars from docker/ocis/.env plus:
       - COLLABORATION_WOPI_SRC=http://localhost:9200
       - COLLABORATION_APP_ADDR=http://documentserver:80
-      - COLLABORATION_APP_NAME=World-Office Document Server
+      - COLLABORATION_APP_NAME=Word-Office Document Server
     - healthcheck: `curl -f http://localhost:9200/health || exit 1` (interval 10s, timeout 5s, retries 30)
     - volumes: ocis-data (named volume), mount web-ui.json
     - depends_on: documentserver (with condition: service_healthy)
@@ -757,7 +757,7 @@ Max Concurrent: 3 (Wave 1)
 
   **Pattern References** (existing code to follow):
   - `document-server-integration/docker-compose.yml` — Example Document Server Docker Compose
-  - `world-office-opencloud/lib/compose.js` — Docker Compose generation logic (service structure, labels, networks)
+  - `word-office-opencloud/lib/compose.js` — Docker Compose generation logic (service structure, labels, networks)
   - `DocumentServer/` — Deployment configuration reference
 
   **API/Type References** (contracts to implement against):
@@ -880,7 +880,7 @@ Max Concurrent: 3 (Wave 1)
   **Pattern References** (existing code to follow):
   - `server/test/` or `server/tests/` — Jest test patterns used in this project
   - `server/.forgejo/workflows/unit-tests.yml` — Test runner configuration
-  - `world-office-opencloud/lib/health.js` — Health check logic (what endpoints are checked, how)
+  - `word-office-opencloud/lib/health.js` — Health check logic (what endpoints are checked, how)
 
   **API/Type References** (contracts to implement against):
   - Document Server health: `GET /hosting/discovery` (returns XML), `GET /healthcheck` (returns 200)
@@ -986,12 +986,12 @@ Max Concurrent: 3 (Wave 1)
   **API/Type References** (contracts to implement against):
   - WOPI Discovery spec: `GET /hosting/discovery` returns `<wopi-discovery>` XML
   - Companion API: `GET /api/health`, `GET /api/config`, `GET /api/health/wopi`, `POST /setup`
-  - `world-office-opencloud/routes/api.js` — API endpoint handlers and response shapes
-  - `world-office-opencloud/routes/setup.js` — Setup wizard validation logic
+  - `word-office-opencloud/routes/api.js` — API endpoint handlers and response shapes
+  - `word-office-opencloud/routes/setup.js` — Setup wizard validation logic
 
   **External References**:
   - WOPI protocol spec: https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/rest/
-  - WORLDOFFICE Document Server API: https://api.world-office.com/docs/docs-api/additional-api-configuration/document-server-integration/
+  - Word Office Document Server API: https://api.Word Office.com/docs/docs-api/additional-api-configuration/document-server-integration/
 
   **WHY Each Reference Matters**:
   - The WOPI discovery XML structure is standardized — tests must validate exact XML elements
@@ -1053,7 +1053,7 @@ Max Concurrent: 3 (Wave 1)
       1. Checkout testsuite repo
       2. Set up Node.js 20
       3. Install dependencies: `npm ci`
-      4. Checkout core/ fork (needed for DS Docker build): `git clone --depth=1 https://codeberg.org/World-Office/core.git docker/documentserver/core`
+      4. Checkout core/ fork (needed for DS Docker build): `git clone --depth=1 https://codeberg.org/Word-Office/core.git docker/documentserver/core`
       5. Initialize sdkjs submodule: `git submodule update --init --recursive` in core dir
       6. Build Docker images: `docker compose -f docker-compose.test.yml build`
       7. Start stack: `docker compose -f docker-compose.test.yml up -d`
@@ -1096,7 +1096,7 @@ Max Concurrent: 3 (Wave 1)
   **Pattern References** (existing code to follow):
   - `server/.forgejo/workflows/unit-tests.yml` — Existing Forgejo CI workflow structure
   - `server/.forgejo/workflows/lint-format.yml` — Lint workflow pattern
-  - `world-office-nextcloud/.forgejo/workflows/` — Another Forgejo CI reference
+  - `word-office-nextcloud/.forgejo/workflows/` — Another Forgejo CI reference
 
   **API/Type References** (contracts to implement against):
   - Forgejo Actions YAML syntax (similar to GitHub Actions): https://forgejo.org/docs/latest/user/actions/
@@ -1162,11 +1162,11 @@ Max Concurrent: 3 (Wave 1)
 
   **What to do**:
   - Create `README.md` with:
-    - Project title: `World-Office Test Suite`
-    - Description: End-to-end test suite for World-Office integration components
+    - Project title: `Word-Office Test Suite`
+    - Description: End-to-end test suite for Word-Office integration components
     - Prerequisites: Docker 20.10+, Node.js 20+, Docker Compose 2.0+
     - Quick Start section:
-      - `git clone git@codeberg.org:World-Office/testsuite.git`
+      - `git clone git@codeberg.org:Word-Office/testsuite.git`
       - `npm install`
       - `docker compose -f docker-compose.test.yml build` (first time only, ~2-4 hours for DS)
       - `docker compose -f docker-compose.test.yml up -d`
@@ -1176,10 +1176,10 @@ Max Concurrent: 3 (Wave 1)
     - CI section explaining Forgejo Actions integration
     - Configuration section explaining .env.test
     - Troubleshooting section for common issues (Docker not running, ports in use, build failures)
-    - World-Office disclaimer (exact wording from established pattern)
+    - Word-Office disclaimer (exact wording from established pattern)
     - License: AGPL-3.0
-  - Push all commits to Codeberg via SSH: `git remote add ssh git@codeberg.org:World-Office/testsuite.git && git push ssh main`
-  - Verify all files are on remote: `curl -s https://codeberg.org/api/v1/repos/World-Office/testsuite/contents | grep -c '"name"'`
+  - Push all commits to Codeberg via SSH: `git remote add ssh git@codeberg.org:Word-Office/testsuite.git && git push ssh main`
+  - Verify all files are on remote: `curl -s https://codeberg.org/api/v1/repos/Word-Office/testsuite/contents | grep -c '"name"'`
   - No PR needed — this IS the main branch of a new repo
 
   **Must NOT do**:
@@ -1205,12 +1205,12 @@ Max Concurrent: 3 (Wave 1)
 
   **Pattern References** (existing code to follow):
   - `server/Readme.md` — README format for this project's repos
-  - `world-office-opencloud/README.md` — Companion README (architecture, setup, API sections)
+  - `word-office-opencloud/README.md` — Companion README (architecture, setup, API sections)
   - Any existing repo README for disclaimer wording
 
   **API/Type References** (contracts to implement against):
-  - Codeberg SSH: `git@codeberg.org:World-Office/testsuite.git`
-  - Codeberg API: `GET /api/v1/repos/World-Office/testsuite/contents`
+  - Codeberg SSH: `git@codeberg.org:Word-Office/testsuite.git`
+  - Codeberg API: `GET /api/v1/repos/Word-Office/testsuite/contents`
 
   **WHY Each Reference Matters**:
   - Existing READMEs establish the documentation style — new README should match
@@ -1238,7 +1238,7 @@ Max Concurrent: 3 (Wave 1)
     Tool: Bash (grep)
     Preconditions: README.md exists
     Steps:
-      1. grep "codeberg.org/World-Office/testsuite" README.md
+      1. grep "codeberg.org/Word-Office/testsuite" README.md
       2. Assert at least 2 matches (clone URL + somewhere else)
     Expected Result: Codeberg URLs present
     Failure Indicators: No Codeberg URL or github.com URL found
@@ -1248,7 +1248,7 @@ Max Concurrent: 3 (Wave 1)
     Tool: Bash (curl)
     Preconditions: git push completed
     Steps:
-      1. curl -s https://codeberg.org/api/v1/repos/World-Office/testsuite/contents | grep -o '"name"'
+      1. curl -s https://codeberg.org/api/v1/repos/Word-Office/testsuite/contents | grep -o '"name"'
       2. Assert at least 5 files found (README.md, package.json, jest.config.js, etc.)
     Expected Result: Files visible on Codeberg
     Failure Indicators: 404 or empty response

@@ -1,11 +1,11 @@
-# WorldOffice OpenCloud - Integration Notes
+# word-office OpenCloud - Integration Notes
 
 **Created:** 2026-03-31
 **Project:** Cloud storage platform with Document Server integration
 
 ## Project Overview
 
-WorldOffice OpenCloud is a Node.js/Express application that provides:
+word-office OpenCloud is a Node.js/Express application that provides:
 - Cloud storage with file upload/download/list/delete
 - Session-based user authentication
 - Document editing integration with Document Server via JWT
@@ -64,7 +64,7 @@ The editor is embedded via iframe with postMessage communication:
 ## File Structure Decisions
 
 ```
-world-office-opencloud/
+word-office-opencloud/
 ├── app.js                 # Entry point, middleware setup
 ├── controllers/           # Business logic layer
 │   └── files.js          # File operations (CRUD)
@@ -143,4 +143,4 @@ world-office-opencloud/
 
 - Document Server example: `../document-server-integration/web/documentserver-example/nodejs/app.js`
 - Document Server API: `../document-server-integration/web/`
-- WORLDOFFICE Docs: https://api.world-office.com/
+- Word Office Docs: https://api.Word Office.com/

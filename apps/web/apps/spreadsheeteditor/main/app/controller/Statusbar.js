@@ -139,13 +139,13 @@ define([
                     });
                     var stringSheet, arr = [];
                     stringSheet = this.api.asc_StartMoveSheet(_.clone(arrTabs));
-                    arr.push({type: 'world-office', value: stringSheet});
+                    arr.push({type: 'Word Office', value: stringSheet});
                     arr.push({type: 'indexes', value: arrTabs});
                     arr.push({type: 'names', value: arrName});
                     arr.push({type: 'key', value: Common.Utils.InternalSettings.get("sse-doc-info-key")});
                     var json = JSON.stringify(arr);
                     if (!Common.Utils.isIE) {
-                        dataTransfer.setData('world-office', json);
+                        dataTransfer.setData('Word Office', json);
                     } else {
                         dataTransfer.setData('text', 'sheet');
                         this.dataTransfer = json;
@@ -155,7 +155,7 @@ define([
                 'tab:drop': _.bind(function (dataTransfer, index, copy) {
                     if (this.isEditFormula || (Common.Utils.isIE && this.dataTransfer === undefined)) return;
                     Common.Utils.isIE && (this.isDrop = true);
-                    var data = !Common.Utils.isIE ? dataTransfer.getData('world-office') : this.dataTransfer;
+                    var data = !Common.Utils.isIE ? dataTransfer.getData('Word Office') : this.dataTransfer;
                     if (data) {
                         var arrData = JSON.parse(data);
                         if (arrData) {
@@ -167,7 +167,7 @@ define([
                                 var arrNames = _.findWhere(arrData, {type: 'names'}).value;
                                 var newNames = this.generateSheetNames(false, undefined, arrNames);
                                 var index = _.isNumber(index) ? index : this.api.asc_getWorksheetsCount();
-                                this.api.asc_EndMoveSheet(index, newNames, _.findWhere(arrData, {type: 'world-office'}).value);
+                                this.api.asc_EndMoveSheet(index, newNames, _.findWhere(arrData, {type: 'Word Office'}).value);
                             }
                         }
                     }

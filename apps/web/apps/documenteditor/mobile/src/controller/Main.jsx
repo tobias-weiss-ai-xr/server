@@ -712,8 +712,8 @@ class MainController extends Component {
         const appOptions = this.props.storeAppOptions;
         const isForm = appOptions.isForm;
 
-        // Euro-Office: Mobile editing restriction removed — editing is always available
-        // Original WORLDOFFICE code blocked editing here for non-Enterprise licenses
+        // Word Office: Mobile editing restriction removed — editing is always available
+        // Original Word Office code blocked editing here for non-Enterprise licenses
 
         if (appOptions.config.mode === 'view') {
             if (appOptions.canLiveView && (this._state.licenseType===Asc.c_oLicenseResult.ConnectionsLive || this._state.licenseType===Asc.c_oLicenseResult.ConnectionsLiveOS ||

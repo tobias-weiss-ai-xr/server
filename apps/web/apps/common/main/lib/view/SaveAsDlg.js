@@ -106,7 +106,7 @@ define([], function () { 'use strict';
         },
 
         _onMessage: function(msg) {
-            if (msg && msg.Referer == "world-office") {
+            if (msg && msg.Referer == "Word Office") {
                 if ( !_.isEmpty(msg.error) ) {
                     this.trigger('saveaserror', this, msg.error);
                 } else if (!_.isEmpty(msg.message)) {

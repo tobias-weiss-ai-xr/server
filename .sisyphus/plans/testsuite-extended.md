@@ -19,7 +19,7 @@
 ## Context
 
 ### Original Request
-"Plan more test scenarios for the World-Office testsuite" with priority on security validation.
+"Plan more test scenarios for the Word-Office testsuite" with priority on security validation.
 
 ### Interview Summary
 **Key Discussions**:

@@ -1,0 +1,21 @@
+{
+  "name": "@world-office/eslint-config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "peerDependencies": {
+    "eslint": ">=9",
+    "typescript": ">=5"
+  },
+  "devDependencies": {
+    "eslint": "^9",
+    "typescript": "^5.7",
+    "@eslint/js": "^9",
+    "typescript-eslint": "^8",
+    "eslint-plugin-react-hooks": "^5",
+    "eslint-plugin-react-refresh": "^0.4"
+  }
+}

@@ -269,7 +269,7 @@ define([
 
                     comment.asc_putText(commentVal);
                     comment.asc_putTime(this.utcDateToString(new Date()));
-                    comment.asc_putWorldOfficeTime(this.ooDateToString(new Date()));
+                    comment.asc_putWord OfficeTime(this.ooDateToString(new Date()));
                     comment.asc_putUserId(this.currentUserId);
                     comment.asc_putUserName(AscCommon.UserInfoParser.getCurrentName());
                     comment.asc_putSolved(false);
@@ -460,7 +460,7 @@ define([
                                 }
 
                                 addReply.asc_putTime(reply.get('time') ? me.utcDateToString(new Date(reply.get('time'))) : '');
-                                addReply.asc_putWorldOfficeTime(reply.get('time') ? me.ooDateToString(new Date(reply.get('time'))) : '');
+                                addReply.asc_putWord OfficeTime(reply.get('time') ? me.ooDateToString(new Date(reply.get('time'))) : '');
                                 addReply.asc_putUserData(reply.get('userdata'));
 
                                 ascComment.asc_addReply(addReply);
@@ -507,7 +507,7 @@ define([
                     if (addReply) {
                         addReply.asc_putText(replyVal);
                         addReply.asc_putTime(me.utcDateToString(new Date()));
-                        addReply.asc_putWorldOfficeTime(me.ooDateToString(new Date()));
+                        addReply.asc_putWord OfficeTime(me.ooDateToString(new Date()));
                         addReply.asc_putUserId(me.currentUserId);
                         addReply.asc_putUserName(AscCommon.UserInfoParser.getCurrentName());
 
@@ -748,7 +748,7 @@ define([
             if (comment) {
                 t = this;
 
-                date = (data.asc_getWorldOfficeTime()) ? new Date(this.stringOOToLocalDate(data.asc_getWorldOfficeTime())) :
+                date = (data.asc_getWord OfficeTime()) ? new Date(this.stringOOToLocalDate(data.asc_getWord OfficeTime())) :
                        ((data.asc_getTime() == '') ? null : new Date(this.stringUtcToLocalDate(data.asc_getTime())));
 
                 var userid = data.asc_getUserId(),
@@ -792,7 +792,7 @@ define([
                 repliesCount = data.asc_getRepliesCount();
                 for (i = 0; i < repliesCount; ++i) {
 
-                    dateReply = (data.asc_getReply(i).asc_getWorldOfficeTime()) ? new Date(this.stringOOToLocalDate(data.asc_getReply(i).asc_getWorldOfficeTime())) :
+                    dateReply = (data.asc_getReply(i).asc_getWord OfficeTime()) ? new Date(this.stringOOToLocalDate(data.asc_getReply(i).asc_getWord OfficeTime())) :
                                 ((data.asc_getReply(i).asc_getTime() == '') ? null : new Date(this.stringUtcToLocalDate(data.asc_getReply(i).asc_getTime())));
 
                     userid = data.asc_getReply(i).asc_getUserId();
@@ -1298,7 +1298,7 @@ define([
 
         readSDKComment: function (id, data, requestObj) {
             requestObj && !requestObj.arrIds && (requestObj.arrIds = []);
-            var date = (data.asc_getWorldOfficeTime()) ? new Date(this.stringOOToLocalDate(data.asc_getWorldOfficeTime())) :
+            var date = (data.asc_getWord OfficeTime()) ? new Date(this.stringOOToLocalDate(data.asc_getWord OfficeTime())) :
                 ((data.asc_getTime() == '') ? null : new Date(this.stringUtcToLocalDate(data.asc_getTime())));
             var userid = data.asc_getUserId(),
                 user = this.userCollection.findOriginalUser(userid),
@@ -1363,7 +1363,7 @@ define([
             var repliesCount = data.asc_getRepliesCount();
             if (repliesCount) {
                 for (i = 0; i < repliesCount; ++i) {
-                    date = (data.asc_getReply(i).asc_getWorldOfficeTime()) ? new Date(this.stringOOToLocalDate(data.asc_getReply(i).asc_getWorldOfficeTime())) :
+                    date = (data.asc_getReply(i).asc_getWord OfficeTime()) ? new Date(this.stringOOToLocalDate(data.asc_getReply(i).asc_getWord OfficeTime())) :
                         ((data.asc_getReply(i).asc_getTime() == '') ? null : new Date(this.stringUtcToLocalDate(data.asc_getReply(i).asc_getTime())));
 
                     var userid = data.asc_getReply(i).asc_getUserId(),
@@ -1482,7 +1482,7 @@ define([
 
                     comment.asc_putText(commentVal);
                     comment.asc_putTime(this.utcDateToString(new Date()));
-                    comment.asc_putWorldOfficeTime(this.ooDateToString(new Date()));
+                    comment.asc_putWord OfficeTime(this.ooDateToString(new Date()));
                     comment.asc_putUserId(this.currentUserId);
                     comment.asc_putUserName(AscCommon.UserInfoParser.getCurrentName());
                     comment.asc_putSolved(false);
@@ -1662,7 +1662,7 @@ define([
             ascComment.asc_putText(comment.get('comment'));
             ascComment.asc_putQuoteText(comment.get('quote'));
             ascComment.asc_putTime(comment.get('time') ? this.utcDateToString(new Date(comment.get('time'))) : '');
-            ascComment.asc_putWorldOfficeTime(comment.get('time') ? this.ooDateToString(new Date(comment.get('time'))) : '');
+            ascComment.asc_putWord OfficeTime(comment.get('time') ? this.ooDateToString(new Date(comment.get('time'))) : '');
             ascComment.asc_putUserId(comment.get('userid'));
             ascComment.asc_putUserName(comment.get('username'));
             ascComment.asc_putSolved(comment.get('resolved'));
@@ -1684,7 +1684,7 @@ define([
 
             ascComment.asc_putText(reply.get('reply'));
             ascComment.asc_putTime(reply.get('time') ? this.utcDateToString(new Date(reply.get('time'))) : '');
-            ascComment.asc_putWorldOfficeTime(reply.get('time') ? this.ooDateToString(new Date(reply.get('time'))) : '');
+            ascComment.asc_putWord OfficeTime(reply.get('time') ? this.ooDateToString(new Date(reply.get('time'))) : '');
             ascComment.asc_putUserId(reply.get('userid'));
             ascComment.asc_putUserName(reply.get('username'));
             ascComment.asc_putUserData(reply.get('userdata'));

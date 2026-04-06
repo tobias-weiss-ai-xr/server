@@ -61,18 +61,18 @@ documents-app-android/
 
 | File | Purpose | FOSS Impact |
 |------|---------|-------------|
-| `app_manager/WorldOffice.jks.gpg` | **Signing keystore** (release APK signing) | CRITICAL: Cannot build release APK without. Must provide FOSS replacement keystore. |
-| `app_manager/WorldOffice-keystore.properties.gpg` | **Signing credentials** (keyAlias, keyPassword, storeFile, storePassword) + API keys | CRITICAL: Contains all proprietary API keys/credentials |
+| `app_manager/Word Office.jks.gpg` | **Signing keystore** (release APK signing) | CRITICAL: Cannot build release APK without. Must provide FOSS replacement keystore. |
+| `app_manager/Word Office-keystore.properties.gpg` | **Signing credentials** (keyAlias, keyPassword, storeFile, storePassword) + API keys | CRITICAL: Contains all proprietary API keys/credentials |
 | `app_manager/google_api.json.gpg` | **Google Play Console API key** (for fastlane upload) | HIGH: Only needed for Play Store publishing |
 | `app_manager/appmanager/google-services.json.gpg` | **Firebase configuration** (project settings, API keys) | CRITICAL: Required by Firebase SDK initialization |
 | `app_manager/auth_strings.xml.gpg` | **Authentication API keys** (Facebook, Dropbox, etc.) | CRITICAL: Decrypted to `toolkit/libtoolkit/src/main/res/values/auth_strings.xml` |
-| `app_manager/WorldOffice-182ba7a9-5335-449e-9c63-2585101e45bc.lic.gpg` | **WORLDOFFICE license file** | CRITICAL: Decrypted to app assets — proprietary license |
+| `app_manager/Word Office-182ba7a9-5335-449e-9c63-2585101e45bc.lic.gpg` | **Word Office license file** | CRITICAL: Decrypted to app assets — proprietary license |
 | `fastlane/.env.secret.gpg` | **Fastlane secrets** (Telegram bot token, etc.) | LOW: Deployment-only |
 
 ### Decryption Flow (from decrypt_secret.sh):
 1. Decrypts all 7 .gpg files using `GIT_ANDROID_DOCUMENTS_PASSPHRASE` env var
 2. Moves `auth_strings.xml` → `toolkit/libtoolkit/src/main/res/values/auth_strings.xml`
-3. Moves `.lic` file → `app_manager/appmanager/src/main/assets/WorldOffice-...lic`
+3. Moves `.lic` file → `app_manager/appmanager/src/main/assets/Word Office-...lic`
 
 ---
 
@@ -148,7 +148,7 @@ All other deps are FOSS: AndroidX, Kotlin, Dagger, Room, Retrofit, Moxy, Koin, G
 ## 5. BUILD CONFIGURATION — PROPRIETARY ENTRIES
 
 ### Signing Config (appmanager/build.gradle.kts)
-- `signingConfigs.world-office` reads from `WorldOffice-keystore.properties`
+- `signingConfigs.Word Office` reads from `Word Office-keystore.properties`
 - Release builds REQUIRE the keystore
 
 ### BuildConfig Fields from keystore.properties:
@@ -226,7 +226,7 @@ The app_manager settings.gradle.kts references these external repos (not in this
 - `../../document-android-editors/editors_slides/libgslides`
 - `../libsnapshot`
 
-These are other repos in the world-office workspace (core, core-ext, document-android-editors).
+These are other repos in the Word Office workspace (core, core-ext, document-android-editors).
 
 ---
 
@@ -236,7 +236,7 @@ These are other repos in the world-office workspace (core, core-ext, document-an
 - Downloads APK from GitHub releases
 - Uploads to **AWS S3** (proprietary cloud service)
 - Uses **AWS CloudFront** cache invalidation
-- References WORLDOFFICE GitHub API
+- References Word Office GitHub API
 
 ### fastlane/Fastfile
 - `upload_to_play_store` — Google Play Store publishing
@@ -249,10 +249,10 @@ These are other repos in the world-office workspace (core, core-ext, document-an
 
 ---
 
-## 10. WORLDOFFICE LICENSE FILE
+## 10. Word Office LICENSE FILE
 
-`app_manager/WorldOffice-182ba7a9-5335-449e-9c63-2585101e45bc.lic.gpg`
-- This is a proprietary WORLDOFFICE license file
+`app_manager/Word Office-182ba7a9-5335-449e-9c63-2585101e45bc.lic.gpg`
+- This is a proprietary Word Office license file
 - Gets decrypted and placed into app assets
 - Used for product licensing/validation
 - **Must be removed for FOSS build**
@@ -271,10 +271,10 @@ These are other repos in the world-office workspace (core, core-ext, document-an
 7. **google-services plugin** — Remove from buildscript
 8. **firebase-crashlytics plugin** — Remove from buildscript
 9. **google-services.json** — Remove (encrypted)
-10. **WorldOffice.jks** — Replace with FOSS signing keystore
-11. **WorldOffice-keystore.properties** — Replace with FOSS credentials
+10. **Word Office.jks** — Replace with FOSS signing keystore
+11. **Word Office-keystore.properties** — Replace with FOSS credentials
 12. **auth_strings.xml** — Remove all proprietary API keys
-13. **WORLDOFFICE license file (.lic)** — Remove
+13. **Word Office license file (.lic)** — Remove
 14. **google_api.json** — Remove (Play Console API)
 
 ### Code Changes Required:

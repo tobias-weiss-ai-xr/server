@@ -1,10 +1,10 @@
-# World-Office
+# Word Office
 
-Modern, open-source document editing suite. Fork of WORLDOFFICE with a full rewrite in Rust and React.
+Independent, open-source document editing suite. Built from scratch in Rust and React.
 
 ## Quick Start
 
-```bash
+`ash
 # Install dependencies
 pnpm install
 
@@ -16,7 +16,7 @@ pnpm dev
 
 # Run tests
 pnpm test
-```
+`
 
 ## License
 
@@ -30,8 +30,8 @@ See [.sisyphus/plans/full-rewrite-modernization.md](.sisyphus/plans/full-rewrite
 
 ## Structure
 
-```
-core/                   # Rust document engine (C++ → Rust rewrite)
+`
+core/                   # Rust document engine
 core-enterprise/         # Enterprise Rust crates (commercial)
 services/              # Rust microservices
 apps/                   # React 19 frontend
@@ -42,7 +42,7 @@ plugins/                # AI autofill, SDK forms
 packages/               # Shared JS/TS packages
 tools/                  # CI, Docker, packaging
 tests/                  # Test suites
-```
+`
 
 ## Contributing
 

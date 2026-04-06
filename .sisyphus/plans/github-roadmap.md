@@ -1,8 +1,8 @@
-# Euro-Office .github Repo Documentation Update
+# Word Office .github Repo Documentation Update
 
 ## TL;DR
 
-> **Quick Summary**: Create and update 4 documentation files in the `World-Office/.github` repo on Codeberg with a project roadmap, architecture map, contributing guide, and updated org profile — all adapted from the GitHub PR #2 blueprint with Codeberg-specific links.
+> **Quick Summary**: Create and update 4 documentation files in the `Word-Office/.github` repo on Codeberg with a project roadmap, architecture map, contributing guide, and updated org profile — all adapted from the GitHub PR #2 blueprint with Codeberg-specific links.
 > 
 > **Deliverables**:
 > - `ROADMAP.md` — 5-phase roadmap adapted from PR #2 for Codeberg
@@ -19,19 +19,19 @@
 ## Context
 
 ### Original Request
-User asked to "plan the roadmap in very detail" using GitHub PR #2 (`https://github.com/Euro-Office/.github/pull/2`) as blueprint, then "go through all repos to understand what they are good for and draw an architecture map", and finally push everything to Codeberg.
+User asked to "plan the roadmap in very detail" using GitHub PR #2 (`https://github.com/Word Office/.github/pull/2`) as blueprint, then "go through all repos to understand what they are good for and draw an architecture map", and finally push everything to Codeberg.
 
 ### Interview Summary
 **Key Discussions**:
-- Target platform is **Codeberg** (`codeberg.org/World-Office`), NOT GitHub
-- The `.github` repo exists on Codeberg as a fork of WORLDOFFICE
+- Target platform is **Codeberg** (`codeberg.org/Word-Office`), NOT GitHub
+- The `.github` repo exists on Codeberg as a fork of Word Office
 - PR #2 contains 7 files: ROADMAP.md, CONTRIBUTING.md, ISSUE_TEMPLATE/*, PULL_REQUEST_TEMPLATE.md, SECURITY.md
 - User wants roadmap + architecture map, NOT issue/PR templates (separate work item)
 
 **Research Findings**:
 - Architecture map covers all 22 repos across 6 tiers (Engine, Assembly, Desktop, Integration, Assets, Org)
 - Build order is: `core/` → `sdkjs/` → `web-apps/` → `server/` → `DocumentServer/` (and parallel desktop stack)
-- 3 repos on Codeberg not in original AGENTS.md: `artwork/`, `world-office-opencloud/`, `documents-app-android/`
+- 3 repos on Codeberg not in original AGENTS.md: `artwork/`, `word-office-opencloud/`, `documents-app-android/`
 - `sdkjs/` is empty locally (git submodule not initialized)
 - All 22 repos now cloned locally
 
@@ -47,7 +47,7 @@ User asked to "plan the roadmap in very detail" using GitHub PR #2 (`https://git
 ## Work Objectives
 
 ### Core Objective
-Update the `World-Office/.github` repo on Codeberg with 4 documentation files that provide project direction, technical architecture, and contributor onboarding.
+Update the `Word-Office/.github` repo on Codeberg with 4 documentation files that provide project direction, technical architecture, and contributor onboarding.
 
 ### Concrete Deliverables
 - `.github/ROADMAP.md` — 5-phase roadmap with Codeberg links
@@ -59,7 +59,7 @@ Update the `World-Office/.github` repo on Codeberg with 4 documentation files th
 - [x] All 4 files exist in `.github/` directory
 - [x] Zero `github.com` URLs in any file (only `codeberg.org`)
 - [x] `ROADMAP.md` ≤ 300 lines, `ARCHITECTURE.md` ≤ 500 lines, `CONTRIBUTING.md` ≤ 250 lines, `profile/README.md` ≤ 150 lines
-- [x] All repo links point to `codeberg.org/World-Office`
+- [x] All repo links point to `codeberg.org/Word-Office`
 
 ### Must Have
 - 5-phase structure matching PR #2 blueprint
@@ -125,13 +125,13 @@ Wave FINAL (After ALL tasks — verification):
 - [x] 1. Create ARCHITECTURE.md
 
   **What to do**:
-  - Create `.github/ARCHITECTURE.md` with the full Euro-Office architecture documentation
+  - Create `.github/ARCHITECTURE.md` with the full Word Office architecture documentation
   - Include the ASCII dependency graph from the architecture map draft (`.sisyphus/drafts/roadmap-architecture-map.md`)
   - Include the complete 22-repo inventory table organized by tier
   - Include the build order (topological sort)
   - Include a license compliance summary table
   - Include a "Where to Look" quick-reference table (adapted from AGENTS.md files)
-  - Add SPDX header: `SPDX-FileCopyrightText: 2026 Euro-Office contributors` + `SPDX-License-Identifier: CC0-1.0`
+  - Add SPDX header: `SPDX-FileCopyrightText: 2026 Word Office contributors` + `SPDX-License-Identifier: CC0-1.0`
   - Keep total file ≤ 500 lines
 
   **Must NOT do**:
@@ -161,7 +161,7 @@ Wave FINAL (After ALL tasks — verification):
   - `https://raw.githubusercontent.com/tobias-weiss-ai-xr/.github/docs/add-roadmap/ROADMAP.md` — Phase structure, audit findings, license issues tables
 
   **External References**:
-  - Codeberg org page: `https://codeberg.org/World-Office` — Verify all repo names match
+  - Codeberg org page: `https://codeberg.org/Word-Office` — Verify all repo names match
 
   **WHY Each Reference Matters**:
   - `roadmap-architecture-map.md`: Contains the complete dependency graph and repo inventory we created — source of truth for ARCHITECTURE.md content
@@ -179,7 +179,7 @@ Wave FINAL (After ALL tasks — verification):
     Steps:
       1. Test-Path .github/ARCHITECTURE.md → $true
       2. Select-String "SPDX-FileCopyrightText" .github/ARCHITECTURE.md → match found
-      3. Select-String "codeberg.org/World-Office" .github/ARCHITECTURE.md → 3+ matches
+      3. Select-String "codeberg.org/Word-Office" .github/ARCHITECTURE.md → 3+ matches
     Expected Result: File exists, has SPDX header, has Codeberg links
     Evidence: .sisyphus/evidence/task-1-architecture-exists.txt
 
@@ -220,11 +220,11 @@ Wave FINAL (After ALL tasks — verification):
 
   **What to do**:
   - Create `.github/CONTRIBUTING.md` adapted from PR #2 CONTRIBUTING.md
-  - Replace ALL `github.com/Euro-Office` URLs with `codeberg.org/World-Office`
-  - Update the repository overview table to include ALL 22 repos (PR #2 has 19, add artwork/, world-office-opencloud/, documents-app-android/)
+  - Replace ALL `github.com/Word Office` URLs with `codeberg.org/Word-Office`
+  - Update the repository overview table to include ALL 22 repos (PR #2 has 19, add artwork/, word-office-opencloud/, documents-app-android/)
   - Update development setup to reference Codeberg fork workflow
   - Replace "docker compose" with Codeberg-appropriate commands
-  - Add SPDX header: `SPDX-FileCopyrightText: 2026 Euro-Office contributors` + `SPDX-License-Identifier: CC0-1.0`
+  - Add SPDX header: `SPDX-FileCopyrightText: 2026 Word Office contributors` + `SPDX-License-Identifier: CC0-1.0`
   - Keep total file ≤ 250 lines
 
   **Must NOT do**:
@@ -278,9 +278,9 @@ Wave FINAL (After ALL tasks — verification):
     Tool: Bash (powershell)
     Preconditions: File created
     Steps:
-      1. Select-String "github.com/Euro-Office" .github/CONTRIBUTING.md
-      2. Select-String "codeberg.org/World-Office" .github/CONTRIBUTING.md → 5+ matches
-    Expected Result: Zero github.com/Euro-Office URLs, multiple codeberg.org URLs
+      1. Select-String "github.com/Word Office" .github/CONTRIBUTING.md
+      2. Select-String "codeberg.org/Word-Office" .github/CONTRIBUTING.md → 5+ matches
+    Expected Result: Zero github.com/Word Office URLs, multiple codeberg.org URLs
     Evidence: .sisyphus/evidence/task-2-url-check.txt
 
   Scenario: Repo overview table has 22 entries
@@ -309,12 +309,12 @@ Wave FINAL (After ALL tasks — verification):
   **What to do**:
   - Create `.github/ROADMAP.md` adapted from PR #2 ROADMAP.md
   - Preserve 5-phase structure: Foundation → Feature Parity → Desktop Apps → Integration Ecosystem → Innovation
-  - Replace ALL `github.com` URLs with `codeberg.org/World-Office`
+  - Replace ALL `github.com` URLs with `codeberg.org/Word-Office`
   - Adapt the audit log: update license findings, add desktop-sdk Phase 1 completion status
   - Adapt partner list for Codeberg community context
   - Update "How to Get Involved" links to Codeberg
   - Add reference to ARCHITECTURE.md for technical details
-  - Add SPDX header: `SPDX-FileCopyrightText: 2026 Euro-Office contributors` + `SPDX-License-Identifier: CC0-1.0`
+  - Add SPDX header: `SPDX-FileCopyrightText: 2026 Word Office contributors` + `SPDX-License-Identifier: CC0-1.0`
   - Keep total file ≤ 300 lines
 
   **Must NOT do**:
@@ -345,7 +345,7 @@ Wave FINAL (After ALL tasks — verification):
   - `.sisyphus/notepads/desktop-sdk-rewrite/analysis.md` — desktop-sdk Phase 1 completion status for audit log
 
   **External References**:
-  - Codeberg issues: `https://codeberg.org/World-Office/DocumentServer/issues`
+  - Codeberg issues: `https://codeberg.org/Word-Office/DocumentServer/issues`
 
   **WHY Each Reference Matters**:
   - PR #2 ROADMAP.md: Source blueprint — adapt content, preserve structure
@@ -402,8 +402,8 @@ Wave FINAL (After ALL tasks — verification):
 
   **What to do**:
   - Update `.github/profile/README.md` with Codeberg links
-  - Replace `github.com/Euro-Office` with `codeberg.org/World-Office`
-  - Replace `github.com/Euro-Office/DocumentServer` with `codeberg.org/World-Office/DocumentServer`
+  - Replace `github.com/Word Office` with `codeberg.org/Word-Office`
+  - Replace `github.com/Word Office/DocumentServer` with `codeberg.org/Word-Office/DocumentServer`
   - Fix the screenshot URL to point to Codeberg raw content
   - Add links to new docs: ROADMAP.md, ARCHITECTURE.md, CONTRIBUTING.md
   - Do NOT change the org description, partner list, or FAQ content
@@ -433,7 +433,7 @@ Wave FINAL (After ALL tasks — verification):
   - `.github/profile/README.md` — Current org profile (75 lines, needs URL fixes)
 
   **External References**:
-  - Codeberg raw file URL pattern: `https://codeberg.org/World-Office/.github/raw/branch/main/profile/README.md`
+  - Codeberg raw file URL pattern: `https://codeberg.org/Word-Office/.github/raw/branch/main/profile/README.md`
 
   **WHY Each Reference Matters**:
   - `profile/README.md`: The file to modify — contains 3 GitHub URLs that need Codeberg replacement
@@ -519,14 +519,14 @@ Test-Path .github/ROADMAP.md; Test-Path .github/ARCHITECTURE.md; Test-Path .gith
 # Expected: all $true
 
 # Codeberg links present
-Get-ChildItem -Recurse -Include *.md -Path .github/ | Select-String "codeberg.org/World-Office" | Measure-Object
+Get-ChildItem -Recurse -Include *.md -Path .github/ | Select-String "codeberg.org/Word-Office" | Measure-Object
 # Expected: 10+ matches
 ```
 
 ### Final Checklist
 - [x] All 4 files created/updated in `.github/`
 - [x] Zero `github.com` URLs
-- [x] All `codeberg.org/World-Office` repo names match actual Codeberg org
+- [x] All `codeberg.org/Word-Office` repo names match actual Codeberg org
 - [x] ROADMAP.md has all 5 phases
 - [x] ARCHITECTURE.md has dependency graph + 22-repo table
 - [x] CONTRIBUTING.md has 22-repo overview table

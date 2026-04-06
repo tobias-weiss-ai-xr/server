@@ -71,7 +71,7 @@ Verified 3+ random modified files:
 All modified files now contain:
 ```cpp
 /*
- * Copyright (C) 2026 Euro-Office Contributors
+ * Copyright (C) 2026 Word Office Contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by

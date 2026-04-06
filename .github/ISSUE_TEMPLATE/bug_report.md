@@ -7,7 +7,7 @@ assignees: ''
 ---
 
 <!--
-SPDX-FileCopyrightText: 2026 Euro-Office contributors
+SPDX-FileCopyrightText: 2026 Word Office contributors
 SPDX-License-Identifier: CC0-1.0
 -->
 
@@ -36,7 +36,7 @@ What actually happened. Include screenshots or screen recordings if applicable.
 - **Browser**: [e.g., Chrome 122, Firefox 123]
 - **Docker version**: [if applicable]
 - **Deployment**: [e.g., Docker, Debian package, from source]
-- **Euro-Office version/commit**: [e.g., nightly, v1.0, commit hash]
+- **Word Office version/commit**: [e.g., nightly, v1.0, commit hash]
 
 ## Logs
 
@@ -44,4 +44,4 @@ Paste relevant error messages or stack traces here.
 
 ## Additional Context
 
-Any other context about the problem (e.g., does it also happen in WORLDOFFICE upstream?).
+Any other context about the problem (e.g., does it also happen in legacy codebase?).

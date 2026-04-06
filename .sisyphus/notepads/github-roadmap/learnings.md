@@ -12,7 +12,7 @@ Look\ tables)
 
 **Requirements**:
 - File <= 500 lines
-- Zero github.com URLs (only codeberg.org/World-Office links)
+- Zero github.com URLs (only codeberg.org/Word-Office links)
 - SPDX header present
 - ASCII dependency graph showing all 22 repos
 - 22-repo inventory table organized by tier
@@ -25,9 +25,9 @@ Look\ quick-reference table
 
 **Key Corrections Applied**:
 - sdkjs/ is NOT empty - actively maintained with 1287 files and commits from today
-- world-office-opencloud/ is a 1-commit prototype/demo, NOT production
-- documents-app-android/ has 850 Kotlin files, substantial code, but no Euro-Office specific changes yet
-- plugin-aiautofill/ is entirely new Euro-Office code (not a fork)
+- word-office-opencloud/ is a 1-commit prototype/demo, NOT production
+- documents-app-android/ has 850 Kotlin files, substantial code, but no Word Office specific changes yet
+- plugin-aiautofill/ is entirely new Word Office code (not a fork)
 
 **Outcome**:
 - Final file: 200 lines (60% under 500-line limit)

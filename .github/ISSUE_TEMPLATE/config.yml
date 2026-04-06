@@ -1,14 +1,14 @@
-# SPDX-FileCopyrightText: 2026 Euro-Office contributors
+# SPDX-FileCopyrightText: 2026 Word Office contributors
 # SPDX-License-Identifier: CC0-1.0
 
 blank_issues_enabled: true
 contact_links:
   - name: Roadmap
-    url: https://codeberg.org/World-Office/.github/src/branch/main/ROADMAP.md
+    url: https://codeberg.org/word-office/.github/src/branch/main/ROADMAP.md
     about: Check the project roadmap for planned features and milestones.
   - name: Contributing Guide
-    url: https://codeberg.org/World-Office/.github/src/branch/main/CONTRIBUTING.md
+    url: https://codeberg.org/word-office/.github/src/branch/main/CONTRIBUTING.md
     about: Read the contributing guide before submitting issues or pull requests.
   - name: Architecture Overview
-    url: https://codeberg.org/World-Office/.github/src/branch/main/ARCHITECTURE.md
+    url: https://codeberg.org/word-office/.github/src/branch/main/ARCHITECTURE.md
     about: Understand the project structure and repository dependencies.

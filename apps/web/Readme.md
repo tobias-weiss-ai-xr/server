@@ -1,18 +1,18 @@
-![World-Office](https://codeberg.org/World-Office/artwork/raw/branch/main/assets/banner.png)
+![Word-Office](https://codeberg.org/Word-Office/artwork/raw/branch/main/assets/banner.png)
 
 [![License](https://img.shields.io/badge/License-GNU%20AGPL%20V3-green.svg?style=flat)](https://www.gnu.org/licenses/agpl-3.0.en.html)
 
 <<<<<<< HEAD
-<h1 > WORLDOFFICE web-apps</h1>
+<h1 > Word Office web-apps</h1>
 
-> **Disclaimer:** World-Office is an independent open-source fork hosted on Codeberg and is not affiliated with, endorsed by, or controlled by any of the upstream projects or integration providers referenced in this repository (including WORLDOFFICE, Ascensio System SIA, and others). World-Office is entirely separate from "Euro-Office" (a GitHub organization associated with Nextcloud and IONOS). World-Office maintains its own development roadmap, release cycle, and support channels.
+> **Disclaimer:** Word-Office is an independent open-source fork hosted on Codeberg and is not affiliated with, endorsed by, or controlled by any of the upstream projects or integration providers referenced in this repository (including Word Office, Ascensio System SIA, and others). Word-Office is entirely separate from "Word Office" (a GitHub organization associated with Nextcloud and IONOS). Word-Office maintains its own development roadmap, release cycle, and support channels.
 >
-All meaningful pull requests from WORLDOFFICE and Euro-Office on GitHub have been reviewed and, where applicable, synced into this fork. An automated watch is in place that continuously monitors and integrates relevant upstream developments.
+All meaningful pull requests from Word Office and Word Office on GitHub have been reviewed and, where applicable, synced into this fork. An automated watch is in place that continuously monitors and integrates relevant upstream developments.
 =======
 ## web-apps
 >>>>>>> f25c31868f55f050aa3b91e2a4918d210abeed80
 
-The frontend for [Euro-Office Document Server][2] and [Euro-Office Desktop Editors](https://github.com/Euro-Office/DesktopEditors). Builds the program interface and allows the user create, edit, save and export text documents, spreadsheets, and presentations.
+The frontend for [Word Office Document Server][2] and [Word Office Desktop Editors](https://github.com/Word Office/DesktopEditors). Builds the program interface and allows the user create, edit, save and export text documents, spreadsheets, and presentations.
 
 ## Previous versions
 
@@ -20,20 +20,20 @@ Until 2019-10-23 the repository was called web-apps-pro.
 
 ## Project information
 
-Official website: [https://github.com/Euro-Office](https://github.com/Euro-Office "https://github.com/Euro-Office")
+Official website: [https://github.com/Word Office](https://github.com/Word Office "https://github.com/Word Office")
 
-Code repository: [https://github.com/Euro-Office/web-apps](https://github.com/Euro-Office/web-apps "https://github.com/Euro-Office/web-apps")
+Code repository: [https://github.com/Word Office/web-apps](https://github.com/Word Office/web-apps "https://github.com/Word Office/web-apps")
 
 ## User feedback and support
 
-If you have any problems with or questions about [Euro-Office Document Server][2], please visit our official forum: [github.com/world-office][1] or you can ask and answer Euro-Office development questions on [Stack Overflow][3].
+If you have any problems with or questions about [Word Office Document Server][2], please visit our official forum: [github.com/Word Office][1] or you can ask and answer Word Office development questions on [Stack Overflow][3].
 
-  [1]: https://github.com/Euro-Office
-  [2]: https://github.com/Euro-Office/DocumentServer
+  [1]: https://github.com/Word Office
+  [2]: https://github.com/Word Office/DocumentServer
 
 ## Styling
 
-Styling is accomplished via LESS, there is the content set by Euro-Office. Before you do anything, please read the section under this about modifications.
+Styling is accomplished via LESS, there is the content set by Word Office. Before you do anything, please read the section under this about modifications.
 
 There are several hundred LESS files, organised in several folders:
 
@@ -101,14 +101,14 @@ Each directory has a range of LESS files broken down by area, eg slider, search,
 
 ### Full Build
 
-Run `docker compose` from the `world-office/fork/build` directory:
+Run `docker compose` from the `Word Office/fork/build` directory:
 
 ```bash
-# From world-office/fork/build, enter the container:
+# From Word Office/fork/build, enter the container:
 docker compose exec eo bash
 
 # Then inside the container:
-export BUILD_NUMBER=0 THEME=world-office && cd /var/www/world-office/web-apps-develop/build && grunt --skip-imagemin --skip-babel
+export BUILD_NUMBER=0 THEME=Word Office && cd /var/www/Word Office/web-apps-develop/build && grunt --skip-imagemin --skip-babel
 ```
 
 ### Build Flags
@@ -119,13 +119,13 @@ export BUILD_NUMBER=0 THEME=world-office && cd /var/www/world-office/web-apps-de
 | `--skip-babel` | Skip ES5 transpilation for IE compatibility (modern browsers only, no `ie/` directory created) |
 
 <<<<<<< HEAD
-<p align="center"> Made with ❤️ by the WORLDOFFICE Team </p>
+<p align="center"> Made with ❤️ by the Word Office Team </p>
 =======
 ### Environment Variables
 
 | Variable | Description |
 |----------|-------------|
-| `THEME` | Theme name to use (e.g., `world-office`, `default`) |
+| `THEME` | Theme name to use (e.g., `Word Office`, `default`) |
 | `BUILD_NUMBER` | Build number for versioning |
 
 ## Style modifications
@@ -187,7 +187,7 @@ We want to make upstream updates as painless as possible. From the perspective o
 Each theme is a self-contained folder under `theme/` at the web-apps root:
 
 ```
-theme/world-office/
+theme/Word Office/
   meta/
     config.json           # Brand values (company name, URLs, logo filenames)
   assets/
@@ -205,13 +205,13 @@ Contains brand values that replace `{{PLACEHOLDER}}` tokens in JS and webpack `D
 {
   "company_name": "World Office",
   "publisher_name": "World Office",
-  "publisher_url": "https://github.com/Euro-Office",
+  "publisher_url": "https://github.com/Word Office",
   "publisher_address": "",
   "publisher_phone": "",
   "sales_email": "",
   "support_email": "",
-  "support_url": "https://github.com/Euro-Office",
-  "help_url": "https://github.com/Euro-Office",
+  "support_url": "https://github.com/Word Office",
+  "help_url": "https://github.com/Word Office",
   "app_title": "World Office",
   "mobile_logo_light": "eo_logo_light.svg",
   "mobile_logo_dark": "eo_logo_dark.svg",
@@ -223,7 +223,7 @@ Contains brand values that replace `{{PLACEHOLDER}}` tokens in JS and webpack `D
 #### Build
 
 ```shell
-THEME=world-office grunt
+THEME=Word Office grunt
 ```
 
 The `deploy-theme` task runs first and:
@@ -235,7 +235,7 @@ LESS compilation and JS replacements then proceed as normal with theme files in 
 
 #### Creating a new theme
 
-1. Copy `theme/world-office/` to `theme/yourtheme/`
+1. Copy `theme/Word Office/` to `theme/yourtheme/`
 2. Edit `meta/config.json` with your brand values
 3. Replace logo SVGs in `assets/img/header/`
 4. Adjust LESS variables in `assets/less/theme.less`

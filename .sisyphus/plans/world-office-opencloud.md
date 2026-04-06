@@ -1,10 +1,10 @@
-# world-office-opencloud Implementation Plan
+# word-office-opencloud Implementation Plan
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Transform world-office-opencloud from a bare prototype into a production-ready deployment companion that orchestrates OCIS + World-Office Document Server via WOPI.
+**Goal:** Transform word-office-opencloud from a bare prototype into a production-ready deployment companion that orchestrates OCIS + Word-Office Document Server via WOPI.
 
-**Architecture:** Docker Compose-based deployment with configuration generation, health checks, and World-Office branding. The app generates OCIS + Document Server configs from a single .env file and provides a setup wizard + status dashboard.
+**Architecture:** Docker Compose-based deployment with configuration generation, health checks, and Word-Office branding. The app generates OCIS + Document Server configs from a single .env file and provides a setup wizard + status dashboard.
 
 **Tech Stack:** Node.js 20+, Express 4, EJS templates, Docker, Docker Compose
 
@@ -29,9 +29,9 @@
 **Step 1: Create package.json**
 ```json
 {
-  "name": "world-office-opencloud",
+  "name": "word-office-opencloud",
   "version": "1.0.0",
-  "description": "Deployment companion for World-Office Document Server + OCIS",
+  "description": "Deployment companion for Word-Office Document Server + OCIS",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
@@ -40,8 +40,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "keywords": ["ocis", "world-office", "world-office", "wopi", "docker"],
-  "author": "World-Office",
+  "keywords": ["ocis", "Word Office", "Word Office", "wopi", "docker"],
+  "author": "Word-Office",
   "license": "AGPL-3.0",
   "dependencies": {
     "express": "^4.18.2",
@@ -79,7 +79,7 @@ coverage/
 
 **Step 3: Create .env.example**
 ```
-# world-office-opencloud Configuration
+# word-office-opencloud Configuration
 # Copy this file to .env and fill in your values
 
 # Application
@@ -96,7 +96,7 @@ DOCUMENT_SERVER_JWT_SECRET=change_me_document_server_jwt_secret
 
 # Docker Configuration
 OCIS_IMAGE=owncloud/ocis:latest
-DOCUMENT_SERVER_IMAGE=world-office/documentserver:latest
+DOCUMENT_SERVER_IMAGE=Word Office/documentserver:latest
 TRAEFIK_IMAGE=traefik:v2.10
 
 # Ports (adjust if already in use)
@@ -174,7 +174,7 @@ const defaults = {
   PORT: '3000',
   NODE_ENV: 'development',
   OCIS_IMAGE: 'owncloud/ocis:latest',
-  DOCUMENT_SERVER_IMAGE: 'world-office/documentserver:latest',
+  DOCUMENT_SERVER_IMAGE: 'Word Office/documentserver:latest',
   TRAEFIK_IMAGE: 'traefik:v2.10',
   TRAEFIK_HTTP_PORT: '80',
   TRAEFIK_HTTPS_PORT: '443',
@@ -246,7 +246,7 @@ config.OCIS_WOPI_SRC = `https://${config.OCIS_DOMAIN}`;
 config.DOCUMENT_SERVER_INTERNAL_URL = `http://documentserver:${config.DOCUMENT_SERVER_INTERNAL_PORT}`;
 config.OCIS_INTERNAL_URL = `http://ocis:${config.OCIS_INTERNAL_PORT}`;
 config.COLLABORATION_APP_ADDR = config.DOCUMENT_SERVER_INTERNAL_URL;
-config.COLLABORATION_APP_NAME = 'World-Office Document Server';
+config.COLLABORATION_APP_NAME = 'Word-Office Document Server';
 
 // Path helpers
 config.resolvePath = (relativePath) => path.resolve(__dirname, '..', relativePath);
@@ -318,7 +318,7 @@ async function generateDockerCompose() {
   // Traefik proxy
   compose.services.traefik = {
     image: config.TRAEFIK_IMAGE,
-    container_name: 'world-office-traefik',
+    container_name: 'word-office-traefik',
     ports: [
       `${config.TRAEFIK_HTTP_PORT}:80`,
       `${config.TRAEFIK_HTTPS_PORT}:443`
@@ -338,13 +338,13 @@ async function generateDockerCompose() {
     labels: {
       'traefik.enable': 'true'
     },
-    networks: ['world-office-network']
+    networks: ['word-office-network']
   };
 
   // OCIS service
   compose.services.ocis = {
     image: config.OCIS_IMAGE,
-    container_name: 'world-office-ocis',
+    container_name: 'word-office-ocis',
     environment: [
       `OCIS_DOMAIN=${config.OCIS_DOMAIN}`,
       `OCIS_JWT_SECRET=${config.OCIS_JWT_SECRET}`,
@@ -381,13 +381,13 @@ async function generateDockerCompose() {
       'traefik.http.services.ocis.loadbalancer.server.port': config.OCIS_INTERNAL_PORT
     },
     depends_on: ['traefik'],
-    networks: ['world-office-network']
+    networks: ['word-office-network']
   };
 
   // OCIS Collaboration Service (WOPI)
   compose.services['ocis-collaboration'] = {
     image: config.OCIS_IMAGE,
-    container_name: 'world-office-ocis-collaboration',
+    container_name: 'word-office-ocis-collaboration',
     command: [
       'ocis',
       'collaboration',
@@ -418,22 +418,22 @@ async function generateDockerCompose() {
       'traefik.http.services.collaboration.loadbalancer.server.port': '9230'
     },
     depends_on: ['ocis'],
-    networks: ['world-office-network']
+    networks: ['word-office-network']
   };
 
   // Document Server
   compose.services.documentserver = {
     image: config.DOCUMENT_SERVER_IMAGE,
-    container_name: 'world-office-documentserver',
+    container_name: 'word-office-documentserver',
     environment: [
       `JWT_SECRET=${config.DOCUMENT_SERVER_JWT_SECRET}`,
       `JWT_HEADER=Authorization`,
       `JWT_IN_BODY=true`
     ],
     volumes: [
-      `${config.DOCUMENT_SERVER_DATA_DIR}/data:/var/www/world-office/Data`,
-      `${config.DOCUMENT_SERVER_DATA_DIR}/logs:/var/log/world-office`,
-      `${config.DOCUMENT_SERVER_DATA_DIR}/lib:/var/lib/world-office`,
+      `${config.DOCUMENT_SERVER_DATA_DIR}/data:/var/www/Word Office/Data`,
+      `${config.DOCUMENT_SERVER_DATA_DIR}/logs:/var/log/Word Office`,
+      `${config.DOCUMENT_SERVER_DATA_DIR}/lib:/var/lib/Word Office`,
       `${config.DOCUMENT_SERVER_DATA_DIR}/db:/var/lib/postgresql`
     ],
     expose: [config.DOCUMENT_SERVER_INTERNAL_PORT],
@@ -445,12 +445,12 @@ async function generateDockerCompose() {
       'traefik.http.services.documentserver.loadbalancer.server.port': config.DOCUMENT_SERVER_INTERNAL_PORT
     },
     depends_on: ['ocis'],
-    networks: ['world-office-network']
+    networks: ['word-office-network']
   };
 
   // Networks
   compose.networks = {
-    'world-office-network': {
+    'word-office-network': {
       driver: 'bridge'
     }
   };
@@ -568,7 +568,7 @@ function generateWebUIConfig() {
       hideSearchBar: false,
       disablePreviews: false,
       general: {
-        displayName: 'World-Office Cloud',
+        displayName: 'Word-Office Cloud',
         slogan: 'Your documents, anywhere',
         hideVersion: false
       }
@@ -697,7 +697,7 @@ test -f data/ocis/config/web-ui.json && echo "PASS: web-ui.json exists"
 test -f data/ocis/config/idp.json && echo "PASS: idp.json exists"
 
 # Check web-ui.json has editor config
-grep -q "World-Office Cloud" data/ocis/config/web-ui.json && echo "PASS: Branding present"
+grep -q "Word-Office Cloud" data/ocis/config/web-ui.json && echo "PASS: Branding present"
 grep -q "wopi" data/ocis/config/web-ui.json && echo "PASS: WOPI handler configured"
 
 # Check JSON is valid
@@ -740,7 +740,7 @@ router.get('/', async (req, res) => {
     const envExists = await fileExists('.env');
 
     res.render('setup', {
-      title: 'world-office-opencloud Setup',
+      title: 'word-office-opencloud Setup',
       configured: envExists,
       config: envExists ? config : getDefaultConfig(),
       errors: {}
@@ -763,7 +763,7 @@ router.post('/', async (req, res) => {
 
     if (Object.keys(errors).length > 0) {
       return res.render('setup', {
-        title: 'world-office-opencloud Setup',
+        title: 'word-office-opencloud Setup',
         configured: false,
         config: formData,
         errors
@@ -872,7 +872,7 @@ function buildEnvFile(formData, secrets) {
     ENABLE_METRICS: formData.ENABLE_METRICS || 'true',
     ENABLE_LOGS: formData.ENABLE_LOGS || 'true',
     OCIS_IMAGE: 'owncloud/ocis:latest',
-    DOCUMENT_SERVER_IMAGE: 'world-office/documentserver:latest',
+    DOCUMENT_SERVER_IMAGE: 'Word Office/documentserver:latest',
     TRAEFIK_IMAGE: 'traefik:v2.10',
     TRAEFIK_HTTP_PORT: '80',
     TRAEFIK_HTTPS_PORT: '443',
@@ -1047,12 +1047,12 @@ module.exports = router;
 <body>
   <div class="container">
     <h1><%= title %></h1>
-    <p class="subtitle">Configure your World-Office Cloud deployment</p>
+    <p class="subtitle">Configure your Word-Office Cloud deployment</p>
 
     <% if (configured) { %>
       <div class="success-message">
         <h3>Configuration Complete!</h3>
-        <p>Your euro_office-opencloud is configured. You can now start the services.</p>
+        <p>Your Word-Office-opencloud is configured. You can now start the services.</p>
       </div>
 
       <div class="info-box">
@@ -1148,7 +1148,7 @@ module.exports = router;
   </div>
 
   <footer>
-    &copy; 2024 World-Office. Released under AGPL-3.0.
+    &copy; 2024 Word-Office. Released under AGPL-3.0.
   </footer>
 </body>
 </html>
@@ -1247,7 +1247,7 @@ router.get('/', async (req, res) => {
     const healthStatus = await getHealthStatus(containers);
 
     res.render('dashboard', {
-      title: 'world-office-opencloud Dashboard',
+      title: 'word-office-opencloud Dashboard',
       config,
       containers,
       healthStatus
@@ -1321,7 +1321,7 @@ async function getContainers() {
   // Filter for our containers
   const ourContainers = allContainers.filter(container => {
     const name = container.Names[0].replace(/^\//, '');
-    return name.startsWith('world-office-');
+    return name.startsWith('word-office-');
   });
 
   return ourContainers;
@@ -1334,10 +1334,10 @@ async function getHealthStatus(containers) {
   };
 
   const serviceNames = {
-    'world-office-traefik': 'Traefik Proxy',
-    'world-office-ocis': 'OCIS',
-    'world-office-ocis-collaboration': 'OCIS Collaboration (WOPI)',
-    'world-office-documentserver': 'Document Server'
+    'word-office-traefik': 'Traefik Proxy',
+    'word-office-ocis': 'OCIS',
+    'word-office-ocis-collaboration': 'OCIS Collaboration (WOPI)',
+    'word-office-documentserver': 'Document Server'
   };
 
   let runningCount = 0;
@@ -1871,14 +1871,14 @@ async function getFullHealthStatus() {
 
   // Check Traefik
   services.push(await getContainerHealth(
-    'world-office-traefik',
+    'word-office-traefik',
     'Traefik Proxy',
     `http://localhost:${config.TRAEFIK_HTTP_PORT}/`
   ));
 
   // Check OCIS
   services.push(await getContainerHealth(
-    'world-office-ocis',
+    'word-office-ocis',
     'OCIS',
     config.ENABLE_SSL
       ? `https://${config.OCIS_DOMAIN}`
@@ -1887,14 +1887,14 @@ async function getFullHealthStatus() {
 
   // Check OCIS Collaboration (WOPI)
   services.push(await getContainerHealth(
-    'world-office-ocis-collaboration',
+    'word-office-ocis-collaboration',
     'OCIS Collaboration (WOPI)',
     `${config.OCIS_WOPI_SRC}/wopi`
   ));
 
   // Check Document Server
   services.push(await getContainerHealth(
-    'world-office-documentserver',
+    'word-office-documentserver',
     'Document Server',
     config.ENABLE_SSL
       ? `https://${config.DOCUMENT_SERVER_DOMAIN}`
@@ -1957,7 +1957,7 @@ async function getSystemMetrics() {
   try {
     const containers = await docker.listContainers({ all: true });
     const ourContainers = containers.filter(c =>
-      c.Names[0].startsWith('/world-office-')
+      c.Names[0].startsWith('/word-office-')
     );
 
     let totalMemory = 0;
@@ -2093,7 +2093,7 @@ git commit -m "feat: add health check API endpoints"
 
 ## Task 8: Styling
 
-**Add World-Office themed CSS and assets.**
+**Add Word-Office themed CSS and assets.**
 
 **Files:**
 - Create: `public/css/style.css`
@@ -2102,7 +2102,7 @@ git commit -m "feat: add health check API endpoints"
 
 **Step 1: Create public/css/style.css**
 ```css
-/* World-Office Design Language */
+/* Word-Office Design Language */
 
 :root {
   /* Colors */
@@ -2637,7 +2637,7 @@ test -f public/css/style.css && echo "PASS: style.css exists"
 test -f public/css/dashboard.css && echo "PASS: dashboard.css exists"
 test -f public/css/setup.css && echo "PASS: setup.css exists"
 
-# Check for World-Office color palette
+# Check for Word-Office color palette
 grep -q "#0b0b1e" public/css/style.css && echo "PASS: Deep void background present"
 grep -q "#00d4ff" public/css/style.css && echo "PASS: Electric cyan present"
 grep -q "#e8b931" public/css/style.css && echo "PASS: Warm gold accent present"
@@ -2646,7 +2646,7 @@ grep -q "#e8b931" public/css/style.css && echo "PASS: Warm gold accent present"
 **Commit:**
 ```bash
 git add public/css/
-git commit -m "feat: add World-Office themed CSS styles"
+git commit -m "feat: add Word-Office themed CSS styles"
 ```
 
 ---
@@ -2732,7 +2732,7 @@ app.use((err, req, res, next) => {
 // Start server
 const PORT = config.PORT;
 app.listen(PORT, () => {
-  console.log(`world-office-opencloud dashboard running on port ${PORT}`);
+  console.log(`word-office-opencloud dashboard running on port ${PORT}`);
   console.log(`Visit http://localhost:${PORT} to access the dashboard`);
 });
 
@@ -2812,21 +2812,21 @@ FROM node:20-alpine
 RUN apk add --no-cache dumb-init
 
 # Create non-root user
-RUN addgroup -g 1001 -S world-office && \
-    adduser -S -u 1001 -G world-office world-office
+RUN addgroup -g 1001 -S word-office && \
+    adduser -S -u 1001 -G word-office word-office
 
 WORKDIR /app
 
 # Copy dependencies and app from builder
-COPY --from=builder --chown=world-office:world-office /app/node_modules ./node_modules
-COPY --from=builder --chown=world-office:world-office /app ./
+COPY --from=builder --chown=word-office:word-office /app/node_modules ./node_modules
+COPY --from=builder --chown=word-office:word-office /app ./
 
 # Create data directories
 RUN mkdir -p data/ocis data/documentserver data/traefik && \
-    chown -R world-office:world-office data
+    chown -R word-office:word-office data
 
 # Switch to non-root user
-USER world-office
+USER word-office
 
 # Expose dashboard port
 EXPOSE 3000
@@ -2863,7 +2863,7 @@ templates/
 
 **Step 3: Test Docker build**
 ```bash
-docker build -t world-office-opencloud:latest .
+docker build -t word-office-opencloud:latest .
 ```
 Expected: Image builds successfully
 
@@ -2899,9 +2899,9 @@ git commit -m "feat: add multi-stage Dockerfile"
 
 **Step 1: Create README.md**
 ```markdown
-# world-office-opencloud
+# word-office-opencloud
 
-A deployment companion for World-Office Document Server and ownCloud Infinite Scale (OCIS). It provides a simple way to orchestrate OCIS, Document Server, and supporting services via Docker Compose.
+A deployment companion for Word-Office Document Server and ownCloud Infinite Scale (OCIS). It provides a simple way to orchestrate OCIS, Document Server, and supporting services via Docker Compose.
 
 ## Features
 
@@ -2909,11 +2909,11 @@ A deployment companion for World-Office Document Server and ownCloud Infinite Sc
 - **Docker Compose Generation**: Automatically generates full stack configuration
 - **Health Dashboard**: Real-time service status monitoring
 - **WOPI Integration**: Seamless OCIS collaboration with Document Server
-- **World-Office Branding**: Consistent visual identity with deep void theme
+- **Word-Office Branding**: Consistent visual identity with deep void theme
 
 ## Architecture
 
-world-office-opencloud is a deployment companion that:
+word-office-opencloud is a deployment companion that:
 
 1. Generates OCIS and Document Server configurations from a single `.env` file
 2. Creates Docker Compose files for the full stack (Traefik, OCIS, Document Server)
@@ -2934,8 +2934,8 @@ The architecture leverages OCIS's native WOPI collaboration service, so no custo
 
 ```bash
 # Clone the repository
-git clone https://codeberg.org/World-Office/world-office-opencloud.git
-cd world-office-opencloud
+git clone https://codeberg.org/Word-Office/word-office-opencloud.git
+cd word-office-opencloud
 
 # Install dependencies
 npm install
@@ -2954,7 +2954,7 @@ npm start
    - Features (SSL, metrics, logs)
 3. Click "Save Configuration"
 4. Run `docker-compose up -d` to start all services
-5. Visit your OCIS domain to start using World-Office Cloud
+5. Visit your OCIS domain to start using Word-Office Cloud
 
 ### Accessing Services
 
@@ -2984,7 +2984,7 @@ The application uses a single `.env` file for configuration. After running the s
 ### Docker Settings
 
 - `OCIS_IMAGE`: OCIS Docker image (default: `owncloud/ocis:latest`)
-- `DOCUMENT_SERVER_IMAGE`: Document Server image (default: `world-office/documentserver:latest`)
+- `DOCUMENT_SERVER_IMAGE`: Document Server image (default: `Word Office/documentserver:latest`)
 - `TRAEFIK_IMAGE`: Traefik image (default: `traefik:v2.10`)
 
 ## Development
@@ -3009,7 +3009,7 @@ npm run lint:fix
 
 ```bash
 # Build the companion image
-docker build -t world-office-opencloud:latest .
+docker build -t word-office-opencloud:latest .
 
 # Run with Docker Compose
 docker-compose up -d
@@ -3019,11 +3019,11 @@ docker-compose up -d
 
 ```bash
 docker run -d \
-  --name world-office-opencloud \
+  --name word-office-opencloud \
   -p 3000:3000 \
   -v $(pwd)/.env:/app/.env \
   -v $(pwd)/data:/app/data \
-  world-office-opencloud:latest
+  word-office-opencloud:latest
 ```
 
 ## API Endpoints
@@ -3055,7 +3055,7 @@ The Docker Compose stack includes:
 - **Traefik**: Reverse proxy with automatic SSL
 - **OCIS**: ownCloud Infinite Scale (file sharing platform)
 - **OCIS Collaboration**: WOPI service for document editing
-- **Document Server**: World-Office document editors
+- **Document Server**: Word-Office document editors
 
 ## Troubleshooting
 
@@ -3071,22 +3071,22 @@ docker-compose logs -f <service-name>
 Verify JWT secrets match between OCIS and Document Server:
 ```bash
 # Check OCIS JWT secret
-docker exec world-office-ocis env | grep JWT_SECRET
+docker exec word-office-ocis env | grep JWT_SECRET
 
 # Check Document Server JWT secret
-docker exec world-office-documentserver env | grep JWT_SECRET
+docker exec word-office-documentserver env | grep JWT_SECRET
 ```
 
 ### Dashboard Not Accessible
 
 Ensure the companion is running:
 ```bash
-docker ps | grep world-office-opencloud
+docker ps | grep word-office-opencloud
 ```
 
 Check port configuration:
 ```bash
-docker logs world-office-opencloud | grep "port"
+docker logs word-office-opencloud | grep "port"
 ```
 
 ## Security Considerations
@@ -3137,10 +3137,10 @@ This project is licensed under the AGPL-3.0 License. See LICENSE file for detail
 
 ## Related Projects
 
-- [world-office-nextcloud](https://codeberg.org/World-Office/world-office-nextcloud) - Nextcloud integration
+- [word-office-nextcloud](https://codeberg.org/Word-Office/word-office-nextcloud) - Nextcloud integration
 - [OCIS](https://github.com/owncloud/ocis) - ownCloud Infinite Scale
-- [WORLDOFFICE Document Server](https://github.com/WORLDOFFICE/DocumentServer) - Document editor
+- [Word Office Document Server](https://github.com/Word Office/DocumentServer) - Document editor
 
 ---
 
-**© 2024 World-Office. Released under AGPL-3.0.**
+**© 2024 Word-Office. Released under AGPL-3.0.**

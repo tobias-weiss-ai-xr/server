@@ -131,7 +131,7 @@ From `desktop-sdk/3DPARTY.md`:
 
 **Recommended Actions:**
 1. Verify if these should be git-submodules
-2. Contact upstream (Ascensio/WORLDOFFICE) for clarification
+2. Contact upstream (Ascensio/Word Office) for clarification
 3. If unused: Remove from repository
 4. If used: Obtain proper source distributions with licenses
 
@@ -258,4 +258,4 @@ From `desktop-sdk/3DPARTY.md`:
 
 **Audit Completed:** 2026-04-02  
 **Next Review:** After upstream response  
-**Auditor:** Euro-Office Development Team
+**Auditor:** Word Office Development Team

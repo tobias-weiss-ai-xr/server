@@ -1,7 +1,7 @@
 # Draft: Extended Test Scenarios for testsuite
 
 ## Requirements (User Stated)
-- Plan more test scenarios for the World-Office testsuite
+- Plan more test scenarios for the Word-Office testsuite
 - Current coverage: health checks, WOPI discovery, API endpoints
 - Need to add: document operations, security tests, edge cases
 

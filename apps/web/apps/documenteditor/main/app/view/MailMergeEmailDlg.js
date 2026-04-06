@@ -160,7 +160,7 @@ define([
         },
 
         _onMessage: function(msg) {
-            if (msg && msg.Referer == "world-office") {
+            if (msg && msg.Referer == "Word Office") {
 //                if ( !_.isEmpty(msg.folder) ) {
 //                    this.trigger('saveasfolder', this, msg.folder); // save last folder url
 //                }

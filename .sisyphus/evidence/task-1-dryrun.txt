@@ -1,7 +1,7 @@
 Git Sync Script
 ================
 Mode: DRY RUN
-Repo Root: C:\Users\Tobias\git\world-office
+Repo Root: C:\Users\Tobias\git\Word Office
 Timestamp: 2026-04-03T14:01:53.5311587+02:00
 
 NOTE: Scaffold mode - sync logic not yet implemented

@@ -771,8 +771,8 @@ define([], function () {
             if(item.value == 'create') {
                 title = this.textCreateMacrosFromDesc;
                 instruction = '' + 
-                    'Create a macro for WorldOffice. ' + 
-                    'The macro should be written specifically for the WorldOffice ' + editorName + '. ' +
+                    'Create a macro for Word Office. ' + 
+                    'The macro should be written specifically for the Word Office ' + editorName + '. ' +
                     'Return only code with comments, as plain text without markdown. ' + 
                     'The format of the code is JavaScript. ' + 
                     'Write comments in the same language as the user prompt. ' + 
@@ -780,8 +780,8 @@ define([], function () {
             } else if(item.value == 'convert') {
                 title = this.textConvertMacrosFromVBA;
                 instruction = '' + 
-                    'Convert macro for WorldOffice from VBA. ' +
-                    'The macro should be written specifically for the WorldOffice ' + editorName + '. ' +
+                    'Convert macro for Word Office from VBA. ' +
+                    'The macro should be written specifically for the Word Office ' + editorName + '. ' +
                     'Return only code with comments, as plain text without markdown. ' +
                     'The code format is JavaScript. ' +
                     'Write comments in ' + langCode + (langName ? '(' + langName + ')' : '') + ' language. ' + 
@@ -873,7 +873,7 @@ define([], function () {
         },
         
         onHelp: function() {
-            window.open('https://api.world-office.com/docs/plugin-and-macros/macros/getting-started/', '_blank')
+            window.open('https://api.Word Office.com/docs/plugin-and-macros/macros/getting-started/', '_blank')
         },
         onBtnClick: function(event) {
             this._handleInput(event.currentTarget.attributes['result'].value);

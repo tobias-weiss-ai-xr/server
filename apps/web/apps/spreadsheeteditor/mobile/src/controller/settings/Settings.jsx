@@ -33,7 +33,7 @@ const SettingsController = inject('storeAppOptions', 'storeSpreadsheetInfo')(obs
 
     const showHelp = () => {
         // let url = '{{HELP_URL}}';
-        // let url = 'https://helpcenter.world-office.com';
+        // let url = 'https://helpcenter.Word Office.com';
         let url = __HELP_URL__;
 
         if (url.charAt(url.length-1) !== '/') {

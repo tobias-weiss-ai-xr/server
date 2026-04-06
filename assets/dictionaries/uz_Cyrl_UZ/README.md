@@ -1,5 +1,5 @@
 # uz-hunspell
-Ushbu lug‘at https://github.com/u2b3k/uz-hunspell  dan olinib world-office lug‘atlar to‘plamiga @faxriddin tomonidan qo‘shildi. 
+Ushbu lug‘at https://github.com/u2b3k/uz-hunspell  dan olinib Word Office lug‘atlar to‘plamiga @faxriddin tomonidan qo‘shildi. 
 
 ## Quyida muallif kirish so‘zi keltirilgan
 O'zbek tilidagi matnlar imlo xatolarini tekshirish uchun Hunspell lug'atlari (Uzbek Hunspell dictionary)

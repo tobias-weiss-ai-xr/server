@@ -1,0 +1,29 @@
+[workspace]
+resolver = "2"
+members = [
+    "eo-common",
+    "eo-unicode",
+    "eo-txt",
+    "eo-fb2",
+    "eo-html",
+    "eo-xps",
+    "eo-ofd",
+    "eo-djvu",
+    "eo-epub",
+    "eo-office-utils",
+    "eo-rtf",
+    "eo-hwp",
+    "eo-pdf",
+    "eo-odf",
+    "eo-ooxml",
+    "eo-msbinary",
+    "eo-docx-renderer",
+    "eo-x2t",
+    "eo-renderer",
+    "eo-fonts",
+    "eo-raster",
+]
+
+[workspace.dependencies]
+anyhow = "1"
+thiserror = "2"

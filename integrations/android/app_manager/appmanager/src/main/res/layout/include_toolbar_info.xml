@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/infoLayout"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_one_line_height"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_separator_height"
+        android:background="@color/colorOutline" />
+
+    <TextView
+        android:id="@+id/infoText"
+        style="@style/Widget.Common.TextView.Micro"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="start"
+        android:layout_weight="1"
+        android:drawablePadding="@dimen/default_margin_small"
+        android:gravity="start|center_vertical"
+        android:paddingHorizontal="@dimen/default_margin_medium"
+        android:layout_marginStart="@dimen/screen_margin_start_toolbar"
+        android:maxLines="2"
+        tools:drawableStartCompat="@drawable/ic_expiring"
+        tools:text="The file lifetime is set to 12 days in this room" />
+
+</LinearLayout>

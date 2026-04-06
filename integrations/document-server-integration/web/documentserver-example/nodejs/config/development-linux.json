@@ -1,0 +1,9 @@
+{
+  "server": {
+    "siteUrl": "/",
+    "exampleUrl": "http://localhost/example",
+    "token": {
+      "enable": true
+    }
+  }
+}

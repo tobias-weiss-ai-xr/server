@@ -1,0 +1,422 @@
+<resources>
+
+    <style name="AppBaseTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorError">@color/colorError</item>
+        <item name="colorOnError">@color/colorOnError</item>
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorSurfaceContainerHigh">@color/colorSurface</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+        <item name="colorOnBackground">@color/colorOnBackground</item>
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="android:statusBarColor">@color/colorAppBar</item>
+        <item name="android:navigationBarColor">@color/colorBackground</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="elevationOverlayEnabled">false</item>
+        <item name="android:textDirection">locale</item>
+        <item name="android:supportsRtl">true</item>
+        <item name="colorPrimaryContainer">@color/colorSecondary</item>
+        <item name="colorOnPrimaryContainer">@color/colorSurface</item>
+        <item name="android:textColorHighlight">@color/colorSecondary30</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+        <item name="popupMenuBackground">@color/colorSurface</item>
+    </style>
+
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <!-- ======================================================================================= -->
+    <!-- Local customizations -->
+    <!-- Activities themes-->
+
+    <style name="NoActionBarTheme" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="MainActivityTheme" parent="AppBaseTheme">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <style name="OperationActivityTheme" parent="AppTheme">
+        <item name="android:navigationBarColor">@color/colorSurface</item>
+    </style>
+
+    <style name="WebViewerActivityStyle" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="DialogCommonTheme" parent="NoActionBarTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
+
+    <style name="MediaTheme" parent="NoActionBarTheme">
+        <item name="android:windowEnableSplitTouch">true</item>
+        <item name="android:splitMotionEvents">true</item>
+        <item name="android:navigationBarColor">@color/colorMediaBackground</item>
+        <item name="android:statusBarColor">@color/colorMediaBackground</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="Theme.Common.BottomSheetDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:navigationBarColor">@color/colorSurface</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="bottomSheetStyle">@style/Widget.Common.BottomSheetDialog</item>
+    </style>
+
+    <!-- ======================================================================================= -->
+    <!-- ShapeAppearance -->
+
+    <style name="ShapeAppearance.Common.BottomSheetDialog" parent="AppTheme">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">16dp</item>
+        <item name="cornerSizeTopLeft">16dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+
+    <!-- ======================================================================================= -->
+    <!-- TextAppearance -->
+
+    <style name="TextAppearance.Common.Title" parent="TextAppearance.MaterialComponents.Headline6" />
+
+    <style name="TextAppearance.Common.TabItem" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="TextAppearance.Common.Button" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textSize">@dimen/fonts_size_medium</item>
+    </style>
+
+    <!-- ======================================================================================= -->
+    <!-- Widgets -->
+
+    <style name="Widget.Common.TextView" parent="AppTheme">
+        <item name="android:textDirection">locale</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">@dimen/fonts_size_medium</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Widget.Common.TextView.Secondary">
+        <item name="android:textColor">@color/colorTextSecondary</item>
+    </style>
+
+    <style name="Widget.Common.TextView.Clickable">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:textAppearance">@style/TextAppearance.Common.Button</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:maxLines">10</item>
+    </style>
+
+    <style name="Widget.Common.TextView.Small">
+        <item name="android:textSize">@dimen/fonts_size_small</item>
+    </style>
+
+    <style name="Widget.Common.TextView.Small.Secondary">
+        <item name="android:textColor">@color/colorTextSecondary</item>
+    </style>
+
+    <style name="Widget.Common.TextView.Micro">
+        <item name="android:textSize">@dimen/fonts_size_micro</item>
+    </style>
+
+    <style name="Widget.Common.TextView.Micro.Secondary">
+        <item name="android:textColor">@color/colorTextSecondary</item>
+    </style>
+
+    <style name="Widget.Common.TextView.Large">
+        <item name="android:textSize">@dimen/fonts_size_large</item>
+    </style>
+
+    <style name="Widget.Common.TextView.Header" parent="Widget.Common.TextView.Small.Secondary">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:layout_marginStart">@dimen/default_margin_large</item>
+        <item name="android:layout_marginEnd">@dimen/default_margin_large</item>
+        <item name="android:layout_marginTop">@dimen/default_margin_large</item>
+        <item name="android:layout_marginBottom">@dimen/default_margin_small</item>
+    </style>
+
+    <style name="Widget.Common.TextView.Title">
+        <item name="android:textAppearance">@style/TextAppearance.Common.Title</item>
+        <item name="android:textSize">@dimen/fonts_size_xlarge</item>
+    </style>
+
+    <style name="Widget.Common.TextView.Description" parent="Widget.Common.TextView.Small.Secondary">
+        <item name="android:maxLines">20</item>
+    </style>
+
+    <style name="Widget.Common.TabLayout" parent="Widget.Material3.TabLayout">
+        <item name="tabTextAppearance">@style/TextAppearance.Common.TabItem</item>
+        <item name="tabSelectedTextColor">?attr/colorPrimary</item>
+        <item name="tabTextColor">@color/colorTextSecondary</item>
+        <item name="android:background">@color/colorSurface</item>
+        <item name="tabMode">auto</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/default_tab_layout_height</item>
+    </style>
+
+    <style name="Widget.Common.TabLayout.Fixed">
+        <item name="tabMode">fixed</item>
+    </style>
+
+    <style name="Widget.Common.TabLayout.Icon" parent="Widget.Common.TabLayout.Fixed">
+        <item name="tabGravity">fill</item>
+        <item name="tabIconTint">@color/color_tab_item_selector</item>
+    </style>
+
+    <style name="Widget.Common.Chip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/color_filter_chip_text_selector</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:checkable">true</item>
+        <item name="chipMinTouchTargetSize">0dp</item>
+        <item name="chipBackgroundColor">@color/color_filter_chip_selector</item>
+        <item name="chipStrokeWidth">0.5dp</item>
+        <item name="chipStrokeColor">@color/color_filter_chip_border_selector</item>
+    </style>
+
+    <style name="Widget.Common.Chip.Closable">
+        <item name="closeIconEnabled">true</item>
+        <item name="closeIconTint">@color/colorWhite</item>
+        <item name="closeIconVisible">false</item>
+        <item name="android:textColor">@color/color_filter_chip_text_author_selector</item>
+    </style>
+
+    <style name="Widget.Common.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="android:layout_width">@dimen/default_screen_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="boxBackgroundColor">@color/colorBackground</item>
+    </style>
+
+    <style name="Widget.Common.TextInputLayout.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+        <item name="android:layout_width">@dimen/default_screen_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="boxBackgroundColor">@color/colorBackground</item>
+    </style>
+
+    <style name="Widget.Common.TextInputLayout.Surface">
+        <item name="boxBackgroundColor">@color/colorSurface</item>
+    </style>
+
+    <style name="Widget.Common.Button" parent="Widget.Material3.Button.ElevatedButton">
+        <item name="android:layout_width">@dimen/default_button_width</item>
+        <item name="android:layout_height">@dimen/default_button_height</item>
+        <item name="android:layout_marginTop">@dimen/default_margin_large</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textAppearance">@style/TextAppearance.Common.Button</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">@dimen/default_corner_radius_button</item>
+        <item name="rippleColor">?colorControlHighlight</item>
+        <item name="android:theme">@style/ThemeOverlay.Common.Button</item>
+    </style>
+
+    <style name="Widget.Common.Button.SmallButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cornerRadius">@dimen/default_corner_radius_button</item>
+    </style>
+
+    <style name="Widget.Common.Button.Error">
+        <item name="android:theme">@style/ThemeOverlay.Common.Button.Error</item>
+    </style>
+
+    <style name="Widget.Common.Button.TextButton" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textAppearance">@style/TextAppearance.Common.Button</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="cornerRadius">@dimen/default_corner_radius_button</item>
+    </style>
+
+    <style name="Widget.Common.Button.IconButton" parent="Widget.Material3.Button.IconButton">
+        <item name="android:layout_width">@dimen/item_one_line_height</item>
+        <item name="android:layout_height">@dimen/item_one_line_height</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconSize">@dimen/image_default_size</item>
+        <item name="rippleColor">?attr/colorControlHighlight</item>
+    </style>
+
+    <style name="Widget.Common.Button.IconButton.Formula" parent="Widget.Common.Button.IconButton">
+        <item name="iconTint">@null</item>
+        <item name="android:iconTint">@null</item>
+    </style>
+
+    <style name="Widget.Common.Button.IconButton.Secondary">
+        <item name="iconTint">@color/colorTextSecondary</item>
+    </style>
+
+    <style name="Widget.Common.AppBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Surface">
+        <item name="android:elevation">@dimen/elevation_height_micro</item>
+        <item name="android:theme">@style/ThemeOverlay.Common.AppBarLayout</item>
+        <item name="android:background">@color/colorAppBar</item>
+    </style>
+
+    <style name="ThemeOverlay.Common.AppBarLayout" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimary">@color/colorPrimary</item>
+    </style>
+
+    <style name="Widget.Common.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@color/colorSurface</item>
+    </style>
+
+    <style name="Widget.Common.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="colorOnPrimary">@color/colorPrimary</item>
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
+
+    <style name="Widget.Common.ImageView" parent="AppTheme" />
+
+    <style name="Widget.Common.ImageView.Secondary">
+        <item name="android:tint">@color/colorTextSecondary</item>
+        <item name="android:tintMode">src_in</item>
+    </style>
+
+    <style name="Widget.Common.ImageView.Tertiary">
+        <item name="android:tint">@color/colorTextTertiary</item>
+        <item name="android:tintMode">src_in</item>
+    </style>
+
+    <style name="Widget.Common.ImageView.Context" parent="Widget.Common.ImageView.Secondary">
+        <item name="android:layout_width">@dimen/image_default_size</item>
+        <item name="android:layout_height">@dimen/image_default_size</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginStart">@dimen/default_margin_large</item>
+        <item name="android:layout_marginEnd">@dimen/default_margin_large</item>
+    </style>
+
+    <style name="Widget.Common.ImageView.ActionBottomMenu" parent="Widget.Common.ImageView">
+        <item name="android:layout_width">@dimen/image_default_size</item>
+        <item name="android:layout_height">@dimen/image_default_size</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginStart">@dimen/default_margin_large</item>
+        <item name="android:layout_marginEnd">@dimen/default_margin_large</item>
+    </style>
+
+    <style name="Widget.Common.BottomSheetDialog" parent="AppTheme">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Common.BottomSheetDialog</item>
+    </style>
+
+    <!-- ======================================================================================= -->
+    <!-- Layouts -->
+
+    <style name="LoginContainerLayout">
+        <item name="android:layout_width">@dimen/default_screen_width</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_marginTop">@dimen/default_margin_xlarge</item>
+    </style>
+
+    <style name="ContextListItemLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/item_one_line_height</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingEnd">@dimen/screen_margin_large</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="PopupListItemLayout" parent="ContextListItemLayout">
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <!-- ======================================================================================= -->
+    <!-- Overlay -->
+
+    <style name="ThemeOverlay.Common.Button" parent="ThemeOverlay.Material3.Button.ElevatedButton">
+        <item name="colorContainer">?attr/colorPrimary</item>
+        <item name="colorOnContainer">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="ThemeOverlay.Common.Button.Error" parent="ThemeOverlay.Material3.Button.ElevatedButton">
+        <item name="colorContainer">?attr/colorError</item>
+        <item name="colorOnContainer">?attr/colorOnError</item>
+    </style>
+
+    <style name="ThemeOverlay.Common.DateTimePicker" parent="android:ThemeOverlay.Material.Dialog">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <!-- ======================================================================================= -->
+    <!-- Other -->
+
+    <style name="MainPopupAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/popup_in</item>
+        <item name="android:windowExitAnimation">@anim/popup_out</item>
+    </style>
+
+    <!--    Material dialog-->
+
+    <style name="App.Dialog.Alert" parent="@style/ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="materialAlertDialogTitleTextStyle">@style/Widget.Common.TextView.Title</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/App.Dialog.Body</item>
+        <item name="buttonBarPositiveButtonStyle">@style/App.Dialog.Buttons</item>
+        <item name="buttonBarNegativeButtonStyle">@style/App.Dialog.Buttons</item>
+        <item name="buttonBarNeutralButtonStyle">@style/App.Dialog.Buttons</item>
+    </style>
+
+    <style name="App.Dialog.Body" parent="Widget.Common.TextView.Small.Secondary">
+        <item name="android:maxLines">20</item>
+    </style>
+
+    <style name="App.Dialog.Buttons" parent="Widget.Common.Button.TextButton" />
+
+    <style name="App.Fab.Style" parent="ThemeOverlay.Material3.FloatingActionButton.Primary">
+        <item name="shapeAppearance">@style/App.Fab.Shape</item>
+    </style>
+
+    <style name="App.Fab.Shape" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">100%</item>
+    </style>
+
+    <style name="FullScreenDialog" parent="AppTheme">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:statusBarColor">@color/colorAppBar</item>
+        <item name="android:navigationBarColor">@color/colorBackground</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:theme">@style/AppTheme</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+    <style name="SignatureFullScreenDialog" parent="FullScreenDialog">
+        <item name="android:windowSoftInputMode">adjustPan</item>
+    </style>
+
+    <style name="TabletDialog" parent="AppTheme">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+</resources>

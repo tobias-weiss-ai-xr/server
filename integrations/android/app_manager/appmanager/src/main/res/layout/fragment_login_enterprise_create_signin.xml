@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <LinearLayout style="@style/LoginContainerLayout">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/login_signin_password_layout"
+            style="@style/Widget.Common.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_create_signin_password"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/login_signin_password_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="noExcludeDescendants"
+                android:inputType="textPassword"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/login_signin_repeat_layout"
+            style="@style/Widget.Common.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin_medium"
+            android:hint="@string/login_create_signin_repeat"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/login_signin_repeat_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="noExcludeDescendants"
+                android:inputType="textPassword"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/login_signin_create_portal_button"
+            style="@style/Widget.Common.Button"
+            android:layout_marginTop="@dimen/default_margin_xlarge"
+            android:text="@string/login_create_signin_create_button" />
+
+        <TextView
+            android:id="@+id/login_signin_terms_info_button"
+            style="@style/Widget.Common.TextView.Clickable"
+            android:layout_marginTop="@dimen/default_margin_xlarge"
+            android:text="@string/login_create_signin_info" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
+

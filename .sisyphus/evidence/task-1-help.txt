@@ -1,0 +1,182 @@
+
+NAME
+    C:\Users\Tobias\git\world-office\scripts\Sync-Remotes.ps1
+    
+SYNOPSIS
+    Sync git remotes for Euro-Office workspace repositories.
+    
+    
+SYNTAX
+    C:\Users\Tobias\git\world-office\scripts\Sync-Remotes.ps1 [-DryRun] [-Execute] [-AllowDirty] [-AutoAddRemotes] 
+    [-AutoOurs] [-Force] [-Json] [[-RepoRoot] <String>] [-Help] [-ListRepos] [<CommonParameters>]
+    
+    
+DESCRIPTION
+    This script synchronizes git repositories in the Euro-Office workspace by:
+    - Fetching from both upstream (world-office) and source (world-office) remotes
+    - Merging changes from source remote into local branches
+    - Pushing updates to world-office remote (Codeberg)
+    
+    By default, operates in dry-run mode to preview actions before execution.
+    
+
+PARAMETERS
+    -DryRun [<SwitchParameter>]
+        Show what would be done without making any changes (default: true).
+        
+        Required?                    false
+        Position?                    named
+        Default value                True
+        Accept pipeline input?       false
+        Aliases                      
+        Accept wildcard characters?  false
+        
+    -Execute [<SwitchParameter>]
+        Actually perform git operations. Must be explicitly set to false to disable dry-run.
+        
+        Required?                    false
+        Position?                    named
+        Default value                False
+        Accept pipeline input?       false
+        Aliases                      
+        Accept wildcard characters?  false
+        
+    -AllowDirty [<SwitchParameter>]
+        Allow operations on repositories with uncommitted changes. Default is to skip dirty repos.
+        
+        Required?                    false
+        Position?                    named
+        Default value                False
+        Accept pipeline input?       false
+        Aliases                      
+        Accept wildcard characters?  false
+        
+    -AutoAddRemotes [<SwitchParameter>]
+        Automatically add world-office and world-office remotes if they don't exist.
+        
+        Required?                    false
+        Position?                    named
+        Default value                False
+        Accept pipeline input?       false
+        Aliases                      
+        Accept wildcard characters?  false
+        
+    -AutoOurs [<SwitchParameter>]
+        Automatically use "ours" merge strategy for conflicts (--strategy-option=ours).
+        
+        Required?                    false
+        Position?                    named
+        Default value                False
+        Accept pipeline input?       false
+        Aliases                      
+        Accept wildcard characters?  false
+        
+    -Force [<SwitchParameter>]
+        Force push to world-office remote. Use with caution.
+        
+        Required?                    false
+        Position?                    named
+        Default value                False
+        Accept pipeline input?       false
+        Aliases                      
+        Accept wildcard characters?  false
+        
+    -Json [<SwitchParameter>]
+        Output results in JSON format for programmatic consumption.
+        
+        Required?                    false
+        Position?                    named
+        Default value                False
+        Accept pipeline input?       false
+        Aliases                      
+        Accept wildcard characters?  false
+        
+    -RepoRoot <String>
+        Path to the repository workspace root. Defaults to current directory.
+        
+        Required?                    false
+        Position?                    1
+        Default value                $PWD
+        Accept pipeline input?       false
+        Aliases                      
+        Accept wildcard characters?  false
+        
+    -Help [<SwitchParameter>]
+        Show help information and exit.
+        
+        Required?                    false
+        Position?                    named
+        Default value                False
+        Accept pipeline input?       false
+        Aliases                      
+        Accept wildcard characters?  false
+        
+    -ListRepos [<SwitchParameter>]
+        
+        Required?                    false
+        Position?                    named
+        Default value                False
+        Accept pipeline input?       false
+        Aliases                      
+        Accept wildcard characters?  false
+        
+    <CommonParameters>
+        This cmdlet supports the common parameters: Verbose, Debug,
+        ErrorAction, ErrorVariable, WarningAction, WarningVariable,
+        OutBuffer, PipelineVariable, and OutVariable. For more information, see
+        about_CommonParameters (https://go.microsoft.com/fwlink/?LinkID=113216). 
+    
+INPUTS
+    
+OUTPUTS
+    
+NOTES
+    
+    
+        - Default mode is dry-run for safety
+        - Skips repositories with uncommitted changes unless --allow-dirty is used
+        - Requires git to be installed and available in PATH
+    
+    -------------------------- EXAMPLE 1 --------------------------
+    
+    PS > .\Sync-Remotes.ps1
+    Preview what would be synced (dry-run mode).
+    
+    
+    
+    
+    
+    
+    -------------------------- EXAMPLE 2 --------------------------
+    
+    PS > .\Sync-Remotes.ps1 --execute
+    Actually perform the sync operations.
+    
+    
+    
+    
+    
+    
+    -------------------------- EXAMPLE 3 --------------------------
+    
+    PS > .\Sync-Remotes.ps1 --execute --verbose --json
+    Perform sync with detailed output in JSON format.
+    
+    
+    
+    
+    
+    
+    -------------------------- EXAMPLE 4 --------------------------
+    
+    PS > .\Sync-Remotes.ps1 --allow-dirty --auto-add-remotes
+    Include dirty repositories and auto-add missing remotes.
+    
+    
+    
+    
+    
+    
+    
+RELATED LINKS
+

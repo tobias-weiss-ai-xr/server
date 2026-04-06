@@ -1,0 +1,19 @@
+{
+  "active_plan": "C:\\Users\\Tobias\\git\\world-office\\.sisyphus\\plans\\testsuite-extended.md",
+  "started_at": "2026-04-04T23:50:36.825Z",
+  "session_ids": [
+    "ses_2aad76335ffeLYG2DT4rzHHpCj",
+    "ses_2a51666d1ffe4Aua8LACq7vwp5",
+    "ses_2a51666b9ffes5r54zHWPor2qT",
+    "ses_2a51666c6ffeHPgfnAMQMJaUM8",
+    "ses_2a515c3feffepDs3gY8gH2gKur",
+    "ses_2a515c3f5ffeSn7rkIqpT512Vb",
+    "ses_2a514c15fffeL9gY7Kmpw8QcaA",
+    "ses_2a513d922ffe9evKp3QbGfEeEi",
+    "ses_2a513d900ffelymcYvXcMptux4",
+    "ses_2a513a711ffegHdQeIeKQzYeFu"
+  ],
+  "plan_name": "testsuite-extended",
+  "agent": "sisyphus",
+  "task_sessions": {}
+}

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_two_line_height"
+    android:clickable="false"
+    android:focusable="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/list_share_settings_items_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/list_share_settings_image"
+            android:layout_width="@dimen/image_size"
+            android:layout_height="@dimen/image_size"
+            android:layout_marginStart="@dimen/screen_margin_large"
+            android:src="@drawable/drawable_list_share_image_item_user_placeholder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/list_share_settings_name"
+            style="@style/Widget.Common.TextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/default_margin_large"
+            app:layout_constraintBottom_toTopOf="@+id/list_share_settings_info"
+            app:layout_constraintEnd_toStartOf="@+id/contextBarrier"
+            app:layout_constraintStart_toEndOf="@+id/list_share_settings_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Item title" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/list_share_settings_info"
+            style="@style/Widget.Common.TextView.Small.Secondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin_small"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/list_share_settings_name"
+            app:layout_constraintStart_toStartOf="@+id/list_share_settings_name"
+            app:layout_constraintTop_toBottomOf="@+id/list_share_settings_name"
+            tools:text="Item info" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/contextBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:barrierDirection="start"
+            app:constraint_referenced_ids="list_share_settings_owner, list_share_settings_context_layout" />
+
+        <app.editors.manager.ui.views.custom.AccessIconButton
+            android:id="@+id/list_share_settings_context_layout"
+            style="@style/Widget.Common.Button.IconButton.Secondary"
+            android:layout_marginEnd="@dimen/default_margin_large"
+            android:visibility="gone"
+            app:icon="@drawable/ic_access_deny"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/list_share_settings_owner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/screen_margin_large"
+            android:text="@string/filter_title_author"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/list_share_settings_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/list_share_settings_name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
+
+

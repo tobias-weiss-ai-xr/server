@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:scrollbars="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <app.editors.manager.ui.views.custom.ConnectCloudView
+            android:id="@+id/cloudsItemWorldOffice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <app.editors.manager.ui.views.custom.ConnectCloudView
+            android:id="@+id/cloudsItemNextCloud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <app.editors.manager.ui.views.custom.ConnectCloudView
+            android:id="@+id/cloudsItemOwnCloud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <app.editors.manager.ui.views.custom.ConnectCloudView
+            android:id="@+id/cloudsItemKDrive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <app.editors.manager.ui.views.custom.ConnectCloudView
+            android:id="@+id/cloudsItemYandex"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <app.editors.manager.ui.views.custom.ConnectCloudView
+            android:id="@+id/cloudsItemOneDrive"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_two_line_height" />
+
+        <app.editors.manager.ui.views.custom.ConnectCloudView
+            android:id="@+id/cloudsItemDropbox"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_two_line_height" />
+
+        <app.editors.manager.ui.views.custom.ConnectCloudView
+            android:id="@+id/cloudsItemGoogleDrive"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_two_line_height"
+            android:visibility="gone" />
+
+        <app.editors.manager.ui.views.custom.ConnectCloudView
+            android:id="@+id/cloudsItemWebDav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

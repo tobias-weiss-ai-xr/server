@@ -1,0 +1,8 @@
+/libs
+/.gradle
+/local_gems
+/.idea
+/.bundle
+
+libs.tar.gz
+/test-reports

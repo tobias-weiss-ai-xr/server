@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="chooser_email_client">选择电子邮件客户端…</string>
+    <string name="about_email_subject">适用于安卓反馈的WORLDOFFICE文档</string>
+    <string name="about_feedback">反馈和支持</string>
+    <string name="text_hint_required">必填</string>
+    <string name="export_send_copy">发送副本</string>
+    <string name="dialogs_edit_forbidden_symbols">请勿使用这些符号\u0020</string>
+    <string name="dialogs_edit_forbidden_name">名称无效</string>
+    <string name="sizes_bytes">b</string>
+    <string name="sizes_kilobytes">KB</string>
+    <string name="sizes_megabytes">MB</string>
+    <string name="sizes_gigabytes">GB</string>
+    <string name="sizes_terabytes">TB</string>
+    <string name="common_accept">接受</string>
+    <string name="common_cancel">取消</string>
+    <string name="common_next">下一个</string>
+    <string name="common_previous">上一个</string>
+    <string name="common_done">完成</string>
+    <string name="common_ok">确定</string>
+    <plurals name="days" tools:ignore="UnusedQuantity">
+        <item quantity="one">天</item>
+        <item quantity="other">天</item>
+    </plurals>
+
+    <plurals name="hours" tools:ignore="UnusedQuantity">
+        <item quantity="one">小时</item>
+        <item quantity="other">小时</item>
+    </plurals>
+    <string name="settings_fonts_title">字体</string>
+    <string name="settings_view">查看</string>
+    <plurals name="months">
+        <item quantity="one">月</item>
+        <item quantity="other">月</item>
+    </plurals>
+    <plurals name="years">
+        <item quantity="one">年</item>
+        <item quantity="other">年</item>
+    </plurals>
+
+    <!-- Newly added translations (v9.0.0 - 2025-06-09) -->
+    <string name="help_and_feedback_contact_support">联系客服</string>
+    <string name="help_and_feedback_help_center">帮助中心</string>
+    <string name="help_and_feedback_suggest_a_feature">建议功能</string>
+    <string name="help_and_feedback_title">帮助与反馈</string>
+
+    <string name="access_members_me_and_title">我和%s</string>
+    <string name="access_members_me_subtitle">（我）</string>
+    <string name="access_members_me_users_groups_title">我、%1$s和%2$s</string>
+
+    <plurals name="access_members_users_title">
+        <item quantity="one">%d 用户</item>
+        <item quantity="other">%d 用户</item>
+    </plurals>
+
+    <plurals name="access_members_groups_title">
+        <item quantity="one">%d 群组</item>
+        <item quantity="other">%d 群组</item>
+    </plurals>
+
+</resources>

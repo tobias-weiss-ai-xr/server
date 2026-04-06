@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright (C) 2025 Euro-Office
+
+name: Lint-php
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master, develop]
+
+jobs:
+  php-lint:
+    runs-on: docker
+    strategy:
+      matrix:
+        php-versions: [ "8.1", "8.2", "8.3", "8.4" ]
+    name: php-lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint PHP ${{ matrix.php-versions }}
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace php:${{ matrix.php-versions }}-cli sh -c 'find . -name \*.php -not -path ./lib/composer/* -not -path ./build/stubs/* -print0 | xargs -0 -n1 php -l'

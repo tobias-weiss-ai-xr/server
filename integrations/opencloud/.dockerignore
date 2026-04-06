@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log
+.env
+.DS_Store
+uploads
+.docker
+logs
+coverage
+.vscode
+.idea
+*.md
+.git
+.gitignore
+data/
+templates/

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--    TODO material 2 corner radius-->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:theme="@style/DialogCommonTheme"
+    app:cardCornerRadius="@dimen/material3_container_radius">
+
+    <LinearLayout
+        android:id="@+id/dialogContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_margin_medium">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/dialogCommonTopTitleText"
+            style="@style/Widget.Common.TextView.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/screen_margin_large"
+            android:layout_marginTop="@dimen/screen_margin_large"
+            android:layout_marginRight="@dimen/screen_margin_large"
+            android:maxLines="2"
+            tools:text="Top title" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/dialogCommonBottomTitleText"
+            style="@style/Widget.Common.TextView.Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/screen_margin_large"
+            android:layout_marginTop="@dimen/screen_margin_large"
+            android:layout_marginRight="@dimen/screen_margin_large"
+            tools:text="Bottom title" />
+
+        <FrameLayout
+            android:id="@+id/dialogCommonFrameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/screen_margin_large"
+            android:layout_marginTop="@dimen/screen_margin_large"
+            android:layout_marginRight="@dimen/screen_margin_large">
+
+            <include
+                layout="@layout/dialog_fragment_progress_waiting"
+                android:visibility="visible" />
+
+            <include
+                layout="@layout/dialog_fragment_progress_loading"
+                android:visibility="gone" />
+
+            <include
+                layout="@layout/dialog_fragment_edit_line_hint"
+                android:visibility="gone" />
+
+            <include
+                layout="@layout/dialog_fragment_edit_multiline"
+                android:visibility="gone" />
+
+            <FrameLayout
+                android:id="@+id/dialogCustomLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/default_margin_medium"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialogCommonFrameLayout">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/dialogCommonCancelButton"
+                style="@style/Widget.Common.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/default_margin_small"
+                tools:text="Cancel" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/dialogCommonAcceptButton"
+                style="@style/Widget.Common.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/default_margin_small"
+                tools:text="Accept" />
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

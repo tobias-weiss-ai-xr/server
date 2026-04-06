@@ -1,0 +1,125 @@
+# World-Office Monorepo .gitignore
+
+# =====================
+# OS files
+# =====================
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# =====================
+# IDE / Editor
+# =====================
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+.fleet/
+
+# =====================
+# Rust
+# =====================
+/target/
+**/*.rs.bk
+*.rlib
+*.exe
+*.dll
+*.so
+*.dylib
+Cargo.lock
+
+# =====================
+# C++ / CMake
+# =====================
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.d
+*.su
+*.ko
+*.mod
+*.mod.c
+*.cmd
+.tmp_versions/
+
+# =====================
+# Node.js
+# =====================
+node_modules/
+dist/
+.next/
+.turbo/
+.vercel/
+*.tsbuildinfo
+
+# =====================
+# Python
+# =====================
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+.eggs/
+*.whl
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# =====================
+# Docker
+# =====================
+.docker/
+
+# =====================
+# Test / Coverage
+# =====================
+coverage/
+.nyc_output/
+test-results/
+*.lcov
+
+# =====================
+# Environment
+# =====================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.cert
+
+# =====================
+# Logs
+# =====================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =====================
+# Misc
+# =====================
+*.bak
+*.tmp
+*.temp
+*.swp
+.nul

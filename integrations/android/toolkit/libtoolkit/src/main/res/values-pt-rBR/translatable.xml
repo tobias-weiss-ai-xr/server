@@ -1,0 +1,60 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="chooser_email_client">Escolha o cliente de e-mail…</string>
+    <string name="about_email_subject">Feedback do WORLDOFFICE Documents Android</string>
+    <string name="about_feedback">Feedback e suporte</string>
+    <string name="text_hint_required">Necessário</string>
+    <string name="export_send_copy">Envie uma cópia</string>
+    <string name="dialogs_edit_forbidden_symbols">Não use esses símbolos\u0020</string>
+    <string name="dialogs_edit_forbidden_name">Nome inválido</string>
+    <string name="sizes_bytes">bytes</string>
+    <string name="sizes_kilobytes">KB</string>
+    <string name="sizes_megabytes">MB</string>
+    <string name="sizes_gigabytes">GB</string>
+    <string name="sizes_terabytes">TB</string>
+    <string name="common_accept">Aceitar</string>
+    <string name="common_cancel">Cancelar</string>
+    <string name="common_done">Concluído</string>
+    <string name="common_next">Seguinte</string>
+    <string name="common_ok">OK</string>
+    <string name="common_previous">Anterior</string>
+    <plurals name="days">
+        <item quantity="one" tools:ignore="ImpliedQuantity">dia</item>
+        <item quantity="other">dias</item>
+    </plurals>
+
+    <plurals name="hours">
+        <item quantity="one" tools:ignore="ImpliedQuantity">hora</item>
+        <item quantity="other">horas</item>
+    </plurals>
+    <string name="settings_fonts_title">Fontes</string>
+    <string name="settings_view">Visualizar</string>
+    <plurals name="months">
+        <item quantity="one">mês</item>
+        <item quantity="other">meses</item>
+    </plurals>
+    <plurals name="years">
+        <item quantity="one">ano</item>
+        <item quantity="other">anos</item>
+    </plurals>
+
+    <!-- Newly added translations (v9.0.0 - 2025-06-09) -->
+    <string name="help_and_feedback_contact_support">Entre em contato com o suporte</string>
+    <string name="help_and_feedback_help_center">Central de Ajuda</string>
+    <string name="help_and_feedback_suggest_a_feature">Sugerir um Recurso</string>
+    <string name="help_and_feedback_title">Ajuda e Feedback</string>
+
+    <string name="access_members_me_and_title">Eu e %s</string>
+    <string name="access_members_me_subtitle">(Eu)</string>
+    <string name="access_members_me_users_groups_title">Eu, %1$s e %2$s</string>
+
+    <plurals name="access_members_users_title">
+        <item quantity="one">%d usuário</item>
+        <item quantity="other">%d usuários</item>
+    </plurals>
+
+    <plurals name="access_members_groups_title">
+        <item quantity="one">%d grupo</item>
+        <item quantity="other">%d grupos</item>
+    </plurals>
+
+</resources>

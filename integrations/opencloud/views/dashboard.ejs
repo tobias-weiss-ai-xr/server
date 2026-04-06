@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-inner">
+      <a href="/dashboard" class="header-brand">
+        <% if (bannerUrl) { %>
+          <img
+            src="<%= bannerUrl %>"
+            alt="World-Office Banner"
+            class="banner-img"
+            onerror="this.style.display='none'"
+          >
+        <% } %>
+        <h1 class="header-title">World-Office Cloud</h1>
+      </a>
+      <nav class="header-nav">
+        <a href="/dashboard" class="nav-link active">Dashboard</a>
+        <a href="/setup" class="nav-link">Setup</a>
+        <a href="/api/health" class="nav-link" target="_blank">API</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="container">
+
+      <!-- Status Banner -->
+      <div class="status-banner status-<%= health.status %>" id="status-banner">
+        <div class="status-banner-text">
+          <span class="status-label">
+            <% if (health.status === 'ok') { %>All Systems Operational<% } %>
+            <% if (health.status === 'degraded') { %>System Degraded<% } %>
+            <% if (health.status === 'down') { %>System Down<% } %>
+            <% if (health.status === 'unknown') { %>Status Unknown<% } %>
+          </span>
+          <span class="status-sub">
+            <%= Object.values(health.services).filter(s => s.running).length %>/<%= Object.keys(health.services).length %> services running
+          </span>
+        </div>
+        <div class="status-banner-meta">
+          <span class="status-badge status-<%= health.status %>"><%= health.status.toUpperCase() %></span>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <a href="/setup" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Edit Configuration
+        </a>
+        <a href="<%= config.ENABLE_SSL ? 'https' : 'http' %>://<%= config.OCIS_DOMAIN || '#' %>" class="btn btn-outline" target="_blank" <%= !config.OCIS_DOMAIN ? 'style="pointer-events:none;opacity:0.5"' : '' %>>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          OCIS
+        </a>
+        <a href="<%= config.ENABLE_SSL ? 'https' : 'http' %>://<%= config.DOCUMENT_SERVER_DOMAIN || '#' %>" class="btn btn-outline" target="_blank" <%= !config.DOCUMENT_SERVER_DOMAIN ? 'style="pointer-events:none;opacity:0.5"' : '' %>>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Document Server
+        </a>
+      </div>
+
+      <!-- Service Cards -->
+      <div class="services-grid" id="services-grid">
+        <% services.forEach(function(service) { %>
+          <%
+            const svcHealth = health.services[service.key] || { running: false, health: 'unknown' };
+            const isRunning = svcHealth.running;
+            const healthClass = isRunning ? 'running' : (svcHealth.health === 'unknown' ? 'unknown' : 'stopped');
+          %>
+          <div class="service-card" data-service="<%= service.key %>">
+            <div class="service-card-header">
+              <h3 class="service-name"><%= service.name %></h3>
+              <span class="status-dot status-<%= healthClass %>" title="<%= svcHealth.health %>"></span>
+            </div>
+            <p class="service-description"><%= service.description %></p>
+            <div class="service-details">
+              <div class="service-detail-row">
+                <span class="detail-label">Container</span>
+                <code class="detail-value"><%= service.containerName %></code>
+              </div>
+              <div class="service-detail-row">
+                <span class="detail-label">Status</span>
+                <span class="status-badge status-<%= healthClass %>">
+                  <%= isRunning ? 'Running' : (svcHealth.health === 'unknown' ? 'Unknown' : 'Stopped') %>
+                </span>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+
+      <!-- Configuration Section -->
+      <section class="config-section">
+        <h2 class="config-section-title">Configuration</h2>
+        <div class="config-grid">
+          <div class="config-item">
+            <span class="config-label">OCIS Domain</span>
+            <span class="config-value"><%= config.OCIS_DOMAIN || '—' %></span>
+          </div>
+          <div class="config-item">
+            <span class="config-label">Document Server Domain</span>
+            <span class="config-value"><%= config.DOCUMENT_SERVER_DOMAIN || '—' %></span>
+          </div>
+          <div class="config-item">
+            <span class="config-label">SSL Enabled</span>
+            <span class="config-value"><%= config.ENABLE_SSL ? 'Yes' : 'No' %></span>
+          </div>
+          <div class="config-item">
+            <span class="config-label">Version</span>
+            <span class="config-value"><%= version %></span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2024 World-Office &mdash; <a href="https://codeberg.org/World-Office">Codeberg</a> &middot; AGPL-3.0 &middot; v<%= version %></p>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

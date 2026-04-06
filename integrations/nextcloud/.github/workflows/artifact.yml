@@ -1,0 +1,57 @@
+name: Artifact
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Get Info
+        run: |
+          echo "version=$(grep -Eo '[0-9]+(\.[0-9]+)+' CHANGELOG.md | head -n 1)" >> $GITHUB_OUTPUT
+        id: info
+      - name: Build Artifact
+        run: |
+          cd ${{ github.workspace }}
+          cwd=$(pwd)
+          git submodule update --init --recursive
+          npm install
+          npm run build
+          composer install --no-dev --optimize-autoloader
+          mkdir -p world-office
+          rsync -av --exclude='world-office' . world-office
+          cd world-office
+          rm -rf ./.github/
+          rm -rf ./.git/
+          rm -rf ./assets/document-templates/.git
+          rm -rf ./assets/document-formats/.git
+          rm -rf ./node_modules/
+          rm -rf ./src/
+          rm ./.eslintrc.js
+          rm ./.gitignore
+          rm ./.gitmodules
+          rm ./.stylelintrc.json
+          rm ./composer.json
+          rm ./composer.lock
+          rm ./npm-shrinkwrap.json
+          rm ./package.json
+          rm ./ruleset.xml
+          rm ./stylelint.config.js
+          rm ./vite.config.mjs
+          cd $cwd
+          tar -czvf world-office.tar.gz world-office
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: world-office
+          path: world-office.tar.gz

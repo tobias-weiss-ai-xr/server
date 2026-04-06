@@ -1,0 +1,60 @@
+<resources>
+    <string name="chooser_email_client">Seleccionar cliente de correo…</string>
+    <string name="about_email_subject">WORLDOFFICE Documents Android Feedback</string>
+    <string name="about_feedback">Feedback y soporte</string>
+    <string name="text_hint_required">Necesaria</string>
+    <string name="export_send_copy">Enviar una copia</string>
+    <string name="dialogs_edit_forbidden_symbols">No utilice estos símbolos\u0020</string>
+    <string name="dialogs_edit_forbidden_name">Nombre no válido</string>
+    <string name="sizes_bytes">bytes</string>
+    <string name="sizes_kilobytes">KB</string>
+    <string name="sizes_megabytes">MB</string>
+    <string name="sizes_gigabytes">GB</string>
+    <string name="sizes_terabytes">TB</string>
+    <string name="common_accept">Aceptar</string>
+    <string name="common_cancel">Cancelar</string>
+    <string name="common_done">Listo</string>
+    <string name="common_next">Siguiente</string>
+    <string name="common_ok">OK</string>
+    <string name="common_previous">Anterior</string>
+    <plurals name="days">
+        <item quantity="one">día</item>
+        <item quantity="other">días</item>
+    </plurals>
+
+    <plurals name="hours">
+        <item quantity="one">hora</item>
+        <item quantity="other">horas</item>
+    </plurals>
+    <string name="settings_fonts_title">Fuentes</string>
+    <string name="settings_view">Ver</string>
+    <plurals name="months">
+        <item quantity="one">mes</item>
+        <item quantity="other">meses</item>
+    </plurals>
+    <plurals name="years">
+        <item quantity="one">año</item>
+        <item quantity="other">años</item>
+    </plurals>
+
+    <!-- Newly added translations (v9.0.0 - 2025-06-09) -->
+    <string name="help_and_feedback_contact_support">Contactar con el equipo de soporte</string>
+    <string name="help_and_feedback_help_center">Centro de ayuda</string>
+    <string name="help_and_feedback_suggest_a_feature">Sugerir una característica</string>
+    <string name="help_and_feedback_title">Ayuda y comentarios</string>
+
+    <string name="access_members_me_and_title">Yo y %s</string>
+    <string name="access_members_me_subtitle">(Yo)</string>
+    <string name="access_members_me_users_groups_title">Yo, %1$s y %2$s</string>
+
+    <plurals name="access_members_users_title">
+        <item quantity="one">%d usuario</item>
+        <item quantity="other">%d usuarios</item>
+    </plurals>
+
+    <plurals name="access_members_groups_title">
+        <item quantity="one">%d grupo</item>
+        <item quantity="other">%d grupos</item>
+    </plurals>
+
+</resources>

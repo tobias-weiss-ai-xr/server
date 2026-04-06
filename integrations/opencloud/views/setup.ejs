@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/setup.css">
+</head>
+<body>
+  <div class="setup-wrapper">
+    <header class="setup-header">
+      <img
+        src="https://codeberg.org/World-Office/artwork/raw/branch/main/assets/banner.png"
+        alt="World-Office Banner"
+        class="banner-img"
+        onerror="this.style.display='none'"
+      >
+      <h1 class="setup-title">Setup Wizard</h1>
+      <p class="setup-subtitle">Configure your World-Office Cloud deployment</p>
+    </header>
+
+    <% if (success) { %>
+      <div class="alert alert-success">
+        <strong>Configuration saved!</strong>
+        <p>Your <code>.env</code> file has been generated. You can now start the services
+          with <code>docker compose up -d</code>.</p>
+        <a href="/dashboard" class="btn btn-primary mt-md">Go to Dashboard &rarr;</a>
+      </div>
+    <% } %>
+
+    <% if (configured && !success) { %>
+      <div class="alert alert-info">
+        <strong>Already configured.</strong>
+        <p>Your <code>.env</code> exists. Edit the values below to reconfigure.</p>
+      </div>
+    <% } %>
+
+    <form id="setup-form" action="/setup" method="POST" novalidate>
+      <!-- Domains -->
+      <section class="form-section">
+        <h2 class="form-section-title">Domains</h2>
+
+        <div class="form-group">
+          <label for="OCIS_DOMAIN">OCIS Domain <span class="required">*</span></label>
+          <input
+            type="text"
+            id="OCIS_DOMAIN"
+            name="OCIS_DOMAIN"
+            value="<%= config.OCIS_DOMAIN || '' %>"
+            placeholder="ocis.example.com"
+            required
+            autocomplete="off"
+          >
+          <% if (errors.OCIS_DOMAIN) { %>
+            <div class="form-error"><%= errors.OCIS_DOMAIN %></div>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <label for="DOCUMENT_SERVER_DOMAIN">Document Server Domain <span class="required">*</span></label>
+          <input
+            type="text"
+            id="DOCUMENT_SERVER_DOMAIN"
+            name="DOCUMENT_SERVER_DOMAIN"
+            value="<%= config.DOCUMENT_SERVER_DOMAIN || '' %>"
+            placeholder="docs.example.com"
+            required
+            autocomplete="off"
+          >
+          <% if (errors.DOCUMENT_SERVER_DOMAIN) { %>
+            <div class="form-error"><%= errors.DOCUMENT_SERVER_DOMAIN %></div>
+          <% } %>
+        </div>
+      </section>
+
+      <!-- JWT Secrets -->
+      <section class="form-section">
+        <h2 class="form-section-title">JWT Secrets</h2>
+        <div class="form-hint mb-lg">
+          Shared secrets for WOPI authentication between OCIS and Document Server.
+          Minimum 32 characters. Use auto-generate for secure random secrets.
+        </div>
+
+        <div class="form-group">
+          <label for="OCIS_JWT_SECRET">OCIS JWT Secret</label>
+          <div class="input-with-action">
+            <input
+              type="password"
+              id="OCIS_JWT_SECRET"
+              name="OCIS_JWT_SECRET"
+              value="<%= config.OCIS_JWT_SECRET || '' %>"
+              placeholder="Min 32 characters"
+              autocomplete="new-password"
+            >
+            <button type="button" class="btn-icon" data-toggle="password" data-target="OCIS_JWT_SECRET" title="Show/hide">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <% if (errors.OCIS_JWT_SECRET) { %>
+            <div class="form-error"><%= errors.OCIS_JWT_SECRET %></div>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <label for="DOCUMENT_SERVER_JWT_SECRET">Document Server JWT Secret</label>
+          <div class="input-with-action">
+            <input
+              type="password"
+              id="DOCUMENT_SERVER_JWT_SECRET"
+              name="DOCUMENT_SERVER_JWT_SECRET"
+              value="<%= config.DOCUMENT_SERVER_JWT_SECRET || '' %>"
+              placeholder="Min 32 characters"
+              autocomplete="new-password"
+            >
+            <button type="button" class="btn-icon" data-toggle="password" data-target="DOCUMENT_SERVER_JWT_SECRET" title="Show/hide">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <% if (errors.DOCUMENT_SERVER_JWT_SECRET) { %>
+            <div class="form-error"><%= errors.DOCUMENT_SERVER_JWT_SECRET %></div>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <button type="button" id="btn-generate-secrets" class="btn btn-outline btn-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle;"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            Auto-generate Secure Secrets
+          </button>
+          <input type="hidden" name="_autoSecrets" id="_autoSecrets" value="">
+        </div>
+      </section>
+
+      <!-- Docker Images -->
+      <section class="form-section">
+        <h2 class="form-section-title">Docker Images</h2>
+
+        <div class="form-group">
+          <label for="OCIS_IMAGE">OCIS Image</label>
+          <input
+            type="text"
+            id="OCIS_IMAGE"
+            name="OCIS_IMAGE"
+            value="<%= config.OCIS_IMAGE || 'owncloud/ocis:latest' %>"
+            placeholder="owncloud/ocis:latest"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="DOCUMENT_SERVER_IMAGE">Document Server Image</label>
+          <input
+            type="text"
+            id="DOCUMENT_SERVER_IMAGE"
+            name="DOCUMENT_SERVER_IMAGE"
+            value="<%= config.DOCUMENT_SERVER_IMAGE || 'world-office/documentserver:latest' %>"
+            placeholder="world-office/documentserver:latest"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="TRAEFIK_IMAGE">Traefik Image</label>
+          <input
+            type="text"
+            id="TRAEFIK_IMAGE"
+            name="TRAEFIK_IMAGE"
+            value="<%= config.TRAEFIK_IMAGE || 'traefik:v2.10' %>"
+            placeholder="traefik:v2.10"
+          >
+        </div>
+      </section>
+
+      <!-- Features -->
+      <section class="form-section">
+        <h2 class="form-section-title">Features</h2>
+
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              name="ENABLE_SSL"
+              value="true"
+              <%= config.ENABLE_SSL === 'true' || config.ENABLE_SSL === true ? 'checked' : '' %>
+            >
+            <span>Enable SSL/TLS</span>
+          </label>
+        </div>
+
+        <div class="form-group mt-md">
+          <label for="PORT">Dashboard Port</label>
+          <input
+            type="number"
+            id="PORT"
+            name="PORT"
+            value="<%= config.PORT || '3000' %>"
+            placeholder="3000"
+            min="1"
+            max="65535"
+          >
+          <% if (errors.PORT) { %>
+            <div class="form-error"><%= errors.PORT %></div>
+          <% } %>
+        </div>
+      </section>
+
+      <!-- Submit -->
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-lg">Save Configuration</button>
+        <a href="/dashboard" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+  <footer class="site-footer">
+    <p>&copy; 2024 World-Office &mdash; <a href="https://codeberg.org/World-Office">Codeberg</a> &middot; AGPL-3.0</p>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

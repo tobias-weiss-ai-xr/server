@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:paddingBottom="@dimen/default_margin_large">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/operation_sections_my"
+            style="@style/ContextListItemLayout"
+            android:layout_height="@dimen/item_two_line_height">
+
+            <ImageView
+                style="@style/Widget.Common.ImageView.Context"
+                app:srcCompat="@drawable/ic_drawer_menu_my_docs"
+                tools:ignore="ContentDescription" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Widget.Common.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_pager_docs_my" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/operation_sections_share"
+            style="@style/ContextListItemLayout"
+            android:layout_height="@dimen/item_two_line_height">
+
+            <ImageView
+                style="@style/Widget.Common.ImageView.Context"
+                app:srcCompat="@drawable/ic_share_docs"
+                tools:ignore="ContentDescription" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Widget.Common.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/navigation_drawer_menu_shared" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/operation_sections_common"
+            style="@style/ContextListItemLayout"
+            android:layout_height="@dimen/item_two_line_height">
+
+            <ImageView
+                android:id="@+id/sectionIcon"
+                style="@style/Widget.Common.ImageView.Context"
+                app:srcCompat="@drawable/ic_drawer_menu_common_docs"
+                tools:ignore="ContentDescription" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/sectionName"
+                style="@style/Widget.Common.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/navigation_drawer_menu_common" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/operation_sections_projects"
+            style="@style/ContextListItemLayout"
+            android:layout_height="@dimen/item_two_line_height"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                style="@style/Widget.Common.ImageView.Context"
+                app:srcCompat="@drawable/ic_drawer_menu_projects"
+                tools:ignore="ContentDescription" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Widget.Common.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/navigation_drawer_menu_projects" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

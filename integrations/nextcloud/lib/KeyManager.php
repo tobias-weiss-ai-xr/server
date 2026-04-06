@@ -1,0 +1,134 @@
+<?php
+/**
+ *
+ * (c) Copyright Ascensio System SIA 2026
+ *
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+ *
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ *
+ */
+
+namespace OCA\WorldOffice;
+
+use OCP\IDBConnection;
+
+/**
+ * Key manager
+ *
+ * @package OCA\WorldOffice
+ */
+class KeyManager {
+
+    public function __construct(private IDBConnection $connection) {}
+
+    /**
+     * Table name
+     */
+    private const TABLENAME_KEY = "world-office_filekey";
+
+    /**
+     * Get document identifier by file id
+     */
+    public function get(int $fileId): string {
+        $select = $this->connection->prepare("
+            SELECT `key`
+            FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
+            WHERE `file_id` = ?
+        ");
+        $result = $select->execute([$fileId]);
+        $keys = $result->fetch();
+
+        return is_array($keys) && isset($keys["key"]) ? $keys["key"] : "";
+    }
+
+    /**
+     * Store document identifier
+     */
+    public function set(int $fileId, string $key): bool {
+        $insert = $this->connection->prepare("
+            INSERT INTO `*PREFIX*" . self::TABLENAME_KEY . "`
+                (`file_id`, `key`)
+            VALUES (?, ?)
+        ");
+        return (bool)$insert->execute([$fileId, $key]);
+    }
+
+    /**
+     * Delete document identifier
+     *
+     * @param integer $fileId - file identifier
+     * @param bool $unlock - delete even with lock label
+     */
+    public function delete(int $fileId, bool $unlock = false): bool {
+        $delete = $this->connection->prepare(
+            "
+            DELETE FROM `*PREFIX*" . self::TABLENAME_KEY . "`
+            WHERE `file_id` = ?
+            " . ($unlock === false ? "AND `lock` != 1" : "")
+        );
+        return (bool)$delete->execute([$fileId]);
+    }
+
+    /**
+     * Change lock status
+     *
+     * @param integer $fileId - file identifier
+     * @param bool $lock - status
+     */
+    public function lock(int $fileId, bool $lock = true): bool {
+        $update = $this->connection->prepare("
+            UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
+            SET `lock` = ?
+            WHERE `file_id` = ?
+        ");
+        return (bool)$update->execute([$lock === true ? 1 : 0, $fileId]);
+    }
+
+    /**
+     * Change forcesave status
+     *
+     * @param integer $fileId - file identifier
+     * @param bool $fs - status
+     */
+    public function setForcesave(int $fileId, bool $fs = true): bool {
+        $update = $this->connection->prepare("
+            UPDATE `*PREFIX*" . self::TABLENAME_KEY . "`
+            SET `fs` = ?
+            WHERE `file_id` = ?
+        ");
+        return (bool)$update->execute([$fs === true ? 1 : 0, $fileId]);
+    }
+
+    /**
+     * Get forcesave status
+     *
+     * @param integer $fileId - file identifier
+     */
+    public function wasForcesave(int $fileId): bool {
+        $select = $this->connection->prepare("
+            SELECT `fs`
+            FROM  `*PREFIX*" . self::TABLENAME_KEY . "`
+            WHERE `file_id` = ?
+        ");
+        $result = $select->execute([$fileId]);
+        $rows = $result->fetch();
+        $fs = is_array($rows) && isset($rows["fs"]) ? $rows["fs"] : 0;
+
+        return $fs === 1 || $fs === "1";
+    }
+}

@@ -1,0 +1,133 @@
+<?php
+/**
+ *
+ * (c) Copyright Ascensio System SIA 2026
+ *
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+ *
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ *
+ */
+
+namespace OCA\WorldOffice\Controller;
+
+use OCA\WorldOffice\DocumentService;
+use OCA\WorldOffice\FileUtility;
+use OCA\WorldOffice\KeyManager;
+use OCA\WorldOffice\RemoteInstance;
+use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
+use OCP\AppFramework\OCSController;
+use OCP\IRequest;
+use Psr\Log\LoggerInterface;
+
+/**
+ * OCS handler
+ */
+class FederationController extends OCSController {
+
+    public function __construct(
+        string $appName,
+        IRequest $request,
+        private readonly LoggerInterface $logger,
+        private readonly FileUtility $fileUtility,
+        private readonly KeyManager $keyManager
+    ) {
+        parent::__construct($appName, $request);
+    }
+
+    /**
+     * Returns the origin document key for editor
+     *
+     * @param string $shareToken - access token
+     * @param string $path - file path
+     *
+     * @return DataResponse
+     */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    #[PublicPage]
+    public function key(string $shareToken, string $path): DataResponse {
+        [$file, $error, $share] = $this->fileUtility->getFileByToken(null, $shareToken, $path);
+
+        if (isset($error)) {
+            $this->logger->error("Federated getFileByToken: $error");
+            return new DataResponse(["error" => $error]);
+        }
+
+        $key = $this->fileUtility->getKey($file, true);
+
+        $key = DocumentService::generateRevisionId($key);
+
+        $this->logger->debug("Federated request get for " . $file->getId() . " key $key");
+
+        return new DataResponse(["key" => $key]);
+    }
+
+    /**
+     * Lock the origin document key for editor
+     *
+     * @param string $shareToken - access token
+     * @param string $path - file path
+     * @param bool $lock - status
+     * @param bool $fs - status
+     *
+     * @return DataResponse
+     */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    #[PublicPage]
+    public function keylock(string $shareToken, string $path, bool $lock, bool $fs): DataResponse {
+        [$file, $error, $share] = $this->fileUtility->getFileByToken(null, $shareToken, $path);
+
+        if (isset($error)) {
+            $this->logger->error("Federated getFileByToken: $error");
+            return new DataResponse(["error" => $error]);
+        }
+
+        $fileId = $file->getId();
+
+        if (RemoteInstance::isRemoteFile($file)) {
+            $isLock = RemoteInstance::lockRemoteKey($file, $lock, $fs);
+            if (!$isLock) {
+                return new DataResponse(["error" => "Failed request"]);
+            }
+        } else {
+            $this->keyManager->lock($fileId, $lock);
+            if (!empty($fs)) {
+                $this->keyManager->setForcesave($fileId, $fs);
+            }
+        }
+
+        $this->logger->debug("Federated request lock for " . $fileId);
+        return new DataResponse();
+    }
+
+    /**
+     * Health check instance
+     */
+    #[NoAdminRequired]
+    #[NoCSRFRequired]
+    #[PublicPage]
+    public function healthcheck(): DataResponse {
+        $this->logger->debug("Federated healthcheck");
+
+        return new DataResponse(["alive" => true]);
+    }
+}

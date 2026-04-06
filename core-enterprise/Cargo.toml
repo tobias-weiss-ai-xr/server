@@ -1,0 +1,14 @@
+[workspace]
+resolver = "2"
+members = [
+    "eo-digital-signature",
+    "eo-redaction",
+    "eo-drm",
+    "eo-watermark",
+    "eo-comparison",
+    "eo-converter-pro",
+]
+
+[workspace.dependencies]
+anyhow = "1"
+thiserror = "2"

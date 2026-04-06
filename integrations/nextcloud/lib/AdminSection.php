@@ -1,0 +1,65 @@
+<?php
+/**
+ *
+ * (c) Copyright Ascensio System SIA 2026
+ *
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+ *
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ *
+ */
+
+namespace OCA\WorldOffice;
+
+use OCP\IURLGenerator;
+use OCP\Settings\IIconSection;
+
+/**
+ * Settings section for the administration page
+ */
+class AdminSection implements IIconSection {
+
+    public function __construct(private readonly IURLGenerator $urlGenerator) {}
+
+    /**
+     * Path to an 16*16 icons
+     */
+    public function getIcon(): string {
+        return $this->urlGenerator->imagePath("world-office", "app-dark.svg");
+    }
+
+    /**
+     * ID of the section
+     */
+    public function getID(): string {
+        return "world-office";
+    }
+
+    /**
+     * Name of the section
+     */
+    public function getName(): string {
+        return "Euro-Office";
+    }
+
+    /**
+     * Get priority order
+     */
+    public function getPriority(): int {
+        return 50;
+    }
+}

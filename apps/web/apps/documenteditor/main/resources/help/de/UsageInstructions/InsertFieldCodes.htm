@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Feldcodes einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Fügen Sie dynamische Felder in Ihr Dokument ein" />
+		<link type="text/css" rel="stylesheet" href="../../../../../../common/main/resources/help/editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../../../../../../common/main/resources/help/search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Feldcodes einfügen</h1>
+			<p>Im Dokumenteneditor können Sie Felder mit dynamischem Inhalt hinzufügen, der von Ihren Systeminformationen oder anderen Inhalten abhängt. Bitte verwechseln Sie Felder nicht mit Inhaltssteuerelementen, da es sich um zwei verschiedene Funktionen handelt.</p>
+			<p>Um ein Feld einzufügen,</p>
+			<ol>
+				<li>Gehen Sie zur Registerkarte <b>Einfügen</b>.</li>
+				<li>Klicken Sie auf die Schaltfläche <b>Feld</b>.</li>
+				<li>Geben Sie im geöffneten Dialogfenster die anzuzeigenden Feldfunktion ein und klicken Sie auf <b>OK</b>.</li>
+			</ol>
+			<p>Die Feldfunktionen sind folgende:</p>
+			<div>
+				<table>
+					<thead>
+						<tr>
+							<th>WORLDOFFICE Feldfunktion</th>
+							<th>Beschreibung</th>
+							<th>Syntax</th>
+							<th>Schalter</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>MERGEFIELD</td>
+							<td style="width: 40%">Der Code fügt einen Link zu einem Datenfeld aus der anderen Quelle in das aktuelle Dokument ein. Beim Zusammenführen ersetzen Daten aus der anderen Quelle den aktuellen Feldwert.</td>
+							<td>{ MERGEFIELD FieldName [ Schalter ]}</td>
+							<td>
+								<ol>
+									<li>\b - gibt den Text an, der vor dem MergeField-Feld eingefügt werden soll, wenn dieses nicht leer ist.</li>
+									<li>\f - gibt den Text an, der nach dem MergeField-Feld eingefügt werden soll, wenn dieses nicht leer ist.</li>
+									<li>\m - gibt an, dass das MergeField-Feld ein zugeordnetes Feld ist.</li>
+									<li>\v - ermöglicht die Zeichenkonvertierung für die vertikale Formatierung.</li>
+								</ol>
+							</td>
+						</tr>
+						<tr>
+							<td>PAGENUM</td>
+							<td>Der Code fügt die aktuelle Seitenzahl ein.</td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>PAGECOUNT</td>
+							<td>Der Code fügt die Gesamtzahl der Seiten im aktuellen Dokument ein.</td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>FORMTEXT</td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>TOC</td>
+							<td>Der Code erstellt ein Inhaltsverzeichnis. Das Inhaltsverzeichnis basiert auf den angewendeten Überschriftenstilen, Gliederungsebenen, Bildunterschriften usw., die in den Inhaltsverzeichniseintragsfeldern angegeben sind.</td>
+							<td>{ TOC [ Schalter ] }</td>
+							<td>
+								<ol>
+									<li>\a - erstellt eine Liste von Objekten, die keine Beschriftungen und Zahlen enthält.</li>
+									<li>\b - erstellt ein Inhaltsverzeichnis für den mit Lesezeichen versehenen Teil des Dokuments.</li>
+									<li>\с - erstellt eine Liste von Objekten des angegebenen Typs.</li>
+									<li>\d - legt den Trennzeichentyp für Seitenzahlen fest.</li>
+									<li>\f - erstellt ein Inhaltsverzeichnis basierend auf den Inhaltsverzeichnisfeldern und nicht auf den Dokumentstrukturebenen.</li>
+									<li>\h - wendet die Hyperlink-Formatierung auf das Inhaltsverzeichnis an.</li>
+									<li>\l - gibt die erforderlichen Ebenen der Inhaltsverzeichnisfelder an. Die Ebenen, die nicht im angegebenen Bereich enthalten sind, werden weggelassen.</li>
+									<li>\n - erstellt ein Inhaltsverzeichnis entweder vollständig oder nur mit den Elementen aus dem angegebenen Bereich (z. B. „1-9“) und lässt die Seitenzahlen weg.</li>
+									<li>\o - erstellt ein Inhaltsverzeichnis, das nur die Strukturebenen des Dokuments und nicht die Inhaltsverzeichnisfelder verwendet.</li>
+									<li>\p - gibt das Trennzeichen zwischen dem Element und der entsprechenden Seitenzahl an.</li>
+									<li>\s - fügt der Seitenzahl eine fortlaufende Nummer hinzu.</li>
+									<li>\t - erstellt ein Inhaltsverzeichnis, das nur benutzerdefinierte Stile anstelle der Standard-Stile verwendet.</li>
+									<li>\u - erstellt ein Inhaltsverzeichnis, wobei nur die angewendete Gliederungsebene der Absatzformatierung verwendet wird.</li>
+									<li>\w - behält die Tabellierung in Tabelleneinträgen bei.</li>
+									<li>\x - behält Zeilenumbrüche in Tabelleneinträgen bei.</li>
+									<li>\z - blendet die Seitenzahl aus, während das Inhaltsverzeichnis als Webdokument-Layout angezeigt wird.</li>
+								</ol>
+							</td>
+						</tr>
+						<tr>
+							<td>PAGEREF</td>
+							<td>Der Code fügt die Seitenzahl als Lesezeichen zum Querverweis ein.</td>
+							<td>{ PAGEREF Lesezeichen [\* Formatschalter ] }</td>
+							<td>
+								<ol>
+									<li>\h - erstellt einen Hyperlink zum angegebenen Absatz.</li>
+									<li>\p - fügt die Position des angegebenen Absatzes relativ zum Lesezeichen ein.</li>
+								</ol>
+							</td>
+						</tr>
+						<tr>
+							<td>PAGE</td>
+							<td>Der Code fügt die Nummer der aktuellen Seite ein.</td>
+							<td>{ PAGE [\* Formatschalter ] }</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>NUMPAGES</td>
+							<td>Der Code fügt die Gesamtzahl der Seiten im Dokument ein.</td>
+							<td>{ NUMPAGES }</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>ASK</td>
+							<td>Der Code fügt ein Feld ein, in dem der Benutzer aufgefordert wird, Daten einzugeben, die dann als Lesezeichen gespeichert werden. Der Editor fordert den Benutzer jedes Mal auf, wenn dieses Feld aktualisiert wird oder während der Zusammenführung.</td>
+							<td>{ ASK Lesezeichen"Aufforderung" [ Optionale Schalter ] }</td>
+							<td>
+								<ol>
+									<li>\d - fügt den Standard-Ersetzungstext als Lesezeichen ein.</li>
+									<li>\o - beim Zusammenführen von Dokumenten wird nur einmal zur Eingabe aufgefordert.</li>
+								</ol>
+							</td>
+						</tr>
+						<tr>
+							<td>REF</td>
+							<td>Der Code fügt den Inhalt des Lesezeichens ein. Das Lesezeichen sollte in das Dokument eingefügt werden.</td>
+							<td>{ [REF] Lesezeichen [ Schalter ] }</td>
+							<td>
+								<ol>
+									<li>\d - gibt das Trennzeichen für die Seitenzahl an.</li>
+									<li>\f - erhöht Fußnoten- oder Notizennummern und fügt sie in das Dokument ein.</li>
+									<li>\h - erstellt einen Hyperlink zum angegebenen Absatz.</li>
+									<li>\n - fügt Absatznummern hinzu, falls vorhanden.</li>
+									<li>\p - fügt die Position des angegebenen Absatzes relativ zum Lesezeichen ein.</li>
+									<li>\r - fügt die relative Nummer des angegebenen Absatzes ein.</li>
+									<li>\t - lässt Symbole weg, die nicht numerisch sind oder kein Trennzeichen enthalten.</li>
+									<li>\w - fügt die vollständige Nummer des angegebenen Absatzes ein.</li>
+								</ol>
+							</td>
+						</tr>
+						<tr>
+							<td>HYPERLINK</td>
+							<td>Der Code fügt einen Hyperlink zu einem Element im Dokument, zu einem Dokument auf Ihrer Festplatte, einem Portal oder einer Drittanbieterressource ein.</td>
+							<td>{ HYPERLINK "Dateiname" [ Schalter ] }</td>
+							<td>
+								<ol>
+									<li>\l - gibt das Element im Dokument an, zu dem es gewechselt werden soll.</li>
+									<li>\m - gibt die Koordinaten eines Hyperlinks für eine serverseitige Imagemap an.</li>
+									<li>\n - öffnet das Enddokument in einem neuen Fenster.</li>
+									<li>\o - gibt den QuickInfo-Text an.</li>
+									<li>\t - gibt das Ziel des Hyperlinks an.</li>
+								</ol>
+							</td>
+						</tr>
+						<tr>
+							<td>TIME</td>
+							<td>Der Code fügt die aktuelle Uhrzeit basierend auf dem System des Benutzers in das Dokument ein.</td>
+							<td>{ TIME [\@ "Date-Time Picture"] }</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>DATE</td>
+							<td>Der Code fügt das aktuelle Datum basierend auf dem System des Benutzers in das Dokument ein.</td>
+							<td>{ DATE [ \@ "Date-Time Picture"] [Switches] }</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>FORMULA</td>
+							<td>Der Code führt die Berechnung gemäß der eingegebenen Formel durch.</td>
+							<td>{ = Formula [ Lesezeichen ] [\#Numeric Picture ] }</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>SEQ</td>
+							<td>Der Code bietet eine Möglichkeit, Kapitel, Tabellen, Abbildungen und andere Elemente in einem Dokument der Reihe nach zu nummerieren. Wenn Sie ein Element zusammen mit seinem Seq-Feld hinzufügen, entfernen oder verschieben, können Sie die anderen Seq-Felder im Dokument aktualisieren, um die überarbeitete Reihenfolge anzuzeigen.</td>
+							<td>{ SEQ Identifier [ Lesezeichen ] [ Schalter ] }</td>
+							<td>
+								<ol>
+									<li>\c - fügt die nächstgelegene vorhergehende Sequenznummer ein.</li>
+									<li>\h - blendet das Feldergebnis aus (wird für Querverweise verwendet).</li>
+									<li>\n - fügt die nächste Sequenznummer ein.</li>
+									<li>\r - die Nummerierung beginnt mit der angegebenen Zahl.</li>
+									<li>\s - die Nummerierung beginnt mit der angegebenen Gliederungsebene.</li>
+								</ol>
+							</td>
+						</tr>
+						<tr>
+							<td>STYLEREF</td>
+							<td>Der Code fügt Text hinzu, der mit einem bestimmten Stil formatiert wurde. Wenn er in einer Kopf- oder Fußzeile platziert wird, zeigt er die erste oder letzte Instanz von mit diesem Stil formatiertem Text aus dem Hauptinhalt der aktuellen Seite an und ermöglicht so die Erstellung von Kopf- oder Fußzeilen im Wörterbuchstil.</td>
+							<td>{ STYLEREF StyleIdentifier [ Schalter ] }</td>
+							<td>
+								<ol>
+									<li>\l - startet die Suche am Ende der aktuellen Seite.</li>
+									<li>\n - fügt die Nummerierung ab dem angegebenen Absatz ein.</li>
+									<li>\p - fügt die Position des angegebenen Absatzes relativ zum Lesezeichen ein.</li>
+									<li>\r - fügt die relative Nummer des angegebenen Absatzes ein.</li>
+									<li>\t - lässt Symbole weg, die nicht numerisch sind oder kein Trennzeichen enthalten.</li>
+									<li>\w - fügt die vollständige Nummer des angegebenen Absatzes ein.</li>
+								</ol>
+							</td>
+						</tr>
+						<tr>
+							<td>NOTEREF</td>
+							<td>Der Code fügt eine Fußnoten- oder Endnotenverweismarke ein, die mit einem Lesezeichen versehen ist, um auf dieselbe Notiz zu verweisen oder Fußnoten und Endnoten miteinander zu vergleichen. Wenn die Reihenfolge der Notizen geändert wird, spiegelt das Ergebnis des Felds die neue Nummerierung wider.</td>
+							<td>{ NOTEREF Lesezeichen [ Schalter ] }</td>
+							<td>
+								<ol>
+									<li>\f - fügt ein mit dem <em>Fußnoten-Referenzstil</em> oder dem <em>Endnoten-Referenzstil</em> formatiertes Referenzzeichen ein.</li>
+									<li>\h - erstellt einen Hyperlink zur angegebenen Fuß- oder Endnote.</li>
+									<li>\p - fügt die relative Position der Fuß- oder Endnote ein.</li>
+								</ol>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<p>Die Feldcodes können unterwegs bearbeitet und aktualisiert werden:</p>
+			<ol>
+				<li>Markieren Sie das gewünschte Feld und öffnen Sie durch Klicken mit der rechten Maustaste das Kontextmenü.</li>
+				<li>
+					<ul>
+						<li><em>Feld aktualisieren</em> - aktualisiert die Informationen im Feld.</li>
+						<li><em>Feld bearbeiten</em> - öffnet das Fenster zum Bearbeiten des Felds.</li>
+						<li><em>Feldcodes umschalten</em> - zeigt den Feldcode an.</li>
+					</ul>
+				</li>
+			</ol>
+		</div>
+	</body>
+</html>

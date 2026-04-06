@@ -1,0 +1,45 @@
+<resources>
+    <!-- App -->
+    <string name="app_package" translatable="false">app.editors.manager</string>
+    <string name="placeholder_point" translatable="false">" • "</string>
+    <string name="badge_doc_version" translatable="false">"V.%d"</string>
+
+    <!-- Google -->
+    <string name="google_scope" translatable="false">oauth2:profile email</string>
+    <string name="google_user_agent" translatable="false">
+        Mozilla/5.0 (Windows NT 6.1) Gecko/20100101 Firefox/94.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36
+    </string>
+
+    <!-- About -->
+    <string name="app_support_email" translatable="false">support@world-office.com</string>
+    <string name="app_licenses_path" translatable="false">file:///android_asset/licenses.html</string>
+    <string name="app_url_main" translatable="false">https://world-office.com</string>
+    <string name="app_url_policy" translatable="false">
+        https://help.world-office.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0
+    </string>
+    <string name="app_url_terms" translatable="false">
+        https://help.world-office.com/products/files/doceditor.aspx?fileid=5048471&amp;doc=bXJ6UmJacDVnVDMxV01oMHhrUlpwaGFBcXJUUUE3VHRuTGZrRUF5a1NKVT0_IjUwNDg0NzEi0
+    </string>
+    <string name="app_url_help" translatable="false">https://helpcenter.world-office.com/mobile-applications/documents/android/</string>
+
+    <string-array name="app_locales">
+        <item>cs</item>
+        <item>de</item>
+        <item>en_US</item>
+        <item>es_ES</item>
+        <item>fr</item>
+        <item>it</item>
+        <item>ko</item>
+        <item>pl</item>
+        <item>pt_BR</item>
+        <item>bg</item>
+        <item>ru</item>
+        <item>lo</item>
+        <item>si</item>
+        <item>ar</item>
+        <item>hy</item>
+        <item>zh</item>
+        <item>nl</item>
+    </string-array>
+
+</resources>

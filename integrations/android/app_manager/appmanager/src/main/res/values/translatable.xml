@@ -1,0 +1,1231 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Documents</string>
+    <string name="app_name_full">WORLDOFFICE Documents</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Permissions -->
+    <string name="permission_account_write_label" translatable="false">Account write permission label</string>
+    <string name="permission_account_write_description" translatable="false">Account write permission description</string>
+    <string name="permission_account_read_label" translatable="false">Account write permission label</string>
+    <string name="permission_account_read_description" translatable="false">Account write permission description</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Versions -->
+    <string name="app_versions_title">Version 3.0 released</string>
+    <string name="app_versions_cancel">Later</string>
+    <string name="app_versions_without_release_accept">Install official app</string>
+    <string name="app_versions_without_release_info">
+        Thanks for beta testing! WORLDOFFICE Documents 3.0 is now released, and beta version is no longer supported. Switch to the official app to receive further updates.
+    </string>
+    <string name="app_versions_update_accept">Update official app</string>
+    <string name="app_versions_update_info">
+        Thanks for beta testing! WORLDOFFICE Documents 3.0 is now released, and beta version is no longer supported. Please, switch to official app to receive further updates.
+    </string>
+    <string name="app_versions_actual_release_accept">Open official app</string>
+    <string name="app_versions_actual_release_info">
+        Thanks for beta testing! WORLDOFFICE Documents 3.0 is now released, and beta version is no longer supported. Please, switch to the official app.
+    </string>
+
+    <!-- ======================================================================================= -->
+    <!-- Snackbar common -->
+    <string name="snackbar_copied">Copied</string>
+    <string name="snackbar_undo">UNDO</string>
+
+    <!-- ======================================================================================= -->
+    <!-- About -->
+    <string name="about_title">About</string>
+    <string name="about_app_version">Version %1$s, build %2$s, SDK %3$s</string>
+    <string name="about_terms">Terms of use</string>
+    <string name="about_policy">Privacy policy</string>
+    <string name="about_license">License agreement</string>
+    <string name="about_website">WORLDOFFICE website</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Common errors -->
+    <string name="errors_unknown_error">Connection error. Try again later.</string>
+    <string name="errors_ssl_error">SSL handshake error</string>
+    <string name="errors_connection_error">Check the internet connection</string>
+    <string name="errors_unknown_host_error">Unknown host</string>
+    <string name="errors_redirect_error">Unknown redirect error with code:\u0020</string>
+    <string name="errors_client_error">Unknown client error with code:\u0020</string>
+    <string name="errors_client_portal_exist">Portal with the same name already exists</string>
+    <string name="errors_client_portal_sms">You have sent too many text messages. Please try again later.</string>
+    <string name="errors_client_host_not_found">Address not found</string>
+    <string name="errors_client_forbidden">Access denied</string>
+    <string name="errors_client_unauthorized">Unauthorized request</string>
+    <string name="errors_client_payment_required"> Payment required</string>
+    <string name="errors_server_error">Unknown server error with code:\u0020</string>
+    <string name="errors_server_auth_error">Authentication error</string>
+    <string name="errors_server_auth_too_many_attempts">Too many attempts. Try again later</string>
+    <string name="errors_email_syntax_error">Invalid email</string>
+    <string name="errors_viewer_download_name">Download failed</string>
+    <string name="errors_email_already_registered">User with this email is already registered</string>
+    <string name="errors_path_url">Invalid URL</string>
+    <string name="errors_create_local_file">Failed create file</string>
+    <string name="errors_import_local_file_desc">Permission denied</string>
+    <string name="errors_import_local_file">Access denied. Give read and write permissions</string>
+    <string name="errors_web_viewr">An error occurred while editing a web document</string>
+    <string name="errors_webdav_sign_in">Wrong server, username or password</string>
+    <string name="errors_webdav_username_password">Wrong username or password</string>
+    <string name="errors_webdav_2fa_code">Wrong verification code</string>
+    <string name="errors_webdav_server">Wrong server</string>
+    <string name="errors_open_document">Failed open document</string>
+
+    <!-- SignIn -->
+    <string name="errors_sign_in_splash_error">Failed to access the portal</string>
+    <string name="errors_sign_in_account_error">Login failed</string>
+    <string name="errors_sign_in_account_already_use">You are already using this account</string>
+    <string name="errors_sign_in_ldap_checkbox">Sign in as LDAP User</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Login -->
+    <string name="login_api_init_error">Init error</string>
+    <string name="login_api_init_portal_error">Portal name syntax error</string>
+    <string name="login_api_portal_name">Wrong portal name. Example: example.world-office.com</string>
+    <string name="login_api_portal_name_length">Portal name must consist of at least 6 characters</string>
+    <string name="login_api_portal_name_content">Portal name must consist of A–Z, a–z, 0–9</string>
+
+
+    <string name="login_retry">Retry connect</string>
+
+    <!-- Accounts -->
+    <string name="login_accounts_select_title">Select account</string>
+    <string name="login_accounts_select_add">Add account</string>
+
+    <!-- Portal pager -->
+    <string name="login_pager_enterprise">PORTAL</string>
+    <string name="login_pager_personal">PERSONAL</string>
+    <string name="login_pager_title">Connect WORLDOFFICE cloud</string>
+
+    <!-- Portal enterprise-->
+    <string name="login_enterprise_edit_hint">Portal address</string>
+    <string name="login_enterprise_button_next">NEXT</string>
+    <string name="login_enterprise_edit_error_hint">Enter valid address</string>
+    <string name="login_enterprise_forgot_password">Forgot password?</string>
+    <string name="login_enterprise_button_create">CREATE PORTAL</string>
+    <string name="login_enterprise_button_select">ACCOUNTS</string>
+    <string name="login_enterprise_email_hint">Email</string>
+    <string name="login_enterprise_password_hint">Password</string>
+    <string name="login_enterprise_signin_button">SIGN IN</string>
+    <string name="login_enterprise_single_sign_button">Single Sign-on</string>
+    <string name="login_enterprise_single_sign_button_login">Login by %1$s</string>
+    <string name="login_enterprise_single_sign_button_login_default">Single Sign-on</string>
+    <string name="login_enterprise_info">
+        WORLDOFFICE portal allows to save files in the cloud, share it with co-workers and co-edit in real time.
+    </string>
+    <string name="login_not_authorization_info">Could not sign in to %1$s at %2$s</string>
+    <string name="login_not_authorization_info_token">Session time is over</string>
+    <string name="login_not_authorization_button">TRY AGAIN</string>
+    <string name="errors_first_name">First name is not valid</string>
+    <string name="errors_last_name">Last name is not valid</string>
+    <string name="login_password_recovery_hint">Enter the email which you used for registration on the portal. The instructions for password recovery will be sent to this email.</string>
+    <string name="login_password_recovery_button_text">RETURN TO ENTER SCREEN</string>
+    <string name="login_password_recovery_success_hint">If a user with the email %1$s exists, the instructions for password change were sent to this email.</string>
+    <string name="login_password_recovery_toolbar_title">Password recovery</string>
+    <!-- Portal personal -->
+    <string name="login_personal_edit_email_hint">Email</string>
+    <string name="login_personal_edit_password_hint">Password</string>
+    <string name="login_personal_signin_button">SIGN IN</string>
+    <string name="login_personal_signup_button">SIGN UP</string>
+    <string name="login_personal_signup_title">Sign up to personal portal</string>
+    <string name="login_personal_signup_edit_info">Confirmation link will be sent to this address</string>
+    <string name="login_personal_signup_dialog_info">Confirmation link sent to email %1$s\nFollow link in mail before you continue</string>
+    <string name="login_personal_info">
+        Connect WORLDOFFICE Personal to save files in the cloud
+    </string>
+    <string name="login_web_dav_title">Connect to %1$s</string>
+
+    <!-- Portal create-->
+    <string name="login_create_portal_title">Create portal for organization</string>
+    <string name="login_create_portal_address_hint">Portal address</string>
+    <string name="login_create_portal_email_hint">Email</string>
+    <string name="login_create_signin_first_name_hint">First name</string>
+    <string name="login_create_signin_last_name_hint">Last name</string>
+    <string name="login_create_portal_next_button">NEXT</string>
+
+    <!-- Portal create sign in -->
+    <string name="login_create_signin_title">Set password</string>
+    <string name="login_create_signin_password">Password</string>
+    <string name="login_create_signin_repeat">Repeat password</string>
+    <string name="login_create_signin_create_button">CREATE</string>
+    <string name="login_create_signin_passwords_mismatch">Passwords mismatch</string>
+    <string name="login_create_signin_passwords_length">Password must contain: from 8 to 30 characters</string>
+    <string name="login_create_signin_info">
+        By clicking this button you accept our Terms of service
+    </string>
+
+    <!-- Portal SMS -->
+    <string name="login_sms_code_label">We sent a text message with the code to number</string>
+    <string name="login_sms_send_again">SEND AGAIN</string>
+    <string name="login_sms_send_again_after">SEND AGAIN AFTER</string>
+    <string name="login_sms_change_number">CHANGE NUMBER</string>
+    <string name="login_sms_phone_number_verification">Phone number verification</string>
+    <string name="login_sms_phone_header">Set phone number</string>
+    <string name="login_sms_phone_country_label">Country</string>
+    <string name="login_sms_phone_number_label">Phone number</string>
+    <string name="login_sms_phone_send_button">SEND CODE</string>
+    <string name="login_sms_phone_error_format">Wrong format</string>
+    <string name="login_sms_phone_send_code">We will send verification code via text message</string>
+    <string name="login_sms_resend_ok">Text message code sent</string>
+
+    <!-- Countries codes -->
+    <string name="countries_codes_title">Select country</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Dialogs -->
+    <string name="bottom_sheet_portal_title">Portal</string>
+    <string name="bottom_sheet_cloud_title">Clouds</string>
+    <!--Move copy dialog-->
+    <string name="dialog_move_copy_title_files">%1$d documents with the same names already exist in the \"%2$s\" folder</string>
+    <string name="dialog_move_copy_title_one_file">The file with the \"%1$s\" name already exists in the \"%2$s\" folder</string>
+    <string name="dialog_move_copy_overwrite">Overwrite with version update</string>
+    <string name="dialog_move_copy_copy">Create file copy</string>
+    <string name="dialog_move_copy_skip">Skip</string>
+    <string name="dialog_move_copy_title">File with the same name</string>
+
+    <!-- Common -->
+    <string name="dialogs_common_ok_button">ACCEPT</string>
+    <string name="dialogs_common_cancel_button" tools:ignore="ButtonCase">CANCEL</string>
+    <string name="dialogs_common_close">Close</string>
+    <string name="dialogs_check_portal_header_text">Check portal capabilities</string>
+    <string name="dialogs_sign_in_portal_header_text">Sign in to portal</string>
+    <string name="dialogs_sign_in_register_portal">Registering portal</string>
+
+    <!-- Waiting -->
+    <string name="dialogs_wait_title">Operation in progress…</string>
+    <string name="dialogs_wait_title_storage">Connecting storage…</string>
+
+    <!-- Question -->
+    <string name="dialogs_question_accept_yes">YES</string>
+    <string name="dialogs_question_accept_no">NO</string>
+    <string name="dialogs_question_accept_delete">DELETE</string>
+    <string name="dialogs_question_accept_remove">REMOVE</string>
+    <string name="dialogs_question_accept_not_really">NOT REALLY</string>
+    <string name="dialogs_question_accept_sure">OK, SURE</string>
+    <string name="dialogs_question_accept_no_thanks">NO, THANKS</string>
+    <string name="dialogs_question_share_remove">Remove the selected item from list?</string>
+    <string name="dialogs_question_http_title">Security warning</string>
+    <string name="dialogs_question_http_question">HTTPS connection is not available, but HTTP connection can be used. Continue?</string>
+    <string name="dialogs_question_facebook_title">Facebook</string>
+    <string name="dialogs_question_facebook_question">Continue with an account:\u0020</string>
+    <string name="dialogs_question_remove_account_title">Remove account?</string>
+    <string name="dialogs_question_remove_account_info">
+        Account with email %1$s from portal %2$s will be logged out and removed from list
+    </string>
+    <string name="dialogs_question_personal_confirm_link_title">Confirm email</string>
+    <string name="dialogs_question_personal_confirm_cancel">TRY AGAIN</string>
+    <string name="dialogs_question_personal_confirm_accept">CONTINUE</string>
+    <string name="dialogs_question_rate_first_info">Do you enjoy using WORLDOFFICE Documents?</string>
+    <string name="dialogs_question_rate_second_info">Would you mind rating the app on Google Play?</string>
+    <string name="dialogs_question_delete_all_title">Delete all items?</string>
+    <string name="dialogs_question_delete_all_fonts">Delete all fonts?</string>
+    <string name="dialogs_question_delete_font">Delete this font?</string>
+
+    <plurals name="dialogs_question_message_delete">
+        <item quantity="one">It will be irretrievably deleted.\nThis action is irreversible.</item>
+        <item quantity="other">They will be irretrievably deleted.\nThis action is irreversible.</item>
+    </plurals>
+
+    <plurals name="dialogs_question_message_to_trash">
+        <item quantity="one">It will be moved to the Trash.</item>
+        <item quantity="other">They will be moved to the Trash.</item>
+    </plurals>
+
+    <plurals name="dialogs_question_message_template">
+        <item quantity="one">Do you really want to delete template room «%s»? The template cannot be restored.</item>
+        <item quantity="other">Do you really want to delete selected room templates? They cannot be restored.</item>
+    </plurals>
+
+    <plurals name="dialogs_question_delete_title">
+        <item quantity="one">Delete this item?</item>
+        <item quantity="other">Delete %1$d items?</item>
+    </plurals>
+
+    <plurals name="dialogs_question_delete_template_title">
+        <item quantity="one">Delete template</item>
+        <item quantity="other">Delete templates</item>
+    </plurals>
+
+    <string name="dialogs_warning_title">Warning</string>
+    <string name="dialogs_warning_only_pdf_form_message">The file cannot be moved to this room. Please try to move the WORLDOFFICE PDF form.</string>
+    <string name="dialogs_warning_pinned_room_limit">You can’t pin more than 10 rooms to the top. Unpin some that are currently pinned.</string>
+    <string name="dialogs_warning_fill_forms_room_create">Creation based on several files and folders is not available for this type of room. To create such a room, go to the Rooms section or use one of the PDF forms.</string>
+    <string name="dialogs_warning_room_space_quota_exceed">Room space quota exceeded (%s).</string>
+
+    <!-- Edit -->
+    <string name="dialogs_edit_rename_title">Rename</string>
+    <string name="dialogs_edit_hint">Enter title</string>
+    <string name="dialogs_edit_create_sheet">New spreadsheet</string>
+    <string name="dialogs_edit_create_presentation">New presentation</string>
+    <string name="dialogs_edit_create_docs">New document</string>
+    <string name="dialogs_edit_create_folder">New folder</string>
+    <string name="dialogs_edit_forbidden_symbols">Do not use these symbols\u0020</string>
+    <string name="dialogs_edit_accept_create">CREATE</string>
+    <string name="dialogs_edit_accept_rename">RENAME</string>
+    <string name="dialogs_edit_feedback_title">Feedback</string>
+    <string name="dialogs_edit_feedback_rate_title">Would you mind sending us feedback?</string>
+    <string name="dialogs_edit_feedback_rate_hint">Tell us what to improve</string>
+    <string name="dialogs_edit_feedback_rate_accept">SEND</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Activity chooser -->
+    <string name="chooser_web_browser">Choose browser…</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Main -->
+    <!-- Title -->
+    <string name="actionbar_title_main">Documents</string>
+    <string name="chooser_activity_not_found">Could not find any application for this action…</string>
+    <string name="fragment_clouds_title">Clouds</string>
+    <string name="fragment_clouds_portal_title">Connect to portal</string>
+    <string name="fragment_clouds_storage_title">Connect to storage</string>
+    <string name="fragment_clouds_world-office_item">WORLDOFFICE</string>
+    <string name="fragment_recent_title">Recent</string>
+    <string name="fragment_on_device_title">On Device</string>
+    <string name="fragment_profile_title">Profile</string>
+    <string name="fragment_templates_title">Templates</string>
+
+    <!-- Drawer -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- Main drawer menu-->
+    <string name="navigation_drawer_menu_shared">Shared with me</string>
+    <string name="navigation_drawer_menu_common">Common documents</string>
+    <string name="navigation_drawer_menu_projects">Projects</string>
+    <string name="navigation_drawer_menu_trash">Trash</string>
+    <string name="navigation_drawer_menu_help">Help</string>
+    <string name="navigation_drawer_menu_logout">Log out</string>
+    <string name="navigation_drawer_menu_sign_in">Sign in</string>
+    <string name="settings_item_title">Settings</string>
+    <string name="settings_item_change_account">Change account</string>
+    <string name="settings_clear_cache">Clear cache</string>
+    <string name="settings_title_common">Common</string>
+    <string name="setting_wifi">Upload files only using Wi-Fi</string>
+    <string name="setting_screen_on">While viewing documents</string>
+    <string name="setting_title_wifi">Wi-Fi</string>
+    <string name="setting_title_sreen_on">Keep Screen On</string>
+    <string name="setting_cache_cleared">Cache cleared</string>
+
+    <!-- Main toolbar menu -->
+    <string name="toolbar_menu_search_result">Search result</string>
+    <string name="toolbar_menu_search_hint">Search…</string>
+    <string name="toolbar_menu_search_view_hint">Enter your query</string>
+    <string name="toolbar_menu_main_options">Options</string>
+    <string name="toolbar_menu_main_share">Share</string>
+    <string name="toolbar_menu_main_move">Move</string>
+    <string name="toolbar_menu_main_copy">Copy</string>
+    <string name="toolbar_menu_main_remove_from_list">Remove from list</string>
+    <string name="toolbar_menu_main_rename">Rename</string>
+    <string name="toolbar_menu_main_delete">Delete</string>
+    <string name="toolbar_menu_main_select">Select…</string>
+    <string name="toolbar_menu_main_select_all">Select all</string>
+    <string name="toolbar_menu_main_deselect">Deselect</string>
+    <string name="toolbar_menu_sort_by">Sort by</string>
+    <string name="toolbar_menu_view">View</string>
+    <string name="toolbar_menu_view_list">List</string>
+    <string name="toolbar_menu_view_grid">Grid</string>
+    <string name="toolbar_menu_sort_order">Sort order</string>
+    <string name="toolbar_menu_sort_date_modified">Date</string>
+    <string name="toolbar_menu_sort_title">Title</string>
+    <string name="toolbar_menu_sort_type">Type</string>
+    <string name="toolbar_menu_sort_tags">Tags</string>
+    <string name="toolbar_menu_sort_size">Size</string>
+    <string name="toolbar_menu_sort_asc">Ascending</string>
+    <string name="toolbar_menu_sort_desc">Descending</string>
+    <string name="toolbar_menu_main_download">Download</string>
+    <string name="toolbar_menu_main_open">Open</string>
+    <string name="toolbar_menu_main_filter">Filter</string>
+
+    <!-- List context menu -->
+    <string name="list_context_folder_name">Folder name</string>
+    <string name="list_context_folder_title">Folder title</string>
+    <string name="list_context_edit">Edit document</string>
+    <string name="list_context_share">Share</string>
+    <string name="list_context_external_link">External access by link</string>
+    <string name="list_context_move">Move</string>
+    <string name="list_context_create_copy">Copy</string>
+    <string name="list_context_duplicate">Duplicate</string>
+    <string name="list_context_notification_enable">Enable notifications</string>
+    <string name="list_context_notification_disable">Disable notifications</string>
+    <string name="list_context_create_download">Download</string>
+    <string name="list_context_save_as_template">Save as template</string>
+    <string name="list_context_access_settings">Access settings</string>
+    <string name="list_context_edit_index">Edit index</string>
+    <string name="list_context_open_location">Open location</string>
+    <string name="list_context_rename">Rename</string>
+    <string name="list_context_rename_success">Renamed successfully</string>
+    <string name="list_context_delete">Delete</string>
+    <string name="list_context_delete_template">Delete template</string>
+    <string name="list_context_delete_storage">Disconnect storage</string>
+    <string name="list_context_delete_success">Deleted successfully</string>
+    <string name="list_context_remove_from_list">@string/toolbar_menu_main_remove_from_list</string>
+    <string name="list_context_delete_recent">Remove from recent</string>
+    <string name="list_context_upload_to_cloud">Upload to cloud</string>
+    <string name="list_context_add_to_favorite">Add to Favorites</string>
+    <string name="list_context_delete_from_favorite">Delete from Favorites</string>
+    <string name="list_context_leave_room">Leave the room</string>
+    <string name="list_context_copy_general_link">Copy general link</string>
+    <string name="list_context_edit_room">Edit room</string>
+    <string name="list_context_edit_template">Edit template</string>
+    <string name="list_context_fill">Fill</string>
+    <string name="list_context_lock">Lock</string>
+    <string name="list_context_unlock">Unlock</string>
+    <string name="list_context_version_history">Show version history</string>
+    <string name="list_context_open_vesrion">Open</string>
+    <string name="list_context_edit_comment">Edit comment</string>
+    <string name="list_context_enable_custom_filter">Enable custom filter</string>
+    <string name="list_context_disable_custom_filter">Disable custom filter</string>
+
+    <!-- List action menu -->
+    <string name="list_action_sheet">Spreadsheet</string>
+    <string name="list_action_presentation">Presentation</string>
+    <string name="list_action_doc">Text document</string>
+    <string name="list_action_doc_from_photo">Text document from photo</string>
+    <string name="list_action_folder">Folder</string>
+    <string name="list_action_photo">Make photo</string>
+    <string name="list_action_upload">Upload file</string>
+    <string name="list_action_storage">Connect third-party storage</string>
+    <string name="list_action_import">Import file</string>
+    <string name="list_action_image_from_library">Picture from Library</string>
+    <string name="list_action_delete_link">Delete link</string>
+    <string name="list_action_delete_image">Delete image</string>
+
+    <!-- Form filling status -->
+    <string name="form_status_draft">Draft</string>
+    <string name="form_status_your_turn">Your turn</string>
+    <string name="form_status_in_progress">In progress</string>
+    <string name="form_status_complete">Complete</string>
+    <string name="form_status_stopped">Stopped</string>
+
+    <!-- Dialog info -->
+
+    <!-- Pager -->
+    <string name="main_pager_docs_my">My documents</string>
+    <string name="main_pager_docs_common">Common</string>
+    <string name="main_pager_docs_share">Shared with me</string>
+    <string name="main_pager_docs_projects">Projects</string>
+    <string name="main_pager_docs_trash">Trash</string>
+    <string name="main_pager_docs_favorites">Favorites</string>
+    <string name="main_pager_docs_virtual_room">Rooms</string>
+    <string name="main_pager_docs_archive_room">Archive</string>
+
+    <!-- Placeholder -->
+    <string name="placeholder_connection">Connection error</string>
+    <string name="placeholder_connection_desc">No network connection detected. Please check your connection and try again</string>
+    <string name="placeholder_connection_button">Reload</string>
+    <string name="placeholder_empty">Empty folder</string>
+    <string name="placeholder_search">Nothing found</string>
+    <string name="placeholder_share">Not shared</string>
+    <string name="placeholder_access_denied">Access denied</string>
+    <string name="placeholder_no_subfolders">No subfolders</string>
+    <string name="placeholder_no_users">No users</string>
+    <string name="placeholder_no_groups">No groups</string>
+    <string name="placeholder_no_users_groups">No users and groups</string>
+    <string name="placeholder_media_error">Unable to load media</string>
+    <string name="placeholder_try_again">Try again</string>
+    <string name="placeholder_loading_files">Loading files…</string>
+    <string name="placeholder_loading_users">Loading users…</string>
+    <string name="placeholder_loading_groups">Loading groups…</string>
+    <string name="placeholder_other_accounts">No other accounts here yet</string>
+    <string name="placeholder_empty_folder">No files here yet</string>
+    <string name="placeholder_empty_folder_common">No docs here yet</string>
+    <string name="placeholder_empty_folder_desc_creator">Create or upload new files</string>
+    <string name="placeholder_empty_form_folder">No forms here yet</string>
+    <string name="placeholder_empty_form_folder_viewer">No forms in this folder yet</string>
+    <string name="placeholder_empty_form_done">No finished forms yet</string>
+    <string name="placeholder_empty_form_subfolder">No files in this folder yet</string>
+    <string name="placeholder_empty_form_in_progress">Nothing here yet</string>
+    <string name="placeholder_empty_form_folder_desc">Upload a ready PDF form</string>
+    <string name="placeholder_empty_form_folder_viewer_desc">The forms uploaded by the administrators will be appeared here.</string>
+    <string name="placeholder_empty_form_done_desc">This section will display all forms that are complete.</string>
+    <string name="placeholder_empty_form_done_folder_desc">Here you will find forms which have been completely filled out by other users.</string>
+    <string name="placeholder_empty_form_in_progress_desc">This section will display the forms in progress.</string>
+    <string name="placeholder_empty_form_in_progress_folder_desc">Here you will find forms in progress, i.e., forms which users have started to fill out but haven\'t completed.</string>
+    <string name="placeholder_empty_trash">No items here yet</string>
+    <string name="placeholder_empty_trash_desc">Deleted files and folders go to Trash, where you can restore or permanently delete them. Items are auto-deleted after 30 days and cannot be recovered once removed from Trash.</string>
+    <string name="placeholder_no_users_found">No users found</string>
+    <string name="placeholder_no_users_found_desc">No users match your search. Please adjust your search parameters or clear the search field to view the full list of users</string>
+    <string name="placeholder_no_members_found">No members found</string>
+    <string name="placeholder_no_members_found_desc">You can add new team members manually or invite them via link</string>
+    <string name="placeholder_no_rooms">Welcome to DocSpace!</string>
+    <string name="placeholder_no_rooms_desc">Create your first room to get started.</string>
+    <string name="placeholder_no_rooms_visitor">There are no rooms here yet</string>
+    <string name="placeholder_no_rooms_visitor_desc">The shared rooms will appear here.</string>
+    <string name="placeholder_empty_archive">No archived rooms here yet</string>
+    <string name="placeholder_empty_archive_desc">Archive unused rooms and restore them anytime in your DocSpace, or delete them permanently. Archived rooms will appear here.</string>
+    <string name="placeholder_empty_archive_visitor_desc">Rooms that have been archived will appear here.</string>
+    <string name="placeholder_empty_templates_folder">No templates here yet</string>
+    <string name="placeholder_empty_templates_folder_desc">Create a template from a room in the Rooms section.</string>
+    <string name="placeholder_empty_from_template">No templates found</string>
+    <string name="placeholder_empty_from_template_desc">Create your first room template and then you can create new rooms based on it.</string>
+    <string name="placeholder_no_search_result">No search result</string>
+    <string name="placeholder_no_search_result_desc">No results matching your search could be found. Please try another phrase</string>
+    <string name="placeholder_empty_room_visitor_desc">Files and folders uploaded by admins will appeared here</string>
+    <string name="placeholder_empty_recent_via_link_desc">View recently opened files shared with you via external links here.</string>
+    <string name="placeholder_payment_required">Business subscription expired</string>
+    <string name="placeholder_payment_required_desc">Your current tariff plan "Business" expired. Please renew your subscription in the account settings to be able to use your DocSpace. If you have any questions, please contact support</string>
+    <string name="placeholder_payment_required_button">Renew Business plan</string>
+    <string name="placeholder_no_fonts">No fonts</string>
+
+    <!-- Time marks-->
+    <string name="list_headers_folder">Folders</string>
+    <string name="list_headers_files">Files</string>
+    <string name="list_headers_created">Just created</string>
+    <string name="list_headers_today">Today</string>
+    <string name="list_headers_yesterday">Yesterday</string>
+    <string name="list_headers_week">This week</string>
+    <string name="list_headers_month">This month</string>
+    <string name="list_headers_year">This year</string>
+    <string name="list_headers_more_year">More than a year</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Share -->
+    <string name="share_title_main">Share settings</string>
+    <string name="share_title_add">Add people</string>
+    <string name="share_invite_user">Invite users</string>
+    <string name="share_title_search">Search people</string>
+
+    <string name="share_goal_user">Users</string>
+    <string name="share_goal_group">Groups</string>
+    <string name="share_goal_guest">Guests</string>
+    <string name="share_main_external_access">External access by link</string>
+    <string name="share_main_external_access_info">Provide access for everyone who has link</string>
+    <string name="share_main_external_copy_button">COPY LINK</string>
+    <string name="list_context_get_external_link">Get link for external access</string>
+
+    <string name="share_popup_access_full">Full access</string>
+    <string name="share_popup_access_review">Review</string>
+    <string name="share_popup_access_read_only">Read only</string>
+    <string name="share_popup_access_deny_access">Deny access</string>
+    <string name="share_popup_access_deny_remove">Remove user</string>
+    <string name="share_popup_access_fill_forms">Fill forms</string>
+    <string name="share_popup_access_comment">Comment</string>
+    <string name="share_popup_access_custom_filter">Custom filter</string>
+
+    <string name="share_snackbar_remove_user">User is removed</string>
+
+    <!-- External link -->
+    <string name="share_access_success">External access successful</string>
+    <string name="share_access_denied">External access denied</string>
+    <string name="share_clipboard_external_copied">Secret link copied to clipboard</string>
+    <string name="share_clipboard_external_custom_filter_copied">The link to the file with the enabled Custom filter is successfully copied to the clipboard</string>
+    <string name="share_clipboard_internal_copied">Link for portal users copied to clipboard</string>
+    <string name="share_clipboard_external_link_label">External link</string>
+
+    <!-- Tabs -->
+    <string name="share_tab_users">USERS</string>
+    <string name="share_tab_groups">GROUPS</string>
+
+    <!-- List headers -->
+    <string name="share_add_common_header_users">Users</string>
+    <string name="share_add_common_header_groups">Groups</string>
+
+    <!-- Panel -->
+    <string name="share_panel_message_notification">Enter message for notification</string>
+    <string name="share_panel_button_add">ADD</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Storage -->
+    <string name="storage_select_title">Select service</string>
+    <string name="storage_select_google_drive">Google Drive</string>
+    <string name="storage_select_drop_box">Dropbox</string>
+    <string name="storage_select_one_drive">OneDrive</string>
+    <string name="storage_select_next_cloud">Nextcloud</string>
+    <string name="storage_select_yandex">Yandex.Disk</string>
+    <string name="storage_select_box">Box</string>
+    <string name="storage_select_share_point">SharePoint</string>
+    <string name="storage_select_own_cloud">ownCloud</string>
+    <string name="storage_select_kdrive" translatable="false">kDrive</string>
+    <string name="krdive_password_helper_text">If you have activated double authentication, please generate a CDM application from the Infomaniak manager.</string>
+    <string name="kdrive_info_title">You must have a paid version of the player to use this service.</string>
+    <string name="storage_email_connection">Email connection</string>
+    <string name="storage_select_web_dav">Other WebDAV storage</string>
+
+    <string name="storage_connect_title">Folder settings</string>
+    <string name="storage_connect_folder_name">Folder name</string>
+    <string name="storage_connect_save_button">SAVE</string>
+    <string name="storage_connect_empty_title">Input storage title</string>
+
+    <string name="storage_web_title">Connect service </string>
+    <string name="storage_connect_button">CONNECT</string>
+
+    <string name="storage_web_dav_settings_login">Login</string>
+    <string name="storage_web_dav_settings_password">Password</string>
+    <string name="storage_web_dav_settings_title">Input title for service</string>
+    <string name="storage_web_dav_settings_hint" translatable="false" tools:ignore="MissingTranslation">https://cloud.yourdomain.com</string>
+    <string name="storage_web_dav_settings_server">Server</string>
+    <string name="storage_web_dav_settings_required">Required</string>
+
+    <string name="storage_onedrive_error_opened">File is opened on portal</string>
+    <string name="storage_onedrive_error_exist">File with same name is already exist in this folder</string>
+    <string name="storage_google_drive_copy_folder_error">Folders can not be copied</string>
+    <string name="storage_dropbox_email_not_verified_error">Email not verified</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Operations -->
+    <string name="operation_title">Select folder</string>
+    <string name="operation_select_room_title">Select room</string>
+    <string name="operation_choose_section">Choose section</string>
+    <string name="operation_complete_message">Operation complete</string>
+    <string name="operation_cancel_message">Operation canceled</string>
+    <string name="operation_delete_impossible">Cannot delete file. File is opened on the portal.</string>
+    <string name="operation_delete_multiple">. One or more files haven`t been deleted due to open on the portal</string>
+    <string name="operation_panel_move_button">Move here</string>
+    <string name="operation_panel_copy_button">Copy here</string>
+    <string name="operation_panel_restore_button">Restore here</string>
+    <string name="operation_panel_cancel_button">Cancel</string>
+    <string name="operation_empty_lists_data">Select items for operation</string>
+    <string name="operation_error_move_to_same">Can not be moved to the same folder</string>
+    <string name="operation_error_move_to_same_subfolder">Can not be moved to the same subfolder</string>
+    <string name="operation_snackbar_send_link">SEND LINK</string>
+    <string name="operation_snackbar_return">RETURN</string>
+    <string name="operation_share_send_link">SEND</string>
+    <string name="operation_add_to_favorites">Added to Favorites</string>
+    <string name="operation_remove_from_favorites">Removed from Favorites</string>
+    <string name="operation_enable_custom_filter">Custom filter for the selected file enabled</string>
+    <string name="operation_disable_custom_filter">Custom filter for the selected file disabled</string>
+
+
+    <plurals name="operation_moved_to_trash">
+        <item quantity="one">Item moved to the Trash</item>
+        <item quantity="other">Items moved to the Trash</item>
+    </plurals>
+
+    <plurals name="operation_delete_irretrievably">
+        <item quantity="one">Item irretrievably deleted</item>
+        <item quantity="other">Items irretrievably deleted</item>
+    </plurals>
+
+    <!-- ======================================================================================= -->
+    <!-- Trash -->
+    <string name="trash_dialog_empty_title">Empty trash</string>
+    <string name="trash_snackbar_move_text">You can restore files from the TRASH</string>
+    <string name="trash_snackbar_move_button">RESTORE</string>
+    <string name="trash_popup_move">Restore to</string>
+    <string name="trash_popup_delete">Delete forever</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Managers load -->
+    <string name="download_manager_title">WORLDOFFICE downloads</string>
+    <string name="download_manager_progress_title">Download in progress</string>
+    <string name="download_manager_archiving_progress">Creating archive</string>
+    <string name="download_manager_complete">Download complete</string>
+    <string name="download_manager_error">Download error</string>
+    <string name="download_manager_error_free_space">Not enough free space</string>
+    <string name="download_manager_error_url">URL syntax error</string>
+    <string name="download_manager_cancel">Download canceled</string>
+    <string name="download_manager_repeat">File is already being downloaded</string>
+    <string name="download_manager_open">Open</string>
+    <string name="download_manager_downloading">Downloading…</string>
+    <string name="download_manager_notification_cancel_download">Cancel download</string>
+    <string name="download_manager_folders_download">Folders cannot be downloaded</string>
+    <string name="download_manager_select_files">Select files</string>
+    <string name="download_manager_exceed_size_100">Exceeds the maximum file size (100MB)</string>
+    <string name="download_manager_exceed_size_25">Exceeds the maximum file size (25MB)</string>
+
+    <string name="upload_manager_file_picker_title">Select a file to upload</string>
+    <string name="upload_manager_progress_title">Upload in progress</string>
+    <string name="upload_manager_error">Upload error</string>
+    <string name="upload_manager_cancel">Upload canceled</string>
+    <string name="upload_manager_repeat">File is already being uploaded</string>
+    <string name="upload_manager_complete">Upload complete</string>
+    <string name="upload_manager_error_url">URL syntax error</string>
+    <string name="upload_manager_error_number_files">You cannot upload more than 20 files at once</string>
+    <string name="upload_manager_image_picker_title">Select an image to upload</string>
+    <string name="upload_manager_error_file_size">The file size cannot be more than 100 megabytes</string>
+    <string name="upload_manager_notification_cancel_upload">Cancel upload</string>
+    <string name="upload_manager_waiting_title">Waiting for upload</string>
+    <string name="upload_manager_duplicate_title">Action required</string>
+    <string name="upload_manager_duplicate_text">The destination already contains a file named «%s». Please select the action:</string>
+    <string name="upload_manager_duplicates_text">The destination already contains files with the same name. Please select the action:</string>
+    <string name="upload_manager_duplicate_overwrite">Overwrite with version update</string>
+    <string name="upload_manager_duplicate_copy">Create file copy</string>
+    <string name="upload_manager_duplicate_skip">Skip</string>
+    <string name="upload_error_wifi">You can upload only when Wi-Fi is enabled</string>
+
+    <string name="room_duplicate_progress_title">Duplicate in progress</string>
+    <string name="room_duplicate_complete">Duplicate complete</string>
+    <string name="room_duplicate_error">Duplicate error</string>
+    <string name="room_duplicate_progress_hide_button">Hide</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Socials -->
+    <string name="socials_twitter_failed_auth">Failed login with Twitter</string>
+    <string name="socials_facebook_cancel_auth">Cancel login with Facebook</string>
+    <string name="socials_facebook_failed_auth">Failed login with Facebook</string>
+    <string name="socials_google_failed_auth">Failed login with Google</string>
+    <string name="socials_google_cancel_auth">Cancel login with Google</string>
+    <string name="socials_failed_auth">Failed login</string>
+
+    <!-- ======================================================================================= -->
+    <!-- On boarding -->
+    <string name="on_boarding_skip_button">SKIP</string>
+    <string name="on_boarding_back_button">BACK</string>
+    <string name="on_boarding_next_button">NEXT</string>
+    <string name="on_boarding_finish_button">Get Started</string>
+
+    <string name="on_boarding_welcome_header">Getting started</string>
+    <string name="on_boarding_welcome_info">
+        Welcome to WORLDOFFICE mobile editing suite! Swipe to learn more about the app.
+    </string>
+
+    <string name="on_boarding_edit_header">Work with office files</string>
+    <string name="on_boarding_edit_info">
+        Create and edit documents with our comprehensive toolbar: work with complex objects in text documents, perform extensive calculations in spreadsheets, create stunning presentations and view PDF files with no formatting loss.
+    </string>
+
+    <string name="on_boarding_locally_header">Edit documents locally</string>
+    <string name="on_boarding_locally_info">
+        Work with documents offline. Created files can later be uploaded to online portal and then accessed from any other device.
+    </string>
+
+    <string name="on_boarding_collaborate_header">Collaborate with your team</string>
+    <string name="on_boarding_collaborate_info">
+In online mode, use real-time co-editing features of WORLDOFFICE to work on documents together with your portal members, share documents and create common storage folders.
+    </string>
+
+    <string name="on_boarding_third_party_header">Third-party storage</string>
+    <string name="on_boarding_third_party_info">
+        Connect third-party storage like Nextcloud, ownCloud, Dropbox and others which use WebDAV protocol.
+    </string>
+
+    <!-- ======================================================================================= -->
+    <!-- Media -->
+    <string name="media_image_share_chooser">Choose app for sharing</string>
+    <string name="media_image_list_info">Media files: %1$s</string>
+    <string name="media_video_error">Player unknown error: %1$s</string>
+
+    <string name="auth_header_screen_1">Set up two-factor authentication</string>
+    <string name="auth_info_screen_1">Install an authenticator app to generate access codes (e.g. Google Authenticator, Authy) to continue working with your portal</string>
+    <string name="auth_header_screen_2">Launch an authenticator app</string>
+    <string name="auth_info_screen_2">Run the app and tap the new account icon</string>
+    <string name="auth_header_screen_3">Add a secret key</string>
+    <string name="auth_info_screen_3">Copy the key and paste it to your authenticator app </string>
+    <string name="auth_header_screen_4">Type the code</string>
+    <string name="auth_info_screen_4">Type the code from your authenticator app to the input field</string>
+    <string name="auth_step_title">Step %1$d of %2$d</string>
+    <string name="auth_install_button">Install</string>
+    <string name="auth_confirm_button">Confirm</string>
+    <string name="auth_clipboard_key_copied">Key copied to clipboard</string>
+    <string name="auth_edit_hint">Code</string>
+
+    <string name="rename_file_exist">File with the same name exists.</string>
+    <string name="device_path_file_error">This file does not exist.</string>
+    <string name="device_trash_files_restore">Restore</string>
+    <string name="error_recent_account">File has been deleted or is not available from this account.</string>
+    <string name="error_recent_enter_account">Please enter account.</string>
+    <string name="error_open_project_file">This account does not have access to the project</string>
+    <string name="switch_account_open_project_file">Switch account</string>
+    <string name="operation_move_file_existing">%1$s file already exists in the destination directory.</string>
+    <string name="upload_to_portal">Upload to portal</string>
+    <string name="this_device">This device</string>
+    <string name="dialog_clear_cache">Clear cache?\nThis operation will free up space on your device by deleting temporary files. Your offline files and personal data won\'t be removed.
+    </string>
+
+    <string name="error_unsupported_path">Unsupported path</string>
+    <string name="error_unsupported_format">Unsupported format</string>
+
+    <string name="cloud_account_description">Collaborate in secure environment and connect third-party storages</string>
+    <string name="cloud_account_start_button">Get started</string>
+    <string name="cloud_account_other_storages_button">Other storages</string>
+    <string name="cloud_world-office" translatable="false">WORLDOFFICE DocSpace</string>
+    <string name="cloud_create_account">Create free account</string>
+    <string name="cloud_world-office_description">Store documents in the cloud and collaborate on them</string>
+    <string name="cloud_vpn_warning">For the best experience, try turning off VPN. Some server features may not work properly.</string>
+    <string name="cloud_accounts_title">Accounts</string>
+    <string name="error_long_file_name">File name is too long</string>
+    <string name="dialog_remove_account_title">Delete from device</string>
+    <string name="dialog_remove_account_description">
+        User with %1$s from the %2$s portal will be logged out and removed from the account list. \n\nPlease, note: to log in, you\'ll need to enter portal address, email and password. All your files will be safe.
+    </string>
+    <string name="dialog_logout_account_title">Are you sure to log out?</string>
+    <string name="dialog_logout_account_description">
+        After you log out, you won\'t need to enter your portal address or email, only the password. Don\'t worry, all the files will be safe in the cloud.
+    </string>
+    <string name="profile_username_title">Username</string>
+    <string name="profile_portal_address">Portal address</string>
+    <string name="profile_type_admin">Admin</string>
+    <string name="profile_type_visitor">Guest</string>
+    <string name="profile_type_user">User</string>
+    <string name="profile_thirdparty_title">Connected services</string>
+
+    <string name="app_settings_analytic_title">Help improve the product</string>
+    <string name="app_settings_analytic">Share app analytics</string>
+    <string name="app_manage_files_title">Access to file management</string>
+    <string name="app_manage_files_description">To edit and create documents locally, you need to allow the app to access files on your device.</string>
+
+    <string name="app_settings_security">Security</string>
+    <string name="app_settings_passcode">Passcode lock</string>
+    <string name="app_settings_disabled">Disabled</string>
+    <string name="app_settings_enabled">Enabled</string>
+    <string name="app_Settings_passcode_enable">Enable passcode</string>
+    <string name="app_settings_passcode_change">Change passcode</string>
+    <string name="app_settings_passcode_fingerprint">Use fingerprint to unlock</string>
+    <string name="app_settings_passcode_enter_title">Enter a passcode</string>
+    <string name="app_settings_passscode_enter_full_title">Enter passcode to unlock app</string>
+    <string name="app_settings_passcode_enter_subtitle">Choose passcode to unlock app</string>
+    <string name="app_settings_passcode_confirm_title">Confirm passcode</string>
+    <string name="app_settings_passcode_confirm_subtitle">Enter passcode one more time</string>
+    <string name="app_settings_passcode_confirm_error">Passcodes do not match</string>
+    <string name="app_settings_passcode_change_disable_title">Enter your current passcode</string>
+    <string name="app_settings_passcode_change_disable_error">Incorrect passcode entered</string>
+    <string name="app_settings_passcode_description"> - this is code which requested at application start.\n\nPay attention! If you forget passcode you have to remove or reinstall application. All documents on device will be lost. </string>
+    <string name="app_settings_passcode_fingerprint_title">Access to Documents</string>
+
+    <plurals name="app_settings_passcode_many_attempt_seconds">
+        <item quantity="one">Too many attempts.\nTry again in %d second</item>
+        <item quantity="other">Too many attempts.\nTry again in %d seconds</item>
+    </plurals>
+
+    <plurals name="app_settings_passcode_many_attempt_minutes">
+        <item quantity="one">Too many attempts.\nTry again in %d minute</item>
+        <item quantity="other">Too many attempts.\nTry again in %d minutes</item>
+    </plurals>
+
+    <string name="app_internal_error">Internal error</string>
+    <string name="app_fragment_crash_error">Please close this app and try again</string>
+    <string name="item_owner_self">Me</string>
+    <string name="sign_in_terms_and_policy_text">
+        <![CDATA[
+           By proceeding, you agree to the
+            <a href="%1$s">Privacy Policy</a>
+            and the
+            <a href="%2$s">Terms of Service</a>
+        ]]>
+    </string>
+    <string name="app_settings_color_theme">Theme</string>
+    <string name="app_settings_follow_the_system">Same as system</string>
+    <string name="app_settings_light_theme">Light theme</string>
+    <string name="app_settings_dark_theme">Dark theme</string>
+
+    <string name="filter_toolbar_title">Filters</string>
+    <string name="filter_toolbar_users_title">Select user</string>
+    <string name="filter_toolbar_groups_title">Select group</string>
+    <string name="filter_title_type">Type</string>
+    <string name="filter_title_author">Author</string>
+    <string name="filter_title_search">Search</string>
+    <string name="filter_type_documents">Documents</string>
+    <string name="filter_type_presentations">Presentations</string>
+    <string name="filter_type_spreadsheets">Spreadsheets</string>
+    <string name="filter_type_form_templates">Form templates</string>
+    <string name="filter_type_forms">Forms</string>
+    <string name="filter_type_pdf_documents">PDF-documents</string>
+    <string name="filter_type_pdf_forms">PDF-forms</string>
+    <string name="filter_type_images">Images</string>
+    <string name="filter_type_media">Media</string>
+    <string name="filter_type_archives">Archives</string>
+    <string name="filter_type_all">All files</string>
+    <string name="filter_exclude_subfolders">Exclude subfolders</string>
+    <string name="filter_show_results">Show %1$s results</string>
+    <string name="filter_button_reset">RESET</string>
+
+    <string name="context_room_move_to_archive">Move to archive</string>
+    <string name="context_room_archive_message">Room moved to archive</string>
+    <string name="context_rooms_archive_message">Rooms moved to archive</string>
+
+    <plurals name="context_rooms_unarchive_message">
+        <item quantity="one">Room successfully restored</item>
+        <item quantity="other">Rooms successfully restored</item>
+    </plurals>
+
+    <string name="list_context_pin_to_top">Pin to top</string>
+    <string name="list_rooms_title">Rooms</string>
+    <string name="list_context_unpin">Unpin</string>
+    <string name="list_context_info">Info</string>
+    <string name="list_context_add_users">Add users</string>
+
+    <string name="rooms_add_collaboration">Collaboration room</string>
+    <string name="rooms_add_collaboration_des">Collaborate on one or multiple documents with your team</string>
+    <string name="rooms_add_public_room">Public room</string>
+    <string name="rooms_add_public_room_des">Invite users via shared links to view documents without registration. You can also embed this room into any web interface.</string>
+    <string name="rooms_add_custom">Custom room</string>
+    <string name="rooms_add_custom_des">Apply your own settings to use this room for any custom purpose</string>
+    <string name="rooms_add_fill_forms">Form filling room</string>
+    <string name="rooms_add_fill_forms_des">Upload PDF forms into the room. Invite users to fill out a PDF form. Review completed forms and analyze data automatically collected in a spreadsheet.</string>
+    <string name="rooms_choose_room">Choose room type</string>
+    <string name="room_name_hint">Room name</string>
+    <string name="room_add_tag_hint">Add tags</string>
+    <string name="rooms_error_name">Room name cannot be empty</string>
+    <string name="rooms_error_create">Error create room</string>
+    <string name="rooms_error_edit">Error edit room</string>
+    <string name="rooms_error_logo_size_exceed">The maximum image size is exceeded (1 MB)</string>
+    <string name="leave_room_title">Leave the room</string>
+    <string name="leave_room_owner_desc">You are the owner of this room. Before you leave the room, you must transfer the owner’s role to another user.</string>
+    <string name="leave_room_desc">Do you really want to leave this room? You will be able to join it again via new invitation by a room admin.</string>
+    <string name="leave_room_assign">Assign Owner</string>
+    <string name="leave_room_message">You have left the room</string>
+    <string name="room_set_owner_title">Change the Room Owner</string>
+    <string name="room_search_not_found">No users found</string>
+    <string name="room_search_not_found_desc">The list of users previously invited to DocSpace or separate rooms will appear here.</string>
+    <string name="room_placeholder_created_room_title">Room created!</string>
+    <string name="room_placeholder_created_template_title">Template created!</string>
+    <string name="room_placeholder_created_room_subtitle">Create new folders to organize your files.</string>
+    <string name="room_placeholder_created_filling_form_room_subtitle">Upload a ready PDF form or create new folders to organize your files</string>
+    <string name="room_placeholder_created_virtual_room_title">Welcome to the Virtual Data Room</string>
+    <string name="room_placeholder_created_virtual_room_subtitle">Get started with quick actions:\nCreate a new file</string>
+    <string name="room_placeholder_public_room_creator_title">Welcome to the Public room</string>
+    <string name="room_placeholder_public_room_creator_subtitle">Create or upload new files or folders to get started.</string>
+    <string name="room_placeholder_empty_viewer_title">The room is empty</string>
+    <string name="room_placeholder_empty_viewer_subtitle">Files and folders created or uploaded by admins will show up here.</string>
+    <string name="room_placeholder_form_room_creator_title">Welcome to the Form filling room</string>
+    <string name="room_placeholder_form_room_creator_subtitle">Upload a ready PDF form to get started.</string>
+    <string name="room_placeholder_form_room_viewer_subtitle">PDF forms uploaded by admins will show up here.</string>
+    <string name="room_placeholder_vdr_room_creator_title">Welcome to the Virtual Data Room</string>
+    <string name="room_placeholder_creator_subtitle">Create or upload new files to get started.</string>
+    <string name="room_placeholder_collab_room_creator_title">Welcome to the Collaboration room</string>
+    <string name="room_placeholder_custom_room_creator_title">Welcome to the Custom room</string>
+
+    <string name="room_recent_via_link">Accessible via link</string>
+    <string name="room_access_via_link_title">Access via link</string>
+    <string name="room_manage_room">Manage room</string>
+
+    <plurals name="rooms_restore_title">
+        <item quantity="one">Restore room?</item>
+        <item quantity="other">Restore rooms?</item>
+    </plurals>
+
+    <plurals name="rooms_restore_desc">
+        <item quantity="one">All shared links in room will become active, and its contents will be available to everyone with the link. Do you want to restore room?</item>
+        <item quantity="other">All shared links in rooms will become active, and its contents will be available to everyone with the link. Do you want to restore rooms?</item>
+    </plurals>
+
+    <string name="rooms_move_to_public_title">Move to Public room</string>
+    <string name="rooms_move_to_public_title_desc">This room and all its contents are available to anyone with the link. Do you want to continue?</string>
+
+    <string name="rooms_info_access_desc">This room is available to anyone with the link. Access for external users is provided depending on the selected type of access rights.</string>
+    <string name="rooms_info_general_link">General link</string>
+    <string name="rooms_info_edit_link">Edit link</string>
+    <string name="rooms_info_create_link_title">Create link</string>
+    <string name="rooms_info_additional_link">Additional link</string>
+    <string name="rooms_info_additional_links">"Additional links (%1$d/%2$d)"</string>
+    <string name="rooms_info_create_link">Create and copy</string>
+    <string name="rooms_info_create_link_complete">Link successfully created and copied to clipboard</string>
+    <string name="rooms_info_create_maximum_exceed">The maximum number of links has been exceeded</string>
+    <string name="rooms_info_delete_link">Delete link</string>
+    <string name="rooms_info_delete_link_complete">Link was deleted</string>
+    <string name="rooms_info_delete_link_desc">Links to all files in the room will be deleted. Previous links to room files and embedded documents will become unavailable.\n\nThis action cannot be undone. Are you sure you want to continue?</string>
+    <string name="rooms_info_revoke_link">Revoke link</string>
+    <string name="rooms_info_revoke_link_desc">Links to all files in the room will be re-generated. Previous links to room files and embedded documents will become unavailable.\n\nThis action cannot be undone. Are you sure you want to continue?</string>
+    <string name="rooms_info_revoke_link_complete">Link was revoked</string>
+    <string name="rooms_info_revoke">Revoke</string>
+    <string name="rooms_info_copy_link">Copy link</string>
+    <string name="rooms_info_copy_link_and_password">Copy link and password</string>
+    <string name="rooms_info_copy_link_to_clipboard">Link successfully copied to clipboard</string>
+    <string name="rooms_info_admin_title">Administration (%d)</string>
+    <string name="rooms_info_users_title">Users (%1d)</string>
+    <string name="rooms_info_groups_title">Groups (%1d)</string>
+    <string name="rooms_info_guests_title">Guests (%1d)</string>
+    <string name="rooms_info_expected_title">Expected users (%1d)</string>
+    <string name="rooms_info_link_expired">The link has expired</string>
+    <string name="rooms_info_link_expired_full">The link has expired and has been disabled</string>
+    <string name="rooms_info_link_name">Link name</string>
+    <string name="rooms_info_password_access">Password access</string>
+    <string name="rooms_info_password_allowed_symbols">Allowed characters: a–z, A–Z, 0–9, !"#%&amp;'()*+,-./:;\u003C=>?@[]^_`{|}</string>
+    <string name="rooms_info_password_minimum_length">Minimum length: 8 characters</string>
+    <string name="rooms_info_file_rectrict">Restrict file content copy, file download and printing</string>
+    <string name="rooms_info_file_rectrict_desc">Enable this setting to disable downloads of files and folders from this room shared via a link</string>
+    <string name="rooms_info_time_limit_title">Time limit</string>
+    <string name="rooms_info_time_limit">Enable time limit</string>
+    <string name="rooms_info_valid_through">Valid through</string>
+    <string name="rooms_info_save_link_title">Save link</string>
+    <string name="rooms_info_save_link_question">Are you sure you want to save and exit?</string>
+    <string name="rooms_info_save_button">Save</string>
+    <string name="rooms_info_dont_save_button">Don\'t save</string>
+
+    <string name="rooms_share_shared_links">Shared links</string>
+    <string name="rooms_share_shared_links_count">Shared links (%d/6)</string>
+    <string name="rooms_share_shared_link_title">Shared link</string>
+    <string name="rooms_share_shared_desc">Provide access to the document and set the permission levels.</string>
+    <string name="rooms_share_lifetime_hours_12">12 hours</string>
+    <string name="rooms_share_lifetime_days_1">1 day</string>
+    <string name="rooms_share_lifetime_days_7">7 day</string>
+    <string name="rooms_share_lifetime_unlimited">Unlimited</string>
+    <string name="rooms_share_lifetime_custom">Custom</string>
+    <string name="rooms_share_shared_to_docsspace_users">DoсSpace users only</string>
+    <string name="rooms_share_shared_to_anyone">Anyone with the link</string>
+    <string name="rooms_share_expires_after">Expires after %s</string>
+    <string name="rooms_share_valid_unlimited">The link is valid for unlimited</string>
+    <string name="rooms_share_access_rights">Access rights</string>
+    <string name="rooms_share_regenerate_link">Regenerate link</string>
+    <string name="rooms_share_general_header">General</string>
+    <string name="rooms_share_link_life_time">Link life time</string>
+    <string name="share_link_folder_restrict_desc">Enable this setting to disable downloading of files and folders from this folder shared via a link</string>
+    <string name="share_link_file_restrict_desc">Enable this setting to disable downloading of this file shared via a link</string>
+    <string name="share_link_file_restrict_warning">You cannot disable the restriction on downloading and copying data because this setting is enforced at the room level for all files.</string>
+    <string name="share_link_file_restrict_warning_ok">OK</string>
+
+    <string name="rooms_filter_type_filling_forms">Filling form</string>
+    <string name="rooms_filter_type_virtual_room">Virtual data room</string>
+    <string name="rooms_filter_type_collaboration">Collaboration</string>
+    <string name="rooms_filter_type_review">Review</string>
+    <string name="rooms_filter_type_public">Public</string>
+    <string name="rooms_filter_type_view_only">View-only</string>
+    <string name="rooms_filter_type_custom">Custom</string>
+    <string name="rooms_filter_author_other_users">Other users…</string>
+    <string name="rooms_filter_third_party_title">Third party resource</string>
+
+    <string name="dialog_create_room">Create room</string>
+    <string name="dialog_create_room_value">New room</string>
+    <string name="invite_by_email">Invite users by email</string>
+    <string name="invite_new_members">New members</string>
+    <string name="invite_new_groups">New groups</string>
+    <string name="invite_add_manually">Add manually</string>
+    <string name="invite_choose_from_list">Choose from list</string>
+    <string name="invite_already_invited">Invited</string>
+    <string name="share_access_room_type">Access type</string>
+    <string name="share_access_room_group_desc">Access rights for all users in the group</string>
+    <string name="share_access_room_owner">Owner</string>
+    <string name="share_user_type_room_docspace_admin">DocSpace admin</string>
+    <string name="share_user_type_room_docspace_owner">DocSpace Owner</string>
+    <string name="share_user_type_room_workspace_owner">Workspace Owner</string>
+    <string name="share_user_type_room_portal_owner">Portal Owner</string>
+    <string name="share_user_type_room_admin">Room admin</string>
+    <string name="share_access_room_manager">Room manager</string>
+    <string name="share_access_room_power_user">Content creator</string>
+    <string name="share_access_room_editor">Editor</string>
+    <string name="share_access_room_form_filler">Form filler</string>
+    <string name="share_access_room_reviewer">Reviewer</string>
+    <string name="share_access_room_commentator">Commentator</string>
+    <string name="share_access_room_viewer">Viewer</string>
+    <string name="share_invite_error_empty">Please enter emails</string>
+    <string name="invite_link_send_success">Invite link was sent</string>
+    <string name="share_choose_access_title">Choose access</string>
+    <string name="share_invite_title">Invite</string>
+    <string name="room_create_success">Room created</string>
+    <string name="room_delete_success">Room deleted</string>
+    <string name="template_delete_success">Template deleted</string>
+    <string name="templates_delete_success">Templates deleted</string>
+    <string name="room_create_thirdparty_storage_title">Third party storage</string>
+    <string name="room_create_thirdparty_storage">Storage</string>
+    <string name="room_create_thirdparty_location">Location</string>
+    <string name="room_create_thirdparty_location_root">Root</string>
+    <string name="room_create_thirdparty_new_folder">Create new folder</string>
+    <string name="room_create_thirdparty_desc">Use third-party services as data storage for this room. A new folder for storing this room’s data will be created in the connected storage</string>
+    <string name="room_storage_reconnect">Reconnect storage</string>
+    <string name="room_storage_not_availabale">The content of third party folder are not available. Try to reconnect the account.</string>
+    <string name="switch_account_title">Switch account?</string>
+    <string name="switch_account_description">Log in to the portal account %1$s to open the document.</string>
+    <string name="share_expected_member">Expect members</string>
+    <string name="app_settings_main_help">Help</string>
+    <string name="settings_language">Language</string>
+    <string name="clear_recents">"Clear recents?"</string>
+    <string name="context_protection_title">Protection</string>
+    <!--  TODO example  -->
+    <string name="settings_language_confirmation_message">
+        Now application is using english language because of the system language has changed
+    </string>
+    <string name="settings_language_confirmation_accept">Good</string>
+    <string name="settings_language_continue_using_app_language">Continue using %1$s</string>
+
+    <!-- For example  -->
+    <string name="conversion_dialog_title">Convert and open document</string>
+    <string name="conversion_dialog_message">The document you open is not OOXML (Office Open XML) file. Convert it to OOXML format for faster viewing and editing.</string>
+    <string name="conversion_dialog_open_in_view_mode">Open in view mode</string>
+    <string name="conversion_dialog_convert_to">Convert to %1s</string>
+    <string name="conversion_dialog_converting_to">Converting to %1s</string>
+
+    <string name="personal_portal_end_button">Create a free account</string>
+    <string name="personal_portal_end_title">WORLDOFFICE Personal is wrapping up</string>
+    <string name="personal_portal_end_text">WORLDOFFICE Personal will be discontinued on September 1st, 2024.\nWe recommend you move to the free WORLDOFFICE DocSpace Cloud.</string>
+
+    <string name="rooms_upload_pdf_from_docspace">Upload PDF Form from DocSpace</string>
+    <string name="rooms_upload_pdf_from_device">Upload PDF Form from device</string>
+    <string name="rooms_fill_in_as_title">Fill in as</string>
+    <string name="rooms_fill_out_form_yourself">Fill out the form yourself</string>
+    <string name="rooms_fill_out_form_yourself_desc">Fill in the fields of the original form in the editor window.</string>
+    <string name="rooms_share_and_collect">Share &amp; collect</string>
+    <string name="rooms_share_and_collect_desc">Share your form and collect responses via a Form filling room.</string>
+    <string name="rooms_fill_form_complete_desc">The filled PDF form is saved and available to you in the Complete folder. To check the status, contact the form owner providing the assigned number.</string>
+    <string name="rooms_fill_form_complete_number_title">Form number</string>
+    <string name="rooms_fill_form_complete_owner_title">Form owner</string>
+    <string name="rooms_fill_form_complete_toolbar_title">Form completed successfully</string>
+    <string name="rooms_fill_form_complete_back_to_room">Back to room</string>
+    <string name="rooms_fill_form_complete_check_forms">Check ready forms</string>
+    <string name="errors_sign_in_account_not_found">Account not found</string>
+    <string name="rooms_notifications_disabled">Room notifications disabled</string>
+    <string name="rooms_notifications_enabled">Room notifications enabled</string>
+
+    <string name="rooms_vdr">Virtual Data Room</string>
+    <string name="rooms_vdr_desc">Use VDR for advanced file security and transparency while filling and signing documents step-by-step. Set watermarks, automatically index and track all content, restrict downloading and copying.</string>
+
+    <string name="file_lifetime_desc">"Set file lifetime to automatically delete the files in this room after a defined period. Lifetime begins on the date of upload/creation of the file."</string>
+    <string name="file_lifetime_title">File lifetime</string>
+    <string name="file_lifetime_hint">Files older than</string>
+    <string name="file_lifetime_warning_title">Older files with exceeded lifetime will be deleted</string>
+    <string name="file_lifetime_warning_desc">Lifetime countdown begins at the file creation date. Some files in this room exceed the proposed lifetime and will be deleted once you enable the setting.</string>
+
+    <string name="file_lifetime_action">Action on files</string>
+    <string name="file_lifetime_action_delete">Delete permanently</string>
+    <string name="file_lifetime_action_move_to_trash">Move to trash</string>
+
+    <string name="file_lifetime_time_period">Time period</string>
+    <string name="file_lifetime_period_days">Days</string>
+    <string name="file_lifetime_period_months">Months</string>
+    <string name="file_lifetime_period_years">Years</string>
+
+    <string name="rooms_vdr_file_restrict_desc">Enable this setting to disable downloads, printing, and content copying for users with the “Viewer” role</string>
+    <string name="rooms_vdr_watermark_title">Add watermarks to documents</string>
+    <string name="rooms_vdr_watermark_desc">Protect all documents in this room with watermarks. If a document already contains one, it will not be replaced.</string>
+    <string name="rooms_vdr_indexing_title">Automatic indexing</string>
+    <string name="rooms_vdr_indexing_desc">Enable automatic indexing to index files and folders by serial number. Sorting by number will be set as default for all users.</string>
+
+    <string name="rooms_vdr_storage_quota_title">Storage quota</string>
+    <string name="rooms_vdr_storage_quota_desc">Storage quota set per room. You can change this value or turn off storage limit.</string>
+    <string name="rooms_vdr_size_quota">Size quota</string>
+    <string name="rooms_vdr_measurement_unit">Measurement unit</string>
+
+    <string name="rooms_vdr_watermark_type">Time Watermark type</string>
+    <string name="rooms_vdr_watermark_type_info">Viewer info</string>
+    <string name="rooms_vdr_watermark_type_image">Image</string>
+    <string name="rooms_vdr_watermark_static_text">Static text</string>
+    <string name="rooms_vdr_watermark_position">Position</string>
+    <string name="rooms_vdr_watermark_position_diagonal">Diagonal</string>
+    <string name="rooms_vdr_watermark_position_horizontal">Horizontal</string>
+    <string name="rooms_vdr_watermark_info_username">User Name</string>
+    <string name="rooms_vdr_watermark_info_email">User Email</string>
+    <string name="rooms_vdr_watermark_info_ip_address">Use IP Address</string>
+    <string name="rooms_vdr_watermark_info_current_date">Current Date</string>
+    <string name="rooms_vdr_watermark_info_room_name">Room Name</string>
+    <string name="rooms_vdr_watermark_image_select">Select image</string>
+    <string name="rooms_vdr_watermark_image_scale">Scale</string>
+    <string name="rooms_vdr_watermark_image_rotate">Rotate</string>
+    <string name="rooms_vdr_watermark_image_desc">This image preview roughly shows how the watermark will be displayed in your files.</string>
+
+    <!-- example: The file lifetime is set to 12 days in this room -->
+    <string name="rooms_vdr_lifetime_info">The file lifetime is set to %1$d %2$s in this room</string>
+
+    <string name="trash_toolbar_info">Items in Trash are automatically deleted after 30 days</string>
+    <string name="rooms_expire_context_info">The file will be deleted on %s</string>
+    <string name="rooms_index_subtitle">Index %s</string>
+    <string name="rooms_index_edit">Edit index</string>
+    <string name="rooms_index_export">Export room index</string>
+    <string name="rooms_index_title">Sorting index</string>
+    <string name="rooms_index_reorder">Reorder</string>
+    <string name="rooms_index_apply">Apply</string>
+    <string name="rooms_index_exit_no_saving">Exit without saving?\nYou have made changes in the index. If you proceed without saving, those changes will not be applied.</string>
+    <string name="rooms_index_reorder_desc">The Reorder action will remove spaces in the indexes. The files will be re-indexed in order with offset to fill in missing indexes.</string>
+    <string name="rooms_index_reorder_complete_title">File exported</string>
+    <string name="rooms_index_reorder_complete_desc">%s file exported to Documents</string>
+    <string name="rooms_index_reorder_open_file">Open file</string>
+
+    <string name="rooms_protected_room">Protected room</string>
+    <string name="rooms_invalid_password">Invalid password</string>
+
+    <string name="rooms_invite_access_description">Guests, Users and Groups cannot be assigned as Room managers. Only Room and DocSpace admins are suitable for the specified role.</string>
+    <string name="rooms_user_type_members">Members</string>
+    <string name="share_goal_everyone">Everyone</string>
+
+    <string name="whats_new_title">What\'s new</string>
+    <string name="whats_new_next">Get started</string>
+
+
+    <string name="version_history_title">Version History</string>
+    <string name="version_edit_comment_title">Edit Comment</string>
+    <string name="version_group_header">Version %s</string>
+    <string name="version_group_current_header">Current — Version %s</string>
+    <string name="edit_comment_title">Edit comment</string>
+    <string name="edit_comment_field_label">Comment</string>
+    <string name="edit_comment_success">Comment saved successfully</string>
+    <string name="context_menu_desc">More</string>
+    <string name="version_restore_done">Version has been restored</string>
+    <string name="version_delete_done">Version has been deleted</string>
+    <string name="edit_comment_label">Comment</string>
+    <string name="error_version_open">Failed to open document</string>
+    <string name="error_version_delete">Failed to delete</string>
+    <string name="error_version_restore">Failed to restore version</string>
+    <string name="error_edit_comment">Failed to update comment</string>
+    <!-- Version History Context Action Dialogs -->
+    <string name="version_restore_title">Restore this version?</string>
+    <string name="version_restore_subtitle">Current file will be saved in version history.</string>
+    <string name="version_restore_confirm">Restore</string>
+    <string name="version_restore_loading">Restoring version</string>
+    <string name="version_delete_title">Delete version</string>
+    <string name="version_delete_subtitle">You are about to delete a file version. It will be no possible to see or restore it anymore. Are you sure you want to continue?</string>
+    <string name="version_delete_confirm">Delete</string>
+    <string name="version_delete_loading">Deleting</string>
+    <string name="version_dialog_cancel">Cancel</string>
+
+    <!--    Room Templates-->
+    <string name="title_save_template">Save as template</string>
+    <string name="title_edit_template">Edit template</string>
+    <string name="title_create_from_template">From template</string>
+    <string name="title_access_settings">Access settings</string>
+
+    <string name="desc_create_from_template">Create a room based on a template. All settings, users, folders and files will be taken from the selected room template.</string>
+    <string name="desc_info_template">Room template. Use this template to quickly create a new room.</string>
+
+    <string name="settings_saved_successfully">Template settings saved</string>
+    <string name="template_created_successfully">Template «%s» saved</string>
+    <string name="room_created_successfully">Room created successfully</string>
+
+    <string name="error_upload_logo">Failed to load logo</string>
+    <string name="error_create_template">Failed to create template</string>
+    <string name="error_create_room">Failed to create room</string>
+    <string name="error_save_template">Failed to save template</string>
+    <string name="error_save_access_settings">Failed to save access settings</string>
+
+    <string name="template_subheader_title">Room template</string>
+    <string name="template_name_hint">Template name</string>
+    <string name="setting_tags_desc">Tags are applied to the room which will be created based on this template.</string>
+    <string name="setting_access_desc">Access to template. You can select members who can create rooms based on this template.</string>
+    <string name="setting_access_public">Template available to everyone</string>
+    <string name="setting_access_public_desc">All DocSpace and Room admins will be able to create rooms using this template.</string>
+    <string name="setting_access_members_title">Add Users or Groups</string>
+    <string name="setting_access_members_title_desc">The added administrators will be able to create rooms using this template.</string>
+    <string name="setting_access_list_title">Access to template</string>
+    <string name="setting_select_members_title">Select Members</string>
+
+    <string name="setting_access_public_bold_docspace">DocSpace</string>
+    <string name="setting_access_public_bold_room">Room admins</string>
+
+    <string name="filling_form_complete">Complete</string>
+    <string name="filling_form_stopped">Stopped</string>
+    <string name="filling_form_history_opened">Opened the form to fill out</string>
+    <string name="filling_form_history_submitted">Submitted their part. The form was sent to the next role.</string>
+    <string name="filling_form_history_stopped">Filling was stopped by %s</string>
+    <string name="filling_form_history_complete">Has completed and submitted their part of the form. The form is fully filled out.</string>
+    <string name="filling_form_filling_status">Filling status</string>
+    <string name="filling_form_filling_status_desc">In this panel you can monitor the completion of the form in which you participate or in which you are the organizer of completion</string>
+    <string name="filling_form_filling_process_details">Process details</string>
+    <string name="filling_form_stop_filling">Stop filling</string>
+    <string name="filling_form_stop_filling_dialog_title">Stop filling?</string>
+    <string name="filling_form_stop_filling_dialog_desc">Are you sure you want to stop filling? It will be impossible to resume filling out this form after cancellation. Filling out the form will be stopped at the stage it is currently at. The file will be marked as "Stopped".</string>
+    <string name="filling_form_send_section_complete">Form Section Completed</string>
+    <string name="filling_form_send_section_complete_desc">The assigned portion of the PDF form has been successfully completed. The filling status of the form can be monitored in the room and via the Filling status panel. An email notification will be sent once the form is fully completed.</string>
+    <string name="filling_form_send_finalized">Form Section Completed</string>
+    <string name="filling_form_send_finalized_desc">The form has been fully completed by all roles and is now finalized. It is available in view-only mode.</string>
+    <string name="filling_form_version_incompatible_desc">The client and server versions are incompatible. You can only open the document in view mode.</string>
+    <string name="dev_mode_system_logs">System logs</string>
+    <string name="dev_mode_network_requests">Network requests</string>
+    <!--    Wats new-->
+    <string name="whats_new">What\'s new in v9.3</string>
+    <string name="whats_new_1">Mentions in comments</string>
+    <string name="whats_new_1_desc">Tag teammates in comments to notify them and improve collaboration</string>
+    <string name="whats_new_2">Word counter in documents</string>
+    <string name="whats_new_2_desc">Track document length instantly with the built-in word counter</string>
+    <string name="whats_new_3">Enhanced search in editors</string>
+    <string name="whats_new_3_desc">Find text faster in documents, spreadsheets, and presentations with the updated in-editor search</string>
+    <string name="whats_new_4">Updated interface</string>
+    <string name="whats_new_4_desc">Enjoy refreshed editor icons and a redesigned context menu for a cleaner look and faster access to key actions</string>
+
+    <string name="start_filling_title">Start filling</string>
+    <string name="start_filling_start">Start</string>
+    <string name="start_filling_desc">In this panel you can monitor the completion of the form in which you participate or in which you are the organizer of completion</string>
+    <string name="start_filling_header">Roles from the form:</string>
+    <string name="start_filling_ready_for_filling">Form is ready for filling in room</string>
+    <string name="start_filling_ready_for_filling_desc">A notification has already been sent to the user in the first role, prompting them to fill out the form. You can navigate to the room or share the filling link with the participants.</string>
+
+    <string name="list_context_reset_filling">Reset and start filling</string>
+
+    <string name="placeholder_no_shared_items">There are no shared items yet</string>
+    <string name="placeholder_no_shared_items_desc">Here you\'ll find files and folders that other DocSpace members shared with you. Your own files and room content are not shown here.</string>
+
+    <string name="rooms_share_shared_folder_desc">Provide access to the folder and set the permission levels.</string>
+    <string name="rooms_info_folder_desc">This folder is accessible via a shared link from its parent folder, but you can create a custom external link with specific permissions.</string>
+    <string name="rooms_info_file_desc">This file is accessible via a shared link from its parent folder, but you can create a custom external link with specific permissions.</string>
+    <string name="rooms_info_fill_form_desc">This room is available to anyone with the link. External users will have Form Filler permission for all the files.</string>
+
+    <string name="share_popup_access_editing">Editing</string>
+    <string name="share_popup_access_remove">Remove</string>
+</resources>

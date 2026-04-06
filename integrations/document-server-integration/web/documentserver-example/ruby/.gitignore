@@ -1,0 +1,7 @@
+.bundle
+bin
+db
+log
+sorbet
+storage
+tmp

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chooser_email_client">E-Mail-Client wählen</string>
+    <string name="about_email_subject">WORLDOFFICE Documents Android-Feedback</string>
+    <string name="about_feedback">Feedback und Support</string>
+    <string name="text_hint_required">Erforderlich</string>
+    <string name="export_send_copy">Kopie senden</string>
+    <string name="dialogs_edit_forbidden_symbols">Verwenden Sie diese Symbole nicht\u0020</string>
+    <string name="dialogs_edit_forbidden_name">Ungültiger Name</string>
+    <string name="sizes_bytes">Byte</string>
+    <string name="sizes_kilobytes">KB</string>
+    <string name="sizes_megabytes">MB</string>
+    <string name="sizes_gigabytes">GB</string>
+    <string name="sizes_terabytes">TB</string>
+    <string name="common_accept">Annehmen</string>
+    <string name="common_cancel">Abbrechen</string>
+    <string name="common_next">Weiter</string>
+    <string name="common_previous">Zurück</string>
+    <string name="common_done">Fertig</string>
+    <string name="common_ok">OK</string>
+    <plurals name="days">
+        <item quantity="one">Tag</item>
+        <item quantity="other">Tage</item>
+    </plurals>
+
+    <plurals name="hours">
+        <item quantity="one">Stunde</item>
+        <item quantity="other">Stunden</item>
+    </plurals>
+    <string name="settings_fonts_title">Schriftarten</string>
+    <string name="settings_view">Ansicht</string>
+    <plurals name="months">
+        <item quantity="one">Monat</item>
+        <item quantity="other">Monate</item>
+    </plurals>
+    <plurals name="years">
+        <item quantity="one">Jahr</item>
+        <item quantity="other">Jahre</item>
+    </plurals>
+
+    <!-- Newly added translations (v9.0.0 - 2025-06-09) -->
+    <string name="help_and_feedback_contact_support">Support kontaktieren</string>
+    <string name="help_and_feedback_help_center">Hilfe-Center</string>
+    <string name="help_and_feedback_suggest_a_feature">Funktion vorschlagen</string>
+    <string name="help_and_feedback_title">Hilfe und Feedback</string>
+
+    <string name="access_members_me_and_title">Ich und %s</string>
+    <string name="access_members_me_subtitle">(Ich)</string>
+    <string name="access_members_me_users_groups_title">Ich, %1$s und %2$s</string>
+
+    <plurals name="access_members_users_title">
+        <item quantity="one">%d Benutzer</item>
+        <item quantity="other">%d Benutzer</item>
+    </plurals>
+
+    <plurals name="access_members_groups_title">
+        <item quantity="one">%d Gruppe</item>
+        <item quantity="other">%d Gruppen</item>
+    </plurals>
+
+</resources>

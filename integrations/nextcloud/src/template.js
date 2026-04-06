@@ -1,0 +1,182 @@
+/**
+ *
+ * (c) Copyright Ascensio System SIA 2026
+ *
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ *
+ */
+
+/* global _, jQuery */
+
+/**
+ * @param {object} $ JQueryStatic object
+ * @param {object} OC Nextcloud OCA object
+ */
+(function($, OC) {
+
+	OCA.WorldOffice = _.extend({
+		AppName: 'world-office',
+		templates: null,
+	}, OCA.WorldOffice)
+
+	OCA.WorldOffice.OpenTemplatePicker = function(name, extension, type) {
+
+		$('#world-office-template-picker').remove()
+
+		$.get(OC.filePath(OCA.WorldOffice.AppName, 'templates', 'templatePicker.html'),
+			function(tmpl) {
+				const $tmpl = $(tmpl)
+				const dialog = $tmpl.octemplate({
+					dialog_name: 'world-office-template-picker',
+					dialog_title: t(OCA.WorldOffice.AppName, 'Select template'),
+				})
+
+				OCA.WorldOffice.AttachTemplates(dialog, type)
+
+				$('body').append(dialog)
+
+				$('#world-office-template-picker').ocdialog({
+					closeOnEscape: true,
+					modal: true,
+					buttons: [{
+						text: t('core', 'Cancel'),
+						classes: 'cancel',
+						click() {
+							$(this).ocdialog('close')
+						},
+					}, {
+						text: t(OCA.WorldOffice.AppName, 'Create'),
+						classes: 'primary',
+						click() {
+							const templateId = this.dataset.templateId
+							const fileList = OCA.Files.App.fileList
+							OCA.WorldOffice.CreateFile(name + extension, fileList, templateId)
+							$(this).ocdialog('close')
+						},
+					}],
+				})
+			})
+	}
+
+	OCA.WorldOffice.GetTemplates = function() {
+		if (OCA.WorldOffice.templates != null) {
+			return
+		}
+
+		$.get(OC.generateUrl('apps/' + OCA.WorldOffice.AppName + '/ajax/template'),
+			function onSuccess(response) {
+				if (response.error) {
+					OC.Notification.show(response.error, {
+						type: 'error',
+						timeout: 3,
+					})
+					return
+				}
+
+				OCA.WorldOffice.templates = response
+
+			})
+	}
+
+	OCA.WorldOffice.AddTemplate = function(file, callback) {
+		const data = new FormData()
+		data.append('file', file)
+
+		$.ajax({
+			method: 'POST',
+			url: OC.generateUrl('apps/' + OCA.WorldOffice.AppName + '/ajax/template'),
+			data,
+			processData: false,
+			contentType: false,
+			success: function onSuccess(response) {
+				if (response.error) {
+					callback(null, response.error)
+					return
+				}
+
+				callback(response, null)
+			},
+		})
+	}
+
+	OCA.WorldOffice.DeleteTemplate = function(templateId, callback) {
+		$.ajax({
+			method: 'DELETE',
+			url: OC.generateUrl('apps/' + OCA.WorldOffice.AppName + '/ajax/template?templateId={templateId}',
+				{
+					templateId,
+				}),
+			success: function onSuccess(response) {
+				if (response) {
+					callback(response)
+				}
+			},
+		})
+	}
+
+	OCA.WorldOffice.AttachTemplates = function(dialog, type) {
+		const emptyItem = dialog[0].querySelector('.world-office-template-item')
+
+		OCA.WorldOffice.templates.forEach(template => {
+			if (template.type !== type) {
+				return
+			}
+			const item = emptyItem.cloneNode(true)
+
+			$(item.querySelector('label')).attr('for', 'template_picker-' + template.id)
+			item.querySelector('input').id = 'template_picker-' + template.id
+			item.querySelector('img').src = template.icon
+			item.querySelector('p').textContent = template.name
+			item.onclick = function() {
+				dialog[0].dataset.templateId = template.id
+			}
+			dialog[0].querySelector('.world-office-template-container').appendChild(item)
+		})
+
+		$(emptyItem.querySelector('label')).attr('for', 'template_picker-0')
+		emptyItem.querySelector('input').id = 'template_picker-0'
+		emptyItem.querySelector('input').checked = true
+		emptyItem.querySelector('img').src = OC.generateUrl('/core/img/filetypes/x-office-' + type + '.svg')
+		emptyItem.querySelector('p').textContent = t(OCA.WorldOffice.AppName, 'Empty')
+		emptyItem.onclick = function() {
+			dialog[0].dataset.templateId = '0'
+		}
+	}
+
+	OCA.WorldOffice.AttachItemTemplate = function(template) {
+		$.get(OC.filePath(OCA.WorldOffice.AppName, 'templates', 'templateItem.html'),
+			function(item) {
+				item = $(item)
+
+				item.attr('data-id', template.id)
+				item.children('img').attr('src', template.icon)
+				item.children('p').text(template.name)
+
+				$('.world-office-template-container').append(item)
+			})
+	}
+
+	OCA.WorldOffice.TemplateExist = function(type) {
+		const isExist = OCA.WorldOffice.templates.some((template) => {
+			return template.type === type
+		})
+
+		return isExist
+	}
+
+})(jQuery, OC)

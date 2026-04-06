@@ -1,0 +1,27 @@
+{
+  "name": "world-office",
+  "version": "0.1.0",
+  "private": true,
+  "description": "World-Office — Modern document editing suite",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "biome check --write .",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.4",
+    "typescript": "^5.7.0",
+    "biome": "^1.9.0",
+    "@biomejs/biome": "^1.9.0"
+  },
+  "packageManager": "pnpm@10.4.1",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

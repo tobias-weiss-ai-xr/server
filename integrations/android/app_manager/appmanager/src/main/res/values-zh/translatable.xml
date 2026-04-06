@@ -1,0 +1,1087 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Documents</string>
+    <string name="app_name_full">WORLDOFFICE Documents</string>
+    <!-- ======================================================================================= -->
+    <!-- Permissions -->
+    <!-- ======================================================================================= -->
+    <!-- Versions -->
+    <string name="app_versions_title">版本3.0发布</string>
+    <string name="app_versions_cancel">稍后</string>
+    <string name="app_versions_without_release_accept">安装官方应用</string>
+    <string name="app_versions_without_release_info">感谢您加入Beta测试！WORLDOFFICE文档3.0现已发布，测试版将不再受到支持。切换到官方应用以获得进一步更新。</string>
+    <string name="app_versions_update_accept">更新官方应用</string>
+    <string name="app_versions_update_info">感谢您加入Beta测试！WORLDOFFICE文档3.0现已发布，测试版将不再受到支持。请切换到官方应用以接收进一步更新。</string>
+    <string name="app_versions_actual_release_accept">打开官方应用</string>
+    <string name="app_versions_actual_release_info">感谢您加入Beta测试！WORLDOFFICE文档3.0现已发布，测试版将不再受到支持。请切换到官方应用。</string>
+    <!-- ======================================================================================= -->
+    <!-- Snackbar common -->
+    <string name="snackbar_copied">已复制</string>
+    <!-- ======================================================================================= -->
+    <!-- About -->
+    <string name="about_title">关于</string>
+    <string name="about_app_version">版本 %1$s, build %2$s, SDK %3$s</string>
+    <string name="about_terms">使用条款</string>
+    <string name="about_policy">隐私政策</string>
+    <string name="about_license">许可协议</string>
+    <string name="about_website">WORLDOFFICE网站</string>
+    <!-- ======================================================================================= -->
+    <!-- Common errors -->
+    <string name="errors_unknown_error">连接错误。稍后再试。</string>
+    <string name="errors_ssl_error">SSL握手错误</string>
+    <string name="errors_connection_error">检查网络连接</string>
+    <string name="errors_unknown_host_error">未知主机</string>
+    <string name="errors_redirect_error">未知重定向错误代码：\u0020</string>
+    <string name="errors_client_error">未知客户端错误代码：\u0020</string>
+    <string name="errors_client_portal_exist">具有相同名称的门户已存在</string>
+    <string name="errors_client_portal_sms">您发送了太多短信。请稍后再试。</string>
+    <string name="errors_client_host_not_found">地址未找到</string>
+    <string name="errors_client_forbidden">拒绝访问</string>
+    <string name="errors_client_unauthorized">未经授权的请求</string>
+    <string name="errors_client_payment_required">需要付款</string>
+    <string name="errors_server_error">未知服务器错误代码：\u0020</string>
+    <string name="errors_server_auth_error">身份验证错误</string>
+    <string name="errors_email_syntax_error">无效邮箱</string>
+    <string name="errors_viewer_download_name">下载失败</string>
+    <string name="errors_email_already_registered">已有使用此邮箱的已注册用户</string>
+    <string name="errors_path_url">无效URL</string>
+    <string name="errors_create_local_file">创建文件失败</string>
+    <!-- SignIn -->
+    <string name="errors_sign_in_splash_error">访问门户失败</string>
+    <string name="errors_sign_in_account_error">登录失败</string>
+    <string name="errors_sign_in_account_already_use">您已在使用此账户</string>
+    <!-- ======================================================================================= -->
+    <!-- Login -->
+    <string name="login_api_init_error">初始化错误</string>
+    <string name="login_api_init_portal_error">门户名称语法错误</string>
+    <string name="login_api_portal_name">错误的门户名称。示例：example.world-office.com</string>
+    <string name="login_api_portal_name_length">门户名称必须包含至少6个字符</string>
+    <string name="login_api_portal_name_content">门户名称必须由A–Z、a–z、0–9组成</string>
+    <string name="login_retry">重试连接</string>
+    <!-- Accounts -->
+    <string name="login_accounts_select_title">选择账户</string>
+    <!-- Portal pager -->
+    <string name="login_pager_enterprise">门户</string>
+    <string name="login_pager_personal">个人</string>
+    <string name="login_pager_title">连接WORLDOFFICE云</string>
+    <!-- Portal enterprise-->
+    <string name="login_enterprise_edit_hint">门户地址</string>
+    <string name="login_enterprise_button_next">下一个</string>
+    <string name="login_enterprise_edit_error_hint">输入有效地址</string>
+    <string name="login_enterprise_forgot_password">忘记密码或邮箱？</string>
+    <string name="login_enterprise_button_create">创建门户</string>
+    <string name="login_enterprise_button_select">账户</string>
+    <string name="login_enterprise_email_hint">邮箱</string>
+    <string name="login_enterprise_password_hint">密码</string>
+    <string name="login_enterprise_signin_button">登录</string>
+    <string name="login_enterprise_single_sign_button">单点登录</string>
+    <string name="login_enterprise_info">WORLDOFFICE门户允许您将文件保存在云中，并与同事进行共享以及实时协同编辑。</string>
+    <string name="login_not_authorization_info">无法在%2$s登录到%1$s</string>
+    <string name="login_not_authorization_button">再试一次</string>
+    <!-- Portal personal -->
+    <string name="login_personal_edit_email_hint">邮箱</string>
+    <string name="login_personal_edit_password_hint">密码</string>
+    <string name="login_personal_signin_button">登录</string>
+    <string name="login_personal_signup_button">注册</string>
+    <string name="login_personal_signup_title">注册个人门户</string>
+    <string name="login_personal_signup_edit_info">确认链接将被发送至此地址</string>
+    <string name="login_personal_signup_dialog_info">确认链接将被发送至邮箱：%1$s\n继续前请根据邮件中的链接操作</string>
+    <string name="login_personal_info">连接WORLDOFFICE个人以将文件保存至云端</string>
+    <string name="login_web_dav_title">连接至%1$s</string>
+    <!-- Portal create-->
+    <string name="login_create_portal_title">为组织创建门户</string>
+    <string name="login_create_portal_address_hint">门户地址</string>
+    <string name="login_create_portal_email_hint">邮箱</string>
+    <string name="login_create_signin_first_name_hint">名字</string>
+    <string name="login_create_signin_last_name_hint">姓氏</string>
+    <string name="login_create_portal_next_button">下一个</string>
+    <!-- Portal create sign in -->
+    <string name="login_create_signin_title">设置密码</string>
+    <string name="login_create_signin_password">密码</string>
+    <string name="login_create_signin_repeat">重复密码</string>
+    <string name="login_create_signin_create_button">创建</string>
+    <string name="login_create_signin_passwords_mismatch">密码不匹配</string>
+    <string name="login_create_signin_info">点击此按钮即代表您接受我们的服务条款</string>
+    <!-- Portal SMS -->
+    <string name="login_sms_code_label">我们已向此号码发送包含代码的文本消息</string>
+    <string name="login_sms_send_again">再次发送</string>
+    <string name="login_sms_send_again_after">稍后再次发送</string>
+    <string name="login_sms_change_number">更改号码</string>
+    <string name="login_sms_phone_number_verification">电话号码验证</string>
+    <string name="login_sms_phone_header">设置电话号码</string>
+    <string name="login_sms_phone_country_label">国家</string>
+    <string name="login_sms_phone_number_label">电话号码</string>
+    <string name="login_sms_phone_send_button">发送代码</string>
+    <string name="login_sms_phone_error_format">格式错误</string>
+    <string name="login_sms_phone_send_code">我们将通过短信发送验证码</string>
+    <string name="login_sms_resend_ok">已发送短信代码</string>
+    <!-- Countries codes -->
+    <string name="countries_codes_title">选择国家/地区</string>
+    <!-- ======================================================================================= -->
+    <!-- Dialogs -->
+    <string name="bottom_sheet_portal_title">门户</string>
+    <string name="bottom_sheet_cloud_title">云</string>
+    <!--Move copy dialog-->
+    <string name="dialog_move_copy_title_files">名称相同的%1$d文档已存在于\"%2$s\"文件夹中</string>
+    <string name="dialog_move_copy_title_one_file">名称为\"%1$s\"的文件已存在于\"%2$s\"文件夹中</string>
+    <string name="dialog_move_copy_overwrite">使用版本更新覆盖</string>
+    <string name="dialog_move_copy_copy">创建文件副本</string>
+    <string name="dialog_move_copy_skip">跳过</string>
+    <string name="dialog_move_copy_title">具有相同名称的文件</string>
+    <!-- Common -->
+    <string name="dialogs_common_ok_button">接受</string>
+    <string name="dialogs_common_cancel_button">取消</string>
+    <string name="dialogs_check_portal_header_text">检查门户功能</string>
+    <string name="dialogs_sign_in_portal_header_text">登录门户</string>
+    <string name="dialogs_sign_in_register_portal">注册门户</string>
+    <!-- Waiting -->
+    <string name="dialogs_wait_title">正在操作…</string>
+    <string name="dialogs_wait_title_storage">连接存储…</string>
+    <!-- Question -->
+    <string name="dialogs_question_accept_yes">是</string>
+    <string name="dialogs_question_accept_no">否</string>
+    <string name="dialogs_question_accept_delete">删除</string>
+    <string name="dialogs_question_accept_remove">移除</string>
+    <string name="dialogs_question_accept_not_really">不一定</string>
+    <string name="dialogs_question_accept_sure">好的，当然</string>
+    <string name="dialogs_question_accept_no_thanks">不用了，谢谢</string>
+    <string name="dialogs_question_share_remove">从列表中移除选定项目？</string>
+    <string name="dialogs_question_http_title">安全警告</string>
+    <string name="dialogs_question_http_question">HTTPS链接不可用，但可使用HTTP连接。继续？</string>
+    <string name="dialogs_question_facebook_title">Facebook</string>
+    <string name="dialogs_question_facebook_question">使用账户继续：\u0020</string>
+    <string name="dialogs_question_remove_account_title">移除账户？</string>
+    <string name="dialogs_question_remove_account_info">
+来自门户%2$s使用邮箱%1$s的账户将被登出并从列表中移除
+</string>
+    <string name="dialogs_question_personal_confirm_link_title">确认邮箱</string>
+    <string name="dialogs_question_personal_confirm_cancel">再试一次</string>
+    <string name="dialogs_question_personal_confirm_accept">继续</string>
+    <string name="dialogs_question_rate_first_info">您喜欢WORLDOFFICE文档的使用体验吗？</string>
+    <string name="dialogs_question_rate_second_info">请在Google Play中评价我们的应用。</string>
+    <!-- Edit -->
+    <string name="dialogs_edit_rename_title">重命名</string>
+    <string name="dialogs_edit_hint">输入标题</string>
+    <string name="dialogs_edit_create_sheet">新电子表格</string>
+    <string name="dialogs_edit_create_presentation">新演示文稿</string>
+    <string name="dialogs_edit_create_docs">新文档</string>
+    <string name="dialogs_edit_create_folder">新文件夹</string>
+    <string name="dialogs_edit_forbidden_symbols">不要使用这些符号\u0020</string>
+    <string name="dialogs_edit_accept_create">创建</string>
+    <string name="dialogs_edit_accept_rename">重命名</string>
+    <string name="dialogs_edit_feedback_title">反馈</string>
+    <string name="dialogs_edit_feedback_rate_title">请问您愿意给我们一些反馈吗？</string>
+    <string name="dialogs_edit_feedback_rate_hint">告诉我们应该如何改进</string>
+    <string name="dialogs_edit_feedback_rate_accept">发送</string>
+    <!-- ======================================================================================= -->
+    <!-- Activity chooser -->
+    <string name="chooser_web_browser">选择浏览器…</string>
+    <!-- ======================================================================================= -->
+    <!-- Main -->
+    <!-- Title -->
+    <string name="actionbar_title_main">文档</string>
+    <string name="chooser_activity_not_found">无法为此操作找到任何应用程序…</string>
+    <string name="fragment_clouds_title">云</string>
+    <string name="fragment_clouds_portal_title">连接到门户</string>
+    <string name="fragment_clouds_storage_title">连接到存储</string>
+    <string name="fragment_clouds_world-office_item">WORLDOFFICE</string>
+    <string name="fragment_recent_title">最近</string>
+    <string name="fragment_on_device_title">在设备中</string>
+    <string name="fragment_profile_title">档案</string>
+    <!-- Drawer -->
+    <string name="navigation_drawer_open">打开导航抽屉</string>
+    <string name="navigation_drawer_close">关闭导航抽屉</string>
+    <!-- Main drawer menu-->
+    <string name="navigation_drawer_menu_shared">与我分享</string>
+    <string name="navigation_drawer_menu_common">共同文档</string>
+    <string name="navigation_drawer_menu_projects">项目</string>
+    <string name="navigation_drawer_menu_trash">垃圾</string>
+    <string name="navigation_drawer_menu_help">帮助</string>
+    <string name="navigation_drawer_menu_logout">注销</string>
+    <string name="login_accounts_select_add">添加账户</string>
+    <string name="settings_item_title">设置</string>
+    <string name="settings_item_change_account">更改账户</string>
+    <string name="settings_clear_cache">清除缓存</string>
+    <string name="settings_title_common">常见</string>
+    <string name="setting_wifi">仅使用Wi-Fi上传文件</string>
+    <string name="setting_title_wifi">Wi-Fi</string>
+    <string name="setting_cache_cleared">缓存已清除</string>
+    <!-- Main toolbar menu -->
+    <string name="toolbar_menu_search_result">搜索结果</string>
+    <string name="toolbar_menu_search_hint">搜索…</string>
+    <string name="toolbar_menu_main_options">选项</string>
+    <string name="toolbar_menu_main_share">分享</string>
+    <string name="toolbar_menu_main_move">移动</string>
+    <string name="toolbar_menu_main_copy">复制</string>
+    <string name="toolbar_menu_main_remove_from_list">从列表中移除</string>
+    <string name="toolbar_menu_main_rename">重命名</string>
+    <string name="toolbar_menu_main_delete">删除</string>
+    <string name="toolbar_menu_main_select">选择…</string>
+    <string name="toolbar_menu_main_select_all">全选</string>
+    <string name="toolbar_menu_main_deselect">取消选择</string>
+    <string name="toolbar_menu_sort_by">排序方式</string>
+    <string name="toolbar_menu_sort_order">排序顺序</string>
+    <string name="toolbar_menu_sort_title">标题</string>
+    <string name="toolbar_menu_sort_type">类型</string>
+    <string name="toolbar_menu_sort_size">大小</string>
+    <string name="toolbar_menu_sort_asc">升序</string>
+    <string name="toolbar_menu_sort_desc">降序</string>
+    <string name="toolbar_menu_main_download">下载</string>
+    <string name="toolbar_menu_main_open">打开</string>
+    <!-- List context menu -->
+    <string name="list_context_folder_name">文件夹名称</string>
+    <string name="list_context_folder_title">文件夹标题</string>
+    <string name="list_context_edit">编辑文档</string>
+    <string name="list_context_share">分享</string>
+    <string name="list_context_external_link">通过链接进行外部访问</string>
+    <string name="list_context_move">移动</string>
+    <string name="list_context_create_copy">复制</string>
+    <string name="list_context_create_download">下载</string>
+    <string name="list_context_rename">重命名</string>
+    <string name="list_context_rename_success">重命名成功</string>
+    <string name="list_context_delete">删除</string>
+    <string name="list_context_delete_storage">断开存储</string>
+    <string name="list_context_delete_success">删除成功</string>
+    <string name="list_context_remove_from_list">@string/toolbar_menu_main_remove_from_list</string>
+    <string name="list_context_delete_recent">从最近中移除</string>
+    <!-- List action menu -->
+    <string name="list_action_sheet">电子表格</string>
+    <string name="list_action_presentation">演示文稿</string>
+    <string name="list_action_doc">文本文档</string>
+    <string name="list_action_folder">文件夹</string>
+    <string name="list_action_photo">制作照片</string>
+    <string name="list_action_upload">上传文件</string>
+    <string name="list_action_storage">连接第三方存储</string>
+    <!-- Dialog info -->
+    <!-- Pager -->
+    <string name="main_pager_docs_common">常见</string>
+    <string name="main_pager_docs_share">与我分享</string>
+    <string name="main_pager_docs_projects">项目</string>
+    <string name="main_pager_docs_trash">垃圾</string>
+    <!-- Placeholder -->
+    <string name="placeholder_connection">连接错误</string>
+    <string name="placeholder_empty">空文件夹</string>
+    <string name="placeholder_search">未找到任何东西</string>
+    <string name="placeholder_share">未分享</string>
+    <string name="placeholder_access_denied">拒绝访问</string>
+    <string name="placeholder_no_subfolders">无子文件夹</string>
+    <string name="placeholder_no_users">无用户</string>
+    <string name="placeholder_no_groups">无群组</string>
+    <string name="placeholder_no_users_groups">无用户和群组</string>
+    <string name="placeholder_media_error">无法加载媒体</string>
+    <string name="placeholder_try_again">再试一次</string>
+    <string name="placeholder_loading_files">正在加载文件…</string>
+    <!-- Time marks-->
+    <string name="list_headers_folder">文件夹</string>
+    <string name="list_headers_files">文件</string>
+    <string name="list_headers_created">刚刚创建</string>
+    <string name="list_headers_today">今天</string>
+    <string name="list_headers_yesterday">昨天</string>
+    <string name="list_headers_week">本周</string>
+    <string name="list_headers_month">本月</string>
+    <string name="list_headers_year">本年</string>
+    <string name="list_headers_more_year">超过一年</string>
+    <!-- ======================================================================================= -->
+    <!-- Share -->
+    <string name="share_title_main">共享设置</string>
+    <string name="share_title_add">添加人员</string>
+    <string name="share_title_search">搜索人员</string>
+    <string name="share_goal_user">用户</string>
+    <string name="share_goal_group">群组</string>
+    <string name="share_main_external_access">通过链接进行外部访问</string>
+    <string name="share_main_external_access_info">为拥有链接的所有人提供访问权限</string>
+    <string name="share_main_external_copy_button">复制链接</string>
+    <string name="list_context_get_external_link">获取外部访问链接</string>
+    <string name="share_popup_access_full">完全访问权限</string>
+    <string name="share_popup_access_review">审阅</string>
+    <string name="share_popup_access_read_only">只读</string>
+    <string name="share_popup_access_deny_access">拒绝访问</string>
+    <string name="share_popup_access_deny_remove">移除</string>
+    <string name="share_popup_access_fill_forms">填写表单</string>
+    <string name="share_popup_access_comment">评论</string>
+    <!-- External link -->
+    <string name="share_access_success">外部访问成功</string>
+    <string name="share_access_denied">外部访问拒绝</string>
+    <string name="share_clipboard_external_copied">Secret链接已复制到剪贴板</string>
+    <string name="share_clipboard_internal_copied">门户用户链接已复制到剪贴板</string>
+    <string name="share_clipboard_external_link_label">外部链接</string>
+    <!-- Tabs -->
+    <string name="share_tab_users">用户</string>
+    <string name="share_tab_groups">群组</string>
+    <!-- List headers -->
+    <string name="share_add_common_header_users">用户</string>
+    <string name="share_add_common_header_groups">群组</string>
+    <!-- Panel -->
+    <string name="share_panel_message_notification">输入通知消息</string>
+    <string name="share_panel_button_add">添加</string>
+    <!-- ======================================================================================= -->
+    <!-- Storage -->
+    <string name="storage_select_title">选择服务</string>
+    <string name="storage_select_google_drive">Google Drive</string>
+    <string name="storage_select_drop_box">Dropbox</string>
+    <string name="storage_select_one_drive">OneDrive</string>
+    <string name="storage_select_next_cloud">Nextcloud</string>
+    <string name="storage_select_yandex">Yandex.Disk</string>
+    <string name="storage_select_box">Box</string>
+    <string name="storage_select_share_point">SharePoint</string>
+    <string name="storage_select_own_cloud">ownCloud</string>
+    <string name="storage_select_web_dav">其他WebDAV存储</string>
+    <string name="storage_connect_title">文件夹设置</string>
+    <string name="storage_connect_folder_name">文件夹名称</string>
+    <string name="storage_connect_save_button">保存</string>
+    <string name="storage_connect_empty_title">输入存储标题</string>
+    <string name="storage_web_title">连接服务</string>
+    <string name="storage_connect_button">连接</string>
+    <string name="storage_web_dav_settings_login">登录</string>
+    <string name="storage_web_dav_settings_password">密码</string>
+    <string name="storage_web_dav_settings_title">输入服务标题</string>
+    <!-- ======================================================================================= -->
+    <!-- Operations -->
+    <string name="operation_title">选择文件夹</string>
+    <string name="operation_choose_section">选择分区</string>
+    <string name="operation_complete_message">操作完成</string>
+    <string name="operation_delete_impossible">无法删除文件。文件已在门户中打开。</string>
+    <string name="operation_delete_multiple">.由于有一个或多个文件已在门户上打开，所以其没有被删除</string>
+    <string name="operation_panel_move_button">移至此处</string>
+    <string name="operation_panel_copy_button">复制至此处</string>
+    <string name="operation_panel_cancel_button">取消</string>
+    <string name="operation_empty_lists_data">选择操作项目</string>
+    <string name="operation_error_move_to_same">无法移动到相同的文件夹</string>
+    <string name="operation_error_move_to_same_subfolder">无法移动到相同的子文件夹</string>
+    <string name="operation_snackbar_send_link">发送链接</string>
+    <string name="operation_snackbar_return">返回</string>
+    <string name="operation_share_send_link">发送</string>
+    <!-- ======================================================================================= -->
+    <!-- Trash -->
+    <string name="trash_dialog_empty_title">清空垃圾箱</string>
+    <string name="trash_popup_delete">永久删除</string>
+    <!-- ======================================================================================= -->
+    <!-- Managers load -->
+    <string name="download_manager_title">WORLDOFFICE下载</string>
+    <string name="download_manager_progress_title">正在下载</string>
+    <string name="download_manager_complete">下载完成</string>
+    <string name="download_manager_error">下载错误</string>
+    <string name="download_manager_error_free_space">没有足够的空闲空间</string>
+    <string name="download_manager_error_url">URL语法错误</string>
+    <string name="download_manager_cancel">下载已取消</string>
+    <string name="download_manager_repeat">已在下载文件</string>
+    <string name="download_manager_open">打开</string>
+    <string name="download_manager_notification_cancel_download">取消下载</string>
+    <string name="download_manager_folders_download">无法下载文件夹</string>
+    <string name="download_manager_select_files">选择文件</string>
+    <string name="upload_manager_file_picker_title">选择要上传的文件</string>
+    <string name="upload_manager_progress_title">正在上传</string>
+    <string name="upload_manager_error">上传错误</string>
+    <string name="upload_manager_cancel">已取消上传</string>
+    <string name="upload_manager_repeat">已在上传文件</string>
+    <string name="upload_manager_complete">上传完成</string>
+    <string name="upload_manager_error_url">URL语法错误</string>
+    <string name="upload_manager_error_number_files">您不能同时上传超过20个文件</string>
+    <string name="upload_manager_image_picker_title">选择要上传的图像</string>
+    <string name="upload_manager_error_file_size">文件大小不能超过100MB</string>
+    <string name="upload_manager_notification_cancel_upload">取消上传</string>
+    <string name="upload_manager_waiting_title">等待上传</string>
+    <string name="upload_error_wifi">您只能在启用Wi-Fi时上传</string>
+    <!-- ======================================================================================= -->
+    <!-- Socials -->
+    <string name="socials_twitter_failed_auth">使用Twitter登录失败</string>
+    <string name="socials_facebook_cancel_auth">取消使用Facebook登陆</string>
+    <string name="socials_facebook_failed_auth">使用Facebook登录失败</string>
+    <string name="socials_google_failed_auth">使用Google登录失败</string>
+    <!-- ======================================================================================= -->
+    <!-- On boarding -->
+    <string name="on_boarding_skip_button">跳过</string>
+    <string name="on_boarding_next_button">下一个</string>
+    <!-- ======================================================================================= -->
+    <!-- Media -->
+    <string name="media_image_share_chooser">选择应用以进行共享</string>
+    <string name="media_image_list_info">媒体文件：%1$s</string>
+    <string name="media_video_error">播放器未知错误：%1$s</string>
+    <string name="auth_header_screen_1">设置双因素身份验证</string>
+    <string name="auth_info_screen_1">安装身份验证器应用（例如Google Authenticator、Authy）以生成访问代码并继续使用您的门户</string>
+    <string name="auth_header_screen_2">启动身份验证器应用</string>
+    <string name="auth_info_screen_2">运行应用，然后点击新账户图标</string>
+    <string name="auth_header_screen_3">添加密钥</string>
+    <string name="auth_info_screen_3">复制密钥并将其粘贴至您的身份验证器应用中</string>
+    <string name="rename_file_exist">存在具有相同名称的文件</string>
+    <string name="device_path_file_error">此文件不存在。</string>
+    <string name="device_trash_files_restore">恢复</string>
+    <string name="error_recent_account">文件已被删除或在此账户中不可用。</string>
+    <string name="error_recent_enter_account">请输入账户。</string>
+    <string name="operation_move_file_existing">%1$s已在目标目录中存在。</string>
+    <string name="upload_to_portal">上传到门户</string>
+    <string name="this_device">此设备</string>
+    <string name="dialog_clear_cache">清除缓存？</string>
+    <string name="error_unsupported_path">不支持的路径</string>
+    <string name="error_unsupported_format">不支持的格式</string>
+    <string name="cloud_account_description">在安全环境中协作并连接第三方存储</string>
+    <string name="cloud_account_start_button">开始</string>
+    <string name="cloud_account_other_storages_button">其他存储</string>
+    <string name="cloud_world-office_description">将文档存储与云端并就其展开协作</string>
+    <string name="cloud_accounts_title">账户</string>
+    <string name="error_long_file_name">文件名过长</string>
+    <string name="dialog_remove_account_description">
+        %2$s门户中带有%1$s的用户将被登出，并从账户列表中移除。\n\n请注意：如需登录，您需要输入门户地址、邮箱以及密码。您的所有文件均将被安全存储。
+    </string>
+    <string name="dialog_logout_account_title">确定要登出？</string>
+    <string name="dialog_logout_account_description">
+        登出后，您将不需要输入门户地址或邮箱，仅需输入密码即可。别担心，所有文件都将被安全地存储于云端。
+    </string>
+    <string name="profile_username_title">用户名</string>
+    <string name="filter_title_type">类型</string>
+    <string name="profile_portal_address">门户地址</string>
+    <string name="profile_type_admin">管理员</string>
+    <string name="profile_type_visitor">访客</string>
+    <string name="profile_type_user">用户</string>
+    <string name="profile_thirdparty_title">已连接的服务</string>
+    <string name="app_settings_analytic_title">帮助改进产品</string>
+    <string name="app_settings_analytic">共享应用分析数据</string>
+    <string name="app_manage_files_title">访问文件管理</string>
+    <string name="app_manage_files_description">要在本地编辑和创建文档，请允许此应用访问您设备上的文件。</string>
+
+    <string name="app_internal_error">内部错误</string>
+    <string name="app_fragment_crash_error">请关闭此应用程序并再次尝试</string>
+    <string name="operation_add_to_favorites">添加到收藏夹</string>
+    <string name="operation_remove_from_favorites">从收藏夹中删除</string>
+    <string name="main_pager_docs_favorites">收藏夹</string>
+    <string name="list_context_add_to_favorite">添加到收藏夹</string>
+    <string name="list_context_delete_from_favorite">从收藏夹中删除</string>
+    <string name="login_enterprise_single_sign_button_login">通过 %1$s 登录</string>
+    <string name="login_enterprise_single_sign_button_login_default">单点登录</string>
+    <string name="login_not_authorization_info_token">会话时间结束</string>
+    <string name="login_password_recovery_hint">输入您在门户上注册时所使用的邮箱。密码恢复说明指南将随邮件发送。</string>
+    <string name="login_password_recovery_button_text">返回输入页面</string>
+    <string name="login_password_recovery_success_hint">如果存在使用邮箱 %1$s 的用户，则密码变更指南将随邮件发送。</string>
+    <string name="login_password_recovery_toolbar_title">密码恢复</string>
+    <string name="download_manager_archiving_progress">创建存档</string>
+    <string name="download_manager_exceed_size_100">超出最大文件大小（100MB）</string>
+    <string name="download_manager_exceed_size_25">超出最大文件大小（25MB）</string>
+    <string name="snackbar_undo">撤消</string>
+    <string name="errors_server_auth_too_many_attempts">尝试次数过多。请稍后重试或 </string>
+    <string name="share_snackbar_remove_user">用户被删除</string>
+    <string name="storage_onedrive_error_opened">文件在门户网站上被打开</string>
+    <string name="storage_onedrive_error_exist">该文件夹中已经存在相同名称的文件。</string>
+    <string name="operation_panel_restore_button">在这里恢复</string>
+    <string name="trash_snackbar_move_text">您可以从TRASH中恢复文件</string>
+    <string name="trash_snackbar_move_button">恢复</string>
+    <string name="trash_popup_move">恢复到</string>
+    <string name="on_boarding_back_button">返回</string>
+    <string name="auth_header_screen_4">输入代码</string>
+    <string name="auth_info_screen_4">从您的认证器应用程序中输入代码到输入栏中</string>
+    <string name="auth_step_title">步骤 %1$d 的 %2$d</string>
+    <string name="auth_install_button">安装</string>
+    <string name="auth_confirm_button">确认</string>
+    <string name="auth_clipboard_key_copied">键被复制到剪贴板</string>
+    <string name="auth_edit_hint">代码</string>
+    <string name="app_settings_security">安全性</string>
+    <string name="app_settings_passcode">密码锁</string>
+    <string name="app_settings_disabled">禁用</string>
+    <string name="app_settings_enabled">启用</string>
+    <string name="app_Settings_passcode_enable">启用密码</string>
+    <string name="app_settings_passcode_change">更改密码</string>
+    <string name="app_settings_passcode_fingerprint">使用指纹解锁</string>
+    <string name="app_settings_passcode_enter_title">输入一个密码</string>
+    <string name="app_settings_passscode_enter_full_title">输入密码以解锁应用程序</string>
+    <string name="app_settings_passcode_enter_subtitle">选择密码来解锁应用程序</string>
+    <string name="app_settings_passcode_confirm_title">确认密码</string>
+    <string name="app_settings_passcode_confirm_subtitle">再输入一次密码</string>
+    <string name="app_settings_passcode_confirm_error">密码不匹配</string>
+    <string name="app_settings_passcode_change_disable_title">输入您当前的密码</string>
+    <string name="app_settings_passcode_change_disable_error">输入的密码不正确</string>
+    <string name="app_settings_passcode_description"> - 这是在应用程序开始时要求的代码。.\n\n请注意! 如果您忘记密码，您必须删除或重新安装应用程序。设备上的所有文件都将丢失。 </string>
+    <string name="app_settings_passcode_fingerprint_title">查阅文件</string>
+    <string name="item_owner_self">我</string>
+    <string name="sign_in_terms_and_policy_text">
+        <![CDATA[
+           通过继续进行，您同意
+            <a href="%1$s">Privacy Policy</a>
+            和
+            <a href="%2$s">Terms of Service</a>
+        ]]>
+    </string>
+    <string name="login_create_signin_passwords_length">密码必须包含：8至30个字符</string>
+    <string name="list_action_import">导入文件</string>
+    <string name="storage_google_drive_copy_folder_error">文件夹无法复制</string>
+    <string name="socials_google_cancel_auth">取消谷歌的登录</string>
+    <string name="error_open_project_file">该账户没有访问项目的权限</string>
+    <string name="switch_account_open_project_file">切换帐户</string>
+    <string name="app_settings_color_theme">颜色主题</string>
+    <string name="app_settings_follow_the_system">跟随系统</string>
+    <string name="app_settings_light_theme">浅色主题</string>
+    <string name="app_settings_dark_theme">深色主题</string>
+    <string name="errors_import_local_file_desc">拒绝许可</string>
+    <string name="errors_import_local_file">拒绝访问。提供读写权限</string>
+    <string name="errors_first_name">名字无效</string>
+    <string name="errors_last_name">姓氏无效</string>
+    <string name="navigation_drawer_menu_sign_in">登录</string>
+    <string name="toolbar_menu_search_view_hint">请输入您要查询的信息</string>
+    <string name="toolbar_menu_sort_date_modified">日期</string>
+    <string name="toolbar_menu_main_filter">过滤</string>
+    <string name="list_context_open_location">开放位置</string>
+    <string name="placeholder_loading_users">正在加载用户。。。</string>
+    <string name="placeholder_loading_groups">正在加载小组。。。</string>
+    <string name="krdive_password_helper_text">如果您已经激活了双重认证，请从Infomaniak管理器中安装CDM应用程序。</string>
+    <string name="kdrive_info_title">您必须有该播放器的付费版本才能使用这项服务。</string>
+    <string name="storage_email_connection">电子邮箱连接</string>
+    <string name="dialog_remove_account_title">从设备中删除</string>
+    <string name="filter_toolbar_title">过滤</string>
+    <string name="filter_toolbar_users_title">选择用户</string>
+    <string name="filter_toolbar_groups_title">选择小组</string>
+    <string name="filter_title_author">作者</string>
+    <string name="filter_title_search">搜索</string>
+    <string name="filter_type_documents">文档</string>
+    <string name="filter_type_presentations">幻灯片</string>
+    <string name="filter_type_spreadsheets">表格</string>
+    <string name="filter_type_images">图片</string>
+    <string name="filter_type_media">媒体</string>
+    <string name="filter_type_archives">档案室</string>
+    <string name="filter_type_all">所有文件</string>
+    <string name="filter_exclude_subfolders">没有子文件夹</string>
+    <string name="filter_show_results">显示 %1$s 结果</string>
+    <string name="filter_button_reset">重置</string>
+    <string name="errors_web_viewr">编辑网络文件时发生错误</string>
+    <string name="errors_webdav_sign_in">服务器、用户名或密码错误</string>
+    <string name="errors_webdav_username_password">用户名或密码错误</string>
+    <string name="errors_webdav_server">服务器错误</string>
+    <string name="toolbar_menu_sort_tags">标签</string>
+    <string name="share_invite_user">邀请用户</string>
+    <string name="storage_web_dav_settings_server">服务器</string>
+    <string name="storage_web_dav_settings_required">必备</string>
+    <string name="context_room_archive_message">房间移至存档</string>
+    <string name="context_rooms_archive_message">房间已经移至存档</string>
+    <string name="list_context_pin_to_top">置顶</string>
+    <string name="list_rooms_title">房间</string>
+    <string name="list_context_unpin">取消置顶</string>
+    <string name="list_context_info">信息</string>
+    <string name="list_context_add_users">添加用户</string>
+    <string name="rooms_add_collaboration">协作房间</string>
+    <string name="rooms_add_collaboration_des">与您的团队一起对一个或多个文件进行协作编辑</string>
+    <string name="rooms_add_custom">自定义房间</string>
+    <string name="rooms_add_custom_des">应用您自己的设置，将这个房间用于任何自定义目的</string>
+    <string name="rooms_filter_type_filling_forms">填表</string>
+    <string name="rooms_filter_type_collaboration">协作</string>
+    <string name="rooms_filter_type_review">审查</string>
+    <string name="rooms_filter_type_view_only">只读</string>
+    <string name="rooms_filter_type_custom">自定义</string>
+    <string name="rooms_filter_author_other_users">其他用户。。。</string>
+    <string name="rooms_filter_third_party_title">第三方资源</string>
+    <string name="dialog_create_room">创建房间</string>
+    <string name="dialog_create_room_value">新建房间</string>
+    <string name="invite_by_email">通过电子邮件邀请用户</string>
+    <string name="share_user_type_room_admin">房间管理员</string>
+    <string name="share_access_room_editor">编辑者</string>
+    <string name="share_access_room_form_filler">填表者</string>
+    <string name="share_access_room_reviewer">审查者</string>
+    <string name="share_access_room_commentator">评论者</string>
+    <string name="share_access_room_viewer">查看者</string>
+    <string name="share_invite_error_empty">请输入电邮</string>
+    <string name="invite_link_send_success">邀请链接已发送</string>
+    <string name="share_choose_access_title">先择访问权限</string>
+    <string name="share_invite_title">邀请</string>
+    <string name="room_create_success">创建的房间</string>
+    <string name="room_delete_success">删除的房间</string>
+    <string name="switch_account_title">是否要切换账户？</string>
+    <string name="switch_account_description">登录到门户账户 %1$s 来打开文件。</string>
+    <plurals name="dialogs_question_message_delete" tools:ignore="UnusedQuantity">
+        <item quantity="one">它将被删除且不可恢复。\n此操作是无法撤销的。</item>
+        <item quantity="other">它们将被删除且不可恢复。\n此操作是无法撤销的。</item>
+    </plurals>
+    <plurals name="dialogs_question_message_to_trash" tools:ignore="UnusedQuantity">
+        <item quantity="one">它将被移至垃圾箱。</item>
+        <item quantity="other">他们将被移至垃圾箱。</item>
+    </plurals>
+    <string name="dialogs_question_delete_all_title">确认删除所有项目？</string>
+    <plurals name="dialogs_question_delete_title" tools:ignore="UnusedQuantity">
+        <item quantity="one">确认删除此项？</item>
+        <item quantity="other">确认删除 %1$d 这些项目？</item>
+    </plurals>
+    <string name="storage_dropbox_email_not_verified_error">电子邮箱未验证</string>
+    <string name="download_manager_downloading">下载中…</string>
+    <string name="settings_language">语言</string>
+    <plurals name="operation_moved_to_trash" tools:ignore="UnusedQuantity">
+        <item quantity="one">移至垃圾箱的物品</item>
+        <item quantity="other">移至垃圾箱的物品</item>
+    </plurals>
+    <plurals name="operation_delete_irretrievably" tools:ignore="UnusedQuantity">
+        <item quantity="one">无法复原的删除项目</item>
+        <item quantity="other">无法复原的删除项目</item>
+    </plurals>
+    <string name="share_expected_member">等待成员</string>
+    <string name="app_settings_main_help">帮助</string>
+    <string name="clear_recents">"删除最近记录?"</string>
+    <string name="list_context_leave_room">离开房间</string>
+    <string name="list_context_copy_general_link">复制通用链接</string>
+    <string name="list_context_edit_room">编辑房间</string>
+    <string name="list_action_image_from_library">图库中的图片</string>
+    <string name="list_action_delete_link">删除链接</string>
+    <string name="placeholder_other_accounts">这里还没有其他帐户</string>
+    <string name="context_room_move_to_archive">移至归档</string>
+    <plurals name="context_rooms_unarchive_message" tools:ignore="UnusedQuantity">
+        <item quantity="one">房间成功恢复</item>
+        <item quantity="other">房间成功恢复</item>
+    </plurals>
+    <string name="rooms_choose_room">选择房间类型</string>
+    <string name="room_name_hint">房间名称</string>
+    <string name="room_add_tag_hint">添加标签</string>
+    <string name="rooms_error_name">房间名称不能为空</string>
+    <string name="rooms_error_create">创建房间错误</string>
+    <string name="rooms_error_edit">编辑房间错误</string>
+    <string name="leave_room_title">离开房间</string>
+    <string name="leave_room_owner_desc">您是此房间的所有者。在离开房间之前，您必须将所有者的角色转移给另一个用户。</string>
+    <string name="leave_room_desc">您确定要离开此房间吗？您可以通过房间管理员的新邀请再次加入。</string>
+    <string name="leave_room_assign">指定所有者</string>
+    <string name="leave_room_message">您已离开房间</string>
+    <string name="room_set_owner_title">更改房间所有者</string>
+    <string name="room_search_not_found">未找到用户</string>
+    <string name="room_search_not_found_desc">曾被邀请到协作空间或独立房间的用户列表将显示在此处。</string>
+
+    <plurals name="rooms_restore_title" tools:ignore="UnusedQuantity">
+        <item quantity="one">恢复这个房间?</item>
+        <item quantity="other">恢复这些房间?</item>
+    </plurals>
+
+    <plurals name="rooms_restore_desc" tools:ignore="UnusedQuantity">
+        <item quantity="one">房间中的所有共享链接将将被激活，所有拥有链接的人都能访问其中的内容。您要恢复房间吗?</item>
+        <item quantity="other">房间中的所有共享链接将将被激活，所有拥有链接的人都能访问其中的内容。您要恢复房间吗?</item>
+    </plurals>
+    <string name="rooms_add_public_room">公共房间</string>
+    <string name="rooms_add_public_room_des">通过共享链接邀请用户，无需注册即可查看文档。您还可以将此房间嵌入任何网络界面。</string>
+    <string name="rooms_move_to_public_title">移至公共房间</string>
+    <string name="rooms_move_to_public_title_desc">所有拥有链接的人都能访问该房间及其内容。您要继续吗?</string>
+    <string name="rooms_info_general_link">通用链接</string>
+    <string name="rooms_info_additional_link">附加链接</string>
+    <string name="rooms_info_additional_links">"附加链接 (%1$d/%2$d)"</string>
+    <string name="rooms_info_create_link">创建并复制</string>
+    <string name="rooms_info_create_link_complete">链接已成功创建并复制到剪贴板</string>
+    <string name="rooms_info_delete_link">删除链接</string>
+    <string name="rooms_info_delete_link_complete">链接已删除</string>
+    <string name="rooms_info_revoke_link">撤销链接</string>
+    <string name="rooms_info_revoke_link_complete">链接已撤销</string>
+    <string name="rooms_info_revoke">撤销</string>
+    <string name="rooms_info_copy_link">复制链接</string>
+    <string name="rooms_info_copy_link_and_password">复制链接和密码</string>
+    <string name="rooms_info_copy_link_to_clipboard">链接已成功复制到剪贴板</string>
+    <string name="rooms_info_admin_title">管理 (%d)</string>
+    <string name="rooms_info_users_title">用户 (%1d)</string>
+    <string name="rooms_info_guests_title">访客 (%1d)</string>
+    <string name="rooms_info_expected_title">预期用户 (%1d)</string>
+    <string name="rooms_info_link_expired">链接已过期</string>
+    <string name="rooms_info_link_expired_full">链接已过期并已被禁用</string>
+    <string name="rooms_info_link_name">链接名称</string>
+    <string name="rooms_info_password_access">密码访问</string>
+    <string name="rooms_info_file_rectrict">限制文件内容的复制、下载和打印</string>
+    <string name="rooms_info_file_rectrict_desc">开启此设置，通过链接共享的房间中的文件和文件夹将被限制下载</string>
+    <string name="rooms_info_time_limit_title">时间限制</string>
+    <string name="rooms_info_time_limit">启用时间限制</string>
+    <string name="rooms_info_valid_through">有效期至</string>
+    <string name="rooms_info_save_link_title">保存链接</string>
+    <string name="rooms_info_save_link_question">您确定要保存并退出吗?</string>
+    <string name="rooms_info_save_button">保存</string>
+    <string name="rooms_info_dont_save_button">不保存</string>
+    <string name="rooms_filter_type_public">公共</string>
+    <string name="share_access_room_owner">所有者</string>
+    <string name="settings_language_confirmation_message">现在应用程序使用英语语言，因为系统语言已更改</string>
+    <string name="settings_language_confirmation_accept">好的</string>
+    <string name="settings_language_continue_using_app_language">继续使用 %1$s</string>
+    <string name="conversion_dialog_title">转换并打开文档</string>
+    <string name="conversion_dialog_message">您打开的文档不是OOXML（Office Open XML）文件。将其转换为OOXML格式以实现更快的查看和编辑。</string>
+    <string name="conversion_dialog_open_in_view_mode">在查看模式中打开</string>
+    <string name="conversion_dialog_convert_to">转换为 %1s</string>
+    <string name="conversion_dialog_converting_to">正在转换为 %1s</string>
+    <string name="main_pager_docs_my">我的文档</string>
+    <string name="main_pager_docs_virtual_room">房间</string>
+    <string name="main_pager_docs_archive_room">存档</string>
+    <string name="errors_sign_in_ldap_checkbox">以 LDAP 用户身份登录</string>
+    <string name="placeholder_no_users_found">未找到用户</string>
+    <string name="placeholder_no_users_found_desc">未找到与您的搜索匹配的用户。请调整搜索参数或清除搜索字段，以查看完整的用户列表</string>
+    <string name="placeholder_no_members_found">未找到成员</string>
+    <string name="placeholder_no_members_found_desc">您可以手动添加新团队成员，或通过链接邀请他们加入</string>
+    <string name="placeholder_no_rooms">欢迎来到协作空间!</string>
+    <string name="placeholder_empty_archive">这里还没有存档房间</string>
+    <string name="placeholder_no_search_result">无搜索结果</string>
+    <string name="placeholder_no_search_result_desc">未找到与您的搜索匹配的结果。请换句话再试一下</string>
+    <string name="placeholder_empty_room_visitor_desc">管理员上传的文件和文件夹将显示在此处</string>
+    <string name="placeholder_payment_required">专业订阅已过期</string>
+    <string name="placeholder_payment_required_desc">您当前的“专业”资费计划已过期。请在帐户设置中续订订阅，以便能够使用协作空间。如果您有任何问题，请联系支持人员。</string>
+    <string name="placeholder_payment_required_button">更新专业计划</string>
+    <string name="filter_type_form_templates">表单模板</string>
+    <string name="filter_type_forms">表单</string>
+    <string name="room_placeholder_created_room_title">房间已创建!</string>
+    <string name="room_placeholder_created_room_subtitle">创建新文件夹来组织您的文件。</string>
+    <string name="room_recent_via_link">可通过链接访问</string>
+    <string name="room_manage_room">管理房间</string>
+    <string name="rooms_info_edit_link">编辑链接</string>
+    <string name="rooms_info_create_link_title">创建链接</string>
+    <string name="rooms_info_groups_title">群组 (%1d)</string>
+    <string name="rooms_share_shared_links">共享链接</string>
+    <string name="rooms_share_shared_link_title">共享链接</string>
+    <string name="rooms_share_shared_desc">提供文档访问权限并设置权限级别。</string>
+    <string name="rooms_share_lifetime_hours_12">12 小时</string>
+    <string name="rooms_share_lifetime_days_1">1 天</string>
+    <string name="rooms_share_lifetime_days_7">7 天</string>
+    <string name="rooms_share_lifetime_unlimited">无限制</string>
+    <string name="rooms_share_lifetime_custom">自定义</string>
+    <string name="rooms_share_shared_to_docsspace_users">仅限协作空间户</string>
+    <string name="rooms_share_shared_to_anyone">任何具有此链接的人</string>
+    <string name="rooms_share_expires_after">在 %s 后过期</string>
+    <string name="rooms_share_valid_unlimited">链接有效期无限制</string>
+    <string name="rooms_share_access_rights">访问权限</string>
+    <string name="rooms_share_regenerate_link">重新生成链接</string>
+    <string name="rooms_share_general_header">常规</string>
+    <string name="rooms_share_link_life_time">链接有效期</string>
+    <string name="invite_new_members">新成员</string>
+    <string name="invite_new_groups">新群组</string>
+    <string name="invite_add_manually">手动添加</string>
+    <string name="invite_choose_from_list">从列表中选择</string>
+    <string name="invite_already_invited">受邀</string>
+    <string name="share_access_room_type">访问类型</string>
+    <string name="share_access_room_group_desc">群组中所有用户的访问权限</string>
+    <string name="room_create_thirdparty_storage_title">第三方存储</string>
+    <string name="room_create_thirdparty_storage">存储</string>
+    <string name="room_create_thirdparty_location">位置</string>
+    <string name="room_create_thirdparty_location_root">根目录</string>
+    <string name="room_create_thirdparty_new_folder">创建新文件夹</string>
+    <string name="room_create_thirdparty_desc">为此房间的数据存储使用第三方服务。将在已连接的存储空间中创建一个用于存储此房间数据的新文件夹。</string>
+    <string name="room_storage_reconnect">重新连接存储</string>
+    <string name="room_storage_not_availabale">第三方文件夹的内容不可用。尝试重新连接帐户。</string>
+    <string name="personal_portal_end_button">创建免费账户</string>
+    <string name="personal_portal_end_title">我们将停用 WORLDOFFICE Personal</string>
+    <string name="personal_portal_end_text">请注意：我们将于2024年9月1日停止使用 WORLDOFFICE Personal，并强烈建议您改用 WORLDOFFICE 协作空间云端版。</string>
+    <string name="dialogs_question_delete_all_fonts">要删除所有字体吗？</string>
+    <string name="dialogs_question_delete_font">要删除该字体吗？</string>
+    <string name="dialogs_warning_title">警告</string>
+    <string name="dialogs_warning_only_pdf_form_message">文件无法移动到该房间。 请尝试移动 WORLDOFFICE PDF 表单。</string>
+    <string name="dialogs_warning_pinned_room_limit">您不能将超过10个房间置顶。请取消一些当前已置顶的房间。</string>
+    <string name="dialogs_warning_fill_forms_room_create">此类房间无法根据多个文件和文件夹进行创建。 要创建此类房间，请访问房间部分或使用 PDF 表单。</string>
+    <string name="toolbar_menu_view">查看</string>
+    <string name="toolbar_menu_view_list">列表</string>
+    <string name="toolbar_menu_view_grid">网格</string>
+    <string name="list_context_duplicate">复制</string>
+    <string name="list_context_fill">填写</string>
+    <string name="placeholder_no_fonts">没有字体</string>
+    <string name="share_popup_access_custom_filter">自定义过滤器</string>
+    <string name="operation_select_room_title">选择房间</string>
+    <string name="room_duplicate_progress_title">复制进行中</string>
+    <string name="room_duplicate_complete">复制完成</string>
+    <string name="room_duplicate_error">复制错误</string>
+    <string name="room_duplicate_progress_hide_button">隐藏</string>
+    <string name="rooms_add_fill_forms">表单填写房间</string>
+    <string name="rooms_add_fill_forms_des">将PDF表单上传到房间。邀请用户填写PDF表单。查看填写的表单，分析电子表格中自动收集的数据。</string>
+    <string name="room_placeholder_form_room_creator_title">欢迎来到表单填写房间</string>
+    <string name="room_placeholder_created_filling_form_room_subtitle">上传现成的PDF表单或创建新文件夹来管理您的文件</string>
+    <string name="context_protection_title">保护</string>
+    <string name="rooms_upload_pdf_from_docspace">从协作空间上传PDF表单</string>
+    <string name="rooms_upload_pdf_from_device">从设备上传PDF表单</string>
+    <string name="rooms_fill_in_as_title">填写为</string>
+    <string name="rooms_fill_out_form_yourself">自己填写表单</string>
+    <string name="rooms_fill_out_form_yourself_desc">在编辑器窗口中填写原始表单的字段。</string>
+    <string name="rooms_share_and_collect">共享&amp;收集</string>
+    <string name="rooms_share_and_collect_desc">共享您的表单并通过表单填写房间收集反馈。</string>
+    <string name="rooms_fill_form_complete_desc">填写的PDF表单已保存并可在“完成”文件夹中找到。要检查状态，请联系表单所有者并提供指定号码。</string>
+    <string name="rooms_fill_form_complete_number_title">表单编号</string>
+    <string name="rooms_fill_form_complete_owner_title">表单所有者</string>
+    <string name="rooms_fill_form_complete_toolbar_title">表单成功完成</string>
+    <string name="rooms_fill_form_complete_back_to_room">返回房间</string>
+    <string name="rooms_fill_form_complete_check_forms">查看已完成的表单</string>
+    <string name="errors_sign_in_account_not_found">账户未找到</string>
+    <string name="list_action_delete_image">删除图像</string>
+    <string name="dialogs_common_close">关闭</string>
+    <string name="list_context_notification_enable">启用通知</string>
+    <string name="list_context_notification_disable">禁用通知</string>
+    <string name="share_goal_guest">访客</string>
+    <plurals name="app_settings_passcode_many_attempt_seconds">
+        <item quantity="one">尝试次数过多。\n请在%d 秒后重试</item>
+        <item quantity="other">尝试次数过多。\n请在%d 秒后重试</item>
+    </plurals>
+    <plurals name="app_settings_passcode_many_attempt_minutes">
+        <item quantity="one">尝试次数过多。\n请在%d 分钟后重试</item>
+        <item quantity="other">尝试次数过多。\n请在%d 分钟后重试</item>
+    </plurals>
+    <string name="rooms_error_logo_size_exceed">图片大小超过最大值 (1 MB)</string>
+    <string name="room_placeholder_created_virtual_room_title">欢迎来到虚拟数据房间</string>
+    <string name="room_placeholder_created_virtual_room_subtitle">通过快速操作开始：\n创建一个新文件</string>
+    <string name="rooms_info_create_maximum_exceed">已超出最大链接数</string>
+    <string name="rooms_info_delete_link_desc">房间内所有文件的链接都将被删除。之前的房间文件链接和嵌入文档的链接将无法使用。\n\n此操作无法撤消。您确定要继续吗?</string>
+    <string name="rooms_info_revoke_link_desc">房间内所有文件的链接将被重新生成。之前的房间文件链接和嵌入文档的链接将无法使用。\n\n此操作无法撤消。您确定要继续吗?</string>
+    <string name="rooms_info_password_allowed_symbols">允许的字符： a–z, A–Z, 0–9, !"#%&amp;'()*+,-./:;\u003C=&gt;?@[]^_`{|}</string>
+    <string name="rooms_info_password_minimum_length">最小长度：8 个字符</string>
+    <string name="rooms_filter_type_virtual_room">虚拟数据房间</string>
+    <string name="share_user_type_room_docspace_admin">协作空间管理员</string>
+    <string name="share_user_type_room_docspace_owner">协作空间所有者</string>
+    <string name="share_access_room_manager">房间管理员</string>
+    <string name="share_access_room_power_user">内容创作者</string>
+    <string name="rooms_notifications_disabled">房间通知已禁用</string>
+    <string name="rooms_notifications_enabled">房间通知已启用</string>
+    <string name="rooms_vdr">虚拟数据房间</string>
+    <string name="rooms_vdr_desc">使用虚拟数据房间（VDR）在逐步填写和签署文档时实现高级文件安全性和透明度。设置水印，自动索引并跟踪所有内容，限制下载和复制操作。</string>
+    <string name="file_lifetime_desc">"设置文件有效期，此房间中的文件会在定义的时间段后自动删除。有效期从文件上传/创建之日起开始计算。"</string>
+    <string name="file_lifetime_title">文件有效期</string>
+    <string name="file_lifetime_hint">超过以下时间的文件</string>
+    <string name="file_lifetime_warning_title">超过有效期的旧文件将被删除</string>
+    <string name="file_lifetime_warning_desc">有效期倒计时从文件创建日期开始。此房间中的某些文件已超过设定的有效期，一旦您启用此设置，这些文件将被删除。</string>
+    <string name="file_lifetime_action">文件操作</string>
+    <string name="file_lifetime_action_delete">永久删除</string>
+    <string name="file_lifetime_action_move_to_trash">移至回收站</string>
+    <string name="file_lifetime_time_period">时间段</string>
+    <string name="file_lifetime_period_days">天</string>
+    <string name="file_lifetime_period_months">月</string>
+    <string name="file_lifetime_period_years">年</string>
+    <string name="rooms_vdr_file_restrict_desc">使用此设置，可禁止具有“可查看”权限的用户下载和复制内容</string>
+    <string name="rooms_vdr_watermark_title">添加水印到文档</string>
+    <string name="rooms_vdr_watermark_desc">使用水印保护此房间中的所有文档。如果文档已经包含水印，则不会被替换。</string>
+    <string name="rooms_vdr_indexing_title">自动索引</string>
+    <string name="rooms_vdr_indexing_desc">启用自动索引，通过序列号对文件和文件夹进行索引。所有用户的默认排序方式将设置为按序号排序。</string>
+    <string name="rooms_vdr_storage_quota_title">存储配额</string>
+    <string name="rooms_vdr_storage_quota_desc">每个房间设置的存储配额。您可以更改此值或关闭存储限制。</string>
+    <string name="rooms_vdr_size_quota">大小配额</string>
+    <string name="rooms_vdr_measurement_unit">测量单位</string>
+    <string name="rooms_vdr_watermark_type">添加水印类型</string>
+    <string name="rooms_vdr_watermark_type_info">查看者信息</string>
+    <string name="rooms_vdr_watermark_type_image">图像</string>
+    <string name="rooms_vdr_watermark_static_text">添加静态文本</string>
+    <string name="rooms_vdr_watermark_position">位置</string>
+    <string name="rooms_vdr_watermark_position_diagonal">对角线</string>
+    <string name="rooms_vdr_watermark_position_horizontal">水平线</string>
+    <string name="rooms_vdr_watermark_info_username">用户名称</string>
+    <string name="rooms_vdr_watermark_info_email">用户电子邮件</string>
+    <string name="rooms_vdr_watermark_info_ip_address">用户 IP 地址</string>
+    <string name="rooms_vdr_watermark_info_current_date">当前日期</string>
+    <string name="rooms_vdr_watermark_info_room_name">房间名称</string>
+    <string name="rooms_vdr_watermark_image_select">选择图片</string>
+    <string name="rooms_vdr_watermark_image_scale">缩放</string>
+    <string name="rooms_vdr_watermark_image_rotate">旋转</string>
+    <string name="rooms_vdr_watermark_image_desc">此图像预览将大致显示水印在您的文件中的显示效果。</string>
+    <string name="rooms_vdr_lifetime_info">文件在此房间中的有效期期设置为 %1$d %2$s</string>
+    <string name="trash_toolbar_info">回收站中的文件将在 30 天后自动删除</string>
+    <string name="rooms_expire_context_info">文件将在 %s 后被删除</string>
+    <string name="rooms_index_subtitle">索引 %s</string>
+    <string name="rooms_index_edit">编辑索引</string>
+    <string name="rooms_index_export">导出房间索引</string>
+    <string name="rooms_index_title">排序索引</string>
+    <string name="rooms_index_reorder">重新排序</string>
+    <string name="rooms_index_apply">应用</string>
+    <string name="rooms_index_exit_no_saving">退出而不保存？\n您已对索引进行了更改。如果您继续而不保存，则不会应用这些更改。</string>
+    <string name="rooms_index_reorder_desc">重新排序操作将移除索引中的空格。文件将按顺序重新编制索引，并使用偏移量填补缺失的索引。</string>
+    <string name="rooms_index_reorder_complete_title">文件已导出</string>
+    <string name="rooms_index_reorder_complete_desc">%s 文件已导出至文档</string>
+    <string name="rooms_index_reorder_open_file">打开文件</string>
+    <string name="rooms_protected_room">受保护的房间</string>
+    <string name="rooms_invalid_password">密码无效</string>
+    <string name="rooms_invite_access_description">无法将访客、用户和群组指定为房间管理员。只有房间和协作空间管理员才适合指定角色。</string>
+    <string name="whats_new_title">新增功能</string>
+    <string name="whats_new_next">开始</string>
+    <string name="whats_new">v9.3 新功能</string>
+    <string name="whats_new_1">评论中提及成员</string>
+    <string name="whats_new_1_desc">在评论中提及团队成员，及时通知并提升协作效率</string>
+    <string name="whats_new_2">文档字数统计</string>
+    <string name="whats_new_2_desc">内置字数统计，随时查看文档长度</string>
+    <string name="whats_new_3">编辑器搜索优化</string>
+    <string name="whats_new_3_desc">在文档、表格和演示中更快速查找内容</string>
+    <string name="whats_new_4">界面更新</string>
+    <string name="whats_new_4_desc">全新图标与重设计的上下文菜单，操作更直观高效</string>
+
+    <!-- Newly added translations (v9.0.0 - 2025-06-09) -->
+    <string name="cloud_create_account">创建免费帐户</string>
+    <string name="context_menu_desc">更多</string>
+    <string name="desc_create_from_template">基于模板创建房间。所有设置、用户、文件夹和文件都将取自所选的房间模板。</string>
+    <string name="desc_info_template">房间模板。使用此模板快速创建新房间。</string>
+    <string name="dialogs_warning_room_space_quota_exceed">房间存储空间额度已超出 (%s)。</string>
+    <string name="edit_comment_field_label">批注</string>
+    <string name="edit_comment_label">批注</string>
+    <string name="edit_comment_success">批注已成功保存</string>
+    <string name="edit_comment_title">编辑批注</string>
+    <string name="error_create_room">创建房间失败</string>
+    <string name="error_create_template">创建模板失败</string>
+    <string name="error_edit_comment">无法更新批注</string>
+    <string name="error_save_access_settings">无法保存访问设置</string>
+    <string name="error_save_template">无法保存模板</string>
+    <string name="error_upload_logo">无法加载logo</string>
+    <string name="error_version_delete">无法删除</string>
+    <string name="error_version_open">无法打开文档</string>
+    <string name="error_version_restore">无法恢复版本</string>
+    <string name="errors_open_document">无法打开文档</string>
+    <string name="errors_webdav_2fa_code">验证码错误</string>
+    <string name="filling_form_complete">已完成</string>
+    <string name="filling_form_filling_process_details">流程详情</string>
+    <string name="filling_form_filling_status">填写状态</string>
+    <string name="filling_form_filling_status_desc">在此面板中，您可以监控您参与或发起的表单的填写进度</string>
+    <string name="filling_form_history_complete">已完成并提交他们的表单部分。表单已全部填写完毕。</string>
+    <string name="filling_form_history_opened">已打开表单进行填写</string>
+    <string name="filling_form_history_stopped">填写已被 %s 停止</string>
+    <string name="filling_form_history_submitted">已提交他们填写的部分，表单已发送至下一个角色。</string>
+    <string name="filling_form_send_finalized">表单部分已完成</string>
+    <string name="filling_form_send_finalized_desc">所有角色的用户已填写完表单，现已最终化，以只读模式提供。</string>
+    <string name="filling_form_send_section_complete">表单部分已完成</string>
+    <string name="filling_form_send_section_complete_desc">PDF 表单的指定部分已完成填写，可以通过房间或“填写状态”面板监控表单的填写状态。表单全部填写完成后，系统将自动发送邮件通知。</string>
+    <string name="filling_form_stop_filling">停止填写</string>
+    <string name="filling_form_stop_filling_dialog_desc">您确定要停止填写吗？停止后无法恢复填写进度，表单将停留在当前阶段，且文件将被标记为“已停止”。</string>
+    <string name="filling_form_stop_filling_dialog_title">停止填写？</string>
+    <string name="filling_form_stopped">已停止</string>
+    <string name="filling_form_version_incompatible_desc">客户端和服务器版本不兼容。仅可在查看模式下打开文档。</string>
+    <string name="filter_type_pdf_documents">PDF 文档</string>
+    <string name="filter_type_pdf_forms">PDF 表单</string>
+    <string name="form_status_complete">已完成</string>
+    <string name="form_status_draft">草稿</string>
+    <string name="form_status_in_progress">进行中</string>
+    <string name="form_status_stopped">已停止</string>
+    <string name="form_status_your_turn">轮到您了</string>
+    <string name="fragment_templates_title">模板</string>
+    <string name="list_action_doc_from_photo">从照片中提取文本文件</string>
+    <string name="list_context_access_settings">访问设置</string>
+    <string name="list_context_delete_template">删除模板</string>
+    <string name="list_context_disable_custom_filter">禁用自定义过滤器</string>
+    <string name="list_context_edit_comment">编辑批注</string>
+    <string name="list_context_edit_index">编辑索引</string>
+    <string name="list_context_edit_template">编辑模板</string>
+    <string name="list_context_enable_custom_filter">启用自定义过滤器</string>
+    <string name="list_context_lock">锁定</string>
+    <string name="list_context_open_vesrion">打开</string>
+    <string name="list_context_save_as_template">另存为模板</string>
+    <string name="list_context_unlock">解锁</string>
+    <string name="list_context_upload_to_cloud">上传到云端</string>
+    <string name="list_context_version_history">显示版本历史记录</string>
+    <string name="on_boarding_collaborate_header">与您的团队协作</string>
+    <string name="on_boarding_collaborate_info">在线模式下，使用 WORLDOFFICE 的实时协同编辑功能与门户成员一起处理文档、共享文档并创建公共存储文件夹。</string>
+    <string name="on_boarding_edit_header">处理办公文件</string>
+    <string name="on_boarding_edit_info">使用我们丰富的工具栏创建和编辑文档：轻松处理文本文档中的复杂对象、执行电子表格计算、制作演示文稿，并查看 PDF 文件，且无需担心格式丢失。</string>
+    <string name="on_boarding_finish_button">开始</string>
+    <string name="on_boarding_locally_header">本地编辑文档</string>
+    <string name="on_boarding_locally_info">离线处理文档。创建的文件稍后可以上传到在线门户，然后从任何其他设备访问。</string>
+    <string name="on_boarding_third_party_header">第三方存储</string>
+    <string name="on_boarding_third_party_info">连接第三方存储，例如 Nextcloud、ownCloud、Dropbox 以及其他使用 WebDAV 协议的存储。</string>
+    <string name="on_boarding_welcome_header">开始</string>
+    <string name="on_boarding_welcome_info">欢迎使用 WORLDOFFICE 移动办公套件！滑动屏幕了解更多应用详情。</string>
+    <string name="operation_disable_custom_filter">已禁用所选文件的自定义过滤器</string>
+    <string name="operation_enable_custom_filter">已启用所选文件的自定义过滤器</string>
+    <string name="placeholder_connection_button">重新加载</string>
+    <string name="placeholder_connection_desc">未检测到网络连接。请检查连接并重试</string>
+    <string name="placeholder_empty_templates_folder">此处尚无模板</string>
+    <string name="room_access_via_link_title">通过链接访问</string>
+    <string name="room_created_successfully">房间创建成功</string>
+    <string name="room_placeholder_created_template_title">模板已创建！</string>
+    <string name="setting_access_desc">访问模板。您可以选择可以基于此模板创建房间的成员。</string>
+    <string name="setting_access_list_title">访问模板</string>
+    <string name="setting_access_members_title">添加用户或群组</string>
+    <string name="setting_access_members_title_desc">添加的管理员将能够使用此模板创建房间。</string>
+    <string name="setting_access_public">模板可供所有人使用</string>
+    <string name="setting_access_public_bold_docspace">协作空间</string>
+    <string name="setting_access_public_bold_room">房间管理员</string>
+    <string name="setting_access_public_desc">所有协作空间和房间管理员都可以使用此模板创建房间。</string>
+    <string name="setting_screen_on">查看文档时</string>
+    <string name="setting_select_members_title">选择成​​员</string>
+    <string name="setting_tags_desc">标签已应用于将基于此模板创建的房间。</string>
+    <string name="setting_title_sreen_on">保持屏幕常亮</string>
+    <string name="settings_saved_successfully">模板设置已保存</string>
+    <string name="share_clipboard_external_custom_filter_copied">已成功将启用自定义过滤器的文件链接复制到剪贴板</string>
+    <string name="share_user_type_room_portal_owner">门户所有者</string>
+    <string name="share_user_type_room_workspace_owner">工作区所有者</string>
+    <string name="template_created_successfully">模板 «%s» 已保存</string>
+    <string name="template_delete_success">模板已删除</string>
+    <string name="template_name_hint">模板名称</string>
+    <string name="template_subheader_title">房间模板</string>
+    <string name="templates_delete_success">模板已删除</string>
+    <string name="title_access_settings">访问设置</string>
+    <string name="title_create_from_template">来自模板</string>
+    <string name="title_edit_template">编辑模板</string>
+    <string name="title_save_template">另存为模板</string>
+    <string name="version_delete_confirm">删除</string>
+    <string name="version_delete_done">版本已删除</string>
+    <string name="version_delete_loading">正在删除</string>
+    <string name="version_delete_subtitle">您确定要继续吗？您即将删除一个文件版本，该版本将无法恢复或查看。确定要继续吗？</string>
+    <string name="version_delete_title">删除版本</string>
+    <string name="version_dialog_cancel">取消</string>
+    <string name="version_edit_comment_title">编辑批注</string>
+    <string name="version_group_current_header">当前版本 - 版本 %s</string>
+    <string name="version_group_header">版本 %s</string>
+    <string name="version_history_title">版本历史记录</string>
+    <string name="version_restore_confirm">恢复</string>
+    <string name="version_restore_done">版本已恢复</string>
+    <string name="version_restore_loading">正在恢复版本</string>
+    <string name="version_restore_subtitle">当前文件将保存在版本历史记录中。</string>
+    <string name="version_restore_title">是否恢复此版本？</string>
+
+    <!-- Newly added translations (v9.0.2 - 2025-06-25) -->
+    <plurals name="dialogs_question_message_template">
+        <item quantity="one">您确定要删除房间模板“%s”吗？此房间模板删除后无法恢复。</item>
+        <item quantity="other">您确定要删除所选房间模板吗？房间模板删除后无法恢复。</item>
+    </plurals>
+    <plurals name="dialogs_question_delete_template_title">
+        <item quantity="one">删除模板</item>
+        <item quantity="other">删除模板</item>
+    </plurals>
+
+    <!-- Newly added translations (v9.1.0 - 2025-10-24) -->
+    <string name="dev_mode_system_logs">系统日志</string>
+    <string name="dev_mode_network_requests">网络请求</string>
+    <string name="start_filling_title">开始填写</string>
+    <string name="start_filling_start">开始</string>
+    <string name="start_filling_desc">在此面板中，您可以监控您参与或发起的表单的填写进度</string>
+    <string name="start_filling_header">来自此表单的角色：</string>
+    <string name="start_filling_ready_for_filling">表单已准备好，可在房间内进行填写</string>
+    <string name="start_filling_ready_for_filling_desc">已向第一个角色的用户发送通知，提示他们填写表单。您可以在房间或与用户分享填写链接。</string>
+    <string name="list_context_reset_filling">重置并开始填写</string>
+
+    <!-- Newly added translations (v9.2.0 - 2025-11-25) -->
+    <string name="upload_manager_duplicate_title">需要操作</string>
+    <string name="upload_manager_duplicate_text">目标位置已存在名为«%s»的文件。请选择操作：</string>
+    <string name="upload_manager_duplicates_text">目标位置已存在同名文件。请选择操作：</string>
+    <string name="upload_manager_duplicate_overwrite">使用版本更新覆盖</string>
+    <string name="upload_manager_duplicate_copy">创建文件副本</string>
+    <string name="upload_manager_duplicate_skip">跳过</string>
+    <string name="socials_failed_auth">登录失败</string>
+    <string name="rooms_info_access_desc">拥有链接的人均可访问此房间。外部用户的访问权限取决于所选的访问权限类型。</string>
+    <string name="rooms_share_shared_links_count">共享链接 (%d/6)</string>
+    <string name="share_link_folder_restrict_desc">启用此设置可禁止通过链接下载此共享文件夹中的文件和文件夹</string>
+    <string name="share_link_file_restrict_desc">启用此设置可禁止通过链接下载此共享文件</string>
+    <string name="share_link_file_restrict_warning">您无法禁用下载和复制数据的限制，因为此设置在房间级别对所有文件强制执行。</string>
+    <string name="share_link_file_restrict_warning_ok">确定</string>
+    <string name="rooms_user_type_members">成员</string>
+    <string name="share_goal_everyone">所有人</string>
+    <string name="placeholder_no_shared_items">尚无共享项</string>
+    <string name="placeholder_no_shared_items_desc">此处将显示其他协作空间成员与您共享的文件和文件夹。您自己的文件和房间内容不会显示在此处。</string>
+    <string name="rooms_share_shared_folder_desc">授予文件夹访问权限并设置权限级别。</string>
+    <string name="rooms_info_folder_desc">此文件夹可通过其父文件夹的共享链接访问，但您可以创建具有特定权限的自定义外部链接。</string>
+    <string name="rooms_info_file_desc">此文件可通过其父文件夹的共享链接访问，但您可以创建具有特定权限的自定义外部链接。</string>
+    <string name="rooms_info_fill_form_desc">任何拥有链接的人都可以访问此房间。外部用户将对所有文件拥有"可填写表单"权限。</string>
+    <string name="share_popup_access_editing">编辑</string>
+    <string name="share_popup_access_remove">移除</string>
+
+    <!-- Newly added translations (v9.3.0 - 2026-02-24) -->
+    <string name="placeholder_empty_folder">此处还没有文件</string>
+    <string name="placeholder_empty_folder_common">此处还没有文档</string>
+    <string name="placeholder_empty_folder_desc_creator">创建或上传新文件</string>
+    <string name="placeholder_empty_form_folder">这里还没有表单</string>
+    <string name="placeholder_empty_form_folder_viewer">此文件夹中还没有表单</string>
+    <string name="placeholder_empty_form_done">还没有已完成的表单</string>
+    <string name="placeholder_empty_form_subfolder">此文件夹中还没有文件</string>
+    <string name="placeholder_empty_form_in_progress">这里还没有内容</string>
+    <string name="placeholder_empty_form_folder_desc">上传现成的 PDF 表单</string>
+    <string name="placeholder_empty_form_folder_viewer_desc">管理员上传的表单将显示在这里。</string>
+    <string name="placeholder_empty_form_done_desc">此部分将显示所有已完成的表单。</string>
+    <string name="placeholder_empty_form_done_folder_desc">这里将显示其他用户已填写完成的表单。</string>
+    <string name="placeholder_empty_form_in_progress_desc">此部分将显示进行中的表单。</string>
+    <string name="placeholder_empty_form_in_progress_folder_desc">这里将显示进行中的表单，即用户已开始填写但尚未完成的表单。</string>
+    <string name="placeholder_empty_trash">这里还没有内容</string>
+    <string name="placeholder_empty_trash_desc">删除的文件和文件夹会进入回收站，您可以恢复或永久删除。项目将在 30 天后自动删除，一旦从回收站移除将无法恢复。</string>
+    <string name="placeholder_no_rooms_desc">创建您的第一个房间以开始使用。</string>
+    <string name="placeholder_no_rooms_visitor">这里还没有房间</string>
+    <string name="placeholder_no_rooms_visitor_desc">共享的房间将显示在这里。</string>
+    <string name="placeholder_empty_archive_desc">将未使用的房间归档，并可随时在您的协作空间中恢复，或永久删除。已归档的房间将显示在这里。</string>
+    <string name="placeholder_empty_archive_visitor_desc">已归档的房间将显示在这里。</string>
+    <string name="placeholder_empty_templates_folder_desc">在房间模块中从房间创建模板。</string>
+    <string name="placeholder_empty_from_template">未找到模板</string>
+    <string name="placeholder_empty_from_template_desc">创建您的第一个房间模板，然后即可基于它创建新房间。</string>
+    <string name="placeholder_empty_recent_via_link_desc">在这里查看通过外部链接与您共享的最近打开的文件。</string>
+    <string name="operation_cancel_message">操作已取消</string>
+    <string name="cloud_vpn_warning">为获得最佳体验，请尝试关闭 VPN。某些服务器功能可能无法正常工作。</string>
+    <string name="room_placeholder_public_room_creator_title">欢迎使用公共房间</string>
+    <string name="room_placeholder_public_room_creator_subtitle">创建或上传新文件或文件夹以开始使用。</string>
+    <string name="room_placeholder_empty_viewer_title">房间为空</string>
+    <string name="room_placeholder_empty_viewer_subtitle">管理员创建或上传的文件和文件夹将显示在这里。</string>
+    <string name="room_placeholder_form_room_creator_subtitle">上传现成的 PDF 表单以开始使用。</string>
+    <string name="room_placeholder_form_room_viewer_subtitle">管理员上传的 PDF 表单将显示在这里。</string>
+    <string name="room_placeholder_vdr_room_creator_title">欢迎使用虚拟数据房间</string>
+    <string name="room_placeholder_creator_subtitle">创建或上传新文件以开始使用。</string>
+    <string name="room_placeholder_collab_room_creator_title">欢迎使用协作房间</string>
+    <string name="room_placeholder_custom_room_creator_title">欢迎使用自定义房间</string>
+</resources>

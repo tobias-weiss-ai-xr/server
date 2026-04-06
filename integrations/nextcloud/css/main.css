@@ -1,0 +1,132 @@
+/**
+ *
+ * (c) Copyright Ascensio System SIA 2026
+ *
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ *
+ */
+
+.icon-world-office-open,
+.icon-world-office-convert,
+.icon-world-office-download,
+.icon-world-office-create {
+    background-color: var(--color-main-text);
+    mask: url("../img/app-dark.svg") no-repeat 50% 50%;
+    mask-size: 16px 16px;
+    -webkit-mask: url("../img/app-dark.svg") no-repeat 50% 50%;
+    -webkit-mask-size: 16px 16px;
+}
+
+/* world-office-inline */
+#body-user.world-office-inline #app-navigation,
+#body-user.world-office-inline .app-navigation,
+#body-user.world-office-inline #app-navigation-vue,
+#body-user.world-office-inline .searchbox,
+#body-user.world-office-inline #app-content .files-controls,
+#body-user.world-office-inline #app-content-vue .files-controls,
+#body-user.world-office-inline .files-filestable,
+#body-user.world-office-inline .files-list,
+#body-user.world-office-inline .files-list__header {
+    display: none;
+}
+
+#body-user.world-office-inline #app-navigation-toggle {
+    display: none !important;
+}
+
+#body-public.world-office-inline #content #app-content,
+#body-user.world-office-inline #content #app-content,
+#body-user.world-office-inline #content #app-content-vue,
+#body-user.world-office-inline #content-vue #app-content-vue {
+    margin-left: 0;
+    position: relative;
+    overflow: hidden;
+    overscroll-behavior-y: none;
+}
+
+#body-public.world-office-inline footer {
+    display: none !important;
+}
+
+#world-officeFrame {
+    background-color: #fff;
+    width: 100%;
+    height: 100vh;
+    display: block;
+    position: absolute;
+    top: 0;
+    z-index: 1010;
+}
+
+.world-office-public-open {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+/* AscDesktopEditor */
+.AscDesktopEditor #body-user #header {
+    display: none;
+}
+
+.AscDesktopEditor #body-user #content,
+.AscDesktopEditor #body-user #content-vue {
+    padding-top: 0;
+    margin-top: 0px;
+    height: 100%;
+}
+
+.AscDesktopEditor #body-user #app-navigation,
+.AscDesktopEditor #body-user #controls,
+.AscDesktopEditor #body-user #app-sidebar {
+    top: 0;
+}
+
+.AscDesktopEditor #body-user #app-navigation {
+    height: 100%;
+}
+
+.AscDesktopEditor #body-user #app-sidebar {
+    height: 100vh;
+}
+
+.AscDesktopEditor #body-user table.multiselect thead,
+.AscDesktopEditor #app-content-files thead {
+    top: 44px;
+}
+
+.AscDesktopEditor #body-user #gallery-button {
+    display: none;
+}
+
+.world-office-download-container {
+    display: flex;
+}
+
+.world-office-download-container p {
+    margin-right: 10px;
+    padding-top: 10px;
+}
+
+.world-office-iframe-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    overflow: hidden;
+    z-index: 1010;
+}

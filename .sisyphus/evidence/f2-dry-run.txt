@@ -1,0 +1,1011 @@
+DEBUG: Scanning for repos in: C:\Users\Tobias\git\world-office
+DEBUG: Found repo: .github
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\.github)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\.github)
+DEBUG: Exit code: 0
+DEBUG: stdout: false
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\.github)
+DEBUG: Exit code: 0
+DEBUG: stdout:  M ROADMAP.md
+
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\.github)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/.github (fetch)
+origin	https://codeberg.org/World-Office/.github (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Skipping non-repo directory: .pytest_cache
+DEBUG: Skipping non-repo directory: .ruff_cache
+DEBUG: Skipping non-repo directory: .sisyphus
+DEBUG: Found repo: artwork
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\artwork)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\artwork)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\artwork)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\artwork)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/artwork.git (fetch)
+origin	https://codeberg.org/World-Office/artwork.git (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: core
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\core)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\core)
+DEBUG: Exit code: 0
+DEBUG: stdout: false
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\core)
+DEBUG: Exit code: 0
+DEBUG: stdout: ?? AGENTS.md
+?? "C\357\200\272UsersTobiasgitworld-officecorefix-sdkjs-checkout.patch"
+
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\core)
+DEBUG: Exit code: 0
+DEBUG: stdout: fork	https://github.com/tobias-weiss-ai-xr/core.git (fetch)
+fork	https://github.com/tobias-weiss-ai-xr/core.git (push)
+github	https://github.com/Euro-Office/core.git (fetch)
+github	https://github.com/Euro-Office/core.git (push)
+origin	https://codeberg.org/World-Office/core (fetch)
+origin	https://codeberg.org/World-Office/core (push)
+
+DEBUG: Unclassified remote \u2192 other: fork (https://github.com/tobias-weiss-ai-xr/core.git)
+DEBUG: Euro-Office remote: github
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=1, world-office=0, codeberg=1, other=1
+DEBUG: Found repo: core-fonts
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\core-fonts)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\core-fonts)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\core-fonts)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\core-fonts)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/core-fonts (fetch)
+origin	https://codeberg.org/World-Office/core-fonts (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: core_WORLDOFFICE
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\core_WORLDOFFICE)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/master
+
+DEBUG: Detected default branch via symbolic-ref: master
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\core_WORLDOFFICE)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\core_WORLDOFFICE)
+DEBUG: Exit code: 0
+DEBUG: stdout: ?? core_commits.patch
+
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\core_WORLDOFFICE)
+DEBUG: Exit code: 0
+DEBUG: stdout: euro_core	https://github.com/Euro-Office/core.git (fetch)
+euro_core	https://github.com/Euro-Office/core.git (push)
+local_core	C:/Users/Tobias/git/world-office/core (fetch)
+local_core	C:/Users/Tobias/git/world-office/core (push)
+origin	https://github.com/tobias-weiss-ai-xr/core_WORLDOFFICE (fetch)
+origin	https://github.com/tobias-weiss-ai-xr/core_WORLDOFFICE (push)
+
+DEBUG: Euro-Office remote: euro_core
+DEBUG: SSH/local remote \u2192 other: local_core
+DEBUG: Unclassified remote \u2192 other: origin (https://github.com/tobias-weiss-ai-xr/core_WORLDOFFICE)
+DEBUG: Remote classification: euro_office=1, world-office=0, codeberg=0, other=2
+DEBUG: Found repo: desktop-apps
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\desktop-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\desktop-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\desktop-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: ?? AGENTS.md
+
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\desktop-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/desktop-apps (fetch)
+origin	https://codeberg.org/World-Office/desktop-apps (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: desktop-sdk
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\desktop-sdk)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\desktop-sdk)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\desktop-sdk)
+DEBUG: Exit code: 0
+DEBUG: stdout:  M ChromiumBasedEditors/lib/helper_main.cpp
+ M ChromiumBasedEditors/lib/include/applicationmanager.h
+ M ChromiumBasedEditors/lib/include/applicationmanager_events.h
+ M ChromiumBasedEditors/lib/include/base.h
+ M ChromiumBasedEditors/lib/include/cefapplication.h
+ M ChromiumBasedEditors/lib/include/cefview.h
+ M ChromiumBasedEditors/lib/include/keyboardchecker.h
+ M ChromiumBasedEditors/lib/include/keychain.h
+ M ChromiumBasedEditors/lib/include/mac_application.h
+ M ChromiumBasedEditors/lib/include/ma
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\desktop-sdk)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/desktop-sdk (fetch)
+origin	https://codeberg.org/World-Office/desktop-sdk (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: DesktopEditors
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\DesktopEditors)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/master
+
+DEBUG: Detected default branch via symbolic-ref: master
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\DesktopEditors)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\DesktopEditors)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\DesktopEditors)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://graphwiz-ai:b1445d45aa26611de3a85efa5063d1566e98ab96@codeberg.org/World-Office/DesktopEditors.git (fetch)
+origin	https://graphwiz-ai:b1445d45aa26611de3a85efa5063d1566e98ab96@codeberg.org/World-Office/DesktopEditors.git (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: dictionaries
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\dictionaries)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\dictionaries)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\dictionaries)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\dictionaries)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/dictionaries (fetch)
+origin	https://codeberg.org/World-Office/dictionaries (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: docker-ci
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\docker-ci)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\docker-ci)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\docker-ci)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\docker-ci)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/docker-ci (fetch)
+origin	https://codeberg.org/World-Office/docker-ci (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: document-formats
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\document-formats)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/master
+
+DEBUG: Detected default branch via symbolic-ref: master
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\document-formats)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\document-formats)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\document-formats)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/document-formats (fetch)
+origin	https://codeberg.org/World-Office/document-formats (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: document-server-integration
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\document-server-integration)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\document-server-integration)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\document-server-integration)
+DEBUG: Exit code: 0
+DEBUG: stdout:  M web/documentserver-example/nodejs/package.json
+?? AGENTS.md
+
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\document-server-integration)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://graphwiz-ai:9f86e804e60dd6d83aa4c60fff5651d2fad50adc@codeberg.org/World-Office/document-server-integration.git (fetch)
+origin	https://graphwiz-ai:9f86e804e60dd6d83aa4c60fff5651d2fad50adc@codeberg.org/World-Office/document-server-integration.git (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: document-server-package
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\document-server-package)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\document-server-package)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\document-server-package)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\document-server-package)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/document-server-package (fetch)
+origin	https://codeberg.org/World-Office/document-server-package (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: document-templates
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\document-templates)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\document-templates)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\document-templates)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\document-templates)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/document-templates (fetch)
+origin	https://codeberg.org/World-Office/document-templates (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: documents-app-android
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\documents-app-android)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/master
+
+DEBUG: Detected default branch via symbolic-ref: master
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\documents-app-android)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\documents-app-android)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\documents-app-android)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/documents-app-android.git (fetch)
+origin	https://codeberg.org/World-Office/documents-app-android.git (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: DocumentServer
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\DocumentServer)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/master
+
+DEBUG: Detected default branch via symbolic-ref: master
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\DocumentServer)
+DEBUG: Exit code: 0
+DEBUG: stdout: false
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\DocumentServer)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\DocumentServer)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://github.com/WORLDOFFICE/DocumentServer.git (fetch)
+origin	https://github.com/WORLDOFFICE/DocumentServer.git (push)
+
+DEBUG: WORLDOFFICE remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=1, codeberg=0, other=0
+DEBUG: Found repo: world-office-nextcloud
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\world-office-nextcloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\world-office-nextcloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\world-office-nextcloud)
+DEBUG: Exit code: 0
+DEBUG: stdout:  M lib/Controller/CallbackController.php
+?? AGENTS.md
+?? test-env/
+
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\world-office-nextcloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://graphwiz-ai:9f86e804e60dd6d83aa4c60fff5651d2fad50adc@codeberg.org/World-Office/world-office-nextcloud.git (fetch)
+origin	https://graphwiz-ai:9f86e804e60dd6d83aa4c60fff5651d2fad50adc@codeberg.org/World-Office/world-office-nextcloud.git (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: world-office-opencloud
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\world-office-opencloud)
+DEBUG: Exit code: 128
+DEBUG: stderr: fatal: ref refs/remotes/origin/HEAD is not a symbolic ref
+
+DEBUG: symbolic-ref failed, trying fallback strategies
+DEBUG: Running: git rev-parse --verify main (cwd=C:\Users\Tobias\git\world-office\world-office-opencloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: 0242e32a519554ed95651133b8bc21f5106aa690
+
+DEBUG: Found 'main' branch
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\world-office-opencloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: false
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\world-office-opencloud)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\world-office-opencloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	git@codeberg.org:World-Office/world-office-opencloud.git (fetch)
+origin	git@codeberg.org:World-Office/world-office-opencloud.git (push)
+
+DEBUG: SSH/local remote \u2192 other: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=0, other=1
+DEBUG: Skipping non-repo directory: ISSUE_TEMPLATE
+DEBUG: Found repo: plugin-aiautofill
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\plugin-aiautofill)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\plugin-aiautofill)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\plugin-aiautofill)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\plugin-aiautofill)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/plugin-aiautofill (fetch)
+origin	https://codeberg.org/World-Office/plugin-aiautofill (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Skipping non-repo directory: scripts
+DEBUG: Found repo: sdkjs
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\sdkjs)
+DEBUG: Exit code: 128
+DEBUG: stderr: fatal: ref refs/remotes/origin/HEAD is not a symbolic ref
+
+DEBUG: symbolic-ref failed, trying fallback strategies
+DEBUG: Running: git rev-parse --verify main (cwd=C:\Users\Tobias\git\world-office\sdkjs)
+DEBUG: Exit code: 128
+DEBUG: stderr: fatal: Needed a single revision
+
+DEBUG: 'main' branch not found
+DEBUG: Running: git rev-parse --verify master (cwd=C:\Users\Tobias\git\world-office\sdkjs)
+DEBUG: Exit code: 128
+DEBUG: stderr: fatal: Needed a single revision
+
+DEBUG: 'master' branch not found
+WARNING: Could not determine default branch for: C:\Users\Tobias\git\world-office\sdkjs
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\sdkjs)
+DEBUG: Exit code: 0
+DEBUG: stdout: false
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\sdkjs)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\sdkjs)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://9f86e804e60dd6d83aa4c60fff5651d2fad50adc@codeberg.org/World-Office/sdkjs (fetch)
+origin	https://9f86e804e60dd6d83aa4c60fff5651d2fad50adc@codeberg.org/World-Office/sdkjs (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: sdkjs-forms
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\sdkjs-forms)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\sdkjs-forms)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\sdkjs-forms)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\sdkjs-forms)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://codeberg.org/World-Office/sdkjs-forms (fetch)
+origin	https://codeberg.org/World-Office/sdkjs-forms (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Found repo: server
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\server)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\server)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\server)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\server)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://graphwiz-ai:9f86e804e60dd6d83aa4c60fff5651d2fad50adc@codeberg.org/World-Office/server.git (fetch)
+origin	https://graphwiz-ai:9f86e804e60dd6d83aa4c60fff5651d2fad50adc@codeberg.org/World-Office/server.git (push)
+
+DEBUG: Codeberg remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=1, other=0
+DEBUG: Skipping non-repo directory: tests
+DEBUG: Found repo: web-apps
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\web-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/master
+
+DEBUG: Detected default branch via symbolic-ref: master
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\web-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: false
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\web-apps)
+DEBUG: Exit code: 0
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\web-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: codeberg	https://graphwiz-ai:b1445d45aa26611de3a85efa5063d1566e98ab96@codeberg.org/World-Office/web-apps.git (fetch)
+codeberg	https://graphwiz-ai:b1445d45aa26611de3a85efa5063d1566e98ab96@codeberg.org/World-Office/web-apps.git (push)
+origin	https://github.com/WORLDOFFICE/web-apps.git (fetch)
+origin	https://github.com/WORLDOFFICE/web-apps.git (push)
+
+DEBUG: Codeberg remote: codeberg
+DEBUG: WORLDOFFICE remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=1, codeberg=1, other=0
+DEBUG: Found 23 git repos
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\.github)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\.github)
+DEBUG: Exit code: 0
+DEBUG: stdout: false
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\.github)
+DEBUG: Exit code: 0
+DEBUG: stdout:  M ROADMAP.md
+
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\.github)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/main
+
+WARNING: [DRY RUN] Repo .github not ready: Repository has uncommitted changes ù commit or stash first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\artwork)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\artwork)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\artwork)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\artwork)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/main
+
+WARNING: [DRY RUN] Repo artwork not ready: Repository is a shallow clone ù run git fetch --unshallow first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\core)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\core)
+DEBUG: Exit code: 0
+DEBUG: stdout: false
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\core)
+DEBUG: Exit code: 0
+DEBUG: stdout: ?? AGENTS.md
+?? "C\357\200\272UsersTobiasgitworld-officecorefix-sdkjs-checkout.patch"
+
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\core)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/main
+
+WARNING: [DRY RUN] Repo core not ready: Repository has uncommitted changes ù commit or stash first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\core-fonts)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\core-fonts)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\core-fonts)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\core-fonts)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/main
+
+WARNING: [DRY RUN] Repo core-fonts not ready: Repository is a shallow clone ù run git fetch --unshallow first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\core_WORLDOFFICE)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/master
+
+DEBUG: Detected default branch via symbolic-ref: master
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\core_WORLDOFFICE)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\core_WORLDOFFICE)
+DEBUG: Exit code: 0
+DEBUG: stdout: ?? core_commits.patch
+
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\core_WORLDOFFICE)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/fix/security-vulnerabilities
+
+WARNING: [DRY RUN] Repo core_WORLDOFFICE not ready: Repository is a shallow clone ù run git fetch --unshallow first; Repository has uncommitted changes ù commit or stash first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\desktop-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\desktop-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\desktop-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: ?? AGENTS.md
+
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\desktop-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/main
+
+WARNING: [DRY RUN] Repo desktop-apps not ready: Repository is a shallow clone ù run git fetch --unshallow first; Repository has uncommitted changes ù commit or stash first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\desktop-sdk)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\desktop-sdk)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\desktop-sdk)
+DEBUG: Exit code: 0
+DEBUG: stdout:  M ChromiumBasedEditors/lib/helper_main.cpp
+ M ChromiumBasedEditors/lib/include/applicationmanager.h
+ M ChromiumBasedEditors/lib/include/applicationmanager_events.h
+ M ChromiumBasedEditors/lib/include/base.h
+ M ChromiumBasedEditors/lib/include/cefapplication.h
+ M ChromiumBasedEditors/lib/include/cefview.h
+ M ChromiumBasedEditors/lib/include/keyboardchecker.h
+ M ChromiumBasedEditors/lib/include/keychain.h
+ M ChromiumBasedEditors/lib/include/mac_application.h
+ M ChromiumBasedEditors/lib/include/ma
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\desktop-sdk)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/main
+
+WARNING: [DRY RUN] Repo desktop-sdk not ready: Repository is a shallow clone ù run git fetch --unshallow first; Repository has uncommitted changes ù commit or stash first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\DesktopEditors)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/master
+
+DEBUG: Detected default branch via symbolic-ref: master
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\DesktopEditors)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\DesktopEditors)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\DesktopEditors)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/master
+
+WARNING: [DRY RUN] Repo DesktopEditors not ready: Repository is a shallow clone ù run git fetch --unshallow first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\dictionaries)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\dictionaries)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\dictionaries)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\dictionaries)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/main
+
+WARNING: [DRY RUN] Repo dictionaries not ready: Repository is a shallow clone ù run git fetch --unshallow first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\docker-ci)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\docker-ci)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\docker-ci)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\docker-ci)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/main
+
+WARNING: [DRY RUN] Repo docker-ci not ready: Repository is a shallow clone ù run git fetch --unshallow first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\document-formats)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/master
+
+DEBUG: Detected default branch via symbolic-ref: master
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\document-formats)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\document-formats)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\document-formats)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/master
+
+WARNING: [DRY RUN] Repo document-formats not ready: Repository is a shallow clone ù run git fetch --unshallow first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\document-server-integration)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\document-server-integration)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\document-server-integration)
+DEBUG: Exit code: 0
+DEBUG: stdout:  M web/documentserver-example/nodejs/package.json
+?? AGENTS.md
+
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\document-server-integration)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/ci/forgejo-actions
+
+WARNING: [DRY RUN] Repo document-server-integration not ready: Repository is a shallow clone ù run git fetch --unshallow first; Repository has uncommitted changes ù commit or stash first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\document-server-package)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\document-server-package)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\document-server-package)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\document-server-package)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/fix/packaging-improvements
+
+WARNING: [DRY RUN] Repo document-server-package not ready: Repository is a shallow clone ù run git fetch --unshallow first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\document-templates)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\document-templates)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\document-templates)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\document-templates)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/main
+
+WARNING: [DRY RUN] Repo document-templates not ready: Repository is a shallow clone ù run git fetch --unshallow first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\documents-app-android)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/master
+
+DEBUG: Detected default branch via symbolic-ref: master
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\documents-app-android)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\documents-app-android)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\documents-app-android)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/master
+
+WARNING: [DRY RUN] Repo documents-app-android not ready: Repository is a shallow clone ù run git fetch --unshallow first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\DocumentServer)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/master
+
+DEBUG: Detected default branch via symbolic-ref: master
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\DocumentServer)
+DEBUG: Exit code: 0
+DEBUG: stdout: false
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\DocumentServer)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\DocumentServer)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/master
+
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\DocumentServer)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	https://github.com/WORLDOFFICE/DocumentServer.git (fetch)
+origin	https://github.com/WORLDOFFICE/DocumentServer.git (push)
+
+DEBUG: WORLDOFFICE remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=1, codeberg=0, other=0
+DEBUG: [DRY RUN] Remotes for DocumentServer: euro_office=0, world-office=1, codeberg=0
+WARNING: [DRY RUN] No Codeberg remote for DocumentServer ù skipping (use --auto-add-remotes)
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\world-office-nextcloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\world-office-nextcloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\world-office-nextcloud)
+DEBUG: Exit code: 0
+DEBUG: stdout:  M lib/Controller/CallbackController.php
+?? AGENTS.md
+?? test-env/
+
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\world-office-nextcloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/ci/forgejo-actions
+
+WARNING: [DRY RUN] Repo world-office-nextcloud not ready: Repository is a shallow clone ù run git fetch --unshallow first; Repository has uncommitted changes ù commit or stash first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\world-office-opencloud)
+DEBUG: Exit code: 128
+DEBUG: stderr: fatal: ref refs/remotes/origin/HEAD is not a symbolic ref
+
+DEBUG: symbolic-ref failed, trying fallback strategies
+DEBUG: Running: git rev-parse --verify main (cwd=C:\Users\Tobias\git\world-office\world-office-opencloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: 0242e32a519554ed95651133b8bc21f5106aa690
+
+DEBUG: Found 'main' branch
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\world-office-opencloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: false
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\world-office-opencloud)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\world-office-opencloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/main
+
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\world-office-opencloud)
+DEBUG: Exit code: 0
+DEBUG: stdout: origin	git@codeberg.org:World-Office/world-office-opencloud.git (fetch)
+origin	git@codeberg.org:World-Office/world-office-opencloud.git (push)
+
+DEBUG: SSH/local remote \u2192 other: origin
+DEBUG: Remote classification: euro_office=0, world-office=0, codeberg=0, other=1
+DEBUG: [DRY RUN] Remotes for world-office-opencloud: euro_office=0, world-office=0, codeberg=0
+WARNING: [DRY RUN] No Codeberg remote for world-office-opencloud ù skipping (use --auto-add-remotes)
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\plugin-aiautofill)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\plugin-aiautofill)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\plugin-aiautofill)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\plugin-aiautofill)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/main
+
+WARNING: [DRY RUN] Repo plugin-aiautofill not ready: Repository is a shallow clone ù run git fetch --unshallow first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\sdkjs)
+DEBUG: Exit code: 128
+DEBUG: stderr: fatal: ref refs/remotes/origin/HEAD is not a symbolic ref
+
+DEBUG: symbolic-ref failed, trying fallback strategies
+DEBUG: Running: git rev-parse --verify main (cwd=C:\Users\Tobias\git\world-office\sdkjs)
+DEBUG: Exit code: 128
+DEBUG: stderr: fatal: Needed a single revision
+
+DEBUG: 'main' branch not found
+DEBUG: Running: git rev-parse --verify master (cwd=C:\Users\Tobias\git\world-office\sdkjs)
+DEBUG: Exit code: 128
+DEBUG: stderr: fatal: Needed a single revision
+
+DEBUG: 'master' branch not found
+WARNING: Could not determine default branch for: C:\Users\Tobias\git\world-office\sdkjs
+WARNING: [DRY RUN] Cannot determine default branch for sdkjs ù skipping
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\sdkjs-forms)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\sdkjs-forms)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\sdkjs-forms)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\sdkjs-forms)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/main
+
+WARNING: [DRY RUN] Repo sdkjs-forms not ready: Repository is a shallow clone ù run git fetch --unshallow first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\server)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/main
+
+DEBUG: Detected default branch via symbolic-ref: main
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\server)
+DEBUG: Exit code: 0
+DEBUG: stdout: true
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\server)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\server)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/ci/forgejo-actions
+
+WARNING: [DRY RUN] Repo server not ready: Repository is a shallow clone ù run git fetch --unshallow first
+DEBUG: Running: git symbolic-ref refs/remotes/origin/HEAD (cwd=C:\Users\Tobias\git\world-office\web-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/remotes/origin/master
+
+DEBUG: Detected default branch via symbolic-ref: master
+DEBUG: Running: git rev-parse --is-shallow-repository (cwd=C:\Users\Tobias\git\world-office\web-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: false
+
+DEBUG: Running: git status --porcelain (cwd=C:\Users\Tobias\git\world-office\web-apps)
+DEBUG: Exit code: 0
+DEBUG: Running: git symbolic-ref -q HEAD (cwd=C:\Users\Tobias\git\world-office\web-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: refs/heads/master
+
+DEBUG: Running: git remote -v (cwd=C:\Users\Tobias\git\world-office\web-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: codeberg	https://graphwiz-ai:b1445d45aa26611de3a85efa5063d1566e98ab96@codeberg.org/World-Office/web-apps.git (fetch)
+codeberg	https://graphwiz-ai:b1445d45aa26611de3a85efa5063d1566e98ab96@codeberg.org/World-Office/web-apps.git (push)
+origin	https://github.com/WORLDOFFICE/web-apps.git (fetch)
+origin	https://github.com/WORLDOFFICE/web-apps.git (push)
+
+DEBUG: Codeberg remote: codeberg
+DEBUG: WORLDOFFICE remote: origin
+DEBUG: Remote classification: euro_office=0, world-office=1, codeberg=1, other=0
+DEBUG: [DRY RUN] Remotes for web-apps: euro_office=0, world-office=1, codeberg=1
+INFO: [DRY RUN] Would fetch from origin (https://github.com/WORLDOFFICE/web-apps.git)
+DEBUG: Running: git rev-list --count HEAD..origin/master (cwd=C:\Users\Tobias\git\world-office\web-apps)
+DEBUG: Exit code: 0
+DEBUG: stdout: 0
+
+DEBUG: [DRY RUN] No outstanding commits from origin/master
+
+============================================================
+  Git Sync ù DRY RUN mode
+============================================================
+
+  [-] .github: skipped
+    Validation failed: Repository has uncommitted changes ù commit or stash first
+
+  [-] artwork: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first
+
+  [-] core: skipped
+    Validation failed: Repository has uncommitted changes ù commit or stash first
+
+  [-] core-fonts: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first
+
+  [-] core_WORLDOFFICE: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first; Repository has uncommitted changes ù commit or stash first
+
+  [-] desktop-apps: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first; Repository has uncommitted changes ù commit or stash first
+
+  [-] desktop-sdk: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first; Repository has uncommitted changes ù commit or stash first
+
+  [-] DesktopEditors: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first
+
+  [-] dictionaries: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first
+
+  [-] docker-ci: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first
+
+  [-] document-formats: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first
+
+  [-] document-server-integration: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first; Repository has uncommitted changes ù commit or stash first
+
+  [-] document-server-package: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first
+
+  [-] document-templates: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first
+
+  [-] documents-app-android: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first
+
+  [-] DocumentServer: skipped
+    No Codeberg remote (use --auto-add-remotes)
+
+  [-] world-office-nextcloud: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first; Repository has uncommitted changes ù commit or stash first
+
+  [-] world-office-opencloud: skipped
+    No Codeberg remote (use --auto-add-remotes)
+
+  [-] plugin-aiautofill: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first
+
+  [-] sdkjs: skipped
+    Cannot determine default branch
+
+  [-] sdkjs-forms: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first
+
+  [-] server: skipped
+    Validation failed: Repository is a shallow clone ù run git fetch --unshallow first
+
+  [.] web-apps: no_changes
+    No changes to sync
+
+============================================================
+  Total: 23 | Synced: 0 | Skipped: 22 | Errors: 0 | No changes: 1
+============================================================

@@ -1,0 +1,46 @@
+name: world-office-nextcloud-test
+
+services:
+  world-office-docs:
+    image: ghcr.io/world-office/documentserver:latest
+    container_name: eo-docs
+    restart: unless-stopped
+    ports:
+      - "8082:80"
+    environment:
+      - ALLOW_PRIVATE_IP_ADDRESS=true
+      - USE_UNAUTHORIZED_STORAGE=true
+      - JWT_SECRET=mysecret
+    volumes:
+      - eo-data:/var/www/world-office/Data
+      - eo-logs:/var/log/world-office
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost/healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  nextcloud:
+    image: nextcloud:33
+    container_name: nextcloud
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    volumes:
+      - nc-data:/var/www/html
+      - ./setup-world-office.sh:/docker-entrypoint-hooks.d/post-installation/setup-world-office.sh:ro
+      - ..:/world-office-nextcloud:ro
+    environment:
+      - NEXTCLOUD_TRUSTED_DOMAINS=localhost,127.0.0.1,172.24.0.0/16
+      - SQLITE_DATABASE=nextcloud
+      - NEXTCLOUD_ADMIN_USER=admin
+      - NEXTCLOUD_ADMIN_PASSWORD=admin
+    depends_on:
+      world-office-docs:
+        condition: service_started
+
+volumes:
+  eo-data:
+  eo-logs:
+  nc-data:

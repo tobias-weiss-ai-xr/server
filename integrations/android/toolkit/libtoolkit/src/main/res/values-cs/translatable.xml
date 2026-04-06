@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="chooser_email_client">Zvolte e-mailového klienta…</string>
+    <string name="about_email_subject">Zpětná vazba k aplikaci Dokumenty WORLDOFFICE pro Android</string>
+    <string name="about_feedback">Zpětná vazba a podpora</string>
+    <string name="text_hint_required">Požadováno</string>
+    <string name="export_send_copy">Odeslat kopii</string>
+    <string name="dialogs_edit_forbidden_symbols">Nepoužívejte tyto symboly\u0020</string>
+    <string name="dialogs_edit_forbidden_name">Neplatný název</string>
+    <string name="sizes_bytes">byty</string>
+    <string name="sizes_kilobytes">KB</string>
+    <string name="sizes_megabytes">MB</string>
+    <string name="sizes_gigabytes">GB</string>
+    <string name="sizes_terabytes">TB</string>
+    <string name="common_accept">Přijmout</string>
+    <string name="common_cancel">Zrušit</string>
+    <string name="common_next">Další</string>
+    <string name="common_previous">Předchozí</string>
+    <string name="common_done">Hotovo</string>
+    <string name="common_ok">OK</string>
+    <plurals name="days" tools:ignore="MissingQuantity">
+        <item quantity="one">den</item>
+        <item quantity="other">dny</item>
+    </plurals>
+
+    <plurals name="hours" tools:ignore="MissingQuantity">
+        <item quantity="one">hodina</item>
+        <item quantity="other">hodiny</item>
+    </plurals>
+    <string name="settings_fonts_title">Fonty</string>
+    <string name="settings_view">Zobrazit</string>
+    <plurals name="months" tools:ignore="MissingQuantity">
+        <item quantity="one">měsíc</item>
+        <item quantity="other">měsíce</item>
+    </plurals>
+    <plurals name="years" tools:ignore="MissingQuantity">
+        <item quantity="one">rok</item>
+        <item quantity="other">roky</item>
+    </plurals>
+
+    <!-- Newly added translations (v9.0.0 - 2025-06-09) -->
+    <string name="help_and_feedback_contact_support">Kontaktovat podporu</string>
+    <string name="help_and_feedback_help_center">Centrum nápovědy</string>
+    <string name="help_and_feedback_suggest_a_feature">Navrhnout funkci</string>
+    <string name="help_and_feedback_title">Nápověda a zpětná vazba</string>
+
+    <string name="access_members_me_and_title">Já a %s</string>
+    <string name="access_members_me_subtitle">(Já)</string>
+    <string name="access_members_me_users_groups_title">Já, %1$s a %2$s</string>
+
+    <plurals name="access_members_users_title">
+        <item quantity="one">%d uživatel</item>
+        <item quantity="other">%d uživatelů</item>
+    </plurals>
+    <plurals name="access_members_groups_title">
+        <item quantity="one">%d skupina</item>
+        <item quantity="other">%d skupin</item>
+    </plurals>
+
+</resources>

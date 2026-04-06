@@ -1,0 +1,81 @@
+fastlane_version "2.62.1"
+
+default_platform(:android)
+skip_docs # Do not create fastlane/README.md
+
+platform :android do
+
+  desc "Cleanup build"
+  lane :cleanup do
+    gradle(task: 'clean', project_dir: 'app_manager/')
+    gradle(task: 'clearAssets', project_dir: 'app_manager/')
+  end
+
+
+  desc "Increment build number"
+  lane :increment_build do
+    increment_version_code(
+      gradle_file_path: "app_manager/appmanager/build.gradle.kts"
+    )
+  end
+
+
+  desc "Commit bumped version"
+  lane :git_version_bumped do
+    versionCode = android_get_version_code(
+      gradle_file: "app_manager/appmanager/build.gradle.kts"
+    )
+
+    versionName = android_get_version_name(
+      gradle_file: "app_manager/appmanager/build.gradle.kts"
+    )
+
+    # creates a bump version commit
+    git_commit(
+      path: "app_manager/appmanager/build.gradle.kts",
+      message: "Version bumped to v#{versionName}(#{versionCode})"
+    )
+
+    # create a local tag with the new version
+    add_git_tag(
+      tag: "v#{versionName}-#{versionCode}",
+      build_number: versionCode
+    )
+
+    # push changes
+    push_to_git_remote
+  end
+
+
+  desc "Build a release bundle"
+  lane :build_release_bundle do
+    cleanup
+    gradle(
+      task: 'bundle',
+      build_type: 'Release',
+      project_dir: 'app_manager/',
+    )
+  end
+
+
+  desc "Build the application as APK files for all platforms"
+  lane :apk do |options|
+    gradle(
+      task: 'assemble',
+      build_type: 'Release',
+      project_dir: 'app_manager/',
+      flags: "--max-workers 2"
+    )
+
+  end
+
+
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "testReleaseUnitTest", project_dir: 'app_manager/')
+
+    sh("mkdir -p ../test-reports")
+    sh("find ../app_manager -name '*.xml' -path '*/testReleaseUnitTest/*' -exec cp '{}' ../test-reports/ \\; || true")
+  end
+
+end

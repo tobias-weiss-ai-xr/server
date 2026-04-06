@@ -1,0 +1,207 @@
+<?php
+/**
+ *
+ * (c) Copyright Ascensio System SIA 2026
+ *
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+ *
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ *
+ */
+
+namespace OCA\WorldOffice;
+
+use OCP\AppFramework\Http\ContentSecurityPolicy;
+use OCP\AppFramework\Http\Response;
+use OCP\AppFramework\Http\TemplateResponse;
+use OCP\DirectEditing\IEditor;
+use OCP\DirectEditing\IToken;
+use OCP\IL10N;
+use Psr\Log\LoggerInterface;
+
+/**
+ * Direct Editor
+ *
+ * @package OCA\WorldOffice
+ */
+class DirectEditor implements IEditor {
+
+    public function __construct(
+        private readonly string $appName,
+        private readonly IL10N $trans,
+        private readonly LoggerInterface $logger,
+        private readonly AppConfig $appConfig,
+        private readonly Crypt $crypt
+    ) {}
+
+    /**
+     * Return a unique identifier for the editor
+     */
+    public function getId(): string {
+        return $this->appName;
+    }
+
+    /**
+     * Return a readable name for the editor
+     */
+    public function getName(): string {
+        return "Euro-Office";
+    }
+
+    /**
+     * A list of mimetypes that should open the editor by default
+     */
+    public function getMimetypes(): array {
+        $mimes = [];
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return $mimes;
+        }
+
+        $formats = $this->appConfig->formatsSetting();
+        foreach ($formats as $setting) {
+            if (array_key_exists("def", $setting) && $setting["def"]) {
+                $mimes[] = $setting["mime"][0];
+            }
+        }
+
+        return $mimes;
+    }
+
+    /**
+     * A list of mimetypes that can be opened in the editor optionally
+     */
+    public function getMimetypesOptional(): array {
+        $mimes = [];
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return $mimes;
+        }
+
+        $formats = $this->appConfig->formatsSetting();
+        foreach ($formats as $setting) {
+            if (!array_key_exists("def", $setting) || !$setting["def"]) {
+                $mimes[] = $setting["mime"][0];
+            }
+        }
+
+        return $mimes;
+    }
+
+    /**
+     * Return a list of file creation options to be presented to the user
+     *
+     * @return array of ACreateFromTemplate|ACreateEmpty
+     */
+    public function getCreators(): array {
+        if (!$this->appConfig->isUserAllowedToUse()) {
+            return [];
+        }
+
+        return [
+            new FileCreator($this->appName, $this->trans, $this->logger, "docx"),
+            new FileCreator($this->appName, $this->trans, $this->logger, "xlsx"),
+            new FileCreator($this->appName, $this->trans, $this->logger, "pptx")
+        ];
+    }
+
+    /**
+     * Return if the view is able to securely view a file without downloading it to the browser
+     */
+    public function isSecure(): bool {
+        return true;
+    }
+
+    /**
+     * Return a template response for displaying the editor
+     *
+     * open can only be called once when the client requests the editor with a one-time-use token
+     * For handling editing and later requests, editors need to implement their own token handling
+     * and take care of invalidation
+     *
+     * @param IToken $token - one time token
+     */
+    public function open(IToken $token): Response {
+        try {
+            $token->useTokenScope();
+            $file = $token->getFile();
+            $fileId = $file->getId();
+            $userId = $token->getUser();
+
+            $this->logger->debug("DirectEditor open: $fileId");
+
+            if (!$this->appConfig->isUserAllowedToUse($userId)) {
+                return $this->renderError($this->trans->t("Not permitted"));
+            }
+
+            $documentServerUrl = $this->appConfig->getDocumentServerUrl();
+
+            if (empty($documentServerUrl)) {
+                $this->logger->error("documentServerUrl is empty");
+                return $this->renderError($this->trans->t("Euro-Office app is not configured. Please contact admin"));
+            }
+
+            $directToken = $this->crypt->getHash([
+                "userId" => $userId,
+                "fileId" => $fileId,
+                "action" => "direct",
+                "iat" => time(),
+                "exp" => time() + 30
+            ]);
+
+            $filePath = $file->getPath();
+            $filePath = preg_replace("/^\/" . $userId . "\/files/", "", (string) $filePath);
+
+            $params = [
+                "fileId" => null,
+                "filePath" => $filePath,
+                "shareToken" => null,
+                "directToken" => $directToken,
+                "isTemplate" => false,
+                "inframe" => false,
+                "inviewer" => false,
+                "anchor" => null
+            ];
+
+            $response = new TemplateResponse($this->appName, "editor", $params, "base");
+
+            $csp = new ContentSecurityPolicy();
+
+            if (preg_match("/^https?:\/\//i", $documentServerUrl)) {
+                $csp->addAllowedScriptDomain($documentServerUrl);
+                $csp->addAllowedFrameDomain($documentServerUrl);
+            } else {
+                $csp->addAllowedFrameDomain("'self'");
+            }
+            $response->setContentSecurityPolicy($csp);
+
+            return $response;
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage(), ["exception" => $e]);
+            return $this->renderError($e->getMessage());
+        }
+    }
+
+    /**
+     * Print error page
+     *
+     * @param string $error - error message
+     */
+    private function renderError(string $error): TemplateResponse {
+        return new TemplateResponse($this->appName, "directeditorerror", [
+            "error" => $error
+        ], TemplateResponse::RENDER_AS_ERROR);
+    }
+}

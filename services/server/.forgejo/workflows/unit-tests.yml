@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# Copyright (C) 2025 Euro-Office
+
+name: Service unit tests
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - '**.js'
+      - '!tests/integration/**'
+      - '!DocService/sources/databaseConnectors/**'
+jobs:
+  unit-tests:
+    name: Service unit tests
+    runs-on: docker
+    container: node:20-bookworm
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Caching dependencies
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            ./npm-shrinkwrap.json
+            ./Common/npm-shrinkwrap.json
+            ./DocService/npm-shrinkwrap.json
+            ./FileConverter/npm-shrinkwrap.json
+
+      - name: Install modules
+        run: |
+          npm ci
+          npm --prefix Common ci
+          npm --prefix DocService ci
+          npm --prefix FileConverter ci
+
+      - name: Run Jest
+        run: npm run "unit tests"

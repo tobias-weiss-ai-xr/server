@@ -1,0 +1,442 @@
+package app.editors.manager.mvp.presenters.main
+
+import android.annotation.SuppressLint
+import android.net.Uri
+import android.os.Environment
+import android.util.Log
+import androidx.core.net.toUri
+import androidx.documentfile.provider.DocumentFile
+import androidx.work.Data
+import app.documents.core.model.cloud.PortalProvider
+import app.documents.core.model.cloud.Recent
+import app.documents.core.network.manager.models.explorer.CloudFile
+import app.documents.core.network.manager.models.explorer.Current
+import app.documents.core.network.manager.models.explorer.Explorer
+import app.documents.core.network.manager.models.explorer.Item
+import app.documents.core.providers.LocalFileProvider
+import app.documents.core.providers.ProviderError
+import app.documents.core.providers.WebDavFileProvider
+import app.editors.manager.R
+import app.editors.manager.app.App
+import app.editors.manager.app.accountOnline
+import app.editors.manager.app.localFileProvider
+import app.editors.manager.app.webDavFileProvider
+import app.editors.manager.managers.works.UploadWork
+import app.editors.manager.mvp.views.main.DocsOnDeviceView
+import app.editors.manager.ui.views.custom.PlaceholderViews
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
+import lib.bootstrap.snapshot.SnapshotCreator
+import lib.toolkit.base.managers.tools.LocalContentTools
+import lib.toolkit.base.managers.utils.ContentResolverUtils
+import lib.toolkit.base.managers.utils.EditType
+import lib.toolkit.base.managers.utils.FileUtils
+import lib.toolkit.base.managers.utils.NetworkUtils
+import lib.toolkit.base.managers.utils.PathUtils
+import lib.toolkit.base.managers.utils.StringUtils
+import lib.toolkit.base.managers.utils.StringUtils.Extension
+import moxy.InjectViewState
+import moxy.presenterScope
+import java.io.File
+
+@InjectViewState
+class DocsOnDevicePresenter : DocsBasePresenter<DocsOnDeviceView, LocalFileProvider>() {
+
+    companion object {
+        val TAG: String = DocsOnDevicePresenter::class.java.simpleName
+    }
+
+    init {
+        App.getApp().appComponent.inject(this)
+        fileProvider = context.localFileProvider
+        checkWebDav()
+    }
+
+    private var webDavFileProvider: WebDavFileProvider? = null
+
+    private fun checkWebDav() {
+        if (context.accountOnline?.isWebDav == true) {
+            webDavFileProvider = context.webDavFileProvider
+        }
+    }
+
+    override fun getItemsById(id: String?) {
+        id?.let { path ->
+            disposable.add(
+                fileProvider.getFiles(path, getArgs(filteringValue).putFilters())
+                    .map {
+                        if (modelExplorerStack.isStackEmpty && id == Environment.getExternalStorageDirectory().absolutePath) {
+                            modelExplorerStack.addStack(it)
+                        }
+                    }
+                    .flatMap {
+                        if (id == Environment.getExternalStorageDirectory().absolutePath) {
+                            fileProvider.getFiles(
+                                LocalContentTools.getDir(context),
+                                getArgs(filteringValue).putFilters()
+                            )
+                        } else {
+                            fileProvider.getFiles(path, getArgs(filteringValue).putFilters())
+                        }
+                    }
+                    .doOnNext { it.filterType = filterManager.getFilter(currentSectionType).type.filterVal }
+                    .doOnNext(::loadSuccess)
+                    .doOnError(::fetchError)
+                    .subscribe()
+            )
+        }
+    }
+
+    override fun getNextList() {
+        // Stub to local
+    }
+
+    override fun updateViewsState() {
+        if (isSelectionMode) {
+            viewState.onStateUpdateSelection(true)
+            viewState.onActionBarTitle(modelExplorerStack.countSelectedItems.toString())
+            viewState.onStateAdapterRoot(modelExplorerStack.isNavigationRoot)
+            viewState.onStateActionButton(false)
+        } else if (isFilteringMode) {
+            viewState.onActionBarTitle(context.getString(R.string.toolbar_menu_search_result))
+            viewState.onStateUpdateFilter(true, filteringValue)
+            viewState.onStateAdapterRoot(modelExplorerStack.isNavigationRoot)
+            viewState.onStateActionButton(false)
+        } else if (!modelExplorerStack.isRoot) {
+            viewState.onStateAdapterRoot(false)
+            viewState.onStateUpdateRoot(false)
+            viewState.onStateActionButton(true)
+            viewState.onActionBarTitle(
+                currentTitle.takeIf(String::isNotEmpty)
+                    ?: context.getString(R.string.toolbar_menu_search_result)
+            )
+        } else {
+            if (pickerMode == PickerMode.Folders) {
+                viewState.onActionBarTitle(context.getString(R.string.operation_title))
+                viewState.onStateActionButton(false)
+            } else {
+                viewState.onActionBarTitle(context.getString(R.string.fragment_on_device_title))
+                viewState.onStateActionButton(true)
+            }
+            viewState.onStateAdapterRoot(true)
+            viewState.onStateUpdateRoot(true)
+        }
+    }
+
+    override fun onActionClick() {
+        viewState.onActionDialog()
+    }
+
+    override fun deleteItems() {
+        val items = modelExplorerStack.selectedFiles + modelExplorerStack.selectedFolders
+        disposable.add(
+            fileProvider.delete(items, null)
+                .doOnComplete {
+                    modelExplorerStack.removeSelected()
+                    getBackStack()
+                    setPlaceholderType(if (modelExplorerStack.isListEmpty) PlaceholderViews.Type.EMPTY else PlaceholderViews.Type.NONE)
+                    viewState.onRemoveItems(*items.toTypedArray())
+                }
+                .doOnError(::fetchError)
+                .subscribe()
+        )
+    }
+
+    override fun uploadToMy(uri: Uri) {
+        context.accountOnline?.let { account ->
+            if (webDavFileProvider == null) {
+                when {
+                    preferenceTool.uploadWifiState && !NetworkUtils.isWifiEnable(context) -> {
+                        viewState.onSnackBar(context.getString(R.string.upload_error_wifi))
+                    }
+
+                    ContentResolverUtils.getSize(context, uri) > FileUtils.STRICT_SIZE -> {
+                        viewState.onSnackBar(context.getString(R.string.upload_manager_error_file_size))
+                    }
+
+                    else -> {
+                        if (!account.isWebDav) {
+                            val workData = Data.Builder()
+                                .putString(UploadWork.TAG_UPLOAD_FILES, uri.toString())
+                                .putString(UploadWork.ACTION_UPLOAD_MY, UploadWork.ACTION_UPLOAD_MY)
+                                .putString(UploadWork.TAG_FOLDER_ID, null)
+                                .build()
+                            startUpload(workData)
+                        }
+                    }
+                }
+            } else {
+                uploadWebDav((account.portal.provider as? PortalProvider.Webdav)?.path.orEmpty(), listOf(uri))
+            }
+        }
+    }
+
+    override fun openFolder(id: String?, position: Int, roomType: Int?) {
+        setFiltering(false)
+        super.openFolder(id, position, roomType)
+    }
+
+    override fun sendCopy() {
+        itemClicked?.id?.let { path ->
+            viewState.onSendCopy(File(path))
+        }
+    }
+
+    private fun uploadWebDav(id: String, uriList: List<Uri>) {
+        var uploadId = id
+        if (uploadId[uploadId.length - 1] != '/') {
+            uploadId = "$uploadId/"
+        }
+        uploadDisposable = webDavFileProvider?.upload(uploadId, uriList)
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({ }, { throwable: Throwable -> fetchError(throwable) }
+            ) {
+                viewState.onDialogClose()
+                viewState.onSnackBar(context.getString(R.string.upload_manager_complete))
+                for (file in webDavFileProvider?.uploadsFile.orEmpty()) {
+                    addFile(file)
+                }
+                webDavFileProvider?.uploadsFile?.clear()
+            }
+    }
+
+    override fun rename(title: String?) {
+        val item = modelExplorerStack.getItemById(itemClicked)
+        if (item != null) {
+            val existFile = File(item.id)
+            if (existFile.exists()) {
+                val path = StringBuilder()
+                path.append(existFile.parent).append("/").append(title)
+                if (item is CloudFile) {
+                    path.append(item.fileExst)
+                }
+                val renameFile = File(path.toString())
+                if (renameFile.exists()) {
+                    viewState.onError(context.getString(R.string.rename_file_exist))
+                } else {
+                    super.rename(title)
+                }
+            }
+        }
+    }
+
+    fun moveFile(data: Uri?, isCopy: Boolean) {
+        val path = PathUtils.getFolderPath(context, data!!)
+        if (isSelectionMode) {
+            moveSelection(path, isCopy)
+            return
+        }
+        try {
+            if (fileProvider.transfer(path, itemClicked, isCopy)) {
+                refresh()
+                viewState.onSnackBar(context.getString(R.string.operation_complete_message))
+            } else {
+                viewState.onError(context.getString(R.string.operation_error_move_to_same))
+            }
+        } catch (e: Exception) {
+            catchTransferError(e)
+        }
+    }
+
+    fun openFromChooser(uri: Uri) {
+        val fileName = ContentResolverUtils.getName(context, uri)
+        openFile(
+            uri = uri,
+            extension = StringUtils.getExtensionFromPath(fileName.lowercase()),
+            editType = EditType.Edit()
+        )
+    }
+
+    fun import(uri: Uri) {
+        val currentId = modelExplorerStack.currentId
+
+        if (currentId == null) {
+            viewState.onError(context.getString(R.string.errors_import_local_file_desc))
+            return
+        }
+
+        disposable.add(
+            fileProvider.import(
+                context,
+                currentId,
+                uri
+            ).subscribe(
+                {},
+                { throwable ->
+                    if (throwable.message?.contains(ProviderError.FILE_EXIST) != true) {
+                        deleteImportFailedFile(uri)
+                    }
+                    viewState.onError(throwable.message)
+                }
+            ) {
+                refresh()
+                viewState.onSnackBar(context.getString(R.string.operation_complete_message))
+            })
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun deleteImportFailedFile(uri: Uri?) {
+        uri?.let {
+            val parentFile = File(modelExplorerStack.currentId ?: return)
+            val path = PathUtils.getPath(context, uri)
+            path?.toUri()?.path?.let { filePath -> File(filePath) }?.let { file ->
+                FileUtils.deletePath(File(parentFile, file.name))
+            }
+        }
+
+    }
+
+
+    private fun moveSelection(path: String?, isCopy: Boolean) {
+        if (modelExplorerStack.countSelectedItems > 0) {
+            val provider = fileProvider
+            val items: MutableList<Item> = ArrayList()
+            val files = modelExplorerStack.selectedFiles
+            val folders = modelExplorerStack.selectedFolders
+            items.addAll(folders)
+            items.addAll(files)
+            for (item in items) {
+                try {
+                    if (!provider.transfer(path, item, isCopy)) {
+                        viewState.onError(context.getString(R.string.operation_error_move_to_same))
+                        break
+                    }
+                } catch (e: Exception) {
+                    catchTransferError(e)
+                }
+            }
+            getBackStack()
+            refresh()
+            viewState.onSnackBar(context.getString(R.string.operation_complete_message))
+        } else {
+            viewState.onError(context.getString(R.string.operation_empty_lists_data))
+        }
+    }
+
+    fun deleteFile() {
+        itemClicked?.let { item ->
+            disposable.add(
+                fileProvider.delete(listOf(item), null)
+                    .doOnComplete {
+                        modelExplorerStack.removeItemById(item.id)
+                        viewState.onRemoveItems(item)
+                    }
+                    .doOnError(::fetchError)
+                    .subscribe()
+            )
+        }
+    }
+
+    fun upload() {
+        itemClicked?.let { item ->
+            context.accountOnline?.let {
+                Uri.fromFile(File(item.id))?.let { uri ->
+                    uploadToMy(uri)
+                }
+            } ?: run {
+                viewState.onShowPortals()
+            }
+        }
+
+    }
+
+    @SuppressLint("MissingPermission")
+    fun showMedia(uri: Uri) {
+        viewState.onOpenMedia(OpenState.Media(getMediaFile(uri), false))
+    }
+
+    private fun getMediaFile(uri: Uri): Explorer {
+        return Explorer().apply {
+            val explorerFile = CloudFile()
+            if (uri.scheme == "content") {
+                val file = DocumentFile.fromSingleUri(context, uri)
+                explorerFile.apply {
+                    pureContentLength = file?.length() ?: 0
+                    webUrl = uri.toString()
+                    fileExst = StringUtils.getExtensionFromPath(file?.name ?: "")
+                    title = file?.name ?: ""
+                    isClicked = true
+                }
+                current = Current().apply {
+                    title = file?.name ?: ""
+                    filesCount = "1"
+                }
+                files = mutableListOf(explorerFile)
+            } else {
+                val file = File(PathUtils.getPath(context, uri).toString())
+                explorerFile.apply {
+                    pureContentLength = file.length()
+                    webUrl = file.absolutePath
+                    fileExst = StringUtils.getExtensionFromPath(file.name)
+                    title = file.name
+                    isClicked = true
+                }
+                current = Current().apply {
+                    title = file.name
+                    filesCount = "1"
+                }
+                files = mutableListOf(explorerFile)
+            }
+        }
+    }
+
+    override fun fetchError(throwable: Throwable) {
+        if (throwable.message != null) {
+            if (throwable.message == ProviderError.ERROR_CREATE_LOCAL) {
+                viewState.onError(context.getString(R.string.rename_file_exist))
+            } else {
+                super.fetchError(throwable)
+            }
+        }
+    }
+
+    private fun catchTransferError(e: Exception) {
+        if (e.message != null) {
+            when (e.message) {
+                ProviderError.FILE_EXIST -> viewState.onError(context.getString(R.string.operation_error_move_to_same))
+                ProviderError.UNSUPPORTED_PATH -> viewState.onError(context.getString(R.string.error_unsupported_path))
+            }
+        } else {
+            Log.e(TAG, "Error move/copy local")
+        }
+    }
+
+    override fun openFile(cloudFile: CloudFile, editType: EditType, canBeShared: Boolean) {
+        presenterScope.launch { addToRecent(cloudFile) }
+        openFile(
+            uri = File(cloudFile.id).toUri(),
+            extension = cloudFile.fileExst,
+            editType = editType
+        )
+    }
+
+    private fun openFile(uri: Uri, extension: String, editType: EditType) {
+        //TODO for tests
+        SnapshotCreator.stop()
+        when (StringUtils.getExtension(extension)) {
+            Extension.PDF -> {
+                if (FileUtils.isOformPdf(context.contentResolver.openInputStream(uri))) {
+                    viewState.onOpenLocalFile(uri, extension, editType)
+                } else {
+                    viewState.onShowPdf(uri, editType)
+                }
+            }
+
+            Extension.IMAGE,
+            Extension.IMAGE_GIF,
+            Extension.VIDEO_SUPPORT -> showMedia(uri)
+
+            else -> viewState.onOpenLocalFile(uri, extension, editType)
+        }
+    }
+
+    override fun cloudFileToRecent(cloudFile: CloudFile): Recent {
+        return Recent(
+            path = cloudFile.webUrl,
+            name = cloudFile.title,
+            size = cloudFile.pureContentLength
+        )
+    }
+}

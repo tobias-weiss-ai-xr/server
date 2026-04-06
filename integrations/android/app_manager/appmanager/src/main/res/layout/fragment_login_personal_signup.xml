@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <LinearLayout style="@style/LoginContainerLayout">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/login_personal_portal_email_layout"
+            style="@style/Widget.Common.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/default_margin_xlarge"
+            android:hint="@string/login_personal_edit_email_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/login_personal_portal_email_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="noExcludeDescendants"
+                android:inputType="textEmailAddress|text"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <include
+            android:id="@+id/terms"
+            layout="@layout/include_login_terms" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/login_personal_signup_button"
+            style="@style/Widget.Common.Button"
+            android:layout_marginTop="@dimen/default_margin_xlarge"
+            android:text="@string/login_personal_signup_button" />
+
+        <include
+            layout="@layout/include_social_networks_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:clickable="false"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
+

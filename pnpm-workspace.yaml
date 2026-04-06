@@ -1,0 +1,7 @@
+packages:
+  - "packages/*"
+  - "apps/*"
+  - "apps/web/*"
+  - "apps-web-enterprise/*"
+  - "integrations/*"
+  - "tools/*"

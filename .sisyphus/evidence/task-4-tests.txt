@@ -1,0 +1,19 @@
+Describing Task 1 - Script Scaffold
+   Context Script file exists and is accessible
+    [-] Script file should exist at Sync-Remotes.ps1 225ms
+      Expected: {True}
+      But was:  {False}
+      69:             Test-Path $ScriptPath | Should Be $true
+      at <ScriptBlock>, C:\Users\Tobias\git\world-office\tests\Sync-Remotes.Tests.ps1: line 69
+   Context Help output
+    [-] Should have help output available 1.82s
+      Expected: value to not be empty
+      77:             $help | Should Not BeNullOrEmpty
+      at <ScriptBlock>, C:\Users\Tobias\git\world-office\tests\Sync-Remotes.Tests.ps1: line 77
+   Context Default execution mode
+    [+] Should default to dry-run mode 40ms
+Describing Task 2 - Invoke-Utility
+   Context Successful command execution
+    [+] Should return output on success 28ms
+   Context Command failure
+    [+] Should throw on failure 28ms

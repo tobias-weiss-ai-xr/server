@@ -1,0 +1,34 @@
+{
+  "name": "world-office-opencloud",
+  "version": "1.0.0",
+  "description": "Deployment companion for World-Office Document Server + OCIS",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Tests not yet implemented\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "keywords": ["ocis", "euro_office", "wopi", "docker"],
+  "author": "World-Office",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9",
+    "dotenv": "^16.3.1",
+    "dockerode": "^4.0.0",
+    "axios": "^1.6.0",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "eslint": "^8.54.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

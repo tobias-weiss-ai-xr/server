@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chooser_email_client">Изберете имейл клиент …</string>
+    <string name="about_email_subject">WORLDOFFICE Документи Android Обратна връзка</string>
+    <string name="about_feedback">Обратна връзка и поддръжка</string>
+    <string name="text_hint_required">Длъжен</string>
+    <string name="export_send_copy">Изпрати копие</string>
+    <string name="dialogs_edit_forbidden_symbols">Не използвайте тези символи\u0020</string>
+    <string name="dialogs_edit_forbidden_name">Невалидно име</string>
+    <string name="sizes_bytes">Байта</string>
+    <string name="sizes_kilobytes">KB</string>
+    <string name="sizes_megabytes">MB</string>
+    <string name="sizes_gigabytes">GB</string>
+    <string name="sizes_terabytes">TB</string>
+    <string name="common_accept">Приеми</string>
+    <string name="common_cancel">Отказ</string>
+    <string name="common_next">Следващ</string>
+    <string name="common_previous">Предишен</string>
+    <string name="common_done">Готово</string>
+    <string name="common_ok">ОК</string>
+    <plurals name="days">
+        <item quantity="one">ден</item>
+        <item quantity="other">дни</item>
+    </plurals>
+
+    <plurals name="hours">
+        <item quantity="one">час</item>
+        <item quantity="other">часове</item>
+    </plurals>
+    <string name="settings_fonts_title">Шрифтове</string>
+    <string name="settings_view">Преглед</string>
+    <plurals name="months">
+        <item quantity="one">месец</item>
+        <item quantity="other">месеци</item>
+    </plurals>
+    <plurals name="years">
+        <item quantity="one">година</item>
+        <item quantity="other">години</item>
+    </plurals>
+
+    <!-- Newly added translations (v9.0.0 - 2025-06-09) -->
+    <string name="help_and_feedback_contact_support">Свържете се с поддръжката</string>
+    <string name="help_and_feedback_help_center">Помощен център</string>
+    <string name="help_and_feedback_suggest_a_feature">Предложете характеристика</string>
+    <string name="help_and_feedback_title">Помощ и Обратна връзка</string>
+
+    <string name="access_members_me_and_title">Аз и %s</string>
+    <string name="access_members_me_subtitle">(Аз)</string>
+    <string name="access_members_me_users_groups_title">Аз, %1$s и %2$s</string>
+
+    <plurals name="access_members_users_title">
+        <item quantity="one">%d потребител</item>
+        <item quantity="other">%d потребители</item>
+    </plurals>
+    <plurals name="access_members_groups_title">
+        <item quantity="one">%d група</item>
+        <item quantity="other">%d групи</item>
+    </plurals>
+</resources>

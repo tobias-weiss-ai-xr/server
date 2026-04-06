@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_title" translatable="false">WORLDOFFICE</string>
+    <string name="dialogs_edit_forbidden_symbols">لا تستخدم هذه الرموز\u0020</string>
+    <string name="dialogs_edit_forbidden_name">اسم غير صالح</string>
+
+    <!-- File/Folder info -->
+    <string name="sizes_bytes">بايت</string>
+    <string name="sizes_kilobytes">كيلو بايت</string>
+    <string name="sizes_megabytes">ميغابايت</string>
+    <string name="sizes_gigabytes">غيغابايت</string>
+    <string name="sizes_terabytes">تيرابايت</string>
+
+    <!--  Feedback  -->
+    <string name="chooser_email_client">اختر عميل البريد الإلكتروني…</string>
+    <string name="about_email_subject">ملفات WORLDOFFICE للحصول على تعليقات Android</string>
+    <string name="about_feedback">ردود الفعل والدعم</string>
+    <string name="text_hint_required">مطلوب</string>
+
+    <string name="export_send_copy">أرسل نسخة</string>
+
+    <string name="common_accept">قبول</string>
+    <string name="common_cancel">إلغاء الأمر</string>
+    <string name="common_next">التالي</string>
+    <string name="common_previous">السابق</string>
+    <string name="common_done">تم</string>
+    <string name="common_ok">موافق</string>
+    <plurals name="days" tools:ignore="MissingQuantity">
+        <item quantity="one">يوم</item>
+        <item quantity="other">أيام</item>
+    </plurals>
+
+    <plurals name="hours" tools:ignore="MissingQuantity">
+        <item quantity="one">ساعة</item>
+        <item quantity="other">ساعات</item>
+    </plurals>
+    <string name="settings_fonts_title">خطوط</string>
+    <string name="settings_view">عرض</string>
+
+    <!-- Newly added translations (v9.0.0 - 2025-06-09) -->
+    <string name="help_and_feedback_contact_support">اتصلوا بالدعم</string>
+    <string name="help_and_feedback_help_center">مركز المساعدة</string>
+    <string name="help_and_feedback_suggest_a_feature">اقترحوا ميزة جديدة</string>
+    <string name="help_and_feedback_title">المساعدة والملاحظات</string>
+
+    <!-- Newly added translations (v9.0.2 - 2025-06-25) -->
+    <plurals name="months">
+        <item quantity="one">شهر</item>
+        <item quantity="other">شهر</item>
+    </plurals>
+    <plurals name="years">
+        <item quantity="one">سنة</item>
+        <item quantity="other">سنة</item>
+    </plurals>
+
+    <string name="access_members_me_and_title">أنا و%s</string>
+    <string name="access_members_me_subtitle">(أنا)</string>
+    <string name="access_members_me_users_groups_title">أنا، %1$s و %2$s</string>
+
+    <plurals name="access_members_users_title">
+        <item quantity="zero">%d مستخدم</item>
+        <item quantity="one">%d مستخدم</item>
+        <item quantity="two">%d مستخدمان</item>
+        <item quantity="few">%d مستخدمين</item>
+        <item quantity="many">%d مستخدمًا</item>
+        <item quantity="other">%d مستخدمين</item>
+    </plurals>
+    <plurals name="access_members_groups_title">
+        <item quantity="zero">%d مجموعة</item>
+        <item quantity="one">%d مجموعة</item>
+        <item quantity="two">%d مجموعتان</item>
+        <item quantity="few">%d مجموعات</item>
+        <item quantity="many">%d مجموعة</item>
+        <item quantity="other">%d مجموعات</item>
+    </plurals>
+</resources>

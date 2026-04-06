@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout style="@style/LoginContainerLayout">
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/storage_connect_title_layout"
+            style="@style/Widget.Common.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/storage_connect_folder_name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/storage_connect_title_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="noExcludeDescendants"
+                android:inputType="textEmailAddress"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/storage_connect_save"
+            style="@style/Widget.Common.Button"
+            android:layout_marginTop="16dp"
+            android:text="@string/storage_connect_save_button" />
+    </LinearLayout>
+</ScrollView>
+

@@ -1,0 +1,90 @@
+package app.editors.manager.ui.fragments.storages
+
+import android.net.Uri
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import app.documents.core.network.common.contracts.ApiContract
+import app.documents.core.network.common.utils.GoogleDriveUtils
+import app.documents.core.network.manager.models.base.Entity
+import app.documents.core.providers.BaseFileProvider
+import app.editors.manager.R
+import app.editors.manager.managers.works.BaseStorageUploadWork
+import app.editors.manager.managers.works.googledrive.UploadWork
+import app.editors.manager.mvp.presenters.main.DocsBasePresenter
+import app.editors.manager.mvp.presenters.storages.DocsGoogleDrivePresenter
+import app.editors.manager.mvp.views.base.DocsGoogleDriveView
+import app.editors.manager.mvp.views.main.DocsBaseView
+import app.editors.manager.ui.dialogs.ActionBottomDialog
+import app.editors.manager.ui.fragments.base.BaseStorageDocsFragment
+import app.editors.manager.ui.fragments.base.StorageLoginFragment
+import moxy.presenter.InjectPresenter
+
+class DocsGoogleDriveFragment: BaseStorageDocsFragment(), DocsGoogleDriveView {
+
+    companion object {
+        val TAG: String = DocsGoogleDriveFragment::class.java.simpleName
+
+        fun newInstance(): DocsGoogleDriveFragment = DocsGoogleDriveFragment()
+
+    }
+
+    @InjectPresenter
+    override lateinit var storagePresenter: DocsGoogleDrivePresenter
+
+    override val presenter: DocsBasePresenter<out DocsBaseView, out BaseFileProvider>
+        get() = storagePresenter
+
+    override fun getSection(): ApiContract.Section = ApiContract.Section.Storage.GoogleDrive
+
+    override fun onActionButtonClick(buttons: ActionBottomDialog.Buttons?) {
+        if (buttons == ActionBottomDialog.Buttons.UPLOAD) {
+            showMultipleFilePickerActivity { uris ->
+                if (!uris.isNullOrEmpty()) {
+                    presenter.upload(null, uris, KEY_UPLOAD)
+                }
+            }
+        } else {
+            super.onActionButtonClick(buttons)
+        }
+    }
+
+    override fun onDocsNext(list: List<Entity>?) {
+        explorerAdapter?.addItems(list)
+    }
+
+    override fun onDocsBatchOperation() {
+        onDialogClose()
+        onSnackBar(getString(R.string.operation_complete_message))
+        onRefresh()
+    }
+
+    override fun onUpload(uploadUris: List<Uri>, folderId: String, fileId: String, tag: String) {
+        val workManager = WorkManager.getInstance(requireContext())
+
+        for (uploadUri in uploadUris) {
+            val data = Data.Builder()
+                .putString(BaseStorageUploadWork.TAG_FOLDER_ID, folderId)
+                .putString(BaseStorageUploadWork.TAG_UPLOAD_FILES, uploadUri.toString())
+                .putString(BaseStorageUploadWork.KEY_TAG, tag)
+                .putString(UploadWork.KEY_FILE_ID, fileId)
+                .build()
+
+            val request = OneTimeWorkRequest.Builder(UploadWork::class.java)
+                .setInputData(data)
+                .build()
+
+            workManager.enqueue(request)
+        }
+    }
+
+    override fun onAuthorization() { }
+
+    override fun onSignIn() {
+        showFragment(
+            StorageLoginFragment.newInstance(GoogleDriveUtils.storage),
+            StorageLoginFragment.TAG,
+            false
+        )
+    }
+}

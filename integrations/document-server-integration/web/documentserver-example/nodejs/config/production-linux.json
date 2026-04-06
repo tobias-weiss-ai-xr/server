@@ -1,0 +1,8 @@
+{
+  "server": {
+    "siteUrl": "/",
+    "maxFileSize": 104857600,
+    "storageFolder": "/var/lib/world-office/documentserver-example/files",
+    "enableForgotten": false
+  }
+}

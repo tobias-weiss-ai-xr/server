@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/colorSurface"
+    android:paddingTop="@dimen/popup_margins_top_bottom"
+    android:paddingBottom="@dimen/popup_margins_top_bottom">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/fullAccessItem"
+            layout="@layout/include_popup_share_item"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/powerUserItem"
+            layout="@layout/include_popup_share_item"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/customFilterItem"
+            layout="@layout/include_popup_share_item"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/editorItem"
+            layout="@layout/include_popup_share_item"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/fillFormItem"
+            layout="@layout/include_popup_share_item"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/reviewItem"
+            layout="@layout/include_popup_share_item"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/commentItem"
+            layout="@layout/include_popup_share_item"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/viewItem"
+            layout="@layout/include_popup_share_item"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/popup_share_access_separator_deny"
+            layout="@layout/view_line_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_separator_height"
+            android:layout_marginTop="@dimen/line_separator_group_top"
+            android:layout_marginBottom="@dimen/line_separator_group_bottom"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/denyItem"
+            layout="@layout/include_popup_share_item"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/popup_share_access_separator_remove"
+            layout="@layout/view_line_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_separator_height"
+            android:layout_marginTop="@dimen/line_separator_group_top"
+            android:layout_marginBottom="@dimen/line_separator_group_bottom"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/deleteItem"
+            layout="@layout/include_popup_share_item"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -1,0 +1,19 @@
+{
+    "name": "world-office/world-office-nextcloud",
+    "authors": [
+        {
+            "name": "Ascensio System SIA",
+            "email": "integration@world-office.com",
+            "homepage": "https://www.world-office.com/"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "OCA\\WorldOffice\\": "./lib/"
+        }
+    },
+    "require": {
+        "php": ">=8.1 <8.5",
+        "firebase/php-jwt": "^6.0"
+    }
+}

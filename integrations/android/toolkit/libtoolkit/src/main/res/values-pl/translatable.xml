@@ -1,0 +1,65 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="chooser_email_client">Wybierz klienta poczty …</string>
+    <string name="about_email_subject">Android Opinie WORLDOFFICE Documents</string>
+    <string name="about_feedback">Opinie i wsparcie</string>
+    <string name="text_hint_required">Wymagany</string>
+    <string name="export_send_copy">Wyślij kop</string>
+    <string name="dialogs_edit_forbidden_symbols">Nie używaj tych znaków\u0020</string>
+    <string name="dialogs_edit_forbidden_name">Nieprawidłowa nazwa</string>
+    <string name="sizes_bytes">bitów</string>
+    <string name="sizes_kilobytes">kB</string>
+    <string name="sizes_megabytes">MB</string>
+    <string name="sizes_gigabytes">GB</string>
+    <string name="sizes_terabytes">TB</string>
+    <string name="common_accept">Akceptuj</string>
+    <string name="common_cancel">Anuluj</string>
+    <string name="common_done">Ukończono</string>
+    <string name="common_next">Dalej</string>
+    <string name="common_ok">OK</string>
+    <string name="common_previous">Wróć</string>
+    <string name="settings_fonts_title">Czcionki</string>
+
+    <plurals name="days">
+        <item quantity="one">dzień</item>
+        <item quantity="few">dni</item>
+        <item quantity="many">dni</item>
+        <item quantity="other">dni</item>
+    </plurals>
+
+    <plurals name="hours">
+        <item quantity="one">godzina</item>
+        <item quantity="few">godziny</item>
+        <item quantity="many">godzin</item>
+        <item quantity="other">godzin</item>
+    </plurals>
+    <string name="settings_view">Widok</string>
+    <plurals name="months" tools:ignore="MissingQuantity">
+        <item quantity="one">miesiąc</item>
+        <item quantity="other">miesiące(-cy)</item>
+    </plurals>
+    <plurals name="years" tools:ignore="MissingQuantity">
+        <item quantity="one">rok</item>
+        <item quantity="other">lat(a)</item>
+    </plurals>
+
+    <!-- Newly added translations (v9.0.0 - 2025-06-09) -->
+    <string name="help_and_feedback_contact_support">Skontaktuj się z obsługą klienta</string>
+    <string name="help_and_feedback_help_center">Centrum pomocy</string>
+    <string name="help_and_feedback_suggest_a_feature">Zaproponuj funkcję</string>
+    <string name="help_and_feedback_title">Pomoc i opinie</string>
+
+    <string name="access_members_me_and_title">Ja i %s</string>
+    <string name="access_members_me_subtitle">(Ja)</string>
+    <string name="access_members_me_users_groups_title">Ja, %1$s i %2$s</string>
+
+    <plurals name="access_members_users_title">
+        <item quantity="one">%d użytkownik</item>
+        <item quantity="other">%d użytkowników</item>
+    </plurals>
+
+    <plurals name="access_members_groups_title">
+        <item quantity="one">%d grupa</item>
+        <item quantity="other">%d grup</item>
+    </plurals>
+
+</resources>

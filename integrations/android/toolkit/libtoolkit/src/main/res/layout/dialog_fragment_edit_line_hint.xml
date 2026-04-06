@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialogCommonEditLineLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:theme="@style/AppTheme">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dialogCommonEditLineTextInputLayout"
+        style="@style/Widget.Common.TextInputLayout.Surface"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:suffixTextColor="@color/colorPrimary">
+
+        <requestFocus />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/dialogCommonEditLineValueEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="noExcludeDescendants"
+            android:inputType="textNoSuggestions"
+            android:textAppearance="@style/Widget.Common.TextView" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</FrameLayout>

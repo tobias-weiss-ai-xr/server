@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/screen_padding_medium_left_right">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/login_sms_code_title_text"
+            style="@style/Widget.Common.TextView.Description"
+            android:layout_width="@dimen/default_screen_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/screen_top_bottom_padding"
+            android:gravity="center"
+            android:lines="2"
+            android:text="@string/login_sms_code_label"
+            android:textSize="@dimen/fonts_size_medium"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.050000012" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/login_sms_code_number_text"
+            style="@style/Widget.Common.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="-"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_sms_code_title_text" />
+
+        <app.editors.manager.ui.views.edits.BaseEditText
+            android:id="@+id/login_sms_code_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:ems="9"
+            android:gravity="center"
+            android:inputType="number"
+            android:letterSpacing="1"
+            android:singleLine="true"
+            android:textSize="@dimen/fonts_size_medium"
+            android:text="123144"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_sms_code_number_text"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/login_sms_code_send_again_button"
+            style="@style/Widget.Common.Button.TextButton"
+            android:layout_marginTop="16dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="10dp"
+            android:text="@string/login_sms_send_again"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_sms_code_edit" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/login_sms_code_change_number_button"
+            style="@style/Widget.Common.Button.TextButton"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="10dp"
+            android:text="@string/login_sms_change_number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_sms_code_send_again_button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

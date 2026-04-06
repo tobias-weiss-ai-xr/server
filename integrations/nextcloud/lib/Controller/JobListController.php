@@ -1,0 +1,98 @@
+<?php
+/**
+ *
+ * (c) Copyright Ascensio System SIA 2026
+ *
+ * This program is a free software product.
+ * You can redistribute it and/or modify it under the terms of the GNU Affero General Public License
+ * (AGPL) version 3 as published by the Free Software Foundation.
+ * In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * The interactive user interfaces in modified source and object code versions of the Program
+ * must display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+ *
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as well as technical
+ * writing content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0 International.
+ * See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ *
+ */
+
+namespace OCA\WorldOffice\Controller;
+
+use OCA\WorldOffice\AppConfig;
+use OCA\WorldOffice\Cron\EditorsCheck;
+use OCP\AppFramework\Controller;
+use OCP\BackgroundJob\IJob;
+use OCP\BackgroundJob\IJobList;
+use OCP\IRequest;
+
+/**
+ * Class JobListController
+ *
+ * @package OCA\WorldOffice\Controller
+ */
+class JobListController extends Controller {
+
+    public function __construct(
+        string $appName,
+        IRequest $request,
+        private readonly AppConfig $appConfig,
+        private readonly IJobList $jobList
+    ) {
+        parent::__construct($appName, $request);
+    }
+
+    /**
+     * Add a job to list
+     *
+     * @param IJob|string $job
+     */
+    private function addJob(IJob|string $job): void {
+        if (!$this->jobList->has($job, null)) {
+            $this->jobList->add($job);
+            \OCP\Log\logger('world-office')->debug("Job '".$job."' added to JobList.", ["app" => $this->appName]);
+        }
+    }
+
+    /**
+     * Remove a job from list
+     *
+     * @param IJob|string $job
+     */
+    private function removeJob(IJob|string $job): void {
+        if ($this->jobList->has($job, null)) {
+            $this->jobList->remove($job);
+            \OCP\Log\logger('world-office')->debug("Job '".$job."' removed from JobList.", ["app" => $this->appName]);
+        }
+    }
+
+    /**
+     * Add or remove EditorsCheck job depending on the value of _editors_check_interval
+     *
+     */
+    private function checkEditorsCheckJob(): void {
+        if (!$this->appConfig->getCronChecker()) {
+            $this->removeJob(EditorsCheck::class);
+            return;
+        }
+        if ($this->appConfig->getEditorsCheckInterval() > 0) {
+            $this->addJob(EditorsCheck::class);
+        } else {
+            $this->removeJob(EditorsCheck::class);
+        }
+    }
+
+    /**
+     * Method for sequentially calling checks of all jobs
+     *
+     */
+    public function checkAllJobs(): void {
+        $this->checkEditorsCheckJob();
+    }
+}

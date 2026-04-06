@@ -1,0 +1,180 @@
+package app.editors.manager.viewModels.main
+
+import android.annotation.SuppressLint
+import android.net.Uri
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import app.documents.core.network.common.RequestsCollector
+import app.editors.manager.R
+import app.editors.manager.managers.tools.FontManager
+import app.editors.manager.managers.tools.PreferenceTool
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import lib.toolkit.base.managers.tools.BaseEvent
+import lib.toolkit.base.managers.tools.BaseEventSender
+import lib.toolkit.base.managers.tools.EventSender
+import lib.toolkit.base.managers.tools.ResourcesProvider
+import lib.toolkit.base.managers.tools.ThemePreferencesTools
+import lib.toolkit.base.managers.utils.FileUtils
+import lib.toolkit.base.managers.utils.mutableStateIn
+import java.io.File
+import javax.inject.Inject
+
+data class AppSettingsState(
+    val cache: Long = 0,
+    val themeMode: Int = 0,
+    val analytics: Boolean = false,
+    val wifi: Boolean = false,
+    val keepScreenOn: Boolean = false,
+    val passcodeEnabled: Boolean = false,
+    val fonts: List<File> = emptyList(),
+    val developerMode: Boolean = false
+)
+
+sealed interface AppSettingsEffect : BaseEvent {
+    data class Progress(val value: Int) : AppSettingsEffect
+    data object ShowDialog : AppSettingsEffect
+    data object HideDialog : AppSettingsEffect
+}
+
+class AppSettingsViewModelFactory @Inject constructor(
+    private val themePrefs: ThemePreferencesTools,
+    private val resourcesProvider: ResourcesProvider,
+    private val preferenceTool: PreferenceTool,
+    private val fontManager: FontManager
+) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return if (modelClass.isAssignableFrom(AppSettingsViewModel::class.java)) {
+            AppSettingsViewModel(themePrefs, resourcesProvider, preferenceTool, fontManager) as T
+        } else {
+            throw IllegalArgumentException("ViewModel Not Found")
+        }
+    }
+}
+
+class AppSettingsViewModel(
+    private val themePrefs: ThemePreferencesTools,
+    private val resourcesProvider: ResourcesProvider,
+    private val preferenceTool: PreferenceTool,
+    private val fontManager: FontManager
+) : ViewModel(), EventSender by BaseEventSender(resourcesProvider) {
+
+    private val _settingsState: MutableStateFlow<AppSettingsState> = flow {
+        emit(
+            AppSettingsState(
+                cache = cache,
+                analytics = preferenceTool.isAnalyticEnable,
+                wifi = preferenceTool.uploadWifiState,
+                keepScreenOn = preferenceTool.keepScreenOn,
+                passcodeEnabled = preferenceTool.passcodeLock.enabled,
+                themeMode = themePrefs.mode,
+                fonts = File(FileUtils.getFontsDir(resourcesProvider.context)).listFiles()?.toList().orEmpty(),
+                developerMode = preferenceTool.developMode
+            )
+        )
+    }.mutableStateIn(viewModelScope, AppSettingsState())
+
+    val settingsState: StateFlow<AppSettingsState> = _settingsState.asStateFlow()
+
+    private var addFontsJob: Job? = null
+
+    private val cache: Long
+        get() = FileUtils.getSize(resourcesProvider.getCacheDir(true)) +
+                FileUtils.getSize(resourcesProvider.getCacheDir(false)) -
+                FileUtils.getSize(File(resourcesProvider.getCacheDir(false)?.absolutePath + "/assets"))
+
+    private fun fetchFonts() {
+        _settingsState.value = _settingsState.value.copy(fonts = fontManager.getFonts())
+    }
+
+    fun setAnalytic(isEnable: Boolean) {
+        preferenceTool.isAnalyticEnable = isEnable
+        _settingsState.value = _settingsState.value.copy(analytics = isEnable)
+    }
+
+    fun setWifiState(isEnable: Boolean) {
+        preferenceTool.setWifiState(isEnable)
+        _settingsState.value = _settingsState.value.copy(wifi = isEnable)
+    }
+
+    fun setScreenOnState(isEnable: Boolean) {
+        preferenceTool.setScreenOnState(isEnable)
+        _settingsState.value = _settingsState.value.copy(keepScreenOn = isEnable)
+    }
+
+    fun setThemeMode(mode: Int) {
+        themePrefs.mode = mode
+        _settingsState.value = _settingsState.value.copy(themeMode = mode)
+        AppCompatDelegate.setDefaultNightMode(mode)
+    }
+
+    @SuppressLint("MissingPermission")
+    fun clearCache() {
+        viewModelScope.launch {
+            resourcesProvider.getCacheDir(true)?.let(FileUtils::deletePath)
+            resourcesProvider.getCacheDir(false)?.let(FileUtils::deletePath)
+            sendMessage(R.string.setting_cache_cleared)
+            _settingsState.value = _settingsState.value.copy(cache = cache)
+        }
+    }
+
+    fun clearFonts() {
+        viewModelScope.launch {
+            fontManager.clearFonts()
+            fetchFonts()
+        }
+    }
+
+    fun deleteFont(font: File) {
+        viewModelScope.launch {
+            fontManager.deleteFont(font)
+            fetchFonts()
+        }
+    }
+
+    fun addFont(fonts: List<Uri>?){
+        if (fonts.isNullOrEmpty()) return
+        addFontsJob?.cancel()
+
+        addFontsJob = viewModelScope.launch {
+            sendEvent(AppSettingsEffect.ShowDialog)
+            fontManager.addFonts(
+                fonts = fonts,
+                onProgress = { value ->
+                    sendEvent(AppSettingsEffect.Progress(value))
+                    fetchFonts()
+                },
+                onError = { e ->
+                    if (e !is CancellationException) {
+                        sendMessage(R.string.upload_manager_error)
+                    } else {
+                        sendEvent(AppSettingsEffect.HideDialog)
+                    }
+                }
+            )
+            sendEvent(AppSettingsEffect.HideDialog)
+        }
+    }
+
+    fun cancelJob() {
+        addFontsJob?.cancel()
+    }
+
+    fun setDeveloperMode(enabled: Boolean) {
+        RequestsCollector.setDeveloperMode(enabled)
+        preferenceTool.developMode = enabled
+        _settingsState.value = _settingsState.value.copy(developerMode = enabled)
+    }
+
+    fun toggleDeveloperMode() {
+        setDeveloperMode(!_settingsState.value.developerMode)
+    }
+}

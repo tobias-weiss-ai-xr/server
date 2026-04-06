@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:installLocation="internalOnly">
+
+    <!--    <permission android:name="com.world-office.documents.ACCOUNTS" />-->
+
+    <uses-permission android:name="${applicationId}.permission.WRITE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
+
+    <queries>
+        <provider
+            android:authorities="com.world-office.projects.accounts"
+            tools:ignore="ExportedContentProvider" />
+    </queries>
+
+    <queries>
+        <package android:name="com.world-office.projects" />
+    </queries>
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <!--suppress AndroidElementNotAllowed -->
+    <meta-data
+        android:name="com.samsung.android.keepalive.density"
+        android:value="true" />
+    <!--suppress AndroidElementNotAllowed -->
+    <meta-data
+        android:name="com.samsung.android.multidisplay.keep_process_alive"
+        android:value="true" />
+
+    <permission
+        android:name="${applicationId}.permission.WRITE"
+        android:description="@string/permission_account_write_description"
+        android:label="@string/permission_account_write_label"
+        android:protectionLevel="signature" />
+    <permission
+        android:name="${applicationId}.permission.READ"
+        android:description="@string/permission_account_read_description"
+        android:label="@string/permission_account_read_label"
+        android:protectionLevel="signature" />
+
+    <application
+        android:name="app.editors.manager.app.App"
+        android:allowBackup="true"
+        android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:localeConfig="@xml/locales_config"
+        android:resizeableActivity="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:requestLegacyExternalStorage="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:replace="android:usesCleartextTraffic"
+        tools:ignore="UnusedAttribute">
+        <activity
+            android:name="app.editors.manager.ui.activities.login.PortalsActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"
+            android:launchMode="standard"
+            android:theme="@style/NoActionBarTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="app.editors.manager.ui.activities.login.SignInActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/NoActionBarTheme"
+            android:windowSoftInputMode="adjustResize|stateUnchanged">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.editors.manager.ui.activities.login.PortalsActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="oauth2social" android:host="world-office.app.manager"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="app.editors.manager.ui.activities.main.MainActivity"
+            android:exported="true"
+            android:filterTouchesWhenObscured="true"
+            android:clearTaskOnLaunch="true"
+            android:launchMode="singleTop"
+            android:supportsPictureInPicture="true"
+            android:theme="@style/MainActivityTheme"
+            android:windowSoftInputMode="adjustResize|adjustPan|stateAlwaysHidden">
+            <!--            <intent-filter android:label="@string/upload_to_portal">-->
+            <!--                <action android:name="android.intent.action.SEND" />-->
+
+            <!--                <category android:name="android.intent.category.DEFAULT" />-->
+
+            <!--                <data-->
+            <!--                    android:host="*"-->
+            <!--                    android:mimeType="application/*" />-->
+            <!--            </intent-filter>-->
+            <!--            <intent-filter android:label="@string/upload_to_portal">-->
+            <!--                <action android:name="android.intent.action.SEND" />-->
+
+            <!--                <category android:name="android.intent.category.DEFAULT" />-->
+
+            <!--                <data-->
+            <!--                    android:host="*"-->
+            <!--                    android:mimeType="video/*" />-->
+            <!--            </intent-filter>-->
+            <!--            <intent-filter android:label="@string/upload_to_portal">-->
+            <!--                <action android:name="android.intent.action.SEND" />-->
+
+            <!--                <category android:name="android.intent.category.DEFAULT" />-->
+
+            <!--                <data-->
+            <!--                    android:host="*"-->
+            <!--                    android:mimeType="image/*" />-->
+            <!--            </intent-filter>-->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="openfile"
+                    android:scheme="oodocuments" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcut" />
+        </activity>
+        <activity
+            android:name="app.editors.manager.ui.activities.main.ShareActivity"
+            android:configChanges="screenSize"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:theme="@style/NoActionBarTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.editors.manager.ui.activities.main.MainActivity" />
+        </activity>
+        <activity
+            android:name="app.editors.manager.ui.activities.main.StartFillingActivity"
+            android:configChanges="screenSize"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/NoActionBarTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+        </activity>
+        <activity
+            android:name="app.editors.manager.ui.activities.main.OnBoardingActivity"
+            android:exported="false"
+            android:launchMode="singleTop">
+        </activity>
+        <activity
+            android:name="app.editors.manager.ui.activities.main.StorageActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:theme="@style/NoActionBarTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.editors.manager.ui.activities.main.MainActivity" />
+        </activity>
+        <activity
+            android:name="app.editors.manager.ui.activities.main.WebViewerActivity"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation|locale|layoutDirection"
+            android:filterTouchesWhenObscured="true"
+            android:hardwareAccelerated="true"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:process=":WebViewerActivity"
+            android:supportsPictureInPicture="true"
+            android:theme="@style/WebViewerActivityStyle"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.editors.manager.ui.activities.main.MainActivity" />
+        </activity>
+        <activity
+            android:name="app.editors.manager.ui.activities.login.WebViewCloudLoginActivity"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|uiMode|keyboard|keyboardHidden|navigation|locale|layoutDirection"
+            android:exported="false"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/NoActionBarTheme" />
+        <activity
+            android:name="app.editors.manager.ui.activities.main.MediaActivity"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:process=":MediaActivity"
+            android:theme="@style/MediaTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.editors.manager.ui.activities.main.MainActivity" />
+        </activity>
+
+        <activity
+            android:theme="@style/PasscodeActivityTheme"
+            android:name="app.editors.manager.ui.activities.main.PasscodeActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor">
+        </activity>
+
+        <activity
+            android:name="app.editors.manager.ui.activities.login.AuthAppActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/NoActionBarTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.editors.manager.ui.activities.login.SignInActivity" />
+        </activity>
+        <activity
+            android:name="app.editors.manager.ui.activities.login.WebDavLoginActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/NoActionBarTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name="app.editors.manager.ui.activities.main.CloudsActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"
+            android:theme="@style/NoActionBarTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="app.editors.manager.ui.activities.main.AccountsActivity"
+            android:exported="false"
+            android:theme="@style/NoActionBarTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="app.editors.manager.ui.activities.main.SettingsActivity"
+            android:exported="false"
+            android:theme="@style/NoActionBarTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="app.editors.manager.ui.activities.main.FilterActivity"
+            android:exported="false"
+            android:theme="@style/NoActionBarTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name="app.editors.manager.ui.activities.main.AppLocaleConfirmationActivity"
+            android:exported="false"
+            android:theme="@style/NoActionBarTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <service
+            android:name="app.documents.shared.MessengerService"
+            android:exported="false"/>
+
+        <service
+            android:name="app.editors.manager.managers.services.AuthenticatorService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <service
+            android:name="app.editors.manager.managers.services.MessageService"
+            android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.asc.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <provider
+            android:name=".managers.tools.AccountContentProvider"
+            android:authorities="com.world-office.accounts"
+            android:enabled="false"
+            android:exported="false" />
+
+        <!-- FOSS build: Facebook SDK entries removed -->
+
+    </application>
+
+</manifest>

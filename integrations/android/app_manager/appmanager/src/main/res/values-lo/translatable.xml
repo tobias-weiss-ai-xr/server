@@ -1,0 +1,1156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">ເອກະສານ</string>
+    <string name="app_name_full">ເອກະສານ WORLDOFFICE ເທົ່ານັ້ນ </string>
+
+    <!-- ======================================================================================= -->
+    <!-- Permissions -->
+
+    <!-- ======================================================================================= -->
+    <!-- Versions -->
+    <string name="app_versions_title">ລູ້ນທີ 3.0 </string>
+    <string name="app_versions_cancel">ພາຍຫຼັງ </string>
+    <string name="app_versions_without_release_accept">ຕິດຕັ້ງແອັບຢ່າງເປັນທາງການ</string>
+    <string name="app_versions_without_release_info">
+        ຂໍຂອບໃຈ ສຳ ລັບການທົດລອງເບຕ້າ! ເອກະສານ WORLDOFFICE ລຸ້ນ3.0 ຖືກນຳໃຊ້ດຽວນີ້, ແລະ ລຸ້ນ beta ບໍ່ໄດ້ຮັບການສະໜັບສະໜູນອີກຕໍ່ໄປ. ປ່ຽນໄປທີ່ແອັບທາງການເພື່ອຮັບການອັບເດດເພີ່ມເຕີມ.
+    </string>
+    <string name="app_versions_update_accept">ອັບເດດແອັບຢ່າງເປັນທາງການ </string>
+    <string name="app_versions_update_info">
+         ຂໍຂອບໃຈ ສຳ ລັບການທົດລອງເບຕ້າ! ເອກະສານ WORLDOFFICE ລຸ້ນ3.0 ຖືກນຳໃຊ້ດຽວນີ້, ແລະ ລຸ້ນ beta ບໍ່ໄດ້ຮັບການສະໜັບສະໜູນອີກຕໍ່ໄປ. ກະລຸນາ, ປ່ຽນໄປທີ່ແອັບທາງການເພື່ອຮັບການປັບປຸງຕື່ມອີ.
+    </string>
+    <string name="app_versions_actual_release_accept">ເປີດແອັບຢ່າງເປັນທາງການ </string>
+    <string name="app_versions_actual_release_info">
+        ຂໍຂອບໃຈ ສຳ ລັບການທົດລອງເບຕ້າ! ເອກະສານ WORLDOFFICE ລຸ້ນ3.0 ຖືກນຳໃຊ້, ແລະ ລຸ້ນ beta ບໍ່ໄດ້ຮັບການສະໜັບສະໜູນອີກຕໍ່ໄປ. ກະລຸນາປ່ຽນໄປທີ່ແອັບທາງການ..
+    </string>
+
+    <!-- ======================================================================================= -->
+    <!-- Snackbar common -->
+    <string name="snackbar_copied">ສຳເນົາ</string>
+
+    <!-- ======================================================================================= -->
+    <!-- About -->
+    <string name="about_title">ກ່ຽວກັບ</string>
+    <string name="about_app_version">ລູ້ນ %1$s, ສ້າງ %2$s, SDK %3$s</string>
+    <string name="about_terms">ເງື່ອນໄຂການນຳໃຊ້</string>
+    <string name="about_policy">ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ</string>
+    <string name="about_license">ການອະນຸຍາດ</string>
+    <string name="about_website">ເວັບໄຊທ໌ WORLDOFFICE ເທົ່ານັ້ນ</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Common errors -->
+    <string name="errors_unknown_error">ຜິດພາດໃນການເຊື່ອມຕໍ່. ລອງໃໝ່ໃນພາຍຫຼັງ. .</string>
+    <string name="errors_ssl_error">ຜິດພາດຂອງ SSL</string>
+    <string name="errors_connection_error">ກວດສອບການເຊື່ອມຕໍ່ອິນເຕີເນັດ</string>
+    <string name="errors_unknown_host_error">ບໍ່ລະບຸຕົວຕົນ</string>
+    <string name="errors_redirect_error">ຜິດພາດໃນການປ່ຽນເສັ້ນທາງທີ່ບໍ່ຮູ້ຈັກກັບລະຫັດ:\u0020</string>
+    <string name="errors_client_error">ຜິດພາດຂອງລູກຄ້າທີ່ບໍ່ຮູ້ຈັກກັບລະຫັດ:\u0020</string>
+    <string name="errors_client_portal_exist">ປະຕູທີ່ມີຊື່ດຽວກັນມີຢູ່ແລ້ວ</string>
+    <string name="errors_client_portal_sms">ທ່ານໄດ້ສົ່ງຂໍ້ຄວາມຫຼາຍເກີນໄປ. ກະລຸນາລອງໃໝ່ໃນພາຍຫຼັງ.</string>
+    <string name="errors_client_host_not_found">ບໍ່ພົບທີ່ຢູ່ </string>
+    <string name="errors_client_forbidden">ການເຂົ້າເຖິງຖືກປະຕິເສດ</string>
+    <string name="errors_client_unauthorized">ການຮ້ອງຂໍທີ່ບໍ່ໄດ້ຮັບອະນຸຍາດ</string>
+    <string name="errors_client_payment_required"> ຕ້ອງການຊຳລະ</string>
+    <string name="errors_server_error">ຄວາມຜິດພາດຂອງເຊີບເວີທີ່ບໍ່ຮູ້ຈັກກັບລະຫັດ:\u0020</string>
+    <string name="errors_server_auth_error">ຜິດພາດໃນການກວດສອບຄວາມຖືກຕ້ອງ </string>
+    <string name="errors_email_syntax_error">ອີເມວທີ່ບໍ່ຖືກຕ້ອງ </string>
+    <string name="errors_viewer_download_name">ການດາວໂຫລດລົ້ມເຫລວ</string>
+    <string name="errors_email_already_registered">ຜູ້ໃຊ້ທີ່ມີອີເມວນີ້ແມ່ນລົງທະບຽນແລ້ວ</string>
+    <string name="errors_path_url">URL ທີ່ບໍ່ຖືກຕ້ອງ</string>
+    <string name="errors_create_local_file">ການສ້າງເອກະສານລົ້ມເຫລວ </string>
+
+    <!-- SignIn -->
+    <string name="errors_sign_in_splash_error">ການເຂົ້າເຖິງປະຕູລົ້ມເຫລວ</string>
+    <string name="errors_sign_in_account_error">ການເຂົ້າສູ່ລະບົບລົ້ມເຫລວ</string>
+    <string name="errors_sign_in_account_already_use">ທ່ານໄດ້ໃຊ້ບັນຊີນີ້ແລ້ວ</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Login -->
+    <string name="login_api_init_error">ເຂົ້າລະບົບ</string>
+    <string name="login_api_init_portal_error">ຜິດພາດຊື່ປະຕູ  syntax</string>
+    <string name="login_api_portal_name">ຊື່ປະຕູທີ່ບໍ່ຖືກຕ້ອງ. ຕົວຢ່າງ   : example.world-office.com</string>
+    <string name="login_api_portal_name_length">ຊື່ປະຕູຕ້ອງມີຢ່າງ ໜ້ອຍ 6 ຕົວອັກສອນ </string>
+    <string name="login_api_portal_name_content">ຊື່ປະຕູຕ້ອງມີ A–Z, a–z, 0–9</string>
+
+
+    <string name="login_retry">ລອງໃໝ່ເຊື່ອມຕໍ່ </string>
+
+    <!-- Accounts -->
+    <string name="login_accounts_select_title"> ເລືອກບັນຊີ</string>
+
+    <!-- Portal pager -->
+    <string name="login_pager_enterprise">ປ່ະຕູ</string>
+    <string name="login_pager_personal">ສ່ວນບຸກຄົນ </string>
+    <string name="login_pager_title">ເຊື່ອມຕໍ່cloud WORLDOFFICE</string>
+
+    <!-- Portal enterprise-->
+    <string name="login_enterprise_edit_hint">ທີ່ຢູ່ປະຕູ </string>
+    <string name="login_enterprise_button_next">ຕໍ່ໄປ</string>
+    <string name="login_enterprise_edit_error_hint">ໃສ່ທີ່ຢູ່ທີ່ຖືກຕ້ອງ</string>
+    <string name="login_enterprise_forgot_password">ລືມລະຫັດຜ່ານຫຼືອີເມວບໍ?</string>
+    <string name="login_enterprise_button_select">ບັນຊີ </string>
+    <string name="login_enterprise_email_hint">ອີເມວ </string>
+    <string name="login_enterprise_password_hint">ລະຫັດຜ່ານ</string>
+    <string name="login_enterprise_signin_button">ເຂົ້າສູ່ລະບົບ </string>
+    <string name="login_enterprise_single_sign_button">ເຂົ້າສູ່ລະບົບດຽວ</string>
+    <string name="login_enterprise_info">
+        WORLDOFFICE portal ຊ່ວຍໃຫ້ທ່ານສາມາດປະຫຍັດເອກະສານໃນຄລາວ, ແບ່ງປັນກັບເພື່ອນຮ່ວມງານ ແລະ ແກ້ໄຂຮ່ວມກັນໃນເວລາຈິງ.
+    </string>
+    <string name="login_not_authorization_info">ບໍ່ສາມາດລົງຊື່ເຂົ້າໃຊ້ %1$s ທີ່ %2$s</string>
+    <string name="login_not_authorization_button"> ລອງອີກຄັ້ງ </string>
+
+    <!-- Portal personal -->
+    <string name="login_personal_edit_email_hint">ອີເມວ</string>
+    <string name="login_personal_edit_password_hint">ລະຫັດຜ່ານ</string>
+    <string name="login_personal_signin_button">ເຂົ້າສູ່ລະບົບ </string>
+    <string name="login_personal_signup_button">ລົງຊື່ເຂົ້າໃຊ້ </string>
+    <string name="login_personal_signup_title">ລົງທະບຽນເຂົ້າປະຕູສ່ວນຕົວ</string>
+    <string name="login_personal_signup_edit_info">ລິ້ງຢືນຢັນຈະຖືກສົ່ງໄປຫາທີ່ຢູ່ນີ້ </string>
+    <string name="login_personal_signup_dialog_info">ລິ້ງຢືນຢັນທີ່ຖືກສົ່ງໄປຫາອີເມວ %1$s \ n ການເຊື່ອມຕໍ່ຢູ່ໃນອີເມວກ່ອນທີ່ທ່ານຈະສືບຕໍ່ </string>
+    <string name="login_personal_info">
+         ເຊື່ອມຕໍ່ WORLDOFFICE ເປັນສ່ວນຕົວ ເພື່ອບັນທຶກເອກະສານໃນ cloud
+    </string>
+    <string name="login_web_dav_title">ເຊື່ອມຕໍ່ກັບ %1$s </string>
+
+    <!-- Portal create-->
+    <string name="login_create_portal_title">ສ້າງປະຕູສຳລັບອົງກອນ </string>
+    <string name="login_create_portal_address_hint">ທີ່ຢູ່ປະຕູ </string>
+    <string name="login_create_portal_email_hint"> ອີເມວ </string>
+    <string name="login_create_signin_first_name_hint">ຊື່</string>
+    <string name="login_create_signin_last_name_hint">ນາມສະກຸນ </string>
+    <string name="login_create_portal_next_button">ຕໍ່ໄປ</string>
+
+    <!-- Portal create sign in -->
+    <string name="login_create_signin_title"> ຕັ້ງລະຫັດຜ່ານ</string>
+    <string name="login_create_signin_password">ລະຫັດຜ່ານ</string>
+    <string name="login_create_signin_repeat"> ໃສ່ລະຫັດຜ່ານອີກ </string>
+    <string name="login_create_signin_create_button">ສ້າງ</string>
+    <string name="login_create_signin_passwords_mismatch">ລະຫັດຜ່ານບໍ່ກົງກັນ </string>
+    <string name="login_create_signin_info">
+        ໂດຍການກົດປຸ່ມນີ້ທ່ານຍອມຮັບເງື່ອນໄຂການໃຫ້ບໍລິການຂອງພວກເຮົາ
+    </string>
+
+    <!-- Portal SMS -->
+    <string name="login_sms_code_label">ພວກເຮົາໄດ້ສົ່ງຂໍ້ຄວາມທີ່ມີລະຫັດໄປຫາເບີ </string>
+    <string name="login_sms_send_again">ສົ່ງອີກຄັັ້ງ</string>
+    <string name="login_sms_send_again_after">ສົ່ງອີກຄັັ້ງພາຍຫຼັງ</string>
+    <string name="login_sms_change_number">ມີການປ່ຽນແປງຕົວເລກ</string>
+    <string name="login_sms_phone_number_verification">ການຢືນຢັນເບີໂທລະສັບ </string>
+    <string name="login_sms_phone_header">ໃສ່ໝາຍເລກໂທລະສັບ </string>
+    <string name="login_sms_phone_country_label">ປະເທດ </string>
+    <string name="login_sms_phone_number_label">ເບີໂທລະສັບ</string>
+    <string name="login_sms_phone_send_button"> ສົ່ງລະຫັດ</string>
+    <string name="login_sms_phone_error_format">ຮູບແບບທີ່ບໍ່ຖືກຕ້ອງ </string>
+    <string name="login_sms_phone_send_code"> ພວກເຮົາຈະສົ່ງລະຫັດຢືນຢັນຜ່ານທາງຂໍ້ຄວາມ </string>
+    <string name="login_sms_resend_ok">ລະຫັດຂໍ້ຄວາມຖືກສົ່ງ </string>
+
+    <!-- Countries codes -->
+    <string name="countries_codes_title">ເລືອກລະຫັດປະເທດ</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Dialogs -->
+    <string name="bottom_sheet_portal_title">ປະຕຸ</string>
+    <string name="bottom_sheet_cloud_title">Clouds</string>
+    <!--Move copy dialog-->
+    <string name="dialog_move_copy_title_files">ອກະສານ %1$d ທີ່ມີຊື່ດຽວກັນຢູ່ໃນໂຟນເດີ \ "%2$s</string>
+    <string name="dialog_move_copy_title_one_file">ແຟ້ມທີ່ມີຊື່ \ "%1$s \" ມີຢູ່ໃນແຟ້ມ \ "%2$s \" ແລ້ວ</string>
+    <string name="dialog_move_copy_overwrite">ຂຽນທັບດ້ວຍການອັບເດດເວີຊັນ</string>
+    <string name="dialog_move_copy_copy"> ສ້າງສຳເນົາເອກະສານ</string>
+    <string name="dialog_move_copy_skip">ຂ້າມ</string>
+    <string name="dialog_move_copy_title">ແຟ້ມທີ່ມີຊື່ດຽວ </string>
+
+    <!-- Common -->
+    <string name="dialogs_common_ok_button">ຍອມຮັບ</string>
+    <string name="dialogs_common_cancel_button">ຍົກເລີກ</string>
+    <string name="dialogs_check_portal_header_text">ກວດເບິ່ງຄວາມສາມາດຂອງປະຕູ </string>
+    <string name="dialogs_sign_in_portal_header_text">ເຂົ້າສູ່ປະຕູ portal (portal) </string>
+    <string name="dialogs_sign_in_register_portal"> ລົງທະບຽນ portal </string>
+
+    <!-- Waiting -->
+    <string name="dialogs_wait_title">ການດຳເນີນງານກຳລັງດຳເນີນຢູ່…</string>
+    <string name="dialogs_wait_title_storage">ກໍາລັງເຊື່ອມຕໍ່ບ່ອນຈັດເກັບຂໍ້ມູນ…</string>
+
+    <!-- Question -->
+    <string name="dialogs_question_accept_yes">ແມ່ນແລ້ວ</string>
+    <string name="dialogs_question_accept_no"> ບໍ່</string>
+    <string name="dialogs_question_accept_delete">ລົບ</string>
+    <string name="dialogs_question_accept_remove">ຍ້າຍ</string>
+    <string name="dialogs_question_accept_not_really">ບໍ່ແມ່ນບໍ</string>
+    <string name="dialogs_question_accept_sure">ຕົກລົງ, ໝັ້ນໃຈ</string>
+    <string name="dialogs_question_accept_no_thanks">ບໍ່, ຂອບໃຈ</string>
+    <string name="dialogs_question_share_remove">ເອົາລາຍການທີ່ເລືອກອອກຈາກລາຍຊື່ບໍ?</string>
+    <string name="dialogs_question_http_title">ແຈ້ງເຕືອນກ່ຽວກັບຄວາມປອດໄພ</string>
+    <string name="dialogs_question_http_question">ການເຊື່ອມຕໍ່ HTTPS ບໍ່ສາມາດໃຊ້ໄດ້, ແຕ່ການເຊື່ອມຕໍ່ HTTP ສາມາດໃຊ້ໄດ້. ດຳເນີນການຕໍ່ບໍ?</string>
+    <string name="dialogs_question_facebook_title">ເຟສບຸກ</string>
+    <string name="dialogs_question_facebook_question">ດຳ ເນີນການຕໍ່ດ້ວຍບັນຊີ:\u0020</string>
+    <string name="dialogs_question_remove_account_title">ເອົາບັນຊີອອກບໍ?</string>
+    <string name="dialogs_question_remove_account_info">
+          ບັນຊີທີ່ມີອີເມວ %1$s ຈາກປະຕູ %2$s ຈະຖືກອອກຈາກລະບົບແລະຖືກລຶບອອກຈາກລາຍຊື່
+    </string>
+    <string name="dialogs_question_personal_confirm_link_title">ຢືນຢັນອີເມວ</string>
+    <string name="dialogs_question_personal_confirm_cancel">ລອງອີກ</string>
+    <string name="dialogs_question_personal_confirm_accept">ສືບຕໍ່</string>
+    <string name="dialogs_question_rate_first_info">ທ່ານມັກໃຊ້ເອກະສານ WORLDOFFICE ບໍ?</string>
+    <string name="dialogs_question_rate_second_info">ທ່ານຕ້ອງການໃຫ້ຄະແນນແອັບໃນ Google Playບໍ?</string>
+
+    <!-- Edit -->
+    <string name="dialogs_edit_rename_title">ປ່ຽນຊື່</string>
+    <string name="dialogs_edit_hint">ໃສ່ຫົວຂໍ້ </string>
+    <string name="dialogs_edit_create_sheet">ສະບັບໃໝ່ </string>
+    <string name="dialogs_edit_create_presentation">ການນຳສະເໜີໃໝ່</string>
+    <string name="dialogs_edit_create_docs">ເອກະສານໃໝ່ </string>
+    <string name="dialogs_edit_create_folder">ແຟ້ມໃໝ່ </string>
+    <string name="dialogs_edit_forbidden_symbols"> ຢ່າໃຊ້ສັນຍາລັກເຫຼົ່ານີ້\u0020</string>
+    <string name="dialogs_edit_accept_create">ສ້າງ</string>
+    <string name="dialogs_edit_accept_rename">ປ່ຽນຊື່</string>
+    <string name="dialogs_edit_feedback_title">ຄຳຕິຊົມ</string>
+    <string name="dialogs_edit_feedback_rate_title">ທ່ານຕ້ອງການສົ່ງຄຳຕິຊົມມາຫາພວກເຮົາບໍ?</string>
+    <string name="dialogs_edit_feedback_rate_hint">ບອກພວກເຮົາວ່າພວກເຮົາຄວນປັບປຸງຫຍັງແດ່ </string>
+    <string name="dialogs_edit_feedback_rate_accept">ສົ່ງ</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Activity chooser -->
+    <string name="chooser_web_browser">ເລືອກ browser…</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Main -->
+    <!-- Title -->
+    <string name="actionbar_title_main">ເອກະສານຕ່າງໆ</string>
+    <string name="chooser_activity_not_found">ບໍ່ສາມາດຊອກຫາຄຳຮ້ອງສະໝັກໃດໆສຳລັບການກະທຳນີ້ .....</string>
+    <string name="fragment_clouds_title">ຄລາວ</string>
+    <string name="fragment_clouds_portal_title"> ເຊື່ອມຕໍ່ກັບ portal</string>
+    <string name="fragment_clouds_storage_title"> ເຊື່ອມຕໍ່ກັບບ່ອນເກັບຂໍ້ມູນ</string>
+    <string name="fragment_clouds_world-office_item">WORLDOFFICE</string>
+    <string name="fragment_recent_title">ວ່າງບໍ່ດົນ</string>
+    <string name="fragment_on_device_title">ໃນອຸປະກອນ </string>
+    <string name="fragment_profile_title">ໜ້າປົກ</string>
+
+    <!-- Drawer -->
+    <string name="navigation_drawer_open">ເປີດແຜນທີ່ນຳທາງ </string>
+    <string name="navigation_drawer_close">ປິດແຜນທີ່ນຳທາງ </string>
+
+    <!-- Main drawer menu-->
+    <string name="navigation_drawer_menu_shared">ແບ່ງປັນກັບຂ້ອຍ</string>
+    <string name="navigation_drawer_menu_common">ເອກະສານທົ່ວໄປ</string>
+    <string name="navigation_drawer_menu_projects">ໂຄງການ </string>
+    <string name="navigation_drawer_menu_trash">ກະຕ່າຂີ້ເຫຍື້ອ</string>
+    <string name="navigation_drawer_menu_help">ຊ່ວຍເຫຼືອ </string>
+    <string name="navigation_drawer_menu_logout">ລະບົບ</string>
+    <string name="login_accounts_select_add">ເພີ່ມບັນຊີ</string>
+    <string name="settings_item_title">ການຕັ້ງຄ່າ</string>
+    <string name="settings_item_change_account">ປ່ຽນບັນຊີ </string>
+    <string name="settings_clear_cache">ເຊັດຖານຄວາມຈຳ </string>
+    <string name="settings_title_common">ທົ່ວໄປ </string>
+    <string name="setting_wifi">ອັບໂຫລດເອກະສານໂດຍໃຊ້ Wi-Fi ເທົ່ານັ້ນ</string>
+    <string name="setting_title_wifi">Wi-Fi</string>
+    <string name="setting_cache_cleared">ລ້າງເຊັດຖານຄວາມຈຳ</string>
+
+    <!-- Main toolbar menu -->
+    <string name="toolbar_menu_search_result">ຜົນການຊອກຫາ </string>
+    <string name="toolbar_menu_search_hint">ກຳລັງຄົ້ນຫາ … </string>
+    <string name="toolbar_menu_main_options">ຕົວເລືອກ</string>
+    <string name="toolbar_menu_main_share">ແບ່ງປັນ</string>
+    <string name="toolbar_menu_main_move">ຍ້າຍ</string>
+    <string name="toolbar_menu_main_copy">ສຳເນົາ</string>
+    <string name="toolbar_menu_main_remove_from_list">ເອົາອອກຈາກລາຍຊື່ </string>
+    <string name="toolbar_menu_main_rename">ປ່ຽນຊື່ </string>
+    <string name="toolbar_menu_main_delete">ລຶບ </string>
+    <string name="toolbar_menu_main_select">ກໍາລັງເລືອກ …</string>
+    <string name="toolbar_menu_main_select_all">ເລືອກທັງ ໝົດ </string>
+    <string name="toolbar_menu_main_deselect">ຍົກເລີກການເລືອກ </string>
+    <string name="toolbar_menu_sort_by">ຮຽງຕາມ</string>
+    <string name="toolbar_menu_sort_order">ຈັດລຽງລຳດັບ </string>
+    <string name="toolbar_menu_sort_title">ຫົວຂໍ້</string>
+    <string name="toolbar_menu_sort_type">ພິມ </string>
+    <string name="toolbar_menu_sort_size">ຂະ ໜາດ</string>
+    <string name="toolbar_menu_sort_asc">ຈາກໜ້ອຍໄປຫາຫຼາຍ</string>
+    <string name="toolbar_menu_sort_desc">ຈາກຫຼາຍໄປຫາໜ້ອຍ</string>
+    <string name="toolbar_menu_main_download">ດາວໂຫລດ </string>
+    <string name="toolbar_menu_main_open"> ເປີດ</string>
+
+    <!-- List context menu -->
+    <string name="list_context_folder_name">ຊື່ແຟ້ມ </string>
+    <string name="list_context_folder_title">ຫົວຂໍ້ແຟ້ມ</string>
+    <string name="list_context_edit">ແກ້ໄຂເອກະສານ</string>
+    <string name="list_context_share">ແບ່ງປັນ</string>
+    <string name="list_context_external_link">ການເຂົ້າເຖິງພາຍນອກໂດຍlink</string>
+    <string name="list_context_move">ຍ້າຍ</string>
+    <string name="list_context_create_copy">ສຳ ເນົາ </string>
+    <string name="list_context_create_download">ດາວໂຫລດ</string>
+    <string name="list_context_rename">ປ່ຽນຊື່</string>
+    <string name="list_context_rename_success">ປ່ຽນຊື່ສຳເລັດ</string>
+    <string name="list_context_delete">ລຶບ </string>
+    <string name="list_context_delete_storage">ຕັດການເຊື່ອມຕໍ່ບ່ອນຈັດເກັບຂໍ້ມູນ </string>
+    <string name="list_context_delete_success">ຖືກລຶບອອກສຳເລັດ</string>
+    <string name="list_context_delete_recent">ເອົາອອກຈາກຫຼ້າສຸດ</string>
+
+    <!-- List action menu -->
+    <string name="list_action_sheet">ວ່າງຕາຕະລາງ</string>
+    <string name="list_action_presentation">ການນຳສະເໜີ</string>
+    <string name="list_action_doc">ຂໍ້ຄວາມເອກະສານ</string>
+    <string name="list_action_folder">ແຟ້ມ</string>
+    <string name="list_action_photo">ເຮັດຮູບພາບ</string>
+    <string name="list_action_upload"> ອັບໂຫລດເອກະສານ </string>
+    <string name="list_action_storage">ເຊື່ອມຕໍ່ບ່ອນເກັບຂໍ້ມູນຂອງພາກສ່ວນທີສາມ</string>
+
+    <!-- Dialog info -->
+
+    <!-- Pager -->
+    <string name="main_pager_docs_common">ທົ່ວໄປ</string>
+    <string name="main_pager_docs_share">ແບ່ງປັນກັບຂ້ອຍ</string>
+    <string name="main_pager_docs_projects">ໂຄງການ</string>
+    <string name="main_pager_docs_trash">ກະຕ່າຂີ້ເຫຍື້ອ</string>
+
+    <!-- Placeholder -->
+    <string name="placeholder_connection">ຜິດພາດໃນການເຊື່ອມຕໍ່</string>
+    <string name="placeholder_empty">ແຟ້ມຫວ່າງເປົ່າ </string>
+    <string name="placeholder_search">ບໍ່ພົບຫັຍງ</string>
+    <string name="placeholder_share">ບໍ່ໄດ້ແບ່ງປັນ</string>
+    <string name="placeholder_access_denied">ການເຂົ້າເຖິງຖືກປະຕິເສດ</string>
+    <string name="placeholder_no_subfolders">ບໍ່ມີແຟ້ມ</string>
+    <string name="placeholder_no_users">ບໍ່ມີຜູ້ໃຊ້</string>
+    <string name="placeholder_no_groups">ບໍ່ມີກຸ່ມ</string>
+    <string name="placeholder_no_users_groups">ບໍ່ມີຜູ້ໃຊ້ ແລະ ກຸ່ມ</string>
+    <string name="placeholder_media_error">ບໍ່ສາມາດໂຫລດສື່</string>
+    <string name="placeholder_try_again">ລອງໃໝ່ອີກ</string>
+    <string name="placeholder_loading_files">ກຳລັງໂຫລດໄຟລ໌ .....</string>
+
+    <!-- Time marks-->
+    <string name="list_headers_folder">ແຟ້ມ</string>
+    <string name="list_headers_files">ຟາຍ</string>
+    <string name="list_headers_created">ຫາກໍ່ສ້າງ</string>
+    <string name="list_headers_today">ມື້ນີ້</string>
+    <string name="list_headers_yesterday">ມື້ວານນີ້</string>
+    <string name="list_headers_week">ອາທິດນີ້ </string>
+    <string name="list_headers_month">ເດືອນນີ້ </string>
+    <string name="list_headers_year"> ປີນີ້</string>
+    <string name="list_headers_more_year">ຫຼາຍກວ່າໜຶ່ງປີ</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Share -->
+    <string name="share_title_main">ຕັ້ງຄ່າແບ່ງປັນ</string>
+    <string name="share_title_add">ເພີ່ມຄົນ </string>
+    <string name="share_title_search">ຄົ້ນຫາຄົນ</string>
+
+    <string name="share_goal_user">ຜູ້ໃຊ້ </string>
+    <string name="share_goal_group">ກຸ່ມ</string>
+    <string name="share_main_external_access">ການເຂົ້າເຖິງພາຍນອກໂດຍ</string>
+    <string name="share_main_external_access_info">ໃຫ້ການເຂົ້າເຖິງ ສຳ ລັບທຸກຄົນທີ່ມີລິ້ງ </string>
+    <string name="share_main_external_copy_button">ສຳເນົາລິ້ງ</string>
+    <string name="list_context_get_external_link">ເອົາລິ້ງສຳລັບການເຂົ້າເຖິງພາຍນອກ </string>
+
+    <string name="share_popup_access_full"> ເຂົ້າເຖິງທັງໝົດ</string>
+    <string name="share_popup_access_review">ທົບທວນ </string>
+    <string name="share_popup_access_read_only">ອ່ານເທົ່ານັ້ນ </string>
+    <string name="share_popup_access_deny_access">ປະຕິເສດການເຂົ້າເຖິງ </string>
+    <string name="share_popup_access_deny_remove">ເອົາອອກ </string>
+    <string name="share_popup_access_fill_forms">ຕື່ມແບບຟອມ</string>
+    <string name="share_popup_access_comment"> ຄຳເຫັນ </string>
+
+    <!-- External link -->
+    <string name="share_access_success">ການເຊື່ອມຕໍ່ພາຍນອກ</string>
+    <string name="share_access_denied">ການເຂົ້າເຖິງພາຍນອກສົບຜົນສຳເລັດ</string>
+    <string name="share_clipboard_external_copied">ລິ້ງລັບສຳລັບຜູ້ໃຊ້ປະຕູທີ່ຖືກຄັດລອກໄປທີ່ </string>
+    <string name="share_clipboard_internal_copied">ລິ້ງສຳລັບຜູ້ໃຊ້ປະຕູທີ່ຖືກຄັດລອກໄປທີ່  </string>
+    <string name="share_clipboard_external_link_label">ລິ້ງພາຍນອກ </string>
+
+    <!-- Tabs -->
+    <string name="share_tab_users">ຜູ້ໃຊ້ </string>
+    <string name="share_tab_groups">ກຸ່ມ </string>
+
+    <!-- List headers -->
+    <string name="share_add_common_header_users">ຜູ້ໃຊ້</string>
+    <string name="share_add_common_header_groups">ກຸ່ມ</string>
+
+    <!-- Panel -->
+    <string name="share_panel_message_notification">ໃສ່ຂໍ້ຄວາມເພື່ອແຈ້ງເຕືອນ </string>
+    <string name="share_panel_button_add">ເພິ່ມ</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Storage -->
+    <string name="storage_select_title">ເລືອກບໍລິການ</string>
+    <string name="storage_select_google_drive">ແອັບ Google Drive</string>
+    <string name="storage_select_drop_box">ແອັບDropbox</string>
+    <string name="storage_select_one_drive"> ແອັບOneDrive</string>
+    <string name="storage_select_next_cloud">ແອັບ Nextcloud</string>
+    <string name="storage_select_yandex">Yandex.Disk</string>
+    <string name="storage_select_box">ກ່ອງ</string>
+    <string name="storage_select_share_point">ຈຸດແບ່ງປັນ</string>
+    <string name="storage_select_own_cloud">ownCloud</string>
+    <string name="storage_select_web_dav">ຖານເກັບຂໍ້ມູນ WebDAV </string>
+
+    <string name="storage_connect_title">ການຕັ້ງຄ່າໂຟເດີ</string>
+    <string name="storage_connect_folder_name">ຊື່ແຟ້ມ </string>
+    <string name="storage_connect_save_button">ບັນທຶກ</string>
+    <string name="storage_connect_empty_title">ຫົວຂໍ້ບ່ອນຈັດເກັບຂໍ້ມູນເຂົ້າ</string>
+
+    <string name="storage_web_title">ບໍລິການເຊື່ອມຕໍ່ </string>
+    <string name="storage_connect_button">ເຊື່ອມຕໍ່</string>
+
+    <string name="storage_web_dav_settings_login">ເຂົ້າລະບົບ</string>
+    <string name="storage_web_dav_settings_password">ລະຫັດຜ່ານ</string>
+    <string name="storage_web_dav_settings_title">ຫົວຂໍ້ການປ້ອນຂໍ້ມູນສຳລັບການບໍລິການ</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Operations -->
+    <string name="operation_title">ລືອກໂຟນເດີ</string>
+    <string name="operation_choose_section">ເລືອກສ່ວນ</string>
+    <string name="operation_complete_message">ປະຕິບັດງານສຳເລັດ</string>
+    <string name="operation_delete_impossible">ບໍ່ສາມາດລຶບໄຟລ໌. ເອກະສານຖືກເປີດຢູ່ ໜ້າ ປະຕູ portal.</string>
+    <string name="operation_delete_multiple">. ໜຶ່ງ ຫຼືຫຼາຍໄຟລ໌ທີ່ບໍ່ໄດ້ຖືກລຶບອອກຍ້ອນການເປີດປະຕູ  portal</string>
+    <string name="operation_panel_move_button">ຍ້າຍທີ່ນີ້ </string>
+    <string name="operation_panel_copy_button">ສຳເນົາທີ່ນີ້</string>
+    <string name="operation_panel_cancel_button">ຍົກເລີກ</string>
+    <string name="operation_empty_lists_data">ເລືອກລາຍການສຳລັບການປະຕິບັດງານ</string>
+    <string name="operation_error_move_to_same">ບໍ່ສາມາດຍ້າຍໄປຢູ່ໃນໂຟນເດີດຽວ</string>
+    <string name="operation_error_move_to_same_subfolder">ບໍ່ສາມາດຍ້າຍໄປຍັງໂຟນເດີຍ່ອຍດຽວ</string>
+    <string name="operation_snackbar_send_link">ສົ່ງລິ້ງ</string>
+    <string name="operation_snackbar_return">ກັບຄືນ</string>
+    <string name="operation_share_send_link">ສົ່ງ</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Trash -->
+    <string name="trash_dialog_empty_title">ລ້າງຖັງຂີ້ເຫຍື້ອບໍ</string>
+    <string name="trash_popup_delete">ລືບອອກເລີຍ</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Managers load -->
+    <string name="download_manager_title">ດາວໂຫລດ WORLDOFFICE ເທົ່ານັ້ນ</string>
+    <string name="download_manager_progress_title">ດາວໂຫລດກຳລັງດຳເນີນຢູ່ </string>
+    <string name="download_manager_complete">ດາວໂຫລດສຳເລັດ</string>
+    <string name="download_manager_error">ດາວໂຫລດຜິດພາດ</string>
+    <string name="download_manager_error_free_space">ບໍ່ມີພື້ນທີ່ຫວ່າງພຽງພໍ </string>
+    <string name="download_manager_error_url">URL syntax ຜິດພາດ</string>
+    <string name="download_manager_cancel">ດາວໂຫລດຖືກຍົກເລີກ</string>
+    <string name="download_manager_repeat">ແຟ້ມກຳລັງຖືກດາວໂຫລດແລ້ວ</string>
+    <string name="download_manager_open"> ເປີດ</string>
+    <string name="download_manager_notification_cancel_download">ຍົກເລີກການດາວໂຫລດ</string>
+    <string name="download_manager_folders_download">ບໍ່ສາມາດດາວໂຫລດໂຟນເດີໄດ້ </string>
+    <string name="download_manager_select_files">ເລືອກແຟ້ມ</string>
+
+    <string name="upload_manager_file_picker_title">ເລືອກແຟ້ມເອກະສານເພື່ອອັບໂຫລດ</string>
+    <string name="upload_manager_progress_title">ອັບໂຫລດຢູ່ໃນຂັ້ນຕອນ</string>
+    <string name="upload_manager_error">ຜິດພາດໃນການອັບໂຫລດ</string>
+    <string name="upload_manager_cancel">ຍົກເລີກການອັບໂຫລດ</string>
+    <string name="upload_manager_repeat">ຟາຍກຳລັງຖືກອັບໂຫລດແລ້ວ</string>
+    <string name="upload_manager_complete">ອັບໂຫລດສຳເລັດ</string>
+    <string name="upload_manager_error_url">URL syntax ຜິດພາດ</string>
+    <string name="upload_manager_error_number_files">ທ່ານບໍ່ສາມາດອັບໂຫລດຫຼາຍກ່ວາ 20 ແຟ້ມໃນເວລາດຽວ </string>
+    <string name="upload_manager_image_picker_title"> ເລືອກຮູບເພື່ອອັບໂຫລດ </string>
+    <string name="upload_manager_error_file_size">ຂະ ໜາດ ຂອງເອກະສານບໍ່ສາມາດເກີນ 100 ເມກະໄບ </string>
+    <string name="upload_manager_notification_cancel_upload">ຍົກເລີກການອັບໂຫລດ </string>
+    <string name="upload_manager_waiting_title">ລໍຖ້າອັບໂຫລດ</string>
+    <string name="upload_error_wifi">ທ່ານສາມາດອັບໂຫລດໄດ້ພຽງແຕ່ເມື່ອເປີດໃຊ້ Wi-Fi </string>
+
+    <!-- ======================================================================================= -->
+    <!-- Socials -->
+    <string name="socials_twitter_failed_auth">ການເຂົ້າສູ່ລະບົບທະວິດເຕີລົ້ມເຫລວ</string>
+    <string name="socials_facebook_cancel_auth">ຍົກເລີກເຂົ້າລະບົບ Facebook</string>
+    <string name="socials_facebook_failed_auth">ເຂົ້າລະບົບ Facebook ບໍ່ສຳເລັດ </string>
+    <string name="socials_google_failed_auth">ເຂົ້າລະບົບ Google ບໍ່ສຳເລັດ </string>
+
+    <!-- ======================================================================================= -->
+    <!-- On boarding -->
+    <string name="on_boarding_skip_button">ຂ້າມໄປ</string>
+    <string name="on_boarding_next_button">ທັດໄປ</string>
+
+    <!-- ======================================================================================= -->
+    <!-- Media -->
+    <string name="media_image_share_chooser">ເລືອກແອັບສຳລັບແບ່ງປັນ</string>
+    <string name="media_image_list_info">ແຟ້ມເອກະສານ: %1$s </string>
+    <string name="media_video_error">ເຄື່ອງຫຼີ້ນທີ່ບໍ່ຮູ້ຈັກຜິດພາດ: %1$s </string>
+
+    <string name="auth_header_screen_1">ຕັ້ງຄ່າການກວດສອບສອງຢ່າງ</string>
+    <string name="auth_info_screen_1">ຕິດຕັ້ງແອັບ authentic ເຄື່ອງຮັບຮອງເພື່ອສ້າງລະຫັດການເຂົ້າເຖິງ (ເຊັ່ນ: Google Authenticator, Authy) ເພື່ອສືບຕໍ່ເຮັດວຽກກັບປະຕູຂອງທ່ານ </string>
+    <string name="auth_header_screen_2">ເປີດໂຕແອັບພິສູດຕົວຈິງ </string>
+    <string name="auth_info_screen_2">ດຳເນີນການແອັບ ແລະ ແຕະທີ່ໄອຄອນບັນຊີໃໝ່</string>
+    <string name="auth_header_screen_3">ເພີ່ມເຄັດລັບທີ່ສຳ</string>
+    <string name="auth_info_screen_3">ສຳເນົາກະແຈ ແລະ ວາງມັນໃສ່ແອັບ authentic ເຄື່ອງຮັບຮອງຂອງທ່ານ </string>
+
+    <string name="rename_file_exist">ແຟ້ມທີ່ມີຊື່ດຽວກັນ.</string>
+    <string name="device_path_file_error">ບໍ່ມີເອກະສານນີ້.</string>
+    <string name="device_trash_files_restore">ກູູ້ຄືນ</string>
+    <string name="error_recent_account">ແຟ້ມໄດ້ຖືກລຶບອອກແລ້ວຫຼືບໍ່ສາມາດໃຊ້ໄດ້ຈາກບັນຊີນີ້.</string>
+    <string name="error_recent_enter_account">ກະລຸນາໃສ່ບັນຊີ.</string>
+    <string name="operation_move_file_existing">ແຟ້ມເອກະສານ %1$s ມີຢູ່ໃນຖານຂໍ້ມູນປາຍທາງແລ້ວ..</string>
+    <string name="upload_to_portal"> ອັບໂຫລດໃສ່ປະຕູ</string>
+    <string name="this_device">ອຸປະກອນນີ້</string>
+    <string name="dialog_clear_cache">ລ້າງແຄດ?</string>
+
+    <string name="error_unsupported_path">ເສັ້ນທາງທີ່ບໍ່ໄດ້ຮັບການສະໜັບສະໜູນ </string>
+    <string name="error_unsupported_format">ຮູບແບບທີ່ບໍ່ຮອງຮັບ</string>
+
+    <string name="cloud_account_description">ຮ່ວມມືໃນສະພາບແວດລ້ອມທີ່ປອດໄພແລະເຊື່ອມຕໍ່ບັນດາເຄື່ອງຂອງຂອງພາກສ່ວນທີສາມ </string>
+    <string name="cloud_account_start_button">ເລີ່ມຕົ້ນ</string>
+    <string name="cloud_account_other_storages_button">ຖານເກັບຂໍ້ມູນອຶ່ນໆ</string>
+    <string name="cloud_world-office_description">ເກັບຮັກສາເອກະສານໄວ້ໃນເມຄແລະຮ່ວມມືກັບພວກມັນ</string>
+    <string name="cloud_accounts_title">ບັນຊີ</string>
+    <string name="error_long_file_name">ຊື່ແຟ້ມຍາວເກີນໄປ </string>
+    <string name="dialog_remove_account_description">
+        ຜູ້ໃຊ້ທີ່ມີ %1$s ຈາກປະຕູ %2$s ຈະຖືກອອກຈາກລະບົບແລະລຶບອອກຈາກບັນຊີບັນຊີ. \ n \ n ກະລຸນາສັງເກດ: ເພື່ອເຂົ້າສູ່ລະບົບ, ທ່ານຕ້ອງການໃສ່ທີ່ຢູ່ປະຕູ, ອີເມວແລະລະຫັດຜ່ານ. ໄຟລ໌ທັງໝົດຂອງທ່ານຈະປອດໄພ.
+    </string>
+    <string name="dialog_logout_account_title">ທ່ານແນ່ໃຈທີ່ຈະອອກຈາກລະບົບ?</string>
+    <string name="dialog_logout_account_description">
+        ຫຼັງຈາກທ່ານອອກຈາກລະບົບ, ທ່ານບໍ່ຈຳເປັນຕ້ອງໃສ່ທີ່ຢູ່ຫຼືອີເມວຂອງທ່ານ, ພຽງແຕ່ລະຫັດຜ່ານ. ຢ່າກັງວົນ, ເອກະສານທັງໝົດຈະປອດໄພໃນຄລາວ
+    </string>
+    <string name="profile_username_title">ຊື່ຜູ້ໃຊ້</string>
+    <string name="filter_title_type">ພິມ</string>
+    <string name="profile_portal_address">ທີ່ຢູ່Portal </string>
+    <string name="profile_type_admin">ບໍລິຫານ</string>
+    <string name="profile_type_visitor">ແຂກ</string>
+    <string name="profile_type_user">ຜູ້ໃຊ້</string>
+    <string name="profile_thirdparty_title">ບໍລິການເຊື່ອມຕໍ່</string>
+
+    <string name="app_settings_analytic_title">ຊ່ວຍປັບປຸງຜະລິດຕະພັນ</string>
+    <string name="app_settings_analytic">ແບ່ງປັນການວິເຄາະແອັບ</string>
+    <string name="app_manage_files_title">ການເຂົ້າເຖິງການຈັດການໄຟລ໌</string>
+    <string name="app_manage_files_description">ເພື່ອແກ້ໄຂ ແລະສ້າງເອກະສານຢູ່ໃນເຄື່ອງ, ທ່ານຈໍາເປັນຕ້ອງອະນຸຍາດໃຫ້ແອັບຯເຂົ້າເຖິງໄຟລ໌ໃນອຸປະກອນຂອງທ່ານ.</string>
+
+    <string name="app_internal_error">ພົບບັນຫາພາຍໃນ</string>
+    <string name="app_fragment_crash_error">ກະລຸນາປິດແອັບ ແລ້ວລອງໃໝ່</string>
+
+    <string name="operation_add_to_favorites">ໄດ້ເພີ່ມເຂົ້າໃນໝວດໃຊ້ປະຈຳ</string>
+    <string name="operation_remove_from_favorites">ໄດ້ເອົາອອກຈາກໝວດໃຊ້ປະຈຳ</string>
+
+    <string name="main_pager_docs_favorites">ໝວດໃຊ້ປະຈຳ</string>
+
+    <string name="list_context_add_to_favorite">ເພີ່ມເຂົ້າໃນໝວດໃຊ້ປະຈຳ</string>
+    <string name="list_context_delete_from_favorite">ລຶບອອກຈາກໝວດໃຊ້ປະຈຳ</string>
+
+    <string name="login_enterprise_button_create">ສ້າງພອດ</string>
+    <string name="login_enterprise_single_sign_button_login">ເຂົ້າລະບົບໂດຍ %1$s</string>
+    <string name="login_enterprise_single_sign_button_login_default">ນຳໃຊ້ໄອດີ (SSO)</string>
+    <string name="login_not_authorization_info_token">ໝົດເວລາເຊື່ອມຕໍ່</string>
+    <string name="login_password_recovery_hint">ກະລຸນາໃສ້ເມວທີ່ໃຊ້ໃນການລົງທະບຽນພອດ. ຄຳແນະນຳໃນການກູ້ລະຫັດຜ່ານຈະຖືກສົ່ງໄປເມວນີ້</string>
+    <string name="login_password_recovery_button_text">ກັບໄປສູ່ໜ້າທຳອິດ</string>
+    <string name="login_password_recovery_success_hint">ຖ້າຊື່ຜູ້ໃຊ້ມີເມວ %1$s, ຄຳແນະນຳໃນການກູ້ລະຫັດຜ່ານໄດ້ຖືກສົ່ງໄປເມວນີ້</string>
+    <string name="login_password_recovery_toolbar_title">ລະຫັດກູ້</string>
+    <string name="download_manager_archiving_progress">ສ້າງສຳເນົາ</string>
+    <string name="download_manager_exceed_size_100">ຂະໜາດຟາຍກາຍກຳນົດ(100MB)</string>
+    <string name="download_manager_exceed_size_25">ຂະໜາດຟາຍກາຍກຳນົດ (25MB)</string>
+    <string name="snackbar_undo">ຍົກເລີກ</string>
+    <string name="errors_server_auth_too_many_attempts">ຜິດຫຼາຍຄັ້ງເກີນໄປ. ລອງໃໝ່ໃນພາຍຫຼັງ</string>
+    <string name="share_snackbar_remove_user">ຜູ້ໃຊ້ຖືກລຶບອອກ</string>
+    <string name="storage_onedrive_error_opened">ໄຟລ໌ຖືກເປີດຢູ່ໃນເວັບແລ້ວ</string>
+    <string name="storage_onedrive_error_exist">ໄຟລ໌ທີ່ມີຊື່ດຽວກັນແມ່ນມີຢູ່ໃນໂຟນເດີນີ້ແລ້ວ</string>
+    <string name="operation_panel_restore_button">ເກັບກູ້ໄວ້ທີ່ນີ້</string>
+    <string name="trash_snackbar_move_text">ທ່ານສາມາດເກັບກໄຟລ໌ຈາກຖັງຂີ້ເຫຍື້ອໄດ້</string>
+    <string name="trash_snackbar_move_button">ກູ້ຄືນ</string>
+    <string name="trash_popup_move">ເກັບກເປັນ</string>
+    <string name="on_boarding_back_button">ກັບຄືນ</string>
+    <string name="auth_header_screen_4">ພິມລະຫັດ</string>
+    <string name="auth_info_screen_4">ພິມລະຫັດຈາກແອັບຢັ້ງຢືນຕົວຕົນຂອງທ່ານໃສ່ຊ່ອງໃສ່ຂໍ້ມູນ</string>
+    <string name="auth_step_title">ຂັ້ນຕອນທີ %1$d ຈາກທັງໝົດ %2$d</string>
+    <string name="auth_install_button">ຕິດຕັ້ງ</string>
+    <string name="auth_confirm_button">ຢືນຢັນ</string>
+    <string name="auth_clipboard_key_copied">ສຳເນົາກະແຈໃສ່ຄລິບບອດແລ້ວ</string>
+    <string name="auth_edit_hint">ລະຫັດ</string>
+    <string name="app_settings_security">ຄວາມປອດໄພ</string>
+    <string name="app_settings_passcode">ລັອກລະຫັດ</string>
+    <string name="app_Settings_passcode_enable">ເປີດໃຊ້ລະຫັດຜ່ານ</string>
+    <string name="app_settings_passcode_change">ປ່ຽນລະຫັດຜ່ານ</string>
+    <string name="app_settings_passcode_fingerprint">ໃຊ້ລາຍນິ້ວມືເພື່ອປົດລັອກ</string>
+    <string name="app_settings_passcode_enter_title">ໃສ່ລະຫັດຜ່ານ</string>
+    <string name="app_settings_passscode_enter_full_title">ໃສ່ລະຫັດເພື່ອປົດລັອກແອັບ</string>
+    <string name="app_settings_passcode_enter_subtitle">ເລືອກລະຫັດຜ່ານເພື່ອປົດລັອກແອັບ</string>
+    <string name="app_settings_passcode_confirm_title">ຢືນຢັນລະຫັດຜ່ານ</string>
+    <string name="app_settings_passcode_confirm_subtitle">ໃສ່ລະຫັດຜ່ານອີກຄັ້ງຫນຶ່ງ</string>
+    <string name="app_settings_passcode_confirm_error">ລະຫັດບໍ່ກົງກັນ</string>
+    <string name="app_settings_passcode_change_disable_title">ໃສ່ລະຫັດປັດຈຸບັນຂອງທ່ານ</string>
+    <string name="app_settings_passcode_change_disable_error">ປ້ອນລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ</string>
+    <string name="app_settings_passcode_description"> - ນີ້ແມ່ນລະຫັດທີ່ຮ້ອງຂໍໃນຕອນເລີ່ມຕົ້ນແອັບພລິເຄຊັນ.\n\nໃຫ້ເອົາໃຈໃສ່! ຖ້າທ່ານລືມລະຫັດຜ່ານ, ທ່ານຕ້ອງເອົາອອກຫຼືຕິດຕັ້ງແອັບພລິເຄຊັນໃຫມ່. ເອກະສານທັງໝົດໃນອຸປະກອນຈະສູນຫາຍໄປ.</string>
+    <string name="app_settings_passcode_fingerprint_title">ການເຂົ້າເຖິງເອກະສານ</string>
+    <string name="item_owner_self">ຂ້ອຍ</string>
+    <string name="sign_in_terms_and_policy_text">
+        <![CDATA[
+           By proceeding, you agree to the
+            <a href="%1$s">Privacy Policy</a>
+            and the
+            <a href="%2$s">Terms of Service</a>
+        ]]>
+    </string>
+    <string name="login_create_signin_passwords_length">ລະຫັດຜ່ານຕ້ອງມີ: ຈາກ 8 ຫາ 30 ຕົວອັກສອນ</string>
+    <string name="list_action_import">ໄຟລ໌ນໍາເຂົ້າ</string>
+    <string name="storage_google_drive_copy_folder_error">ບໍ່ສາມາດສຳເນົາໂຟນເດີໄດ້</string>
+    <string name="socials_google_cancel_auth">ຍົກເລີກການເຂົ້າສູ່ລະບົບດ້ວຍ Google</string>
+    <string name="error_open_project_file">ບັນຊີນີ້ບໍ່ມີສິດເຂົ້າເຖິງໂຄງການ</string>
+    <string name="switch_account_open_project_file">ສະຫຼັບບັນຊີ</string>
+    <string name="app_settings_color_theme">ຮູບແບບສີສັນ</string>
+    <string name="app_settings_follow_the_system">ຄືກັນກັບລະບົບ</string>
+    <string name="app_settings_light_theme">ຮູບແບບສີສັນແຈ້ງ</string>
+    <string name="app_settings_dark_theme">ຮູບແບບສີສັນມືດ</string>
+    <string name="errors_import_local_file_desc">ປະຕິເສດການອະນຸຍາດ</string>
+    <string name="errors_import_local_file">ປະ​ຕິ​ເສດ​ການ​ເຂົ້າ​ເຖິງ. ການໃຫ້ສິດອ່ານ ແລະຂຽນ</string>
+    <string name="errors_first_name">ຊື່ບໍ່ຖືກຕ້ອງ</string>
+    <string name="errors_last_name">ນາມສະກຸນບໍ່ຖືກຕ້ອງ</string>
+    <string name="navigation_drawer_menu_sign_in">ເຂົ້າສູ່ລະບົບ</string>
+    <string name="toolbar_menu_search_view_hint">ໃສ່ຄໍາຖາມຂອງທ່ານ</string>
+    <string name="toolbar_menu_sort_date_modified">ວັນທີ</string>
+    <string name="toolbar_menu_main_filter">ຄັດກອງ</string>
+    <string name="list_context_open_location">ເປີດສະຖານທີ່</string>
+    <string name="placeholder_loading_users">ກຳລັງໂຫລດຜູ້ໃຊ້…</string>
+    <string name="placeholder_loading_groups">ກຳລັງໂຫຼດກຸ່ມ…</string>
+    <string name="krdive_password_helper_text">ຖ້າທ່ານໄດ້ເປີດໃຊ້ການກວດສອບສອງຊັ້ນ, ກະລຸນາສ້າງ ແອັບພລິເຄຊັນ CDM ຈາກ ລະບົບຈັດການ Infomaniak.</string>
+    <string name="kdrive_info_title">ທ່ານຕ້ອງມີເຄື່ອງຫຼິ້ນລຸ້ນທີ່ເສຍເງິນເພື່ອໃຊ້ບໍລິການນີ້.</string>
+    <string name="storage_email_connection">ການເຊື່ອມຕໍ່ອີເມລ໌</string>
+    <string name="dialog_remove_account_title">ລຶບອອກຈາກອຸປະກອນ</string>
+    <string name="app_settings_disabled">ປິດການໃຊ້</string>
+    <string name="app_settings_enabled">ເປີດໃຊ້ແລ້ວ</string>
+    <string name="filter_toolbar_title">ຄັດກອງ</string>
+    <string name="filter_toolbar_users_title">ເລືອກຜູ້ໃຊ້</string>
+    <string name="filter_toolbar_groups_title">ເລືອກກຸ່ມ</string>
+    <string name="filter_title_author">ຜູ້ຂຽນ</string>
+    <string name="filter_title_search">ຄົ້ນຫາ</string>
+    <string name="filter_type_documents">ເອກະສານ</string>
+    <string name="filter_type_presentations">ການນໍາສະເຫນີ</string>
+    <string name="filter_type_spreadsheets">ສະເປຣດຊີດ</string>
+    <string name="filter_type_images">ຮູບພາບ</string>
+    <string name="filter_type_media">ຊື່ມວນຊົນ</string>
+    <string name="filter_type_archives">ຮວບຮວມ</string>
+    <string name="filter_type_all">ໄຟລ໌ທັງໝົດ</string>
+    <string name="filter_exclude_subfolders">ບໍ່ລວມໂຟເດີຍ່ອຍ</string>
+    <string name="filter_show_results">ສະແດງຜົນການຄົ້ນຫາ %1$s</string>
+    <string name="filter_button_reset">ປັບໃໝ່</string>
+    <string name="errors_web_viewr">ເກີດຄວາມຜິດພາດໃນການແກ້ໄຂເອກະສານເທິ່ງເວັບ</string>
+    <string name="errors_webdav_sign_in">ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານ ເຊີບເວີ ບໍ່ຖືກຕ້ອງ</string>
+    <string name="errors_webdav_username_password">ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານ ບໍ່ຖືກຕ້ອງ</string>
+    <string name="errors_webdav_server">ເຊີບເວີບໍ່ຖືກຕ້ອງ</string>
+    <string name="toolbar_menu_sort_tags">ປ້າຍກຳກັບ</string>
+    <string name="share_invite_user">ເຊີນຜູ້ໃຊ້</string>
+    <string name="storage_web_dav_settings_server">ເຊີບເວີ</string>
+    <string name="storage_web_dav_settings_required">ຕ້ອງການ</string>
+    <string name="context_room_archive_message">ຫ້ອງຖືກຍ້າຍໄປບ່ອນມ້ຽນແລ້ວ</string>
+    <string name="context_rooms_archive_message">ຫ້ອງຖືກຍ້າຍໄປບ່ອນມ້ຽນແລ້ວ</string>
+    <string name="list_context_pin_to_top">ປັກໝຸດຢູ່ເທິງສຸດ</string>
+    <string name="list_rooms_title">ຫ້ອງ</string>
+    <string name="list_context_unpin">ຖອນປັກໝຸດ</string>
+    <string name="list_context_info">ຂໍ້ມູນ</string>
+    <string name="list_context_add_users">ເພີ່ມຜູ້ໃຊ້</string>
+    <string name="rooms_add_collaboration">ຫ້ອງແກ້ຮ່ວມກັນ</string>
+    <string name="rooms_add_collaboration_des">ແກ້ໄຂຮ່ວມ ເອກະສານໜຶ່ງສະບັບ ຫຼື ເອກະສານຫຼາຍສະບັບກັບທີມງານຂອງທ່ານ</string>
+    <string name="rooms_add_custom">ກຳນົດຫ້ອງເອງ</string>
+    <string name="rooms_add_custom_des">ນຳໃຊ້ການຕັ້ງຄ່າຫ້ອງຂອງທ່ານເອງ ເພື່ອໃຫ້ແທດເໝາະກັບທ່ານ</string>
+    <string name="rooms_filter_type_filling_forms">ການຕື່ມແບບຟອມ</string>
+    <string name="rooms_filter_type_collaboration">ການຮ່ວມແກ້ໄຂ</string>
+    <string name="rooms_filter_type_review">ທົບທວນຄືນ</string>
+    <string name="rooms_filter_type_view_only">ເບິ່ງເທົ່ານັ້ນ</string>
+    <string name="rooms_filter_type_custom">ກຳນົດເອງ</string>
+    <string name="rooms_filter_author_other_users">ຜູ້​ໃຊ້​ອື່ນໆ…</string>
+    <string name="rooms_filter_third_party_title">ຊັບພະຍາກອນພາກສ່ວນທີສາມ</string>
+    <string name="dialog_create_room">ສ້າງຫ້ອງ</string>
+    <string name="dialog_create_room_value">ຫ້ອງໃໝ່</string>
+    <string name="invite_by_email">ເຊີນຜູ້ໃຊ້ທາງອີເມວ</string>
+    <string name="share_user_type_room_admin">ຜູ້ເບິ່ງແຍງຫ້ອງ</string>
+    <string name="share_access_room_editor">ຜູ້ມີສິດແກ້ໄຂ</string>
+    <string name="share_access_room_form_filler">ຕົວຕື່ມແບບຟອມ</string>
+    <string name="share_access_room_reviewer">ຜູ້ກວດ</string>
+    <string name="share_access_room_commentator">ຜູ້ໃຫ້ຄວາມຄິດເຫັນ</string>
+    <string name="share_access_room_viewer">ເບີ່ງຢ່າງດ່ຽວ</string>
+    <string name="share_invite_error_empty">ກະລຸນາໃສ່ອີເມວ</string>
+    <string name="invite_link_send_success">ສົ່ງລິ້ງເຊີນແລ້ວ</string>
+    <string name="share_choose_access_title">ເລືອກການເຂົ້າເຖິງ</string>
+    <string name="share_invite_title">ເຊີນ</string>
+    <string name="room_create_success">ສ້າງຫ້ອງ</string>
+    <string name="room_delete_success">ລຶບຫ້ອງແລ້ວ</string>
+    <string name="switch_account_title">ສະຫຼັບບັນຊີ?</string>
+    <string name="switch_account_description">ກະລຸນາເຂົ້າສູ່ລະບົບ %1$s ເພື່ອເປີດເອກະສານ.</string>
+    <plurals name="dialogs_question_message_delete" tools:ignore="UnusedQuantity">
+        <item quantity="one">ມັນຈະຖືກລຶບຢ່າງບໍ່ສາມາດຖອນຄືນໄດ້.\ n ການກະທຳນີ້ບໍ່ສາມາດຍົກເລີກໄດ້.</item>
+        <item quantity="other">ພວກມັນຈະຖືກລຶບຢ່າງບໍ່ສາມາດຖອນຄືນໄດ້.\ n ການກະທຳນີ້ບໍ່ສາມາດຍົກເລີກໄດ້.</item>
+    </plurals>
+
+    <plurals name="dialogs_question_message_to_trash" tools:ignore="UnusedQuantity">
+        <item quantity="one">ມັນຈະຖືກຍ້າຍໄປຖັງຂີ້ເຫຍື້ອ.</item>
+        <item quantity="other">ພວກເຂົາຈະຖືກຍ້າຍໄປຖັງຂີ້ເຫຍື້ອ.</item>
+    </plurals>
+
+
+    <string name="dialogs_question_delete_all_title">ລຶບລາຍການທັງໝົດບໍ?</string>
+    <plurals name="dialogs_question_delete_title" tools:ignore="UnusedQuantity">
+        <item quantity="one">ລຶບລາຍການນີ້ອອກບໍ?</item>
+        <item quantity="other">ລຶບ %1$d ລາຍການອອກບໍ?</item>
+    </plurals>
+    <string name="storage_dropbox_email_not_verified_error">ອີເມວບໍ່ໄດ້ຖືກຢືນຢັນ</string>
+    <string name="download_manager_downloading">ກໍາລັງດາວໂຫລດ</string>
+    <string name="settings_language">ພາສາ</string>
+    <plurals name="operation_moved_to_trash" tools:ignore="UnusedQuantity">
+        <item quantity="one">ຍ້າຍລາຍການໄປໃສ່ຖັງຂີ້ເຫຍື້ອ</item>
+        <item quantity="other">ຍ້າຍລາຍການໄປໃສ່ຖັງຂີ້ເຫຍື້ອ</item>
+    </plurals>
+    <plurals name="operation_delete_irretrievably" tools:ignore="UnusedQuantity">
+        <item quantity="one">ລາຍ​ການ​ຖືກ​ລົບ​ອອກ​ໂດຍ​ຖາວອນ​</item>
+        <item quantity="other">ລາຍ​ການ​ຖືກ​ລົບ​ອອກ​ໂດຍ​ຖາວອນ​</item>
+    </plurals>
+    <string name="share_expected_member">ຄາດໝາຍສະມາຊິກ</string>
+    <string name="app_settings_main_help">ຊ່ວຍເຫຼືອ</string>
+    <string name="clear_recents">"ລຶບເມື່ອບໍ່ດົນມານີ້?"</string>
+    <string name="list_context_leave_room">ອອກຈາກຫ້ອງ</string>
+    <string name="list_context_copy_general_link">ສຳເນົາລິ້ງທົ່ວໄປ</string>
+    <string name="list_context_edit_room">ແກ້ໄຂຫ້ອງ</string>
+    <string name="list_action_image_from_library">ຮູບພາບຈາກຄັງ</string>
+    <string name="list_action_delete_link">ລຶບລິ້ງ</string>
+    <string name="placeholder_other_accounts">ບໍ່ມີບັນຊີອື່ນຢູ່ບ່ອນນີ້ເທື່ອ</string>
+    <string name="context_room_move_to_archive">ຍ້າຍໄປບ່ອນເກັບມ້ຽນ</string>
+    <plurals name="context_rooms_unarchive_message" tools:ignore="UnusedQuantity">
+        <item quantity="one">ຟື້ນຟູຫ້ອງສຳເລັດແລ້ວ</item>
+        <item quantity="other">ຟື້ນຟູຫ້ອງສຳເລັດແລ້ວ</item>
+    </plurals>
+    <string name="rooms_choose_room">ເລືອກປະເພດຫ້ອງ</string>
+    <string name="room_name_hint">ຊື່ຫ້ອງ</string>
+    <string name="room_add_tag_hint">ເພີ່ມແທັກ</string>
+    <string name="rooms_error_name">ຊື່ຫ້ອງບໍ່ສາມາດຫວ່າງເປົ່າໄດ້</string>
+    <string name="rooms_error_create">ເກີດຄວາມຜິດພາດໃນການສ້າງຫ້ອງ</string>
+    <string name="rooms_error_edit">ເກີດຄວາມຜິດພາດໃນການແກ້ໄຂຫ້ອງ</string>
+    <string name="leave_room_title">ອອກຈາກຫ້ອງ</string>
+    <string name="leave_room_owner_desc">ທ່ານເປັນເຈົ້າຂອງຫ້ອງນີ້. ກ່ອນທີ່ທ່ານຈະອອກຈາກຫ້ອງ, ທ່ານຕ້ອງໂອນສິດຄວາມເປັນເຈົ້າຂອງໄປຫາຜູ້ໃຊ້ອື່ນ.</string>
+    <string name="leave_room_desc">ທ່ານຕ້ອງການອອກຈາກຫ້ອງນີ້ແທ້ໆບໍ? ທ່ານຈະສາມາດເຂົ້າຮ່ວມມັນໄດ້ອີກຄັ້ງໂດຍການເຊີນໃໝ່ໂດຍຜູ້ເບິ່ງແຍງຫ້ອງ.</string>
+    <string name="leave_room_assign">ມອບໝາຍສິດຄວາມເປັນເຈົ້າຂອງ</string>
+    <string name="leave_room_message">ທ່ານໄດ້ອອກຈາກຫ້ອງ</string>
+    <string name="room_set_owner_title">ປ່ຽນເຈົ້າຂອງຫ້ອງ</string>
+    <string name="room_search_not_found">ບໍ່ພົບຜູ້ໃຊ້</string>
+    <string name="room_search_not_found_desc">ລາຍຊື່ຜູ້ໃຊ້ທີ່ຖືກເຊີນໄປ DocSpace ກ່ອນນີ້ແລ້ວ ຫຼືຫ້ອງແຍກຕ່າງຫາກຈະປາກົດຢູ່ບ່ອນນີ້.</string>
+    <plurals name="rooms_restore_title" tools:ignore="UnusedQuantity">
+        <item quantity="one">ຟື້ນຟູຫ້ອງບໍ?</item>
+        <item quantity="other">ຟື້ນຟູຫ້ອງບໍ?</item>
+    </plurals>
+    <plurals name="rooms_restore_desc" tools:ignore="UnusedQuantity">
+        <item quantity="one">ລິ້ງທີ່ແບ່ງປັນທັງໝົດຢູ່ໃນຫ້ອງຈະກາຍເປັນສະຖານະມີຜົນ, ແລະເນື້ອຫາຂອງມັນຈະໃຫ້ທຸກຄົນທີ່ມີລິ້ງສາມາດໃຊ້ໄດ້. ທ່ານຕ້ອງການຟື້ນຟູຫ້ອງບໍ?</item>
+        <item quantity="other">ລິ້ງທີ່ແບ່ງປັນທັງໝົດຢູ່ໃນຫ້ອງຈະກາຍເປັນສະຖານະມີຜົນ, ແລະເນື້ອຫາຂອງມັນຈະໃຫ້ທຸກຄົນທີ່ມີລິ້ງສາມາດໃຊ້ໄດ້. ທ່ານຕ້ອງການຟື້ນຟູຫ້ອງບໍ?</item>
+    </plurals>
+    <string name="rooms_add_public_room">ຫ້ອງສາທາລະນະ</string>
+    <string name="rooms_add_public_room_des">ເຊີນຜູ້ໃຊ້ຜ່ານລິ້ງທີ່ແບ່ງປັນເພື່ອເບິ່ງເອກະສານໂດຍບໍ່ຕ້ອງລົງທະບຽນ. ນອກນັ້ນທ່ານຍັງສາມາດຝັງຫ້ອງນີ້ເຂົ້າໄປໃນສ່ວນຕິດຕໍ່ເວັບໃດໆ.</string>
+    <string name="rooms_move_to_public_title">ຍ້າຍໄປຫ້ອງສາທາລະນະ</string>
+    <string name="rooms_move_to_public_title_desc">ຫ້ອງນີ້ ແລະເນື້ອຫາທັງໝົດຂອງມັນ ແມ່ນທຸກຄົນທີ່ມີລິ້ງ ສາມາດໃຊ້ໄດ້. ທ່ານຕ້ອງການສືບຕໍ່ບໍ?</string>
+    <string name="rooms_info_general_link">ການເຊື່ອມຕໍ່ທົ່ວໄປ</string>
+    <string name="rooms_info_additional_link">ການເຊື່ອມຕໍ່ເພີ່ມເຕີມ</string>
+    <string name="rooms_info_additional_links">"ລິ້ງເພີ່ມເຕີມ (%1$d/%2$d)"</string>
+    <string name="rooms_info_create_link">ສ້າງ ແລະສຳເນົາ</string>
+    <string name="rooms_info_create_link_complete">ສ້າງລິ້ງສຳເລັດ ແລະສຳເນົາໄປໃສ່ຄລິບບອດແລ້ວ</string>
+    <string name="rooms_info_delete_link">ລຶບລິ້ງ</string>
+    <string name="rooms_info_delete_link_complete">ລິ້ງຖືກລຶບແລ້ວ</string>
+    <string name="rooms_info_revoke_link">ຖອນການເຊື່ອມຕໍ່</string>
+    <string name="rooms_info_revoke_link_complete">ລິ້ງຖືກຖອນຄືນ</string>
+    <string name="rooms_info_revoke">ຖອນຄືນ</string>
+    <string name="rooms_info_copy_link">ສຳເນົາລິ້ງ</string>
+    <string name="rooms_info_copy_link_and_password">ສຳເນົາລິ້ງ ແລະລະຫັດຜ່ານ</string>
+    <string name="rooms_info_copy_link_to_clipboard">ສຳເນົາລິ້ງໄປໃສ່ຄລິບບອດສຳເລັດແລ້ວ</string>
+    <string name="rooms_info_admin_title">ບໍລິຫານ (%d)</string>
+    <string name="rooms_info_users_title">ຜູ້ໃຊ້ (%1d)</string>
+    <string name="rooms_info_expected_title">ຜູ້ໃຊ້ທີ່ຄາດຫວັງ (%1d)</string>
+    <string name="rooms_info_link_expired">ລິ້ງໝົດອາຍຸແລ້ວ</string>
+    <string name="rooms_info_link_expired_full">ລິ້ງດັ່ງກ່າວໝົດອາຍຸແລ້ວ ແລະຖືກປິດການນຳໃຊ້</string>
+    <string name="rooms_info_link_name">ຊື່ລິ້ງ</string>
+    <string name="rooms_info_password_access">ການເຂົ້າເຖິງລະຫັດຜ່ານ</string>
+    <string name="rooms_info_file_rectrict">ຈໍາ​ກັດ​ການ​ສໍາ​ເນົາ​ເນື້ອ​ໃນ​ໄຟລ​໌​, ການ​ດາວ​ໂຫຼດ​ໄຟລ​໌​ແລະ​ການ​ພິມ​</string>
+    <string name="rooms_info_file_rectrict_desc">ເປີດໃຊ້ການຕັ້ງຄ່ານີ້ເພື່ອປິດການດາວໂຫຼດໄຟລ໌ ແລະໂຟນເດີ້ຕ່າງໆຈາກຫ້ອງນີ້ທີ່ແບ່ງປັນຜ່ານລິ້ງ</string>
+    <string name="rooms_info_time_limit_title">ກໍານົດເວລາ</string>
+    <string name="rooms_info_time_limit">ເປີດໃຊ້ເວລາຈຳກັດ</string>
+    <string name="rooms_info_valid_through">ຖືກຕ້ອງຜ່ານ</string>
+    <string name="rooms_info_save_link_title">ບັນທຶກການເຊື່ອມຕໍ່</string>
+    <string name="rooms_info_save_link_question">ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການບັນທຶກ ແລະອອກ?</string>
+    <string name="rooms_info_save_button">ບັນທຶກ</string>
+    <string name="rooms_info_dont_save_button">ຢ່າບັນທຶກ</string>
+    <string name="rooms_filter_type_public">ສາທາລະນະ</string>
+    <string name="share_access_room_owner">ເຈົ້າຂອງ</string>
+    <string name="settings_language_confirmation_message">ໃນປັດຈຸບັນແອັບພລິເຄຊັນກໍາລັງໃຊ້ພາສາອັງກິດເນື່ອງຈາກພາສາຂອງລະບົບມີການປ່ຽນແປງ</string>
+    <string name="settings_language_confirmation_accept">ດີ</string>
+    <string name="settings_language_continue_using_app_language">ສືບຕໍ່ນຳໃຊ້ %1$s</string>
+    <string name="conversion_dialog_title">ແປງແລະເປີດເອກະສານ</string>
+    <string name="conversion_dialog_message">ເອກະສານທີ່ທ່ານເປີດບໍ່ແມ່ນໄຟລ໌ OOXML (Office Open XML). ປ່ຽນເປັນ ຮູບແບບ OOXML ສໍາລັບການເບິ່ງ ແລະແກ້ໄຂໄວຂຶ້ນ.</string>
+    <string name="conversion_dialog_open_in_view_mode">ເປີດຢູ່ໃນໂໝດເບິ່ງໄດ້ເທົ່ານັ້ນ</string>
+    <string name="conversion_dialog_convert_to">ປ່ຽນເປັນ %1s</string>
+    <string name="conversion_dialog_converting_to">ກຳລັງປ່ຽນເປັນ %1s</string>
+    <string name="main_pager_docs_my">ເອກະສານຂອງຂ້ອຍ</string>
+    <string name="main_pager_docs_virtual_room">ຫ້ອງ</string>
+    <string name="main_pager_docs_archive_room">ຊັບມ້ຽນ</string>
+    <string name="errors_sign_in_ldap_checkbox">ເຂົ້າສູ່ລະບົບໂດຍຜູ້ໃຊ້ LDAP</string>
+    <string name="placeholder_no_users_found">ບໍ່ພົບຜູ້ໃຊ້</string>
+    <string name="placeholder_no_users_found_desc">ບໍ່ມີຜູ້ໃຊ້ໃດກົງກັບການຄົ້ນຫາຂອງທ່ານ. ກະລຸນາປັບຕົວກໍານົດການຊອກຫາຂອງທ່ານ ຫຼືລຶບຊ່ອງຊອກຫາເພື່ອເບິ່ງລາຍຊື່ຜູ້ໃຊ້ທັງໝົດ</string>
+    <string name="placeholder_no_members_found">ບໍ່ພົບສະມາຊິກ</string>
+    <string name="placeholder_no_members_found_desc">ທ່ານສາມາດເພີ່ມສະມາຊິກທີມໃຫມ່ດ້ວຍຕົນເອງ ຫຼືເຊີນພວກເຂົາຜ່ານທາງເຊື່ອມຕໍ່</string>
+    <string name="placeholder_no_rooms">ຍິນດີຕ້ອນຮັບສູ່ DocSpace!</string>
+    <string name="placeholder_empty_archive">ບໍ່ມີຫ້ອງເກັບມ້ຽນໄວ້ບ່ອນນີ້ເທື່ອ</string>
+    <string name="placeholder_no_search_result">ບໍ່ມີຜົນການຊອກຫາ</string>
+    <string name="placeholder_no_search_result_desc">ບໍ່ພົບຜົນການຊອກຫາທີ່ກົງກັບການຊອກຫາຂອງເຈົ້າ. ກະລຸນາລອງປະໂຫຍກອື່ນ</string>
+    <string name="placeholder_empty_room_visitor_desc">ໄຟລ໌ ແລະໂຟນເດີທີ່ອັບໂຫລດໂດຍຜູ້ເບິ່ງແຍງລະບົບຈະປາກົດຢູ່ບ່ອນນີ້</string>
+    <string name="placeholder_payment_required">ສະມາຊິກແບບອົງກອນໝົດອາຍຸແລ້ວ</string>
+    <string name="placeholder_payment_required_desc">ແຜນຊຳລະປັດຈຸບັນຂອງທ່ານ "ອົງກອນ" ໝົດອາຍຸແລ້ວ. ກະລຸນາຕໍ່ອາຍຸການສະໝັກໃຊ້ຂອງທ່ານໃນການຕັ້ງຄ່າບັນຊີເພື່ອໃຫ້ສາມາດໃຊ້ DocSpace ຂອງທ່ານໄດ້. ຖ້າທ່ານມີຄໍາຖາມໃດໆ, ກະລຸນາຕິດຕໍ່ທີມງານສະຫນັບສະຫນູນ</string>
+    <string name="placeholder_payment_required_button">ປັບປຸງແຜນຊຳລະແບບອົງກອນ</string>
+    <string name="filter_type_form_templates">ຮູບແບບແບບຟອມ</string>
+    <string name="filter_type_forms">ແບບຟອມ</string>
+    <string name="room_placeholder_created_room_title">ສ້າງຫ້ອງແລ້ວ!</string>
+    <string name="room_placeholder_created_room_subtitle">ສ້າງໂຟນເດີໃຫມ່ເພື່ອຈັດລະບຽບໄຟລ໌ຂອງທ່ານ.</string>
+    <string name="room_recent_via_link">ເຂົ້າເຖິງໄດ້ໂດຍຜ່ານການເຊື່ອມຕໍ່</string>
+    <string name="room_manage_room">ຈັດການຫ້ອງ</string>
+    <string name="rooms_info_edit_link">ແກ້ໄຂລິ້ງ</string>
+    <string name="rooms_info_create_link_title">ສ້າງລິ້ງ</string>
+    <string name="rooms_info_groups_title">ກຸ່ມ (%1d)</string>
+    <string name="rooms_share_shared_links">ລິ້ງທີ່ແບ່ງປັນ</string>
+    <string name="rooms_share_shared_link_title">ລິ້ງທີ່ແບ່ງປັນ</string>
+    <string name="rooms_share_shared_desc">ໃຫ້ການເຂົ້າເຖິງເອກະສານແລະກໍານົດລະດັບການອະນຸຍາດ.</string>
+    <string name="rooms_share_lifetime_hours_12">12 ຊົ່ວໂມງ</string>
+    <string name="rooms_share_lifetime_days_1">1 ມື້</string>
+    <string name="rooms_share_lifetime_days_7">7 ມື້</string>
+    <string name="rooms_share_lifetime_unlimited">ບໍ່ຈຳກັດ</string>
+    <string name="rooms_share_lifetime_custom">ກຳນົດເອງ</string>
+    <string name="rooms_share_shared_to_docsspace_users">ສຳລັບຜູ້ໃຊ້ DocSpace ເທົ່ານັ້ນ</string>
+    <string name="rooms_share_shared_to_anyone">ທຸກຄົນທີ່ມີລິ້ງ</string>
+    <string name="rooms_share_expires_after">ໝົດອາຍຸຫຼັງຈາກ %s</string>
+    <string name="rooms_share_valid_unlimited">ສາມາດເຊື່ອມຕໍ່ໄດ້ແບບບໍ່ຈໍາກັດ</string>
+    <string name="rooms_share_access_rights">ສິດການເຂົ້າເຖິງ</string>
+    <string name="rooms_share_regenerate_link">ສ້າງການເຊື່ອມຕໍ່ຄືນ</string>
+    <string name="rooms_share_general_header">ທົ່ວໄປ</string>
+    <string name="rooms_share_link_life_time">ເຊື່ອມຕໍ່ຕະຫຼອດຊີບ</string>
+    <string name="invite_new_members">ສະມາຊິກໃໝ່</string>
+    <string name="invite_new_groups">ກຸ່ມໃໝ່</string>
+    <string name="invite_add_manually">ເພີ່ມດ້ວຍຕົນເອງ</string>
+    <string name="invite_choose_from_list">ເລືອກຈາກບັນຊີລາຍຊື່</string>
+    <string name="invite_already_invited">ເຊີນ</string>
+    <string name="share_access_room_type">ປະເພດການເຂົ້າເຖິງ</string>
+    <string name="share_access_room_group_desc">ສິດການເຂົ້າເຖິງສໍາລັບຜູ້ໃຊ້ທັງຫມົດໃນກຸ່ມ</string>
+    <string name="room_create_thirdparty_storage_title">ການເກັບຮັກສາກັບພາກສ່ວນທີສາມ</string>
+    <string name="room_create_thirdparty_storage">ບ່ອນເກັບຮັກສາ</string>
+    <string name="room_create_thirdparty_location">ສະຖານທີ່</string>
+    <string name="room_create_thirdparty_location_root">ຮາກ</string>
+    <string name="room_create_thirdparty_new_folder">ສ້າງໂຟນເດີໃຫມ່</string>
+    <string name="room_create_thirdparty_desc">ໃຊ້ການບໍລິການພາກສ່ວນທີສາມເປັນບ່ອນເກັບຂໍ້ມູນສໍາລັບຫ້ອງນີ້. ໂຟນເດີໃໝ່ສຳລັບການຈັດເກັບຂໍ້ມູນຂອງຫ້ອງນີ້ຈະຖືກສ້າງຢູ່ໃນບ່ອນເກັບຂໍ້ມູນທີ່ເຊື່ອມຕໍ່</string>
+    <string name="room_storage_reconnect">ເຊື່ອມຕໍ່ບ່ອນເກັບຂໍ້ມູນຄືນໃໝ່</string>
+    <string name="room_storage_not_availabale">ເນື້ອຫາຂອງໂຟນເດີພາກສ່ວນທີສາມ ບໍ່ ສາມາດໃຊ້ໄດ້. ພະຍາຍາມເຊື່ອມຕໍ່ບັນຊີຄືນໃໝ່.</string>
+    <string name="personal_portal_end_button">ສ້າງບັນຊີຟຣີໄດ້ເລີຍ</string>
+    <string name="personal_portal_end_title">WORLDOFFICE Personal ກຳລັງປິດຕົວລົງ</string>
+    <string name="personal_portal_end_text">WORLDOFFICE Personal ຈະຢຸດໃຫ້ບໍລິການຕັ້ງແຕ່ວັນທີ 1 ກັນຍາ 2024.\nພວກເຮົາຂໍແນະນຳໃຫ້ທ່ານຍ້າຍໄປໃຊ້ WORLDOFFICE DocSpace Cloud ຟຣີ.</string>\
+    <string name="list_action_delete_image">ລຶບຮູບ</string>
+
+    <!-- Newly added translations (v9.0.0 - 2025-06-09) -->
+    <string name="cloud_create_account">ສ້າງບັນຊີຟຣີ</string>
+    <string name="context_menu_desc">ເພີ່ມເຕີມ</string>
+    <string name="context_protection_title">ການປົກປ້ອງ</string>
+    <string name="desc_create_from_template">ສ້າງ​ຫ້ອງ​ໂດຍ​ອີງ​ໃສ່​ແມ່​ແບບ. ການຕັ້ງຄ່າທັງໝົດ, ຜູ້ໃຊ້, ໂຟນເດີ ແລະໄຟລ໌ຈະຖືກເອົາມາຈາກແມ່ແບບຫ້ອງທີ່ເລືອກ.</string>
+    <string name="desc_info_template">ແມ່ແບບຫ້ອງ. ໃຊ້ແມ່ແບບນີ້ເພື່ອສ້າງຫ້ອງໃຫມ່ຢ່າງໄວວາ.</string>
+    <string name="dialogs_common_close">ປິດ</string>
+    <string name="dialogs_question_delete_all_fonts">ລຶບຟອນທັງໝົດບໍ?</string>
+    <string name="dialogs_question_delete_font">ລຶບຟອນນີ້ອອກບໍ?</string>
+    <string name="dialogs_warning_fill_forms_room_create">ການ​ສ້າງ​ໂດຍ​ອີງ​ໃສ່​ຫຼາຍ​ໄຟ​ລ໌ ແລະ​ໂຟ​ລ​ເດີ​ບໍ່​ມີ​ໃຫ້​ສຳ​ລັບ​ຫ້ອງ​ປະ​ເພດ​ນີ້. ເພື່ອສ້າງຫ້ອງດັ່ງກ່າວ, ໃຫ້ໄປທີ່ພາກສ່ວນຫ້ອງ ຫຼືໃຊ້ແບບຟອມ PDF ໃດນຶ່ງ.</string>
+    <string name="dialogs_warning_only_pdf_form_message">ໄຟລ໌ດັ່ງກ່າວບໍ່ສາມາດຍ້າຍໄປຫ້ອງນີ້ໄດ້. ກະລຸນາລອງຍ້າຍແບບຟອມ WORLDOFFICE PDF.</string>
+    <string name="dialogs_warning_pinned_room_limit">ທ່ານບໍ່ສາມາດປັກໝຸດໄດ້ຫຼາຍກວ່າ 10 ຫ້ອງຢູ່ເທິງສຸດ. ຖອນປັກໝຸດບາງອັນທີ່ປັກໝຸດຢູ່.</string>
+    <string name="dialogs_warning_room_space_quota_exceed">ໂຄຕ້າພື້ນທີ່ຫ້ອງເກີນ (%s).</string>
+    <string name="dialogs_warning_title">ຄຳເຕືອນ</string>
+    <string name="edit_comment_field_label">ສະແດງຄຳເຫັນ</string>
+    <string name="edit_comment_label">ສະແດງຄຳເຫັນ</string>
+    <string name="edit_comment_success">ບັນທຶກຄຳເຫັນສຳເລັດແລ້ວ</string>
+    <string name="edit_comment_title">ແກ້ໄຂຄຳເຫັນ</string>
+    <string name="error_create_room">ສ້າງ​ຫ້ອງ​ບໍ່​ສຳ​ເລັດ</string>
+    <string name="error_create_template">ສ້າງ​ແມ່​ແບບ​ບໍ່​ສຳ​ເລັດ</string>
+    <string name="error_edit_comment">ອັບເດດຄຳເຫັນບໍ່ສຳເລັດ</string>
+    <string name="error_save_access_settings">ບັນທຶກການຕັ້ງຄ່າການເຂົ້າເຖິງບໍ່ສຳເລັດ</string>
+    <string name="error_save_template">ບັນທຶກແມ່ແບບລົ້ມເຫລວ</string>
+    <string name="error_upload_logo">ໂຫຼດໂລໂກ້ບໍ່ສຳເລັດ</string>
+    <string name="error_version_delete">ລຶບ​ບໍ່​ສຳ​ເລັດ</string>
+    <string name="error_version_open">ເປີດເອກະສານບໍ່ສຳເລັດ</string>
+    <string name="error_version_restore">ລົ້ມເຫລວໃນການກູ້ເວີຊັນ</string>
+    <string name="errors_open_document">ເອກະສານເປີດບໍ່ສຳເລັດ</string>
+    <string name="errors_sign_in_account_not_found">ບໍ່​ພົບ​ບັນ​ຊີ</string>
+    <string name="errors_webdav_2fa_code">ລະຫັດຢືນຢັນຜິດ</string>
+    <string name="file_lifetime_action">ການ​ປະ​ຕິ​ບັດ​ກັບ​ໄຟ​ລ໌</string>
+    <string name="file_lifetime_action_delete">ລຶບຖາວອນ</string>
+    <string name="file_lifetime_action_move_to_trash">ຍ້າຍໄປຖັງຂີ້ເຫຍື້ອ</string>
+    <string name="file_lifetime_desc">\"ຕັ້ງ​ອາຍຸ​ຂອງ​ໄຟລ໌​ເພື່ອ​ລຶບ​ໄຟລ໌​ໃນ​ຫ້ອງ​ນີ້​ໂດຍ​ອັດຕະໂນ​ມັດ ຫຼັງຈາກ​ໄລຍະ​ເວລາ​ທີ່​ກຳນົດ.\"</string>
+    <string name="file_lifetime_hint">ໄຟລ໌ທີ່ເກົ່າກວ່າ</string>
+    <string name="file_lifetime_period_days">ມື້</string>
+    <string name="file_lifetime_period_months">ເດືອນ</string>
+    <string name="file_lifetime_period_years">ປີ</string>
+    <string name="file_lifetime_time_period">ໄລຍະເວລາ</string>
+    <string name="file_lifetime_title">ອາຍຸຂອງໄຟລ໌</string>
+    <string name="file_lifetime_warning_desc">ການນັບຖອຍຫຼັງຕະຫຼອດຊີວິດເລີ່ມຕົ້ນໃນວັນທີສ້າງໄຟລ໌. ບາງໄຟລ໌ຢູ່ໃນຫ້ອງນີ້ເກີນອາຍຸທີ່ສະເໜີໄວ້ ແລະຈະຖືກລຶບອອກເມື່ອທ່ານເປີດໃຊ້ການຕັ້ງຄ່າ.</string>
+    <string name="file_lifetime_warning_title">ໄຟ​ລ໌​ເກົ່າ​ທີ່​ມີ​ການ​ໃຊ້​ງານ​ເກີນ​ກຳ​ນົດ​ຈະ​ຖືກ​ລຶບ</string>
+    <string name="filling_form_complete">ສຳເລັດ</string>
+    <string name="filling_form_filling_process_details">ລາຍລະອຽດຂະບວນການ</string>
+    <string name="filling_form_filling_status">ສະຖານະການຕື່ມ</string>
+    <string name="filling_form_filling_status_desc">ໃນ​ແຜງ​ນີ້​ເຈົ້າ​ສາ​ມາດ​ຕິດ​ຕາມ​ກວດ​ກາ​ການ​ສໍາ​ເລັດ​ຂອງ​ຮູບ​ແບບ​ທີ່​ທ່ານ​ເຂົ້າ​ຮ່ວມ​ຫຼື​ໃນ​ການ​ທີ່​ທ່ານ​ເປັນ​ຜູ້​ຈັດ​ການ​ສໍາ​ເລັດ​ຮູບ​ໄດ້</string>
+    <string name="filling_form_history_complete">ໄດ້​ເຮັດ​ສຳ​ເລັດ​ແລະ​ສົ່ງ​ສ່ວນ​ຂອງ​ແບບ​ຟອມ​ຂອງ​ເຂົາ​ເຈົ້າ​ແລ້ວ. ແບບຟອມຖືກຕື່ມເຕັມແລ້ວ.</string>
+    <string name="filling_form_history_opened">ເປີດແບບຟອມເພື່ອຕື່ມຂໍ້ມູນ</string>
+    <string name="filling_form_history_stopped">ການຕື່ມຖືກຢຸດໂດຍ %s</string>
+    <string name="filling_form_history_submitted">ໄດ້​ສົ່ງ​ສ່ວນ​ຂອງ​ເຂົາ​ເຈົ້າ​ແລ້ວ. ແບບຟອມດັ່ງກ່າວຖືກສົ່ງໄປຫາບົດບາດຕໍ່ໄປ.</string>
+    <string name="filling_form_send_finalized">ພາກສ່ວນແບບຟອມສຳເລັດແລ້ວ</string>
+    <string name="filling_form_send_finalized_desc">ແບບຟອມໄດ້ສຳເລັດສົມບູນແລ້ວໂດຍທຸກໜ້າທີ່ ແລະຕອນນີ້ສຳເລັດແລ້ວ. ມັນສາມາດໃຊ້ໄດ້ໃນໂໝດເບິ່ງເທົ່ານັ້ນ.</string>
+    <string name="filling_form_send_section_complete">ພາກສ່ວນແບບຟອມສຳເລັດແລ້ວ</string>
+    <string name="filling_form_send_section_complete_desc">ສ່ວນ​ທີ່​ໄດ້​ຮັບ​ມອບ​ໝາຍ​ຂອງ​ແບບ​ຟອມ PDF ໄດ້​ສຳ​ເລັດ​ແລ້ວ. ສະຖານະການຕື່ມຂໍ້ມູນຂອງແບບຟອມສາມາດຖືກຕິດຕາມຢູ່ໃນຫ້ອງແລະຜ່ານກະດານສະຖານະການຕື່ມ. ການແຈ້ງເຕືອນທາງອີເມລ໌ຈະຖືກສົ່ງເມື່ອແບບຟອມສຳເລັດສົມບູນແລ້ວ.</string>
+    <string name="filling_form_stop_filling">ຢຸດການຕື່ມ</string>
+    <string name="filling_form_stop_filling_dialog_desc">ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການຢຸດການຕື່ມ? ມັນຈະເປັນໄປບໍ່ໄດ້ທີ່ຈະສືບຕໍ່ຕື່ມແບບຟອມນີ້ຫຼັງຈາກການຍົກເລີກ. ການຕື່ມແບບຟອມຈະຖືກຢຸດຢູ່ໃນຂັ້ນຕອນທີ່ມັນປະຈຸບັນຢູ່. ໄຟລ໌ຈະຖືກໝາຍເປັນ \"ຢຸດ\".</string>
+    <string name="filling_form_stop_filling_dialog_title">ຢຸດການຕື່ມບໍ?</string>
+    <string name="filling_form_stopped">ຢຸດ</string>
+    <string name="filling_form_version_incompatible_desc">ລຸ້ນລູກຂ່າຍ ແລະເຊີບເວີບໍ່ເຂົ້າກັນໄດ້. ທ່ານສາມາດເປີດເອກະສານໃນໂໝດເບິ່ງເທົ່ານັ້ນ.</string>
+    <string name="filter_type_pdf_documents">ເອກະສານ PDF</string>
+    <string name="filter_type_pdf_forms">ແບບຟອມ PDF</string>
+    <string name="form_status_complete">ສຳເລັດ</string>
+    <string name="form_status_draft">ຮ່າງ</string>
+    <string name="form_status_in_progress">ກຳລັງດຳເນີນຢູ່</string>
+    <string name="form_status_stopped">ຢຸດ</string>
+    <string name="form_status_your_turn">ລ້ຽວຂອງເຈົ້າ</string>
+    <string name="fragment_templates_title">ແມ່ແບບ</string>
+    <string name="list_action_doc_from_photo">ເອກະສານຂໍ້ຄວາມຈາກຮູບ</string>
+    <string name="list_context_access_settings">ການຕັ້ງຄ່າການເຂົ້າເຖິງ</string>
+    <string name="list_context_delete_template">ລຶບແມ່ແບບ</string>
+    <string name="list_context_disable_custom_filter">ປິດ​ການ​ກັ່ນ​ຕອງ​ແບບ​ກຳ​ນົດ​ເອງ</string>
+    <string name="list_context_duplicate">ຊໍ້າກັນ</string>
+    <string name="list_context_edit_comment">ແກ້ໄຂຄຳເຫັນ</string>
+    <string name="list_context_edit_index">ດັດ​ແກ້​ດັດ​ຊະ​ນີ</string>
+    <string name="list_context_edit_template">ແກ້ໄຂແມ່ແບບ</string>
+    <string name="list_context_enable_custom_filter">ເປີດໃຊ້ຕົວກັ່ນຕອງແບບກຳນົດເອງ</string>
+    <string name="list_context_fill">ຕື່ມ</string>
+    <string name="list_context_lock">ລັອກ</string>
+    <string name="list_context_notification_disable">ປິດການແຈ້ງເຕືອນ</string>
+    <string name="list_context_notification_enable">ເປີດໃຊ້ການແຈ້ງເຕືອນ</string>
+    <string name="list_context_open_vesrion">ເປີດ</string>
+    <string name="list_context_save_as_template">ບັນທຶກເປັນແມ່ແບບ</string>
+    <string name="list_context_unlock">ປົດລັອກ</string>
+    <string name="list_context_upload_to_cloud">ອັບໂຫຼດຂຶ້ນຄລາວ</string>
+    <string name="list_context_version_history">ສະແດງປະຫວັດເວີຊັນ</string>
+    <string name="on_boarding_collaborate_header">ຮ່ວມ​ມື​ກັບ​ທີມ​ຂອງ​ທ່ານ</string>
+    <string name="on_boarding_collaborate_info">ໃນໂໝດອອນໄລນ໌, ໃຫ້ໃຊ້ຄຸນສົມບັດການແກ້ໄຂຮ່ວມກັນແບບສົດໆຂອງ WORLDOFFICE ເພື່ອເຮັດວຽກໃນເອກະສານຮ່ວມກັນກັບສະມາຊິກປະຕູຂອງທ່ານ, ແບ່ງປັນເອກະສານ ແລະສ້າງໂຟນເດີເກັບມ້ຽນທົ່ວໄປ.</string>
+    <string name="on_boarding_edit_header">ເຮັດວຽກກັບໄຟລ໌ຫ້ອງການ</string>
+    <string name="on_boarding_edit_info">ສ້າງແລະແກ້ໄຂເອກະສານດ້ວຍແຖບເຄື່ອງມືທີ່ສົມບູນແບບຂອງພວກເຮົາ: ເຮັດວຽກກັບວັດຖຸທີ່ຊັບຊ້ອນໃນເອກະສານຂໍ້ຄວາມ, ປະຕິບັດການຄິດໄລ່ຢ່າງກວ້າງຂວາງໃນຕາຕະລາງ, ສ້າງການນໍາສະເຫນີທີ່ສວຍງາມແລະເບິ່ງໄຟລ໌ PDF ໂດຍບໍ່ມີການສູນເສຍຮູບແບບ.</string>
+    <string name="on_boarding_finish_button">ເລີ່ມຕົ້ນ</string>
+    <string name="on_boarding_locally_header">ແກ້ໄຂເອກະສານຢູ່ໃນເຄື່ອງ</string>
+    <string name="on_boarding_locally_info">ເຮັດວຽກກັບເອກະສານອອຟໄລ. ໄຟລ໌ທີ່ສ້າງແລ້ວສາມາດຖືກອັບໂຫຼດຂຶ້ນຢູ່ໃນປະຕູອອນໄລນ໌ ແລະຈາກນັ້ນເຂົ້າເຖິງໄດ້ຈາກອຸປະກອນອື່ນ.</string>
+    <string name="on_boarding_third_party_header">ບ່ອນເກັບຂໍ້ມູນພາກສ່ວນທີສາມ</string>
+    <string name="on_boarding_third_party_info">ເຊື່ອມຕໍ່ບ່ອນເກັບຂໍ້ມູນພາກສ່ວນທີສາມເຊັ່ນ Nextcloud, ownCloud, Dropbox ແລະອື່ນໆທີ່ໃຊ້ໂປຣໂຕຄໍ WebDAV.</string>
+    <string name="on_boarding_welcome_header">ການ​ເລີ່ມ​ຕົ້ນ</string>
+    <string name="on_boarding_welcome_info">ຍິນດີຕ້ອນຮັບສູ່ຊຸດແກ້ໄຂມືຖື WORLDOFFICE! ປັດເພື່ອສຶກສາເພີ່ມເຕີມກ່ຽວກັບແອັບ.</string>
+    <string name="operation_disable_custom_filter">ຕົວ​ກັ່ນ​ຕອງ​ແບບ​ກຳ​ນົດ​ເອງ​ສຳ​ລັບ​ໄຟ​ທີ່​ເລືອກ​ໄດ້​ປິດ​ໃຊ້​ງານ​ແລ້ວ</string>
+    <string name="operation_enable_custom_filter">ຕົວ​ກັ່ນ​ຕອງ​ແບບ​ກຳ​ນົດ​ເອງ​ສຳ​ລັບ​ໄຟ​ລ໌​ທີ່​ເລືອກ​ເປີດ​ໃຊ້​ງານ​ແລ້ວ</string>
+    <string name="operation_select_room_title">ເລືອກຫ້ອງ</string>
+    <string name="placeholder_connection_button">ໂຫຼດຄືນໃໝ່</string>
+    <string name="placeholder_connection_desc">ບໍ່ພົບການເຊື່ອມຕໍ່ເຄືອຂ່າຍ. ກະລຸນາກວດເບິ່ງການເຊື່ອມຕໍ່ຂອງທ່ານ ແລະລອງໃໝ່ອີກ</string>
+    <string name="placeholder_empty_templates_folder">ບໍ່ມີແມ່ແບບຢູ່ບ່ອນນີ້ເທື່ອ</string>
+    <string name="placeholder_no_fonts">ບໍ່ມີຟອນ</string>
+    <string name="room_access_via_link_title">ເຂົ້າເຖິງຜ່ານລິ້ງ</string>
+    <string name="room_created_successfully">ສ້າງຫ້ອງສຳເລັດແລ້ວ</string>
+    <string name="room_duplicate_complete">ຊ້ຳ​ກັນ​ສຳ​ເລັດ</string>
+    <string name="room_duplicate_error">ເກີດ​ຄວາມ​ຜິດ​ພາດ​ຊ້ຳ​ກັນ</string>
+    <string name="room_duplicate_progress_hide_button">ເຊື່ອງ</string>
+    <string name="room_duplicate_progress_title">ກຳລັງຊ້ຳກັນຢູ່</string>
+    <string name="room_placeholder_created_filling_form_room_subtitle">ອັບໂຫລດແບບຟອມ PDF ທີ່ພ້ອມແລ້ວ ຫຼືສ້າງໂຟນເດີໃໝ່ເພື່ອຈັດລະບຽບໄຟລ໌ຂອງທ່ານ</string>
+    <string name="room_placeholder_form_room_creator_title">ຍິນດີຕ້ອນຮັບສູ່ຫ້ອງຕື່ມແບບຟອມ</string>
+    <string name="room_placeholder_created_template_title">ສ້າງແມ່ແບບແລ້ວ!</string>
+    <string name="room_placeholder_created_virtual_room_subtitle">ເລີ່ມຕົ້ນດ້ວຍການດຳເນີນການດ່ວນ:\nສ້າງໄຟລ໌ໃຫມ່</string>
+    <string name="room_placeholder_created_virtual_room_title">ຍິນດີຕ້ອນຮັບສູ່ຫ້ອງຂໍ້ມູນສະເໝືອນຈິງ</string>
+    <string name="rooms_add_fill_forms">ຫ້ອງຕື່ມແບບຟອມ</string>
+    <string name="rooms_add_fill_forms_des">ອັບໂຫລດແບບຟອມ PDF ເຂົ້າໄປໃນຫ້ອງ. ເຊີນຜູ້ໃຊ້ຕື່ມແບບຟອມ PDF. ກວດເບິ່ງແບບຟອມທີ່ເຮັດແລ້ວ ແລະວິເຄາະຂໍ້ມູນທີ່ເກັບໄດ້ໂດຍອັດຕະໂນມັດໃນສະເປຣດຊີດ.</string>
+    <string name="rooms_error_logo_size_exceed">ຂະໜາດຮູບສູງສຸດແມ່ນເກີນ (1 MB)</string>
+    <string name="rooms_expire_context_info">ໄຟລ໌ດັ່ງກ່າວຈະຖືກລຶບໃນ %s</string>
+    <string name="rooms_fill_form_complete_back_to_room">ກັບ​ຄືນ​ໄປ​ຫ້ອງ</string>
+    <string name="rooms_fill_form_complete_check_forms">ກວດເບິ່ງແບບຟອມທີ່ພ້ອມແລ້ວ</string>
+    <string name="rooms_fill_form_complete_desc">ແບບ​ຟອມ PDF ເຕັມ​ໄປ​ຖືກ​ບັນ​ທຶກ​ໄວ້​ແລະ​ມີ​ໃຫ້​ທ່ານ​ຢູ່​ໃນ​ໂຟນ​ເດີ​ສໍາ​ເລັດ​ຮູບ. ເພື່ອກວດສອບສະຖານະ, ໃຫ້ຕິດຕໍ່ເຈົ້າຂອງແບບຟອມທີ່ລະບຸເບີໂທທີ່ກຳນົດໄວ້.</string>
+    <string name="rooms_fill_form_complete_number_title">ໝາຍເລກແບບຟອມ</string>
+    <string name="rooms_fill_form_complete_owner_title">ເຈົ້າຂອງແບບຟອມ</string>
+    <string name="rooms_fill_form_complete_toolbar_title">ແບບຟອມສຳເລັດແລ້ວ</string>
+    <string name="rooms_fill_in_as_title">ຕື່ມ​ໃສ່​ເປັນ</string>
+    <string name="rooms_fill_out_form_yourself">ຕື່ມ​ຂໍ້​ມູນ​ດ້ວຍ​ຕົວ​ທ່ານ​ເອງ</string>
+    <string name="rooms_fill_out_form_yourself_desc">ຕື່ມ​ຂໍ້​ມູນ​ໃສ່​ຊ່ອງ​ຂອງ​ຮູບ​ແບບ​ຕົ້ນ​ສະ​ບັບ​ຢູ່​ໃນ​ປ່ອງ​ຢ້ຽມ​ແກ້​ໄຂ.</string>
+    <string name="rooms_filter_type_virtual_room">ຫ້ອງ​ຂໍ້​ມູນ​ສະ​ເໝືອນ</string>
+    <string name="rooms_index_apply">ສະໝັກ</string>
+    <string name="rooms_index_edit">ດັດ​ແກ້​ດັດ​ຊະ​ນີ</string>
+    <string name="rooms_index_exit_no_saving">ອອກ​ໂດຍ​ບໍ່​ມີ​ການ​ບັນ​ທຶກ​ບໍ?\nທ່ານ​ໄດ້​ເຮັດ​ການ​ປ່ຽນ​ແປງ​ໃນ​ດັດ​ຊະ​ນີ​. ຖ້າ​ຫາກ​ທ່ານ​ດໍາ​ເນີນ​ການ​ໂດຍ​ບໍ່​ມີ​ການ​ບັນ​ທຶກ, ການ​ປ່ຽນ​ແປງ​ເຫຼົ່າ​ນັ້ນ​ຈະ​ບໍ່​ໄດ້​ຮັບ​ການ​ນໍາ​ໃຊ້.</string>
+    <string name="rooms_index_export">ດັດສະນີຫ້ອງສົ່ງອອກ</string>
+    <string name="rooms_index_reorder">ສັ່ງ​ຄືນ</string>
+    <string name="rooms_index_reorder_complete_desc">%s ໄຟລ໌ຖືກສົ່ງອອກໄປຍັງເອກະສານ</string>
+    <string name="rooms_index_reorder_complete_title">ໄຟລ໌ຖືກສົ່ງອອກແລ້ວ</string>
+    <string name="rooms_index_reorder_desc">ການ​ດຳ​ເນີນ​ການ​ຈັດ​ລຳດັບ​ຄືນ​ໃໝ່​ຈະ​ເອົາ​ຊ່ອງ​ຫວ່າງ​ໃນ​ດັດ​ຊະ​ນີ​ອອກ. ໄຟລ໌ຈະຖືກດັດສະນີຄືນໃໝ່ຕາມລໍາດັບດ້ວຍການຊົດເຊີຍເພື່ອຕື່ມຂໍ້ມູນໃສ່ໃນດັດຊະນີທີ່ຂາດຫາຍໄປ.</string>
+    <string name="rooms_index_reorder_open_file">ເປີດໄຟລ໌</string>
+    <string name="rooms_index_subtitle">ດັດຊະນີ %s</string>
+    <string name="rooms_index_title">ດັດຊະນີການຈັດຮຽງ</string>
+    <string name="rooms_info_create_maximum_exceed">ເກີນຈຳນວນລິ້ງສູງສຸດແລ້ວ</string>
+    <string name="rooms_info_delete_link_desc">ລິ້ງຫາໄຟລ໌ທັງໝົດໃນຫ້ອງຈະຖືກລຶບອອກ. ລິ້ງກ່ອນໜ້ານີ້ໄປຫາໄຟລ໌ຫ້ອງ ແລະເອກະສານທີ່ຝັງໄວ້ຈະບໍ່ສາມາດໃຊ້ໄດ້.\n\nຄຳສັ່ງນີ້ບໍ່ສາມາດຍົກເລີກໄດ້. ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການສືບຕໍ່?</string>
+    <string name="rooms_info_guests_title">ແຂກ (%1d)</string>
+    <string name="rooms_info_password_allowed_symbols">ຕົວອັກສອນທີ່ອະນຸຍາດ: a–z, A–Z, 0–9, !\"#%&amp;\'()*+,-./:;\u003C=>?@[]^_`{|}</string>
+    <string name="rooms_info_password_minimum_length">ຄວາມຍາວຕໍ່າສຸດ: 8 ຕົວອັກສອນ</string>
+    <string name="rooms_info_revoke_link_desc">ລິ້ງຫາໄຟລ໌ທັງໝົດໃນຫ້ອງຈະຖືກສ້າງຄືນໃໝ່. ລິ້ງກ່ອນໜ້ານີ້ໄປຫາໄຟລ໌ຫ້ອງ ແລະເອກະສານທີ່ຝັງໄວ້ຈະບໍ່ສາມາດໃຊ້ໄດ້.\n\nຄຳສັ່ງນີ້ບໍ່ສາມາດຍົກເລີກໄດ້. ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການສືບຕໍ່?</string>
+    <string name="rooms_invalid_password">ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ</string>
+    <string name="rooms_invite_access_description">ແຂກ, ຜູ້ໃຊ້ ແລະກຸ່ມບໍ່ສາມາດຖືກມອບໝາຍໃຫ້ເປັນຜູ້ຈັດການຫ້ອງໄດ້. ສະເພາະຜູ້ເບິ່ງແຍງຫ້ອງ ແລະ DocSpace ທີ່ເໝາະສົມກັບບົດບາດທີ່ລະບຸໄວ້.</string>
+    <string name="rooms_notifications_disabled">ການແຈ້ງເຕືອນຫ້ອງຖືກປິດໄວ້</string>
+    <string name="rooms_notifications_enabled">ເປີດ​ການ​ແຈ້ງ​ເຕືອນ​ຫ້ອງ​ແລ້ວ</string>
+    <string name="rooms_protected_room">ຫ້ອງ​ປົກ​ປ້ອງ</string>
+    <string name="rooms_share_and_collect">ແບ່ງປັນ &amp; ເກັບກໍາ</string>
+    <string name="rooms_share_and_collect_desc">ແບ່ງປັນແບບຟອມຂອງເຈົ້າ ແລະເກັບກຳຄຳຕອບຜ່ານຫ້ອງຕື່ມແບບຟອມ.</string>
+    <string name="rooms_upload_pdf_from_device">ອັບໂຫລດແບບຟອມ PDF ຈາກອຸປະກອນ</string>
+    <string name="rooms_upload_pdf_from_docspace">ອັບໂຫລດແບບຟອມ PDF ຈາກ DocSpace</string>
+    <string name="rooms_vdr">ຫ້ອງ​ຂໍ້​ມູນ​ສະ​ເໝືອນ</string>
+    <string name="rooms_vdr_desc">ໃຊ້ VDR ເພື່ອຄວາມປອດໄພຂອງໄຟລ໌ຂັ້ນສູງ ແລະຄວາມໂປ່ງໃສໃນຂະນະທີ່ຕື່ມ ແລະເຊັນເອກະສານແບບເທື່ອລະຂັ້ນຕອນ. ຕັ້ງຄ່າລາຍນ້ຳ, ດັດສະນີອັດຕະໂນມັດ ແລະຕິດຕາມເນື້ອຫາທັງໝົດ, ຈຳກັດການດາວໂຫຼດ ແລະສຳເນົາ.</string>
+    <string name="rooms_vdr_file_restrict_desc">ເປີດ​ໃຊ້​ງານ​ການ​ຕັ້ງ​ຄ່າ​ນີ້​ເພື່ອ​ປິດ​ການ​ດາວ​ໂຫຼດ, ການ​ພິມ, ແລະ​ການ​ຄັດ​ລອກ​ເນື້ອ​ຫາ​ສຳ​ລັບ​ຜູ້​ໃຊ້​ທີ່​ມີ​ບົດ​ບາດ “ຜູ້​ເບິ່ງ”</string>
+    <string name="rooms_vdr_indexing_desc">ເປີດໃຊ້ການດັດສະນີອັດຕະໂນມັດເພື່ອດັດສະນີໄຟລ໌ ແລະໂຟນເດີ້ຕ່າງໆຕາມໝາຍເລກຊີຣຽວ ການຈັດຮຽງຕາມຕົວເລກຈະຖືກຕັ້ງເປັນຄ່າເລີ່ມຕົ້ນສຳລັບຜູ້ໃຊ້ທັງໝົດ.</string>
+    <string name="rooms_vdr_indexing_title">ດັດສະນີອັດຕະໂນມັດ</string>
+    <string name="rooms_vdr_lifetime_info">ອາຍຸຂອງໄຟລ໌ຖືກຕັ້ງເປັນ %1$d %2$s ໃນຫ້ອງນີ້</string>
+    <string name="rooms_vdr_measurement_unit">ໜ່ວຍວັດແທກ</string>
+    <string name="rooms_vdr_size_quota">ໂຄຕ້າຂະໜາດ</string>
+    <string name="rooms_vdr_storage_quota_desc">ໂຄ​ຕ້າ​ບ່ອນ​ຈັດ​ເກັບ​ທີ່​ຕັ້ງ​ໄວ້​ຕໍ່​ຫ້ອງ. ທ່ານສາມາດປ່ຽນຄ່ານີ້ ຫຼືປິດການຈຳກັດບ່ອນຈັດເກັບຂໍ້ມູນໄດ້.</string>
+    <string name="rooms_vdr_storage_quota_title">ໂຄຕ້າບ່ອນຈັດເກັບຂໍ້ມູນ</string>
+    <string name="rooms_vdr_watermark_desc">ປົກປ້ອງເອກະສານທັງໝົດໃນຫ້ອງນີ້ດ້ວຍລາຍນໍ້າ. ຖ້າເອກະສານມີອັນໜຶ່ງຢູ່ແລ້ວ, ມັນຈະບໍ່ຖືກແທນທີ່.</string>
+    <string name="rooms_vdr_watermark_image_desc">ຮູບ​ພາບ​ຕົວ​ຢ່າງ​ນີ້​ສະ​ແດງ​ໃຫ້​ເຫັນ​ວ່າ​ລາຍ​ນ້ຳ​ຈະ​ຖືກ​ສະ​ແດງ​ໃນ​ໄຟລ​໌​ຂອງ​ທ່ານ​ແນວ​ໃດ.</string>
+    <string name="rooms_vdr_watermark_image_rotate">ໝຸນ</string>
+    <string name="rooms_vdr_watermark_image_scale">ຂະໜາດ</string>
+    <string name="rooms_vdr_watermark_image_select">ເລືອກຮູບ</string>
+    <string name="rooms_vdr_watermark_info_current_date">ວັນທີປັດຈຸບັນ</string>
+    <string name="rooms_vdr_watermark_info_email">ອີເມວຜູ້ໃຊ້</string>
+    <string name="rooms_vdr_watermark_info_ip_address">ໃຊ້ທີ່ຢູ່ IP</string>
+    <string name="rooms_vdr_watermark_info_room_name">ຊື່ຫ້ອງ</string>
+    <string name="rooms_vdr_watermark_info_username">ຊື່​ຜູ້​ໃຊ້</string>
+    <string name="rooms_vdr_watermark_position">ຕຳແໜ່ງ</string>
+    <string name="rooms_vdr_watermark_position_diagonal">ເສັ້ນຂວາງ</string>
+    <string name="rooms_vdr_watermark_position_horizontal">ແນວນອນ</string>
+    <string name="rooms_vdr_watermark_static_text">ຂໍ້ຄວາມຄົງທີ່</string>
+    <string name="rooms_vdr_watermark_title">ເພີ່ມລາຍນ້ຳໃສ່ເອກະສານ</string>
+    <string name="rooms_vdr_watermark_type">ປະເພດລາຍນ້ຳເວລາ</string>
+    <string name="rooms_vdr_watermark_type_image">ຮູບ</string>
+    <string name="rooms_vdr_watermark_type_info">ຂໍ້ມູນຜູ້ເບິ່ງ</string>
+    <string name="setting_access_desc">ເຂົ້າເຖິງແມ່ແບບ. ທ່ານສາມາດເລືອກສະມາຊິກຜູ້ທີ່ສາມາດສ້າງຫ້ອງໂດຍອີງໃສ່ແມ່ແບບນີ້.</string>
+    <string name="setting_access_list_title">ເຂົ້າເຖິງແມ່ແບບ</string>
+    <string name="setting_access_members_title">ເພີ່ມຜູ້ໃຊ້ ຫຼືກຸ່ມ</string>
+    <string name="setting_access_members_title_desc">ຜູ້​ຄວບ​ຄຸມ​ທີ່​ເພີ່ມ​ເຂົ້າ​ມາ​ຈະ​ສາ​ມາດ​ສ້າງ​ຫ້ອງ​ໂດຍ​ໃຊ້​ແມ່​ແບບ​ນີ້​ໄດ້.</string>
+    <string name="setting_access_public">ແມ່ແບບມີໃຫ້ທຸກຄົນ</string>
+    <string name="setting_access_public_bold_docspace">DocSpace</string>
+    <string name="setting_access_public_bold_room">ຜູ້ເບິ່ງແຍງຫ້ອງ</string>
+    <string name="setting_access_public_desc">ຜູ້ເບິ່ງແຍງ DocSpace ແລະຫ້ອງທັງໝົດຈະສາມາດສ້າງຫ້ອງໂດຍໃຊ້ແມ່ແບບນີ້ໄດ້.</string>
+    <string name="setting_screen_on">ໃນຂະນະທີ່ກຳລັງເບິ່ງເອກະສານ</string>
+    <string name="setting_select_members_title">ເລືອກສະມາຊິກ</string>
+    <string name="setting_tags_desc">ແທັກ​ຖືກ​ນຳ​ໃຊ້​ກັບ​ຫ້ອງ​ທີ່​ຈະ​ຖືກ​ສ້າງ​ຂຶ້ນ​ໂດຍ​ອີງ​ໃສ່​ແມ່​ແບບ​ນີ້.</string>
+    <string name="setting_title_sreen_on">ເປີດໜ້າຈໍ</string>
+    <string name="settings_saved_successfully">ບັນທຶກການຕັ້ງຄ່າແມ່ແບບແລ້ວ</string>
+    <string name="share_access_room_manager">ຜູ້ຈັດການຫ້ອງ</string>
+    <string name="share_access_room_power_user">ຜູ້ສ້າງເນື້ອຫາ</string>
+    <string name="share_clipboard_external_custom_filter_copied">ການ​ເຊື່ອມ​ຕໍ່​ກັບ​ໄຟ​ລ໌​ທີ່​ມີ​ຕົວ​ກັ່ນ​ຕອງ​ແບບ​ກຳ​ນົດ​ເອງ​ທີ່​ເປີດ​ໃຊ້​ງານ​ຖືກ​ຄັດ​ລອກ​ໄປ​ທີ່ clipboard ສົບ​ຜົນ​ສໍາ​ເລັດ</string>
+    <string name="share_goal_guest">ແຂກ</string>
+    <string name="share_popup_access_custom_filter">ຕົວກັ່ນຕອງແບບກຳນົດເອງ</string>
+    <string name="share_user_type_room_docspace_admin">ຜູ້ເບິ່ງແຍງ DocSpace</string>
+    <string name="share_user_type_room_docspace_owner">ເຈົ້າຂອງ DocSpace</string>
+    <string name="share_user_type_room_portal_owner">ເຈົ້າຂອງປະຕູ</string>
+    <string name="share_user_type_room_workspace_owner">ເຈົ້າ​ຂອງ​ບ່ອນ​ເຮັດ​ວຽກ</string>
+    <string name="template_created_successfully">ແມ່ແບບ «%s» ບັນທຶກແລ້ວ</string>
+    <string name="template_delete_success">ແມ່ແບບຖືກລຶບແລ້ວ</string>
+    <string name="template_name_hint">ຊື່ແມ່ແບບ</string>
+    <string name="template_subheader_title">ແມ່ແບບຫ້ອງ</string>
+    <string name="templates_delete_success">ແມ່ແບບຖືກລຶບແລ້ວ</string>
+    <string name="title_access_settings">ການຕັ້ງຄ່າການເຂົ້າເຖິງ</string>
+    <string name="title_create_from_template">ຈາກແມ່ແບບ</string>
+    <string name="title_edit_template">ແກ້ໄຂແມ່ແບບ</string>
+    <string name="title_save_template">ບັນທຶກເປັນແມ່ແບບ</string>
+    <string name="toolbar_menu_view">ເບິ່ງ</string>
+    <string name="toolbar_menu_view_grid">ຕາໜ່າງ</string>
+    <string name="toolbar_menu_view_list">ລາຍຊື່</string>
+    <string name="trash_toolbar_info">ລາຍການໃນຖັງຂີ້ເຫຍື້ອຈະຖືກລຶບໂດຍອັດຕະໂນມັດຫຼັງຈາກ 30 ມື້</string>
+    <string name="version_delete_confirm">ລຶບ</string>
+    <string name="version_delete_done">ເວີ​ຊັນ​ຖືກ​ລຶບ​ແລ້ວ</string>
+    <string name="version_delete_loading">ກຳລັງລຶບ</string>
+    <string name="version_delete_subtitle">ທ່ານກຳລັງຈະລຶບເວີຊັນໄຟລ໌. ມັນຈະເປັນໄປບໍ່ໄດ້ທີ່ຈະເຫັນ ຫຼືຟື້ນຟູມັນອີກຕໍ່ໄປ. ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການສືບຕໍ່?</string>
+    <string name="version_delete_title">ລຶບເວີຊັນ</string>
+    <string name="version_dialog_cancel">ຍົກເລີກ</string>
+    <string name="version_edit_comment_title">ແກ້ໄຂຄຳເຫັນ</string>
+    <string name="version_group_current_header">ປັດຈຸບັນ — ເວີຊັນ %s</string>
+    <string name="version_group_header">ລຸ້ນ %s</string>
+    <string name="version_history_title">ປະຫວັດເວີຊັນ</string>
+    <string name="version_restore_confirm">ກູ້​ຄືນ</string>
+    <string name="version_restore_done">ເວີ​ຊັນ​ໄດ້​ຮັບ​ການ​ຟື້ນ​ຟູ​ແລ້ວ</string>
+    <string name="version_restore_loading">ການ​ຟື້ນ​ຟູ​ເວີ​ຊັນ</string>
+    <string name="version_restore_subtitle">ໄຟລ໌ປັດຈຸບັນຈະຖືກບັນທຶກໄວ້ໃນປະຫວັດເວີຊັນ.</string>
+    <string name="version_restore_title">ກູ້​ເວີ​ຊັນ​ນີ້​ຄືນ​ມາ​ບໍ?</string>
+    <string name="whats_new_1">ປັບປຸງການເຊື່ອມໂຍງກັບ DocSpace v3.0</string>
+    <string name="whats_new_1_desc">ຮ່ວມ​ມື​ໃນ​ເອກະສານ​ດ້ວຍ​ການ​ອັບ​ເດດ ແລະ​ການ​ປັບ​ປຸງ​ຫລ້າ​ສຸດ​ສຳ​ລັບ WORLDOFFICE DocSpace v3.0.</string>
+    <string name="whats_new_2">ສ່ວນຕິດຕໍ່ແຖບສຳລັບແທັບເລັດ ແລະເດັສທັອບ</string>
+    <string name="whats_new_2_desc">ເຮັດ​ໃຫ້​ການ​ນຳ​ທາງ​ງ່າຍ​ຂຶ້ນ ແລະ​ການ​ແກ້​ໄຂ​ດ້ວຍ​ແຖບ​ເຄື່ອງ​ມື​ທີ່​ຕິດ​ຢູ່​ໃນ​ແທັບ​ເລັດ ແລະ​ອຸ​ປະ​ກອນ​ເດັສ​ທັອບ.</string>
+    <string name="whats_new_3">ປະເພດແຜນວາດໃໝ່</string>
+    <string name="whats_new_3_desc">ເພີ່ມ​ປະ​ເພດ​ແຜນ​ວາດ​ໃໝ່​ເພື່ອ​ເບິ່ງ​ຂໍ້​ມູນ​ຂອງ​ທ່ານ​ສຳ​ລັບ​ການ​ນຳ​ສະ​ເໜີ​ລາຍ​ລະ​ອຽດ ແລະ​ການ​ວິ​ເຄາະ.</string>
+    <string name="whats_new_4">ເບິ່ງ Apple Pages ແລະໄຟລ໌ HWP</string>
+    <string name="whats_new_4_desc">ເປີດ ແລະເບິ່ງເອກະສານໃນຮູບແບບ Apple Pages ແລະ Hangul Word.</string>
+    <string name="whats_new_next">ເລີ່ມຕົ້ນ</string>
+    <string name="whats_new_title">ມີ​ຫຍັງ​ໃໝ່</string>
+
+    <!-- Newly added translations (v9.0.2 - 2025-06-25) -->
+    <plurals name="dialogs_question_message_template">
+        <item quantity="other">ທ່ານຕ້ອງການລຶບແມ່ແບບຫ້ອງທີ່ເລືອກແທ້ໆບໍ? ພວກມັນບໍ່ສາມາດຟື້ນຟູໄດ້.</item>
+    </plurals>
+    <plurals name="dialogs_question_delete_template_title">
+        <item quantity="other">ລຶບແມ່ແບບ</item>
+    </plurals>
+    <plurals name="app_settings_passcode_many_attempt_seconds">
+        <item quantity="other">ພະຍາຍາມຫຼາຍເກີນໄປ.\nລອງໃໝ່ໃນອີກ %d ວິນາທີ</item>
+    </plurals>
+    <plurals name="app_settings_passcode_many_attempt_minutes">
+        <item quantity="other">ພະຍາຍາມຫຼາຍເທື່ອເກີນໄປ.\nລອງໃໝ່ໃນອີກ %d ນາທີ</item>
+    </plurals>
+
+    <!-- Newly added translations (v9.1.0 - 2025-10-24) -->
+    <string name="dev_mode_system_logs">ບັນທຶກລະບົບ</string>
+    <string name="dev_mode_network_requests">ການຮ້ອງຂໍເຄືອຂ່າຍ</string>
+    <string name="whats_new">ມີຫຍັງໃໝ່ໃນ v9.0</string>
+    <string name="start_filling_title">ເລີ່ມຕື່ມຂໍ້ມູນ</string>
+    <string name="start_filling_start">ເລີ່ມ</string>
+    <string name="start_filling_desc">ໃນແຜງນີ້ ທ່ານສາມາດຕິດຕາມການສຳເລັດຂອງແບບຟອມທີ່ທ່ານເຂົ້າຮ່ວມ ຫຼື ທີ່ທ່ານເປັນຜູ້ຈັດແຈງການສຳເລັດ</string>
+    <string name="start_filling_header">ບົດບາດຈາກແບບຟອມ:</string>
+    <string name="start_filling_ready_for_filling">ແບບຟອມພ້ອມແລ້ວສຳລັບການຕື່ມຂໍ້ມູນໃນຫ້ອງ</string>
+    <string name="start_filling_ready_for_filling_desc">ການແຈ້ງເຕືອນໄດ້ຖືກສົ່ງໄປຫາຜູ້ໃຊ້ໃນບົດບາດທຳອິດແລ້ວ, ເຊິ່ງກະຕຸ້ນໃຫ້ເຂົາເຈົ້າຕື່ມຂໍ້ມູນໃນແບບຟອມ. ທ່ານສາມາດນຳທາງໄປຫາຫ້ອງ ຫຼື ແບ່ງປັນລິ້ງການຕື່ມຂໍ້ມູນກັບຜູ້ເຂົ້າຮ່ວມ.</string>
+    <string name="list_context_reset_filling">ຕັ້ງຄ່າໃໝ່ ແລະ ເລີ່ມການຕື່ມຂໍ້ມູນ</string>
+
+    <!-- Newly added translations (v9.2.0 - 2025-11-25) -->
+    <string name="upload_manager_duplicate_title">ຕ້ອງມີການດຳເນີນການ</string>
+    <string name="upload_manager_duplicate_text">ຈຸດໝາຍປາຍທາງມີໄຟລ໌ທີ່ມີຊື່ວ່າ «%s» ຢູ່ແລ້ວ. ກະລຸນາເລືອກການກະທຳ:</string>
+    <string name="upload_manager_duplicates_text">ປາຍທາງມີໄຟລ໌ທີ່ມີຊື່ດຽວກັນຢູ່ແລ້ວ. ກະລຸນາເລືອກການກະທຳ:</string>
+    <string name="upload_manager_duplicate_overwrite">ຂຽນທັບດ້ວຍການອັບເດດເວີຊັນ</string>
+    <string name="upload_manager_duplicate_copy">ສ້າງສຳເນົາໄຟລ໌</string>
+    <string name="upload_manager_duplicate_skip">ຂ້າມ</string>
+    <string name="socials_failed_auth">ເຂົ້າສູ່ລະບົບບໍ່ສຳເລັດ</string>
+    <string name="rooms_info_access_desc">ຫ້ອງນີ້ສາມາດໃຊ້ໄດ້ສຳລັບທຸກຄົນທີ່ມີລິ້ງ. ການເຂົ້າເຖິງສຳລັບຜູ້ໃຊ້ພາຍນອກແມ່ນສະໜອງໃຫ້ໂດຍຂຶ້ນກັບປະເພດສິດການເຂົ້າເຖິງທີ່ເລືອກ.</string>
+    <string name="rooms_share_shared_links_count">ລິ້ງທີ່ແບ່ງປັນ (%d/6)</string>
+    <string name="share_link_folder_restrict_desc">ເປີດໃຊ້ການຕັ້ງຄ່ານີ້ເພື່ອປິດການດາວໂຫຼດໄຟລ໌ ແລະ ໂຟນເດີຈາກໂຟນເດີນີ້ທີ່ແບ່ງປັນຜ່ານລິ້ງ</string>
+    <string name="share_link_file_restrict_desc">ເປີດໃຊ້ການຕັ້ງຄ່ານີ້ເພື່ອປິດການດາວໂຫຼດໄຟລ໌ນີ້ທີ່ແບ່ງປັນຜ່ານລິ້ງ</string>
+    <string name="share_link_file_restrict_warning">ທ່ານບໍ່ສາມາດປິດການໃຊ້ງານຂໍ້ຈຳກັດໃນການດາວໂຫຼດ ແລະ ສຳເນົາຂໍ້ມູນໄດ້ ເພາະວ່າການຕັ້ງຄ່ານີ້ຖືກບັງຄັບໃຊ້ໃນລະດັບຫ້ອງສຳລັບທຸກໄຟລ໌.</string>
+    <string name="share_link_file_restrict_warning_ok">OK</string>
+    <string name="rooms_user_type_members">ສະມາຊິກ</string>
+    <string name="share_goal_everyone">ທຸກໆຄົນ</string>
+    <string name="placeholder_no_shared_items">ຍັງບໍ່ມີລາຍການທີ່ແບ່ງປັນເທື່ອ</string>
+    <string name="placeholder_no_shared_items_desc">ທີ່ນີ້ທ່ານຈະພົບເຫັນໄຟລ໌ ແລະ ໂຟນເດີທີ່ສະມາຊິກ DocSpace ຄົນອື່ນໆໄດ້ແບ່ງປັນກັບທ່ານ. ໄຟລ໌ ແລະ ເນື້ອຫາຫ້ອງຂອງທ່ານເອງບໍ່ໄດ້ສະແດງຢູ່ທີ່ນີ້.</string>
+    <string name="rooms_share_shared_folder_desc">ໃຫ້ສິດການເຂົ້າເຖິງໂຟນເດີ ແລະ ຕັ້ງຄ່າລະດັບການອະນຸຍາດ.</string>
+    <string name="rooms_info_folder_desc">ໂຟນເດີນີ້ສາມາດເຂົ້າເຖິງໄດ້ຜ່ານລິ້ງທີ່ແບ່ງປັນຈາກໂຟນເດີຫຼັກຂອງມັນ, ແຕ່ທ່ານສາມາດສ້າງລິ້ງພາຍນອກທີ່ກຳນົດເອງດ້ວຍສິດອະນຸຍາດສະເພາະໄດ້.</string>
+    <string name="rooms_info_file_desc">ໄຟລ໌ນີ້ສາມາດເຂົ້າເຖິງໄດ້ຜ່ານລິ້ງທີ່ແບ່ງປັນຈາກໂຟນເດີຫຼັກຂອງມັນ, ແຕ່ທ່ານສາມາດສ້າງລິ້ງພາຍນອກທີ່ກຳນົດເອງດ້ວຍສິດອະນຸຍາດສະເພາະໄດ້.</string>
+    <string name="rooms_info_fill_form_desc">ຫ້ອງນີ້ສາມາດໃຊ້ໄດ້ສຳລັບທຸກຄົນທີ່ມີລິ້ງ. ຜູ້ໃຊ້ພາຍນອກຈະມີສິດອະນຸຍາດຕື່ມແບບຟອມສຳລັບທຸກໄຟລ໌.</string>
+    <string name="share_popup_access_editing">ການແກ້ໄຂ</string>
+    <string name="share_popup_access_remove">ລຶບອອກ</string>
+
+    <!-- Newly added translations (v9.3.0 - 2026-02-24) -->
+    <string name="list_context_remove_from_list">@string/toolbar_menu_main_remove_from_list</string>
+    <string name="placeholder_empty_folder">ຍັງບໍ່ມີໄຟລ໌ຢູ່ບ່ອນນີ້ເທື່ອ</string>
+    <string name="placeholder_empty_folder_common">ຍັງບໍ່ມີເອກະສານຢູ່ບ່ອນນີ້ເທື່ອ</string>
+    <string name="placeholder_empty_folder_desc_creator">ສ້າງ ຫຼື ອັບໂຫຼດໄຟລ໌ໃໝ່</string>
+    <string name="placeholder_empty_form_folder">ຍັງບໍ່ມີແບບຟອມຢູ່ບ່ອນນີ້ເທື່ອ</string>
+    <string name="placeholder_empty_form_folder_viewer">ຍັງບໍ່ມີແບບຟອມຢູ່ໃນໂຟນເດີນີ້ເທື່ອ</string>
+    <string name="placeholder_empty_form_done">ຍັງບໍ່ທັນມີແບບຟອມທີ່ສຳເລັດແລ້ວເທື່ອ</string>
+    <string name="placeholder_empty_form_subfolder">ຍັງບໍ່ມີໄຟລ໌ຢູ່ໃນໂຟນເດີນີ້ເທື່ອ</string>
+    <string name="placeholder_empty_form_in_progress">ບໍ່ມີຫຍັງຢູ່ບ່ອນນີ້ເທື່ອ</string>
+    <string name="placeholder_empty_form_folder_desc">ອັບໂຫຼດແບບຟອມ PDF ທີ່ພ້ອມແລ້ວ</string>
+    <string name="placeholder_empty_form_folder_viewer_desc">ແບບຟອມທີ່ອັບໂຫຼດໂດຍຜູ້ເບິ່ງແຍງລະບົບຈະປາກົດຢູ່ທີ່ນີ້.</string>
+    <string name="placeholder_empty_form_done_desc">ພາກນີ້ຈະສະແດງແບບຟອມທັງໝົດທີ່ຄົບຖ້ວນແລ້ວ.</string>
+    <string name="placeholder_empty_form_done_folder_desc">ທີ່ນີ້ທ່ານຈະພົບເຫັນແບບຟອມທີ່ຜູ້ໃຊ້ອື່ນໆໄດ້ຕື່ມຄົບຖ້ວນແລ້ວ.</string>
+    <string name="placeholder_empty_form_in_progress_desc">ພາກນີ້ຈະສະແດງແບບຟອມທີ່ກຳລັງດຳເນີນການຢູ່.</string>
+    <string name="placeholder_empty_form_in_progress_folder_desc">ໃນທີ່ນີ້ທ່ານຈະພົບເຫັນແບບຟອມທີ່ກຳລັງດຳເນີນການຢູ່, ເຊັ່ນ: ແບບຟອມທີ່ຜູ້ໃຊ້ໄດ້ເລີ່ມຕື່ມຂໍ້ມູນແລ້ວແຕ່ຍັງບໍ່ທັນໄດ້ເຮັດສຳເລັດ.</string>
+    <string name="placeholder_empty_trash">ຍັງບໍ່ມີລາຍການຢູ່ທີ່ນີ້ເທື່ອ</string>
+    <string name="placeholder_empty_trash_desc">ໄຟລ໌ ແລະ ໂຟນເດີທີ່ຖືກລຶບຈະໄປທີ່ຖັງຂີ້ເຫຍື້ອ, ບ່ອນທີ່ທ່ານສາມາດກູ້ຄືນ ຫຼື ລຶບພວກມັນອອກຢ່າງຖາວອນ. ລາຍການຕ່າງໆຈະຖືກລຶບໂດຍອັດຕະໂນມັດຫຼັງຈາກ 30 ມື້ ແລະ ບໍ່ສາມາດກູ້ຄືນໄດ້ເມື່ອຖືກລຶບອອກຈາກຖັງຂີ້ເຫຍື້ອ.</string>
+    <string name="placeholder_no_rooms_desc">ສ້າງຫ້ອງທຳອິດຂອງທ່ານເພື່ອເລີ່ມຕົ້ນ.</string>
+    <string name="placeholder_no_rooms_visitor">ຍັງບໍ່ມີຫ້ອງຢູ່ທີ່ນີ້ເທື່ອ</string>
+    <string name="placeholder_no_rooms_visitor_desc">ຫ້ອງທີ່ໃຊ້ຮ່ວມກັນຈະປາກົດຢູ່ທີ່ນີ້.</string>
+    <string name="placeholder_empty_archive_desc">ເກັບຫ້ອງທີ່ບໍ່ໄດ້ໃຊ້ໄວ້ ແລະ ກູ້ຄືນພວກມັນໄດ້ທຸກເວລາໃນ DocSpace ຂອງທ່ານ, ຫຼື ລຶບພວກມັນອອກຢ່າງຖາວອນ. ຫ້ອງທີ່ເກັບໄວ້ແລ້ວຈະປາກົດຢູ່ທີ່ນີ້.</string>
+    <string name="placeholder_empty_archive_visitor_desc">ຫ້ອງທີ່ເກັບໄວ້ແລ້ວຈະປາກົດຢູ່ທີ່ນີ້.</string>
+    <string name="placeholder_empty_templates_folder_desc">ສ້າງແມ່ແບບຈາກຫ້ອງໃນພາກສ່ວນຫ້ອງ.</string>
+    <string name="placeholder_empty_from_template">ບໍ່ພົບແມ່ແບບ</string>
+    <string name="placeholder_empty_from_template_desc">ສ້າງແມ່ແບບຫ້ອງທຳອິດຂອງທ່ານ ແລະ ຫຼັງຈາກນັ້ນທ່ານສາມາດສ້າງຫ້ອງໃໝ່ໂດຍອີງໃສ່ມັນໄດ້.</string>
+    <string name="placeholder_empty_recent_via_link_desc">ເບິ່ງໄຟລ໌ທີ່ເປີດບໍ່ດົນມານີ້ທີ່ແບ່ງປັນກັບທ່ານຜ່ານລິ້ງພາຍນອກທີ່ນີ້.</string>
+    <string name="operation_cancel_message">ການດຳເນີນງານຖືກຍົກເລີກແລ້ວ</string>
+    <string name="cloud_vpn_warning">ເພື່ອປະສົບການທີ່ດີທີ່ສຸດ, ລອງປິດ VPN. ຄຸນສົມບັດເຊີບເວີບາງຢ່າງອາດຈະເຮັດວຽກບໍ່ຖືກຕ້ອງ.</string>
+    <string name="room_placeholder_public_room_creator_title">ຍິນດີຕ້ອນຮັບສູ່ຫ້ອງສາທາລະນະ</string>
+    <string name="room_placeholder_public_room_creator_subtitle">ສ້າງ ຫຼື ອັບໂຫຼດໄຟລ໌ ຫຼື ໂຟນເດີໃໝ່ເພື່ອເລີ່ມຕົ້ນ.</string>
+    <string name="room_placeholder_empty_viewer_title">ຫ້ອງຫວ່າງເປົ່າ</string>
+    <string name="room_placeholder_empty_viewer_subtitle">ໄຟລ໌ ແລະ ໂຟນເດີທີ່ສ້າງ ຫຼື ອັບໂຫຼດໂດຍຜູ້ເບິ່ງແຍງລະບົບຈະສະແດງຢູ່ທີ່ນີ້.</string>
+    <string name="room_placeholder_form_room_creator_subtitle">ອັບໂຫຼດແບບຟອມ PDF ທີ່ພ້ອມແລ້ວເພື່ອເລີ່ມຕົ້ນ.</string>
+    <string name="room_placeholder_form_room_viewer_subtitle">ແບບຟອມ PDF ທີ່ອັບໂຫຼດໂດຍຜູ້ເບິ່ງແຍງລະບົບຈະປາກົດຢູ່ທີ່ນີ້.</string>
+    <string name="room_placeholder_vdr_room_creator_title">ຍິນດີຕ້ອນຮັບສູ່ຫ້ອງຂໍ້ມູນສະເໝືອນ</string>
+    <string name="room_placeholder_creator_subtitle">ສ້າງ ຫຼື ອັບໂຫຼດໄຟລ໌ໃໝ່ເພື່ອເລີ່ມຕົ້ນ.</string>
+    <string name="room_placeholder_collab_room_creator_title">ຍິນດີຕ້ອນຮັບສູ່ຫ້ອງຮ່ວມມື</string>
+    <string name="room_placeholder_custom_room_creator_title">ຍິນດີຕ້ອນຮັບສູ່ຫ້ອງກຳນົດເອງ</string>
+</resources>

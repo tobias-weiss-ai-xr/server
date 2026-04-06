@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chooser_email_client">ເລືອກລູກຄ້າທາງອີເມວ…</string>
+    <string name="about_email_subject">ເອກະສານ WORLDOFFICE  ສຳລັບຄຳຕິຊົມຈາກ</string>
+    <string name="about_feedback">ຄໍາຕິຊົມແລະສະຫນັບສະຫນູນ</string>
+    <string name="text_hint_required">ຕ້ອງການ</string>
+    <string name="export_send_copy">ສົ່ງສຳເນົາ</string>
+    <string name="dialogs_edit_forbidden_symbols">ຢ່າໃຊ້ສັນຍາລັກເຫຼົ່ານີ້\u0020</string>
+    <string name="dialogs_edit_forbidden_name">ຊື່ບໍ່ຖືກຕ້ອງ</string>
+    <string name="sizes_bytes">ໄບຕ໌</string>
+    <string name="sizes_kilobytes">ກິໂລໄບຕ໌</string>
+    <string name="sizes_megabytes">ເມກະໄບຕ໌</string>
+    <string name="sizes_gigabytes">ກິກກະໄບຕ໌</string>
+    <string name="sizes_terabytes">ເຕລາໄບຕ໌</string>
+    <string name="common_accept">ຍອມຮັບ</string>
+    <string name="common_cancel">ຍົກເລີກ</string>
+    <string name="common_next">ຕໍ່ໄປ</string>
+    <string name="common_previous">ກ່ອນໜ້າ</string>
+    <string name="common_done">ສຳເລັດ</string>
+    <string name="common_ok">ໂອເຄ</string>
+    <string name="settings_fonts_title">ຕົວອັກສອນ</string>
+  
+    <plurals name="days">
+        <item quantity="other">ມື້</item>
+    </plurals>
+
+    <plurals name="hours">
+        <item quantity="other">ຊົ່ວໂມງ</item>
+    </plurals>
+    <string name="settings_view">ເບິ່ງ</string>
+
+    <!-- Newly added translations (v9.0.0 - 2025-06-09) -->
+    <string name="help_and_feedback_contact_support">ຕິດຕໍ່ຝ່າຍຊ່ວຍເຫຼືອ</string>
+    <string name="help_and_feedback_help_center">ສູນ​ຊ່ວຍ​ເຫຼືອ</string>
+    <string name="help_and_feedback_suggest_a_feature">ແນະນຳຄຸນສົມບັດ</string>
+    <string name="help_and_feedback_title">ຊ່ວຍ​ເຫຼືອ ແລະ​ຄຳ​ຕິ​ຊົມ</string>
+
+    <!-- Newly added translations (v9.0.2 - 2025-06-25) -->
+    <plurals name="months">
+        <item quantity="one">ເດືອນ</item>
+        <item quantity="other">ເດືອນ</item>
+    </plurals>
+    <plurals name="years">
+        <item quantity="one">ປີ</item>
+        <item quantity="other">ປີ</item>
+    </plurals>
+
+    <string name="access_members_me_and_title">ຂ້ອຍ ແລະ %s</string>
+    <string name="access_members_me_subtitle">(ຂ້ອຍ)</string>
+    <string name="access_members_me_users_groups_title">ຂ້ອຍ, %1$s ແລະ %2$s</string>
+
+    <plurals name="access_members_users_title">
+        <item quantity="other">%d ຜູ້ໃຊ້</item>
+    </plurals>
+
+    <plurals name="access_members_groups_title">
+        <item quantity="other">%d ກຸ່ມ</item>
+    </plurals>
+
+</resources>

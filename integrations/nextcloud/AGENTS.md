@@ -6,7 +6,7 @@
 
 ## OVERVIEW
 
-Nextcloud app that integrates Euro-Office Document Server — enables editing DOCX/XLSX/PPTX/PDF from within Nextcloud with co-editing, track changes, watermarks, and 50+ format support.
+Nextcloud app that integrates word-office Document Server — enables editing DOCX/XLSX/PPTX/PDF from within Nextcloud with co-editing, track changes, watermarks, and 50+ format support.
 
 ## STRUCTURE
 
@@ -52,7 +52,7 @@ world-office-nextcloud/
 - **Nextcloud:** 33-34
 - **PHP:** 8.1 - 8.4
 - **Node.js:** 20+ (for building)
-- **Document Server:** Euro-Office Docs (must be reachable from both Nextcloud server AND client browsers)
+- **Document Server:** word-office Docs (must be reachable from both Nextcloud server AND client browsers)
 - **PHP deps:** `firebase/php-jwt ^6.0`
 
 ## KEY CONFIGURATION SETTINGS

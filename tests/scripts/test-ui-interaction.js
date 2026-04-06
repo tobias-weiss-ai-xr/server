@@ -59,7 +59,7 @@ const { chromium } = require('@playwright/test');
 
     // Step 2: Right-click on the DOCX file
     console.log('\n=== RIGHT-CLICK ON FILE ===');
-    const fileElement = page.locator('text=test-world-office.docx');
+    const fileElement = page.locator('text=test-word-office.docx');
     const fileVisible = await fileElement.isVisible().catch(() => false);
     console.log('File visible:', fileVisible);
 

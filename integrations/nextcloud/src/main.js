@@ -513,7 +513,7 @@ import { loadState } from '@nextcloud/initial-state'
 				mimeTypes.forEach((mime) => {
 					OCA.Files.fileActions.registerAction({
 						name: 'world-officeOpen',
-						displayName: t(OCA.WorldOffice.AppName, 'Open in Euro-Office'),
+						displayName: t(OCA.WorldOffice.AppName, 'Open in word-office'),
 						mime,
 						permissions: OC.PERMISSION_READ,
 						iconClass: 'icon-world-office-open',
@@ -527,7 +527,7 @@ import { loadState } from '@nextcloud/initial-state'
 					if (config.conv) {
 						OCA.Files.fileActions.registerAction({
 							name: 'world-officeConvert',
-							displayName: t(OCA.WorldOffice.AppName, 'Convert with Euro-Office'),
+							displayName: t(OCA.WorldOffice.AppName, 'Convert with word-office'),
 							mime,
 							permissions: (isPublicShare() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
 							iconClass: 'icon-world-office-convert',
@@ -561,7 +561,7 @@ import { loadState } from '@nextcloud/initial-state'
 		} else {
 			registerFileAction(new FileAction({
 				id: 'world-office-open-def',
-				displayName: () => t(OCA.WorldOffice.AppName, 'Open in Euro-Office'),
+				displayName: () => t(OCA.WorldOffice.AppName, 'Open in word-office'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
 					const config = getConfig(files[0])
@@ -580,7 +580,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 			registerFileAction(new FileAction({
 				id: 'world-office-open',
-				displayName: () => t(OCA.WorldOffice.AppName, 'Open in Euro-Office'),
+				displayName: () => t(OCA.WorldOffice.AppName, 'Open in word-office'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
 					const config = getConfig(files[0])
@@ -599,7 +599,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 			registerFileAction(new FileAction({
 				id: 'world-office-convert',
-				displayName: () => t(OCA.WorldOffice.AppName, 'Convert with Euro-Office'),
+				displayName: () => t(OCA.WorldOffice.AppName, 'Convert with word-office'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
 					const config = getConfig(files[0])
@@ -882,7 +882,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 			registerFileAction(new FileAction({
 				id: 'world-office-public-open',
-				displayName: () => t(OCA.WorldOffice.AppName, 'Open in Euro-Office'),
+				displayName: () => t(OCA.WorldOffice.AppName, 'Open in word-office'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
 					if (Permission.READ !== (files[0].permissions & Permission.READ)) { return false }

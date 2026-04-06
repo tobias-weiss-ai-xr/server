@@ -109,7 +109,7 @@ import AppDarkSvg from '../img/app-dark.svg?raw';
 		const getTemplate = function(callback) {
 			if ($el.find('.world-office-share-container').length === 0) {
 				$('<ul>', { class: 'world-office-share-container' }).appendTo($el)
-				$('<div>').html(t(OCA.WorldOffice.AppName, 'Provide advanced document permissions using Euro-Office')).prependTo($el)
+				$('<div>').html(t(OCA.WorldOffice.AppName, 'Provide advanced document permissions using word-office')).prependTo($el)
 			}
 
 			if (templateItem) {

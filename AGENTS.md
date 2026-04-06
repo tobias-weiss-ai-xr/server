@@ -1,4 +1,4 @@
-# EURO-OFFICE WORKSPACE
+# word-office WORKSPACE
 
 **Generated:** 2026-03-31
 **Source:** codeberg.org/World-Office (forks of WORLDOFFICE)
@@ -6,12 +6,12 @@
 
 ## OVERVIEW
 
-Multi-repo workspace containing Euro-Office forks of the WORLDOFFICE document suite. Each repo is an independent clone (shallow, depth=1) from Codeberg. These are FORKS — upstream is WORLDOFFICE.
+Multi-repo workspace containing word-office forks of the WORLDOFFICE document suite. Each repo is an independent clone (shallow, depth=1) from Codeberg. These are FORKS — upstream is WORLDOFFICE.
 
 ## STRUCTURE
 
 ```
-world-office/
+word-office/
 ├── core/                          # C++ core engine (format conversion, rendering)
 ├── web-apps/                      # Web UI: editor interface, apps, media (28k files)
 ├── desktop-sdk/                   # C++ desktop integration SDK (6.6k files)

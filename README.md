@@ -1,52 +1,47 @@
-# Word Office
+<p align="center">
+  <img src="assets/artwork/assets/banner.png" alt="Word Office Banner" width="600">
+</p>
 
-Independent, open-source document editing suite. Built from scratch in Rust and React.
+<h1 align="center">Word Office</h1>
+
+<p align="center">
+  <strong>Independent, open-source document editing suite.</strong><br>
+  Built from scratch in Rust and React.
+</p>
+
+<p align="center">
+  <a href="https://codeberg.org/Word-Office/server">Repository</a> ·
+  <a href="LICENSE">AGPL-3.0</a> ·
+  <a href=".github/CONTRIBUTING.md">Contributing</a>
+</p>
+
+---
 
 ## Quick Start
 
 `ash
-# Install dependencies
 pnpm install
-
-# Build everything
 pnpm build
-
-# Run dev servers
 pnpm dev
-
-# Run tests
-pnpm test
 `
+
+## Structure
+
+| Directory | Purpose |
+|-----------|---------|
+| core/ | Rust document engine |
+| core-enterprise/ | Enterprise Rust crates |
+| services/ | Rust microservices |
+| pps/ | React 19 frontend |
+| integrations/ | Nextcloud, OpenCloud, Android |
+| ssets/ | Fonts, dictionaries, artwork |
+| plugins/ | AI autofill, SDK forms |
+| packages/ | Shared JS/TS packages |
 
 ## License
 
 Dual-licensed under [AGPL-3.0](LICENSE) (Community) and [Commercial](LICENSE-COMMERCIAL) (Enterprise).
 
-See [LICENSE.md](LICENSE.md) for details on the dual license model.
-
-## Documentation
-
-See [.sisyphus/plans/full-rewrite-modernization.md](.sisyphus/plans/full-rewrite-modernization.md) for the full modernization plan.
-
-## Structure
-
-`
-core/                   # Rust document engine
-core-enterprise/         # Enterprise Rust crates (commercial)
-services/              # Rust microservices
-apps/                   # React 19 frontend
-apps-web-enterprise/     # Enterprise frontend extensions
-integrations/           # Nextcloud, OpenCloud, Android, WOPI
-assets/                 # Fonts, dictionaries, artwork, templates
-plugins/                # AI autofill, SDK forms
-packages/               # Shared JS/TS packages
-tools/                  # CI, Docker, packaging
-tests/                  # Test suites
-`
-
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-All contributors must sign the CLA (Contributor License Agreement) to grant
-dual-license distribution rights.
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md). All contributors must sign the [CLA](cla/).

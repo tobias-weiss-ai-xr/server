@@ -9,7 +9,7 @@
 #   docker compose -f docker-compose.opencloud.yml down -v
 #
 # Prerequisites:
-#   - eo-docs container must be running (ghcr.io/world-office/documentserver)
+#   - eo-docs container must be running (ghcr.io/word-office/documentserver)
 #   - Run `scripts/patch-eodocs.sh` to patch missing assets in eo-docs
 #   - TLS cert/key generated in docker/ocis/
 

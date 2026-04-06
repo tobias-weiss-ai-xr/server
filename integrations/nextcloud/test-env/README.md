@@ -1,14 +1,14 @@
-# Euro-Office Nextcloud Integration — Test Environment
+# word-office Nextcloud Integration — Test Environment
 
 ## Overview
 
-Docker Compose environment for testing the Euro-Office Nextcloud integration app against a Euro-Office Document Server instance.
+Docker Compose environment for testing the word-office Nextcloud integration app against a word-office Document Server instance.
 
 ## Services
 
 | Service | Image | Port | Purpose |
 |---------|-------|------|---------|
-| `world-office-docs` | `ghcr.io/world-office/documentserver:latest` | 8080 | Euro-Office Document Server |
+| `world-office-docs` | `ghcr.io/word-office/documentserver:latest` | 8080 | word-office Document Server |
 | `nextcloud` | `nextcloud:33` | 8081 | Nextcloud instance |
 
 ## Quick Start

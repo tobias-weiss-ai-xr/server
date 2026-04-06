@@ -2,7 +2,7 @@ name: world-office-nextcloud-test
 
 services:
   world-office-docs:
-    image: ghcr.io/world-office/documentserver:latest
+    image: ghcr.io/word-office/documentserver:latest
     container_name: eo-docs
     restart: unless-stopped
     ports:

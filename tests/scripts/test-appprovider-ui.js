@@ -113,7 +113,7 @@ const { chromium } = require('@playwright/test');
       'word/document.xml': Buffer.from('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>Hello from World-Office E2E test!</w:t></w:r></w:p></w:body></w:document>')
     });
     
-    const docxPath = '/tmp/test-world-office.docx';
+    const docxPath = '/tmp/test-word-office.docx';
     fs.writeFileSync(docxPath, docx);
     console.log(`Created test DOCX: ${docxPath.length} bytes`);
     
@@ -128,7 +128,7 @@ const { chromium } = require('@playwright/test');
       // Upload file
       const https = require('https');
       const uploadResult = await new Promise((resolve, reject) => {
-        const req = https.request('https://localhost:9200/dav/files/admin/test-world-office.docx', {
+        const req = https.request('https://localhost:9200/dav/files/admin/test-word-office.docx', {
           method: 'PUT',
           headers: {
             'Authorization': 'Bearer ' + token,
@@ -159,8 +159,8 @@ const { chromium } = require('@playwright/test');
     const fileRows = await page.locator('resource-table-row, [data-test-resource-name], tr').all();
     console.log(`Found ${fileRows.length} rows in file list`);
     
-    // Look for "test-world-office.docx" text
-    const fileElement = page.locator('text=test-world-office.docx');
+    // Look for "test-word-office.docx" text
+    const fileElement = page.locator('text=test-word-office.docx');
     const fileVisible = await fileElement.isVisible().catch(() => false);
     console.log(`File visible: ${fileVisible}`);
     

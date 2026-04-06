@@ -35,8 +35,8 @@ if ($_["tagsEnabled"]) {
 <div class="section section-world-office section-world-office-addr">
 
     <div class="world-office-description">
-        <h1><?php p($l->t("Welcome to Euro-Office!")) ?></h1>
-        <p><?php p($l->t("Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using Euro-Office.")) ?></p>
+        <h1><?php p($l->t("Welcome to word-office!")) ?></h1>
+        <p><?php p($l->t("Edit and collaborate on text documents, spreadsheets, presentations, and PDFs within Nextcloud using word-office.")) ?></p>
         <div class="useful-links">
             <a href="https://helpcenter.world-office.com/integration/nextcloud.aspx" target="_blank"><?php p($l->t("Learn more")) ?></a>
             <a href="https://feedback.world-office.com/forums/966080-your-voice-matters?category_id=519288" target="_blank"><?php p($l->t("Suggest a feature")) ?></a>
@@ -45,9 +45,9 @@ if ($_["tagsEnabled"]) {
 
     <div id="world-officeAddrSettings">
         <h2><?php p($l->t("Server settings")) ?></h2>
-        <p class="settings-hint"><?php p($l->t("Euro-Office Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
+        <p class="settings-hint"><?php p($l->t("word-office Location specifies the address of the server with the document services installed. Please change the '<documentserver>' for the server address in the below line.")) ?></p>
 
-        <p><?php p($l->t("Euro-Office address")) ?></p>
+        <p><?php p($l->t("word-office address")) ?></p>
         <p><input id="world-officeUrl" value="<?php p($_["documentserver"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
 
         <p>
@@ -73,10 +73,10 @@ if ($_["tagsEnabled"]) {
             <p class="world-office-header"><?php p($l->t("Authorization header (leave blank to use default header)")) ?></p>
             <p><input id="world-officeJwtHeader" value="<?php p($_["jwtHeader"]) ?>" placeholder="Authorization" type="text"></p>
 
-            <p class="world-office-header"><?php p($l->t("Euro-Office address for internal requests from the server")) ?></p>
+            <p class="world-office-header"><?php p($l->t("word-office address for internal requests from the server")) ?></p>
             <p><input id="world-officeInternalUrl" value="<?php p($_["documentserverInternal"]) ?>" placeholder="https://<documentserver>/" type="text"></p>
 
-            <p class="world-office-header"><?php p($l->t("Server address for internal requests from Euro-Office")) ?></p>
+            <p class="world-office-header"><?php p($l->t("Server address for internal requests from word-office")) ?></p>
             <p><input id="world-officeStorageUrl" value="<?php p($_["storageUrl"]) ?>" placeholder="<?php p($_["currentServer"]) ?>" type="text"></p>
         </div>
     </div>
@@ -89,13 +89,13 @@ if ($_["tagsEnabled"]) {
             <input type="checkbox" class="checkbox" id="world-officeDemo"
                 <?php if ($_["demo"]["enabled"]) { ?>checked="checked"<?php } ?>
                 <?php if (!$_["demo"]["available"]) { ?>disabled="disabled"<?php } ?> />
-            <label for="world-officeDemo"><?php p($l->t("Connect to demo Euro-Office server")) ?></label>
+            <label for="world-officeDemo"><?php p($l->t("Connect to demo word-office server")) ?></label>
 
             <br />
             <?php if ($_["demo"]["available"]) { ?>
             <em><?php p($l->t("This is a public test server, please do not use it for private sensitive data. The server will be available during a 30-day period.")) ?></em>
             <?php } else { ?>
-            <em><?php p($l->t("The 30-day test period is over, you can no longer connect to demo Euro-Office server.")) ?></em>
+            <em><?php p($l->t("The 30-day test period is over, you can no longer connect to demo word-office server.")) ?></em>
             <?php } ?>
         </div>
     </div>
@@ -115,7 +115,7 @@ if ($_["tagsEnabled"]) {
     <p>
         <input type="checkbox" class="checkbox" id="world-officePreview"
             <?php if ($_["preview"]) { ?>checked="checked"<?php } ?> />
-        <label for="world-officePreview"><?php p($l->t("Use Euro-Office to generate a document preview (it will take up disk space)")) ?></label>
+        <label for="world-officePreview"><?php p($l->t("Use word-office to generate a document preview (it will take up disk space)")) ?></label>
     </p>
 
     <p>
@@ -133,7 +133,7 @@ if ($_["tagsEnabled"]) {
     <p>
         <input type="checkbox" class="checkbox" id="world-officeAdvanced"
             <?php if ($_["advanced"]) { ?>checked="checked"<?php } ?> />
-        <label for="world-officeAdvanced"><?php p($l->t("Provide advanced document permissions using Euro-Office")) ?></label>
+        <label for="world-officeAdvanced"><?php p($l->t("Provide advanced document permissions using word-office")) ?></label>
     </p>
 
     <p>

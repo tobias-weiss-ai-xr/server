@@ -1,5 +1,5 @@
 {
-  "name": "world-office",
+  "name": "word-office",
   "version": "1.0.0",
   "dependencies": [
     "hunspell",

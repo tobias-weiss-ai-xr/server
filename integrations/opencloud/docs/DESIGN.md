@@ -249,7 +249,7 @@ This approach builds a custom OCIS micro-service that provides World-Office-spec
 - Format-specific conversion options (PDF quality, compression)
 - Conversion queue management
 
-**Euro-Office Branding Overrides**
+**word-office Branding Overrides**
 - Custom branding in OCIS interface (logos, colors, fonts)
 - White-label deployment option
 - Custom splash screen and welcome message
@@ -577,7 +577,7 @@ The design should support both OCIS and Nextcloud integration:
 - Collabora WOPI Implementation: https://github.com/CollaboraOnline/online/blob/main/wsd/wopi/WopiStorage.cpp
 
 ### world-office-nextcloud
-- Repository: C:\Users\Tobias\git\world-office\world-office-nextcloud\
+- Repository: C:\Users\Tobias\git\word-office\world-office-nextcloud\
 - JWT patterns in controllers/auth.js
 - Config patterns in config/config.js
 - Converter patterns in controllers/converter.js

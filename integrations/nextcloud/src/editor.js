@@ -91,11 +91,11 @@
 					script.src = config.documentServerUrl + 'web-apps/apps/api/documents/api.js?shardKey=' + config.document.key
 					script.setAttribute('nonce', btoa(OC.requestToken))
 					script.onerror = function() {
-						OCA.WorldOffice.showMessage(t(OCA.WorldOffice.AppName, 'Euro-Office cannot be reached. Please contact admin'), 'error', { timeout: -1 })
+						OCA.WorldOffice.showMessage(t(OCA.WorldOffice.AppName, 'word-office cannot be reached. Please contact admin'), 'error', { timeout: -1 })
 					}
 					script.onload = function() {
 						if (typeof DocsAPI === 'undefined') {
-							OCA.WorldOffice.showMessage(t(OCA.WorldOffice.AppName, 'Euro-Office cannot be reached. Please contact admin'), 'error', { timeout: -1 })
+							OCA.WorldOffice.showMessage(t(OCA.WorldOffice.AppName, 'word-office cannot be reached. Please contact admin'), 'error', { timeout: -1 })
 							return
 						}
 
@@ -137,7 +137,7 @@
 
 						if (config.editorConfig.tenant) {
 							config.events.onAppReady = function() {
-								OCA.WorldOffice.docEditor.showMessage(t(OCA.WorldOffice.AppName, 'You are using public demo Euro-Office server. Please do not store private sensitive data.'))
+								OCA.WorldOffice.docEditor.showMessage(t(OCA.WorldOffice.AppName, 'You are using public demo word-office server. Please do not store private sensitive data.'))
 							}
 						}
 

@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-# Wait for Euro-Office Document Server to be ready
-echo "Waiting for Euro-Office Document Server..."
+# Wait for word-office Document Server to be ready
+echo "Waiting for word-office Document Server..."
 until curl -sf http://world-office-docs/healthcheck > /dev/null 2>&1; do
     echo "  Waiting for http://world-office-docs/healthcheck..."
     sleep 5
@@ -10,7 +10,7 @@ done
 echo "Document Server is ready!"
 
 # Copy the world-office app into Nextcloud
-echo "Copying Euro-Office app to Nextcloud..."
+echo "Copying word-office app to Nextcloud..."
 # Always copy from the mounted volume to ensure we have the latest version
 if [ -d /world-office-nextcloud ]; then
     rm -rf /var/www/html/apps/world-office
@@ -49,11 +49,11 @@ php /var/www/html/occ config:system:set trusted_domains 4 --value="nextcloud"
 
 # Enable the world-office app if not already enabled
 if ! php /var/www/html/occ app:list | grep -q "world-office.*\(enabled\)"; then
-    echo "Enabling Euro-Office app..."
+    echo "Enabling word-office app..."
     php /var/www/html/occ app:enable world-office
     echo "App enabled!"
 else
-    echo "Euro-Office app already enabled."
+    echo "word-office app already enabled."
 fi
 
 # Configure integration settings

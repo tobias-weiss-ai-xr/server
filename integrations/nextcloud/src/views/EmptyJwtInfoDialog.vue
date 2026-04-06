@@ -62,7 +62,7 @@ export default {
 			const securityUrl = 'https://api.world-office.com/docs/docs-api/get-started/how-it-works/security/'
 			return t(
 				'world-office',
-				'To ensure the security of important parameters in Euro-Office requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}" target="_blank">click here</a>.',
+				'To ensure the security of important parameters in word-office requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}" target="_blank">click here</a>.',
 				{ url: securityUrl },
 				{ escape: false, sanitize: false },
 			)

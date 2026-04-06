@@ -1,5 +1,5 @@
 {
-  "name": "@world-office/testsuite",
+  "name": "@word-office/testsuite",
   "version": "1.0.0",
   "description": "End-to-end test suite for World-Office integration components",
   "main": "index.js",
@@ -13,7 +13,7 @@
     "lint:fix": "eslint . --fix"
   },
   "keywords": [
-    "world-office",
+    "word-office",
     "e2e",
     "tests",
     "wopi",

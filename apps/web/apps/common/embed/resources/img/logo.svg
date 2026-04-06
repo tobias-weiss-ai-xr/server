@@ -1,4 +1,147 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="85" height="20" fill="none">
-<g fill-rule="evenodd" fill="#444"><path d="M20.211 7.003C19.395 7.655 19 8.658 19 9.987s.395 2.332 1.21 3.009S21.947 14 23.026 14c1.053 0 2-.326 2.79-1.003.79-.652 1.184-1.655 1.184-2.984 0-1.354-.395-2.332-1.184-3.009S24.105 6 23.026 6 21 6.326 20.211 7.003zm1.053 4.991c-.342-.426-.526-1.078-.526-2.006 0-.903.184-1.555.526-1.956.368-.426.763-.702 1.184-.803h0c.105-.025.211-.05.289-.05.079-.025.158-.025.263-.025h0a1.03 1.03 0 0 1 .145.013l.145.013c.079 0 .184.025.289.05.421.1.816.376 1.158.803s.526 1.103.526 1.981-.184 1.555-.526 1.981-.737.702-1.158.803l-.052.013c-.081.02-.15.037-.237.037-.105.025-.184.025-.29.025-.04 0-.085-.006-.132-.013h0l-.132-.013c-.087 0-.156-.017-.237-.037h0 0l-.052-.013c-.421-.1-.816-.376-1.184-.803zM30.134 6H28v8h1.639V9.282l-.026-1.41h.026l.416.897L32.866 14H35V6h-1.639v4.718l.026 1.41h-.026l-.416-1.077L30.134 6zm6.186 0H38v6.641h3.5V14h-5.18V6zm5.687 0H40l3.161 4.744V14h1.732v-3.256L48 6h-1.842l-1.787 2.821-.275.538h-.055l-.275-.538L42.007 6zM48 9.987c0-1.329.395-2.332 1.211-2.984C50 6.326 50.947 6 52.026 6s2 .326 2.79 1.003S56 8.658 56 10.013c0 1.329-.395 2.332-1.184 2.984-.79.677-1.737 1.003-2.79 1.003-1.079 0-2-.326-2.816-1.003C48.421 12.32 48 11.317 48 9.987zm1.737 0c0 .928.184 1.58.526 2.006.368.426.737.702 1.184.803.105.025.21.05.289.05.039 0 .086.006.132.013l.132.013c.105 0 .184 0 .289-.025.087 0 .156-.017.237-.037l.038-.009.014-.003c.421-.1.816-.376 1.158-.803s.526-1.103.526-1.981-.184-1.555-.526-1.981-.737-.702-1.158-.803c-.105-.025-.21-.05-.289-.05-.053 0-.099-.006-.145-.013L52 7.154c-.105 0-.184 0-.263.025-.079 0-.184.025-.289.05-.421.1-.816.376-1.184.803-.342.401-.526 1.053-.526 1.956zM62 6h-4.63v8H59v-3.359h2.871V9.282H59V7.359h3V6zm1.37 0H68v1.359h-3v1.923h2.871v1.359H65V14h-1.63V6zm6.13 0v8h1.638V6H69.5zm9 .202v1.363c-.273-.101-.546-.177-.843-.227a5.79 5.79 0 0 0-.967-.076c-.818 0-1.438.252-1.884.782-.446.505-.669 1.161-.669 1.943 0 .757.198 1.388.62 1.893s1.016.782 1.785.782c.236 0 .471-.019.739-.04h0l.129-.01c.322-.05.645-.126.992-.278l.099 1.338c-.05.025-.124.05-.198.076l-.322.076a4.65 4.65 0 0 1-.446.08h0l-.297.046-.917.05h-.248c-.893-.05-1.711-.404-2.455-1.009-.744-.631-1.116-1.615-1.116-2.927 0-1.287.372-2.297 1.091-3.003S75.302 6 76.517 6l.868.025c.236.022.454.063.684.106l.109.02c.025.013.056.019.087.025a.35.35 0 0 1 .087.025c.015-.016.04-.012.074-.007.021.003.046.007.074.007zM85 6h-5v8h5v-1.256h-3.336v-2.231h2.885V9.256h-2.885v-2H85V6z"/><path opacity=".5" d="M1.605 12.508l4.958 2.318c.503.229 1.348.229 1.874 0l4.936-2.307 1.188.557c.525.252.525.641 0 .87l-6.169 2.883c-.48.229-1.325.229-1.828 0L.394 13.945c-.526-.252-.526-.641 0-.87l1.21-.568z"/><path opacity=".75" d="M1.555 8.985l5.008 2.341c.503.229 1.348.229 1.874 0l5.008-2.341 1.161.544c.526.252.526.641 0 .87l-6.169 2.883c-.526.252-1.371.252-1.874 0L.394 10.398c-.526-.252-.526-.641 0-.87l1.161-.543z"/><path d="M6.563 9.825L.394 6.942c-.526-.252-.526-.641 0-.87l6.169-2.883c.525-.252 1.371-.252 1.874 0l6.169 2.883c.525.252.525.641 0 .87L8.437 9.825c-.526.229-1.371.229-1.874 0z"/>
-</g><defs />
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg52"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <!-- Background: deep void -->
+  <path
+     id="rect2"
+     style="fill:#0b0b1e"
+     d="M 0,0 H 512 V 512 H 0 Z" />
+  <!-- Subtle radial glow behind the structure -->
+  <defs
+     id="defs24">
+    <radialGradient
+       id="glow"
+       cx="50%"
+       cy="45%"
+       r="40%">
+      <stop
+         offset="0%"
+         stop-color="#0d1a3a"
+         id="stop4" />
+      <stop
+         offset="100%"
+         stop-color="#0b0b1e"
+         id="stop6" />
+    </radialGradient>
+    <linearGradient
+       id="cyanGrad"
+       x1="0%"
+       y1="0%"
+       x2="100%"
+       y2="100%">
+      <stop
+         offset="0%"
+         stop-color="#00d4ff"
+         id="stop9" />
+      <stop
+         offset="100%"
+         stop-color="#0088aa"
+         id="stop11" />
+    </linearGradient>
+    <linearGradient
+       id="goldGrad"
+       x1="0%"
+       y1="0%"
+       x2="100%"
+       y2="100%">
+      <stop
+         offset="0%"
+         stop-color="#e8b931"
+         id="stop14" />
+      <stop
+         offset="100%"
+         stop-color="#c49520"
+         id="stop16" />
+    </linearGradient>
+    <linearGradient
+       id="indigoGrad"
+       x1="0%"
+       y1="0%"
+       x2="80%"
+       y2="100%">
+      <stop
+         offset="0%"
+         stop-color="#252550"
+         id="stop19" />
+      <stop
+         offset="100%"
+         stop-color="#12122a"
+         id="stop21" />
+    </linearGradient>
+  </defs>
+  <path
+     id="rect26"
+     style="fill:url(#glow)"
+     d="M 0,0 H 512 V 512 H 0 Z" />
+  <!-- === DECONSTRUCTIVIST PRISM === -->
+  <!-- 
+    Architecture: An abstract crystalline structure suggesting 
+    a deconstructivist building viewed from an oblique elevated angle.
+    Multiple faceted planes create depth through color and occlusion.
+    Inspired by: Zaha Hadid, Daniel Libeskind, Frank Gehry
+  -->
+  <!-- Layer 1 (deepest): Back-right face - deep indigo volume -->
+  <path
+     id="polygon28"
+     style="fill:url(#indigoGrad)"
+     d="M 275,72 405,195 365,430 228,350 Z" />
+  <!-- Layer 2: Left face - dark teal, creates corner depth -->
+  <path
+     id="polygon30"
+     style="fill:#004466"
+     d="M 110,165 275,72 228,350 88,325 Z" />
+  <!-- Layer 3: Top face - deep purple, closes the top volume -->
+  <path
+     id="polygon32"
+     style="fill:#2d1b69"
+     d="M 110,165 275,72 405,195 255,238 Z" />
+  <!-- Layer 4: Front-right facet - electric cyan, catches light -->
+  <path
+     id="polygon34"
+     style="opacity:0.92;fill:url(#cyanGrad)"
+     d="m 405,195 40,90 -60,183 -20,-38 z" />
+  <!-- Layer 5: Lower-left cantilever - warm gold accent -->
+  <path
+     id="polygon36"
+     style="opacity:0.88;fill:url(#goldGrad)"
+     d="M 88,325 228,350 185,452 58,432 Z" />
+  <!-- Layer 6: Floating shard - upper right, cyan accent -->
+  <path
+     id="polygon38"
+     style="opacity:0.35;fill:#00d4ff"
+     d="m 330,55 65,65 -25,65 -60,-45 z" />
+  <!-- Layer 7: Small floating element - gold highlight -->
+  <path
+     id="polygon40"
+     style="opacity:0.3;fill:#e8b931"
+     d="m 395,120 40,35 -15,55 -40,-30 z" />
+  <!-- === EDGE HIGHLIGHTS === -->
+  <!-- Subtle white edge lines on key structural edges -->
+  <path
+     id="line42"
+     style="opacity:0.25;stroke:#ffffff;stroke-width:1.2"
+     d="M 275,72 405,195" />
+  <path
+     id="line44"
+     style="opacity:0.2;stroke:#ffffff"
+     d="m 405,195 40,90" />
+  <path
+     id="line46"
+     style="opacity:0.15;stroke:#ffffff"
+     d="M 275,72 110,165" />
+  <path
+     id="line48"
+     style="opacity:0.2;stroke:#00d4ff;stroke-width:0.8"
+     d="M 405,195 255,238" />
+  <!-- === BASE SHADOW === -->
+  <path
+     id="polygon50"
+     style="opacity:0.5;fill:#060610"
+     d="m 88,325 140,25 137,80 20,38 L 185,452 58,432 Z" />
 </svg>

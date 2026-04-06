@@ -9,7 +9,7 @@
 #     make build-image
 #
 # This command builds the image:
-#     world-office/documentserver:latest
+#     word-office/documentserver:latest
 #
 # -----------------------------------------------------------------------------
 # Starting the services
@@ -50,7 +50,7 @@ name: minimal-documentserver-test
 
 services:
   documentserver:
-    image: world-office/documentserver:latest
+    image: word-office/documentserver:latest
     container_name: eo-documentserver
     ports:
       - "8080:80"

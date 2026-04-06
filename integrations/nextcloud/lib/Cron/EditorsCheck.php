@@ -126,7 +126,7 @@ class EditorsCheck extends TimedJob {
         $notification = $notificationManager->createNotification();
         $notification->setApp($this->appName)
             ->setDateTime(new \DateTime())
-            ->setObject("editorsCheck", $this->trans->t("Euro-Office server is not available"))
+            ->setObject("editorsCheck", $this->trans->t("word-office server is not available"))
             ->setSubject("editorscheck_info");
         foreach ($this->getUsersToNotify() as $uid) {
             $notification->setUser($uid);

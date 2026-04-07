@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# Build Document Server from World-Office/core/ fork
+# Build Document Server from World-Office/core/
 # =============================================================================
 #
 # Usage: ./build.sh [tag]
@@ -24,11 +24,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONTEXT_DIR="$(dirname "$SCRIPT_DIR")"
 
 echo "=============================================="
-echo "World-Office Document Server Build"
+echo "World Office Document Server Build"
 echo "=============================================="
 echo ""
 echo "Building from: https://codeberg.org/World-Office/core"
-echo "Image tag:     world-office-documentserver:${TAG}"
+echo "Image tag:     worldoffice-documentserver:${TAG}"
 echo "Context:       ${CONTEXT_DIR}"
 echo ""
 echo "⚠️  WARNING: This will take 2-4 hours for the C++ build!"
@@ -46,8 +46,8 @@ echo ""
 
 # Build with progress output
 docker build \
-    -t world-office-documentserver:${TAG} \
-    -t world-office-documentserver:latest \
+    -t worldoffice-documentserver:${TAG} \
+    -t worldoffice-documentserver:latest \
     --build-arg JWT_SECRET=build_placeholder_change_at_runtime \
     --progress=plain \
     -f "${SCRIPT_DIR}/Dockerfile" \
@@ -60,10 +60,10 @@ echo "=============================================="
 echo ""
 echo "To run the container:"
 echo "  docker run -d \\"
-echo "    --name world-office-ds \\"
+echo "    --name worldoffice-ds \\"
 echo "    -e JWT_SECRET=your_secret_here \\"
 echo "    -p 8080:80 \\"
-echo "    world-office-documentserver:${TAG}"
+echo "    worldoffice-documentserver:${TAG}"
 echo ""
 echo "To test:"
 echo "  curl http://localhost:8080/hosting/discovery"

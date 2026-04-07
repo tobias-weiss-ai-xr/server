@@ -1,7 +1,7 @@
 /**
  * Companion API Tests
  * 
- * Tests that verify the world-office-opencloud companion API endpoints.
+ * Tests that verify the worldoffice-opencloud companion API endpoints.
  */
 
 const { describe, test, expect } = require('@jest/globals');

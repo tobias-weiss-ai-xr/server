@@ -1,5 +1,5 @@
 /**
- * @fileoverview Interactive headed E2E test for OCIS + World-Office Document Server
+ * @fileoverview Interactive headed E2E test for OCIS + World Office Document Server
  * 
  * Tests the full user flow:
  * 1. Login to OCIS

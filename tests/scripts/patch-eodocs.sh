@@ -1,5 +1,5 @@
 #!/bin/bash
-# Patch missing assets in the eo-docs container (World-Office build issues)
+# Patch missing assets in the eo-docs container (World Office build issues)
 # Usage: ./scripts/patch-eodocs.sh
 # Prerequisites: eo-docs container must be running
 
@@ -14,10 +14,10 @@ if ! docker ps --format '{{.Names}}' | grep -q "^${CONTAINER}$"; then
   exit 1
 fi
 
-# 1. Create device_scale.js stub (missing in World-Office build)
+# 1. Create device_scale.js stub (missing in World Office build)
 echo "Patching device_scale.js..."
 docker exec "$CONTAINER" sh -c "cat > ${DOCROOT}/sdkjs/common/device_scale.js << 'STUB'
-// device_scale.js stub — missing in World-Office build
+// device_scale.js stub — missing in World Office build
 // Provides DPI scaling functions expected by the editor UI
 window.AscCommon = window.AscCommon || {};
 window.AscCommon.checkDeviceScale = function() {

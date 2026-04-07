@@ -1,7 +1,7 @@
 /**
  * Input Validation Security Tests
  * 
- * Tests that verify input handling and security for the World-Office companion API.
+ * Tests that verify input handling and security for the World Office companion API.
  * These tests validate that the API properly rejects malicious or malformed input.
  */
 

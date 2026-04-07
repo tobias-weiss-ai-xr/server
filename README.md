@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://codeberg.org/Word-Office/server">Repository</a> ·
+  <a href="https://codeberg.org/World-Office/server">Repository</a> ·
   <a href="LICENSE">AGPL-3.0</a> ·
   <a href=".github/CONTRIBUTING.md">Contributing</a>
 </p>

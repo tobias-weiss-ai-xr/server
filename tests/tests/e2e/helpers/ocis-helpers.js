@@ -1,10 +1,10 @@
 /**
- * @fileoverview Shared helpers for OCIS + World-Office WOPI integration tests.
+ * @fileoverview Shared helpers for OCIS + World Office WOPI integration tests.
  *
  * All patterns are proven against the running test environment:
  * - OCIS at https://localhost:9200
  * - Collaboration service at http://localhost:9300
- * - World-Office Document Server at http://localhost:8082
+ * - World Office Document Server at http://localhost:8082
  * - nginx proxy at http://localhost:8083
  */
 
@@ -28,7 +28,7 @@ const LOGIN = {
   submit: 'button:has-text("Log in")',
 };
 
-/** Minimal valid OOXML .docx as base64 (contains "Hello from World-Office!") */
+/** Minimal valid OOXML .docx as base64 (contains "Hello from World Office!") */
 const MINIMAL_DOCX_B64 =
   'UEsDBBQABgAIAAAAIQD/2X8S0AEAAM8EAAATAAgCW0NvbnRlbnRfVHlwZXMueG1sIIJyZWxzLy5yZWxzCi4uL3dvcmQvZG9jdW1lbnQueG1sCqSwTsMwDIvPSfQjd2FHQ/ZDxJyiYxQaJG2YfaHAWbaSNG1k3dbSNNrpCj6T7v5wTPnJTt3yvun1P9yA6f0aQWCiC3xiR4QLJcOFAzCkVOA7U1BYa3VyDGATp0fJKKBqKAr+AiycMQmK4xzGfVkD6eYQgK3uCUZx8qQiBKFGSnkAUEsHCAVV4W1NAAAAagEAAFBLAwQUAAYACAAAACEApL6x/QEAAAAPAQAACwAIAl9yZWxzLy5yZWxzCjxSeWVyZW5jaWVzLz52YXIvRU9IL1Jvb3RNYW5pZmVzdC54bWwKPC9SdWxlcz4KCi88cm9vdE1hbmlmZXN0IHhtbG5zPSJodHRwOi8vc2NoZW1hcy5vcGVueG1sZm9ybWF0cy5vcmcvcGFja2FnZS8yMDA2L21ldGFkYXRhL2NvcmUtcHJvcGVydGllcyI+CiAgPERlZmF1bHRTdHJldGNoIFBhcnRDb25maWd1cmF0aW9ucz0iZXh0cmFjdC8yMDEyIiAvPgo8L3Jvb3RNYW5pZmVzdD4KUEsHCAB2+sS0AQAAFwEAAFBLAwQUAAYACAAAACEAu5Wq1wMAAABIAQAADQAIAl3b3JkL2RvY3VtZW50LnhtbCiVwU4DQAwCG1+n9FS2sbscudDqHRAZKNrRjXRHEM1smcBNTk3GLkFKdQmYtVOCvlV1olUVWt2UBXILIS5Wp1cBZmAApFKc0DsIpYCnRUVVZJVsUT6KUWjKpZt1WpCwVdMFU0AFBLBwiVoapnAAAAUQEAAFBLAQIUABQABgAIAAAAIQD/2X8S0AEAAM8EAAAEAAAAAAAAAAAAAAAAAAAAAABbQ29udGVudF9UeXBlc10ueG1sUEsBAhQAFAAGAAgAAAAhAKS+s/0BAAAADwEAAAkAAAAAAAAAAAAAAAAAPwEAABfcmVscy8ucmVsc1BLAQIUABQABgAIAAAAIQC72rXBAwAAAEgBAAANAAAAAAAAAAAAAAAAAGwEAAB3b3JkL2RvY3VtZW50LnhtbFBLBQYAAAAAAgACAIAAAAB2FgEAAAAA';
 
@@ -206,7 +206,7 @@ function parseWopiSession(session) {
 }
 
 /**
- * Navigate the browser to the World-Office editor via form POST.
+ * Navigate the browser to the World Office editor via form POST.
  * The editor requires POST (not GET) with access_token in the form body.
  *
  * IMPORTANT: Use the ORIGINAL WOPISrc with container hostname (test-collaboration:9300).

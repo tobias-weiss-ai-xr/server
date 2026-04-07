@@ -1,0 +1,4 @@
+Hello 世界 Привет مرحبا
+Cześć Здравейте こんにちは
+UTF-8 encoded multilingual text.
+Emoji: 📄 ✏️ 🌍

@@ -11,7 +11,7 @@ async function generateDockerCompose() {
   // Traefik proxy
   compose.services.traefik = {
     image: config.TRAEFIK_IMAGE,
-    container_name: 'world-office-traefik',
+    container_name: 'worldoffice-traefik',
     ports: [
       `${config.TRAEFIK_HTTP_PORT}:80`,
       `${config.TRAEFIK_HTTPS_PORT}:443`
@@ -31,13 +31,13 @@ async function generateDockerCompose() {
     labels: {
       'traefik.enable': 'true'
     },
-    networks: ['world-office-network']
+    networks: ['worldoffice-network']
   };
 
   // OCIS service
   compose.services.ocis = {
     image: config.OCIS_IMAGE,
-    container_name: 'world-office-ocis',
+    container_name: 'worldoffice-ocis',
     environment: [
       `OCIS_DOMAIN=${config.OCIS_DOMAIN}`,
       `OCIS_JWT_SECRET=${config.OCIS_JWT_SECRET}`,
@@ -74,13 +74,13 @@ async function generateDockerCompose() {
       'traefik.http.services.ocis.loadbalancer.server.port': config.OCIS_INTERNAL_PORT
     },
     depends_on: ['traefik'],
-    networks: ['world-office-network']
+    networks: ['worldoffice-network']
   };
 
   // OCIS Collaboration Service (WOPI)
   compose.services['ocis-collaboration'] = {
     image: config.OCIS_IMAGE,
-    container_name: 'world-office-ocis-collaboration',
+    container_name: 'worldoffice-ocis-collaboration',
     command: [
       'ocis',
       'collaboration',
@@ -111,13 +111,13 @@ async function generateDockerCompose() {
       'traefik.http.services.collaboration.loadbalancer.server.port': '9230'
     },
     depends_on: ['ocis'],
-    networks: ['world-office-network']
+    networks: ['worldoffice-network']
   };
 
   // Document Server
   compose.services.documentserver = {
     image: config.DOCUMENT_SERVER_IMAGE,
-    container_name: 'world-office-documentserver',
+    container_name: 'worldoffice-documentserver',
     environment: [
       `JWT_SECRET=${config.DOCUMENT_SERVER_JWT_SECRET}`,
       `JWT_HEADER=Authorization`,
@@ -138,12 +138,12 @@ async function generateDockerCompose() {
       'traefik.http.services.documentserver.loadbalancer.server.port': config.DOCUMENT_SERVER_INTERNAL_PORT
     },
     depends_on: ['ocis'],
-    networks: ['world-office-network']
+    networks: ['worldoffice-network']
   };
 
   // Networks
   compose.networks = {
-    'world-office-network': {
+    'worldoffice-network': {
       driver: 'bridge'
     }
   };

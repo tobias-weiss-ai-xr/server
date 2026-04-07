@@ -27,7 +27,7 @@ if [[ "$1" == "--build" ]]; then
 fi
 
 echo "=============================================="
-echo "World-Office E2E Test Stack"
+echo "World Office E2E Test Stack"
 echo "=============================================="
 echo ""
 echo "Compose file: $COMPOSE_FILE"

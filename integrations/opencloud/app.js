@@ -14,7 +14,7 @@ try {
   config = require('./lib/config.js');
 } catch (err) {
   console.log('[info] Configuration not loaded:', err.message);
-  console.log('[info] Navigate to /setup to configure World-Office Cloud.');
+  console.log('[info] Navigate to /setup to configure World Office Cloud.');
 }
 
 // ── Create Express app ─────────────────────────────────────────────────
@@ -88,7 +88,7 @@ app.use(function (err, req, res, next) {
 const PORT = config ? config.PORT : (process.env.PORT || 3000);
 app.listen(PORT, function () {
   console.log('');
-  console.log('  World-Office Cloud Dashboard');
+  console.log('  World Office Cloud Dashboard');
   console.log('  ─────────────────────────────');
   console.log('  Local:   http://localhost:' + PORT);
   if (config) {

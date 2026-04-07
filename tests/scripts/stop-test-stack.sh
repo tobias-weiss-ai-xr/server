@@ -48,5 +48,5 @@ echo "✓ Test stack stopped"
 echo ""
 
 # Show remaining containers
-echo "Remaining World-Office test containers:"
+echo "Remaining World Office test containers:"
 docker ps -a --filter "name=test-" --format "table {{.Names}}\t{{.Status}}"

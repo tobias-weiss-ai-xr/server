@@ -86,8 +86,8 @@ const { chromium } = require('@playwright/test');
     // Check for any "Open with" or app-provider related menu items
     console.log('\n=== Step 5: Check for external app integration ===');
     const allText = await page.locator('body').innerText().catch(() => '');
-    const hasOpenWith = allText.includes('Open with') || allText.includes('Open in') || allText.includes('World-Office');
-    console.log(`Has "Open with/Open in/World-Office" text: ${hasOpenWith}`);
+    const hasOpenWith = allText.includes('Open with') || allText.includes('Open in') || allText.includes('World Office');
+    console.log(`Has "Open with/Open in/World Office" text: ${hasOpenWith}`);
 
     // Look for any buttons/links with "open" in them
     const openElements = await page.locator('[class*="open" i], [data-test*="open" i], button:has-text("Open")').allTextContents();

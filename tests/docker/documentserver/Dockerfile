@@ -1,4 +1,4 @@
-# Document Server Dockerfile - Built from World-Office/core/ fork
+# Document Server Dockerfile - Built from World-Office/core/
 # 
 # This Dockerfile builds Document Server from our fork at:
 # https://codeberg.org/World-Office/core
@@ -6,8 +6,8 @@
 # Build time: ~2-4 hours (C++ compilation)
 # 
 # Usage:
-#   docker build -t world-office-documentserver:latest .
-#   docker run -e JWT_SECRET=your_secret -p 8080:80 world-office-documentserver
+#   docker build -t worldoffice-documentserver:latest .
+#   docker run -e JWT_SECRET=your_secret -p 8080:80 worldoffice-documentserver
 
 # =============================================================================
 # Stage 1: Builder - Compile C++ core and Node.js services

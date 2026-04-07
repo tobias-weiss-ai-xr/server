@@ -1,10 +1,10 @@
-# World-Office Test Suite
+# World Office Test Suite
 
-End-to-end test suite for World-Office integration components.
+End-to-end test suite for World Office integration components.
 
 ## Overview
 
-This repository contains automated E2E tests for the World-Office document editing stack:
+This repository contains automated E2E tests for the World Office document editing stack:
 
 - **Document Server** - WOPI client (editor) built from [World-Office/core](https://codeberg.org/World-Office/core)
 - **OCIS** - ownCloud Infinite Scale (WOPI host) for file storage
@@ -47,7 +47,7 @@ This repository contains automated E2E tests for the World-Office document editi
 ### 1. Clone and Install
 
 ```bash
-git clone git@codeberg.org:World-Office/testsuite.git
+git clone git@codeberg.org:World-Office/server.git
 cd testsuite
 npm install
 ```
@@ -298,14 +298,14 @@ testsuite/
 
 ## Related Projects
 
-- [world-office-opencloud](https://codeberg.org/World-Office/world-office-opencloud) - Companion app
+- [worldoffice-opencloud](https://codeberg.org/World-Office/server) - Companion app
 - [core](https://codeberg.org/World-Office/core) - Document Server core (C++)
 - [OCIS](https://github.com/owncloud/ocis) - ownCloud Infinite Scale
 
 ---
 
-> **Disclaimer:** World-Office is an independent open-source fork hosted on Codeberg and is not affiliated with, endorsed by, or controlled by any of the upstream projects or integration providers referenced in this repository (including WORLDOFFICE, Ascensio System SIA, and others). World-Office is entirely separate from "word-office" (a GitHub organization associated with Nextcloud and IONOS). World-Office maintains its own development roadmap, release cycle, and support channels.
+> **Disclaimer:** World Office is an independent, sovereign document editing suite built from scratch. Not a fork. Not associated with WORLDOFFICE or any other project. World Office maintains its own development roadmap, release cycle, and support channels.
 >
-> All meaningful pull requests from WORLDOFFICE and word-office on GitHub have been reviewed and, where applicable, synced into this fork. An automated watch is in place that continuously monitors and integrates relevant upstream developments.
+> World Office is hosted at [codeberg.org/World-Office](https://codeberg.org/World-Office).
 
-**© 2026 World-Office. Released under AGPL-3.0.**
+**© 2026 World Office. Released under AGPL-3.0.**

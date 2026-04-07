@@ -43,7 +43,7 @@ function generateWebUIConfig() {
       hideSearchBar: false,
       disablePreviews: false,
       general: {
-        displayName: 'World-Office Cloud',
+        displayName: 'World Office Cloud',
         slogan: 'Your documents, anywhere',
         hideVersion: false
       }

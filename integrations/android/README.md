@@ -1,10 +1,10 @@
-# World-Office Documents for Android — FOSS-Compliant Fork
+# World Office Documents for Android
 
-![World-Office](https://codeberg.org/World-Office/artwork/raw/branch/main/assets/banner.png)
+![World Office](https://codeberg.org/World-Office/artwork/raw/branch/main/assets/banner.png)
 [![License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![FOSS Compliant](https://img.shields.io/badge/FOSS-Compliant-success.svg)](https://codeberg.org/World-Office/documents-app-android)
 
-> **Disclaimer:** World-Office is an independent open-source fork hosted on Codeberg and is not affiliated with, endorsed by, or controlled by any of the upstream projects or integration providers referenced in this repository (including WORLDOFFICE, Ascensio System SIA, and others). World-Office is entirely separate from "word-office" (a GitHub organization associated with Nextcloud and IONOS). World-Office maintains its own development roadmap, release cycle, and support channels.
+> **Disclaimer:** World Office is an independent, sovereign document editing suite built from scratch. Not a fork. Not associated with WORLDOFFICE or any other project.
 
 ## About
 
@@ -81,7 +81,7 @@ World-Office Documents for Android is released under the [GNU AGPLv3 license](ht
 - [World-Office/core](https://codeberg.org/World-Office/core) — C++ rendering and conversion engine
 - [World-Office/web-apps](https://codeberg.org/World-Office/web-apps) — Web editor interface
 - [World-Office/DocumentServer](https://codeberg.org/World-Office/DocumentServer) — Document server deployment
-- [World-Office/world-office-opencloud](https://codeberg.org/World-Office/world-office-opencloud) — OCIS deployment companion
-- [World-Office/world-office-nextcloud](https://codeberg.org/World-Office/world-office-nextcloud) — Nextcloud integration
+- [World-Office/worldoffice-opencloud](https://codeberg.org/World-Office/server) — OCIS deployment companion
+- [World-Office/worldoffice-nextcloud](https://codeberg.org/World-Office/server) — Nextcloud integration
 
 © 2024 World-Office. Released under AGPL-3.0.

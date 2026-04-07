@@ -1,8 +1,8 @@
-name: world-office-nextcloud-test
+name: worldoffice-nextcloud-test
 
 services:
-  world-office-docs:
-    image: ghcr.io/word-office/documentserver:latest
+  worldoffice-docs:
+    image: ghcr.io/world-office/documentserver:latest
     container_name: eo-docs
     restart: unless-stopped
     ports:
@@ -30,14 +30,14 @@ services:
     volumes:
       - nc-data:/var/www/html
       - ./setup-world-office.sh:/docker-entrypoint-hooks.d/post-installation/setup-world-office.sh:ro
-      - ..:/world-office-nextcloud:ro
+      - ..:/worldoffice-nextcloud:ro
     environment:
       - NEXTCLOUD_TRUSTED_DOMAINS=localhost,127.0.0.1,172.24.0.0/16
       - SQLITE_DATABASE=nextcloud
       - NEXTCLOUD_ADMIN_USER=admin
       - NEXTCLOUD_ADMIN_PASSWORD=admin
     depends_on:
-      world-office-docs:
+      worldoffice-docs:
         condition: service_started
 
 volumes:

@@ -1,12 +1,12 @@
-# word-office WORKSPACE
+# World Office WORKSPACE
 
 **Generated:** 2026-03-31
-**Source:** codeberg.org/World-Office (forks of WORLDOFFICE)
+**Source:** codeberg.org/World-Office (independent rewrite)
 **Repos:** 19 | **Total Files:** ~66k
 
 ## OVERVIEW
 
-Multi-repo workspace containing word-office forks of the WORLDOFFICE document suite. Each repo is an independent clone (shallow, depth=1) from Codeberg. These are FORKS — upstream is WORLDOFFICE.
+World Office — an independent, sovereign document editing suite built from scratch in Rust + TypeScript. Not a fork. Not associated with WORLDOFFICE.
 
 ## STRUCTURE
 
@@ -28,7 +28,7 @@ word-office/
 ├── dictionaries/                  # Hunspell dictionaries (103 locales)
 ├── core-fonts/                    # Bundled fonts (TTF/OTF)
 ├── docker-ci/                     # Docker build images (Ubuntu 24.04, Node 20, JDK 21)
-├── world-office-nextcloud/          # Nextcloud integration (PHP/JS)
+├── integrations/nextcloud/          # Nextcloud integration (PHP/JS)
 ├── plugin-aiautofill/             # AI autofill plugin (JS/JSON)
 ├── .github/                       # GitHub/Codeberg CI workflows
 └── nul                            # (junk — safe to delete)
@@ -95,14 +95,14 @@ word-office/
 | License | Repos |
 |---------|-------|
 | AGPL-3.0 | core, desktop-apps, document-server-integration, document-templates, plugin-aiautofill, sdkjs-forms, server, web-apps |
-| Apache-2.0 | DesktopEditors, document-formats, document-server-package, world-office-nextcloud |
+| Apache-2.0 | DesktopEditors, document-formats, document-server-package, integrations/nextcloud |
 | Proprietary | desktop-sdk (freeware) |
 | Fonts | core-fonts (various per-font) |
 
 ## CODE STYLE
 
 - **server/**: ESLint 9 + Prettier (`.editorconfig`, `.prettierrc` present)
-- **world-office-nextcloud/**: ESLint (`.eslintrc.js` present)
+- **integrations/nextcloud/**: ESLint (`.eslintrc.js` present)
 - **C++ repos**: No standardized clang-format — follow per-repo existing style
 - **PHP repos**: No linter config — follow PSR-12 conventions
 

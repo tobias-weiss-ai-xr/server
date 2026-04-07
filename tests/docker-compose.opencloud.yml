@@ -1,5 +1,5 @@
 # =============================================================================
-# World-Office OpenCloud E2E Test — OCIS + eo-docs
+# World Office OpenCloud E2E Test — OCIS + eo-docs
 # =============================================================================
 #
 # Spins up OCIS with TLS connected to the already-running eo-docs Document Server.
@@ -77,7 +77,7 @@ services:
       - ./docker/ocis/tls-cert.pem:/tls/tls-cert.pem:ro
       - ./docker/ocis/tls-key.pem:/tls/tls-key.pem:ro
     networks:
-      - world-office-net
+      - worldoffice-net
     healthcheck:
       test: ["CMD-SHELL", "wget --no-check-certificate -qO- https://localhost:9200/health || exit 1"]
       interval: 10s
@@ -119,7 +119,7 @@ services:
       - COLLABORATION_APP_INSECURE=true
       - COLLABORATION_APP_NAME=WorldOffice
       - COLLABORATION_APP_PRODUCT=WorldOffice
-      - COLLABORATION_APP_DESCRIPTION=World-Office Document Server
+      - COLLABORATION_APP_DESCRIPTION=World Office Document Server
 
       # WOPI secret — must match eo-docs JWT_SECRET
       - COLLABORATION_WOPI_SECRET=mysecret
@@ -144,10 +144,10 @@ services:
       - test-ocis-config:/etc/ocis:ro
       - ocis-data:/var/lib/ocis:ro
     networks:
-      - world-office-net
+      - worldoffice-net
 
 networks:
-  world-office-net:
+  worldoffice-net:
     external: true
     name: 54c70abdabedc566785a29ce4bcd510b025de9101ec6bee335ec7e7483affba2
 

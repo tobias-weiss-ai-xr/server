@@ -1,7 +1,7 @@
 {
-  "name": "world-office-opencloud",
+  "name": "worldoffice-opencloud",
   "version": "1.0.0",
-  "description": "Deployment companion for World-Office Document Server + OCIS",
+  "description": "Deployment companion for World Office Document Server + OCIS",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",

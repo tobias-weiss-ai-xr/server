@@ -1,11 +1,11 @@
 # =============================================================================
-# World-Office E2E Test Stack
+# World Office E2E Test Stack
 # =============================================================================
 #
 # This Docker Compose file spins up the full integration stack for E2E testing:
-#   1. Document Server (built from World-Office/core/ fork)
+#   1. Document Server (built from World-Office/core/)
 #   2. OCIS (ownCloud Infinite Scale)
-#   3. world-office-opencloud Companion
+#   3. worldoffice-opencloud Companion
 #
 # Usage:
 #   docker compose -f docker-compose.test.yml up -d
@@ -81,7 +81,7 @@ services:
       # WOPI Collaboration
       - COLLABORATION_WOPI_SRC=http://localhost:9200
       - COLLABORATION_APP_ADDR=http://documentserver:80
-      - COLLABORATION_APP_NAME=World-Office Document Server
+      - COLLABORATION_APP_NAME=World Office Document Server
     volumes:
       - ocis-data:/var/lib/ocis
       - ./docker/ocis/web-ui.json:/etc/ocis/web-ui.json:ro
@@ -102,7 +102,7 @@ services:
   # ===========================================================================
   companion:
     build:
-      context: ../world-office-opencloud
+      context: ../worldoffice-opencloud
       dockerfile: Dockerfile
     container_name: test-companion
     hostname: companion
@@ -144,7 +144,7 @@ services:
 networks:
   test-network:
     driver: bridge
-    name: world-office-test-network
+    name: worldoffice-test-network
 
 # =============================================================================
 # Volumes

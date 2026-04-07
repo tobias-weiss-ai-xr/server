@@ -1,5 +1,5 @@
 # =============================================================================
-# world-office-opencloud Companion Dockerfile
+# worldoffice-opencloud Companion Dockerfile
 # =============================================================================
 #
 # This builds a Docker image for the companion dashboard that:

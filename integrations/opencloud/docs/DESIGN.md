@@ -1,4 +1,4 @@
-# world-office-opencloud Design Document
+# worldoffice-opencloud Design Document
 
 **Version:** 1.0
 **Date:** 2026-04-04
@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-world-office-opencloud aims to provide a seamless integration between World-Office Document Server and ownCloud Infinite Scale (OCIS). This document outlines three architectural approaches, with detailed analysis of trade-offs, dependencies, and implementation considerations.
+worldoffice-opencloud aims to provide a seamless integration between World Office Document Server and ownCloud Infinite Scale (OCIS). This document outlines three architectural approaches, with detailed analysis of trade-offs, dependencies, and implementation considerations.
 
 The primary insight from our research is that OCIS already has a native WOPI collaboration service. The integration is primarily configuration-based rather than requiring custom protocol code. This shapes our architectural choices significantly.
 
@@ -39,9 +39,9 @@ The WOPI protocol is HTTP-based, RESTful, and stateless, making it ideal for clo
 
 ### 1.3 Why This Project Exists
 
-The World-Office suite provides a fork of the WORLDOFFICE document editors with European branding and localization. While world-office-nextcloud integrates with Nextcloud, there's no equivalent integration for OCIS users.
+World Office is an independent, sovereign document editing suite. While worldoffice-nextcloud integrates with Nextcloud, there's no equivalent integration for OCIS users.
 
-OCIS has built-in WOPI support and integrates with Collabora and WORLDOFFICE. However, setting up a production deployment requires manual configuration of multiple components. world-office-opencloud aims to simplify this process.
+OCIS has built-in WOPI support and integrates with Collabora and WORLDOFFICE. However, setting up a production deployment requires manual configuration of multiple components. worldoffice-opencloud aims to simplify this process.
 
 ### 1.4 Current State
 
@@ -55,9 +55,9 @@ The project currently contains a bare Express.js prototype (1 commit) with:
 
 This prototype will be replaced entirely. All code is throwaway scaffolding.
 
-### 1.5 Relationship to world-office-nextcloud
+### 1.5 Relationship to World Office-nextcloud
 
-world-office-nextcloud provides a mature integration pattern for Nextcloud. Key reusable elements include:
+World Office-nextcloud provides a mature integration pattern for Nextcloud. Key reusable elements include:
 
 - JWT configuration structure (shared secret, expiration, leeway)
 - Token signing with HS256
@@ -69,15 +69,15 @@ These patterns inform our design but require adaptation for OCIS's different arc
 
 ---
 
-## 2. Approach 1: Deployment Companion ("World-Office Cloud in a Box")
+## 2. Approach 1: Deployment Companion ("World Office Cloud in a Box")
 
 ### 2.1 Architecture
 
-This approach builds a deployment companion that orchestrates OCIS, World-Office Document Server, and supporting services through Docker Compose. The app generates all necessary configurations from a single environment file.
+This approach builds a deployment companion that orchestrates OCIS, World Office Document Server, and supporting services through Docker Compose. The app generates all necessary configurations from a single environment file.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    world-office-opencloud                       │
+│                    World Office-opencloud                       │
 │                    (Deployment Companion)                     │
 │                                                               │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐   │
@@ -176,12 +176,12 @@ This approach builds a deployment companion that orchestrates OCIS, World-Office
 **Cons:**
 - Limited to deployment. Doesn't add features beyond what OCIS provides.
 - Tied to Docker Compose. Not ideal for Kubernetes deployments.
-- No World-Office-specific UI in OCIS. Uses standard OCIS interface.
+- No World Office-specific UI in OCIS. Uses standard OCIS interface.
 
 **Dependencies:**
 - Docker and Docker Compose installed on target system
 - OCIS docker image and configuration
-- World-Office Document Server image
+- World Office Document Server image
 - Sufficient system resources (4GB+ RAM recommended)
 
 ### 2.5 Why Approach 1 First
@@ -194,7 +194,7 @@ This approach provides the fastest path to a working product. It gives users a c
 
 ### 3.1 Architecture
 
-This approach builds a custom OCIS micro-service that provides World-Office-specific features beyond generic WOPI collaboration. The extension integrates with OCIS's extension system and provides additional functionality.
+This approach builds a custom OCIS micro-service that provides World Office-specific features beyond generic WOPI collaboration. The extension integrates with OCIS's extension system and provides additional functionality.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -216,7 +216,7 @@ This approach builds a custom OCIS micro-service that provides World-Office-spec
         ┌───────────────────┼───────────────────┐
         ▼                   ▼                   ▼
 ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│ World-Office  │    │  Template    │    │   Format     │
+│ World Office  │    │  Template    │    │   Format     │
 │  Extension   │    │   Manager    │    │   Policy     │
 │              │    │              │    │   Engine     │
 └──────┬───────┘    └──────────────┘    └──────────────┘
@@ -234,7 +234,7 @@ This approach builds a custom OCIS micro-service that provides World-Office-spec
 - Written in Go (OCIS native language)
 - Implements OCIS extension interfaces
 - Registers with OCIS at startup
-- Provides REST API for World-Office features
+- Provides REST API for World Office features
 - Handles authentication via OCIS tokens
 
 **Template Management Service**
@@ -249,7 +249,7 @@ This approach builds a custom OCIS micro-service that provides World-Office-spec
 - Format-specific conversion options (PDF quality, compression)
 - Conversion queue management
 
-**word-office Branding Overrides**
+**World Office Branding Overrides**
 - Custom branding in OCIS interface (logos, colors, fonts)
 - White-label deployment option
 - Custom splash screen and welcome message
@@ -308,7 +308,7 @@ This approach builds a custom OCIS micro-service that provides World-Office-spec
 
 ### 3.5 When to Choose This Approach
 
-Best suited for organizations with in-house Go development capacity and a need for World-Office-specific features beyond generic WOPI. Ideal for enterprise deployments with custom workflows.
+Best suited for organizations with in-house Go development capacity and a need for World Office-specific features beyond generic WOPI. Ideal for enterprise deployments with custom workflows.
 
 ---
 
@@ -316,11 +316,11 @@ Best suited for organizations with in-house Go development capacity and a need f
 
 ### 4.1 Architecture
 
-This approach builds a standalone web application for administrative tasks. It provides a comprehensive dashboard for managing OCIS deployments with World-Office Document Server.
+This approach builds a standalone web application for administrative tasks. It provides a comprehensive dashboard for managing OCIS deployments with World Office Document Server.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                 world-office-opencloud                          │
+│                 World Office-opencloud                          │
 │                  (Management Dashboard)                        │
 │                                                               │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐   │
@@ -361,7 +361,7 @@ This approach builds a standalone web application for administrative tasks. It p
 - Responsive design for mobile and desktop
 - Real-time updates via WebSocket
 - Data visualization (charts, graphs, tables)
-- Dark mode with World-Office branding
+- Dark mode with World Office branding
 
 **User Management Module**
 - List and search users
@@ -456,7 +456,7 @@ Best suited for organizations with large deployments requiring centralized manag
 
 ### 5.1 JWT Configuration
 
-All three approaches require JWT configuration for WOPI authentication. The pattern from world-office-nextcloud applies:
+All three approaches require JWT configuration for WOPI authentication. The pattern from World Office-nextcloud applies:
 
 **JWT Secret**
 - Shared secret between OCIS and Document Server
@@ -479,7 +479,7 @@ WORLDOFFICE_DOMAIN → Document Server public URL
 
 ### 5.2 Branding
 
-World-Office visual identity must be consistent across all approaches:
+World Office visual identity must be consistent across all approaches:
 
 **Color Palette**
 - Background: deep void #0b0b1e
@@ -576,8 +576,8 @@ The design should support both OCIS and Nextcloud integration:
 - WOPI Protocol Specification: https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/rest/wopi-protocol
 - Collabora WOPI Implementation: https://github.com/CollaboraOnline/online/blob/main/wsd/wopi/WopiStorage.cpp
 
-### world-office-nextcloud
-- Repository: C:\Users\Tobias\git\word-office\world-office-nextcloud\
+### worldoffice-nextcloud
+- Repository: C:\Users\Tobias\git\World-Office\integrations\nextcloud\
 - JWT patterns in controllers/auth.js
 - Config patterns in config/config.js
 - Converter patterns in controllers/converter.js
@@ -603,7 +603,7 @@ The design should support both OCIS and Nextcloud integration:
 3. Gather user feedback on setup experience
 4. Evaluate need for additional features
 5. Consider Approach 3 (Management Dashboard) for enterprise deployments
-6. Approach 2 (OCIS Extension) reserved for specific World-Office feature requests
+6. Approach 2 (OCIS Extension) reserved for specific World Office feature requests
 
 ---
 

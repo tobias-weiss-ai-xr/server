@@ -1,7 +1,7 @@
 /**
  * JWT Token Validation Security Tests
  * 
- * Tests JWT handling for the World-Office Document Server.
+ * Tests JWT handling for the World Office Document Server.
  * Validates proper authentication and error responses for various JWT scenarios.
  */
 

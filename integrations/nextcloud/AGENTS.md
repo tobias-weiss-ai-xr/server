@@ -1,18 +1,18 @@
-# EUROOFFICE-NEXTCLOUD
+# WORLD-OFFICE-NEXTCLOUD
 
 **Generated:** 2026-03-31
-**Source:** codeberg.org/World-Office/world-office-nextcloud (fork of WORLDOFFICE)
+**Source:** codeberg.org/World-Office/server (independent rewrite)
 **Files:** ~153 | **License:** Apache-2.0 | **Version:** 11.0.0
 
 ## OVERVIEW
 
-Nextcloud app that integrates word-office Document Server — enables editing DOCX/XLSX/PPTX/PDF from within Nextcloud with co-editing, track changes, watermarks, and 50+ format support.
+Nextcloud app that integrates World Office Document Server — enables editing DOCX/XLSX/PPTX/PDF from within Nextcloud with co-editing, track changes, watermarks, and 50+ format support.
 
 ## STRUCTURE
 
 ```
-world-office-nextcloud/
-├── appinfo/info.xml          # App metadata (NC 33-34, namespace: WorldOffice)
+worldoffice-nextcloud/
+├── appinfo/info.xml          # App metadata (NC 33-34, namespace: Worldoffice)
 ├── lib/                      # PHP backend
 │   ├── Controller/EditorController.php  # Main editor endpoint
 │   ├── AdminSettings.php     # Admin panel settings
@@ -52,7 +52,7 @@ world-office-nextcloud/
 - **Nextcloud:** 33-34
 - **PHP:** 8.1 - 8.4
 - **Node.js:** 20+ (for building)
-- **Document Server:** word-office Docs (must be reachable from both Nextcloud server AND client browsers)
+- **Document Server:** World Office Docs (must be reachable from both Nextcloud server AND client browsers)
 - **PHP deps:** `firebase/php-jwt ^6.0`
 
 ## KEY CONFIGURATION SETTINGS
@@ -77,7 +77,7 @@ composer install      # PHP dependencies
 ## ANTI-PATTERNS
 
 - NEVER mismatch `jwt_secret` between Nextcloud and DocServer — causes 403 errors
-- NEVER use `world-office` as app ID — this fork uses `world-office`
+- NEVER use `world-office` as app ID — this project uses `worldoffice`
 - NEVER skip `composer install` — JWT handling depends on firebase/php-jwt
 - NEVER forget `chown -R www-data:www-data` after copying app files
 

@@ -1,14 +1,14 @@
-# word-office Nextcloud Integration — Test Environment
+# World Office Nextcloud Integration — Test Environment
 
 ## Overview
 
-Docker Compose environment for testing the word-office Nextcloud integration app against a word-office Document Server instance.
+Docker Compose environment for testing the World Office Nextcloud integration app against a World Office Document Server instance.
 
 ## Services
 
 | Service | Image | Port | Purpose |
 |---------|-------|------|---------|
-| `world-office-docs` | `ghcr.io/word-office/documentserver:latest` | 8080 | word-office Document Server |
+| `worldoffice-docs` | `ghcr.io/world-office/documentserver:latest` | 8080 | World Office Document Server |
 | `nextcloud` | `nextcloud:33` | 8081 | Nextcloud instance |
 
 ## Quick Start
@@ -18,7 +18,7 @@ Docker Compose environment for testing the word-office Nextcloud integration app
 docker compose up -d
 
 # Wait for Document Server to be ready (~30s)
-docker compose logs -f world-office-docs | grep -m1 "ready"
+docker compose logs -f worldoffice-docs | grep -m1 "ready"
 
 # Configure Nextcloud integration (runs automatically on first start)
 docker compose exec nextcloud bash /setup-world-office.sh
@@ -33,11 +33,11 @@ docker compose exec nextcloud bash /setup-world-office.sh
 ### JWT Secret
 Both services use `mysecret` as the JWT secret. Change in both places:
 
-1. `world-office-docs` → `JWT_SECRET` env var
+1. `worldoffice-docs` → `JWT_SECRET` env var
 2. `setup-world-office.sh` → `jwt_secret` occ command
 
 ### Internal URLs
-- Nextcloud sees Document Server at: `http://world-office-docs/`
+- Nextcloud sees Document Server at: `http://worldoffice-docs/`
 - Document Server sees Nextcloud at: `http://nextcloud/`
 
 ### Manual Setup (if auto-setup fails)
@@ -46,38 +46,38 @@ Both services use `mysecret` as the JWT secret. Change in both places:
 docker compose exec nextcloud bash
 
 # Install the app manually
-php occ app:install world-office
+php occ app:install worldoffice
 # or copy from local source:
-# cp -r /path/to/world-office-nextcloud /var/www/html/apps/world-office
+# cp -r /path/to/worldoffice-nextcloud /var/www/html/apps/worldoffice
 
 # Configure
-php occ config:app:set world-office DocumentServerUrl --value="http://localhost:8080/"
-php occ config:app:set world-office DocumentServerInternalUrl --value="http://world-office-docs/"
-php occ config:app:set world-office StorageUrl --value="http://nextcloud/"
-php occ config:app:set world-office jwt_secret --value="mysecret"
-php occ config:app:set world-office VerifyPeerOff --value="true"
+php occ config:app:set worldoffice DocumentServerUrl --value="http://localhost:8080/"
+php occ config:app:set worldoffice DocumentServerInternalUrl --value="http://worldoffice-docs/"
+php occ config:app:set worldoffice StorageUrl --value="http://nextcloud/"
+php occ config:app:set worldoffice jwt_secret --value="mysecret"
+php occ config:app:set worldoffice VerifyPeerOff --value="true"
 
 # Verify connection
-php occ world-office:documentserver --check
+php occ worldoffice:documentserver --check
 ```
 
 ### Install Local App Source
 
-To test your local `world-office-nextcloud` source:
+To test your local `worldoffice-nextcloud` source:
 
 ```bash
 # Build JS assets (requires Node.js 20+)
-cd world-office-nextcloud
+cd worldoffice-nextcloud
 npm install
 npm run build
 composer install
 
 # Copy to running container
-docker compose cp ./ nextcloud:/var/www/html/apps/world-office
-docker compose exec nextcloud chown -R www-data:www-data /var/www/html/apps/world-office
+docker compose cp ./ nextcloud:/var/www/html/apps/worldoffice
+docker compose exec nextcloud chown -R www-data:www-data /var/www/html/apps/worldoffice
 
 # Enable and configure
-docker compose exec nextcloud php occ app:enable world-office
+docker compose exec nextcloud php occ app:enable worldoffice
 ```
 
 ## Teardown

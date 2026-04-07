@@ -1,5 +1,5 @@
 /**
- * @fileoverview E2E tests for OCIS + World-Office WOPI integration.
+ * @fileoverview E2E tests for OCIS + World Office WOPI integration.
  *
  * Tests the full WOPI chain:
  *   Login → Upload → PROPFIND → /app/open → CheckFileInfo → Editor loads

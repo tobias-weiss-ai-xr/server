@@ -1,7 +1,7 @@
 /**
  * Companion Health Tests
  * 
- * Tests that verify the world-office-opencloud companion is running and healthy.
+ * Tests that verify the worldoffice-opencloud companion is running and healthy.
  */
 
 const { describe, test, expect } = require('@jest/globals');

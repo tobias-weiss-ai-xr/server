@@ -10,19 +10,19 @@ const SERVICES = [
     key: 'ocis',
     name: 'OCIS',
     description: 'ownCloud Infinite Scale — file sharing platform',
-    containerName: 'world-office-ocis'
+    containerName: 'worldoffice-ocis'
   },
   {
     key: 'documentserver',
     name: 'Document Server',
-    description: 'World-Office document editing server',
-    containerName: 'world-office-documentserver'
+    description: 'World Office document editing server',
+    containerName: 'worldoffice-documentserver'
   },
   {
     key: 'traefik',
     name: 'Traefik',
     description: 'Reverse proxy with automatic SSL',
-    containerName: 'world-office-traefik'
+    containerName: 'worldoffice-traefik'
   }
 ];
 
@@ -40,7 +40,7 @@ router.get('/dashboard', async (req, res) => {
     const config = req.app.locals.config || {};
 
     res.render('dashboard', {
-      title: 'Dashboard — World-Office Cloud',
+      title: 'Dashboard — World Office Cloud',
       bannerUrl: BANNER_URL,
       services: SERVICES,
       health,

@@ -11,9 +11,9 @@ const VERSION = '1.0.0';
 
 // Container names we care about
 const CONTAINER_MAP = {
-  ocis: 'world-office-ocis',
-  documentserver: 'world-office-documentserver',
-  traefik: 'world-office-traefik'
+  ocis: 'worldoffice-ocis',
+  documentserver: 'worldoffice-documentserver',
+  traefik: 'worldoffice-traefik'
 };
 
 /**
@@ -32,7 +32,7 @@ async function runDocker(cmd) {
 }
 
 /**
- * Get status of all world-office containers using docker ps.
+ * Get status of all worldoffice containers using docker ps.
  * Uses shell commands for maximum compatibility.
  */
 async function getContainerStatuses() {

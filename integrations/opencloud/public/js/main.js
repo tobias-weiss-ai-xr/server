@@ -1,5 +1,5 @@
 /**
- * World-Office Cloud — Main Client-side JavaScript
+ * World Office Cloud — Main Client-side JavaScript
  * Handles: dashboard health polling, setup wizard interactions, copy-to-clipboard
  */
 (function () {

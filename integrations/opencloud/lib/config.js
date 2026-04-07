@@ -81,7 +81,7 @@ config.OCIS_WOPI_SRC = `https://${config.OCIS_DOMAIN}`;
 config.DOCUMENT_SERVER_INTERNAL_URL = `http://documentserver:${config.DOCUMENT_SERVER_INTERNAL_PORT}`;
 config.OCIS_INTERNAL_URL = `http://ocis:${config.OCIS_INTERNAL_PORT}`;
 config.COLLABORATION_APP_ADDR = config.DOCUMENT_SERVER_INTERNAL_URL;
-config.COLLABORATION_APP_NAME = 'World-Office Document Server';
+config.COLLABORATION_APP_NAME = 'World Office Document Server';
 
 // Path helpers
 config.resolvePath = (relativePath) => path.resolve(__dirname, '..', relativePath);

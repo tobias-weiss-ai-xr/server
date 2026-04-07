@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Record a GIF showing the OCIS → World-Office editor workflow.
+ * Record a GIF showing the OCIS → World Office editor workflow.
  *
  * Steps captured:
  * 1. OCIS login page
@@ -8,7 +8,7 @@
  * 3. File manager after login
  * 4. Uploading a document
  * 5. Document visible in file list
- * 6. Opening document in World-Office editor
+ * 6. Opening document in World Office editor
  * 7. Editor with document loaded
  *
  * Uses sequential screenshots assembled into an animated GIF.
@@ -108,7 +108,7 @@ async function createGif() {
 }
 
 (async () => {
-  console.log('🎬 Recording OCIS → World-Office editor workflow...\n');
+  console.log('Recording OCIS → World Office editor workflow...\n');
 
   const browser = await chromium.launch({
     headless: true,
@@ -196,8 +196,8 @@ async function createGif() {
 
   await captureFrame(page, '5. Opening document via WOPI...', 1500);
 
-  // === Step 7: Navigate to World-Office editor ===
-  console.log('Step 7: Open in World-Office editor');
+  // === Step 7: Navigate to World Office editor ===
+  console.log('Step 7: Open in World Office editor');
   const editorUrl = `http://localhost:8082/hosting/wopi/word/edit?WOPISrc=${encodeURIComponent(wopiSrc)}`;
   const formHtml = `
     <html><body>
@@ -213,7 +213,7 @@ async function createGif() {
   // Wait for editor to load
   console.log('  Waiting for editor to initialize...');
   await page.waitForTimeout(5000);
-  await captureFrame(page, '6. World-Office editor loading...', 1500);
+  await captureFrame(page, '6. World Office editor loading...', 1500);
 
   await page.waitForTimeout(10000);
 
@@ -232,7 +232,7 @@ async function createGif() {
       }));
     } catch(e) {}
   }
-  await captureFrame(page, `7. Document open in World-Office editor`, 3000);
+  await captureFrame(page, `7. Document open in World Office editor`, 3000);
 
   console.log(`  Canvas: ${editorState.hasCanvas}, Title: ${editorState.title}`);
 

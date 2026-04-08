@@ -1,7 +1,7 @@
 # SERVER
 
-**Generated:** 2026-03-31
-**Source:** codeberg.org/World-Office/server (fork of WORLDOFFICE/server)
+**Generated:** 2026-04-08
+**Source:** codeberg.org/World-Office/server (independent rewrite)
 **Files:** ~863 | **License:** AGPL-3.0
 
 ## OVERVIEW

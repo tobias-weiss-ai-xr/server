@@ -1,0 +1,43 @@
+# World-Office Prometheus Configuration
+# ======================================
+# Scrape targets: all Rust microservices expose /metrics on their service ports.
+# Services are expected to use the `metrics` crate with `metrics-exporter-prometheus`.
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'api-gateway'
+    static_configs:
+      - targets: ['host.docker.internal:8080']
+    metrics_path: '/metrics'
+
+  - job_name: 'identity-service'
+    static_configs:
+      - targets: ['host.docker.internal:8001']
+    metrics_path: '/metrics'
+
+  - job_name: 'storage-service'
+    static_configs:
+      - targets: ['host.docker.internal:8002']
+    metrics_path: '/metrics'
+
+  - job_name: 'conversion-service'
+    static_configs:
+      - targets: ['host.docker.internal:8003']
+    metrics_path: '/metrics'
+
+  - job_name: 'coauthoring-service'
+    static_configs:
+      - targets: ['host.docker.internal:8004']
+    metrics_path: '/metrics'
+
+  - job_name: 'session-service'
+    static_configs:
+      - targets: ['host.docker.internal:8005']
+    metrics_path: '/metrics'
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

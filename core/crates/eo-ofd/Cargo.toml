@@ -7,4 +7,7 @@ license = "AGPL-3.0-or-later"
 [dependencies]
 anyhow = { workspace = true }
 thiserror = { workspace = true }
-
+eo-common = { path = "../eo-common" }
+eo-office-utils = { path = "../eo-office-utils" }
+serde = { workspace = true }
+roxmltree = "0.20"

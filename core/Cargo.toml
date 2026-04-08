@@ -1,29 +1,33 @@
 [workspace]
 resolver = "2"
 members = [
-    "eo-common",
-    "eo-unicode",
-    "eo-txt",
-    "eo-fb2",
-    "eo-html",
-    "eo-xps",
-    "eo-ofd",
-    "eo-djvu",
-    "eo-epub",
-    "eo-office-utils",
-    "eo-rtf",
-    "eo-hwp",
-    "eo-pdf",
-    "eo-odf",
-    "eo-ooxml",
-    "eo-msbinary",
-    "eo-docx-renderer",
-    "eo-x2t",
-    "eo-renderer",
-    "eo-fonts",
-    "eo-raster",
+    "crates/eo-common",
+    "crates/eo-unicode",
+    "crates/eo-txt",
+    "crates/eo-fb2",
+    "crates/eo-html",
+    "crates/eo-xps",
+    "crates/eo-ofd",
+    "crates/eo-djvu",
+    "crates/eo-epub",
+    "crates/eo-office-utils",
+    "crates/eo-rtf",
+    "crates/eo-hwp",
+    "crates/eo-pdf",
+    "crates/eo-odf",
+    "crates/eo-ooxml",
+    "crates/eo-msbinary",
+    "crates/eo-docx-renderer",
+    "crates/eo-x2t",
+    "crates/eo-renderer",
+    "crates/eo-fonts",
+    "crates/eo-raster",
 ]
 
 [workspace.dependencies]
 anyhow = "1"
 thiserror = "2"
+serde = "1"
+serde_json = "1"
+zip = "2"
+flate2 = "1"

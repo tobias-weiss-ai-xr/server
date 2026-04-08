@@ -52,15 +52,20 @@ pub fn discover_tests(
         return cases;
     }
 
-    for entry in fs::read_dir(test_dir).unwrap_or_else(|e| {
-        eprintln!(
-            "Warning: cannot read test dir {}: {}",
-            test_dir.display(),
-            e
-        );
-        Vec::new()
-    }) {
-        let Ok(entry) = entry else { continue };
+    let entries = match fs::read_dir(test_dir) {
+        Ok(entries) => entries,
+        Err(e) => {
+            eprintln!(
+                "Warning: cannot read test dir {}: {}",
+                test_dir.display(),
+                e
+            );
+            return cases;
+        }
+    };
+
+    for entry_result in entries {
+        let Ok(entry) = entry_result else { continue };
         let path = entry.path();
 
         if !path.is_file() {

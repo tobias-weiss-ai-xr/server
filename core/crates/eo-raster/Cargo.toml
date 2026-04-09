@@ -7,4 +7,5 @@ license = "AGPL-3.0-or-later"
 [dependencies]
 anyhow = { workspace = true }
 thiserror = { workspace = true }
-
+serde = { workspace = true }
+image = { workspace = true }

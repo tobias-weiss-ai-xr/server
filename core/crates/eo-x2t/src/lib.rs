@@ -1,3 +1,12 @@
-// eo-x2t -- World-Office core engine crate
+// eo-x2t -- World-Office format conversion orchestrator
+//!
+//! Routes conversion requests between format modules and manages
+//! the conversion pipeline. Replaces the C++ X2tConverter (38 files).
 
-// Part of the World-Office document engine.
+pub mod model;
+pub mod router;
+
+pub use model::{ConversionInput, ConversionOutput, ConversionResult, ConversionStatus};
+pub use router::ConversionRouter;
+
+pub const FORMAT_NAME: &str = "x2t";

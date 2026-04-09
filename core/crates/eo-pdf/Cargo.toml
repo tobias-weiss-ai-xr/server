@@ -7,4 +7,6 @@ license = "AGPL-3.0-or-later"
 [dependencies]
 anyhow = { workspace = true }
 thiserror = { workspace = true }
-
+eo-common = { path = "../eo-common" }
+serde = { workspace = true }
+flate2 = { workspace = true }

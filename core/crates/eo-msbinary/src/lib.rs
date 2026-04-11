@@ -7,8 +7,10 @@
 
 pub mod detector;
 pub mod model;
+pub mod ole;
 
 pub use detector::detect_binary_format;
 pub use model::{BinaryFormat, MsBinaryDocument};
+pub use ole::OleCompoundDoc;
 
 pub const FORMAT_NAME: &str = "msbinary";

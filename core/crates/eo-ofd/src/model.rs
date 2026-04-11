@@ -43,6 +43,40 @@ pub struct OfdPage {
     pub height: f64,
     /// Base URI for the page content file.
     pub base_loc: Option<String>,
+    /// Extracted text content from the page.
+    pub text_content: Vec<OfdTextObject>,
+    /// Image references on the page.
+    pub image_refs: Vec<OfdImageObject>,
+}
+
+/// A text object extracted from a page.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OfdTextObject {
+    /// Boundary rectangle (x, y, width, height) in millimeters.
+    pub boundary: Option<(f64, f64, f64, f64)>,
+    /// Text content.
+    pub text: String,
+    /// Font ID reference.
+    pub font_id: Option<String>,
+    /// Font size in points.
+    pub font_size: Option<f64>,
+    /// Whether text is bold.
+    pub bold: bool,
+    /// Whether text is italic.
+    pub italic: bool,
+}
+
+/// An image object reference from a page.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OfdImageObject {
+    /// Boundary rectangle (x, y, width, height) in millimeters.
+    pub boundary: Option<(f64, f64, f64, f64)>,
+    /// Resource ID reference.
+    pub resource_id: Option<String>,
+    /// Image format (PNG, JPEG, etc.).
+    pub format: Option<String>,
+    /// Optional alternative text.
+    pub alt_text: Option<String>,
 }
 
 /// A resource reference.

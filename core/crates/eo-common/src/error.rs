@@ -12,4 +12,7 @@ pub enum CoreError {
 
     #[error("Unsupported format: {0}")]
     UnsupportedFormat(String),
+
+    #[error("Invalid input: {message}")]
+    InvalidInput { message: String },
 }

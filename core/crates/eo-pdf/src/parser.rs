@@ -45,6 +45,10 @@ impl PdfParser {
         // Parse metadata
         let metadata = self.parse_metadata(info_ref, &objects, &obj_map);
 
+        // Detect xref type and encryption
+        let xref_type = self.detect_xref_type(text);
+        let encryption = self.detect_encryption(text);
+
         Ok(PdfDocument {
             version,
             page_count,
@@ -52,6 +56,8 @@ impl PdfParser {
             pages,
             objects,
             linearized,
+            xref_type,
+            encryption,
         })
     }
 
@@ -1020,6 +1026,209 @@ impl PdfParser {
         }
 
         (String::from_utf8_lossy(&result).to_string(), i)
+    }
+
+    fn detect_xref_type(&self, text: &str) -> XrefType {
+        let has_classic = text.contains("/Type") && text.contains("xref");
+        let has_stream = text.contains("/Type") && text.contains("/XRef");
+
+        match (has_classic, has_stream) {
+            (true, true) => XrefType::Hybrid,
+            (false, true) => XrefType::XrefStream,
+            (true, false) => XrefType::ClassicTable,
+            (false, false) => XrefType::Unknown,
+        }
+    }
+
+    fn detect_encryption(&self, text: &str) -> Option<PdfEncryption> {
+        // Check for /Encrypt reference
+        if !text.contains("/Encrypt") {
+            return None;
+        }
+
+        // Default encrypted document
+        let mut encryption = PdfEncryption {
+            encrypted: true,
+            version: 1,
+            key_length: None,
+            method: "Unknown".to_string(),
+            user_password_required: false,
+        };
+
+        // Try to find encryption dictionary and extract /V (version)
+        if let Some(encrypt_pos) = text.find("/Encrypt") {
+            let search_region = &text[encrypt_pos..encrypt_pos.saturating_add(512)];
+
+            // Find /V entry
+            if let Some(v_pos) = search_region.find("/V") {
+                let after_v = &search_region[v_pos + 2..];
+                if let Some(version_val) = after_v
+                    .strip_prefix(' ')
+                    .unwrap_or(after_v)
+                    .split_whitespace()
+                    .next()
+                {
+                    if let Ok(v) = version_val.parse::<u32>() {
+                        encryption.version = v;
+                    }
+                }
+            }
+
+            // Find /Length entry
+            if let Some(len_pos) = search_region.find("/Length") {
+                let after_len = &search_region[len_pos + 7..];
+                if let Some(len_val) = after_len.split_whitespace().next() {
+                    if let Ok(len) = len_val.parse::<u32>() {
+                        encryption.key_length = Some(len);
+                    }
+                }
+            }
+
+            // Check for encryption method (/CF or /CFM)
+            if let Some(cfm_pos) = search_region.find("/CFM") {
+                let after_cfm = &search_region[cfm_pos + 4..];
+                if let Some(method_val) = after_cfm.split_whitespace().next() {
+                    encryption.method = method_val.to_string();
+                }
+            } else if search_region.find("/CF").is_some() {
+                // Check for /CF dictionary with method info
+                encryption.method = "Custom".to_string();
+            }
+
+            // Detect AES vs RC4 based on version and filters
+            if encryption.method == "Unknown" {
+                if encryption.version >= 4 {
+                    encryption.method = "AES".to_string();
+                } else {
+                    encryption.method = "RC4".to_string();
+                }
+            }
+
+            // Check for /EncryptMetadata false (metadata not encrypted)
+            if let Some(meta_pos) = search_region.find("/EncryptMetadata") {
+                let after_meta = &search_region[meta_pos + 14..];
+                if after_meta.trim_start().starts_with("false") {
+                    // Metadata not encrypted
+                }
+            }
+        }
+
+        Some(encryption)
+    }
+
+    #[allow(dead_code)]
+    fn parse_xref_stream(
+        &self,
+        _data: &[u8],
+        objects: &[PdfObject],
+        _obj_map: &HashMap<(u32, u32), usize>,
+    ) -> Result<Vec<(u32, u32, u8)>> {
+        // Find the XRef stream object
+        let xref_obj = objects.iter().find(|obj| {
+            obj.entries
+                .iter()
+                .any(|(k, v)| k == "/Type" && matches!(v, PdfValue::Name(n) if n == "XRef"))
+        });
+
+        let xref_obj = match xref_obj {
+            Some(obj) => obj,
+            None => return Ok(Vec::new()),
+        };
+
+        // Get stream data
+        let stream_data = match &xref_obj.stream_data {
+            Some(data) => data,
+            None => return Ok(Vec::new()),
+        };
+
+        // Parse /W array to get field widths
+        let w_array = self
+            .get_dict_entry("/W", &xref_obj.entries)
+            .and_then(|v| match v {
+                PdfValue::Array(arr) => Some(arr.clone()),
+                _ => None,
+            });
+
+        let widths = match w_array {
+            Some(arr) => {
+                let mut w = [1, 4, 1]; // Default widths per PDF spec
+                for (i, val) in arr.iter().take(3).enumerate() {
+                    if let PdfValue::Integer(n) = val {
+                        w[i] = *n as usize;
+                    }
+                }
+                w
+            }
+            None => [1, 4, 1],
+        };
+
+        // Parse /Index array if present (default is [0, Size])
+        let index_array = self
+            .get_dict_entry("/Index", &xref_obj.entries)
+            .and_then(|v| match v {
+                PdfValue::Array(arr) => Some(arr.clone()),
+                _ => None,
+            });
+
+        let index_pairs: Vec<(u32, u32)> = match index_array {
+            Some(arr) => {
+                let mut pairs = Vec::new();
+                let mut i = 0;
+                while i + 1 < arr.len() {
+                    if let (PdfValue::Integer(start), PdfValue::Integer(count)) =
+                        (&arr[i], &arr[i + 1])
+                    {
+                        pairs.push((*start as u32, *count as u32));
+                    }
+                    i += 2;
+                }
+                pairs
+            }
+            None => {
+                // Get /Size for default range
+                let size = self
+                    .get_dict_entry("/Size", &xref_obj.entries)
+                    .and_then(|v| match v {
+                        PdfValue::Integer(n) => Some(n as u32),
+                        _ => None,
+                    })
+                    .unwrap_or(0);
+                vec![(0, size)]
+            }
+        };
+
+        // Decode stream data using field widths
+        let mut entries = Vec::new();
+        let mut pos = 0;
+        let entry_size = widths[0] + widths[1] + widths[2];
+
+        for (start_obj, count) in index_pairs {
+            for _ in 0..count {
+                if pos + entry_size > stream_data.len() {
+                    break;
+                }
+
+                let mut type_val: u32 = 0;
+                for i in 0..widths[0] {
+                    type_val = (type_val << 8) | stream_data[pos + i] as u32;
+                }
+
+                let mut offset_val: u32 = 0;
+                for i in 0..widths[1] {
+                    offset_val = (offset_val << 8) | stream_data[pos + widths[0] + i] as u32;
+                }
+
+                let mut gen_val: u32 = 0;
+                for i in 0..widths[2] {
+                    gen_val = (gen_val << 8) | stream_data[pos + widths[0] + widths[1] + i] as u32;
+                }
+
+                entries.push((start_obj, gen_val, type_val as u8));
+                pos += entry_size;
+            }
+        }
+
+        Ok(entries)
     }
 
     fn parse_metadata(

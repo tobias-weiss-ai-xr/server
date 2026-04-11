@@ -4,6 +4,7 @@
 //! This crate provides the rendering pipeline that transforms DOCX
 //! document models into visual output via the eo-renderer backend.
 
+pub mod layout;
 pub mod model;
 pub mod pipeline;
 

@@ -15,6 +15,7 @@ use roxmltree::Document as XmlDoc;
 
 use crate::model::*;
 
+const OFFICE_NS: &str = "urn:oasis:names:tc:opendocument:xmlns:office:1.0";
 const ODF_NS: &str = "urn:oasis:names:tc:opendocument:xmlns:office:1.0";
 const META_NS: &str = "urn:oasis:names:tc:opendocument:xmlns:meta:1.0";
 const TEXT_NS: &str = "urn:oasis:names:tc:opendocument:xmlns:text:1.0";
@@ -22,6 +23,9 @@ const TABLE_NS: &str = "urn:oasis:names:tc:opendocument:xmlns:table:1.0";
 const STYLE_NS: &str = "urn:oasis:names:tc:opendocument:xmlns:style:1.0";
 const FO_NS: &str = "urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0";
 const MANIFEST_NS: &str = "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0";
+const DRAW_NS: &str = "urn:oasis:names:tc:opendocument:xmlns:drawing:1.0";
+const SVG_NS: &str = "urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0";
+const XLINK_NS: &str = "http://www.w3.org/1999/xlink";
 
 /// ODF parser.
 pub struct OdfParser;
@@ -272,9 +276,8 @@ impl OdfParser {
     }
 
     fn parse_text_content(&self, doc: &XmlDoc) -> Result<OdfContent> {
-        let mut paragraphs = Vec::new();
-        let mut headings = Vec::new();
-        let mut tables = Vec::new();
+        let mut content = Vec::new();
+        let mut sections = Vec::new();
 
         for node in doc.descendants() {
             if node.has_tag_name((TEXT_NS, "p")) {
@@ -283,11 +286,11 @@ impl OdfParser {
                     .attribute((TEXT_NS, "style-name"))
                     .map(|s| s.to_string());
                 let spans = Self::collect_spans(node);
-                paragraphs.push(TextParagraph {
+                content.push(OdfTextContent::Paragraph(TextParagraph {
                     text,
                     style_name,
                     spans,
-                });
+                }));
             } else if node.has_tag_name((TEXT_NS, "h")) {
                 let text = Self::collect_text(node);
                 let level = node
@@ -297,20 +300,28 @@ impl OdfParser {
                 let style_name = node
                     .attribute((TEXT_NS, "style-name"))
                     .map(|s| s.to_string());
-                headings.push(TextHeading {
+                content.push(OdfTextContent::Heading(TextHeading {
                     text,
                     level,
                     style_name,
-                });
+                }));
             } else if node.has_tag_name((TABLE_NS, "table")) {
-                tables.push(self.parse_table(node));
+                content.push(OdfTextContent::Table(self.parse_table(node)));
+            } else if node.has_tag_name((TEXT_NS, "list")) {
+                content.push(OdfTextContent::List(self.parse_list(node)));
+            } else if node.has_tag_name((DRAW_NS, "image")) {
+                if let Some(img) = self.parse_image(node) {
+                    content.push(OdfTextContent::Image(img));
+                }
+            } else if node.has_tag_name((TEXT_NS, "section")) {
+                sections.push(self.parse_section(node));
             }
         }
 
         Ok(OdfContent::Text {
-            paragraphs,
-            headings,
-            tables,
+            content,
+            page_layouts: vec![],
+            sections,
         })
     }
 
@@ -346,6 +357,155 @@ impl OdfParser {
         spans
     }
 
+    fn parse_list(&self, list_node: roxmltree::Node) -> OdfList {
+        let list_style_name = list_node
+            .attribute((TEXT_NS, "style-name"))
+            .map(|s| s.to_string());
+
+        // Detect list type from style name or child elements
+        let list_type = if let Some(style_name) = &list_style_name {
+            if style_name.starts_with("L") || style_name.contains("number") {
+                OdfListType::Ordered
+            } else {
+                OdfListType::Unordered
+            }
+        } else {
+            OdfListType::Unordered
+        };
+
+        let continue_numbering = list_node
+            .attribute((TEXT_NS, "continue-numbering"))
+            .map(|s| s == "true")
+            .unwrap_or(false);
+
+        let start_value = list_node
+            .attribute((TEXT_NS, "start-value"))
+            .and_then(|s| s.parse::<u32>().ok());
+
+        let mut items = Vec::new();
+        for item_node in list_node.children() {
+            if !item_node.has_tag_name((TEXT_NS, "list-item")) {
+                continue;
+            }
+
+            let mut item_content = Vec::new();
+            for child in item_node.children() {
+                if child.has_tag_name((TEXT_NS, "p")) {
+                    let text = Self::collect_text(child);
+                    let style_name = child
+                        .attribute((TEXT_NS, "style-name"))
+                        .map(|s| s.to_string());
+                    let spans = Self::collect_spans(child);
+                    item_content.push(OdfTextContent::Paragraph(TextParagraph {
+                        text,
+                        style_name,
+                        spans,
+                    }));
+                } else if child.has_tag_name((TEXT_NS, "list")) {
+                    item_content.push(OdfTextContent::List(self.parse_list(child)));
+                }
+            }
+
+            items.push(OdfListItem {
+                content: item_content,
+                nesting_level: 0,
+            });
+        }
+
+        OdfList {
+            list_style_name,
+            items,
+            list_type,
+            continue_numbering,
+            start_value,
+        }
+    }
+
+    fn parse_image(&self, image_node: roxmltree::Node) -> Option<OdfImage> {
+        let href = image_node
+            .attribute((XLINK_NS, "href"))
+            .map(|s| s.to_string())?;
+        let name = image_node
+            .attribute((DRAW_NS, "name"))
+            .map(|s| s.to_string());
+
+        // Get dimensions from parent draw:frame
+        let mut width = None;
+        let mut height = None;
+        let mut alt_text = None;
+
+        if let Some(parent) = image_node.parent() {
+            if parent.has_tag_name((DRAW_NS, "frame")) {
+                width = parent.attribute((SVG_NS, "width")).map(|s| s.to_string());
+                height = parent.attribute((SVG_NS, "height")).map(|s| s.to_string());
+                alt_text = parent
+                    .attribute((SVG_NS, "title"))
+                    .or_else(|| parent.attribute((DRAW_NS, "name")))
+                    .map(|s| s.to_string());
+            }
+        }
+
+        Some(OdfImage {
+            href,
+            name,
+            alt_text,
+            width,
+            height,
+            data: None,
+            content_type: None,
+        })
+    }
+
+    fn parse_section(&self, section_node: roxmltree::Node) -> OdfSection {
+        let name = section_node
+            .attribute((TEXT_NS, "name"))
+            .map(|s| s.to_string());
+        let style_name = section_node
+            .attribute((TEXT_NS, "style-name"))
+            .map(|s| s.to_string());
+        let protected = section_node
+            .attribute((TEXT_NS, "protected"))
+            .map(|s| s == "true")
+            .unwrap_or(false);
+
+        let mut content = Vec::new();
+        for child in section_node.children() {
+            if child.has_tag_name((TEXT_NS, "p")) {
+                let text = Self::collect_text(child);
+                let style_name = child
+                    .attribute((TEXT_NS, "style-name"))
+                    .map(|s| s.to_string());
+                let spans = Self::collect_spans(child);
+                content.push(OdfTextContent::Paragraph(TextParagraph {
+                    text,
+                    style_name,
+                    spans,
+                }));
+            } else if child.has_tag_name((TEXT_NS, "h")) {
+                let text = Self::collect_text(child);
+                let level = child
+                    .attribute((TEXT_NS, "outline-level"))
+                    .and_then(|l| l.parse::<u32>().ok())
+                    .unwrap_or(1);
+                let style_name = child
+                    .attribute((TEXT_NS, "style-name"))
+                    .map(|s| s.to_string());
+                content.push(OdfTextContent::Heading(TextHeading {
+                    text,
+                    level,
+                    style_name,
+                }));
+            }
+        }
+
+        OdfSection {
+            name,
+            style_name,
+            content,
+            protected,
+        }
+    }
+
     fn parse_table(&self, table_node: roxmltree::Node) -> OdfTable {
         let name = table_node
             .attribute((TABLE_NS, "name"))
@@ -373,8 +533,8 @@ impl OdfParser {
                     .unwrap_or(1);
 
                 // Detect cell type
-                let val_attr = cell_node.attribute((OFFICE_NS_FALLBACK, "value"));
-                let val_type = cell_node.attribute((OFFICE_NS_FALLBACK, "value-type"));
+                let val_attr = cell_node.attribute((OFFICE_NS, "value"));
+                let val_type = cell_node.attribute((OFFICE_NS, "value-type"));
                 match val_type {
                     Some("float") | Some("currency") | Some("percentage") => {
                         let value = val_attr.and_then(|v| v.parse::<f64>().ok());
@@ -623,19 +783,20 @@ impl OdfParser {
         let odf = self.parse(data)?;
 
         let (title, _text, word_count) = match &odf.content {
-            OdfContent::Text {
-                paragraphs,
-                headings,
-                tables: _,
-            } => {
+            OdfContent::Text { content, .. } => {
                 let title = odf.metadata.title.clone();
                 let mut parts = Vec::new();
-                for h in headings {
-                    parts.push(format!("{} {}", "#".repeat(h.level as usize), h.text));
-                }
-                for p in paragraphs {
-                    if !p.text.trim().is_empty() {
-                        parts.push(p.text.clone());
+                for item in content {
+                    match item {
+                        OdfTextContent::Heading(h) => {
+                            parts.push(format!("{} {}", "#".repeat(h.level as usize), h.text));
+                        }
+                        OdfTextContent::Paragraph(p) => {
+                            if !p.text.trim().is_empty() {
+                                parts.push(p.text.clone());
+                            }
+                        }
+                        _ => {}
                     }
                 }
                 let text = parts.join("\n");
@@ -687,10 +848,8 @@ impl Default for OdfParser {
     }
 }
 
-// Fallback namespace constants for attribute access
+// Fallback namespace constant for attribute access
 const OFFICE_NS_FALLBACK: &str = "urn:oasis:names:tc:opendocument:xmlns:office:1.0";
-const DRAW_NS: &str = "urn:oasis:names:tc:opendocument:xmlns:drawing:1.0";
-const SVG_NS: &str = "urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0";
 
 #[cfg(test)]
 mod tests {
@@ -850,7 +1009,14 @@ mod tests {
     fn test_parse_odt_paragraphs() {
         let parser = OdfParser::new();
         let doc = parser.parse(&make_minimal_odt()).unwrap();
-        if let OdfContent::Text { paragraphs, .. } = &doc.content {
+        if let OdfContent::Text { content, .. } = &doc.content {
+            let paragraphs: Vec<_> = content
+                .iter()
+                .filter_map(|c| match c {
+                    OdfTextContent::Paragraph(p) => Some(p),
+                    _ => None,
+                })
+                .collect();
             assert_eq!(paragraphs.len(), 3);
             assert_eq!(paragraphs[0].text, "First paragraph.");
             assert!(paragraphs[1].text.contains("bold text"));
@@ -863,7 +1029,14 @@ mod tests {
     fn test_parse_odt_headings() {
         let parser = OdfParser::new();
         let doc = parser.parse(&make_minimal_odt()).unwrap();
-        if let OdfContent::Text { headings, .. } = &doc.content {
+        if let OdfContent::Text { content, .. } = &doc.content {
+            let headings: Vec<_> = content
+                .iter()
+                .filter_map(|c| match c {
+                    OdfTextContent::Heading(h) => Some(h),
+                    _ => None,
+                })
+                .collect();
             assert_eq!(headings.len(), 1);
             assert_eq!(headings[0].text, "Chapter One");
             assert_eq!(headings[0].level, 1);
@@ -876,7 +1049,14 @@ mod tests {
     fn test_parse_odt_spans() {
         let parser = OdfParser::new();
         let doc = parser.parse(&make_minimal_odt()).unwrap();
-        if let OdfContent::Text { paragraphs, .. } = &doc.content {
+        if let OdfContent::Text { content, .. } = &doc.content {
+            let paragraphs: Vec<_> = content
+                .iter()
+                .filter_map(|c| match c {
+                    OdfTextContent::Paragraph(p) => Some(p),
+                    _ => None,
+                })
+                .collect();
             let spans = &paragraphs[1].spans;
             assert_eq!(spans.len(), 1);
             assert_eq!(spans[0].text, "bold text");

@@ -70,6 +70,8 @@ impl OfdParser {
                         width: 210.0,
                         height: 297.0,
                         base_loc: None,
+                        text_content: Vec::new(),
+                        image_refs: Vec::new(),
                     });
                 }
             }
@@ -179,13 +181,110 @@ impl OfdParser {
             (210.0, 297.0)
         };
 
+        // Extract text content from TextObject elements
+        let text_content = self.extract_text_objects(&root);
+
+        // Extract image references from ImageObject elements
+        let image_refs = self.extract_image_objects(&root);
+
         Ok(OfdPage {
             id: root.attribute("ID").map(|s| s.to_string()),
             index,
             width,
             height,
             base_loc: None,
+            text_content,
+            image_refs,
         })
+    }
+
+    /// Extract TextObject elements from a page's Content/Layer.
+    fn extract_text_objects(&self, root: &roxmltree::Node) -> Vec<OfdTextObject> {
+        let mut objects = Vec::new();
+
+        for node in root.descendants() {
+            if !node.has_tag_name("TextObject") {
+                continue;
+            }
+
+            let boundary = node.attribute("Boundary").and_then(|b| {
+                let parts: Vec<f64> = b
+                    .split_whitespace()
+                    .filter_map(|s| s.parse().ok())
+                    .collect();
+                if parts.len() == 4 {
+                    Some((parts[0], parts[1], parts[2], parts[3]))
+                } else {
+                    None
+                }
+            });
+
+            let font_id = node.attribute("Font").map(|s| s.to_string());
+            let font_size = node.attribute("Size").and_then(|s| s.parse::<f64>().ok());
+            let bold = node.attribute("Bold").map(|s| s == "true").unwrap_or(false);
+            let italic = node
+                .attribute("Italic")
+                .map(|s| s == "true")
+                .unwrap_or(false);
+
+            // Extract text from TextCode children
+            let text = node
+                .descendants()
+                .filter(|n| n.has_tag_name("TextCode"))
+                .filter_map(|tc| tc.text().map(|t| t.to_string()))
+                .collect::<Vec<_>>()
+                .join("");
+
+            objects.push(OfdTextObject {
+                boundary,
+                text,
+                font_id,
+                font_size,
+                bold,
+                italic,
+            });
+        }
+
+        objects
+    }
+
+    /// Extract ImageObject elements from a page's Content/Layer.
+    fn extract_image_objects(&self, root: &roxmltree::Node) -> Vec<OfdImageObject> {
+        let mut images = Vec::new();
+
+        for node in root.descendants() {
+            if !node.has_tag_name("ImageObject") {
+                continue;
+            }
+
+            let boundary = node.attribute("Boundary").and_then(|b| {
+                let parts: Vec<f64> = b
+                    .split_whitespace()
+                    .filter_map(|s| s.parse().ok())
+                    .collect();
+                if parts.len() == 4 {
+                    Some((parts[0], parts[1], parts[2], parts[3]))
+                } else {
+                    None
+                }
+            });
+
+            let resource_id = node.attribute("ResourceID").map(|s| s.to_string());
+            let format = node
+                .attribute("Format")
+                .or(node.attribute("Subtype"))
+                .map(|s| s.to_string());
+            let alt_text = node.attribute("AltText").map(|s| s.to_string());
+
+            images.push(OfdImageObject {
+                boundary,
+                resource_id,
+                format,
+                alt_text,
+            });
+        }
+
+        images
     }
 
     /// Collect resources from the archive.

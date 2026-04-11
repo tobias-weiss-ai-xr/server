@@ -15,6 +15,10 @@ pub struct PdfDocument {
     pub objects: Vec<PdfObject>,
     /// Whether the file is linearized (optimized for web delivery).
     pub linearized: bool,
+    /// Cross-reference table type.
+    pub xref_type: XrefType,
+    /// Encryption information (None if not encrypted).
+    pub encryption: Option<PdfEncryption>,
 }
 
 /// PDF document metadata from the Info dictionary.
@@ -77,4 +81,33 @@ pub enum PdfValue {
         dict: Vec<(String, PdfValue)>,
         data: Vec<u8>,
     },
+}
+
+/// Type of cross-reference table in the PDF.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum XrefType {
+    /// Classic xref table (text-based, pre-PDF 1.5)
+    ClassicTable,
+    /// Cross-reference stream (PDF 1.5+)
+    XrefStream,
+    /// Hybrid: both classic table and xref stream present
+    Hybrid,
+    /// Unknown / not detected
+    #[default]
+    Unknown,
+}
+
+/// PDF encryption information.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PdfEncryption {
+    /// Whether the document is encrypted.
+    pub encrypted: bool,
+    /// Encryption algorithm version (from /V entry).
+    pub version: u32,
+    /// Key length in bits (from /Length entry, if present).
+    pub key_length: Option<u32>,
+    /// Encryption method name (e.g., "AES", "RC4", "None").
+    pub method: String,
+    /// Whether user password is required (vs owner password).
+    pub user_password_required: bool,
 }

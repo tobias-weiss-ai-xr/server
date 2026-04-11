@@ -1,12 +1,223 @@
 //! 2D rendering canvas.
 //!
 //! Provides a stateful drawing surface with fill/stroke operations,
-//! transform management, and clipping. Modeled after the HTML5 Canvas API.
+//! transform management, clipping, and pixel-level rasterization.
+//! Modeled after the HTML5 Canvas API.
 
 use crate::color::{Color, Paint, StrokeStyle};
 use crate::model::{BlendMode, Page};
 use crate::path::{FillRule, PathBuilder};
 use crate::transform::{AffineTransform, TransformStack};
+
+/// A single RGBA pixel stored as u32 (0xAARRGGBB).
+type PixelU32 = u32;
+
+/// Pixel buffer for the canvas.
+#[derive(Debug, Clone)]
+struct PixelBuffer {
+    width: u32,
+    height: u32,
+    pixels: Vec<PixelU32>,
+}
+
+impl PixelBuffer {
+    fn new(width: u32, height: u32, fill: PixelU32) -> Self {
+        let count = (width as usize) * (height as usize);
+        Self {
+            width,
+            height,
+            pixels: vec![fill; count],
+        }
+    }
+
+    fn get(&self, x: u32, y: u32) -> PixelU32 {
+        if x >= self.width || y >= self.height {
+            return 0; // transparent
+        }
+        self.pixels[(y as usize) * (self.width as usize) + (x as usize)]
+    }
+
+    fn set(&mut self, x: u32, y: u32, pixel: PixelU32) {
+        if x >= self.width || y >= self.height {
+            return;
+        }
+        self.pixels[(y as usize) * (self.width as usize) + (x as usize)] = pixel;
+    }
+
+    fn blend(&mut self, x: u32, y: u32, color: &Color, alpha: f32) {
+        if x >= self.width || y >= self.height {
+            return;
+        }
+        let existing = self.get(x, y);
+        let er = ((existing >> 16) & 0xFF) as f32;
+        let eg = ((existing >> 8) & 0xFF) as f32;
+        let eb = (existing & 0xFF) as f32;
+        let a = alpha * color.a;
+        let inv = 1.0 - a;
+        let r = (color.r * a * 255.0 + er * inv) as u8;
+        let g = (color.g * a * 255.0 + eg * inv) as u8;
+        let b = (color.b * a * 255.0 + eb * inv) as u8;
+        self.set(
+            x,
+            y,
+            0xFF000000 | ((r as u32) << 16) | ((g as u32) << 8) | (b as u32),
+        );
+    }
+
+    fn fill_rect(&mut self, x: i32, y: i32, w: u32, h: u32, color: &Color, alpha: f32) {
+        let x0 = x.max(0) as u32;
+        let y0 = y.max(0) as u32;
+        let x1 = (x0 + w).min(self.width);
+        let y1 = (y0 + h).min(self.height);
+        for py in y0..y1 {
+            for px in x0..x1 {
+                self.blend(px, py, color, alpha);
+            }
+        }
+    }
+
+    /// Fill an arbitrary polygon using the scanline even-odd rule.
+    fn fill_polygon(&mut self, points: &[(f32, f32)], color: &Color, alpha: f32) {
+        if points.len() < 3 {
+            return;
+        }
+
+        // Find bounding box
+        let mut y_min = f32::MAX;
+        let mut y_max = f32::MIN;
+        for &(_, y) in points {
+            y_min = y_min.min(y);
+            y_max = y_max.max(y);
+        }
+
+        let scan_start = y_min.floor().max(0.0) as i32;
+        let scan_end = (y_max.ceil() as i32).min(self.height as i32);
+
+        // Number of edges
+        let n = points.len();
+
+        for scan_y in scan_start..scan_end {
+            let y = scan_y as f32 + 0.5; // sample at pixel center
+            let mut intersections: Vec<f32> = Vec::new();
+
+            for i in 0..n {
+                let (x0, y0) = points[i];
+                let (x1, y1) = points[(i + 1) % n];
+
+                // Skip horizontal edges
+                if (y1 - y0).abs() < 1e-10 {
+                    continue;
+                }
+
+                // Check if scanline crosses this edge
+                if (y >= y0.min(y1)) && (y < y0.max(y1)) {
+                    let t = (y - y0) / (y1 - y0);
+                    let x_int = x0 + t * (x1 - x0);
+                    intersections.push(x_int);
+                }
+            }
+            intersections.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
+
+            // Fill between pairs (even-odd rule)
+            let mut idx = 0;
+            while idx + 1 < intersections.len() {
+                let x_left = intersections[idx].ceil().max(0.0) as u32;
+                let x_right = intersections[idx + 1].floor() as u32;
+                if x_right < x_left {
+                    idx += 2;
+                    continue;
+                }
+                let px_start = x_left.min(self.width);
+                let px_end = (x_right + 1).min(self.width);
+                let py = scan_y as u32;
+                if py < self.height {
+                    for px in px_start..px_end {
+                        self.blend(px, py, color, alpha);
+                    }
+                }
+                idx += 2;
+            }
+        }
+    }
+
+    /// Stroke a series of connected line segments with given width.
+    /// For each segment, computes the perpendicular rectangle (quad) and fills it.
+    fn stroke_lines(&mut self, points: &[(f32, f32)], color: &Color, alpha: f32, line_width: f32) {
+        if points.len() < 2 {
+            // Single point: draw a dot
+            if points.len() == 1 {
+                let cx = points[0].0 as i32;
+                let cy = points[0].1 as i32;
+                let half = (line_width / 2.0).ceil() as i32;
+                self.fill_rect(
+                    cx - half,
+                    cy - half,
+                    (half * 2 + 1) as u32,
+                    (half * 2 + 1) as u32,
+                    color,
+                    alpha,
+                );
+            }
+            return;
+        }
+
+        let half_w = line_width / 2.0;
+
+        for i in 0..points.len() - 1 {
+            let (x0, y0) = points[i];
+            let (x1, y1) = points[i + 1];
+
+            let dx = x1 - x0;
+            let dy = y1 - y0;
+            let length = (dx * dx + dy * dy).sqrt();
+
+            if length < 1e-10 {
+                // Degenerate segment: draw a dot
+                let cx = x0 as i32;
+                let cy = y0 as i32;
+                let half = (line_width / 2.0).ceil() as i32;
+                self.fill_rect(
+                    cx - half,
+                    cy - half,
+                    (half * 2 + 1) as u32,
+                    (half * 2 + 1) as u32,
+                    color,
+                    alpha,
+                );
+                continue;
+            }
+
+            // Perpendicular direction
+            let nx = -dy / length;
+            let ny = dx / length;
+
+            // Four corners of the stroke quad
+            let quad = [
+                (x0 + nx * half_w, y0 + ny * half_w),
+                (x0 - nx * half_w, y0 - ny * half_w),
+                (x1 - nx * half_w, y1 - ny * half_w),
+                (x1 + nx * half_w, y1 + ny * half_w),
+            ];
+
+            self.fill_polygon(&quad, color, alpha);
+        }
+    }
+
+    fn clear(&mut self, color: PixelU32) {
+        self.pixels.fill(color);
+    }
+
+    fn as_rgba_bytes(&self) -> Vec<u8> {
+        let mut bytes = Vec::with_capacity(self.pixels.len() * 4);
+        for &pixel in &self.pixels {
+            bytes.push(((pixel >> 16) & 0xFF) as u8);
+            bytes.push(((pixel >> 8) & 0xFF) as u8);
+            bytes.push((pixel & 0xFF) as u8);
+            bytes.push((pixel >> 24) as u8);
+        }
+        bytes
+    }
+}
 
 /// Drawing state (for save/restore).
 #[derive(Debug, Clone)]
@@ -35,7 +246,7 @@ impl Default for CanvasState {
 /// 2D rendering canvas.
 ///
 /// Provides drawing operations (rect, path, text), state management
-/// (save/restore), and transform manipulation.
+/// (save/restore), transform manipulation, and pixel-level rasterization.
 pub struct Canvas {
     /// Canvas width in pixels.
     pub width: u32,
@@ -51,11 +262,14 @@ pub struct Canvas {
     current_path: PathBuilder,
     /// Clip path (if any).
     clip_path: Option<PathBuilder>,
+    /// Pixel buffer.
+    buffer: PixelBuffer,
 }
 
 impl Canvas {
-    /// Create a new canvas with the given pixel dimensions.
+    /// Create a new canvas with the given pixel dimensions, filled with white.
     pub fn new(width: u32, height: u32) -> Self {
+        let buffer = PixelBuffer::new(width, height, 0xFFFFFFFF); // opaque white
         Self {
             width,
             height,
@@ -64,13 +278,35 @@ impl Canvas {
             transforms: TransformStack::new(),
             current_path: PathBuilder::new(),
             clip_path: None,
+            buffer,
         }
     }
 
-    /// Create a canvas sized to match a page at a given DPI.
+    /// Create a canvas sized to match a page at a given DPI, filled with white.
     pub fn from_page(page: &Page, dpi: f32) -> Self {
         let (w, h) = page.pixel_size(dpi);
         Self::new(w, h)
+    }
+
+    /// Create a canvas with a specific background color.
+    pub fn with_background(width: u32, height: u32, background: Color) -> Self {
+        let r = (background.r.clamp(0.0, 1.0) * 255.0) as u8;
+        let g = (background.g.clamp(0.0, 1.0) * 255.0) as u8;
+        let b = (background.b.clamp(0.0, 1.0) * 255.0) as u8;
+        let a = (background.a.clamp(0.0, 1.0) * 255.0) as u8;
+        let pixel =
+            0xFF000000 | ((a as u32) << 24) | ((r as u32) << 16) | ((g as u32) << 8) | (b as u32);
+        let buffer = PixelBuffer::new(width, height, pixel);
+        Self {
+            width,
+            height,
+            state: CanvasState::default(),
+            state_stack: Vec::new(),
+            transforms: TransformStack::new(),
+            current_path: PathBuilder::new(),
+            clip_path: None,
+            buffer,
+        }
     }
 
     // --- State management ---
@@ -188,43 +424,114 @@ impl Canvas {
         self.current_path.circle(cx, cy, r);
     }
 
-    // --- Drawing operations (stubs) ---
+    // --- Drawing operations ---
 
-    /// Fill the current path.
+    /// Fill the current path with the current fill paint.
+    /// Supports axis-aligned rectangles (fast path) and arbitrary polygons.
     pub fn fill(&mut self) {
-        // In a full implementation, this would rasterize the path.
-        // For now, clear the path after "filling".
+        let alpha = self.state.global_alpha;
+        if let Some(color) = self.paint_color(&self.state.fill_paint) {
+            // Check if the path is a simple axis-aligned rectangle
+            if self.is_rect_path() {
+                let (x, y, w, h) = self.get_rect_bounds();
+                let transform = self.current_transform();
+                // Transform the rectangle corners
+                let (tx, ty) = transform.transform_point(x, y);
+                let (tx2, ty2) = transform.transform_point(x + w, y + h);
+                let rx = tx.min(tx2).floor() as i32;
+                let ry = ty.min(ty2).floor() as i32;
+                let rw = (tx.max(tx2).ceil() - rx as f32).abs() as u32;
+                let rh = (ty.max(ty2).ceil() - ry as f32).abs() as u32;
+                self.buffer.fill_rect(rx, ry, rw, rh, &color, alpha);
+            } else {
+                // General path: flatten, transform, rasterize
+                let transform = self.current_transform();
+                let subpaths = self.current_path.flatten(0.5);
+                for subpath in &subpaths {
+                    if subpath.points.len() < 2 {
+                        continue;
+                    }
+                    // Transform all points to screen space
+                    let transformed: Vec<(f32, f32)> = subpath
+                        .points
+                        .iter()
+                        .map(|&(x, y)| transform.transform_point(x, y))
+                        .collect();
+                    if transformed.len() >= 3 && subpath.is_closed {
+                        self.buffer.fill_polygon(&transformed, &color, alpha);
+                    }
+                }
+            }
+        }
         self.current_path.clear();
     }
 
-    /// Stroke the current path.
+    /// Stroke the current path with the current stroke paint.
     pub fn stroke(&mut self) {
+        let alpha = self.state.global_alpha;
+        if let Some(color) = self.paint_color(&self.state.stroke_paint) {
+            let lw = self.state.stroke_style.line_width;
+            if self.is_rect_path() {
+                let (x, y, w, h) = self.get_rect_bounds();
+                let transform = self.current_transform();
+                let (tx, ty) = transform.transform_point(x, y);
+                let (tx2, ty2) = transform.transform_point(x + w, y + h);
+                let rx = (tx.min(tx2) - lw / 2.0).floor() as i32;
+                let ry = (ty.min(ty2) - lw / 2.0).floor() as i32;
+                let rw = (tx.max(tx2) - tx.min(tx2) + lw).ceil() as u32;
+                let rh = (ty.max(ty2) - ty.min(ty2) + lw).ceil() as u32;
+                self.buffer.fill_rect(rx, ry, rw, rh, &color, alpha);
+            } else {
+                // General path: flatten, transform, stroke
+                let transform = self.current_transform();
+                let subpaths = self.current_path.flatten(0.5);
+                for subpath in &subpaths {
+                    if subpath.points.len() < 2 {
+                        continue;
+                    }
+                    // Transform all points to screen space
+                    let transformed: Vec<(f32, f32)> = subpath
+                        .points
+                        .iter()
+                        .map(|&(x, y)| transform.transform_point(x, y))
+                        .collect();
+                    self.buffer.stroke_lines(&transformed, &color, alpha, lw);
+                }
+            }
+        }
         self.current_path.clear();
     }
 
-    /// Fill a rectangle.
+    /// Fill a rectangle directly (more efficient than begin_path + rect + fill).
     pub fn fill_rect(&mut self, x: f32, y: f32, w: f32, h: f32) {
         self.begin_path();
         self.rect(x, y, w, h);
         self.fill();
     }
 
-    /// Stroke a rectangle.
+    /// Stroke a rectangle directly.
     pub fn stroke_rect(&mut self, x: f32, y: f32, w: f32, h: f32) {
         self.begin_path();
         self.rect(x, y, w, h);
         self.stroke();
     }
 
-    /// Clear the entire canvas.
+    /// Clear the entire canvas to transparent.
     pub fn clear(&mut self) {
-        self.current_path.clear();
+        self.buffer.clear(0x00000000);
     }
 
-    /// Clear a rectangular area.
+    /// Clear a rectangular area to transparent.
     pub fn clear_rect(&mut self, x: f32, y: f32, w: f32, h: f32) {
-        let _ = (x, y, w, h);
-        // In full implementation, would clear the pixel buffer in this region.
+        let x0 = x.max(0.0) as u32;
+        let y0 = y.max(0.0) as u32;
+        let x1 = (x0 + w as u32).min(self.width);
+        let y1 = (y0 + h as u32).min(self.height);
+        for py in y0..y1 {
+            for px in x0..x1 {
+                self.buffer.set(px, py, 0x00000000);
+            }
+        }
     }
 
     // --- Clipping ---
@@ -240,6 +547,24 @@ impl Canvas {
     /// Reset the clip to the full canvas.
     pub fn reset_clip(&mut self) {
         self.clip_path = None;
+    }
+
+    // --- Pixel access ---
+
+    /// Get the raw pixel buffer as RGBA bytes.
+    pub fn to_rgba_bytes(&self) -> Vec<u8> {
+        self.buffer.as_rgba_bytes()
+    }
+
+    /// Get a pixel at (x, y) as (r, g, b, a) u8 values.
+    pub fn get_pixel(&self, x: u32, y: u32) -> (u8, u8, u8, u8) {
+        let pixel = self.buffer.get(x, y);
+        (
+            ((pixel >> 16) & 0xFF) as u8,
+            ((pixel >> 8) & 0xFF) as u8,
+            (pixel & 0xFF) as u8,
+            (pixel >> 24) as u8,
+        )
     }
 
     // --- Accessors ---
@@ -262,6 +587,48 @@ impl Canvas {
     /// Check if a clip path is active.
     pub fn has_clip(&self) -> bool {
         self.clip_path.is_some()
+    }
+
+    // --- Internal helpers ---
+
+    fn paint_color(&self, paint: &Paint) -> Option<Color> {
+        match paint {
+            Paint::Color(c) => Some(*c),
+            Paint::None => None,
+        }
+    }
+
+    /// Check if the current path is a single axis-aligned rectangle.
+    fn is_rect_path(&self) -> bool {
+        let cmds = self.current_path.commands();
+        // A rect is: MoveTo + LineTo + LineTo + LineTo + Close = 5 commands
+        cmds.len() == 5
+            && matches!(cmds[0], crate::path::PathCommand::MoveTo(_, _))
+            && matches!(cmds[1], crate::path::PathCommand::LineTo(_, _))
+            && matches!(cmds[2], crate::path::PathCommand::LineTo(_, _))
+            && matches!(cmds[3], crate::path::PathCommand::LineTo(_, _))
+            && matches!(cmds[4], crate::path::PathCommand::Close)
+    }
+
+    /// Get the bounding rectangle of a rect path.
+    fn get_rect_bounds(&self) -> (f32, f32, f32, f32) {
+        let cmds = self.current_path.commands();
+        let mut min_x = f32::MAX;
+        let mut min_y = f32::MAX;
+        let mut max_x = f32::MIN;
+        let mut max_y = f32::MIN;
+        for cmd in cmds {
+            match cmd {
+                crate::path::PathCommand::MoveTo(x, y) | crate::path::PathCommand::LineTo(x, y) => {
+                    min_x = min_x.min(*x);
+                    min_y = min_y.min(*y);
+                    max_x = max_x.max(*x);
+                    max_y = max_y.max(*y);
+                }
+                _ => {}
+            }
+        }
+        (min_x, min_y, max_x - min_x, max_y - min_y)
     }
 }
 
@@ -360,5 +727,222 @@ mod tests {
         let mut c = Canvas::new(100, 100);
         c.fill_rect(0.0, 0.0, 10.0, 10.0);
         assert!(c.current_path().is_empty());
+    }
+
+    // --- Pixel buffer tests ---
+
+    #[test]
+    fn test_default_white_background() {
+        let c = Canvas::new(10, 10);
+        let (r, g, b, a) = c.get_pixel(0, 0);
+        assert_eq!(r, 255);
+        assert_eq!(g, 255);
+        assert_eq!(b, 255);
+        assert_eq!(a, 255);
+    }
+
+    #[test]
+    fn test_with_background() {
+        let c = Canvas::with_background(10, 10, Color::rgb(0.5, 0.0, 0.0));
+        let (r, g, b, _) = c.get_pixel(0, 0);
+        assert_eq!(r, 127); // 0.5 * 255 = 127.5 → 127 (truncation)
+        assert_eq!(g, 0);
+        assert_eq!(b, 0);
+    }
+
+    #[test]
+    fn test_fill_rect_pixels() {
+        let mut c = Canvas::new(20, 20);
+        c.set_fill(Paint::Color(Color::RED));
+        c.fill_rect(5.0, 5.0, 10.0, 10.0);
+
+        // Inside the filled rect — should be red
+        let (r, g, b, _) = c.get_pixel(10, 10);
+        assert_eq!(r, 255);
+        assert_eq!(g, 0);
+        assert_eq!(b, 0);
+
+        // Outside the filled rect — should still be white
+        let (r, g, b, _) = c.get_pixel(0, 0);
+        assert_eq!(r, 255);
+        assert_eq!(g, 255);
+        assert_eq!(b, 255);
+    }
+
+    #[test]
+    fn test_fill_rect_with_alpha() {
+        let mut c = Canvas::new(20, 20);
+        c.set_fill(Paint::Color(Color::new(1.0, 0.0, 0.0, 0.5))); // 50% red
+        c.set_global_alpha(1.0);
+        c.fill_rect(0.0, 0.0, 10.0, 10.0);
+
+        let (r, g, b, _) = c.get_pixel(5, 5);
+        // 50% red over white: r ≈ 255, g ≈ 128, b ≈ 128
+        assert!(r >= 250);
+        assert!(g >= 125 && g <= 130);
+        assert!(b >= 125 && b <= 130);
+    }
+
+    #[test]
+    fn test_clear_canvas() {
+        let mut c = Canvas::new(10, 10);
+        c.fill_rect(0.0, 0.0, 10.0, 10.0);
+        c.clear();
+        let (_, _, _, a) = c.get_pixel(5, 5);
+        assert_eq!(a, 0); // transparent
+    }
+
+    #[test]
+    fn test_clear_rect() {
+        let mut c = Canvas::new(20, 20);
+        c.set_fill(Paint::Color(Color::RED));
+        c.fill_rect(0.0, 0.0, 20.0, 20.0);
+        c.clear_rect(5.0, 5.0, 10.0, 10.0);
+
+        // Inside cleared area — transparent
+        let (_, _, _, a) = c.get_pixel(10, 10);
+        assert_eq!(a, 0);
+
+        // Outside cleared area — still red
+        let (r, _, _, _) = c.get_pixel(0, 0);
+        assert_eq!(r, 255);
+    }
+
+    #[test]
+    fn test_to_rgba_bytes() {
+        let c = Canvas::new(2, 2);
+        let bytes = c.to_rgba_bytes();
+        assert_eq!(bytes.len(), 16); // 2*2*4
+                                     // All white
+        assert_eq!(bytes[0], 255); // R
+        assert_eq!(bytes[1], 255); // G
+        assert_eq!(bytes[2], 255); // B
+        assert_eq!(bytes[3], 255); // A
+    }
+
+    #[test]
+    fn test_fill_rect_with_transform() {
+        let mut c = Canvas::new(100, 100);
+        c.set_fill(Paint::Color(Color::RED));
+        c.translate(10.0, 10.0);
+        c.fill_rect(0.0, 0.0, 5.0, 5.0);
+
+        // The rect should be at (10,10) to (15,15)
+        let (r, _, _, _) = c.get_pixel(12, 12);
+        assert_eq!(r, 255);
+
+        // (5,5) should still be white
+        let (r, g, b, _) = c.get_pixel(5, 5);
+        assert_eq!(r, 255);
+        assert_eq!(g, 255);
+        assert_eq!(b, 255);
+    }
+
+    #[test]
+    fn test_stroke_rect() {
+        let mut c = Canvas::new(50, 50);
+        c.set_stroke(Paint::Color(Color::BLUE));
+        c.set_stroke_style(StrokeStyle {
+            line_width: 2.0,
+            ..Default::default()
+        });
+        c.stroke_rect(10.0, 10.0, 10.0, 10.0);
+
+        // Inside the stroked rect — should be blue
+        let (_, _, b, _) = c.get_pixel(15, 15);
+        assert_eq!(b, 255);
+    }
+
+    #[test]
+    fn test_out_of_bounds() {
+        let c = Canvas::new(10, 10);
+        let (r, g, b, a) = c.get_pixel(100, 100);
+        assert_eq!(r, 0);
+        assert_eq!(g, 0);
+        assert_eq!(b, 0);
+        assert_eq!(a, 0);
+    }
+
+    #[test]
+    fn test_multiple_fills_overlap() {
+        let mut c = Canvas::new(50, 50);
+        c.set_fill(Paint::Color(Color::RED));
+        c.fill_rect(0.0, 0.0, 50.0, 50.0);
+
+        c.set_fill(Paint::Color(Color::BLUE));
+        c.set_global_alpha(0.5);
+        c.fill_rect(10.0, 10.0, 30.0, 30.0);
+
+        // Overlap area: red base + 50% blue blended on top
+        // blend: dst.r * (1-a) + src.r * a = 255*0.5 + 0*0.5 = 127
+        let (r, g, b, _) = c.get_pixel(25, 25);
+        assert!(r < 255); // red reduced by blend
+        assert_eq!(g, 0);
+        assert!(b > 100); // blue present
+    }
+
+    #[test]
+    fn test_fill_circle() {
+        // Circle path goes through ellipse (cubic Beziers), not a rect path,
+        // so it exercises the general fill_polygon path.
+        let mut c = Canvas::new(100, 100);
+        c.set_fill(Paint::Color(Color::RED));
+        c.begin_path();
+        c.circle(50.0, 50.0, 20.0);
+        c.fill();
+
+        // Some pixels within the bounding box should be filled (non-white)
+        // Check a pixel at (60, 50) which is well inside the circle
+        let (r, g, b, _) = c.get_pixel(60, 50);
+        assert!(
+            (r, g, b) != (255, 255, 255),
+            "pixel inside circle should not be white"
+        );
+
+        // Far corner should still be white
+        let (r, g, b, _) = c.get_pixel(0, 0);
+        assert_eq!((r, g, b), (255, 255, 255));
+    }
+
+    #[test]
+    fn test_fill_triangle() {
+        let mut c = Canvas::new(100, 100);
+        c.set_fill(Paint::Color(Color::GREEN));
+        c.begin_path();
+        c.move_to(10.0, 10.0);
+        c.line_to(90.0, 10.0);
+        c.line_to(50.0, 90.0);
+        c.close_path();
+        c.fill();
+
+        // Centroid area should be green
+        let (_r, g, _b, _) = c.get_pixel(50, 40);
+        assert!(g > 200, "triangle interior should be green");
+
+        // Outside should still be white
+        let (r, g, b, _) = c.get_pixel(0, 0);
+        assert_eq!((r, g, b), (255, 255, 255));
+    }
+
+    #[test]
+    fn test_stroke_line() {
+        let mut c = Canvas::new(100, 100);
+        c.set_stroke(Paint::Color(Color::BLUE));
+        c.set_stroke_style(StrokeStyle {
+            line_width: 2.0,
+            ..Default::default()
+        });
+        c.begin_path();
+        c.move_to(10.0, 50.0);
+        c.line_to(90.0, 50.0);
+        c.stroke();
+
+        // A pixel along the stroked line should be blue
+        let (_, _, b, _) = c.get_pixel(50, 50);
+        assert!(b > 200, "stroked line should be blue");
+
+        // Far away should still be white
+        let (r, g, b, _) = c.get_pixel(50, 0);
+        assert_eq!((r, g, b), (255, 255, 255));
     }
 }

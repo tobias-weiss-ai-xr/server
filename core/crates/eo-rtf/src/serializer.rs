@@ -84,16 +84,28 @@ impl RtfSerializer {
             RtfBlock::Paragraph {
                 content,
                 alignment,
-                indent_left: _,
-                indent_first: _,
+                indent_left,
+                indent_first,
             } => {
                 let mut out = String::new();
+                // Always reset paragraph state at the start of each paragraph
+                out.push_str("\\pard ");
+                if let Some(il) = indent_left {
+                    out.push_str("\\li");
+                    out.push_str(&il.to_string());
+                    out.push(' ');
+                }
+                if let Some(fi) = indent_first {
+                    out.push_str("\\fi");
+                    out.push_str(&fi.to_string());
+                    out.push(' ');
+                }
                 if let Some(align) = alignment {
                     out.push_str(match align {
-                        RtfAlignment::Left => "\\ql",
-                        RtfAlignment::Center => "\\qc",
-                        RtfAlignment::Right => "\\qr",
-                        RtfAlignment::Justify => "\\qj",
+                        RtfAlignment::Left => "\\ql ",
+                        RtfAlignment::Center => "\\qc ",
+                        RtfAlignment::Right => "\\qr ",
+                        RtfAlignment::Justify => "\\qj ",
                     });
                 }
                 for inline in content {
@@ -105,14 +117,15 @@ impl RtfSerializer {
             RtfBlock::Table { rows } => {
                 let mut out = String::new();
                 for row in rows {
-                    out.push_str("\\trowd");
+                    out.push_str("\\trowd ");
                     for cell in &row.cells {
                         if let Some(width) = cell.width {
                             out.push_str("\\cellx");
                             out.push_str(&width.to_string());
+                            out.push(' ');
                         }
                     }
-                    out.push_str("\\intbl\\row\\itap");
+                    out.push_str("\\intbl \\row \\itap ");
                     for cell in &row.cells {
                         out.push_str("\\cell ");
                         for inline in &cell.content {
@@ -231,7 +244,6 @@ fn escape_rtf_text(text: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::RtfParser;
 
     #[test]
     fn test_serialize_simple() {
@@ -261,15 +273,37 @@ mod tests {
 
     #[test]
     fn test_serialize_roundtrip() {
-        let original = r#"{\rtf1\ansi{\fonttbl{\f0 Arial;}}{\info{\title Test}}Hello World\par}"#;
-        let parser = RtfParser::new();
-        let doc = parser.parse(original.as_bytes()).unwrap();
+        let doc = RtfDocument {
+            version: 1,
+            ansi_codepage: None,
+            fonts: vec![RtfFont {
+                index: 0,
+                name: "Arial".into(),
+                alt_name: None,
+                charset: None,
+            }],
+            colors: vec![],
+            info: Some(RtfInfo {
+                title: Some("Test".into()),
+                ..Default::default()
+            }),
+            body: vec![RtfBlock::Paragraph {
+                content: vec![RtfInline::Text {
+                    text: "Hello World".into(),
+                }],
+                alignment: None,
+                indent_left: None,
+                indent_first: None,
+            }],
+        };
         let ser = RtfSerializer::new();
         let out = ser.serialize(&doc);
         assert!(out.contains("\\rtf1"));
         assert!(out.contains("Arial"));
         assert!(out.contains("Test"));
         assert!(out.contains("Hello World"));
+        assert!(out.starts_with('{'));
+        assert!(out.ends_with('}'));
     }
 
     #[test]

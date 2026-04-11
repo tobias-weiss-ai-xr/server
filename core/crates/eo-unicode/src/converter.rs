@@ -71,7 +71,7 @@ impl UnicodeConverter {
         let mut total_read = 0;
         let mut total_written = 0;
         let mut had_replacements = false;
-        let mut remaining = input;
+        let remaining = input;
 
         loop {
             let (result, bytes_read, bytes_written, replaced) =
@@ -103,7 +103,7 @@ impl UnicodeConverter {
         let mut total_read = 0;
         let mut total_written = 0;
         let mut had_replacements = false;
-        let mut remaining = input;
+        let remaining = input;
 
         loop {
             let (result, bytes_read, bytes_written, replaced) =
@@ -139,7 +139,7 @@ impl UnicodeConverter {
         let mut total_read = 0;
         let mut total_written = 0;
         let mut had_replacements = false;
-        let mut remaining = input;
+        let remaining = &*input;
 
         loop {
             let (result, bytes_read, bytes_written, replaced) =
@@ -182,7 +182,6 @@ impl UnicodeConverter {
             [0xFF, 0xFE, ..] => Some(encoding_rs::UTF_16LE),
             // UTF-32 BOMs: treat as UTF-16 (encoding_rs doesn't have UTF-32)
             [0x00, 0x00, 0xFE, 0xFF, ..] => Some(encoding_rs::UTF_16BE),
-            [0xFF, 0xFE, 0x00, 0x00, ..] => Some(encoding_rs::UTF_16LE),
             _ => None,
         }
     }

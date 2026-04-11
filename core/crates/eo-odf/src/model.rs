@@ -63,11 +63,11 @@ pub struct OdfMetadata {
 /// Document content varies by type.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum OdfContent {
-    /// ODT: paragraphs of text
+    /// ODT: paragraphs of text, lists, images, sections
     Text {
-        paragraphs: Vec<TextParagraph>,
-        headings: Vec<TextHeading>,
-        tables: Vec<OdfTable>,
+        content: Vec<OdfTextContent>,
+        page_layouts: Vec<OdfPageLayout>,
+        sections: Vec<OdfSection>,
     },
     /// ODS: sheets with cell data
     Spreadsheet { sheets: Vec<SpreadsheetSheet> },
@@ -200,4 +200,72 @@ pub struct OdfStyle {
     pub parent: Option<String>,
     pub display_name: Option<String>,
     pub properties: Vec<(String, String)>,
+}
+
+/// A list (ordered or unordered).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OdfList {
+    pub list_style_name: Option<String>,
+    pub items: Vec<OdfListItem>,
+    pub list_type: OdfListType,
+    pub continue_numbering: bool,
+    pub start_value: Option<u32>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum OdfListType {
+    Unordered,
+    Ordered,
+}
+
+/// A list item, which may contain paragraphs and nested lists.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OdfListItem {
+    pub content: Vec<OdfTextContent>,
+    pub nesting_level: u32,
+}
+
+/// Content that can appear in text: paragraphs, headings, lists, images, tables.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum OdfTextContent {
+    Paragraph(TextParagraph),
+    Heading(TextHeading),
+    List(OdfList),
+    Image(OdfImage),
+    Table(OdfTable),
+}
+
+/// An image reference in the document.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OdfImage {
+    pub href: String,
+    pub name: Option<String>,
+    pub alt_text: Option<String>,
+    pub width: Option<String>,
+    pub height: Option<String>,
+    /// Raw image data extracted from ZIP (if available).
+    pub data: Option<Vec<u8>>,
+    pub content_type: Option<String>,
+}
+
+/// A section in the document.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OdfSection {
+    pub name: Option<String>,
+    pub style_name: Option<String>,
+    pub content: Vec<OdfTextContent>,
+    pub protected: bool,
+}
+
+/// Page layout properties.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OdfPageLayout {
+    pub name: String,
+    pub page_width: Option<String>,
+    pub page_height: Option<String>,
+    pub margin_top: Option<String>,
+    pub margin_bottom: Option<String>,
+    pub margin_left: Option<String>,
+    pub margin_right: Option<String>,
+    pub orientation: Option<String>,
 }

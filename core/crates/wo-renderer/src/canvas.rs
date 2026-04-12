@@ -5,6 +5,7 @@
 //! Modeled after the HTML5 Canvas API.
 
 use crate::color::{Color, Paint, StrokeStyle};
+use crate::gradient::Gradient;
 use crate::model::{BlendMode, Page};
 use crate::path::{FillRule, PathBuilder};
 use crate::transform::{AffineTransform, TransformStack};
@@ -507,6 +508,90 @@ impl Canvas {
         self.begin_path();
         self.rect(x, y, w, h);
         self.fill();
+    }
+
+    /// Fill a rectangle with a gradient.
+    pub fn fill_rect_gradient(&mut self, x: f32, y: f32, w: f32, h: f32, gradient: &Gradient) {
+        let alpha = self.state.global_alpha;
+        let transform = self.current_transform();
+
+        // Transform the rectangle corners to screen space for iteration
+        let (tx, ty) = transform.transform_point(x, y);
+        let (tx2, ty2) = transform.transform_point(x + w, y + h);
+        let rx = tx.min(tx2).floor() as i32;
+        let ry = ty.min(ty2).floor() as i32;
+        let rw = (tx.max(tx2).ceil() - rx as f32).abs() as u32;
+        let rh = (ty.max(ty2).ceil() - ry as f32).abs() as u32;
+
+        // Get inverse transform to compute gradient positions in user space
+        let inv_transform = match transform.invert() {
+            Some(t) => t,
+            None => return, // Singular transform, cannot fill
+        };
+
+        let x0 = rx.max(0) as u32;
+        let y0 = ry.max(0) as u32;
+        let x1 = (x0 + rw).min(self.width);
+        let y1 = (y0 + rh).min(self.height);
+
+        for py in y0..y1 {
+            for px in x0..x1 {
+                // Transform pixel back to user space
+                let (ux, uy) = inv_transform.transform_point(px as f32, py as f32);
+                let t = gradient.position_at(ux, uy);
+                let color = gradient.color_at(t);
+                self.buffer.blend(px, py, &color, alpha);
+            }
+        }
+    }
+
+    /// Fill a path with a gradient.
+    pub fn fill_path_gradient(&mut self, path: &PathBuilder, gradient: &Gradient) {
+        let alpha = self.state.global_alpha;
+        let transform = self.current_transform();
+
+        // Get bounding box of path
+        let (bx, by, bx2, by2) = path.bounds();
+        let bw = bx2 - bx;
+        let bh = by2 - by;
+
+        // Check for empty bounds
+        if bw <= 0.0 || bh <= 0.0 {
+            return;
+        }
+
+        // Transform bounds to screen space for iteration
+        let (tx, ty) = transform.transform_point(bx, by);
+        let (tx2, ty2) = transform.transform_point(bx2, by2);
+        let rx = tx.min(tx2).floor() as i32;
+        let ry = ty.min(ty2).floor() as i32;
+        let rw = (tx.max(tx2).ceil() - rx as f32).abs() as u32;
+        let rh = (ty.max(ty2).ceil() - ry as f32).abs() as u32;
+
+        // Get inverse transform to compute gradient positions in user space
+        let inv_transform = match transform.invert() {
+            Some(t) => t,
+            None => return, // Singular transform, cannot fill
+        };
+
+        let x0 = rx.max(0) as u32;
+        let y0 = ry.max(0) as u32;
+        let x1 = (x0 + rw).min(self.width);
+        let y1 = (y0 + rh).min(self.height);
+
+        for py in y0..y1 {
+            for px in x0..x1 {
+                // Check if pixel is inside the path (in user space)
+                let (ux, uy) = inv_transform.transform_point(px as f32, py as f32);
+                if !path.contains_point(ux, uy, self.state.fill_rule) {
+                    continue;
+                }
+
+                let t = gradient.position_at(ux, uy);
+                let color = gradient.color_at(t);
+                self.buffer.blend(px, py, &color, alpha);
+            }
+        }
     }
 
     /// Stroke a rectangle directly.

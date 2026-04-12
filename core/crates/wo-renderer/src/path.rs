@@ -281,6 +281,78 @@ impl PathBuilder {
             (min_x, min_y, max_x, max_y)
         }
     }
+
+    /// Test if a point is inside the path using the specified fill rule.
+    pub fn contains_point(&self, x: f32, y: f32, fill_rule: FillRule) -> bool {
+        if self.commands.is_empty() {
+            return false;
+        }
+
+        // Flatten the path to polygon(s)
+        let subpaths = self.flatten(0.5);
+
+        match fill_rule {
+            FillRule::EvenOdd => self.contains_point_even_odd(x, y, &subpaths),
+            FillRule::NonZero => self.contains_point_non_zero(x, y, &subpaths),
+        }
+    }
+
+    /// Test point-in-polygon using even-odd rule.
+    fn contains_point_even_odd(&self, x: f32, y: f32, subpaths: &[FlattenedSubpath]) -> bool {
+        let mut winding = 0;
+        for subpath in subpaths {
+            if !subpath.is_closed || subpath.points.len() < 3 {
+                continue;
+            }
+            // Ray casting algorithm
+            let n = subpath.points.len();
+            for i in 0..n {
+                let (x0, y0) = subpath.points[i];
+                let (x1, y1) = subpath.points[(i + 1) % n];
+
+                // Check if edge crosses the horizontal ray to the right of the point
+                if (y0 > y) != (y1 > y) {
+                    // Compute x-coordinate of intersection
+                    let x_int = (x1 - x0) * (y - y0) / (y1 - y0) + x0;
+                    if x_int > x {
+                        winding += 1;
+                    }
+                }
+            }
+        }
+        winding % 2 == 1
+    }
+
+    /// Test point-in-polygon using non-zero winding rule.
+    fn contains_point_non_zero(&self, x: f32, y: f32, subpaths: &[FlattenedSubpath]) -> bool {
+        let mut winding = 0;
+        for subpath in subpaths {
+            if !subpath.is_closed || subpath.points.len() < 3 {
+                continue;
+            }
+            // Winding number algorithm
+            let n = subpath.points.len();
+            for i in 0..n {
+                let (x0, y0) = subpath.points[i];
+                let (x1, y1) = subpath.points[(i + 1) % n];
+
+                // Check if edge crosses the horizontal ray to the right of the point
+                if (y0 > y) != (y1 > y) {
+                    // Compute x-coordinate of intersection
+                    let x_int = (x1 - x0) * (y - y0) / (y1 - y0) + x0;
+                    if x_int > x {
+                        // Determine winding direction based on whether edge goes up or down
+                        if y1 > y0 {
+                            winding += 1;
+                        } else {
+                            winding -= 1;
+                        }
+                    }
+                }
+            }
+        }
+        winding != 0
+    }
 }
 
 /// Approximate a quadratic Bézier curve with line segments.

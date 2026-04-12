@@ -8,14 +8,18 @@
 
 pub mod canvas;
 pub mod color;
+pub mod gradient;
 pub mod model;
 pub mod path;
+pub mod text;
 pub mod transform;
 
 pub use canvas::Canvas;
 pub use color::{Color, Paint, StrokeStyle};
+pub use gradient::Gradient;
 pub use model::{BlendMode, Page, RenderResult};
 pub use path::{FillRule, PathBuilder};
+pub use text::TextLayoutEngine;
 pub use transform::{AffineTransform, TransformStack};
 
 pub const FORMAT_NAME: &str = "renderer";

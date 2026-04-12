@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite"
 
 const ObservedReferencesTab = observer(function ObservedReferencesTab() {
   return (
-    <section className="de-referencestab-panel" data-tab="references" role="tabpanel" aria-labelledby="references">
+    <section
+      className="de-referencestab-panel"
+      data-tab="references"
+      role="tabpanel"
+      aria-labelledby="references"
+    >
       {/* Table of Contents */}
       <div className="de-referencestab-group">
         <div className="de-referencestab-elset">

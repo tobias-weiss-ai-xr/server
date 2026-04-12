@@ -1,5 +1,5 @@
-import type { JSX } from "react"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { documentStore } from "../../stores/DocumentStore"
 
 function ZoomControls(): JSX.Element {
@@ -31,7 +31,7 @@ function ZoomControls(): JSX.Element {
         −
       </button>
       <div className="de-statusbar-zoom-label">
-        <label className="de-statusbar-label">{`${documentStore.zoomLevel}%`}</label>
+        <span className="de-statusbar-label">{`${documentStore.zoomLevel}%`}</span>
       </div>
       <button
         type="button"
@@ -46,7 +46,8 @@ function ZoomControls(): JSX.Element {
 }
 
 const ObservedStatusBar = observer(function ObservedStatusBar(): JSX.Element {
-  const { currentPage, totalPages, languageCode, wordCount, trackChanges, spellingEnabled } = documentStore
+  const { currentPage, totalPages, languageCode, wordCount, trackChanges, spellingEnabled } =
+    documentStore
 
   return (
     <div className="de-statusbar">
@@ -61,9 +62,9 @@ const ObservedStatusBar = observer(function ObservedStatusBar(): JSX.Element {
         >
           ‹
         </button>
-        <label className="de-statusbar-page-label">
+        <span className="de-statusbar-page-label">
           Page {currentPage + 1} of {totalPages}
-        </label>
+        </span>
         <button
           type="button"
           className="de-statusbar-btn"
@@ -77,18 +78,10 @@ const ObservedStatusBar = observer(function ObservedStatusBar(): JSX.Element {
 
       {/* Select/Hand tool */}
       <div className="de-statusbar-tools">
-        <button
-          type="button"
-          className="de-statusbar-btn"
-          title="Select Tool"
-        >
+        <button type="button" className="de-statusbar-btn" title="Select Tool">
           ↖
         </button>
-        <button
-          type="button"
-          className="de-statusbar-btn"
-          title="Hand Tool"
-        >
+        <button type="button" className="de-statusbar-btn" title="Hand Tool">
           ✋
         </button>
       </div>
@@ -97,11 +90,7 @@ const ObservedStatusBar = observer(function ObservedStatusBar(): JSX.Element {
 
       {/* Language selector */}
       <div className="de-statusbar-tools">
-        <select
-          className="de-statusbar-select"
-          value={languageCode}
-          aria-label="Language"
-        >
+        <select className="de-statusbar-select" value={languageCode} aria-label="Language">
           <option value="en-US">English (US)</option>
           <option value="es-ES">Spanish (ES)</option>
           <option value="fr-FR">French (FR)</option>
@@ -116,7 +105,7 @@ const ObservedStatusBar = observer(function ObservedStatusBar(): JSX.Element {
 
       {/* Word count */}
       <div className="de-statusbar-tools">
-        <label className="de-statusbar-label">Words: {wordCount}</label>
+        <span className="de-statusbar-label">Words: {wordCount}</span>
       </div>
 
       <div className="de-statusbar-separator" />

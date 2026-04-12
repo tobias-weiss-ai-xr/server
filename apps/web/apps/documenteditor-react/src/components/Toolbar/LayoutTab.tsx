@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite"
 
 const ObservedLayoutTab = observer(function ObservedLayoutTab() {
   return (
-    <section className="de-layouttab-panel" data-tab="layout" role="tabpanel" aria-labelledby="layout">
+    <section
+      className="de-layouttab-panel"
+      data-tab="layout"
+      role="tabpanel"
+      aria-labelledby="layout"
+    >
       {/* Page Setup */}
       <div className="de-layouttab-group">
         <div className="de-layouttab-elset">

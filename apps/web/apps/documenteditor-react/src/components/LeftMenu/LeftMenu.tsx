@@ -1,5 +1,5 @@
-import type { JSX } from "react"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { documentStore } from "../../stores/DocumentStore"
 import type { LeftMenuAction } from "../../types/document"
 import { LeftMenuButton } from "./LeftMenuButton"

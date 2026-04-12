@@ -55,7 +55,12 @@ const ObservedDataTableTab = observer(function ObservedDataTableTab() {
           <button type="button" className="se-datatab-btn" onClick={() => {}} title="Banded Rows">
             Banded Rows
           </button>
-          <button type="button" className="se-datatab-btn" onClick={() => {}} title="Banded Columns">
+          <button
+            type="button"
+            className="se-datatab-btn"
+            onClick={() => {}}
+            title="Banded Columns"
+          >
             Banded Columns
           </button>
         </div>

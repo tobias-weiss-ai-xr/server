@@ -1,13 +1,13 @@
+import { observer } from "mobx-react-lite"
+import { documentStore } from "../../stores/DocumentStore"
 import { FileTab } from "./FileTab"
+import { FormsTab } from "./FormsTab"
+import { HeaderFooterTab } from "./HeaderFooterTab"
 import { HomeTab } from "./HomeTab"
 import { InsertTab } from "./InsertTab"
 import { LayoutTab } from "./LayoutTab"
 import { ReferencesTab } from "./ReferencesTab"
 import { ViewTab } from "./ViewTab"
-import { FormsTab } from "./FormsTab"
-import { HeaderFooterTab } from "./HeaderFooterTab"
-import { observer } from "mobx-react-lite"
-import { documentStore } from "../../stores/DocumentStore"
 
 const ObservedToolbar = observer(function ObservedToolbar() {
   const isEditMode = documentStore.isEditMode

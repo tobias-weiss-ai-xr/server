@@ -1,5 +1,5 @@
-import type { FileMenuAction } from "../../types/spreadsheet"
 import { spreadsheetStore } from "../../stores/SpreadsheetStore"
+import type { FileMenuAction } from "../../types/spreadsheet"
 
 interface FileMenuItemsProps {
   onMenuClick: (action: string, hasPanel: boolean) => void
@@ -43,25 +43,39 @@ export function FileMenuItems({ onMenuClick, onBack }: FileMenuItemsProps) {
 
   return (
     <ul className="se-file-menu-items">
-      <li
+      <div
         className="se-file-menu-item"
         role="menuitem"
+        tabIndex={0}
         onClick={handleBack}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault()
+            handleBack()
+          }
+        }}
       >
         <span className="se-file-menu-item-icon">←</span>
         <span className="se-file-menu-item-caption">Back</span>
-      </li>
+      </div>
       <li className="se-file-menu-divider" />
-        {MENU_ITEMS.map((item) => (
-          <li
-            key={item.action}
-            className={`se-file-menu-item${activePanel === item.action ? " active" : ""}`}
-            role="menuitem"
-            onClick={() => onMenuClick(item.action, item.hasPanel)}
-          >
-            <span className="se-file-menu-item-caption">{item.caption}</span>
-          </li>
-        ))}
+      {MENU_ITEMS.map((item) => (
+        <div
+          key={item.action}
+          className={`se-file-menu-item${activePanel === item.action ? " active" : ""}`}
+          role="menuitem"
+          tabIndex={0}
+          onClick={() => onMenuClick(item.action, item.hasPanel)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault()
+              onMenuClick(item.action, item.hasPanel)
+            }
+          }}
+        >
+          <span className="se-file-menu-item-caption">{item.caption}</span>
+        </div>
+      ))}
     </ul>
   )
 }

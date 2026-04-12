@@ -1,12 +1,15 @@
 export function SettingsPanel({ visible }: { visible: boolean }) {
   return (
-    <div className="de-file-menu-content-box" style={{ display: visible ? "block" : "none", padding: "0", flexDirection: "column" }}>
+    <div
+      className="de-file-menu-content-box"
+      style={{ display: visible ? "block" : "none", padding: "0", flexDirection: "column" }}
+    >
       <div className="de-file-menu-header">Advanced Settings</div>
       <div className="de-file-menu-settings-table">
         <tbody>
           <tr className="de-file-menu-row">
             <td className="de-file-menu-group td">
-              <label className="de-file-menu-label">Interface Theme</label>
+              <span className="de-file-menu-label">Interface Theme</span>
             </td>
             <td className="de-file-menu-right">
               <select className="de-file-menu-select" defaultValue="default">
@@ -19,7 +22,7 @@ export function SettingsPanel({ visible }: { visible: boolean }) {
           </tr>
           <tr className="de-file-menu-row">
             <td className="de-file-menu-group td">
-              <label className="de-file-menu-label">Font Rendering</label>
+              <span className="de-file-menu-label">Font Rendering</span>
             </td>
             <td className="de-file-menu-right">
               <select className="de-file-menu-select" defaultValue="auto">
@@ -33,7 +36,7 @@ export function SettingsPanel({ visible }: { visible: boolean }) {
           </tr>
           <tr className="de-file-menu-row">
             <td className="de-file-menu-group td">
-              <label className="de-file-menu-label">Spell Checking</label>
+              <span className="de-file-menu-label">Spell Checking</span>
             </td>
             <td className="de-file-menu-right">
               <label className="de-file-menu-checkbox">
@@ -44,7 +47,7 @@ export function SettingsPanel({ visible }: { visible: boolean }) {
           </tr>
           <tr className="de-file-menu-row">
             <td className="de-file-menu-group td">
-              <label className="de-file-menu-label">Cache Mode</label>
+              <span className="de-file-menu-label">Cache Mode</span>
             </td>
             <td className="de-file-menu-right">
               <label className="de-file-menu-checkbox">
@@ -55,7 +58,7 @@ export function SettingsPanel({ visible }: { visible: boolean }) {
           </tr>
           <tr className="de-file-menu-row">
             <td className="de-file-menu-group td">
-              <label className="de-file-menu-label">Autosave</label>
+              <span className="de-file-menu-label">Autosave</span>
             </td>
             <td className="de-file-menu-right">
               <label className="de-file-menu-checkbox">
@@ -66,7 +69,7 @@ export function SettingsPanel({ visible }: { visible: boolean }) {
           </tr>
           <tr className="de-file-menu-row">
             <td className="de-file-menu-group td">
-              <label className="de-file-menu-label">Co-Authoring</label>
+              <span className="de-file-menu-label">Co-Authoring</span>
             </td>
             <td className="de-file-menu-right">
               <label className="de-file-menu-checkbox">

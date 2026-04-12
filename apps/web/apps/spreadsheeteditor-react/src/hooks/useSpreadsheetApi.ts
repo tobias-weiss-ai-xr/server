@@ -41,5 +41,5 @@ export function useSpreadsheetApi(): SpreadsheetApi | null {
     return () => clearInterval(interval)
   }, [])
 
-  return ready ? sdkBridge as unknown as SpreadsheetApi : null
+  return ready ? (sdkBridge as unknown as SpreadsheetApi) : null
 }

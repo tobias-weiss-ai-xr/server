@@ -54,7 +54,15 @@ export type ZoomLevel = 50 | 75 | 100 | 125 | 150 | 175 | 200 | 300 | 400 | 500
 
 export const ZOOM_LEVELS: ZoomLevel[] = [50, 75, 100, 125, 150, 175, 200, 300, 400, 500]
 
-export type DocumentTab = "file" | "home" | "insert" | "layout" | "references" | "view" | "forms" | "headerfooter"
+export type DocumentTab =
+  | "file"
+  | "home"
+  | "insert"
+  | "layout"
+  | "references"
+  | "view"
+  | "forms"
+  | "headerfooter"
 
 export type FileMenuAction =
   | "back"
@@ -77,7 +85,14 @@ export type FileMenuAction =
   | "open-recent"
   | "protect"
 
-export type LeftMenuAction = "search" | "comments" | "chat" | "navigation" | "thumbnails" | "support" | "about"
+export type LeftMenuAction =
+  | "search"
+  | "comments"
+  | "chat"
+  | "navigation"
+  | "thumbnails"
+  | "support"
+  | "about"
 
 export type RightMenuPanel =
   | "paragraph"

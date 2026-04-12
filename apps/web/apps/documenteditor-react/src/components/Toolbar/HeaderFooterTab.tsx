@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite"
 
 const ObservedHeaderFooterTab = observer(function ObservedHeaderFooterTab() {
   return (
-    <section className="de-headerfootertab-panel" data-tab="headerfooter" role="tabpanel" aria-labelledby="headerfooter">
+    <section
+      className="de-headerfootertab-panel"
+      data-tab="headerfooter"
+      role="tabpanel"
+      aria-labelledby="headerfooter"
+    >
       {/* Header & Footer */}
       <div className="de-headerfootertab-group">
         <div className="de-headerfootertab-elset">

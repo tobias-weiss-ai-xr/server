@@ -4,10 +4,11 @@ export function DocumentInfoPanel({ visible }: { visible: boolean }) {
   const doc = documentStore.document
 
   return (
-    <div className="de-file-menu-content-box" style={{ display: visible ? "block" : "none", padding: "0 0 0 20px" }}>
-      <div className="de-file-menu-header">
-        Document Info
-      </div>
+    <div
+      className="de-file-menu-content-box"
+      style={{ display: visible ? "block" : "none", padding: "0 0 0 20px" }}
+    >
+      <div className="de-file-menu-header">Document Info</div>
       <div className="de-file-menu-info-table">
         <tbody>
           <tr className="de-file-menu-info-row">

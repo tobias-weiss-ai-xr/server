@@ -9,7 +9,13 @@ interface RightMenuButtonProps {
   onClick: () => void
 }
 
-export function RightMenuButton({ action, title, icon, active, onClick }: RightMenuButtonProps): JSX.Element {
+export function RightMenuButton({
+  action,
+  title,
+  icon,
+  active,
+  onClick,
+}: RightMenuButtonProps): JSX.Element {
   return (
     <button
       type="button"
@@ -20,7 +26,9 @@ export function RightMenuButton({ action, title, icon, active, onClick }: RightM
       aria-pressed={active}
     >
       <svg className="se-right-menu-icon" aria-hidden="true">
-        <text x="50%" y="55%" textAnchor="middle" fontSize="16">{icon}</text>
+        <text x="50%" y="55%" textAnchor="middle" fontSize="16">
+          {icon}
+        </text>
       </svg>
     </button>
   )

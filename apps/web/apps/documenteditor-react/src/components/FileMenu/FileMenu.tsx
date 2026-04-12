@@ -1,16 +1,16 @@
 import type { CSSProperties } from "react"
 import { documentStore } from "../../stores/DocumentStore"
 import { FileMenuItems } from "./FileMenuItems"
-import { SaveAsPanel } from "./panels/SaveAsPanel"
-import { SaveCopyPanel } from "./panels/SaveCopyPanel"
-import { RecentFilesPanel } from "./panels/RecentFilesPanel"
 import { CreateNewPanel } from "./panels/CreateNewPanel"
 import { DocumentInfoPanel } from "./panels/DocumentInfoPanel"
-import { RightsPanel } from "./panels/RightsPanel"
-import { SettingsPanel } from "./panels/SettingsPanel"
 import { HelpPanel } from "./panels/HelpPanel"
-import { ProtectDocPanel } from "./panels/ProtectDocPanel"
 import { PrintPreviewPanel } from "./panels/PrintPreviewPanel"
+import { ProtectDocPanel } from "./panels/ProtectDocPanel"
+import { RecentFilesPanel } from "./panels/RecentFilesPanel"
+import { RightsPanel } from "./panels/RightsPanel"
+import { SaveAsPanel } from "./panels/SaveAsPanel"
+import { SaveCopyPanel } from "./panels/SaveCopyPanel"
+import { SettingsPanel } from "./panels/SettingsPanel"
 
 const panelContainerStyle: CSSProperties = {
   width: "100%",

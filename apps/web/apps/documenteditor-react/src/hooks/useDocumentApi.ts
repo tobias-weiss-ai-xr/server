@@ -32,5 +32,5 @@ export function useDocumentApi(): DocumentApi | null {
     return () => clearInterval(interval)
   }, [])
 
-  return ready ? sdkBridge as unknown as DocumentApi : null
+  return ready ? (sdkBridge as unknown as DocumentApi) : null
 }

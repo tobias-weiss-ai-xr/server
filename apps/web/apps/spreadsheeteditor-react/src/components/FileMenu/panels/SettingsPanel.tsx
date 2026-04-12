@@ -1,6 +1,9 @@
 export function SettingsPanel({ visible }: { visible: boolean }) {
   return (
-    <div className="se-file-menu-content-box" style={{ display: visible ? "block" : "none", padding: "0 0 0 20px" }}>
+    <div
+      className="se-file-menu-content-box"
+      style={{ display: visible ? "block" : "none", padding: "0 0 0 20px" }}
+    >
       <div className="se-file-menu-header">Advanced Settings</div>
       <table className="se-file-menu-settings-table">
         <tbody>

@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite"
 
 const ObservedInsertTab = observer(function ObservedInsertTab() {
   return (
-    <section className="se-inserttab-panel" data-tab="insert" role="tabpanel" aria-labelledby="insert">
+    <section
+      className="se-inserttab-panel"
+      data-tab="insert"
+      role="tabpanel"
+      aria-labelledby="insert"
+    >
       {/* Tables */}
       <div className="se-inserttab-group">
         <div className="se-inserttab-elset">
@@ -49,7 +54,12 @@ const ObservedInsertTab = observer(function ObservedInsertTab() {
           <button type="button" className="se-inserttab-btn" onClick={() => {}} title="Picture">
             Picture
           </button>
-          <button type="button" className="se-inserttab-btn" onClick={() => {}} title="Online Pictures">
+          <button
+            type="button"
+            className="se-inserttab-btn"
+            onClick={() => {}}
+            title="Online Pictures"
+          >
             Online Pictures
           </button>
         </div>

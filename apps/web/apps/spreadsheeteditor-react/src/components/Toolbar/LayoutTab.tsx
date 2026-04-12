@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite"
 
 const ObservedLayoutTab = observer(function ObservedLayoutTab() {
   return (
-    <section className="se-layouttab-panel" data-tab="layout" role="tabpanel" aria-labelledby="layout">
+    <section
+      className="se-layouttab-panel"
+      data-tab="layout"
+      role="tabpanel"
+      aria-labelledby="layout"
+    >
       {/* Page Setup */}
       <div className="se-layouttab-group">
         <div className="se-layouttab-elset">
@@ -68,16 +73,36 @@ const ObservedLayoutTab = observer(function ObservedLayoutTab() {
           <span className="se-layouttab-label">Arrange</span>
         </div>
         <div className="se-layouttab-elset">
-          <button type="button" className="se-layouttab-btn" onClick={() => {}} title="Bring Forward">
+          <button
+            type="button"
+            className="se-layouttab-btn"
+            onClick={() => {}}
+            title="Bring Forward"
+          >
             Bring Forward
           </button>
-          <button type="button" className="se-layouttab-btn" onClick={() => {}} title="Send Backward">
+          <button
+            type="button"
+            className="se-layouttab-btn"
+            onClick={() => {}}
+            title="Send Backward"
+          >
             Send Backward
           </button>
-          <button type="button" className="se-layouttab-btn" onClick={() => {}} title="Bring to Front">
+          <button
+            type="button"
+            className="se-layouttab-btn"
+            onClick={() => {}}
+            title="Bring to Front"
+          >
             Bring to Front
           </button>
-          <button type="button" className="se-layouttab-btn" onClick={() => {}} title="Send to Back">
+          <button
+            type="button"
+            className="se-layouttab-btn"
+            onClick={() => {}}
+            title="Send to Back"
+          >
             Send to Back
           </button>
         </div>

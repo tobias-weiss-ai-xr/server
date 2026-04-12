@@ -1,13 +1,13 @@
 import { makeAutoObservable } from "mobx"
 import type {
-  SpreadsheetMode,
-  SpreadsheetDocument,
-  SheetInfo,
-  ZoomLevel,
-  SpreadsheetTab,
   LeftMenuAction,
   RightMenuPanel,
+  SheetInfo,
+  SpreadsheetDocument,
+  SpreadsheetMode,
+  SpreadsheetTab,
   StatisticsType,
+  ZoomLevel,
 } from "../types/spreadsheet"
 import { ZOOM_LEVELS } from "../types/spreadsheet"
 
@@ -70,7 +70,7 @@ export class SpreadsheetStore {
   activeFileMenuPanel: string | null = null
 
   /* Language */
-  languageCode: string = "en-US"
+  languageCode = "en-US"
 
   constructor() {
     makeAutoObservable(this)
@@ -110,7 +110,10 @@ export class SpreadsheetStore {
   }
 
   setZoomLevel(level: number): void {
-    const clamped = Math.max(ZOOM_LEVELS[0] as number, Math.min(ZOOM_LEVELS[ZOOM_LEVELS.length - 1] as number, level)) as ZoomLevel
+    const clamped = Math.max(
+      ZOOM_LEVELS[0] as number,
+      Math.min(ZOOM_LEVELS[ZOOM_LEVELS.length - 1] as number, level),
+    ) as ZoomLevel
     this.zoomLevel = clamped
     this.fitToPage = false
     this.fitToWidth = false
@@ -192,9 +195,7 @@ export class SpreadsheetStore {
   }
 
   renameSheet(index: number, name: string): void {
-    this.sheets = this.sheets.map((sheet, i) =>
-      i === index ? { ...sheet, name } : sheet
-    )
+    this.sheets = this.sheets.map((sheet, i) => (i === index ? { ...sheet, name } : sheet))
   }
 
   deleteSheet(index: number): void {
@@ -234,7 +235,13 @@ export class SpreadsheetStore {
     this.showStatistics = show
   }
 
-  updateStatistics(stats: { average: number; count: number; min: number; max: number; sum: number }): void {
+  updateStatistics(stats: {
+    average: number
+    count: number
+    min: number
+    max: number
+    sum: number
+  }): void {
     this.statistics = stats
   }
 

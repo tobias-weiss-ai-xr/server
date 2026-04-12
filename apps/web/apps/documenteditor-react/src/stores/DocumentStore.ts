@@ -1,12 +1,12 @@
 import { makeAutoObservable } from "mobx"
 import type {
-  DocumentMode,
   DocumentDocument,
-  PageInfo,
-  ZoomLevel,
+  DocumentMode,
   DocumentTab,
   LeftMenuAction,
+  PageInfo,
   RightMenuPanel,
+  ZoomLevel,
 } from "../types/document"
 import { ZOOM_LEVELS } from "../types/document"
 
@@ -54,7 +54,7 @@ export class DocumentStore {
   activeFileMenuPanel: string | null = null
 
   /* Language */
-  languageCode: string = "en-US"
+  languageCode = "en-US"
 
   /* Word count */
   wordCount = 0
@@ -103,7 +103,10 @@ export class DocumentStore {
   }
 
   setZoomLevel(level: number): void {
-    const clamped = Math.max(ZOOM_LEVELS[0] as number, Math.min(ZOOM_LEVELS[ZOOM_LEVELS.length - 1] as number, level)) as ZoomLevel
+    const clamped = Math.max(
+      ZOOM_LEVELS[0] as number,
+      Math.min(ZOOM_LEVELS[ZOOM_LEVELS.length - 1] as number, level),
+    ) as ZoomLevel
     this.zoomLevel = clamped
     this.fitToPage = false
     this.fitToWidth = false

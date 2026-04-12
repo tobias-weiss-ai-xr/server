@@ -1,11 +1,11 @@
 import { observer } from "mobx-react-lite"
+import { spreadsheetStore } from "../../stores/SpreadsheetStore"
+import { DataTableTab } from "./DataTableTab"
 import { FileTab } from "./FileTab"
+import { FormulaTab } from "./FormulaTab"
 import { HomeTab } from "./HomeTab"
 import { InsertTab } from "./InsertTab"
 import { LayoutTab } from "./LayoutTab"
-import { FormulaTab } from "./FormulaTab"
-import { DataTableTab } from "./DataTableTab"
-import { spreadsheetStore } from "../../stores/SpreadsheetStore"
 
 const ObservedToolbar = observer(function ObservedToolbar() {
   const isEditMode = spreadsheetStore.isEditMode

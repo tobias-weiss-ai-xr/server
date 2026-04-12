@@ -1,7 +1,7 @@
-import type { JSX } from "react"
-import type { RightMenuPanel } from "../../types/document"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { documentStore } from "../../stores/DocumentStore"
+import type { RightMenuPanel } from "../../types/document"
 import { RightMenuButton } from "./RightMenuButton"
 
 const BUTTONS: Array<{ action: RightMenuPanel; title: string; icon: string }> = [
@@ -19,7 +19,12 @@ const BUTTONS: Array<{ action: RightMenuPanel; title: string; icon: string }> = 
 
 function RightMenuInner(): JSX.Element {
   return (
-    <div className="de-right-menu" role="menubar" aria-orientation="vertical" aria-label="Right menu">
+    <div
+      className="de-right-menu"
+      role="menubar"
+      aria-orientation="vertical"
+      aria-label="Right menu"
+    >
       <div className="de-right-menu-btns">
         {BUTTONS.map(({ action, title, icon }) => (
           <RightMenuButton

@@ -1,5 +1,5 @@
-import type { FileMenuAction } from "../../types/document"
 import { documentStore } from "../../stores/DocumentStore"
+import type { FileMenuAction } from "../../types/document"
 
 interface FileMenuItemsProps {
   onMenuClick: (action: string, hasPanel: boolean) => void
@@ -43,25 +43,39 @@ export function FileMenuItems({ onMenuClick, onBack }: FileMenuItemsProps) {
 
   return (
     <ul className="de-file-menu-items">
-      <li
+      <div
         className="de-file-menu-item"
         role="menuitem"
+        tabIndex={0}
         onClick={handleBack}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault()
+            handleBack()
+          }
+        }}
       >
         <span className="de-file-menu-item-icon">←</span>
         <span className="de-file-menu-item-caption">Back</span>
-      </li>
+      </div>
       <li className="de-file-menu-divider" />
-        {MENU_ITEMS.map((item) => (
-          <li
-            key={item.action}
-            className={`de-file-menu-item${activePanel === item.action ? " active" : ""}`}
-            role="menuitem"
-            onClick={() => onMenuClick(item.action, item.hasPanel)}
-          >
-            <span className="de-file-menu-item-caption">{item.caption}</span>
-          </li>
-        ))}
+      {MENU_ITEMS.map((item) => (
+        <div
+          key={item.action}
+          className={`de-file-menu-item${activePanel === item.action ? " active" : ""}`}
+          role="menuitem"
+          tabIndex={0}
+          onClick={() => onMenuClick(item.action, item.hasPanel)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault()
+              onMenuClick(item.action, item.hasPanel)
+            }
+          }}
+        >
+          <span className="de-file-menu-item-caption">{item.caption}</span>
+        </div>
+      ))}
     </ul>
   )
 }

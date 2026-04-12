@@ -15,7 +15,12 @@ const ObservedHomeTab = observer(function ObservedHomeTab() {
           <button type="button" className="de-hometab-btn" onClick={() => {}} title="Paste">
             Paste
           </button>
-          <button type="button" className="de-hometab-btn" onClick={() => {}} title="Format Painter">
+          <button
+            type="button"
+            className="de-hometab-btn"
+            onClick={() => {}}
+            title="Format Painter"
+          >
             Format Painter
           </button>
         </div>

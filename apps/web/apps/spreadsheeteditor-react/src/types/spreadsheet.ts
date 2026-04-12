@@ -64,7 +64,14 @@ export type ZoomLevel = 50 | 75 | 100 | 125 | 150 | 175 | 200 | 300 | 400 | 500
 
 export const ZOOM_LEVELS: ZoomLevel[] = [50, 75, 100, 125, 150, 175, 200, 300, 400, 500]
 
-export type SpreadsheetTab = "file" | "home" | "insert" | "layout" | "formula" | "data" | "tabledesign"
+export type SpreadsheetTab =
+  | "file"
+  | "home"
+  | "insert"
+  | "layout"
+  | "formula"
+  | "data"
+  | "tabledesign"
 
 export type FileMenuAction =
   | "back"

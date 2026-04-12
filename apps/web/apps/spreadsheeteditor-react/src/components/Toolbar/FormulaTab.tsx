@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite"
 
 const ObservedFormulaTab = observer(function ObservedFormulaTab() {
   return (
-    <section className="se-formulatab-panel" data-tab="formula" role="tabpanel" aria-labelledby="formula">
+    <section
+      className="se-formulatab-panel"
+      data-tab="formula"
+      role="tabpanel"
+      aria-labelledby="formula"
+    >
       {/* Function Library */}
       <div className="se-formulatab-group">
         <div className="se-formulatab-elset">
@@ -41,10 +46,20 @@ const ObservedFormulaTab = observer(function ObservedFormulaTab() {
           <span className="se-formulatab-label">Defined Names</span>
         </div>
         <div className="se-formulatab-elset">
-          <button type="button" className="se-formulatab-btn" onClick={() => {}} title="Name Manager">
+          <button
+            type="button"
+            className="se-formulatab-btn"
+            onClick={() => {}}
+            title="Name Manager"
+          >
             Name Manager
           </button>
-          <button type="button" className="se-formulatab-btn" onClick={() => {}} title="Create from Selection">
+          <button
+            type="button"
+            className="se-formulatab-btn"
+            onClick={() => {}}
+            title="Create from Selection"
+          >
             Create from Selection
           </button>
         </div>
@@ -58,10 +73,20 @@ const ObservedFormulaTab = observer(function ObservedFormulaTab() {
           <span className="se-formulatab-label">Formula Auditing</span>
         </div>
         <div className="se-formulatab-elset">
-          <button type="button" className="se-formulatab-btn" onClick={() => {}} title="Trace Precedents">
+          <button
+            type="button"
+            className="se-formulatab-btn"
+            onClick={() => {}}
+            title="Trace Precedents"
+          >
             Trace Precedents
           </button>
-          <button type="button" className="se-formulatab-btn" onClick={() => {}} title="Trace Dependents">
+          <button
+            type="button"
+            className="se-formulatab-btn"
+            onClick={() => {}}
+            title="Trace Dependents"
+          >
             Trace Dependents
           </button>
         </div>

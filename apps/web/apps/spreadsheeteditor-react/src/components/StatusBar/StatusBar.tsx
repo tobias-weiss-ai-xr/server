@@ -1,5 +1,5 @@
-import type { JSX } from "react"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { spreadsheetStore } from "../../stores/SpreadsheetStore"
 
 function ZoomControls(): JSX.Element {
@@ -31,7 +31,7 @@ function ZoomControls(): JSX.Element {
         −
       </button>
       <div className="se-statusbar-zoom-label">
-        <label className="se-statusbar-label">{`${spreadsheetStore.zoomLevel}%`}</label>
+        <span className="se-statusbar-label">{`${spreadsheetStore.zoomLevel}%`}</span>
       </div>
       <button
         type="button"
@@ -46,7 +46,14 @@ function ZoomControls(): JSX.Element {
 }
 
 const ObservedStatusBar = observer(function ObservedStatusBar(): JSX.Element {
-  const { sheets, activeSheetIndex, filteredCount, showStatistics, activeStatistics, languageCode } = spreadsheetStore
+  const {
+    sheets,
+    activeSheetIndex,
+    filteredCount,
+    showStatistics,
+    activeStatistics,
+    languageCode,
+  } = spreadsheetStore
 
   return (
     <div className="se-statusbar">
@@ -92,6 +99,14 @@ const ObservedStatusBar = observer(function ObservedStatusBar(): JSX.Element {
             key={sheet.index}
             className={`se-statusbar-sheet-tab${sheet.active ? " active" : ""}`}
             onClick={() => spreadsheetStore.setActiveSheetIndex(sheet.index)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault()
+                spreadsheetStore.setActiveSheetIndex(sheet.index)
+              }
+            }}
+            role="tab"
+            tabIndex={0}
           >
             {sheet.name}
           </div>
@@ -151,7 +166,7 @@ const ObservedStatusBar = observer(function ObservedStatusBar(): JSX.Element {
         <>
           <div className="se-statusbar-separator" />
           <div className="se-statusbar-tools">
-            <label className="se-statusbar-label">{`${filteredCount} of ${spreadsheetStore.sheets.length * 100} records found`}</label>
+            <span className="se-statusbar-label">{`${filteredCount} of ${spreadsheetStore.sheets.length * 100} records found`}</span>
           </div>
         </>
       )}

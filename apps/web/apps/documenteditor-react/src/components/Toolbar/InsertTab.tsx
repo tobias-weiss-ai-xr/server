@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite"
 
 const ObservedInsertTab = observer(function ObservedInsertTab() {
   return (
-    <section className="de-inserttab-panel" data-tab="insert" role="tabpanel" aria-labelledby="insert">
+    <section
+      className="de-inserttab-panel"
+      data-tab="insert"
+      role="tabpanel"
+      aria-labelledby="insert"
+    >
       {/* Pages */}
       <div className="de-inserttab-group">
         <div className="de-inserttab-elset">

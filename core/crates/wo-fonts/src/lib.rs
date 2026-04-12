@@ -6,10 +6,12 @@
 //! Supports TrueType (.ttf), OpenType (.otf), WOFF, WOFF2,
 //! and provides font metrics, glyph outlines, and basic shaping.
 
+pub mod cache;
 pub mod loader;
 pub mod metrics;
 pub mod model;
 
+pub use cache::{FontCache, FontMatcher, FontQuery};
 pub use loader::FontLoader;
 pub use metrics::FontMetrics;
 pub use model::{FontInfo, FontStyle, FontWeight, GlyphMetrics};

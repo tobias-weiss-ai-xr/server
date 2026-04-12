@@ -8,7 +8,7 @@ World-Office is under active development. Security fixes are applied to the `mai
 
 **Do not open a public issue for security vulnerabilities.**
 
-Report vulnerabilities to: **security@world-office.org**
+Report vulnerabilities to: **world-office@graphwiz.ai**
 
 ### What to include
 

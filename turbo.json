@@ -25,6 +25,23 @@
     },
     "clean": {
       "cache": false
+    },
+    "cargo:check": {
+      "outputs": ["target/**"]
+    },
+    "cargo:build": {
+      "dependsOn": ["cargo:check"],
+      "outputs": ["target/**"]
+    },
+    "cargo:test": {
+      "dependsOn": ["cargo:check"],
+      "outputs": ["target/**"]
+    },
+    "cargo:lint": {
+      "outputs": []
+    },
+    "cargo:fmt": {
+      "outputs": []
     }
   }
 }

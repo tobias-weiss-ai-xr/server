@@ -1,16 +1,16 @@
 # =============================================================================
-# World Office OpenCloud E2E Test — OCIS + eo-docs
+# World Office OpenCloud E2E Test — OCIS + wo-docs
 # =============================================================================
 #
-# Spins up OCIS with TLS connected to the already-running eo-docs Document Server.
+# Spins up OCIS with TLS connected to the already-running wo-docs Document Server.
 # Usage:
 #   docker compose -f docker-compose.opencloud.yml up -d
 #   docker compose -f docker-compose.opencloud.yml logs -f ocis
 #   docker compose -f docker-compose.opencloud.yml down -v
 #
 # Prerequisites:
-#   - eo-docs container must be running (ghcr.io/word-office/documentserver)
-#   - Run `scripts/patch-eodocs.sh` to patch missing assets in eo-docs
+#   - wo-docs container must be running (ghcr.io/word-office/documentserver)
+#   - Run `scripts/patch-eodocs.sh` to patch missing assets in wo-docs
 #   - TLS cert/key generated in docker/ocis/
 
 services:
@@ -39,7 +39,7 @@ services:
       # IDP issuer — must match OCIS_URL for OIDC
       - IDP_ISSUER=https://localhost:9200
 
-      # JWT — must match eo-docs JWT_SECRET
+      # JWT — must match wo-docs JWT_SECRET
       - OCIS_JWT_SECRET=mysecret
       - TOKEN_MANAGER_JWT_SECRET=mysecret
 
@@ -110,21 +110,21 @@ services:
       # Gateway — reach the OCIS gateway on the OCIS container
       - GATEWAY_GRPC_ADDR=ocis:9142
 
-      # WOPI source — the URL that eo-docs uses to reach this service
-      # Must be reachable from the eo-docs container
+      # WOPI source — the URL that wo-docs uses to reach this service
+      # Must be reachable from the wo-docs container
       - COLLABORATION_WOPI_SRC=http://test-collaboration:9300
 
-      # App config — point to eo-docs via nginx proxy
+      # App config — point to wo-docs via nginx proxy
       - COLLABORATION_APP_ADDR=http://test-nginx-proxy:8083
       - COLLABORATION_APP_INSECURE=true
       - COLLABORATION_APP_NAME=WorldOffice
       - COLLABORATION_APP_PRODUCT=WorldOffice
       - COLLABORATION_APP_DESCRIPTION=World Office Document Server
 
-      # WOPI secret — must match eo-docs JWT_SECRET
+      # WOPI secret — must match wo-docs JWT_SECRET
       - COLLABORATION_WOPI_SECRET=mysecret
 
-      # Disable WOPI proof key verification (eo-docs doesn't send proof headers)
+      # Disable WOPI proof key verification (wo-docs doesn't send proof headers)
       - COLLABORATION_APP_PROOF_DISABLE=true
 
       # CS3 gateway communication

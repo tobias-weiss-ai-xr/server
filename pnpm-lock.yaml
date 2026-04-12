@@ -18,6 +18,52 @@ importers:
         specifier: ^5.7.0
         version: 5.9.3
 
+  apps/web/apps/documenteditor-react:
+    dependencies:
+      '@world-office/design-system':
+        specifier: workspace:*
+        version: link:../../../../packages/design-system
+      '@world-office/editor-common':
+        specifier: workspace:*
+        version: link:../../../../packages/editor-common
+      '@world-office/editor-stores':
+        specifier: workspace:*
+        version: link:../../../../packages/editor-stores
+      '@world-office/i18n':
+        specifier: workspace:*
+        version: link:../../../../packages/i18n
+      '@world-office/sdk-bridge':
+        specifier: workspace:*
+        version: link:../../../../packages/sdk-bridge
+      mobx:
+        specifier: ^6.13.0
+        version: 6.15.0
+      mobx-react-lite:
+        specifier: ^4.1.0
+        version: 4.1.1(mobx@6.15.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.5
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.5(react@19.2.5)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react':
+        specifier: ^4.3.0
+        version: 4.7.0(vite@6.4.2(@types/node@25.6.0)(yaml@2.8.3))
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+      vite:
+        specifier: ^6.0.0
+        version: 6.4.2(@types/node@25.6.0)(yaml@2.8.3)
+
   apps/web/apps/editor-shell:
     dependencies:
       '@world-office/design-system':
@@ -93,6 +139,52 @@ importers:
         version: 6.4.2(@types/node@25.6.0)(yaml@2.8.3)
 
   apps/web/apps/presentationeditor-react:
+    dependencies:
+      '@world-office/design-system':
+        specifier: workspace:*
+        version: link:../../../../packages/design-system
+      '@world-office/editor-common':
+        specifier: workspace:*
+        version: link:../../../../packages/editor-common
+      '@world-office/editor-stores':
+        specifier: workspace:*
+        version: link:../../../../packages/editor-stores
+      '@world-office/i18n':
+        specifier: workspace:*
+        version: link:../../../../packages/i18n
+      '@world-office/sdk-bridge':
+        specifier: workspace:*
+        version: link:../../../../packages/sdk-bridge
+      mobx:
+        specifier: ^6.13.0
+        version: 6.15.0
+      mobx-react-lite:
+        specifier: ^4.1.0
+        version: 4.1.1(mobx@6.15.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.5
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.5(react@19.2.5)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react':
+        specifier: ^4.3.0
+        version: 4.7.0(vite@6.4.2(@types/node@25.6.0)(yaml@2.8.3))
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+      vite:
+        specifier: ^6.0.0
+        version: 6.4.2(@types/node@25.6.0)(yaml@2.8.3)
+
+  apps/web/apps/spreadsheeteditor-react:
     dependencies:
       '@world-office/design-system':
         specifier: workspace:*

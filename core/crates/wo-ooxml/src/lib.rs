@@ -1,0 +1,28 @@
+// wo-ooxml -- World-Office OOXML format engine
+//!
+//! Pure Rust implementation of Office Open XML format parsing.
+//! Supports DOCX, XLSX, PPTX (Office 2007+ formats).
+//! OOXML is a ZIP-based XML format defined by ECMA-376/ISO 29500.
+
+pub mod detector;
+pub mod model;
+pub mod parser;
+
+pub use model::{OoxmlDocument, OoxmlFormat};
+pub use parser::OoxmlParser;
+
+pub const FORMAT_NAME: &str = "ooxml";
+
+/// Check if data is an OOXML file (ZIP with [Content_Types].xml).
+pub fn is_ooxml_file(data: &[u8]) -> bool {
+    if data.len() < 4 || data[0] != 0x50 || data[1] != 0x4B {
+        return false;
+    }
+    let cursor = std::io::Cursor::new(data);
+    if let Ok(mut archive) = zip::ZipArchive::new(cursor) {
+        if archive.by_name("[Content_Types].xml").is_ok() {
+            return true;
+        }
+    }
+    false
+}

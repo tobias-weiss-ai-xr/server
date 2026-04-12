@@ -48,4 +48,4 @@ format-corpus/
 
 ## Roundtrip Test Harness
 
-See `core/crates/eo-common/src/test_harness.rs` for the Rust roundtrip testing infrastructure.
+See `core/crates/wo-common/src/test_harness.rs` for the Rust roundtrip testing infrastructure.

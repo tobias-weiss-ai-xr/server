@@ -1,12 +1,12 @@
 [workspace]
 resolver = "2"
 members = [
-    "eo-digital-signature",
-    "eo-redaction",
-    "eo-drm",
-    "eo-watermark",
-    "eo-comparison",
-    "eo-converter-pro",
+    "wo-digital-signature",
+    "wo-redaction",
+    "wo-drm",
+    "wo-watermark",
+    "wo-comparison",
+    "wo-converter-pro",
 ]
 
 [workspace.dependencies]

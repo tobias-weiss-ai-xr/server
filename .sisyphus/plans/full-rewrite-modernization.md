@@ -118,38 +118,38 @@ world-office/                             (monorepo)
 ├── core/                                # Rust document engine (AGPL)
 │   ├── Cargo.toml                       # Workspace for all core crates
 │   ├── crates/
-│   │   ├── eo-common/                   # Shared types, errors, utils
-│   │   ├── eo-unicode/                  # ICU-based text conversion
-│   │   ├── eo-txt/                      # Plain text format
-│   │   ├── eo-fb2/                      # FictionBook 2.0
-│   │   ├── eo-html/                     # HTML import/export
-│   │   ├── eo-xps/                      # XPS format
-│   │   ├── eo-ofd/                      # Chinese OFD
-│   │   ├── eo-djvu/                     # DjVu format
-│   │   ├── eo-epub/                     # EPUB format
-│   │   ├── eo-office-utils/             # ZIP/archive manipulation
-│   │   ├── eo-rtf/                      # RTF format
-│   │   ├── eo-hwp/                      # Korean HWP
-│   │   ├── eo-pdf/                      # PDF read/write
-│   │   ├── eo-odf/                      # ODF (ODT/ODS/ODP)
-│   │   ├── eo-ooxml/                    # OOXML (DOCX/XLSX/PPTX)
-│   │   ├── eo-msbinary/                 # Legacy .doc/.xls/.ppt
-│   │   ├── eo-docx-renderer/            # DOCX → PDF rendering
-│   │   ├── eo-x2t/                      # Format conversion orchestrator
-│   │   ├── eo-renderer/                 # Canvas rendering engine
-│   │   ├── eo-fonts/                    # Font engine
-│   │   └── eo-raster/                   # Raster image processing
+│   │   ├── wo-common/                   # Shared types, errors, utils
+│   │   ├── wo-unicode/                  # ICU-based text conversion
+│   │   ├── wo-txt/                      # Plain text format
+│   │   ├── wo-fb2/                      # FictionBook 2.0
+│   │   ├── wo-html/                     # HTML import/export
+│   │   ├── wo-xps/                      # XPS format
+│   │   ├── wo-ofd/                      # Chinese OFD
+│   │   ├── wo-djvu/                     # DjVu format
+│   │   ├── wo-epub/                     # EPUB format
+│   │   ├── wo-office-utils/             # ZIP/archive manipulation
+│   │   ├── wo-rtf/                      # RTF format
+│   │   ├── wo-hwp/                      # Korean HWP
+│   │   ├── wo-pdf/                      # PDF read/write
+│   │   ├── wo-odf/                      # ODF (ODT/ODS/ODP)
+│   │   ├── wo-ooxml/                    # OOXML (DOCX/XLSX/PPTX)
+│   │   ├── wo-msbinary/                 # Legacy .doc/.xls/.ppt
+│   │   ├── wo-docx-renderer/            # DOCX → PDF rendering
+│   │   ├── wo-x2t/                      # Format conversion orchestrator
+│   │   ├── wo-renderer/                 # Canvas rendering engine
+│   │   ├── wo-fonts/                    # Font engine
+│   │   └── wo-raster/                   # Raster image processing
 │   └── tests/                           # Format roundtrip test corpus
 │
 ├── core-enterprise/                     # Enterprise-only Rust crates (COMMERCIAL)
 │   ├── Cargo.toml
 │   └── crates/
-│       ├── eo-digital-signature/       # PAdES, XAdES, document signing
-│       ├── eo-redaction/                # Document redaction (black bars, remove content)
-│       ├── eo-drm/                      # Document rights management, encryption
-│       ├── eo-watermark/                # Dynamic watermarking (text, image)
-│       ├── eo-comparison/               # Advanced document comparison (legal redline)
-│       └── eo-converter-pro/            # Batch conversion, priority queue, advanced formats
+│       ├── wo-digital-signature/       # PAdES, XAdES, document signing
+│       ├── wo-redaction/                # Document redaction (black bars, remove content)
+│       ├── wo-drm/                      # Document rights management, encryption
+│       ├── wo-watermark/                # Dynamic watermarking (text, image)
+│       ├── wo-comparison/               # Advanced document comparison (legal redline)
+│       └── wo-converter-pro/            # Batch conversion, priority queue, advanced formats
 │
 ├── services/                            # Rust microservices (AGPL core, commercial extensions)
 │   ├── conversion-service/              # Format conversion (AGPL core)
@@ -335,7 +335,7 @@ Wave 4: CRITICAL (4,182 files) ────── Weeks 49-72
 During the rewrite, C++ modules that haven't been rewritten yet are accessed via `cxx`:
 
 ```rust
-// core/crates/eo-ooxml/src/bridge.rs
+// core/crates/wo-ooxml/src/bridge.rs
 #[cxx::bridge]
 mod ffi {
     extern "C++" {
@@ -395,7 +395,7 @@ When a module is fully rewritten in Rust, the cxx bridge is removed and the Rust
 
 3. **Rust module acceptance criteria:**
    ```
-   For each Rust module (e.g., eo-fb2):
+   For each Rust module (e.g., wo-fb2):
      1. Run roundtrip test corpus for that format against Rust implementation
      2. Compare output with C++ implementation
      3. Compare BOTH against golden master (original Office documents)
@@ -503,15 +503,15 @@ When a module is fully rewritten in Rust, the cxx bridge is removed and the Rust
 
 | Task | Effort | Category | Parallel |
 |------|--------|----------|----------|
-| eo-common crate (shared types, errors, utils) | 1 week | deep | No |
-| eo-txt (16 files) | 2 days | quick | After common |
-| eo-fb2 (7 files) | 1 day | quick | After common |
-| eo-html (22 files) | 3 days | quick | After common |
-| eo-xps (19 files) | 3 days | quick | After common |
-| eo-ofd (58 files) | 1 week | unspecified-high | After common |
-| eo-djvu (117 files) | 1 week | unspecified-high | After common |
-| eo-epub (86 files) | 1 week | unspecified-high | After common |
-| eo-office-utils (90 files) | 1 week | unspecified-high | After common |
+| wo-common crate (shared types, errors, utils) | 1 week | deep | No |
+| wo-txt (16 files) | 2 days | quick | After common |
+| wo-fb2 (7 files) | 1 day | quick | After common |
+| wo-html (22 files) | 3 days | quick | After common |
+| wo-xps (19 files) | 3 days | quick | After common |
+| wo-ofd (58 files) | 1 week | unspecified-high | After common |
+| wo-djvu (117 files) | 1 week | unspecified-high | After common |
+| wo-epub (86 files) | 1 week | unspecified-high | After common |
+| wo-office-utils (90 files) | 1 week | unspecified-high | After common |
 | Roundtrip tests for all 8 modules | 1 week | deep | After all modules |
 
 **Exit Criteria:**
@@ -525,11 +525,11 @@ When a module is fully rewritten in Rust, the cxx bridge is removed and the Rust
 
 | Task | Effort | Category | Parallel |
 |------|--------|----------|----------|
-| eo-rtf (168 files) | 2 weeks | deep | No |
-| eo-hwp (165 files) | 2 weeks | deep | Parallel with RTF |
-| eo-pdf (301 files) | 4 weeks | deep | After RTF (reuses PDF knowledge) |
-| eo-odf (841 files) | 5 weeks | deep | Parallel with PDF |
-| eo-docx-renderer (46 files) | 1 week | quick | After ODF + PDF |
+| wo-rtf (168 files) | 2 weeks | deep | No |
+| wo-hwp (165 files) | 2 weeks | deep | Parallel with RTF |
+| wo-pdf (301 files) | 4 weeks | deep | After RTF (reuses PDF knowledge) |
+| wo-odf (841 files) | 5 weeks | deep | Parallel with PDF |
+| wo-docx-renderer (46 files) | 1 week | quick | After ODF + PDF |
 | Roundtrip tests for all 5 modules | 2 weeks | deep | After all modules |
 
 **Exit Criteria:**
@@ -573,10 +573,10 @@ When a module is fully rewritten in Rust, the cxx bridge is removed and the Rust
 
 | Task | Effort | Category | Parallel |
 |------|--------|----------|----------|
-| eo-unicode (998 files, ICU wrappers → icu4x) | 4 weeks | deep | No |
-| eo-msbinary (2,954 files, legacy .doc/.xls/.ppt) | 12 weeks | deep | After unicode |
-| eo-ooxml (3,387 files, DOCX/XLSX/PPTX) | 12 weeks | deep | After msbinary |
-| eo-x2t (38 files, conversion orchestrator) | 2 weeks | deep | After all format crates |
+| wo-unicode (998 files, ICU wrappers → icu4x) | 4 weeks | deep | No |
+| wo-msbinary (2,954 files, legacy .doc/.xls/.ppt) | 12 weeks | deep | After unicode |
+| wo-ooxml (3,387 files, DOCX/XLSX/PPTX) | 12 weeks | deep | After msbinary |
+| wo-x2t (38 files, conversion orchestrator) | 2 weeks | deep | After all format crates |
 | Roundtrip tests for all modules | 4 weeks | deep | After all modules |
 | Performance optimization | 4 weeks | deep | After tests |
 
@@ -594,12 +594,12 @@ When a module is fully rewritten in Rust, the cxx bridge is removed and the Rust
 
 | Task | Effort | Category | Parallel |
 |------|--------|----------|----------|
-| eo-fonts (FreeType + HarfBuzz → Rust FFI + fontdb) | 4 weeks | deep | No |
-| eo-raster (image processing, PNG/JPEG/TIFF/GIF) | 6 weeks | deep | After fonts |
-| eo-renderer core (canvas API, drawing primitives) | 8 weeks | deep | After raster |
-| eo-renderer text (text layout, shaping, bidirectional) | 4 weeks | deep | After renderer core |
-| eo-renderer graphics (paths, transforms, blending, gradients) | 4 weeks | deep | Parallel with text |
-| eo-common remaining (1,030 files, network, plugins, etc.) | 6 weeks | deep | Parallel |
+| wo-fonts (FreeType + HarfBuzz → Rust FFI + fontdb) | 4 weeks | deep | No |
+| wo-raster (image processing, PNG/JPEG/TIFF/GIF) | 6 weeks | deep | After fonts |
+| wo-renderer core (canvas API, drawing primitives) | 8 weeks | deep | After raster |
+| wo-renderer text (text layout, shaping, bidirectional) | 4 weeks | deep | After renderer core |
+| wo-renderer graphics (paths, transforms, blending, gradients) | 4 weeks | deep | Parallel with text |
+| wo-common remaining (1,030 files, network, plugins, etc.) | 6 weeks | deep | Parallel |
 | Rendering comparison tests (pixel-perfect vs C++) | 4 weeks | deep | After renderer |
 | Performance benchmarking and optimization | 4 weeks | deep | After tests |
 
@@ -640,9 +640,9 @@ When a module is fully rewritten in Rust, the cxx bridge is removed and the Rust
 
 | Task | Effort | Category | Parallel |
 |------|--------|----------|----------|
-| Compile eo-x2t to WASM (format conversion in browser) | 4 weeks | deep | No |
+| Compile wo-x2t to WASM (format conversion in browser) | 4 weeks | deep | No |
 | Client-side format conversion (DOCX→PDF, etc.) | 3 weeks | deep | After WASM |
-| Compile eo-renderer to WASM (client-side rendering) | 6 weeks | deep | After x2t WASM |
+| Compile wo-renderer to WASM (client-side rendering) | 6 weeks | deep | After x2t WASM |
 | Offline editing (IndexedDB + Service Worker) | 4 weeks | deep | After rendering WASM |
 | Performance optimization (WASM binary size, load time) | 3 weeks | deep | After all WASM |
 | Gradual degradation strategy (server → WASM fallback) | 2 weeks | unspecified-high | After all |
@@ -931,12 +931,12 @@ Enterprise features use **compile-time feature flags** (not runtime checks):
 [features]
 default = []  # No enterprise features without license
 
-digital-signatures = ["dep:eo-pdf"]
-redaction = ["dep:eo-pdf", "dep:eo-renderer"]
+digital-signatures = ["dep:wo-pdf"]
+redaction = ["dep:wo-pdf", "dep:wo-renderer"]
 drm = []
-watermark = ["dep:eo-renderer"]
-comparison = ["dep:eo-ooxml"]
-converter-pro = ["dep:eo-x2t"]
+watermark = ["dep:wo-renderer"]
+comparison = ["dep:wo-ooxml"]
+converter-pro = ["dep:wo-x2t"]
 ```
 
 ```rust
@@ -1005,11 +1005,11 @@ All contributors must sign a CLA granting:
 
 | Feature | Crate/Package | Description | Priority |
 |---------|--------------|-------------|----------|
-| **Digital Signatures** | `core-enterprise/eo-digital-signature` | PAdES (PDF), XAdES (OOXML), document timestamping. Integrates with hardware tokens (eIDAS, FIDO2). | P0 |
-| **Document Encryption** | `core-enterprise/eo-drm` | AES-256 encryption at rest, password protection, certificate-based encryption. Integrates with Azure Key Vault, AWS KMS, HashiCorp Vault. | P0 |
-| **Redaction** | `core-enterprise/eo-redaction` | Content redaction with black bars, content removal, metadata scrubbing. Pattern-based (SSN, credit cards, custom). | P1 |
-| **Watermarking** | `core-enterprise/eo-watermark` | Dynamic watermarks (user, date, custom text, image). Visible and hidden (steganographic) modes. Applied on view, export, print. | P1 |
-| **Document Comparison** | `core-enterprise/eo-comparison` | Legal redline comparison. Character-level diffs, style changes, image/table comparison. Accept/reject per change. | P2 |
+| **Digital Signatures** | `core-enterprise/wo-digital-signature` | PAdES (PDF), XAdES (OOXML), document timestamping. Integrates with hardware tokens (eIDAS, FIDO2). | P0 |
+| **Document Encryption** | `core-enterprise/wo-drm` | AES-256 encryption at rest, password protection, certificate-based encryption. Integrates with Azure Key Vault, AWS KMS, HashiCorp Vault. | P0 |
+| **Redaction** | `core-enterprise/wo-redaction` | Content redaction with black bars, content removal, metadata scrubbing. Pattern-based (SSN, credit cards, custom). | P1 |
+| **Watermarking** | `core-enterprise/wo-watermark` | Dynamic watermarks (user, date, custom text, image). Visible and hidden (steganographic) modes. Applied on view, export, print. | P1 |
+| **Document Comparison** | `core-enterprise/wo-comparison` | Legal redline comparison. Character-level diffs, style changes, image/table comparison. Accept/reject per change. | P2 |
 
 ### 13.2 Category 2: Admin & Compliance
 
@@ -1026,7 +1026,7 @@ All contributors must sign a CLA granting:
 | Feature | Package | Description | Priority |
 |---------|---------|-------------|----------|
 | **Review Workflows** | `web-enterprise/review-workflows` | Approval chains: draft → review → approve → publish. Role-based reviewers. Multi-stage reviews. | P1 |
-| **Advanced Change Tracking** | `core-enterprise/eo-comparison` extension | Granular per-author change tracking. Accept/reject per-change. Author attribution. | P2 |
+| **Advanced Change Tracking** | `core-enterprise/wo-comparison` extension | Granular per-author change tracking. Accept/reject per-change. Author attribution. | P2 |
 | **Comment & Annotation** | `apps/web/` extension | Inline comments anchored to content. Comment threads, mentions, resolution tracking. | P2 |
 | **Version History Pro** | `services/storage-service` extension | Unlimited version history with delta storage (AGPL: configurable). Point-in-time restore. | P1 |
 
@@ -1038,7 +1038,7 @@ All contributors must sign a CLA granting:
 | **Webhook & API Automation** | `services/webhook-service` (new) | Outgoing webhooks on document events. Configurable per collection. Retry with backoff. | P1 |
 | **CRM Connectors** | `integrations/enterprise/crm/` | Salesforce, HubSpot, Pipedrive connectors. Auto-create docs from CRM data. | P2 |
 | **ERP Connectors** | `integrations/enterprise/erp/` | SAP, Microsoft Dynamics, Odoo connectors. Invoice generation from ERP. | P2 |
-| **Bulk Conversion Pro** | `core-enterprise/eo-converter-pro` | Priority queue. Batch 1000+ documents. Advanced format support. Conversion templates. | P1 |
+| **Bulk Conversion Pro** | `core-enterprise/wo-converter-pro` | Priority queue. Batch 1000+ documents. Advanced format support. Conversion templates. | P1 |
 | **Headless API** | `services/api-gateway` extension | API-only mode. Rate limits per API key. Usage metering. | P1 |
 
 ### 13.5 Category 5: Analytics & Branding

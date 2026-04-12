@@ -1,7 +1,7 @@
 //! conversion-service — World-Office document conversion microservice
 //!
 //! Handles format-to-format conversion requests (DOCX↔PDF↔ODT, etc.)
-//! via the eo-x2t core engine. Jobs are queued and processed asynchronously.
+//! via the wo-x2t core engine. Jobs are queued and processed asynchronously.
 
 use axum::{
     extract::{Path, State},
@@ -123,7 +123,7 @@ async fn submit_conversion(
         jobs.insert(job_id.clone(), job);
     }
 
-    // TODO: enqueue actual conversion via eo-x2t core engine
+    // TODO: enqueue actual conversion via wo-x2t core engine
     tracing::info!(
         job_id = %job_id,
         from = %payload.input_format,
@@ -177,7 +177,7 @@ async fn health() -> Json<HealthResponse> {
 
 /// Supported format list for discovery.
 async fn supported_formats() -> Json<Vec<String>> {
-    // TODO: read from eo-x2t registry
+    // TODO: read from wo-x2t registry
     Json(vec![
         "docx".into(),
         "pdf".into(),

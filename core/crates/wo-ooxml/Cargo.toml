@@ -1,0 +1,14 @@
+[package]
+name = "wo-ooxml"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+
+[dependencies]
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+wo-common = { path = "../wo-common" }
+serde = { workspace = true }
+roxmltree = "0.20"
+zip = { workspace = true }
+

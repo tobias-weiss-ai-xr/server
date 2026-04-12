@@ -21,7 +21,7 @@
 #
 # You can monitor the container logs with:
 #
-#     docker logs -f eo-documentserver
+#     docker logs -f wo-documentserver
 #
 # The Document Server is fully started when you see a log message like:
 #
@@ -34,7 +34,7 @@
 # The example Node.js application is not started automatically.
 # After the container is running, start it manually with:
 #
-#     docker exec -it eo-documentserver supervisorctl start ds-example
+#     docker exec -it wo-documentserver supervisorctl start ds-example
 #
 # -----------------------------------------------------------------------------
 # Access the example
@@ -51,6 +51,6 @@ name: minimal-documentserver-test
 services:
   documentserver:
     image: word-office/documentserver:latest
-    container_name: eo-documentserver
+    container_name: wo-documentserver
     ports:
       - "8080:80"

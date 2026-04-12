@@ -3,7 +3,7 @@ name: worldoffice-nextcloud-test
 services:
   worldoffice-docs:
     image: ghcr.io/world-office/documentserver:latest
-    container_name: eo-docs
+    container_name: wo-docs
     restart: unless-stopped
     ports:
       - "8082:80"
@@ -12,8 +12,8 @@ services:
       - USE_UNAUTHORIZED_STORAGE=true
       - JWT_SECRET=mysecret
     volumes:
-      - eo-data:/var/www/world-office/Data
-      - eo-logs:/var/log/world-office
+      - wo-data:/var/www/world-office/Data
+      - wo-logs:/var/log/world-office
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost/healthcheck"]
       interval: 10s
@@ -41,6 +41,6 @@ services:
         condition: service_started
 
 volumes:
-  eo-data:
-  eo-logs:
+  wo-data:
+  wo-logs:
   nc-data:

@@ -7,8 +7,10 @@
     "devUrl": "http://localhost:1420"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
+        "label": "main",
         "title": "World Office",
         "width": 1280,
         "height": 720,
@@ -19,13 +21,68 @@
     ],
     "security": {
       "csp": null
+    },
+    "trayIcon": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
     }
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["nsis", "deb", "rpm", "dmg", "app"],
     "icon": [
       "icons/icon.png"
-    ]
+    ],
+    "resources": [],
+    "copyright": "Copyright © 2026 World Office",
+    "category": "Office",
+    "shortDescription": "World Office — Independent Document Suite",
+    "longDescription": "World Office is a modern, open-source office suite supporting DOCX, XLSX, PPTX, PDF, ODF, and more.",
+    "linux": {
+      "deb": {
+        "depends": [],
+        "priority": "optional",
+        "section": "utils"
+      },
+      "rpm": {
+        "depends": [],
+        "release": "1"
+      },
+      "appimage": {
+        "bundleMediaFramework": false
+      }
+    },
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "minimumSystemVersion": "10.15",
+      "providerShortName": "WO",
+      "signingIdentity": null
+    },
+    "windows": {
+      "nsis": {
+        "languages": ["English", "German", "French", "Spanish"],
+        "displayLanguageSelector": true,
+        "installMode": "currentUser",
+        "allowDowngrades": true,
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true,
+        "shortcutFolder": "World Office",
+        "perMachine": false,
+        "template": null,
+        "installerIcon": "icons/icon.ico",
+        "headerImage": null,
+        "sidebarImage": null,
+        "bitmap": null
+      },
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "",
+      "wix": null,
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      }
+    }
   }
 }

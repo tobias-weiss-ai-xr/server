@@ -4,6 +4,25 @@
   "description": "Capability for the main window",
   "windows": ["main"],
   "permissions": [
-    "core:default"
+    "core:default",
+    "core:window:allow-center",
+    "core:window:allow-close",
+    "core:window:allow-create",
+    "core:window:allow-hide",
+    "core:window:allow-show",
+    "core:window:allow-maximize",
+    "core:window:allow-minimize",
+    "core:window:allow-unmaximize",
+    "core:window:allow-unminimize",
+    "core:window:allow-focus",
+    "core:window:allow-set-focus",
+    "core:window:allow-set-title",
+    "core:window:allow-set-fullscreen",
+    "core:window:allow-set-zoom",
+    "core:window:allow-zoom",
+    "core:app:allow-exit",
+    "fs:default",
+    "dialog:default",
+    "updater:default"
   ]
 }

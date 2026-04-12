@@ -5,6 +5,7 @@
 
 pub mod model;
 pub mod parser;
+pub mod roundtrip;
 
 pub use model::OfdDocument;
 pub use parser::OfdParser;

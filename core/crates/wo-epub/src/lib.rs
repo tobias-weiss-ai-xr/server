@@ -6,6 +6,7 @@
 
 pub mod model;
 pub mod parser;
+pub mod roundtrip;
 
 pub use model::EpubDocument;
 pub use parser::EpubParser;

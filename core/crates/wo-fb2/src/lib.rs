@@ -7,6 +7,7 @@
 
 pub mod model;
 pub mod parser;
+pub mod roundtrip;
 
 pub use model::Fb2Document;
 pub use parser::Fb2Parser;

@@ -37,6 +37,10 @@ members = [
     "services-enterprise/audit-service",
     "services-enterprise/scim-service",
     "services-enterprise/webhook-service",
+    "core/crates/wo-wopi",
+    "core/crates/wo-webdav",
+    "core/crates/wo-x2t-wasm",
+    "core/crates/wo-renderer-wasm",
 ]
 
 [workspace.package]
@@ -69,7 +73,7 @@ tracing = "0.1"
 tracing-subscriber = "0.3"
 cxx = "1"
 axum = { version = "0.8", features = ["ws"] }
-tower-http = { version = "0.6", features = ["cors"] }
+tower-http = { version = "0.6", features = ["cors", "trace"] }
 futures-util = "0.3"
 uuid = { version = "1", features = ["v4"] }
 chrono = { version = "0.4", features = ["serde"] }
@@ -81,3 +85,14 @@ encoding_rs = "0.8"
 ttf-parser = "0.25"
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "tiff", "gif", "bmp"] }
 unicode-normalization = "0.1"
+urlencoding = "2"
+hyper = { version = "1", features = ["full"] }
+base64 = "0.22"
+sha2 = "0.10"
+async-trait = "0.1"
+tempfile = "3"
+tower = "0.5"
+wasm-bindgen = "0.2"
+js-sys = "0.3"
+web-sys = { version = "0.3", features = ["console", "HtmlCanvasElement", "CanvasRenderingContext2d", "ImageData", "Window", "Document"] }
+console_error_panic_hook = "0.1"

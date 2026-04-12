@@ -1,0 +1,23 @@
+[package]
+name = "wo-renderer-wasm"
+version = "0.1.0"
+edition = "2021"
+authors = ["World-Office Contributors"]
+description = "WASM bindings for World-Office rendering engine"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/yourusername/World-Office"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = { workspace = true }
+js-sys = { workspace = true }
+web-sys = { workspace = true }
+wo-renderer = { path = "../wo-renderer" }
+wo-common = { path = "../wo-common" }
+console_error_panic_hook = { workspace = true, optional = true }
+serde_json = { workspace = true }
+
+[features]
+default = ["console_error_panic_hook"]

@@ -6,26 +6,17 @@ labels: enhancement
 assignees: ''
 ---
 
-<!--
-SPDX-FileCopyrightText: 2026 Word Office contributors
-SPDX-License-Identifier: CC0-1.0
--->
-
 ## Problem
 
 What problem does this feature solve? Why is it needed?
 
 ## Proposed Solution
 
-Describe your proposed solution. Be as specific as possible.
+Describe your proposed solution. Be specific.
 
 ## Alternatives Considered
 
-Are there other approaches you've thought about? Why are they less suitable?
-
-## Affected Components
-
-Which repositories would this change touch? (e.g., DocumentServer, core, sdkjs, web-apps, server, desktop-apps)
+What other approaches have you thought about? Why are they less suitable?
 
 ## Additional Context
 

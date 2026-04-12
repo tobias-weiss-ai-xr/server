@@ -6,14 +6,9 @@ labels: bug
 assignees: ''
 ---
 
-<!--
-SPDX-FileCopyrightText: 2026 Word Office contributors
-SPDX-License-Identifier: CC0-1.0
--->
-
 ## Description
 
-A clear and concise description of what the bug is.
+A clear description of what the bug is.
 
 ## Steps to Reproduce
 
@@ -28,20 +23,15 @@ What you expected to happen.
 
 ## Actual Behavior
 
-What actually happened. Include screenshots or screen recordings if applicable.
+What happened instead. Include screenshots or logs if applicable.
 
 ## Environment
 
-- **OS**: [e.g., Ubuntu 22.04, macOS 14, Windows 11]
-- **Browser**: [e.g., Chrome 122, Firefox 123]
-- **Docker version**: [if applicable]
-- **Deployment**: [e.g., Docker, Debian package, from source]
-- **Word Office version/commit**: [e.g., nightly, v1.0, commit hash]
-
-## Logs
-
-Paste relevant error messages or stack traces here.
+- **OS**: [e.g., Ubuntu 24.04, macOS 15, Windows 11]
+- **World-Office version**: [e.g., v0.1.0, commit hash]
+- **Browser**: [e.g., Chrome 130, Firefox 132]
+- **Deployment**: [e.g., Docker, from source]
 
 ## Additional Context
 
-Any other context about the problem (e.g., does it also happen in legacy codebase?).
+Any other context about the problem.

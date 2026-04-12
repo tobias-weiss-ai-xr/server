@@ -1,0 +1,32 @@
+{
+  "name": "@world-office/visioeditor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --write src/"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "mobx": "^6.13.0",
+    "mobx-react-lite": "^4.1.0",
+    "@world-office/design-system": "workspace:*",
+    "@world-office/editor-common": "workspace:*",
+    "@world-office/editor-stores": "workspace:*",
+    "@world-office/sdk-bridge": "workspace:*",
+    "@world-office/i18n": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0"
+  }
+}

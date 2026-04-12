@@ -1,4 +1,4 @@
-import React, { forwardRef, type InputHTMLAttributes } from "react";
+import { forwardRef, type InputHTMLAttributes } from "react";
 import { colors, radii, spacing } from "../tokens";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

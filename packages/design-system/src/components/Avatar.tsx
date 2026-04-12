@@ -1,5 +1,5 @@
-import React from "react";
-import { colors, radii, spacing } from "../tokens";
+import type { CSSProperties } from "react";
+import { colors, radii } from "../tokens";
 
 interface AvatarProps {
   src?: string;
@@ -7,7 +7,7 @@ interface AvatarProps {
   fallback?: string;
   size?: number;
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
 export function Avatar({ src, alt = "", fallback, size = 40, className, style }: AvatarProps) {

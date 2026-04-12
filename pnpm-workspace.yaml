@@ -2,6 +2,7 @@ packages:
   - "packages/*"
   - "apps/*"
   - "apps/web/*"
+  - "apps/web/apps/*"
   - "apps-web-enterprise/*"
   - "integrations/*"
   - "tools/*"

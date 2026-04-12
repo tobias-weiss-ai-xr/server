@@ -1,0 +1,67 @@
+/* Presentation Editor — Left Menu Styles */
+
+.prese-left-menu {
+  display: flex;
+  width: var(--wo-prese-leftmenu-width);
+  height: 100%;
+  background-color: var(--wo-prese-bg-toolbar);
+  border-right: 1px solid var(--wo-prese-border);
+  user-select: none;
+}
+
+.prese-left-menu-btns {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1;
+}
+
+/* Toolbar-style button (square, icon-only) */
+.prese-left-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: var(--wo-prese-text-secondary);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.prese-left-menu-btn:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+  color: var(--wo-prese-text-primary);
+}
+
+.prese-left-menu-btn.active {
+  color: var(--wo-prese-accent);
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+}
+
+/* Icon SVG container */
+.prese-left-menu-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.prese-left-menu-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Side panel area (expandable, sits beside the icon bar) */
+.prese-left-panel-side {
+  width: 250px;
+  height: 100%;
+  background-color: var(--wo-prese-bg-pane);
+  border-right: 1px solid var(--wo-prese-border);
+  overflow: hidden;
+}
+
+/* Chat panel placeholder */
+.prese-left-panel-chat {
+  width: 100%;
+  height: 100%;
+}

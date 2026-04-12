@@ -1,0 +1,125 @@
+/* Presentation Editor — Main Layout & Reset */
+
+:root {
+  --wo-prese-toolbar-height: 40px;
+  --wo-prese-toolbar-height-compact: 34px;
+  --wo-prese-statusbar-height: 25px;
+  --wo-prese-statusbar-height-expanded: 50px;
+  --wo-prese-leftmenu-width: 40px;
+  --wo-prese-leftmenu-min: 40px;
+  --wo-prese-leftmenu-max: 300px;
+  --wo-prese-rightmenu-width: 40px;
+  --wo-prese-rightmenu-min: 40px;
+  --wo-prese-rightmenu-max: 300px;
+  --wo-prese-doc-bg: #fbfbfb;
+
+  --wo-prese-bg-pane: #ffffff;
+  --wo-prese-bg-toolbar: var(--wo-color-bg-toolbar, #f0f0f0);
+  --wo-prese-bg-statusbar: var(--wo-color-bg-statusbar, #e8e8e8);
+  --wo-prese-bg-page: #ffffff;
+  --wo-prese-bg-page-active: #ffffff;
+  --wo-prese-bg-page-overlay: rgba(68, 71, 150, 1);
+  --wo-prese-text-primary: var(--wo-color-text-primary, #333333);
+  --wo-prese-text-secondary: var(--wo-color-text-secondary, #666666);
+  --wo-prese-border: var(--wo-color-border, #e0e0e0);
+  --wo-prese-accent: var(--wo-color-accent, #4472c4);
+  --wo-prese-accent-hover: var(--wo-color-accent-hover, #355d9e);
+  --wo-prese-font: var(--wo-font-family, "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif);
+}
+
+.viewport-ref {
+  font-family: var(--wo-prese-font);
+  color: var(--wo-prese-text-primary);
+}
+
+#editor_sdk {
+  width: 100%;
+  height: 100%;
+}
+
+/* Viewport — VBox/HBox layout via CSS Grid */
+.prese-viewport {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--wo-prese-bg-pane);
+  overflow: hidden;
+}
+
+.prese-viewport-vbox {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.prese-viewport-toolbar {
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.prese-viewport-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.prese-viewport-left-menu {
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.prese-viewport-right-menu {
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.prese-viewport-editor {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--wo-prese-doc-bg);
+}
+
+.prese-viewport-statusbar {
+  flex-shrink: 0;
+}
+
+/* File menu panel (full-height overlay) */
+.prese-file-menu-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 500;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* About panel */
+.prese-about-menu-panel {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 40px;
+  top: 0;
+  padding-right: 40px;
+  z-index: 450;
+  background-color: var(--wo-prese-bg-pane);
+  overflow: hidden;
+}
+
+/* Document holder */
+.prese-document-holder {
+  width: 100%;
+  height: 100%;
+  background-color: var(--wo-prese-doc-bg);
+}

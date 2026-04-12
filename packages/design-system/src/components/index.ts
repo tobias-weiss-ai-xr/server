@@ -11,3 +11,6 @@ export { Dialog } from "./Dialog";
 export { Tooltip } from "./Tooltip";
 export { Spinner } from "./Spinner";
 export { Avatar } from "./Avatar";
+
+// Editor primitives
+export * from "./editor";

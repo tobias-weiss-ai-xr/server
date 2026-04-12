@@ -1,0 +1,177 @@
+/* Editor Layout — CSS Grid */
+
+.editor-layout {
+  display: grid;
+  grid-template-rows: var(--wo-toolbar-height) 1fr var(--wo-statusbar-height);
+  grid-template-columns: 1fr;
+  height: 100%;
+  width: 100%;
+}
+
+.editor-toolbar {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.editor-body {
+  grid-row: 2;
+  grid-column: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.editor-statusbar {
+  grid-row: 3;
+  grid-column: 1;
+}
+
+/* Panels */
+
+.editor-tabbar {
+  flex-shrink: 0;
+  width: var(--wo-tabbar-height);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 1px solid var(--wo-color-border);
+  background-color: var(--wo-color-bg-secondary);
+}
+
+.editor-left-panel {
+  flex-shrink: 0;
+  width: var(--wo-panel-min-width);
+  max-width: var(--wo-panel-max-width);
+  min-width: var(--wo-panel-min-width);
+  height: 100%;
+  overflow-y: auto;
+  border-right: 1px solid var(--wo-color-border);
+  background-color: var(--wo-color-bg-panel);
+}
+
+.editor-canvas {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: auto;
+  background-color: var(--wo-color-bg-primary);
+}
+
+.editor-right-panel {
+  flex-shrink: 0;
+  width: var(--wo-panel-min-width);
+  max-width: var(--wo-panel-max-width);
+  min-width: var(--wo-panel-min-width);
+  height: 100%;
+  overflow-y: auto;
+  border-left: 1px solid var(--wo-color-border);
+  background-color: var(--wo-color-bg-panel);
+}
+
+/* Toolbar */
+
+.toolbar-container {
+  display: flex;
+  align-items: center;
+  height: var(--wo-toolbar-height);
+  padding: 0 8px;
+  background-color: var(--wo-color-bg-toolbar);
+  border-bottom: 1px solid var(--wo-color-border);
+  gap: 2px;
+}
+
+/* Status Bar */
+
+.statusbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--wo-statusbar-height);
+  padding: 0 12px;
+  background-color: var(--wo-color-bg-statusbar);
+  border-top: 1px solid var(--wo-color-border);
+  font-size: 12px;
+  color: var(--wo-color-text-secondary);
+}
+
+.statusbar-left,
+.statusbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Tab Bar */
+
+.tabbar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  gap: 4px;
+}
+
+.tabbar-item {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--wo-color-text-secondary);
+  font-size: 16px;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.tabbar-item:hover {
+  background-color: var(--wo-color-bg-toolbar);
+  color: var(--wo-color-text-primary);
+}
+
+.tabbar-item.active {
+  background-color: var(--wo-color-accent);
+  color: #ffffff;
+}
+
+/* Panels shared */
+
+.panel-container {
+  padding: 12px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--wo-color-text-secondary);
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--wo-color-border);
+}
+
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Canvas */
+
+.canvas-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.canvas-placeholder {
+  color: var(--wo-color-text-secondary);
+  font-size: 14px;
+  text-align: center;
+  padding: 24px;
+}

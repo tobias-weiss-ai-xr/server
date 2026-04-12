@@ -1,0 +1,189 @@
+import type { EditorAppConfig } from "@world-office/editor-common"
+
+export interface PresentationMode extends EditorAppConfig {
+  isEdit: boolean
+  canCoAuthoring: boolean
+  canChat: boolean
+  canComments: boolean
+  canViewComments: boolean
+  canDownload: boolean
+  canPrint: boolean
+  canPreviewPrint: boolean
+  canRename: boolean
+  canBack: boolean
+  canHelp: boolean
+  canSuggest: boolean
+  canOpenRecent: boolean
+  canCreateNew: boolean
+  canCloseEditor: boolean
+  enableDownload: boolean
+  isDesktopApp: boolean
+  isOffline: boolean
+  compactview: boolean
+  customization: PresentationCustomization
+}
+
+export interface PresentationCustomization {
+  feedback?: { url: string }
+  goback: { text?: string; url?: string }
+  close?: { text?: string }
+  leftMenu?: boolean
+  statusBar?: boolean
+  toolbar?: boolean
+  chat?: boolean
+  comments?: boolean
+}
+
+export interface PresentationDocument {
+  title: string
+  fileType: string
+  info?: {
+    author?: string
+    created?: string
+    modified?: string
+    sharingSettings?: Array<{ user: string; permissions: string }>
+    pageCount?: number
+  }
+}
+
+export interface SlideInfo {
+  index: number
+  label: string
+  layout?: SlideLayout
+}
+
+export type SlideLayout =
+  | "blank"
+  | "title"
+  | "content"
+  | "comparison"
+  | "sectionHeader"
+  | "twoContent"
+  | "captionOnly"
+  | "verticalText"
+  | "verticalTitleAndText"
+  | "verticalTitleAndTextOverContent"
+
+export type ZoomLevel = 50 | 75 | 100 | 125 | 150 | 175 | 200 | 300 | 400 | 500
+
+export const ZOOM_LEVELS: ZoomLevel[] = [50, 75, 100, 125, 150, 175, 200, 300, 400, 500]
+
+export type PresentationTab = "file" | "home" | "insert" | "design" | "transitions" | "animation"
+
+export type FileMenuAction =
+  | "back"
+  | "saveas"
+  | "save-copy"
+  | "save-desktop"
+  | "print"
+  | "printpreview"
+  | "rename"
+  | "info"
+  | "rights"
+  | "history"
+  | "help"
+  | "opts"
+  | "exit"
+  | "close-editor"
+  | "external-help"
+  | "suggest"
+  | "create-new"
+  | "open-recent"
+
+export type LeftMenuAction = "search" | "slides" | "comments" | "chat" | "support" | "about"
+
+export type RightMenuPanel = "paragraph" | "table" | "image" | "slide" | "chart" | "shape" | "textart"
+
+export type TransitionEffect =
+  | "none"
+  | "fade"
+  | "push"
+  | "wipe"
+  | "split"
+  | "reveal"
+  | "checker"
+  | "zoom"
+  | "morp"
+  | "circle"
+  | "uncover"
+  | "cover"
+  | "flash"
+  | "random"
+  | "shred"
+  | "wedge"
+  | "wheel"
+  | "flythrough"
+  | "excite"
+  | "dissolve"
+  | "newsflash"
+  | "bars"
+  | "contract"
+  | "rotate"
+  | "blast"
+  | "center"
+  | "shape"
+  | "zoomIn"
+  | "zoomOut"
+  | "coverIn"
+  | "coverUp"
+  | "coverLeft"
+  | "coverRight"
+  | "pullIn"
+  | "pullUp"
+  | "pullLeft"
+  | "pullRight"
+
+export type AnimationEffect =
+  | "none"
+  | "appear"
+  | "fade"
+  | "flyIn"
+  | "floatIn"
+  | "split"
+  | "wipe"
+  | "shape"
+  | "wheel"
+  | "bars"
+  | "zoom"
+  | "rotate"
+  | "floatOut"
+  | "growAndTurn"
+  | "swivel"
+  | "bounce"
+  | "path"
+  | "pathReverse"
+  | "zoom"
+  | "compress"
+  | "colorTyping"
+  | "emphasis"
+  | "emphasisDark"
+  | "emphasisFlash"
+  | "lineColor"
+  | "fontColor"
+  | "growWithColor"
+  | "shrinkAndTurn"
+  | "shrink"
+  | "swing"
+  | "teeter"
+  | "spin"
+  | "growAndShrink"
+
+export type StartAnimation = "onClick" | "withPrevious" | "afterPrevious" | "onStart"
+
+export type SaveAsFormat =
+  | "PPTX"
+  | "PPSX"
+  | "PDF"
+  | "ODP"
+  | "POTX"
+  | "PPTM"
+  | "PDFA"
+  | "OTP"
+  | "JPG"
+  | "PNG"
+
+export type SlideSize = "screen4x3" | "widescreen" | "standard" | "custom"
+
+export type ThemeType = "builtin" | "custom"
+
+export type TextDirection = "ltr" | "rtl"

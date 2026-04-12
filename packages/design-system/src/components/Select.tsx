@@ -1,4 +1,4 @@
-import React, { forwardRef, type SelectHTMLAttributes } from "react";
+import { forwardRef, type SelectHTMLAttributes } from "react";
 import { colors, radii, spacing } from "../tokens";
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {

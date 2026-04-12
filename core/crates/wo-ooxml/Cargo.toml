@@ -9,6 +9,7 @@ anyhow = { workspace = true }
 thiserror = { workspace = true }
 wo-common = { path = "../wo-common" }
 serde = { workspace = true }
+serde_json = { workspace = true }
 roxmltree = "0.20"
 zip = { workspace = true }
 

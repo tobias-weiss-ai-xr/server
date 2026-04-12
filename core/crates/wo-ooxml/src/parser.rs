@@ -8,8 +8,8 @@
 
 use std::io::{Cursor, Read};
 
-use wo_common::{CoreError, Document, DocumentMetadata, Result};
 use roxmltree::Document as XmlDoc;
+use wo_common::{CoreError, Document, DocumentMetadata, Result};
 
 use crate::detector::detect_ooxml_format;
 use crate::model::*;

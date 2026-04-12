@@ -8,4 +8,6 @@ license = "AGPL-3.0-or-later"
 anyhow = { workspace = true }
 thiserror = { workspace = true }
 serde = { workspace = true }
+wo-common = { path = "../wo-common" }
+serde_json = { workspace = true }
 

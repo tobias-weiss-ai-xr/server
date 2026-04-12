@@ -10,8 +10,10 @@
 pub mod converter;
 pub mod encoding;
 pub mod normalizer;
+pub mod roundtrip;
 
 pub use converter::UnicodeConverter;
 pub use encoding::{EncodingInfo, EncodingRegistry};
+pub use roundtrip::UnicodeRoundtrip;
 
 pub const FORMAT_NAME: &str = "unicode";

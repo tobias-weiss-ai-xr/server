@@ -8,9 +8,11 @@
 pub mod detector;
 pub mod model;
 pub mod ole;
+pub mod roundtrip;
 
 pub use detector::detect_binary_format;
 pub use model::{BinaryFormat, MsBinaryDocument};
 pub use ole::OleCompoundDoc;
+pub use roundtrip::MsbinaryRoundtrip;
 
 pub const FORMAT_NAME: &str = "msbinary";

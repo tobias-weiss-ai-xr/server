@@ -1,7 +1,7 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// OOXML format type.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OoxmlFormat {
     /// Word Document (.docx)
     Docx,
@@ -11,6 +11,35 @@ pub enum OoxmlFormat {
     Pptx,
     /// Unknown OOXML format
     Unknown,
+}
+
+impl<'de> Deserialize<'de> for OoxmlFormat {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        Ok(match s.to_lowercase().as_str() {
+            "docx" => OoxmlFormat::Docx,
+            "xlsx" => OoxmlFormat::Xlsx,
+            "pptx" => OoxmlFormat::Pptx,
+            _ => OoxmlFormat::Unknown,
+        })
+    }
+}
+
+impl Serialize for OoxmlFormat {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(match self {
+            OoxmlFormat::Docx => "docx",
+            OoxmlFormat::Xlsx => "xlsx",
+            OoxmlFormat::Pptx => "pptx",
+            OoxmlFormat::Unknown => "unknown",
+        })
+    }
 }
 
 impl std::fmt::Display for OoxmlFormat {

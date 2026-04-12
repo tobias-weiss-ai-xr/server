@@ -67,7 +67,7 @@
 - [x] 4G-3: Verify spreadsheeteditor renders and is interactive
 
 ## Final Verification Wave
-- [ ] F1: ALL editor apps build with `pnpm build` — zero errors
-- [ ] F2: TypeScript strict mode passes across all migrated packages
-- [ ] F3: Visual regression — each editor renders identical to Backbone version
-- [ ] F4: Biome lint passes across all new/modified files
+- [x] F1: ALL editor apps build with `pnpm build` — zero errors
+- [x] F2: TypeScript strict mode passes across all migrated packages
+- [x] F3: Visual regression — each editor renders identical to Backbone version
+- [x] F4: Biome lint passes across all new/modified files

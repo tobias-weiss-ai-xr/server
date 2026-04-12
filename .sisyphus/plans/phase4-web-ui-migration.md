@@ -53,18 +53,18 @@
 
 ### Phase 4E: Presentation Editor
 - [x] 4E-1: Migrate presentationeditor toolbar, statusbar, and views
-- [ ] 4E-2: Migrate presentationeditor controllers
-- [ ] 4E-3: Verify presentationeditor renders and is interactive
+- [x] 4E-2: Migrate presentationeditor controllers
+- [x] 4E-3: Verify presentationeditor renders and is interactive
 
 ### Phase 4F: Document Editor
-- [ ] 4F-1: Migrate documenteditor toolbar, statusbar, and views
-- [ ] 4F-2: Migrate documenteditor controllers (LeftMenu, RightMenu, Search, etc.)
-- [ ] 4F-3: Verify documenteditor renders and is interactive
+- [x] 4F-1: Migrate documenteditor toolbar, statusbar, and views
+- [x] 4F-2: Migrate documenteditor controllers (LeftMenu, RightMenu, Search, etc.)
+- [x] 4F-3: Verify documenteditor renders and is interactive
 
 ### Phase 4G: Spreadsheet Editor (most complex)
-- [ ] 4G-1: Migrate spreadsheeteditor toolbar, statusbar, and views
-- [ ] 4G-2: Migrate spreadsheeteditor controllers (all sheets, formulas, etc.)
-- [ ] 4G-3: Verify spreadsheeteditor renders and is interactive
+- [x] 4G-1: Migrate spreadsheeteditor toolbar, statusbar, and views
+- [x] 4G-2: Migrate spreadsheeteditor controllers (all sheets, formulas, etc.)
+- [x] 4G-3: Verify spreadsheeteditor renders and is interactive
 
 ## Final Verification Wave
 - [ ] F1: ALL editor apps build with `pnpm build` — zero errors

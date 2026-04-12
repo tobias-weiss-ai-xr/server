@@ -1,0 +1,125 @@
+/* Document Editor — Main Layout & Reset */
+
+:root {
+  --wo-de-toolbar-height: 40px;
+  --wo-de-toolbar-height-compact: 34px;
+  --wo-de-statusbar-height: 25px;
+  --wo-de-statusbar-height-expanded: 50px;
+  --wo-de-leftmenu-width: 40px;
+  --wo-de-leftmenu-min: 40px;
+  --wo-de-leftmenu-max: 300px;
+  --wo-de-rightmenu-width: 40px;
+  --wo-de-rightmenu-min: 40px;
+  --wo-de-rightmenu-max: 300px;
+  --wo-de-doc-bg: #fbfbfb;
+
+  --wo-de-bg-pane: #ffffff;
+  --wo-de-bg-toolbar: var(--wo-color-bg-toolbar, #f0f0f0);
+  --wo-de-bg-statusbar: var(--wo-color-bg-statusbar, #e8e8e8);
+  --wo-de-bg-page: #ffffff;
+  --wo-de-bg-page-active: #ffffff;
+  --wo-de-bg-page-overlay: rgba(68, 71, 150, 1);
+  --wo-de-text-primary: var(--wo-color-text-primary, #333333);
+  --wo-de-text-secondary: var(--wo-color-text-secondary, #666666);
+  --wo-de-border: var(--wo-color-border, #e0e0e0);
+  --wo-de-accent: var(--wo-color-accent, #4472c4);
+  --wo-de-accent-hover: var(--wo-color-accent-hover, #355d9e);
+  --wo-de-font: var(--wo-font-family, "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif);
+}
+
+.viewport-ref {
+  font-family: var(--wo-de-font);
+  color: var(--wo-de-text-primary);
+}
+
+#editor_sdk {
+  width: 100%;
+  height: 100%;
+}
+
+/* Viewport — VBox/HBox layout via CSS Grid */
+.de-viewport {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--wo-de-bg-pane);
+  overflow: hidden;
+}
+
+.de-viewport-vbox {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.de-viewport-toolbar {
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.de-viewport-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.de-viewport-left-menu {
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.de-viewport-right-menu {
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.de-viewport-editor {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--wo-de-doc-bg);
+}
+
+.de-viewport-statusbar {
+  flex-shrink: 0;
+}
+
+/* File menu panel (full-height overlay) */
+.de-file-menu-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 500;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* About panel */
+.de-about-menu-panel {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 40px;
+  top: 0;
+  padding-right: 40px;
+  z-index: 450;
+  background-color: var(--wo-de-bg-pane);
+  overflow: hidden;
+}
+
+/* Document holder */
+.de-document-holder {
+  width: 100%;
+  height: 100%;
+  background-color: var(--wo-de-doc-bg);
+}

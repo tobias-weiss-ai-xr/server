@@ -1,0 +1,694 @@
+/* Toolbar */
+
+.de-toolbar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--wo-de-bg-toolbar);
+  border-bottom: 1px solid var(--wo-de-border);
+  user-select: none;
+}
+
+.de-toolbar-tabs {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 8px;
+  gap: 2px;
+}
+
+.de-toolbar-extra-left,
+.de-toolbar-extra-right {
+  flex: 1;
+}
+
+.de-toolbar-controls {
+  display: none;
+  overflow: hidden;
+}
+
+.de-toolbar-static {
+  display: none;
+}
+
+.de-toolbar-panels {
+  display: none;
+}
+
+/* Tab button */
+.de-toolbar-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--wo-de-text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.de-toolbar-tab:hover {
+  color: var(--wo-de-text-primary);
+}
+
+.de-toolbar-tab.active {
+  color: var(--wo-de-accent);
+  border-bottom-color: var(--wo-de-accent);
+  font-weight: 600;
+}
+
+/* HomeTab */
+.de-hometab-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.de-hometab-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.de-hometab-elset {
+  display: flex;
+  align-items: center;
+}
+
+.de-hometab-label {
+  font-size: 11px;
+  color: var(--wo-de-text-secondary);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.de-hometab-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  color: var(--wo-de-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.de-hometab-btn:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+  border-color: var(--wo-de-border);
+}
+
+.de-hometab-btn.active {
+  background-color: var(--wo-de-accent);
+  color: #ffffff;
+  border-color: var(--wo-de-accent);
+}
+
+.de-hometab-zoom-select {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  font-size: 12px;
+  color: var(--wo-de-text-primary);
+  cursor: pointer;
+}
+
+.de-hometab-separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--wo-de-border);
+}
+
+/* DesignTab */
+.de-designtab-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.de-designtab-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.de-designtab-elset {
+  display: flex;
+  align-items: center;
+}
+
+.de-designtab-label {
+  font-size: 11px;
+  color: var(--wo-de-text-secondary);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.de-designtab-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  color: var(--wo-de-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.de-designtab-btn:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+  border-color: var(--wo-de-border);
+}
+
+.de-designtab-btn.active {
+  background-color: var(--wo-de-accent);
+  color: #ffffff;
+  border-color: var(--wo-de-accent);
+}
+
+.de-designtab-separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--wo-de-border);
+}
+
+/* TransitionsTab */
+.de-transitionstab-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.de-transitionstab-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.de-transitionstab-elset {
+  display: flex;
+  align-items: center;
+}
+
+.de-transitionstab-label {
+  font-size: 11px;
+  color: var(--wo-de-text-secondary);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.de-transitionstab-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  color: var(--wo-de-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.de-transitionstab-btn:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+  border-color: var(--wo-de-border);
+}
+
+.de-transitionstab-btn.active {
+  background-color: var(--wo-de-accent);
+  color: #ffffff;
+  border-color: var(--wo-de-accent);
+}
+
+.de-transitionstab-separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--wo-de-border);
+}
+
+/* AnimationTab */
+.de-animationtab-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.de-animationtab-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.de-animationtab-elset {
+  display: flex;
+  align-items: center;
+}
+
+.de-animationtab-label {
+  font-size: 11px;
+  color: var(--wo-de-text-secondary);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.de-animationtab-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  color: var(--wo-de-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.de-animationtab-btn:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+  border-color: var(--wo-de-border);
+}
+
+.de-animationtab-btn.active {
+  background-color: var(--wo-de-accent);
+  color: #ffffff;
+  border-color: var(--wo-de-accent);
+}
+
+.de-animationtab-separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--wo-de-border);
+}
+
+/* InsertTab */
+.de-inserttab-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.de-inserttab-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.de-inserttab-elset {
+  display: flex;
+  align-items: center;
+}
+
+.de-inserttab-label {
+  font-size: 11px;
+  color: var(--wo-de-text-secondary);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.de-inserttab-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  color: var(--wo-de-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.de-inserttab-btn:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+  border-color: var(--wo-de-border);
+}
+
+.de-inserttab-separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--wo-de-border);
+}
+
+/* ViewTab */
+.de-viewtab-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.de-viewtab-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.de-viewtab-elset {
+  display: flex;
+  align-items: center;
+}
+
+.de-viewtab-label {
+  font-size: 11px;
+  color: var(--wo-de-text-secondary);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.de-viewtab-zoom-select {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  font-size: 12px;
+  color: var(--wo-de-text-primary);
+  cursor: pointer;
+}
+
+.de-viewtab-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  color: var(--wo-de-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.de-viewtab-btn:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+  border-color: var(--wo-de-border);
+}
+
+.de-viewtab-btn.active {
+  background-color: var(--wo-de-accent);
+  color: #ffffff;
+  border-color: var(--wo-de-accent);
+}
+
+.de-viewtab-btn-theme {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  color: var(--wo-de-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.de-viewtab-btn-theme:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+}
+
+.de-viewtab-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--wo-de-text-primary);
+  cursor: pointer;
+}
+
+.de-viewtab-checkbox input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.de-viewtab-separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--wo-de-border);
+}
+
+.de-viewtab-separator-theme {
+  margin: 4px 0;
+}
+
+/* Document Editor — Layout Tab */
+.de-layouttab-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.de-layouttab-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.de-layouttab-elset {
+  display: flex;
+  align-items: center;
+}
+
+.de-layouttab-label {
+  font-size: 11px;
+  color: var(--wo-de-text-secondary);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.de-layouttab-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  color: var(--wo-de-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.de-layouttab-btn:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+  border-color: var(--wo-de-border);
+}
+
+.de-layouttab-btn.active {
+  background-color: var(--wo-de-accent);
+  color: #ffffff;
+  border-color: var(--wo-de-accent);
+}
+
+.de-layouttab-separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--wo-de-border);
+}
+
+/* Document Editor — References Tab */
+.de-referencestab-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.de-referencestab-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.de-referencestab-elset {
+  display: flex;
+  align-items: center;
+}
+
+.de-referencestab-label {
+  font-size: 11px;
+  color: var(--wo-de-text-secondary);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.de-referencestab-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  color: var(--wo-de-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.de-referencestab-btn:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+  border-color: var(--wo-de-border);
+}
+
+.de-referencestab-btn.active {
+  background-color: var(--wo-de-accent);
+  color: #ffffff;
+  border-color: var(--wo-de-accent);
+}
+
+.de-referencestab-separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--wo-de-border);
+}
+
+/* Document Editor — Forms Tab */
+.de-formstab-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.de-formstab-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.de-formstab-elset {
+  display: flex;
+  align-items: center;
+}
+
+.de-formstab-label {
+  font-size: 11px;
+  color: var(--wo-de-text-secondary);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.de-formstab-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  color: var(--wo-de-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.de-formstab-btn:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+  border-color: var(--wo-de-border);
+}
+
+.de-formstab-btn.active {
+  background-color: var(--wo-de-accent);
+  color: #ffffff;
+  border-color: var(--wo-de-accent);
+}
+
+.de-formstab-separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--wo-de-border);
+}
+
+/* Document Editor — Header & Footer Tab */
+.de-headerfootertab-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.de-headerfootertab-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.de-headerfootertab-elset {
+  display: flex;
+  align-items: center;
+}
+
+.de-headerfootertab-label {
+  font-size: 11px;
+  color: var(--wo-de-text-secondary);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.de-headerfootertab-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--wo-de-border);
+  border-radius: 3px;
+  background-color: var(--wo-de-bg-pane);
+  color: var(--wo-de-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.de-headerfootertab-btn:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+  border-color: var(--wo-de-border);
+}
+
+.de-headerfootertab-btn.active {
+  background-color: var(--wo-de-accent);
+  color: #ffffff;
+  border-color: var(--wo-de-accent);
+}
+
+.de-headerfootertab-separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--wo-de-border);
+}

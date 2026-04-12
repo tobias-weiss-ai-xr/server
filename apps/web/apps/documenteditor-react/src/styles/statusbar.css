@@ -1,0 +1,137 @@
+/* Status Bar */
+
+.de-statusbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--wo-de-statusbar-height);
+  padding: 0 2px 0;
+  z-index: 500;
+  background-color: var(--wo-de-bg-statusbar);
+  border-top: 1px solid var(--wo-de-border);
+  font-size: 12px;
+  color: var(--wo-de-text-secondary);
+  user-select: none;
+}
+
+.de-statusbar.no-compact {
+  height: var(--wo-de-statusbar-height-expanded);
+}
+
+/* Page navigation */
+.de-statusbar-page-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.de-statusbar-page-label {
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: default;
+  color: var(--wo-de-text-secondary);
+}
+
+/* Document-specific status bar elements */
+.de-statusbar-page-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.de-statusbar-word-count {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.de-statusbar-track-changes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.de-statusbar-spelling {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Tool buttons */
+.de-statusbar-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+/* Zoom controls */
+.de-statusbar-zoom-box {
+  position: absolute;
+  right: 0;
+  height: var(--wo-de-statusbar-height);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 10px;
+  flex-shrink: 0;
+}
+
+.de-statusbar-no-compact .de-statusbar-zoom-box {
+  height: var(--wo-de-statusbar-height-expanded);
+}
+
+/* Separator */
+.de-statusbar-separator {
+  width: 1px;
+  height: 100%;
+  background-color: var(--wo-de-border);
+}
+
+/* Button */
+.de-statusbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--wo-de-text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.de-statusbar-btn:hover {
+  background-color: var(--wo-color-bg-secondary, #f5f5f5);
+}
+
+.de-statusbar-btn.active {
+  background-color: var(--wo-de-accent);
+  color: #ffffff;
+}
+
+.de-statusbar-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Zoom label */
+.de-statusbar-zoom-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.de-statusbar-label {
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: default;
+}

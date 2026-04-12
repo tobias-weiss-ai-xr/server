@@ -125,7 +125,7 @@ word-office/
 
 ### WSL Workaround for dlltool Issue
 
-Windows builds may fail with `error: error calling dlltool 'dlltool.exe': program not not found` when compiling windows-sys crates.
+Windows builds may fail with `error: error calling dlltool 'dlltool.exe': program not found` when compiling windows-sys crates.
 
 **Solution:** Use WSL (Windows Subsystem for Linux) to run Rust tests and builds:
 
@@ -141,3 +141,19 @@ wsl bash -c "cd /mnt/c/Users/Tobias/git/World-Office && ~/.cargo/bin/cargo build
 ```
 
 This bypasses Windows-specific toolchain issues while working on the same codebase.
+
+### Known Issue: wo-pdf ICE
+
+The wo-pdf crate triggers a Rust compiler ICE (Internal Compiler Error) in rustc 1.94.1:
+
+```
+thread 'rustc' panicked at /rustc-dev/.../library/alloc/src/vec/mod.rs:2873:36:
+slice index starts at 12 but ends at 10
+```
+
+**Workaround:** Skip wo-pdf tests until the ICE is fixed upstream:
+
+```bash
+# Test all format crates except wo-pdf
+wsl bash -c "cd /mnt/c/Users/Tobias/git/World-Office && ~/.cargo/bin/cargo test -p wo-html -p wo-rtf -p wo-fb2 -p wo-epub -p wo-hwp -p wo-djvu -p wo-xps -p wo-ofd"
+```

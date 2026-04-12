@@ -1,5 +1,5 @@
-import type { FileMenuAction } from "../../types/presentation"
 import { presentationStore } from "../../stores/PresentationStore"
+import type { FileMenuAction } from "../../types/presentation"
 
 interface FileMenuItemsProps {
   onMenuClick: (action: string, hasPanel: boolean) => void
@@ -40,27 +40,38 @@ export function FileMenuItems({ onMenuClick, onBack }: FileMenuItemsProps) {
     onBack()
   }
 
+  function handleKeyDown(e: React.KeyboardEvent, action: () => void): void {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault()
+      action()
+    }
+  }
+
   return (
     <ul className="prese-file-menu-items">
-      <li
+      <div
         className="prese-file-menu-item"
         role="menuitem"
+        tabIndex={0}
         onClick={handleBack}
+        onKeyDown={(e) => handleKeyDown(e, handleBack)}
       >
         <span className="prese-file-menu-item-icon">←</span>
         <span className="prese-file-menu-item-caption">Back</span>
-      </li>
+      </div>
       <li className="prese-file-menu-divider" />
-        {MENU_ITEMS.map((item) => (
-          <li
-            key={item.action}
-            className={`prese-file-menu-item${activePanel === item.action ? " active" : ""}`}
-            role="menuitem"
-            onClick={() => onMenuClick(item.action, item.hasPanel)}
-          >
-            <span className="prese-file-menu-item-caption">{item.caption}</span>
-          </li>
-        ))}
+      {MENU_ITEMS.map((item) => (
+        <div
+          key={item.action}
+          className={`prese-file-menu-item${activePanel === item.action ? " active" : ""}`}
+          role="menuitem"
+          tabIndex={0}
+          onClick={() => onMenuClick(item.action, item.hasPanel)}
+          onKeyDown={(e) => handleKeyDown(e, () => onMenuClick(item.action, item.hasPanel))}
+        >
+          <span className="prese-file-menu-item-caption">{item.caption}</span>
+        </div>
+      ))}
     </ul>
   )
 }

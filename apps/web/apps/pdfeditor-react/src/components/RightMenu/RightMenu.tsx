@@ -1,8 +1,8 @@
-import type { JSX } from "react"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { pdfStore } from "../../stores/PdfStore"
-import { RightMenuButton } from "./RightMenuButton"
 import type { RightMenuPanel } from "../../types/pdf"
+import { RightMenuButton } from "./RightMenuButton"
 
 const BUTTONS: Array<{ action: RightMenuPanel; title: string; icon: string }> = [
   { action: "paragraph", title: "Paragraph", icon: "¶" },
@@ -16,7 +16,12 @@ const BUTTONS: Array<{ action: RightMenuPanel; title: string; icon: string }> = 
 
 function RightMenuInner(): JSX.Element {
   return (
-    <div className="pdf-right-menu" role="menubar" aria-orientation="vertical" aria-label="Right menu">
+    <div
+      className="pdf-right-menu"
+      role="menubar"
+      aria-orientation="vertical"
+      aria-label="Right menu"
+    >
       <div className="pdf-right-menu-btns">
         {BUTTONS.map(({ action, title, icon }) => (
           <RightMenuButton

@@ -92,7 +92,14 @@ export type FileMenuAction =
 
 export type LeftMenuAction = "search" | "slides" | "comments" | "chat" | "support" | "about"
 
-export type RightMenuPanel = "paragraph" | "table" | "image" | "slide" | "chart" | "shape" | "textart"
+export type RightMenuPanel =
+  | "paragraph"
+  | "table"
+  | "image"
+  | "slide"
+  | "chart"
+  | "shape"
+  | "textart"
 
 export type TransitionEffect =
   | "none"

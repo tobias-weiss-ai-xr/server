@@ -1,12 +1,12 @@
-import { FileTab } from "./FileTab"
-import { HomeTab } from "./HomeTab"
-import { CommentTab } from "./CommentTab"
-import { InsertTab } from "./InsertTab"
-import { RedactTab } from "./RedactTab"
-import { FormsTab } from "./FormsTab"
-import { ViewTab } from "./ViewTab"
 import { observer } from "mobx-react-lite"
 import { pdfStore } from "../../stores/PdfStore"
+import { CommentTab } from "./CommentTab"
+import { FileTab } from "./FileTab"
+import { FormsTab } from "./FormsTab"
+import { HomeTab } from "./HomeTab"
+import { InsertTab } from "./InsertTab"
+import { RedactTab } from "./RedactTab"
+import { ViewTab } from "./ViewTab"
 
 const ObservedToolbar = observer(function ObservedToolbar() {
   const isEditMode = pdfStore.isEditMode

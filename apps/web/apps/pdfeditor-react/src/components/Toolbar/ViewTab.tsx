@@ -49,11 +49,7 @@ const ObservedViewTab = observer(function ObservedViewTab() {
       <div className="pdf-viewtab-separator" />
 
       <div className="pdf-viewtab-group">
-        <button
-          type="button"
-          className="pdf-viewtab-btn-theme"
-          title="Interface theme"
-        >
+        <button type="button" className="pdf-viewtab-btn-theme" title="Interface theme">
           Interface Theme
         </button>
       </div>

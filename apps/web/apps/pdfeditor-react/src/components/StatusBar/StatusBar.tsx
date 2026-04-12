@@ -1,5 +1,5 @@
-import type { JSX } from "react"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { pdfStore } from "../../stores/PdfStore"
 
 function ZoomControls(): JSX.Element {
@@ -31,7 +31,7 @@ function ZoomControls(): JSX.Element {
         −
       </button>
       <div className="pdf-statusbar-zoom-label">
-        <label className="pdf-statusbar-label">{`${pdfStore.zoomLevel}%`}</label>
+        <span className="pdf-statusbar-label">{`${pdfStore.zoomLevel}%`}</span>
       </div>
       <button
         type="button"
@@ -50,11 +50,11 @@ const ObservedStatusBar = observer(function ObservedStatusBar(): JSX.Element {
     <div className="pdf-statusbar">
       {/* Page navigation */}
       <div className="pdf-statusbar-page-nav">
-        <label className="pdf-statusbar-page-label">
+        <span className="pdf-statusbar-page-label">
           {pdfStore.pageCount > 0
             ? `Page ${pdfStore.currentPage + 1} of ${pdfStore.pageCount}`
             : ""}
-        </label>
+        </span>
         <button
           type="button"
           className="pdf-statusbar-btn"

@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite"
 
 const ObservedInsertTab = observer(function ObservedInsertTab() {
   return (
-    <section className="pdf-inserttab-panel" data-tab="insert" role="tabpanel" aria-labelledby="insert">
+    <section
+      className="pdf-inserttab-panel"
+      data-tab="insert"
+      role="tabpanel"
+      aria-labelledby="insert"
+    >
       <div className="pdf-inserttab-group">
         <div className="pdf-inserttab-elset">
           <button type="button" className="pdf-inserttab-btn" title="Table">

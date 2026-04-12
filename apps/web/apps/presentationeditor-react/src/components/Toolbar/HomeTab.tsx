@@ -12,7 +12,9 @@ const ObservedHomeTab = observer(function ObservedHomeTab() {
   }
 
   function goToNextSlide() {
-    presentationStore.setCurrentSlide(Math.min(presentationStore.totalSlides - 1, presentationStore.currentSlide + 1))
+    presentationStore.setCurrentSlide(
+      Math.min(presentationStore.totalSlides - 1, presentationStore.currentSlide + 1),
+    )
   }
 
   function goToLastSlide() {
@@ -33,7 +35,12 @@ const ObservedHomeTab = observer(function ObservedHomeTab() {
           <button type="button" className="prese-hometab-btn" onClick={() => {}} title="Paste">
             Paste
           </button>
-          <button type="button" className="prese-hometab-btn" onClick={() => {}} title="Format Painter">
+          <button
+            type="button"
+            className="prese-hometab-btn"
+            onClick={() => {}}
+            title="Format Painter"
+          >
             Format Painter
           </button>
         </div>
@@ -44,21 +51,43 @@ const ObservedHomeTab = observer(function ObservedHomeTab() {
       {/* Slides */}
       <div className="prese-hometab-group">
         <div className="prese-hometab-elset">
-          <button type="button" className="prese-hometab-btn" onClick={goToFirstSlide} title="First Slide">
+          <button
+            type="button"
+            className="prese-hometab-btn"
+            onClick={goToFirstSlide}
+            title="First Slide"
+          >
             First
           </button>
-          <button type="button" className="prese-hometab-btn" onClick={goToPrevSlide} title="Previous Slide">
+          <button
+            type="button"
+            className="prese-hometab-btn"
+            onClick={goToPrevSlide}
+            title="Previous Slide"
+          >
             Previous
           </button>
-          <button type="button" className="prese-hometab-btn" onClick={goToNextSlide} title="Next Slide">
+          <button
+            type="button"
+            className="prese-hometab-btn"
+            onClick={goToNextSlide}
+            title="Next Slide"
+          >
             Next
           </button>
-          <button type="button" className="prese-hometab-btn" onClick={goToLastSlide} title="Last Slide">
+          <button
+            type="button"
+            className="prese-hometab-btn"
+            onClick={goToLastSlide}
+            title="Last Slide"
+          >
             Last
           </button>
         </div>
         <div className="prese-hometab-elset">
-          <span className="prese-hometab-label">Slide {presentationStore.currentSlide + 1} of {presentationStore.totalSlides}</span>
+          <span className="prese-hometab-label">
+            Slide {presentationStore.currentSlide + 1} of {presentationStore.totalSlides}
+          </span>
         </div>
         <div className="prese-hometab-elset">
           <button type="button" className="prese-hometab-btn" title="New Slide">

@@ -8,7 +8,12 @@ const ObservedCommentTab = observer(function ObservedCommentTab() {
   }
 
   return (
-    <section className="pdf-commenttab-panel" data-tab="comment" role="tabpanel" aria-labelledby="comment">
+    <section
+      className="pdf-commenttab-panel"
+      data-tab="comment"
+      role="tabpanel"
+      aria-labelledby="comment"
+    >
       <div className="pdf-commenttab-group">
         <button
           type="button"

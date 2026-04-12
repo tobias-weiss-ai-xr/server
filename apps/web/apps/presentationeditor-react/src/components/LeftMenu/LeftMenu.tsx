@@ -1,5 +1,5 @@
-import type { JSX } from "react"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { presentationStore } from "../../stores/PresentationStore"
 import type { LeftMenuAction } from "../../types/presentation"
 import { LeftMenuButton } from "./LeftMenuButton"
@@ -15,7 +15,12 @@ const BUTTONS: Array<{ action: LeftMenuAction; title: string; icon: string }> = 
 
 function LeftMenuInner(): JSX.Element {
   return (
-    <div className="prese-left-menu" role="menubar" aria-orientation="vertical" aria-label="Left menu">
+    <div
+      className="prese-left-menu"
+      role="menubar"
+      aria-orientation="vertical"
+      aria-label="Left menu"
+    >
       <div className="prese-left-menu-btns">
         {BUTTONS.map(({ action, title, icon }) => (
           <LeftMenuButton

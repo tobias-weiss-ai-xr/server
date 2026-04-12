@@ -1,7 +1,7 @@
 import { ThemeProvider } from "@world-office/design-system"
 import { Viewport } from "./components/Viewport"
-import { pdfStore } from "./stores/PdfStore"
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts"
+import { pdfStore } from "./stores/PdfStore"
 
 export function App() {
   useKeyboardShortcuts()

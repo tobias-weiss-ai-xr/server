@@ -1,5 +1,5 @@
-import type { JSX } from "react"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { visioStore } from "../../stores/VisioStore"
 
 function PageTabsInner(): JSX.Element {

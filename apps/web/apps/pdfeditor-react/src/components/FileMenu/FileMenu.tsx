@@ -1,10 +1,10 @@
 import type { CSSProperties } from "react"
 import { pdfStore } from "../../stores/PdfStore"
 import { FileMenuItems } from "./FileMenuItems"
-import { SaveAsPanel } from "./panels/SaveAsPanel"
-import { SettingsPanel } from "./panels/SettingsPanel"
 import { DocumentInfoPanel } from "./panels/DocumentInfoPanel"
 import { HelpPanel } from "./panels/HelpPanel"
+import { SaveAsPanel } from "./panels/SaveAsPanel"
+import { SettingsPanel } from "./panels/SettingsPanel"
 
 const panelContainerStyle: CSSProperties = {
   width: "100%",
@@ -55,7 +55,10 @@ export function FileMenu() {
 
 function PrintPreviewPanel({ visible }: { visible: boolean }) {
   return (
-    <div className="pdf-file-menu-content-box" style={{ ...contentBoxBaseStyle, display: visible ? "block" : "none", padding: 0 }}>
+    <div
+      className="pdf-file-menu-content-box"
+      style={{ ...contentBoxBaseStyle, display: visible ? "block" : "none", padding: 0 }}
+    >
       <div className="pdf-file-menu-header">Print Preview</div>
     </div>
   )

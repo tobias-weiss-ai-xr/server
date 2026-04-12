@@ -1,11 +1,11 @@
 import type { ReactNode } from "react"
-import { Toolbar } from "./Toolbar/Toolbar"
-import { StatusBar } from "./StatusBar/StatusBar"
-import { LeftMenu } from "./LeftMenu/LeftMenu"
-import { RightMenu } from "./RightMenu/RightMenu"
+import { pdfStore } from "../stores/PdfStore"
 import { DocumentHolder } from "./DocumentHolder"
 import { FileMenu } from "./FileMenu/FileMenu"
-import { pdfStore } from "../stores/PdfStore"
+import { LeftMenu } from "./LeftMenu/LeftMenu"
+import { RightMenu } from "./RightMenu/RightMenu"
+import { StatusBar } from "./StatusBar/StatusBar"
+import { Toolbar } from "./Toolbar/Toolbar"
 
 interface ViewportProps {
   toolbarVisible: boolean
@@ -15,7 +15,13 @@ interface ViewportProps {
   isCompactToolbar: boolean
 }
 
-export function Viewport({ toolbarVisible, statusbarVisible, leftMenuVisible, rightMenuVisible, isCompactToolbar }: ViewportProps): ReactNode {
+export function Viewport({
+  toolbarVisible,
+  statusbarVisible,
+  leftMenuVisible,
+  rightMenuVisible,
+  isCompactToolbar,
+}: ViewportProps): ReactNode {
   const toolbarHeight = isCompactToolbar
     ? "var(--wo-pdf-toolbar-height-compact, 34px)"
     : "var(--wo-pdf-toolbar-height, 40px)"
@@ -34,11 +40,7 @@ export function Viewport({ toolbarVisible, statusbarVisible, leftMenuVisible, ri
       <div className="pdf-viewport-vbox">
         {/* Toolbar row */}
         {toolbarVisible && (
-          <div
-            className="pdf-viewport-toolbar"
-            style={{ height: toolbarHeight }}
-            role="toolbar"
-          >
+          <div className="pdf-viewport-toolbar" style={{ height: toolbarHeight }} role="toolbar">
             <Toolbar />
           </div>
         )}

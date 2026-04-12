@@ -5,10 +5,11 @@ export function DocumentInfoPanel({ visible }: { visible: boolean }): JSX.Elemen
   const doc = presentationStore.document
 
   return (
-    <div className="prese-file-menu-content-box" style={{ display: visible ? "block" : "none", padding: "0 0 0 20px" }}>
-      <div className="prese-file-menu-header">
-        Document Info
-      </div>
+    <div
+      className="prese-file-menu-content-box"
+      style={{ display: visible ? "block" : "none", padding: "0 0 0 20px" }}
+    >
+      <div className="prese-file-menu-header">Document Info</div>
       <table className="prese-file-menu-info-table">
         <tbody>
           <tr className="prese-file-menu-info-row">
@@ -80,7 +81,9 @@ export function DocumentInfoPanel({ visible }: { visible: boolean }): JSX.Elemen
               <span className="prese-file-menu-label">Language:</span>
             </td>
             <td className="prese-file-menu-info-right">
-              <span className="prese-file-menu-value">{presentationStore.languageCode ?? "en-US"}</span>
+              <span className="prese-file-menu-value">
+                {presentationStore.languageCode ?? "en-US"}
+              </span>
             </td>
           </tr>
         </tbody>

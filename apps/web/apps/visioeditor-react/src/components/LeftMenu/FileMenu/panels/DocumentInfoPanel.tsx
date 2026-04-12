@@ -4,15 +4,16 @@ export function DocumentInfoPanel({ visible }: { visible: boolean }) {
   const doc = visioStore.document
 
   return (
-    <div className="visio-file-menu-content-box" style={{ display: visible ? "block" : "none", padding: "0 30px" }}>
-      <div className="visio-file-menu-header">
-        Document Info
-      </div>
+    <div
+      className="visio-file-menu-content-box"
+      style={{ display: visible ? "block" : "none", padding: "0 30px" }}
+    >
+      <div className="visio-file-menu-header">Document Info</div>
       <table className="visio-file-menu-info-table">
         <tbody>
           <tr className="visio-file-menu-info-row">
             <td className="visio-file-menu-info-left">
-              <label>Title</label>
+              <span>Title</span>
             </td>
             <td className="visio-file-menu-info-right">
               <span>{doc?.title ?? "Untitled"}</span>
@@ -21,7 +22,7 @@ export function DocumentInfoPanel({ visible }: { visible: boolean }) {
           <tr className="visio-file-menu-info-divider" />
           <tr className="visio-file-menu-info-row">
             <td className="visio-file-menu-info-left">
-              <label>Author</label>
+              <span>Author</span>
             </td>
             <td className="visio-file-menu-info-right">
               <span>{doc?.info?.author ?? "—"}</span>
@@ -29,7 +30,7 @@ export function DocumentInfoPanel({ visible }: { visible: boolean }) {
           </tr>
           <tr className="visio-file-menu-info-row">
             <td className="visio-file-menu-info-left">
-              <label>Created</label>
+              <span>Created</span>
             </td>
             <td className="visio-file-menu-info-right">
               <span>{doc?.info?.created ?? "—"}</span>
@@ -37,7 +38,7 @@ export function DocumentInfoPanel({ visible }: { visible: boolean }) {
           </tr>
           <tr className="visio-file-menu-info-row">
             <td className="visio-file-menu-info-left">
-              <label>Modified</label>
+              <span>Modified</span>
             </td>
             <td className="visio-file-menu-info-right">
               <span>{doc?.info?.modified ?? "—"}</span>
@@ -45,7 +46,7 @@ export function DocumentInfoPanel({ visible }: { visible: boolean }) {
           </tr>
           <tr className="visio-file-menu-info-row">
             <td className="visio-file-menu-info-left">
-              <label>Format</label>
+              <span>Format</span>
             </td>
             <td className="visio-file-menu-info-right">
               <span>{doc?.fileType?.toUpperCase() ?? "—"}</span>

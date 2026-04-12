@@ -1,17 +1,17 @@
 import { makeAutoObservable } from "mobx"
 import type {
-  PresentationMode,
-  PresentationDocument,
-  SlideInfo,
-  ZoomLevel,
-  PresentationTab,
+  AnimationEffect,
   LeftMenuAction,
+  PresentationDocument,
+  PresentationMode,
+  PresentationTab,
   RightMenuPanel,
+  SlideInfo,
   SlideSize,
+  StartAnimation,
   ThemeType,
   TransitionEffect,
-  AnimationEffect,
-  StartAnimation,
+  ZoomLevel,
 } from "../types/presentation"
 import { ZOOM_LEVELS } from "../types/presentation"
 
@@ -70,7 +70,7 @@ export class PresentationStore {
   themeType: ThemeType = "builtin"
 
   /* Language */
-  languageCode: string = "en-US"
+  languageCode = "en-US"
 
   constructor() {
     makeAutoObservable(this)
@@ -110,7 +110,10 @@ export class PresentationStore {
   }
 
   setZoomLevel(level: number): void {
-    const clamped = Math.max(ZOOM_LEVELS[0] as number, Math.min(ZOOM_LEVELS[ZOOM_LEVELS.length - 1] as number, level)) as ZoomLevel
+    const clamped = Math.max(
+      ZOOM_LEVELS[0] as number,
+      Math.min(ZOOM_LEVELS[ZOOM_LEVELS.length - 1] as number, level),
+    ) as ZoomLevel
     this.zoomLevel = clamped
     this.fitToPage = false
     this.fitToWidth = false

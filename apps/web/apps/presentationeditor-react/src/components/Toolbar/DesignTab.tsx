@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite"
 
 const ObservedDesignTab = observer(function ObservedDesignTab() {
   return (
-    <section className="prese-designtab-panel" data-tab="design" role="tabpanel" aria-labelledby="design">
+    <section
+      className="prese-designtab-panel"
+      data-tab="design"
+      role="tabpanel"
+      aria-labelledby="design"
+    >
       {/* Themes */}
       <div className="prese-designtab-group">
         <div className="prese-designtab-elset">

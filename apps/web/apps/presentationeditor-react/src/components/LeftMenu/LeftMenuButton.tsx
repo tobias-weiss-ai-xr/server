@@ -8,7 +8,13 @@ interface LeftMenuButtonProps {
   onClick: () => void
 }
 
-export function LeftMenuButton({ action, title, icon, active, onClick }: LeftMenuButtonProps): JSX.Element {
+export function LeftMenuButton({
+  action,
+  title,
+  icon,
+  active,
+  onClick,
+}: LeftMenuButtonProps): JSX.Element {
   return (
     <button
       type="button"
@@ -19,7 +25,9 @@ export function LeftMenuButton({ action, title, icon, active, onClick }: LeftMen
       aria-pressed={active}
     >
       <svg className="prese-left-menu-icon" aria-hidden="true">
-        <text x="50%" y="55%" textAnchor="middle" fontSize="16">{icon}</text>
+        <text x="50%" y="55%" textAnchor="middle" fontSize="16">
+          {icon}
+        </text>
       </svg>
     </button>
   )

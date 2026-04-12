@@ -3,14 +3,15 @@ import { pdfStore } from "../../stores/PdfStore"
 
 const ObservedRedactTab = observer(function ObservedRedactTab() {
   return (
-    <section className="pdf-redacttab-panel" data-tab="redact" role="tabpanel" aria-labelledby="redact">
+    <section
+      className="pdf-redacttab-panel"
+      data-tab="redact"
+      role="tabpanel"
+      aria-labelledby="redact"
+    >
       <div className="pdf-redacttab-group">
         <div className="pdf-redacttab-elset">
-          <button
-            type="button"
-            className="pdf-redacttab-btn"
-            title="Mark for Redaction"
-          >
+          <button type="button" className="pdf-redacttab-btn" title="Mark for Redaction">
             Mark for Redaction
           </button>
         </div>
@@ -20,11 +21,7 @@ const ObservedRedactTab = observer(function ObservedRedactTab() {
 
       <div className="pdf-redacttab-group">
         <div className="pdf-redacttab-elset">
-          <button
-            type="button"
-            className="pdf-redacttab-btn"
-            title="Redact Pages"
-          >
+          <button type="button" className="pdf-redacttab-btn" title="Redact Pages">
             Redact Pages
           </button>
         </div>
@@ -48,11 +45,7 @@ const ObservedRedactTab = observer(function ObservedRedactTab() {
 
       <div className="pdf-redacttab-group">
         <div className="pdf-redacttab-elset">
-          <button
-            type="button"
-            className="pdf-redacttab-btn"
-            title="Find to Redact"
-          >
+          <button type="button" className="pdf-redacttab-btn" title="Find to Redact">
             Find to Redact
           </button>
         </div>

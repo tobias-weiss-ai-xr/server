@@ -26,5 +26,5 @@ export function usePdfApi(): PdfApi | null {
     return () => clearInterval(interval)
   }, [])
 
-  return ready ? sdkBridge as unknown as PdfApi : null
+  return ready ? (sdkBridge as unknown as PdfApi) : null
 }

@@ -1,5 +1,5 @@
-import type { JSX } from "react"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { presentationStore } from "../../stores/PresentationStore"
 import type { RightMenuPanel } from "../../types/presentation"
 import { RightMenuButton } from "./RightMenuButton"
@@ -16,7 +16,12 @@ const BUTTONS: Array<{ action: RightMenuPanel; title: string; icon: string }> = 
 
 function RightMenuInner(): JSX.Element {
   return (
-    <div className="prese-right-menu" role="menubar" aria-orientation="vertical" aria-label="Right menu">
+    <div
+      className="prese-right-menu"
+      role="menubar"
+      aria-orientation="vertical"
+      aria-label="Right menu"
+    >
       <div className="prese-right-menu-btns">
         {BUTTONS.map(({ action, title, icon }) => (
           <RightMenuButton

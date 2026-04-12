@@ -82,10 +82,34 @@ export type FileMenuAction =
 
 export type LeftMenuAction = "search" | "comments" | "chat" | "navigation" | "thumbnails" | "about"
 
-export type RightMenuPanel = "paragraph" | "image" | "shape" | "table" | "chart" | "textart" | "form"
+export type RightMenuPanel =
+  | "paragraph"
+  | "image"
+  | "shape"
+  | "table"
+  | "chart"
+  | "textart"
+  | "form"
 
-export type AnnotationTool = "highlight" | "strikeout" | "underline" | "text-comment" | "stamp" | "shape-comment"
+export type AnnotationTool =
+  | "highlight"
+  | "strikeout"
+  | "underline"
+  | "text-comment"
+  | "stamp"
+  | "shape-comment"
 
-export type FormFieldType = "text" | "combobox" | "dropdown" | "checkbox" | "radiobox" | "picture" | "email" | "phone" | "datetime" | "zipcode" | "credit"
+export type FormFieldType =
+  | "text"
+  | "combobox"
+  | "dropdown"
+  | "checkbox"
+  | "radiobox"
+  | "picture"
+  | "email"
+  | "phone"
+  | "datetime"
+  | "zipcode"
+  | "credit"
 
 export type Tool = "select" | "hand"

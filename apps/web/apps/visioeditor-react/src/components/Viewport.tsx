@@ -1,10 +1,10 @@
 import type { ReactNode } from "react"
-import { Toolbar } from "./Toolbar/Toolbar"
-import { StatusBar } from "./StatusBar/StatusBar"
-import { LeftMenu } from "./LeftMenu/LeftMenu"
+import { visioStore } from "../stores/VisioStore"
 import { DocumentHolder } from "./DocumentHolder"
 import { FileMenu } from "./LeftMenu/FileMenu/FileMenu"
-import { visioStore } from "../stores/VisioStore"
+import { LeftMenu } from "./LeftMenu/LeftMenu"
+import { StatusBar } from "./StatusBar/StatusBar"
+import { Toolbar } from "./Toolbar/Toolbar"
 
 interface ViewportProps {
   toolbarVisible: boolean
@@ -13,7 +13,12 @@ interface ViewportProps {
   isCompactToolbar: boolean
 }
 
-export function Viewport({ toolbarVisible, statusbarVisible, leftMenuVisible, isCompactToolbar }: ViewportProps): ReactNode {
+export function Viewport({
+  toolbarVisible,
+  statusbarVisible,
+  leftMenuVisible,
+  isCompactToolbar,
+}: ViewportProps): ReactNode {
   const toolbarHeight = isCompactToolbar
     ? "var(--wo-visio-toolbar-height-compact, 34px)"
     : "var(--wo-visio-toolbar-height, 40px)"
@@ -32,11 +37,7 @@ export function Viewport({ toolbarVisible, statusbarVisible, leftMenuVisible, is
       <div className="visio-viewport-vbox">
         {/* Toolbar row */}
         {toolbarVisible && (
-          <div
-            className="visio-viewport-toolbar"
-            style={{ height: toolbarHeight }}
-            role="toolbar"
-          >
+          <div className="visio-viewport-toolbar" style={{ height: toolbarHeight }} role="toolbar">
             <Toolbar isEdit={visioStore.mode?.isEdit ?? false} />
           </div>
         )}

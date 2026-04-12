@@ -17,16 +17,16 @@ const ObservedFormsTab = observer(function ObservedFormsTab() {
   ]
 
   return (
-    <section className="pdf-formstab-panel" data-tab="forms" role="tabpanel" aria-labelledby="forms">
+    <section
+      className="pdf-formstab-panel"
+      data-tab="forms"
+      role="tabpanel"
+      aria-labelledby="forms"
+    >
       <div className="pdf-formstab-group">
         <div className="pdf-formstab-elset">
           {formFields.map(({ type, label }) => (
-            <button
-              key={type}
-              type="button"
-              className="pdf-formstab-btn"
-              title={label}
-            >
+            <button key={type} type="button" className="pdf-formstab-btn" title={label}>
               {label}
             </button>
           ))}

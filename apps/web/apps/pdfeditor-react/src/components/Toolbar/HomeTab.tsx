@@ -35,16 +35,36 @@ const ObservedHomeTab = observer(function ObservedHomeTab() {
     <section className="pdf-hometab-panel" data-tab="home" role="tabpanel" aria-labelledby="home">
       <div className="pdf-hometab-group">
         <div className="pdf-hometab-elset">
-          <button type="button" className="pdf-hometab-btn" onClick={goToFirstPage} title="First Page">
+          <button
+            type="button"
+            className="pdf-hometab-btn"
+            onClick={goToFirstPage}
+            title="First Page"
+          >
             First
           </button>
-          <button type="button" className="pdf-hometab-btn" onClick={goToPrevPage} title="Previous Page">
+          <button
+            type="button"
+            className="pdf-hometab-btn"
+            onClick={goToPrevPage}
+            title="Previous Page"
+          >
             Previous
           </button>
-          <button type="button" className="pdf-hometab-btn" onClick={goToNextPage} title="Next Page">
+          <button
+            type="button"
+            className="pdf-hometab-btn"
+            onClick={goToNextPage}
+            title="Next Page"
+          >
             Next
           </button>
-          <button type="button" className="pdf-hometab-btn" onClick={goToLastPage} title="Last Page">
+          <button
+            type="button"
+            className="pdf-hometab-btn"
+            onClick={goToLastPage}
+            title="Last Page"
+          >
             Last
           </button>
         </div>

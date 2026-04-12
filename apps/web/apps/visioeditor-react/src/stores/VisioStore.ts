@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx"
-import type { VisioMode, VisioDocument, PageTab, ZoomLevel, LeftMenuAction } from "../types/visio"
+import type { LeftMenuAction, PageTab, VisioDocument, VisioMode, ZoomLevel } from "../types/visio"
 import { ZOOM_LEVELS } from "../types/visio"
 
 const STORAGE_PREFIX = "ve-"
@@ -73,7 +73,10 @@ export class VisioStore {
   }
 
   setZoomLevel(level: number): void {
-    const clamped = Math.max(ZOOM_LEVELS[0] as number, Math.min(ZOOM_LEVELS[ZOOM_LEVELS.length - 1] as number, level)) as ZoomLevel
+    const clamped = Math.max(
+      ZOOM_LEVELS[0] as number,
+      Math.min(ZOOM_LEVELS[ZOOM_LEVELS.length - 1] as number, level),
+    ) as ZoomLevel
     this.zoomLevel = clamped
     this.fitToPage = false
     this.fitToWidth = false

@@ -34,5 +34,5 @@ export function usePresentationApi(): PresentationApi | null {
     return () => clearInterval(interval)
   }, [])
 
-  return ready ? sdkBridge as unknown as PresentationApi : null
+  return ready ? (sdkBridge as unknown as PresentationApi) : null
 }

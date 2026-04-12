@@ -1,5 +1,5 @@
-import type { JSX } from "react"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { visioStore } from "../../stores/VisioStore"
 import { LeftMenuButton } from "./LeftMenuButton"
 
@@ -12,7 +12,12 @@ const BUTTONS = [
 
 function LeftMenuInner(): JSX.Element {
   return (
-    <div className="visio-left-menu" role="menubar" aria-orientation="vertical" aria-label="Left menu">
+    <div
+      className="visio-left-menu"
+      role="menubar"
+      aria-orientation="vertical"
+      aria-label="Left menu"
+    >
       <div className="visio-left-menu-btns">
         {BUTTONS.map(({ action, title, icon }) => (
           <LeftMenuButton

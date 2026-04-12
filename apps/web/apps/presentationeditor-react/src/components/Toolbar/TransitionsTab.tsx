@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite"
 
 const ObservedTransitionsTab = observer(function ObservedTransitionsTab() {
   return (
-    <section className="prese-transitionstab-panel" data-tab="transitions" role="tabpanel" aria-labelledby="transitions">
+    <section
+      className="prese-transitionstab-panel"
+      data-tab="transitions"
+      role="tabpanel"
+      aria-labelledby="transitions"
+    >
       {/* Transition to This Slide */}
       <div className="prese-transitionstab-group">
         <div className="prese-transitionstab-elset">

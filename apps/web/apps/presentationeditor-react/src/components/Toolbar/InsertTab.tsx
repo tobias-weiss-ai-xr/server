@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite"
 
 const ObservedInsertTab = observer(function ObservedInsertTab() {
   return (
-    <section className="prese-inserttab-panel" data-tab="insert" role="tabpanel" aria-labelledby="insert">
+    <section
+      className="prese-inserttab-panel"
+      data-tab="insert"
+      role="tabpanel"
+      aria-labelledby="insert"
+    >
       {/* Slides */}
       <div className="prese-inserttab-group">
         <div className="prese-inserttab-elset">

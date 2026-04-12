@@ -1,5 +1,15 @@
 import { makeAutoObservable } from "mobx"
-import type { PdfMode, PdfDocument, PageInfo, ZoomLevel, PdfTab, LeftMenuAction, RightMenuPanel, AnnotationTool, Tool } from "../types/pdf"
+import type {
+  AnnotationTool,
+  LeftMenuAction,
+  PageInfo,
+  PdfDocument,
+  PdfMode,
+  PdfTab,
+  RightMenuPanel,
+  Tool,
+  ZoomLevel,
+} from "../types/pdf"
 import { ZOOM_LEVELS } from "../types/pdf"
 
 const STORAGE_PREFIX = "pe-"
@@ -104,7 +114,10 @@ export class PdfStore {
   }
 
   setZoomLevel(level: number): void {
-    const clamped = Math.max(ZOOM_LEVELS[0] as number, Math.min(ZOOM_LEVELS[ZOOM_LEVELS.length - 1] as number, level)) as ZoomLevel
+    const clamped = Math.max(
+      ZOOM_LEVELS[0] as number,
+      Math.min(ZOOM_LEVELS[ZOOM_LEVELS.length - 1] as number, level),
+    ) as ZoomLevel
     this.zoomLevel = clamped
     this.fitToPage = false
     this.fitToWidth = false
@@ -214,8 +227,7 @@ export class PdfStore {
 function setStorageItem(key: string, value: string): void {
   try {
     localStorage.setItem(`${STORAGE_PREFIX}${key}`, value)
-  } catch {
-  }
+  } catch {}
 }
 
 export const pdfStore = new PdfStore()

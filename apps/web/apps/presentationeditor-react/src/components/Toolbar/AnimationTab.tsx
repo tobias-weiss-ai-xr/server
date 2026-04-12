@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite"
 
 const ObservedAnimationTab = observer(function ObservedAnimationTab() {
   return (
-    <section className="prese-animationtab-panel" data-tab="animation" role="tabpanel" aria-labelledby="animation">
+    <section
+      className="prese-animationtab-panel"
+      data-tab="animation"
+      role="tabpanel"
+      aria-labelledby="animation"
+    >
       {/* Animations */}
       <div className="prese-animationtab-group">
         <div className="prese-animationtab-elset">

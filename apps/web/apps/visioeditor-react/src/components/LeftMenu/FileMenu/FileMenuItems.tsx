@@ -32,26 +32,37 @@ export function FileMenuItems({ onMenuClick, onBack }: FileMenuItemsProps): JSX.
     onBack()
   }
 
+  function handleKeyDown(e: React.KeyboardEvent, action: () => void): void {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault()
+      action()
+    }
+  }
+
   return (
     <ul className="visio-file-menu-items">
-      <li
+      <div
         className="visio-file-menu-item"
         role="menuitem"
+        tabIndex={0}
         onClick={handleBack}
+        onKeyDown={(e) => handleKeyDown(e, handleBack)}
       >
         <span className="visio-file-menu-item-icon">←</span>
         <span className="visio-file-menu-item-caption">Back</span>
-      </li>
+      </div>
       <li className="visio-file-menu-divider" />
-        {MENU_ITEMS.map((item) => (
-        <li
+      {MENU_ITEMS.map((item) => (
+        <div
           key={item.action}
           className={`visio-file-menu-item${activePanel === item.action ? " active" : ""}`}
           role="menuitem"
+          tabIndex={0}
           onClick={() => onMenuClick(item.action, item.hasPanel)}
+          onKeyDown={(e) => handleKeyDown(e, () => onMenuClick(item.action, item.hasPanel))}
         >
           <span className="visio-file-menu-item-caption">{item.caption}</span>
-        </li>
+        </div>
       ))}
     </ul>
   )

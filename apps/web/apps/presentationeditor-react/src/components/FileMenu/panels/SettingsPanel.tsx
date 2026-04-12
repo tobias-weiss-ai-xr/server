@@ -2,13 +2,16 @@ import type { JSX } from "react"
 
 export function SettingsPanel({ visible }: { visible: boolean }): JSX.Element {
   return (
-    <div className="prese-file-menu-content-box" style={{ display: visible ? "block" : "none", padding: 0, flexDirection: "column" }}>
+    <div
+      className="prese-file-menu-content-box"
+      style={{ display: visible ? "block" : "none", padding: 0, flexDirection: "column" }}
+    >
       <div className="prese-file-menu-header">Advanced Settings</div>
       <table className="prese-file-menu-settings-table">
         <tbody>
           <tr className="prese-file-menu-row">
             <td className="prese-file-menu-left">
-              <label className="prese-file-menu-label">Interface Theme</label>
+              <span className="prese-file-menu-label">Interface Theme</span>
             </td>
             <td className="prese-file-menu-right">
               <select className="prese-file-menu-select" defaultValue="default">
@@ -21,7 +24,7 @@ export function SettingsPanel({ visible }: { visible: boolean }): JSX.Element {
           </tr>
           <tr className="prese-file-menu-row">
             <td className="prese-file-menu-left">
-              <label className="prese-file-menu-label">Font Rendering</label>
+              <span className="prese-file-menu-label">Font Rendering</span>
             </td>
             <td className="prese-file-menu-right">
               <select className="prese-file-menu-select" defaultValue="auto">
@@ -35,7 +38,7 @@ export function SettingsPanel({ visible }: { visible: boolean }): JSX.Element {
           </tr>
           <tr className="prese-file-menu-row">
             <td className="prese-file-menu-left">
-              <label className="prese-file-menu-label">Spell Checking</label>
+              <span className="prese-file-menu-label">Spell Checking</span>
             </td>
             <td className="prese-file-menu-right">
               <label className="prese-file-menu-checkbox">
@@ -46,7 +49,7 @@ export function SettingsPanel({ visible }: { visible: boolean }): JSX.Element {
           </tr>
           <tr className="prese-file-menu-row">
             <td className="prese-file-menu-left">
-              <label className="prese-file-menu-label">Cache Mode</label>
+              <span className="prese-file-menu-label">Cache Mode</span>
             </td>
             <td className="prese-file-menu-right">
               <label className="prese-file-menu-checkbox">
@@ -57,7 +60,7 @@ export function SettingsPanel({ visible }: { visible: boolean }): JSX.Element {
           </tr>
           <tr className="prese-file-menu-row">
             <td className="prese-file-menu-left">
-              <label className="prese-file-menu-label">Autosave</label>
+              <span className="prese-file-menu-label">Autosave</span>
             </td>
             <td className="prese-file-menu-right">
               <label className="prese-file-menu-checkbox">
@@ -68,7 +71,7 @@ export function SettingsPanel({ visible }: { visible: boolean }): JSX.Element {
           </tr>
           <tr className="prese-file-menu-row">
             <td className="prese-file-menu-left">
-              <label className="prese-file-menu-label">Co-Authoring</label>
+              <span className="prese-file-menu-label">Co-Authoring</span>
             </td>
             <td className="prese-file-menu-right">
               <label className="prese-file-menu-checkbox">

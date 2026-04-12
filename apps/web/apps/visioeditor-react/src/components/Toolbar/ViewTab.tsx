@@ -49,11 +49,7 @@ export function ViewTab(): JSX.Element {
       <div className="visio-viewtab-separator" />
 
       <div className="visio-viewtab-group">
-        <button
-          type="button"
-          className="visio-viewtab-btn-theme"
-          title="Interface theme"
-        >
+        <button type="button" className="visio-viewtab-btn-theme" title="Interface theme">
           Interface Theme
         </button>
       </div>

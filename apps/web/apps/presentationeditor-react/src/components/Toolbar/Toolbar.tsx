@@ -1,11 +1,11 @@
+import { observer } from "mobx-react-lite"
+import { presentationStore } from "../../stores/PresentationStore"
+import { AnimationTab } from "./AnimationTab"
+import { DesignTab } from "./DesignTab"
 import { FileTab } from "./FileTab"
 import { HomeTab } from "./HomeTab"
 import { InsertTab } from "./InsertTab"
-import { DesignTab } from "./DesignTab"
 import { TransitionsTab } from "./TransitionsTab"
-import { AnimationTab } from "./AnimationTab"
-import { observer } from "mobx-react-lite"
-import { presentationStore } from "../../stores/PresentationStore"
 
 const ObservedToolbar = observer(function ObservedToolbar() {
   const isEditMode = presentationStore.isEditMode

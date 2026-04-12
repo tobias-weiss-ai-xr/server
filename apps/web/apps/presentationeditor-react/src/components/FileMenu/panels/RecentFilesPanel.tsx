@@ -8,7 +8,10 @@ export function RecentFilesPanel({ visible }: { visible: boolean }): JSX.Element
   ]
 
   return (
-    <div className="prese-file-menu-content-box" style={{ display: visible ? "block" : "none", padding: "0 0 0 20px" }}>
+    <div
+      className="prese-file-menu-content-box"
+      style={{ display: visible ? "block" : "none", padding: "0 0 0 20px" }}
+    >
       <div className="prese-file-menu-header">Recent Files</div>
       <div className="prese-file-menu-body">
         <p className="prese-file-menu-instruction">
@@ -22,14 +25,10 @@ export function RecentFilesPanel({ visible }: { visible: boolean }): JSX.Element
       </div>
       <div className="prese-file-menu-list">
         {recentDocs.map((doc) => (
-          <div
-            key={doc.id}
-            className="prese-file-menu-item"
-            onClick={() => {}}
-          >
+          <button key={doc.id} className="prese-file-menu-item" type="button" onClick={() => {}}>
             <span className="prese-file-menu-item-title">{doc.title}</span>
             <span className="prese-file-menu-item-date">{doc.date}</span>
-          </div>
+          </button>
         ))}
       </div>
     </div>

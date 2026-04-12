@@ -26,5 +26,5 @@ export function useVisioApi(): VisioApi | null {
     return () => clearInterval(interval)
   }, [])
 
-  return ready ? sdkBridge as unknown as VisioApi : null
+  return ready ? (sdkBridge as unknown as VisioApi) : null
 }

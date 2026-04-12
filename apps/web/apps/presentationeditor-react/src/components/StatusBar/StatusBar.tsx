@@ -1,5 +1,5 @@
-import type { JSX } from "react"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { presentationStore } from "../../stores/PresentationStore"
 
 function ZoomControls(): JSX.Element {
@@ -31,7 +31,7 @@ function ZoomControls(): JSX.Element {
         −
       </button>
       <div className="prese-statusbar-zoom-label">
-        <label className="prese-statusbar-label">{`${presentationStore.zoomLevel}%`}</label>
+        <span className="prese-statusbar-label">{`${presentationStore.zoomLevel}%`}</span>
       </div>
       <button
         type="button"
@@ -61,9 +61,9 @@ const ObservedStatusBar = observer(function ObservedStatusBar(): JSX.Element {
         >
           ‹
         </button>
-        <label className="prese-statusbar-page-label">
+        <span className="prese-statusbar-page-label">
           Slide {currentSlide + 1} of {totalSlides}
-        </label>
+        </span>
         <button
           type="button"
           className="prese-statusbar-btn"
@@ -77,11 +77,7 @@ const ObservedStatusBar = observer(function ObservedStatusBar(): JSX.Element {
 
       {/* Slideshow button */}
       <div className="prese-statusbar-tools">
-        <button
-          type="button"
-          className="prese-statusbar-btn"
-          title="Slideshow"
-        >
+        <button type="button" className="prese-statusbar-btn" title="Slideshow">
           ▶
         </button>
       </div>

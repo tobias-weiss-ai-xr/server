@@ -1,8 +1,8 @@
-import type { JSX } from "react"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { pdfStore } from "../../stores/PdfStore"
-import { LeftMenuButton } from "./LeftMenuButton"
 import type { LeftMenuAction } from "../../types/pdf"
+import { LeftMenuButton } from "./LeftMenuButton"
 
 const BUTTONS: Array<{ action: LeftMenuAction; title: string; icon: string }> = [
   { action: "search", title: "Search", icon: "🔍" },
@@ -15,7 +15,12 @@ const BUTTONS: Array<{ action: LeftMenuAction; title: string; icon: string }> = 
 
 function LeftMenuInner(): JSX.Element {
   return (
-    <div className="pdf-left-menu" role="menubar" aria-orientation="vertical" aria-label="Left menu">
+    <div
+      className="pdf-left-menu"
+      role="menubar"
+      aria-orientation="vertical"
+      aria-label="Left menu"
+    >
       <div className="pdf-left-menu-btns">
         {BUTTONS.map(({ action, title, icon }) => (
           <LeftMenuButton

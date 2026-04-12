@@ -1,5 +1,5 @@
-import type { JSX } from "react"
 import { observer } from "mobx-react-lite"
+import type { JSX } from "react"
 import { visioStore } from "../../stores/VisioStore"
 
 function ZoomControlsInner(): JSX.Element {
@@ -30,7 +30,7 @@ function ZoomControlsInner(): JSX.Element {
         −
       </button>
       <div className="visio-statusbar-zoom-label">
-        <label className="visio-statusbar-label">{`${visioStore.zoomLevel}%`}</label>
+        <span className="visio-statusbar-label">{`${visioStore.zoomLevel}%`}</span>
       </div>
       <button
         type="button"

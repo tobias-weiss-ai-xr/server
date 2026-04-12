@@ -5,10 +5,12 @@
 
 pub mod model;
 pub mod parser;
+pub mod roundtrip;
 pub mod serializer;
 
 pub use model::RtfDocument;
 pub use parser::RtfParser;
+pub use roundtrip::RtfRoundtrip;
 pub use serializer::RtfSerializer;
 
 pub const FORMAT_NAME: &str = "rtf";

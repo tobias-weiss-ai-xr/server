@@ -5,10 +5,12 @@
 
 pub mod model;
 pub mod parser;
+pub mod roundtrip;
 pub mod serializer;
 
 pub use model::HtmlDocument;
 pub use parser::HtmlParser;
+pub use roundtrip::HtmlRoundtrip;
 pub use serializer::HtmlSerializer;
 
 /// The format identifier for this crate.

@@ -120,3 +120,24 @@ word-office/
 - DesktopEditors contains only CI config (YAML + build script) — actual code is in desktop-apps + desktop-sdk.
 - document-templates contains binary Office files — not code-editable.
 - Docker CI uses Ubuntu 24.04, Node.js 20, JDK 21, Grunt CLI, @yao-pkg/pkg.
+
+## WINDOWS DEVELOPMENT
+
+### WSL Workaround for dlltool Issue
+
+Windows builds may fail with `error: error calling dlltool 'dlltool.exe': program not not found` when compiling windows-sys crates.
+
+**Solution:** Use WSL (Windows Subsystem for Linux) to run Rust tests and builds:
+
+```bash
+# Run tests via WSL
+wsl bash -c "cd /mnt/c/Users/Tobias/git/World-Office && ~/.cargo/bin/cargo test -p wo-html -p wo-rtf"
+
+# Run full workspace tests via WSL
+wsl bash -c "cd /mnt/c/Users/Tobias/git/World-Office && ~/.cargo/bin/cargo test --workspace"
+
+# Build via WSL
+wsl bash -c "cd /mnt/c/Users/Tobias/git/World-Office && ~/.cargo/bin/cargo build --release"
+```
+
+This bypasses Windows-specific toolchain issues while working on the same codebase.

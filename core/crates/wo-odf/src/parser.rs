@@ -10,8 +10,8 @@
 
 use std::io::{Cursor, Read};
 
-use wo_common::{CoreError, Document, DocumentMetadata, Result};
 use roxmltree::Document as XmlDoc;
+use wo_common::{CoreError, Document, DocumentMetadata, Result};
 
 use crate::model::*;
 

@@ -7,8 +7,10 @@
 pub mod layout;
 pub mod model;
 pub mod pipeline;
+pub mod roundtrip;
 
 pub use model::{RenderConfig, RenderOutput, RenderResult};
 pub use pipeline::DocxRenderPipeline;
+pub use roundtrip::DocxRendererRoundtrip;
 
 pub const FORMAT_NAME: &str = "docx-renderer";

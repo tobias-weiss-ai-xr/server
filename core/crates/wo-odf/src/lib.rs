@@ -6,9 +6,11 @@
 
 pub mod model;
 pub mod parser;
+pub mod roundtrip;
 
 pub use model::OdfDocument;
 pub use parser::OdfParser;
+pub use roundtrip::OdfRoundtrip;
 
 pub const FORMAT_NAME: &str = "odf";
 

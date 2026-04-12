@@ -6,11 +6,75 @@
 
 use std::collections::HashMap;
 
-use wo_common::{CoreError, Document, DocumentMetadata, Result};
 use flate2::read::ZlibDecoder;
 use std::io::Read as _;
+use wo_common::{CoreError, Document, DocumentMetadata, Result};
 
 use crate::model::*;
+
+/// Find a subsequence in a byte slice.
+fn find_subsequence(haystack: &[u8], needle: &[u8]) -> Option<usize> {
+    haystack
+        .windows(needle.len())
+        .position(|window| window == needle)
+}
+
+/// Find a subsequence in a byte slice, searching from the right.
+fn rfind_subsequence(haystack: &[u8], needle: &[u8]) -> Option<usize> {
+    haystack
+        .windows(needle.len())
+        .rposition(|window| window == needle)
+}
+
+/// Parse a number (integer or float) from a byte slice.
+fn parse_number_from_bytes(data: &[u8]) -> Option<String> {
+    let mut i = 0;
+    // Skip leading whitespace
+    while i < data.len() && data[i].is_ascii_whitespace() {
+        i += 1;
+    }
+
+    let start = i;
+    // Parse sign
+    if i < data.len() && (data[i] == b'-' || data[i] == b'+') {
+        i += 1;
+    }
+
+    // Parse digits
+    while i < data.len() && data[i].is_ascii_digit() {
+        i += 1;
+    }
+
+    // Parse decimal point and fractional digits
+    if i < data.len() && data[i] == b'.' {
+        i += 1;
+        while i < data.len() && data[i].is_ascii_digit() {
+            i += 1;
+        }
+    }
+
+    if start == i {
+        return None;
+    }
+
+    std::str::from_utf8(&data[start..i])
+        .ok()
+        .map(|s| s.to_string())
+}
+
+/// Trim leading and trailing whitespace from a byte slice.
+fn trim_whitespace(data: &[u8]) -> &[u8] {
+    let start = data
+        .iter()
+        .position(|&b| !b.is_ascii_whitespace())
+        .unwrap_or(data.len());
+    let end = data
+        .iter()
+        .rposition(|&b| !b.is_ascii_whitespace())
+        .map(|p| p + 1)
+        .unwrap_or(start);
+    &data[start..end]
+}
 
 /// PDF parser.
 pub struct PdfParser;
@@ -22,22 +86,18 @@ impl PdfParser {
 
     /// Parse raw PDF data into a PdfDocument.
     pub fn parse(&self, data: &[u8]) -> Result<PdfDocument> {
-        let text = std::str::from_utf8(data).map_err(|e| CoreError::Parse {
-            format: "pdf".into(),
-            message: format!("Invalid UTF-8 in PDF: {}", e),
-        })?;
-
-        let version = self.parse_version(text)?;
-        let linearized = text.contains("/Linearized") || text.contains("/Linearized 1");
+        let version = self.parse_version(data)?;
+        let linearized = find_subsequence(data, b"/Linearized").is_some()
+            || find_subsequence(data, b"/Linearized 1").is_some();
 
         // Parse all indirect objects
         let mut objects = Vec::new();
         let mut obj_map: HashMap<(u32, u32), usize> = HashMap::new();
-        self.parse_objects(text, data, &mut objects, &mut obj_map)?;
+        self.parse_objects(data, &mut objects, &mut obj_map)?;
 
         // Parse xref / trailer for root reference
-        let root_ref = self.find_root_ref(text);
-        let info_ref = self.find_info_ref(text);
+        let root_ref = self.find_root_ref(data);
+        let info_ref = self.find_info_ref(data);
 
         // Parse page tree
         let (page_count, pages) = self.parse_page_tree(root_ref, &objects, &obj_map, data);
@@ -46,8 +106,8 @@ impl PdfParser {
         let metadata = self.parse_metadata(info_ref, &objects, &obj_map);
 
         // Detect xref type and encryption
-        let xref_type = self.detect_xref_type(text);
-        let encryption = self.detect_encryption(text);
+        let xref_type = self.detect_xref_type_bytes(data);
+        let encryption = self.detect_encryption_bytes(data);
 
         Ok(PdfDocument {
             version,
@@ -61,45 +121,54 @@ impl PdfParser {
         })
     }
 
-    fn parse_version(&self, text: &str) -> Result<String> {
-        let line = text.lines().next().ok_or(CoreError::Parse {
-            format: "pdf".into(),
-            message: "Empty PDF file".into(),
-        })?;
+    fn parse_version(&self, data: &[u8]) -> Result<String> {
+        let line_end =
+            data.iter()
+                .position(|&b| b == b'\n' || b == b'\r')
+                .ok_or(CoreError::Parse {
+                    format: "pdf".into(),
+                    message: "Empty PDF file".into(),
+                })?;
 
-        if !line.starts_with("%PDF-") {
+        let line = &data[..line_end];
+        if !line.starts_with(b"%PDF-") {
             return Err(CoreError::Parse {
                 format: "pdf".into(),
-                message: format!("Invalid PDF header: {}", line),
+                message: format!("Invalid PDF header: {:?}", std::str::from_utf8(line)),
             });
         }
 
-        Ok(line[5..].trim().to_string())
+        std::str::from_utf8(&line[5..])
+            .map(|s| s.trim().to_string())
+            .map_err(|e| CoreError::Parse {
+                format: "pdf".into(),
+                message: format!("Invalid UTF-8 in version: {}", e),
+            })
     }
 
-    fn find_root_ref(&self, text: &str) -> (u32, u32) {
+    fn find_root_ref(&self, data: &[u8]) -> (u32, u32) {
         // Look for /Root N N R in trailer or xref stream
         let default = (1, 0);
 
         // Find trailer dictionary
-        if let Some(trailer_start) = text.find("trailer") {
+        if let Some(trailer_start) = find_subsequence(data, b"trailer") {
             let trailer_text =
-                &text[trailer_start..trailer_start + 512.min(text.len() - trailer_start)];
-            if let Some(root_pos) = trailer_text.find("/Root") {
+                &data[trailer_start..trailer_start + 512.min(data.len() - trailer_start)];
+            if let Some(root_pos) = find_subsequence(trailer_text, b"/Root") {
                 let after = &trailer_text[root_pos + 5..];
-                if let Some(ref_str) = Self::parse_ref(after) {
+                if let Some(ref_str) = Self::parse_ref_bytes(after) {
                     return ref_str;
                 }
             }
         }
 
         // Try to find /Root anywhere near startxref
-        if let Some(startxref_pos) = text.find("startxref") {
+        if let Some(startxref_pos) = find_subsequence(data, b"startxref") {
             let search_start = startxref_pos.saturating_sub(2048);
-            let region = &text[search_start..startxref_pos];
-            if let Some(root_pos) = region.rfind("/Root") {
+            let region = &data[search_start..startxref_pos];
+            if let Some(root_pos) = rfind_subsequence(region, b"/Root") {
                 let after = &region[root_pos + 5..];
-                if let Some(ref_str) = Self::parse_ref(after) {
+                if let Some(ref_str) = Self::parse_ref_bytes(after) {
                     return ref_str;
                 }
             }
@@ -108,13 +177,13 @@ impl PdfParser {
         default
     }
 
-    fn find_info_ref(&self, text: &str) -> (u32, u32) {
-        if let Some(trailer_start) = text.find("trailer") {
+    fn find_info_ref(&self, data: &[u8]) -> (u32, u32) {
+        if let Some(trailer_start) = find_subsequence(data, b"trailer") {
             let trailer_text =
-                &text[trailer_start..trailer_start + 512.min(text.len() - trailer_start)];
-            if let Some(info_pos) = trailer_text.find("/Info") {
+                &data[trailer_start..trailer_start + 512.min(data.len() - trailer_start)];
+            if let Some(info_pos) = find_subsequence(trailer_text, b"/Info") {
                 let after = &trailer_text[info_pos + 5..];
-                if let Some(ref_str) = Self::parse_ref(after) {
+                if let Some(ref_str) = Self::parse_ref_bytes(after) {
                     return ref_str;
                 }
             }
@@ -135,37 +204,86 @@ impl PdfParser {
         }
     }
 
+    fn parse_ref_bytes(data: &[u8]) -> Option<(u32, u32)> {
+        let mut i = 0;
+        // Skip leading whitespace
+        while i < data.len() && data[i].is_ascii_whitespace() {
+            i += 1;
+        }
+
+        // Parse object number
+        let obj_start = i;
+        while i < data.len() && data[i].is_ascii_digit() {
+            i += 1;
+        }
+        if obj_start == i {
+            return None;
+        }
+        let obj = std::str::from_utf8(&data[obj_start..i])
+            .ok()?
+            .parse::<u32>()
+            .ok()?;
+
+        // Skip whitespace
+        while i < data.len() && data[i].is_ascii_whitespace() {
+            i += 1;
+        }
+
+        // Parse generation number
+        let gen_start = i;
+        while i < data.len() && data[i].is_ascii_digit() {
+            i += 1;
+        }
+        if gen_start == i {
+            return None;
+        }
+        let gen_num = std::str::from_utf8(&data[gen_start..i])
+            .ok()?
+            .parse::<u32>()
+            .ok()?;
+
+        // Skip whitespace
+        while i < data.len() && data[i].is_ascii_whitespace() {
+            i += 1;
+        }
+
+        // Check for 'R'
+        if i < data.len() && data[i] == b'R' {
+            Some((obj, gen_num))
+        } else {
+            None
+        }
+    }
+
     fn parse_objects(
         &self,
-        text: &str,
-        raw: &[u8],
+        data: &[u8],
         objects: &mut Vec<PdfObject>,
         obj_map: &mut HashMap<(u32, u32), usize>,
     ) -> Result<()> {
         let mut pos = 0;
-        let bytes = text.as_bytes();
 
-        while pos < bytes.len() {
+        while pos < data.len() {
             // Look for "N N obj" pattern
-            if bytes[pos] == b'\n' || bytes[pos] == b'\r' {
+            if data[pos] == b'\n' || data[pos] == b'\r' {
                 pos += 1;
                 continue;
             }
 
             // Quick check for digit (start of obj number)
-            if !bytes[pos].is_ascii_digit() {
+            if !data[pos].is_ascii_digit() {
                 pos += 1;
                 continue;
             }
 
             // Try to parse object header
-            if let Some((obj_num, gen_num, content_start)) = Self::try_parse_obj_header(bytes, pos)
-            {
-                let obj_end = Self::find_endobj(text, content_start);
-                let content = &text[content_start..obj_end];
+            if let Some((obj_num, gen_num, content_start)) = Self::try_parse_obj_header(data, pos) {
+                let obj_end = Self::find_endobj_bytes(data, content_start);
+                let content = &data[content_start..obj_end];
 
                 // Check if this is a stream object
-                let (entries, stream_data) = self.parse_object_content(content, raw, obj_end);
+                let (entries, stream_data) =
+                    self.parse_object_content_bytes(content, data, obj_end);
 
                 let idx = objects.len();
                 obj_map.insert((obj_num, gen_num), idx);
@@ -228,6 +346,15 @@ impl PdfParser {
         }
     }
 
+    fn find_endobj_bytes(data: &[u8], start: usize) -> usize {
+        // Find "endobj" after start
+        if let Some(pos) = find_subsequence(&data[start..], b"endobj") {
+            start + pos
+        } else {
+            data.len()
+        }
+    }
+
     fn parse_object_content(
         &self,
         content: &str,
@@ -248,6 +375,57 @@ impl PdfParser {
                 let data_start_abs = content_end - content.len() + data_start_in_content;
                 // Find "endstream"
                 let remaining = &content[data_start_in_content..];
+                if let Some(end_pos) = remaining.find("endstream") {
+                    let data_end = data_start_abs + end_pos;
+                    let data_end = data_end.min(raw.len());
+                    Some(raw[data_start_abs..data_end].to_vec())
+                } else {
+                    None
+                }
+            } else {
+                None
+            }
+        } else {
+            None
+        };
+
+        // Parse dictionary entries (everything before "stream" or end of content)
+        let dict_text = if stream_data.is_some() {
+            if let Some(pos) = trimmed.find("stream") {
+                trimmed[..pos].trim()
+            } else {
+                trimmed
+            }
+        } else {
+            trimmed.trim_end()
+        };
+
+        let entries = self.parse_dictionary(dict_text);
+        (entries, stream_data)
+    }
+
+    fn parse_object_content_bytes(
+        &self,
+        content: &[u8],
+        raw: &[u8],
+        content_end: usize,
+    ) -> (Vec<(String, PdfValue)>, Option<Vec<u8>>) {
+        // Convert to string for dictionary parsing
+        let content_str = std::str::from_utf8(content).unwrap_or("");
+        let trimmed = content_str.trim_start();
+
+        // Check for stream
+        let stream_data = if trimmed.contains("stream\r\n") || trimmed.contains("stream\n") {
+            let stream_keyword = if trimmed.contains("stream\r\n") {
+                "stream\r\n"
+            } else {
+                "stream\n"
+            };
+            if let Some(stream_pos) = trimmed.find(stream_keyword) {
+                let data_start_in_content = stream_pos + stream_keyword.len();
+                let data_start_abs = content_end - content.len() + data_start_in_content;
+                // Find "endstream"
+                let remaining = &trimmed[data_start_in_content..];
                 if let Some(end_pos) = remaining.find("endstream") {
                     let data_end = data_start_abs + end_pos;
                     let data_end = data_end.min(raw.len());
@@ -1040,6 +1218,20 @@ impl PdfParser {
         }
     }
 
+    fn detect_xref_type_bytes(&self, data: &[u8]) -> XrefType {
+        let has_classic =
+            find_subsequence(data, b"/Type").is_some() && find_subsequence(data, b"xref").is_some();
+        let has_stream = find_subsequence(data, b"/Type").is_some()
+            && find_subsequence(data, b"/XRef").is_some();
+
+        match (has_classic, has_stream) {
+            (true, true) => XrefType::Hybrid,
+            (false, true) => XrefType::XrefStream,
+            (true, false) => XrefType::ClassicTable,
+            (false, false) => XrefType::Unknown,
+        }
+    }
+
     fn detect_encryption(&self, text: &str) -> Option<PdfEncryption> {
         // Check for /Encrypt reference
         if !text.contains("/Encrypt") {
@@ -1109,6 +1301,71 @@ impl PdfParser {
                 let after_meta = &search_region[meta_pos + 14..];
                 if after_meta.trim_start().starts_with("false") {
                     // Metadata not encrypted
+                }
+            }
+        }
+
+        Some(encryption)
+    }
+
+    fn detect_encryption_bytes(&self, data: &[u8]) -> Option<PdfEncryption> {
+        // Check for /Encrypt reference
+        if !find_subsequence(data, b"/Encrypt").is_some() {
+            return None;
+        }
+
+        // Default encrypted document
+        let mut encryption = PdfEncryption {
+            encrypted: true,
+            version: 1,
+            key_length: None,
+            method: "Unknown".to_string(),
+            user_password_required: false,
+        };
+
+        // Try to find encryption dictionary and extract /V (version)
+        if let Some(encrypt_pos) = find_subsequence(data, b"/Encrypt") {
+            let end = encrypt_pos.saturating_add(512).min(data.len());
+            let search_region = &data[encrypt_pos..end];
+
+            // Find /V entry
+            if let Some(v_pos) = find_subsequence(search_region, b"/V") {
+                let after_v = &search_region[v_pos + 2..];
+                let v_str = parse_number_from_bytes(after_v);
+                if let Some(v) = v_str.and_then(|s| s.parse::<u32>().ok()) {
+                    encryption.version = v;
+                }
+            }
+
+            // Find /Length entry
+            if let Some(len_pos) = find_subsequence(search_region, b"/Length") {
+                let after_len = &search_region[len_pos + 7..];
+                let len_str = parse_number_from_bytes(after_len);
+                if let Some(len) = len_str.and_then(|s| s.parse::<u32>().ok()) {
+                    encryption.key_length = Some(len);
+                }
+            }
+
+            // Check for encryption method (/CF or /CFM)
+            if let Some(cfm_pos) = find_subsequence(search_region, b"/CFM") {
+                let after_cfm = &search_region[cfm_pos + 4..];
+                if let Ok(method) = std::str::from_utf8(trim_whitespace(after_cfm)) {
+                    encryption.method = method
+                        .split_whitespace()
+                        .next()
+                        .unwrap_or("Unknown")
+                        .to_string();
+                }
+            } else if find_subsequence(search_region, b"/CF").is_some() {
+                encryption.method = "Custom".to_string();
+            }
+
+            // Detect AES vs RC4 based on version and filters
+            if encryption.method == "Unknown" {
+                if encryption.version >= 4 {
+                    encryption.method = "AES".to_string();
+                } else {
+                    encryption.method = "RC4".to_string();
                 }
             }
         }

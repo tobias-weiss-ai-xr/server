@@ -124,9 +124,9 @@ async function generateDockerCompose() {
       `JWT_IN_BODY=true`
     ],
     volumes: [
-      `${config.DOCUMENT_SERVER_DATA_DIR}/data:/var/www/world-office/Data`,
-      `${config.DOCUMENT_SERVER_DATA_DIR}/logs:/var/log/world-office`,
-      `${config.DOCUMENT_SERVER_DATA_DIR}/lib:/var/lib/world-office`,
+      `${config.DOCUMENT_SERVER_DATA_DIR}/data:/var/www/worldoffice/Data`,
+      `${config.DOCUMENT_SERVER_DATA_DIR}/logs:/var/log/worldoffice`,
+      `${config.DOCUMENT_SERVER_DATA_DIR}/lib:/var/lib/worldoffice`,
       `${config.DOCUMENT_SERVER_DATA_DIR}/db:/var/lib/postgresql`
     ],
     expose: [config.DOCUMENT_SERVER_INTERNAL_PORT],

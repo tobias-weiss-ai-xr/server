@@ -21,8 +21,8 @@
  *
  */
 
-#content.app-world-office,
-#body-public #content.app-world-office {
+#content.app-worldoffice,
+#body-public #content.app-worldoffice {
     min-height: calc(100% - 50px);
 }
 
@@ -38,12 +38,12 @@
     margin-top: -50px;
 }
 
-#content.app-world-office #app > iframe {
+#content.app-worldoffice #app > iframe {
     height: calc(100dvh - 50px);
     margin-top: 0px;
 }
 
-.world-office-inviewer > iframe {
+.worldoffice-inviewer > iframe {
     height: 100vh !important;
 }
 

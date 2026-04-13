@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "world-office",
+    "worldoffice",
     {
     "Access denied" : "Brak dostępu",
     "Invalid request" : "Niepoprawne zapytanie",

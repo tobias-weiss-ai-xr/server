@@ -66,7 +66,7 @@ use OCP\User\Events\UserDeletedEvent;
 use OCP\Server;
 
 class Application extends App implements IBootstrap {
-    public const APP_ID = "world-office";
+    public const APP_ID = "worldoffice";
 
     private readonly AppConfig $appConfig;
 

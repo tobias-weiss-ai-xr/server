@@ -25,7 +25,7 @@
 		:name="dialogName"
 		:buttons="buttons"
 		@update:open="$emit('close', false)">
-		<div class="world-office-popup-info">
+		<div class="worldoffice-popup-info">
 			<p>{{ successText }}</p>
 			<p v-html="warningHtml" />
 		</div>
@@ -45,8 +45,8 @@ export default {
 
 	data() {
 		return {
-			successText: t('world-office', 'Server settings have been successfully updated'),
-			dialogName: t('world-office', 'Info'),
+			successText: t('worldoffice', 'Server settings have been successfully updated'),
+			dialogName: t('worldoffice', 'Info'),
 			buttons: [
 				{
 					label: t('core', 'Ok'),
@@ -59,10 +59,10 @@ export default {
 
 	computed: {
 		warningHtml() {
-			const securityUrl = 'https://api.world-office.com/docs/docs-api/get-started/how-it-works/security/'
+			const securityUrl = 'https://api.worldoffice.org/docs/docs-api/get-started/how-it-works/security/'
 			return t(
-				'world-office',
-				'To ensure the security of important parameters in word-office requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}" target="_blank">click here</a>.',
+				'worldoffice',
+				'To ensure the security of important parameters in World Office requests, please set a Secret Key on the Settings page. To learn more, <a href="{url}" target="_blank">click here</a>.',
 				{ url: securityUrl },
 				{ escape: false, sanitize: false },
 			)
@@ -72,14 +72,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.world-office-popup-info {
+.worldoffice-popup-info {
     display: flex;
     flex-direction: column;
     row-gap: 12px;
     padding: 13px;
 }
 
-.world-office-popup-info :deep(a) {
+.worldoffice-popup-info :deep(a) {
     text-decoration: underline;
 }
 

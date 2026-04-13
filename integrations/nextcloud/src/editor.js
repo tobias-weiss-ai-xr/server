@@ -30,7 +30,7 @@
 (function($, OCA) {
 
 	OCA.WorldOffice = _.extend({
-		AppName: 'world-office',
+		AppName: 'worldoffice',
 		inframe: false,
 		inviewer: false,
 		fileId: null,

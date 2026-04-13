@@ -34,7 +34,7 @@ import AppDarkSvg from '../img/app-dark.svg?raw';
 (function($, OC) {
 
 	OCA.WorldOffice = _.extend({
-		AppName: 'world-office',
+		AppName: 'worldoffice',
 	}, OCA.WorldOffice)
 
 	OCA.WorldOffice.Permissions = {

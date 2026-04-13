@@ -1,12 +1,8 @@
 ![World-Office](https://codeberg.org/World-Office/artwork/raw/branch/main/assets/banner.png)
 
-# world-office-opencloud
+# worldoffice-opencloud
 
 A deployment companion for World-Office Document Server and ownCloud Infinite Scale (OCIS). It provides a simple way to orchestrate OCIS, Document Server, and supporting services via Docker Compose.
-
-> **Disclaimer:** World-Office is an independent open-source fork hosted on Codeberg and is not affiliated with, endorsed by, or controlled by any of the upstream projects or integration providers referenced in this repository (including WORLDOFFICE, Ascensio System SIA, and others). World-Office is entirely separate from "word-office" (a GitHub organization associated with Nextcloud and IONOS). World-Office maintains its own development roadmap, release cycle, and support channels.
->
-> All meaningful pull requests from WORLDOFFICE and word-office on GitHub have been reviewed and, where applicable, synced into this fork. An automated watch is in place that continuously monitors and integrates relevant upstream developments.
 
 ## Features
 
@@ -18,7 +14,7 @@ A deployment companion for World-Office Document Server and ownCloud Infinite Sc
 
 ## Architecture
 
-world-office-opencloud is a deployment companion that:
+worldoffice-opencloud is a deployment companion that:
 
 1. Generates OCIS and Document Server configurations from a single `.env` file
 2. Creates Docker Compose files for the full stack (Traefik, OCIS, Document Server)
@@ -39,8 +35,8 @@ The architecture leverages OCIS's native WOPI collaboration service, so no custo
 
 ```bash
 # Clone the repository
-git clone https://codeberg.org/World-Office/world-office-opencloud.git
-cd world-office-opencloud
+git clone https://codeberg.org/World-Office/worldoffice-opencloud.git
+cd worldoffice-opencloud
 
 # Install dependencies
 npm install
@@ -89,7 +85,7 @@ The application uses a single `.env` file for configuration. After running the s
 ### Docker Settings
 
 - `OCIS_IMAGE`: OCIS Docker image (default: `owncloud/ocis:latest`)
-- `DOCUMENT_SERVER_IMAGE`: Document Server image (default: `world-office/documentserver:latest`)
+- `DOCUMENT_SERVER_IMAGE`: Document Server image (default: `worldoffice/documentserver:latest`)
 - `TRAEFIK_IMAGE`: Traefik image (default: `traefik:v2.10`)
 
 ## Development
@@ -114,7 +110,7 @@ npm run lint:fix
 
 ```bash
 # Build the companion image
-docker build -t world-office-opencloud:latest .
+docker build -t worldoffice-opencloud:latest .
 
 # Run with Docker Compose
 docker-compose up -d
@@ -124,11 +120,11 @@ docker-compose up -d
 
 ```bash
 docker run -d \
-  --name world-office-opencloud \
+  --name worldoffice-opencloud \
   -p 3000:3000 \
   -v $(pwd)/.env:/app/.env \
   -v $(pwd)/data:/app/data \
-  world-office-opencloud:latest
+  worldoffice-opencloud:latest
 ```
 
 ## API Endpoints
@@ -176,22 +172,22 @@ docker-compose logs -f <service-name>
 Verify JWT secrets match between OCIS and Document Server:
 ```bash
 # Check OCIS JWT secret
-docker exec world-office-ocis env | grep JWT_SECRET
+docker exec worldoffice-ocis env | grep JWT_SECRET
 
 # Check Document Server JWT secret
-docker exec world-office-documentserver env | grep JWT_SECRET
+docker exec worldoffice-documentserver env | grep JWT_SECRET
 ```
 
 ### Dashboard Not Accessible
 
 Ensure the companion is running:
 ```bash
-docker ps | grep world-office-opencloud
+docker ps | grep worldoffice-opencloud
 ```
 
 Check port configuration:
 ```bash
-docker logs world-office-opencloud | grep "port"
+docker logs worldoffice-opencloud | grep "port"
 ```
 
 ## Security Considerations
@@ -232,7 +228,7 @@ Contributions are welcome! Please follow these guidelines:
 
 ## License
 
-This project is licensed under the AGPL-3.0 License. See LICENSE file for details.
+This project is licensed under the MIT License. See LICENSE file for details.
 
 ## Support
 
@@ -242,10 +238,10 @@ This project is licensed under the AGPL-3.0 License. See LICENSE file for detail
 
 ## Related Projects
 
-- [world-office-nextcloud](https://codeberg.org/World-Office/world-office-nextcloud) - Nextcloud integration
+- [worldoffice-nextcloud](https://codeberg.org/World-Office/worldoffice-nextcloud) - Nextcloud integration
 - [OCIS](https://github.com/owncloud/ocis) - ownCloud Infinite Scale
 - [World-Office Document Server](https://codeberg.org/World-Office/DocumentServer) - Document editor
 
 ---
 
-© 2024 World-Office. Released under AGPL-3.0.
+© 2024 World-Office. Released under MIT.

@@ -23,17 +23,17 @@
  *
  */
 
-    style("world-office", "editor");
-    \OCP\Util::addScript("world-office", "world-office-desktop", 'core');
+    style("worldoffice", "editor");
+    \OCP\Util::addScript("worldoffice", "worldoffice-desktop", 'core');
 if (!empty($_["directToken"])) {
-    \OCP\Util::addScript("world-office", "world-office-directeditor", 'core');
+    \OCP\Util::addScript("worldoffice", "worldoffice-directeditor", 'core');
 }
-    \OCP\Util::addScript("world-office", "world-office-editor", 'core');
+    \OCP\Util::addScript("worldoffice", "worldoffice-editor", 'core');
 ?>
 
 <div id="app"
     <?php if (!empty($_["inviewer"])) { ?>
-        class="world-office-inviewer"
+        class="worldoffice-inviewer"
     <?php } ?>>
 
     <div id="iframeEditor"

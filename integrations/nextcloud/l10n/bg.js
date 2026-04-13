@@ -1,5 +1,5 @@
 OC.L10N.register(
-    "world-office",
+    "worldoffice",
     {
     "Access denied" : "Отказан достъп",
     "Invalid request" : "Неправилна заявка",

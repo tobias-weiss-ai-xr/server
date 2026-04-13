@@ -100,7 +100,7 @@ function buildEnvContent(data) {
     OCIS_JWT_SECRET: autoSecrets ? generateSecret() : (data.OCIS_JWT_SECRET || generateSecret()),
     DOCUMENT_SERVER_JWT_SECRET: autoSecrets ? generateSecret() : (data.DOCUMENT_SERVER_JWT_SECRET || generateSecret()),
     OCIS_IMAGE: (data.OCIS_IMAGE || 'owncloud/ocis:latest').trim(),
-    DOCUMENT_SERVER_IMAGE: (data.DOCUMENT_SERVER_IMAGE || 'world-office/documentserver:latest').trim(),
+    DOCUMENT_SERVER_IMAGE: (data.DOCUMENT_SERVER_IMAGE || 'worldoffice/documentserver:latest').trim(),
     TRAEFIK_IMAGE: (data.TRAEFIK_IMAGE || 'traefik:v2.10').trim(),
     TRAEFIK_HTTP_PORT: '80',
     TRAEFIK_HTTPS_PORT: '443',
@@ -133,7 +133,7 @@ router.get('/', async (req, res) => {
       OCIS_JWT_SECRET: '',
       DOCUMENT_SERVER_JWT_SECRET: '',
       OCIS_IMAGE: 'owncloud/ocis:latest',
-      DOCUMENT_SERVER_IMAGE: 'world-office/documentserver:latest',
+      DOCUMENT_SERVER_IMAGE: 'worldoffice/documentserver:latest',
       TRAEFIK_IMAGE: 'traefik:v2.10',
       ENABLE_SSL: 'true',
       PORT: '3000'

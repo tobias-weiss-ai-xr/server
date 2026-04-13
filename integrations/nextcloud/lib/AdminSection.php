@@ -39,21 +39,21 @@ class AdminSection implements IIconSection {
      * Path to an 16*16 icons
      */
     public function getIcon(): string {
-        return $this->urlGenerator->imagePath("world-office", "app-dark.svg");
+        return $this->urlGenerator->imagePath("worldoffice", "app-dark.svg");
     }
 
     /**
      * ID of the section
      */
     public function getID(): string {
-        return "world-office";
+        return "worldoffice";
     }
 
     /**
      * Name of the section
      */
     public function getName(): string {
-        return "word-office";
+        return "World Office";
     }
 
     /**

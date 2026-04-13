@@ -1,10 +1,10 @@
 {
-    "name": "world-office/world-office-nextcloud",
+    "name": "worldoffice/worldoffice-nextcloud",
     "authors": [
         {
-            "name": "Ascensio System SIA",
-            "email": "integration@world-office.com",
-            "homepage": "https://www.world-office.com/"
+            "name": "World Office contributors",
+            "email": "dev@worldoffice.org",
+            "homepage": "https://www.worldoffice.org/"
         }
     ],
     "autoload": {

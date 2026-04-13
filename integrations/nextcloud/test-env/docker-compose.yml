@@ -12,8 +12,8 @@ services:
       - USE_UNAUTHORIZED_STORAGE=true
       - JWT_SECRET=mysecret
     volumes:
-      - wo-data:/var/www/world-office/Data
-      - wo-logs:/var/log/world-office
+      - wo-data:/var/www/worldoffice/Data
+      - wo-logs:/var/log/worldoffice
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost/healthcheck"]
       interval: 10s
@@ -29,7 +29,7 @@ services:
       - "8081:80"
     volumes:
       - nc-data:/var/www/html
-      - ./setup-world-office.sh:/docker-entrypoint-hooks.d/post-installation/setup-world-office.sh:ro
+      - ./setup-worldoffice.sh:/docker-entrypoint-hooks.d/post-installation/setup-worldoffice.sh:ro
       - ..:/worldoffice-nextcloud:ro
     environment:
       - NEXTCLOUD_TRUSTED_DOMAINS=localhost,127.0.0.1,172.24.0.0/16

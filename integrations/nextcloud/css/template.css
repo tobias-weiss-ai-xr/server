@@ -21,58 +21,58 @@
  *
  */
 
-.world-office-template-container li {
+.worldoffice-template-container li {
     margin-bottom: 10px;
 }
 
-.world-office-template-item img,
-.world-office-template-delete,
-.world-office-template-download,
-.world-office-template-item p {
+.worldoffice-template-item img,
+.worldoffice-template-delete,
+.worldoffice-template-download,
+.worldoffice-template-item p {
     display: inline-block;
     margin-right: 10px;
     cursor: pointer;
 }
 
-.world-office-template-delete,
-.world-office-template-download {
+.worldoffice-template-delete,
+.worldoffice-template-download {
     margin-bottom: -4px;
 }
 
-.world-office-template-delete {
+.worldoffice-template-delete {
     opacity: .6;
 }
 
-.world-office-template-download {
+.worldoffice-template-download {
     background-image: url("../../../core/img/actions/download.svg");
     height: 16px;
     width: 16px;
     opacity: .6;
 }
 
-.section-world-office-templates .icon-add {
+.section-worldoffice-templates .icon-add {
     opacity: 0.5;
     padding-left: 44px;
 }
 
-.section-world-office-templates .icon-add:hover {
+.section-worldoffice-templates .icon-add:hover {
     opacity: 0.7;
 }
 
-.world-office-template-item img {
+.worldoffice-template-item img {
     float: left;
     margin-top: 5px;
 }
 
-.world-office-template-item input {
+.worldoffice-template-item input {
     position: absolute;
     left: -10000px;
 }
 
-.world-office-template-item input:checked + label {
+.worldoffice-template-item input:checked + label {
     color: rgb(55, 137, 243);
 }
 
-.section-world-office-templates input {
+.section-worldoffice-templates input {
     display: none;
 }

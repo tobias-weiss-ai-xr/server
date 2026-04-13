@@ -21,7 +21,7 @@
  *
  */
 
-#world-officeViewerFrame {
+#worldofficeViewerFrame {
     background-color: #fff;
     width: 100%;
     height: calc(var(--body-height) + var(--body-container-margin) + 100px);
@@ -31,11 +31,11 @@
     z-index: 110;
 }
 
-.modal-wrapper--full #world-officeViewerFrame {
+.modal-wrapper--full #worldofficeViewerFrame {
     top: 0;
 }
 
-.widget-custom #world-officeViewerFrame {
+.widget-custom #worldofficeViewerFrame {
     position: unset;
     top: unset;
     min-height: 300px;

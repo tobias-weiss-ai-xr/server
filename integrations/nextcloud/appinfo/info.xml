@@ -15,7 +15,7 @@ Whether you’re working with internal teams or external collaborators, the Worl
 ]]></description>
     <licence>agpl</licence>
 	<author>World Office contributors</author>
-    <author mail="dev@world-office.com" homepage="https://www.world-office.com/">Ascensio System SIA</author>
+    <author mail="dev@worldoffice.org" homepage="https://www.worldoffice.org/">World Office contributors</author>
     <version>11.0.0</version>
     <namespace>Worldoffice</namespace>
     <types>

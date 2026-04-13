@@ -21,61 +21,61 @@
  *
  */
 
- #content .section-world-office .icon-info {
+ #content .section-worldoffice .icon-info {
     box-sizing: content-box;
     padding-top: 6px;
 }
 
-.world-office-header {
+.worldoffice-header {
     display: inline-block;
     margin-top: 16px;
 }
 
-.section-world-office input {
+.section-worldoffice input {
     display: block;
     width: 250px;
 }
 
-.world-office-hide {
+.worldoffice-hide {
     display: none;
 }
 
-#world-officeAdv {
+#worldofficeAdv {
     cursor: pointer;
     text-decoration: none;
 }
 
-#world-officeAdv .icon {
+#worldofficeAdv .icon {
     display: inline-block;
     margin-bottom: -3px;
 }
 
-#world-officeAddrSave {
+#worldofficeAddrSave {
     float: left;
 }
 
-.world-office-demo {
+.worldoffice-demo {
     margin-left: 90px;
 }
 
-#s2id_world-officeLimitGroups,
-#s2id_world-officeWatermark_allGroupsList,
-#s2id_world-officeWatermark_allTagsList,
-#s2id_world-officeWatermark_linkTagsList {
+#s2id_worldofficeLimitGroups,
+#s2id_worldofficeWatermark_allGroupsList,
+#s2id_worldofficeWatermark_allTagsList,
+#s2id_worldofficeWatermark_linkTagsList {
     margin-bottom: 16px;
     margin-left: 18px;
     margin-top: 6px;
     width: 250px;
 }
 
-.world-office-exts {
+.worldoffice-exts {
     column-width: 100px;
     -moz-column-width: 100px;
     -webkit-column-width: 100px;
     margin-bottom: 1em;
 }
 
-.world-office-tables {
+.worldoffice-tables {
     margin-top: 4px;
     line-height: initial;
     column-width: 140px;
@@ -84,43 +84,43 @@
     margin-bottom: 1em;
 }
 
-#world-officeSecret-show {
+#worldofficeSecret-show {
     left: 205px;
 }
 
-#world-officeEnableSharingBlock {
+#worldofficeEnableSharingBlock {
     margin-left: 1.5em;
 }
 
-.world-office-description {
+.worldoffice-description {
     display: flex;
     flex-direction: column;
     row-gap: 11px;
     margin-bottom: 24px;
 }
 
-.world-office-description h1 {
+.worldoffice-description h1 {
     font-size: 32px;
     font-weight: 600;
 }
 
-.world-office-description p {
+.worldoffice-description p {
     font-size: 15px;
     font-weight: 400;
     margin-bottom: 0 !important;
 }
 
-.world-office-description .useful-links {
+.worldoffice-description .useful-links {
     display: flex;
     column-gap: 24px;
 }
 
-.world-office-description .useful-links a {
+.worldoffice-description .useful-links a {
     display: flex;
     gap: 4px;
 }
 
-.world-office-description .useful-links a::after {
+.worldoffice-description .useful-links a::after {
     content: url('../img/top-right-arrow.svg');
     width: 12px;
     height: 12px;

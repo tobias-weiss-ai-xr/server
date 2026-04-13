@@ -30,7 +30,7 @@
 (function($, OC) {
 
 	OCA.WorldOffice = _.extend({
-		AppName: 'world-office',
+		AppName: 'worldoffice',
 		templates: null,
 	}, OCA.WorldOffice)
 

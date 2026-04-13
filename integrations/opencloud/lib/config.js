@@ -9,7 +9,7 @@ const defaults = {
   PORT: '3000',
   NODE_ENV: 'development',
   OCIS_IMAGE: 'owncloud/ocis:latest',
-  DOCUMENT_SERVER_IMAGE: 'world-office/documentserver:latest',
+  DOCUMENT_SERVER_IMAGE: 'worldoffice/documentserver:latest',
   TRAEFIK_IMAGE: 'traefik:v2.10',
   TRAEFIK_HTTP_PORT: '80',
   TRAEFIK_HTTPS_PORT: '443',

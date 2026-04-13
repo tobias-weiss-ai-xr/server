@@ -50,7 +50,7 @@ class AdminSettings implements ISettings {
      * Get section ID
      */
     public function getSection(): string {
-        return "world-office";
+        return "worldoffice";
     }
 
     /**

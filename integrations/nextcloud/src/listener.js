@@ -29,7 +29,7 @@
 (function(OCA) {
 
 	OCA.WorldOffice = _.extend({
-		AppName: 'world-office',
+		AppName: 'worldoffice',
 		frameSelector: null,
 		titleBase: window.document.title,
 		favIconBase: $('link[rel="icon"]').attr('href'),

@@ -21,10 +21,10 @@
  *
  */
 
-.icon-world-office-open,
-.icon-world-office-convert,
-.icon-world-office-download,
-.icon-world-office-create {
+.icon-worldoffice-open,
+.icon-worldoffice-convert,
+.icon-worldoffice-download,
+.icon-worldoffice-create {
     background-color: var(--color-main-text);
     mask: url("../img/app-dark.svg") no-repeat 50% 50%;
     mask-size: 16px 16px;
@@ -32,38 +32,38 @@
     -webkit-mask-size: 16px 16px;
 }
 
-/* world-office-inline */
-#body-user.world-office-inline #app-navigation,
-#body-user.world-office-inline .app-navigation,
-#body-user.world-office-inline #app-navigation-vue,
-#body-user.world-office-inline .searchbox,
-#body-user.world-office-inline #app-content .files-controls,
-#body-user.world-office-inline #app-content-vue .files-controls,
-#body-user.world-office-inline .files-filestable,
-#body-user.world-office-inline .files-list,
-#body-user.world-office-inline .files-list__header {
+/* worldoffice-inline */
+#body-user.worldoffice-inline #app-navigation,
+#body-user.worldoffice-inline .app-navigation,
+#body-user.worldoffice-inline #app-navigation-vue,
+#body-user.worldoffice-inline .searchbox,
+#body-user.worldoffice-inline #app-content .files-controls,
+#body-user.worldoffice-inline #app-content-vue .files-controls,
+#body-user.worldoffice-inline .files-filestable,
+#body-user.worldoffice-inline .files-list,
+#body-user.worldoffice-inline .files-list__header {
     display: none;
 }
 
-#body-user.world-office-inline #app-navigation-toggle {
+#body-user.worldoffice-inline #app-navigation-toggle {
     display: none !important;
 }
 
-#body-public.world-office-inline #content #app-content,
-#body-user.world-office-inline #content #app-content,
-#body-user.world-office-inline #content #app-content-vue,
-#body-user.world-office-inline #content-vue #app-content-vue {
+#body-public.worldoffice-inline #content #app-content,
+#body-user.worldoffice-inline #content #app-content,
+#body-user.worldoffice-inline #content #app-content-vue,
+#body-user.worldoffice-inline #content-vue #app-content-vue {
     margin-left: 0;
     position: relative;
     overflow: hidden;
     overscroll-behavior-y: none;
 }
 
-#body-public.world-office-inline footer {
+#body-public.worldoffice-inline footer {
     display: none !important;
 }
 
-#world-officeFrame {
+#worldofficeFrame {
     background-color: #fff;
     width: 100%;
     height: 100vh;
@@ -73,7 +73,7 @@
     z-index: 1010;
 }
 
-.world-office-public-open {
+.worldoffice-public-open {
     display: inline-block;
     margin-top: 10px;
 }
@@ -113,16 +113,16 @@
     display: none;
 }
 
-.world-office-download-container {
+.worldoffice-download-container {
     display: flex;
 }
 
-.world-office-download-container p {
+.worldoffice-download-container p {
     margin-right: 10px;
     padding-top: 10px;
 }
 
-.world-office-iframe-container {
+.worldoffice-iframe-container {
     position: absolute;
     width: 100%;
     height: 100%;

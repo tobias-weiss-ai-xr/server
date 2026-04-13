@@ -32,7 +32,7 @@
 	}
 
 	OCA.WorldOffice = {
-		AppName: 'world-office',
+		AppName: 'worldoffice',
 		frameSelector: null,
 		setting: {},
 	}

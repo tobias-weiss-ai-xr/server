@@ -23,21 +23,21 @@ FROM node:20-alpine
 RUN apk add --no-cache dumb-init
 
 # Create non-root user
-RUN addgroup -g 1001 -S world-office && \
-    adduser -S -u 1001 -G world-office world-office
+RUN addgroup -g 1001 -S worldoffice && \
+    adduser -S -u 1001 -G worldoffice worldoffice
 
 WORKDIR /app
 
 # Copy dependencies and app from builder
-COPY --from=builder --chown=world-office:world-office /app/node_modules ./node_modules
-COPY --from=builder --chown=world-office:world-office /app ./
+COPY --from=builder --chown=worldoffice:worldoffice /app/node_modules ./node_modules
+COPY --from=builder --chown=worldoffice:worldoffice /app ./
 
 # Create data directories
 RUN mkdir -p data/ocis data/documentserver data/traefik && \
-    chown -R world-office:world-office data
+    chown -R worldoffice:worldoffice data
 
 # Switch to non-root user
-USER world-office
+USER worldoffice
 
 # Expose dashboard port
 EXPOSE 3000

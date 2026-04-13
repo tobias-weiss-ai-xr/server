@@ -23,7 +23,7 @@
  *
  */
 
-\OCP\Util::addScript("world-office", "directeditor", 'core');
+\OCP\Util::addScript("worldoffice", "directeditor", 'core');
 ?>
 <div class="guest-box" id="directEditorError">
     <h2><?php p($l->t('Error')); ?></h2>

@@ -52,7 +52,7 @@ import { loadState } from '@nextcloud/initial-state'
 (function(OCA) {
 
 	OCA.WorldOffice = _.extend({
-		AppName: 'world-office',
+		AppName: 'worldoffice',
 		context: null,
 		frameSelector: null,
 	}, OCA.WorldOffice)
@@ -194,13 +194,13 @@ import { loadState } from '@nextcloud/initial-state'
 				window.open(url, '_blank')
 				return
 			}
-			OCA.WorldOffice.frameSelector = '#world-officeFrame'
-			const $iframe = $('<div class="world-office-iframe-container"><iframe id="world-officeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + url + '&inframe=true" /></div>')
+			OCA.WorldOffice.frameSelector = '#worldofficeFrame'
+			const $iframe = $('<div class="worldoffice-iframe-container"><iframe id="worldofficeFrame" nonce="' + btoa(OC.requestToken) + '" scrolling="no" allowfullscreen src="' + url + '&inframe=true" /></div>')
 
 			const frameContainer = $('#app-content').length > 0 ? $('#app-content') : $('#app-content-vue')
 			frameContainer.append($iframe)
 
-			$('body').addClass('world-office-inline')
+			$('body').addClass('worldoffice-inline')
 
 			if (OCA.Files.Sidebar) {
 				OCA.Files.Sidebar.close()
@@ -225,9 +225,9 @@ import { loadState } from '@nextcloud/initial-state'
 	}
 
 	OCA.WorldOffice.CloseEditor = function() {
-		$('body').removeClass('world-office-inline')
+		$('body').removeClass('worldoffice-inline')
 
-		const iframeContainer = document.querySelector('.world-office-iframe-container')
+		const iframeContainer = document.querySelector('.worldoffice-iframe-container')
 		if (iframeContainer !== null) {
 			iframeContainer.remove()
 		}
@@ -281,7 +281,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 	OCA.WorldOffice.FileClickExec = async function(file, view, dir, isDefault = true) {
 		if (OCA.WorldOffice.context !== null
-			&& document.querySelector('.world-office-iframe-container')
+			&& document.querySelector('.worldoffice-iframe-container')
 			&& !OCA.WorldOffice.Desktop) {
 			return null
 		}
@@ -361,7 +361,7 @@ import { loadState } from '@nextcloud/initial-state'
 			function(tmpl) {
 				const dialog = $(tmpl).octemplate({
 					dialog_name: 'download-picker',
-					dialog_title: t('world-office', 'Download as'),
+					dialog_title: t('worldoffice', 'Download as'),
 				})
 
 				$(dialog[0].querySelectorAll('p')).text(t(OCA.WorldOffice.AppName, 'Choose a format to convert {fileName}', { fileName }))
@@ -375,7 +375,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 				dialog[0].dataset.format = extension
 				selectNode.onchange = function() {
-					dialog[0].dataset.format = $('#world-office-download-select option:selected').attr('data-value')
+					dialog[0].dataset.format = $('#worldoffice-download-select option:selected').attr('data-value')
 				}
 
 				OCA.WorldOffice.setting.formats[extension].saveas.forEach(ext => {
@@ -399,7 +399,7 @@ import { loadState } from '@nextcloud/initial-state'
 							$(this).ocdialog('close')
 						},
 					}, {
-						text: t('world-office', 'Download'),
+						text: t('worldoffice', 'Download'),
 						classes: 'primary',
 						click() {
 							const format = this.dataset.format
@@ -512,47 +512,47 @@ import { loadState } from '@nextcloud/initial-state'
 				const mimeTypes = config.mime
 				mimeTypes.forEach((mime) => {
 					OCA.Files.fileActions.registerAction({
-						name: 'world-officeOpen',
+						name: 'worldofficeOpen',
 						displayName: t(OCA.WorldOffice.AppName, 'Open in word-office'),
 						mime,
 						permissions: OC.PERMISSION_READ,
-						iconClass: 'icon-world-office-open',
+						iconClass: 'icon-worldoffice-open',
 						actionHandler: OCA.WorldOffice.FileClick,
 					})
 
 					if (config.def) {
-						OCA.Files.fileActions.setDefault(mime, 'world-officeOpen')
+						OCA.Files.fileActions.setDefault(mime, 'worldofficeOpen')
 					}
 
 					if (config.conv) {
 						OCA.Files.fileActions.registerAction({
-							name: 'world-officeConvert',
+							name: 'worldofficeConvert',
 							displayName: t(OCA.WorldOffice.AppName, 'Convert with word-office'),
 							mime,
 							permissions: (isPublicShare() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-							iconClass: 'icon-world-office-convert',
+							iconClass: 'icon-worldoffice-convert',
 							actionHandler: OCA.WorldOffice.FileConvertClick,
 						})
 					}
 
 					if (config.createForm) {
 						OCA.Files.fileActions.registerAction({
-							name: 'world-officeCreateForm',
+							name: 'worldofficeCreateForm',
 							displayName: t(OCA.WorldOffice.AppName, 'Create form'),
 							mime,
 							permissions: (isPublicShare() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ),
-							iconClass: 'icon-world-office-create',
+							iconClass: 'icon-worldoffice-create',
 							actionHandler: OCA.WorldOffice.CreateFormClick,
 						})
 					}
 
 					if (config.saveas && !isPublicShare() && !OCA.WorldOffice.setting.disableDownload) {
 						OCA.Files.fileActions.registerAction({
-							name: 'world-officeDownload',
+							name: 'worldofficeDownload',
 							displayName: t(OCA.WorldOffice.AppName, 'Download as'),
 							mime,
 							permissions: OC.PERMISSION_READ,
-							iconClass: 'icon-world-office-download',
+							iconClass: 'icon-worldoffice-download',
 							actionHandler: OCA.WorldOffice.DownloadClick,
 						})
 					}
@@ -560,7 +560,7 @@ import { loadState } from '@nextcloud/initial-state'
 			})
 		} else {
 			registerFileAction(new FileAction({
-				id: 'world-office-open-def',
+				id: 'worldoffice-open-def',
 				displayName: () => t(OCA.WorldOffice.AppName, 'Open in word-office'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
@@ -579,7 +579,7 @@ import { loadState } from '@nextcloud/initial-state'
 			}))
 
 			registerFileAction(new FileAction({
-				id: 'world-office-open',
+				id: 'worldoffice-open',
 				displayName: () => t(OCA.WorldOffice.AppName, 'Open in word-office'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
@@ -598,7 +598,7 @@ import { loadState } from '@nextcloud/initial-state'
 			}))
 
 			registerFileAction(new FileAction({
-				id: 'world-office-convert',
+				id: 'worldoffice-convert',
 				displayName: () => t(OCA.WorldOffice.AppName, 'Convert with word-office'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
@@ -624,7 +624,7 @@ import { loadState } from '@nextcloud/initial-state'
 			}))
 
 			registerFileAction(new FileAction({
-				id: 'world-office-create-form',
+				id: 'worldoffice-create-form',
 				displayName: () => t(OCA.WorldOffice.AppName, 'Create form'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
@@ -651,7 +651,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 			if (!isPublicShare()) {
 				registerFileAction(new FileAction({
-					id: 'world-office-download-as',
+					id: 'worldoffice-download-as',
 					displayName: () => t(OCA.WorldOffice.AppName, 'Download as'),
 					iconSvgInline: () => AppDarkSvg,
 					enabled: (files) => {
@@ -687,7 +687,7 @@ import { loadState } from '@nextcloud/initial-state'
 			}
 			// Document
 			addNewFileMenuEntry({
-				id: 'new-world-office-docx',
+				id: 'new-worldoffice-docx',
 				displayName: t(OCA.WorldOffice.AppName, 'New document'),
 				enabled: (folder) => {
 					return (folder.permissions & Permission.CREATE) !== 0
@@ -707,7 +707,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 			// Spreadsheet
 			addNewFileMenuEntry({
-				id: 'new-world-office-xlsx',
+				id: 'new-worldoffice-xlsx',
 				displayName: t(OCA.WorldOffice.AppName, 'New spreadsheet'),
 				enabled: (folder) => {
 					return (folder.permissions & Permission.CREATE) !== 0
@@ -727,7 +727,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 			// Presentation
 			addNewFileMenuEntry({
-				id: 'new-world-office-pptx',
+				id: 'new-worldoffice-pptx',
 				displayName: t(OCA.WorldOffice.AppName, 'New presentation'),
 				enabled: (context) => {
 					return (context.permissions & Permission.CREATE) !== 0
@@ -748,7 +748,7 @@ import { loadState } from '@nextcloud/initial-state'
 
 		// PDF Form
 		addNewFileMenuEntry({
-			id: 'new-world-office-pdf',
+			id: 'new-worldoffice-pdf',
 			displayName: t(OCA.WorldOffice.AppName, 'New PDF form'),
 			enabled: folder => {
 				return (folder.permissions & Permission.CREATE) !== 0
@@ -777,10 +777,10 @@ import { loadState } from '@nextcloud/initial-state'
 
 			if (isPublicShare() && !OCA.WorldOffice.isViewIsFile()) {
 				menu.addMenuEntry({
-					id: 'world-officeDocx',
+					id: 'worldofficeDocx',
 					displayName: t(OCA.WorldOffice.AppName, 'New document'),
 					templateName: t(OCA.WorldOffice.AppName, 'New document'),
-					iconClass: 'icon-world-office-new-docx',
+					iconClass: 'icon-worldoffice-new-docx',
 					fileType: 'docx',
 					actionHandler(name) {
 						if (!isPublicShare() && OCA.WorldOffice.TemplateExist('document')) {
@@ -792,10 +792,10 @@ import { loadState } from '@nextcloud/initial-state'
 				})
 
 				menu.addMenuEntry({
-					id: 'world-officeXlsx',
+					id: 'worldofficeXlsx',
 					displayName: t(OCA.WorldOffice.AppName, 'New spreadsheet'),
 					templateName: t(OCA.WorldOffice.AppName, 'New spreadsheet'),
-					iconClass: 'icon-world-office-new-xlsx',
+					iconClass: 'icon-worldoffice-new-xlsx',
 					fileType: 'xlsx',
 					actionHandler(name) {
 						if (!isPublicShare() && OCA.WorldOffice.TemplateExist('spreadsheet')) {
@@ -807,10 +807,10 @@ import { loadState } from '@nextcloud/initial-state'
 				})
 
 				menu.addMenuEntry({
-					id: 'world-officePpts',
+					id: 'worldofficePpts',
 					displayName: t(OCA.WorldOffice.AppName, 'New presentation'),
 					templateName: t(OCA.WorldOffice.AppName, 'New presentation'),
-					iconClass: 'icon-world-office-new-pptx',
+					iconClass: 'icon-worldoffice-new-pptx',
 					fileType: 'pptx',
 					actionHandler(name) {
 						if (!isPublicShare() && OCA.WorldOffice.TemplateExist('presentation')) {
@@ -827,10 +827,10 @@ import { loadState } from '@nextcloud/initial-state'
 			}
 
 			menu.addMenuEntry({
-				id: 'world-officePdf',
+				id: 'worldofficePdf',
 				displayName: t(OCA.WorldOffice.AppName, 'New PDF form'),
 				templateName: t(OCA.WorldOffice.AppName, 'New PDF form'),
-				iconClass: 'icon-world-office-new-pdf',
+				iconClass: 'icon-worldoffice-new-pdf',
 				fileType: 'pdf',
 				actionHandler(name) {
 					OCA.WorldOffice.OpenFormPicker(name + '.pdf', fileList)
@@ -881,7 +881,7 @@ import { loadState } from '@nextcloud/initial-state'
 			}
 
 			registerFileAction(new FileAction({
-				id: 'world-office-public-open',
+				id: 'worldoffice-public-open',
 				displayName: () => t(OCA.WorldOffice.AppName, 'Open in word-office'),
 				iconSvgInline: () => AppDarkSvg,
 				enabled: (files) => {
@@ -900,11 +900,11 @@ import { loadState } from '@nextcloud/initial-state'
 				&& !(_oc_appswebroots.text && extension === 'txt')) {
 				const editorUrl = OC.generateUrl('apps/' + OCA.WorldOffice.AppName + '/s/' + encodeURIComponent(getSharingToken()))
 
-				OCA.WorldOffice.frameSelector = '#world-officeFrame'
+				OCA.WorldOffice.frameSelector = '#worldofficeFrame'
 				const container = document.createElement('div')
-				container.classList.add('world-office-iframe-container')
+				container.classList.add('worldoffice-iframe-container')
 				const iframe = document.createElement('iframe')
-				iframe.id = 'world-officeFrame'
+				iframe.id = 'worldofficeFrame'
 				iframe.nonce = btoa(OC.requestToken)
 				iframe.scrolling = 'no'
 				iframe.allowFullscreen = true
@@ -912,7 +912,7 @@ import { loadState } from '@nextcloud/initial-state'
 				container.appendChild(iframe)
 				const appContent = document.querySelector('#app-content') || document.querySelector('#app-content-vue')
 				appContent.appendChild(container)
-				$('body').addClass('world-office-inline')
+				$('body').addClass('worldoffice-inline')
 			}
 		} else {
 			OC.Plugins.register('OCA.Files.NewFileMenu', OCA.WorldOffice.NewFileMenu)

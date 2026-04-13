@@ -1,22 +1,22 @@
 {
-    "name": "world-office",
+    "name": "worldoffice",
     "version": "9.13.0",
-    "description": "WORLDOFFICE app allows you to view, edit and collaborate on text documents, spreadsheets and presentations within Nextcloud using WORLDOFFICE Docs. This will create a new Edit in WORLDOFFICE action within the document library for Office documents. This allows multiple users to co-author documents in real time from the familiar web interface and save the changes back to your file storage.",
-    "homepage": "https://www.world-office.com",
-    "author": "Ascensio System SIA <integration@world-office.com> (https://www.world-office.com)",
+    "description": "World Office app allows you to view, edit and collaborate on text documents, spreadsheets and presentations within Nextcloud using World Office Docs. This will create a new Edit in World Office action within the document library for Office documents. This allows multiple users to co-author documents in real time from the familiar web interface and save the changes back to your file storage.",
+    "homepage": "https://www.worldoffice.org",
+    "author": "World Office contributors <dev@worldoffice.org> (https://www.worldoffice.org)",
     "maintainers": [
-        "Ascensio System SIA <integration@world-office.com> (https://www.world-office.com)"
+        "World Office contributors <dev@worldoffice.org> (https://www.worldoffice.org)"
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/WORLDOFFICE/world-office-nextcloud.git"
+        "url": "git+https://github.com/word-office/worldoffice-nextcloud.git"
     },
     "bugs": {
-        "url": "https://github.com/world-office/world-office-nextcloud/issues",
-        "email": "support@world-office.com"
+        "url": "https://github.com/word-office/worldoffice-nextcloud/issues",
+        "email": "support@worldoffice.org"
     },
     "keywords": [
-        "world-office",
+        "worldoffice",
         "nextcloud"
     ],
     "license": "AGPL-3.0",

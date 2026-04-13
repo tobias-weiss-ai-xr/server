@@ -41,7 +41,7 @@ The WOPI protocol is HTTP-based, RESTful, and stateless, making it ideal for clo
 
 World Office is an independent, sovereign document editing suite. While worldoffice-nextcloud integrates with Nextcloud, there's no equivalent integration for OCIS users.
 
-OCIS has built-in WOPI support and integrates with Collabora and WORLDOFFICE. However, setting up a production deployment requires manual configuration of multiple components. worldoffice-opencloud aims to simplify this process.
+OCIS has built-in WOPI support and integrates with Collabora and World-Office. However, setting up a production deployment requires manual configuration of multiple components. worldoffice-opencloud aims to simplify this process.
 
 ### 1.4 Current State
 
@@ -474,7 +474,7 @@ All three approaches require JWT configuration for WOPI authentication. The patt
 ```
 OCIS_JWT_SECRET → Document Server JWT secret
 OCIS_DOMAIN → WOPI host URL
-WORLDOFFICE_DOMAIN → Document Server public URL
+DOCUMENT_SERVER_DOMAIN → Document Server public URL
 ```
 
 ### 5.2 Branding
@@ -582,9 +582,9 @@ The design should support both OCIS and Nextcloud integration:
 - Config patterns in config/config.js
 - Converter patterns in controllers/converter.js
 
-### WORLDOFFICE Document Server
-- Documentation: https://api.world-office.com/docbuilder/
-- Docker Image: world-office/documentserver
+### World-Office Document Server
+- Documentation: https://codeberg.org/World-Office/DocumentServer
+- Docker Image: worldoffice/documentserver
 
 ### Technology References
 - Express.js: https://expressjs.com/

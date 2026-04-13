@@ -1083,7 +1083,7 @@ class AppConfig {
             // group unknown -> error and allow nobody
             $group = \OCP\Server::get(\OCP\IGroupManager::class)->get($groupName);
             if ($group === null) {
-                \OCP\Log\logger('world-office')->error("Group is unknown $groupName", ["app" => $this->appName]);
+                \OCP\Log\logger('worldoffice')->error("Group is unknown $groupName", ["app" => $this->appName]);
                 $this->setLimitGroups(array_diff($groups, [$groupName]));
             } elseif ($group->inGroup($user)) {
                 return true;

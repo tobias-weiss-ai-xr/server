@@ -21,7 +21,7 @@
  *
  */
 
-.icon-world-office-sharing {
+.icon-worldoffice-sharing {
     background-color: var(--color-main-text);
     mask: url("../img/app-dark.svg") no-repeat 50% 50%;
     mask-size: 16px 16px;
@@ -29,41 +29,41 @@
     -webkit-mask-size: 16px 16px;
 }
 
-.world-office-share-item {
+.worldoffice-share-item {
     display: flex;
     list-style-type: none;
 }
 
-.world-office-share-item img {
+.worldoffice-share-item img {
     width: 32px;
     height: 32px;
 }
 
-.world-office-share-popup {
+.worldoffice-share-popup {
     margin-right: 14px;
     margin-top: 44px;
 }
 
-.world-office-share-item span {
+.worldoffice-share-item span {
     margin-left: 10px;
     margin-top: 5px;
 }
 
-#world-office-share-menu {
+#worldoffice-share-menu {
     margin-left: auto;
 }
 
-.world-office-share-action {
+.worldoffice-share-action {
     line-height: 44px;
 }
 
-.world-office-share-label {
+.worldoffice-share-label {
     padding-right: 14px !important;
     padding-left: 14px !important;
     opacity: .7;
 }
 
-.world-office-share-link-avatar {
+.worldoffice-share-link-avatar {
     height: 32px;
     width: 32px;
     background: var(--color-background-dark);
@@ -72,7 +72,7 @@
     justify-content: center;
 }
 
-.world-office-share-link-avatar img {
+.worldoffice-share-link-avatar img {
     height: 16px;
     width: 16px;
 }

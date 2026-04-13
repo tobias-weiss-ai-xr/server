@@ -1,5 +1,5 @@
-import {useFieldValidation} from '../hooks/useFieldValidation';
-import {useMemo} from 'react';
+import { useMemo } from "react"
+import { useFieldValidation } from "../hooks/useFieldValidation"
 
 /**
  * Hook for password validation
@@ -7,25 +7,31 @@ import {useMemo} from 'react';
  * @returns {Object} { isValid, errorMessage, invalidRules, isLoading, error }
  */
 export function usePasswordValidation(password) {
-  const {validateField, isLoading} = useFieldValidation();
+  const { validateField, isLoading } = useFieldValidation()
 
   const validationResult = useMemo(() => {
-    const rules = ['minLength', 'hasDigit', 'hasUppercase', 'hasSpecialChar', 'allowedCharactersOnly'];
+    const rules = [
+      "minLength",
+      "hasDigit",
+      "hasUppercase",
+      "hasSpecialChar",
+      "allowedCharactersOnly",
+    ]
 
-    const invalidRules = rules.filter(rule => {
-      const fieldPath = `adminPanel.passwordValidation.${rule}`;
-      const error = validateField(fieldPath, password || '');
-      return !!error;
-    });
+    const invalidRules = rules.filter((rule) => {
+      const fieldPath = `adminPanel.passwordValidation.${rule}`
+      const error = validateField(fieldPath, password || "")
+      return !!error
+    })
 
     return {
       isValid: invalidRules.length === 0,
-      invalidRules
-    };
-  }, [validateField, password]);
+      invalidRules,
+    }
+  }, [validateField, password])
 
   return {
     ...validationResult,
-    isLoading
-  };
+    isLoading,
+  }
 }

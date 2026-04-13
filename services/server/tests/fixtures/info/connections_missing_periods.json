@@ -17,16 +17,16 @@
     "date": "2025-09-05T12:00:00Z"
   },
   "quota": {
-    "edit": {"connectionsCount": 12},
-    "view": {"connectionsCount": 9},
+    "edit": { "connectionsCount": 12 },
+    "view": { "connectionsCount": 9 },
     "byMonth": []
   },
   "connectionsStat": {
     "hour": {
-      "edit": {"max": 10, "avr": 8}
+      "edit": { "max": 10, "avr": 8 }
     },
     "day": {
-      "liveview": {"max": 20, "avr": 12}
+      "liveview": { "max": 20, "avr": 12 }
     }
   }
 }

@@ -37,12 +37,7 @@
     "url": "git+https://github.com/World-Office/document-server-integration.git"
   },
   "pkg": {
-    "assets": [
-      "public/**/*",
-      "views/*",
-      "node_modules/debug/**/*",
-      "node_modules/ms/**/*"
-    ],
+    "assets": ["public/**/*", "views/*", "node_modules/debug/**/*", "node_modules/ms/**/*"],
     "public-packages": ["debug"]
   },
   "devDependencies": {

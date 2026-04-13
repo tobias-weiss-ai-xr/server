@@ -7,9 +7,6 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true
   },
-  "include": [
-    "**/*.ts",
-    "**/*.d.ts"
-  ],
+  "include": ["**/*.ts", "**/*.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

@@ -16,18 +16,18 @@
     "date": "2025-09-05T12:00:00Z"
   },
   "quota": {
-    "edit": {"usersCount": {"unique": 120, "anonymous": 30}},
-    "view": {"usersCount": {"unique": 100, "anonymous": 20}},
+    "edit": { "usersCount": { "unique": 120, "anonymous": 30 } },
+    "view": { "usersCount": { "unique": 100, "anonymous": 20 } },
     "byMonth": [
       {
         "date": "2025-06-01T00:00:00Z",
-        "users": {"a": {}, "b": {}, "c": {"anonym": true}},
-        "usersView": {"d": {}, "e": {"anonym": true}}
+        "users": { "a": {}, "b": {}, "c": { "anonym": true } },
+        "usersView": { "d": {}, "e": { "anonym": true } }
       },
       {
         "date": "2025-07-01T00:00:00Z",
-        "users": {"f": {}, "g": {"anonym": true}},
-        "usersView": {"h": {}, "i": {}, "j": {"anonym": true}}
+        "users": { "f": {}, "g": { "anonym": true } },
+        "usersView": { "h": {}, "i": {}, "j": { "anonym": true } }
       }
     ]
   },

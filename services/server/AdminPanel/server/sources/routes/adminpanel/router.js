@@ -1,20 +1,19 @@
-'use strict';
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
-const operationContext = require('../../../../../Common/sources/operationContext');
-const passwordManager = require('../../passwordManager');
-const bootstrap = require('../../bootstrap');
-const adminPanelJwtSecret = require('../../jwtSecret');
-const tenantManager = require('../../../../../Common/sources/tenantManager');
-const commonDefines = require('../../../../../Common/sources/commondefines');
-const {validateScoped} = require('../config/config.service');
-const supersetSchema = require('../../../../../Common/config/schemas/config.schema.json');
+const express = require("express")
+const jwt = require("jsonwebtoken")
+const cookieParser = require("cookie-parser")
+const operationContext = require("../../../../../Common/sources/operationContext")
+const passwordManager = require("../../passwordManager")
+const bootstrap = require("../../bootstrap")
+const adminPanelJwtSecret = require("../../jwtSecret")
+const tenantManager = require("../../../../../Common/sources/tenantManager")
+const commonDefines = require("../../../../../Common/sources/commondefines")
+const { validateScoped } = require("../config/config.service")
+const supersetSchema = require("../../../../../Common/config/schemas/config.schema.json")
 
-const router = express.Router();
+const router = express.Router()
 
-router.use(express.json());
-router.use(cookieParser());
+router.use(express.json())
+router.use(cookieParser())
 
 /**
  * Validates password against all requirements using existing config service
@@ -30,22 +29,22 @@ function validatePassword(ctx, password) {
         hasDigit: password,
         hasUppercase: password,
         hasSpecialChar: password,
-        allowedCharactersOnly: password
-      }
-    }
-  };
+        allowedCharactersOnly: password,
+      },
+    },
+  }
 
-  const result = validateScoped(ctx, testData);
+  const result = validateScoped(ctx, testData)
 
   if (result.value) {
     return {
-      isValid: true
-    };
+      isValid: true,
+    }
   }
 
   return {
-    isValid: false
-  };
+    isValid: false,
+  }
 }
 
 /**
@@ -55,13 +54,13 @@ function validatePassword(ctx, password) {
  * @param {string} token - JWT token
  */
 function setAuthCookie(res, req, token) {
-  res.cookie('accessToken', token, {
+  res.cookie("accessToken", token, {
     httpOnly: true,
     secure: req.secure,
-    sameSite: 'strict',
+    sameSite: "strict",
     maxAge: 60 * 60 * 1000,
-    path: '/'
-  });
+    path: "/",
+  })
 }
 
 /**
@@ -72,15 +71,15 @@ function setAuthCookie(res, req, token) {
  */
 function requireAuth(req, res, next) {
   try {
-    const token = req.cookies?.accessToken;
+    const token = req.cookies?.accessToken
     if (!token) {
-      return res.status(401).json({error: 'Unauthorized'});
+      return res.status(401).json({ error: "Unauthorized" })
     }
-    const decoded = jwt.verify(token, adminPanelJwtSecret);
-    req.user = decoded;
-    next();
+    const decoded = jwt.verify(token, adminPanelJwtSecret)
+    req.user = decoded
+    next()
   } catch {
-    res.status(401).json({error: 'Unauthorized'});
+    res.status(401).json({ error: "Unauthorized" })
   }
 }
 
@@ -88,18 +87,20 @@ function requireAuth(req, res, next) {
  * Check if initial setup is required and get password validation schema
  * Returns setup status and minimal schema for password validation
  */
-router.get('/setup/required', async (req, res) => {
-  const ctx = new operationContext.Context();
+router.get("/setup/required", async (req, res) => {
+  const ctx = new operationContext.Context()
   try {
-    ctx.initFromRequest(req);
-    const setupRequired = await passwordManager.isSetupRequired(ctx);
+    ctx.initFromRequest(req)
+    const setupRequired = await passwordManager.isSetupRequired(ctx)
 
     // If setup required but no valid code, generate new one (lazy generation)
     if (setupRequired) {
-      const hasCode = bootstrap.hasValidBootstrapToken();
+      const hasCode = bootstrap.hasValidBootstrapToken()
       if (!hasCode) {
-        const {code, expiresAt} = await bootstrap.generateBootstrapToken(ctx);
-        ctx.logger.warn('Bootstrap code generated on demand | Code: ' + code + ' | Expires: ' + expiresAt.toISOString());
+        const { code, expiresAt } = await bootstrap.generateBootstrapToken(ctx)
+        ctx.logger.warn(
+          `Bootstrap code generated on demand | Code: ${code} | Expires: ${expiresAt.toISOString()}`,
+        )
       }
     }
 
@@ -109,201 +110,207 @@ router.get('/setup/required', async (req, res) => {
       properties: {
         adminPanel: {
           properties: {
-            passwordValidation: supersetSchema.properties.adminPanel.properties.passwordValidation
-          }
-        }
-      }
-    };
+            passwordValidation: supersetSchema.properties.adminPanel.properties.passwordValidation,
+          },
+        },
+      },
+    }
 
     res.json({
       setupRequired,
-      passwordValidationSchema
-    });
+      passwordValidationSchema,
+    })
   } catch (error) {
-    ctx.logger.error('Setup check error: %s', error.stack);
-    res.status(500).json({error: 'Internal server error'});
+    ctx.logger.error("Setup check error: %s", error.stack)
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
 /**
  * Complete initial setup with password
  * Requires valid bootstrap token
  */
-router.post('/setup', async (req, res) => {
-  const ctx = new operationContext.Context();
+router.post("/setup", async (req, res) => {
+  const ctx = new operationContext.Context()
   try {
-    ctx.initFromRequest(req);
+    ctx.initFromRequest(req)
 
-    const setupRequired = await passwordManager.isSetupRequired(ctx);
+    const setupRequired = await passwordManager.isSetupRequired(ctx)
     if (!setupRequired) {
-      return res.status(400).json({error: 'Setup already completed'});
+      return res.status(400).json({ error: "Setup already completed" })
     }
 
-    const {bootstrapToken, password} = req.body;
+    const { bootstrapToken, password } = req.body
 
     // Verify bootstrap token
     if (!bootstrapToken) {
-      return res.status(400).json({error: 'Bootstrap token is required'});
+      return res.status(400).json({ error: "Bootstrap token is required" })
     }
 
-    const tokenValid = await bootstrap.verifyBootstrapToken(ctx, bootstrapToken);
+    const tokenValid = await bootstrap.verifyBootstrapToken(ctx, bootstrapToken)
     if (!tokenValid) {
-      ctx.logger.warn('Invalid or expired bootstrap token attempt');
-      return res.status(401).json({error: 'Invalid or expired bootstrap token'});
+      ctx.logger.warn("Invalid or expired bootstrap token attempt")
+      return res.status(401).json({ error: "Invalid or expired bootstrap token" })
     }
 
     if (!password) {
-      return res.status(400).json({error: 'Password is required'});
+      return res.status(400).json({ error: "Password is required" })
     }
 
-    const passwordValidationResult = validatePassword(ctx, password);
+    const passwordValidationResult = validatePassword(ctx, password)
     if (!passwordValidationResult.isValid) {
-      return res
-        .status(400)
-        .json({error: 'Password must be at least 8 characters long, contain at least one digit, one uppercase letter and one special character'});
+      return res.status(400).json({
+        error:
+          "Password must be at least 8 characters long, contain at least one digit, one uppercase letter and one special character",
+      })
     }
 
-    await passwordManager.saveAdminPassword(ctx, password);
+    await passwordManager.saveAdminPassword(ctx, password)
 
     // Invalidate bootstrap token after successful setup
-    await bootstrap.invalidateBootstrapToken(ctx);
+    await bootstrap.invalidateBootstrapToken(ctx)
 
-    const token = jwt.sign({tenant: 'localhost', isAdmin: true}, adminPanelJwtSecret, {expiresIn: '1h'});
-    setAuthCookie(res, req, token);
+    const token = jwt.sign({ tenant: "localhost", isAdmin: true }, adminPanelJwtSecret, {
+      expiresIn: "1h",
+    })
+    setAuthCookie(res, req, token)
 
-    ctx.logger.info('AdminPanel setup completed successfully');
-    res.json({message: 'Setup completed successfully'});
+    ctx.logger.info("AdminPanel setup completed successfully")
+    res.json({ message: "Setup completed successfully" })
   } catch (error) {
-    ctx.logger.error('Setup error: %s', error.stack);
-    res.status(500).json({error: error.message || 'Internal server error'});
+    ctx.logger.error("Setup error: %s", error.stack)
+    res.status(500).json({ error: error.message || "Internal server error" })
   }
-});
+})
 
 /**
  * Change admin password
  */
-router.post('/change-password', requireAuth, async (req, res) => {
-  const ctx = new operationContext.Context();
+router.post("/change-password", requireAuth, async (req, res) => {
+  const ctx = new operationContext.Context()
   try {
-    ctx.initFromRequest(req);
+    ctx.initFromRequest(req)
 
-    const {currentPassword, newPassword} = req.body;
+    const { currentPassword, newPassword } = req.body
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({error: 'Current password and new password are required'});
+      return res.status(400).json({ error: "Current password and new password are required" })
     }
 
-    const passwordValidationResult = validatePassword(ctx, newPassword);
+    const passwordValidationResult = validatePassword(ctx, newPassword)
     if (!passwordValidationResult.isValid) {
-      return res
-        .status(400)
-        .json({error: 'Password must be at least 8 characters long, contain at least one digit, one uppercase letter and one special character'});
+      return res.status(400).json({
+        error:
+          "Password must be at least 8 characters long, contain at least one digit, one uppercase letter and one special character",
+      })
     }
 
     if (currentPassword === newPassword) {
-      return res.status(400).json({error: 'New password must be different from current password'});
+      return res.status(400).json({ error: "New password must be different from current password" })
     }
 
-    const isValid = await passwordManager.verifyAdminPassword(ctx, currentPassword);
+    const isValid = await passwordManager.verifyAdminPassword(ctx, currentPassword)
     if (!isValid) {
-      return res.status(401).json({error: 'Current password is incorrect'});
+      return res.status(401).json({ error: "Current password is incorrect" })
     }
 
-    await passwordManager.saveAdminPassword(ctx, newPassword);
+    await passwordManager.saveAdminPassword(ctx, newPassword)
 
-    ctx.logger.info('AdminPanel password changed successfully');
-    res.json({message: 'Password changed successfully'});
+    ctx.logger.info("AdminPanel password changed successfully")
+    res.json({ message: "Password changed successfully" })
   } catch (error) {
-    ctx.logger.error('Change password error: %s', error.stack);
-    res.status(500).json({error: 'Internal server error'});
+    ctx.logger.error("Change password error: %s", error.stack)
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
-router.get('/me', (req, res) => {
+router.get("/me", (req, res) => {
   try {
-    const token = req.cookies?.accessToken;
+    const token = req.cookies?.accessToken
     if (!token) {
-      return res.json({authorized: false});
+      return res.json({ authorized: false })
     }
-    const decoded = jwt.verify(token, adminPanelJwtSecret);
-    return res.json({authorized: true, ...decoded});
+    const decoded = jwt.verify(token, adminPanelJwtSecret)
+    return res.json({ authorized: true, ...decoded })
   } catch {
-    return res.json({authorized: false});
+    return res.json({ authorized: false })
   }
-});
+})
 
-router.post('/login', async (req, res) => {
-  const ctx = new operationContext.Context();
+router.post("/login", async (req, res) => {
+  const ctx = new operationContext.Context()
   try {
-    ctx.initFromRequest(req);
+    ctx.initFromRequest(req)
 
-    const setupRequired = await passwordManager.isSetupRequired(ctx);
+    const setupRequired = await passwordManager.isSetupRequired(ctx)
     if (setupRequired) {
-      return res.status(403).json({error: 'Setup required', setupRequired: true});
+      return res.status(403).json({ error: "Setup required", setupRequired: true })
     }
 
-    const {password} = req.body;
+    const { password } = req.body
     if (!password) {
-      return res.status(400).json({error: 'Password is required'});
+      return res.status(400).json({ error: "Password is required" })
     }
 
-    const isValid = await passwordManager.verifyAdminPassword(ctx, password);
+    const isValid = await passwordManager.verifyAdminPassword(ctx, password)
     if (!isValid) {
-      ctx.logger.warn('Failed login attempt for AdminPanel');
-      return res.status(401).json({error: 'Invalid password'});
+      ctx.logger.warn("Failed login attempt for AdminPanel")
+      return res.status(401).json({ error: "Invalid password" })
     }
 
-    const token = jwt.sign({tenant: 'localhost', isAdmin: true}, adminPanelJwtSecret, {expiresIn: '1h'});
-    setAuthCookie(res, req, token);
+    const token = jwt.sign({ tenant: "localhost", isAdmin: true }, adminPanelJwtSecret, {
+      expiresIn: "1h",
+    })
+    setAuthCookie(res, req, token)
 
-    ctx.logger.info('AdminPanel login successful');
-    res.json({tenant: 'localhost', isAdmin: true});
+    ctx.logger.info("AdminPanel login successful")
+    res.json({ tenant: "localhost", isAdmin: true })
   } catch (error) {
-    ctx.logger.error('Login error: %s', error.stack);
-    res.status(500).json({error: 'Internal server error'});
+    ctx.logger.error("Login error: %s", error.stack)
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
-router.post('/logout', async (req, res) => {
+router.post("/logout", async (req, res) => {
   try {
-    res.clearCookie('accessToken', {
+    res.clearCookie("accessToken", {
       httpOnly: true,
-      sameSite: 'strict',
-      path: '/'
-    });
-    res.json({message: 'Logged out successfully'});
+      sameSite: "strict",
+      path: "/",
+    })
+    res.json({ message: "Logged out successfully" })
   } catch {
-    res.status(500).json({error: 'Internal server error'});
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
 /**
  * Generate JWT token for Document Server requests
  */
-router.post('/generate-docserver-token', requireAuth, async (req, res) => {
-  const ctx = new operationContext.Context();
+router.post("/generate-docserver-token", requireAuth, async (req, res) => {
+  const ctx = new operationContext.Context()
   try {
-    ctx.initFromRequest(req);
+    ctx.initFromRequest(req)
 
-    const body = req.body;
+    const body = req.body
 
-    const secret = await tenantManager.getTenantSecret(ctx, commonDefines.c_oAscSecretType.Inbox);
+    const secret = await tenantManager.getTenantSecret(ctx, commonDefines.c_oAscSecretType.Inbox)
 
     if (!secret) {
-      return res.status(500).json({error: 'JWT secret not configured'});
+      return res.status(500).json({ error: "JWT secret not configured" })
     }
 
-    const tenTokenInboxAlgorithm = ctx.getCfg('services.CoAuthoring.token.inbox.algorithm', 'HS256');
-    const tenTokenInboxExpires = ctx.getCfg('services.CoAuthoring.token.inbox.expires', '5m');
+    const tenTokenInboxAlgorithm = ctx.getCfg("services.CoAuthoring.token.inbox.algorithm", "HS256")
+    const tenTokenInboxExpires = ctx.getCfg("services.CoAuthoring.token.inbox.expires", "5m")
 
-    const options = {algorithm: tenTokenInboxAlgorithm, expiresIn: tenTokenInboxExpires};
-    const token = jwt.sign(body, secret, options);
+    const options = { algorithm: tenTokenInboxAlgorithm, expiresIn: tenTokenInboxExpires }
+    const token = jwt.sign(body, secret, options)
 
-    ctx.logger.info('Generated Document Server JWT token');
-    res.json({token});
+    ctx.logger.info("Generated Document Server JWT token")
+    res.json({ token })
   } catch (error) {
-    ctx.logger.error('JWT token generation error: %s', error.stack);
-    res.status(500).json({error: 'Internal server error'});
+    ctx.logger.error("JWT token generation error: %s", error.stack)
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
-module.exports = router;
+module.exports = router

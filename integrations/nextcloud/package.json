@@ -1,48 +1,43 @@
 {
-    "name": "worldoffice",
-    "version": "9.13.0",
-    "description": "World Office app allows you to view, edit and collaborate on text documents, spreadsheets and presentations within Nextcloud using World Office Docs. This will create a new Edit in World Office action within the document library for Office documents. This allows multiple users to co-author documents in real time from the familiar web interface and save the changes back to your file storage.",
-    "homepage": "https://www.worldoffice.org",
-    "author": "World Office contributors <dev@worldoffice.org> (https://www.worldoffice.org)",
-    "maintainers": [
-        "World Office contributors <dev@worldoffice.org> (https://www.worldoffice.org)"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/word-office/worldoffice-nextcloud.git"
-    },
-    "bugs": {
-        "url": "https://github.com/word-office/worldoffice-nextcloud/issues",
-        "email": "support@worldoffice.org"
-    },
-    "keywords": [
-        "worldoffice",
-        "nextcloud"
-    ],
-    "license": "AGPL-3.0",
-    "private": true,
-    "scripts": {
-        "build": "vite build --mode production",
-        "dev": "vite build --mode development"
-    },
-    "dependencies": {
-        "@nextcloud/auth": "^2.5.2",
-        "@nextcloud/event-bus": "^3.3.3",
-        "@nextcloud/files": "^3.12.2",
-        "@nextcloud/initial-state": "^3.0.0",
-        "@nextcloud/l10n": "^3.4.1",
-        "@nextcloud/router": "^3.1.0",
-        "@nextcloud/sharing": "^0.4.0",
-        "@nextcloud/vue": "^9.5.0",
-        "vue": "^3.5.28"
-    },
-    "devDependencies": {
-        "@nextcloud/browserslist-config": "^3.1.2",
-        "@nextcloud/eslint-config": "^8.4.1",
-        "@nextcloud/stylelint-config": "^3.0.1",
-        "@nextcloud/vite-config": "^2.5.2",
-        "stylelint": "^16.26.1",
-        "stylelint-config-standard": "^36.0.1",
-        "vite": "^7.3.1"
-    }
+  "name": "worldoffice",
+  "version": "9.13.0",
+  "description": "World Office app allows you to view, edit and collaborate on text documents, spreadsheets and presentations within Nextcloud using World Office Docs. This will create a new Edit in World Office action within the document library for Office documents. This allows multiple users to co-author documents in real time from the familiar web interface and save the changes back to your file storage.",
+  "homepage": "https://www.worldoffice.org",
+  "author": "World Office contributors <dev@worldoffice.org> (https://www.worldoffice.org)",
+  "maintainers": ["World Office contributors <dev@worldoffice.org> (https://www.worldoffice.org)"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/word-office/worldoffice-nextcloud.git"
+  },
+  "bugs": {
+    "url": "https://github.com/word-office/worldoffice-nextcloud/issues",
+    "email": "support@worldoffice.org"
+  },
+  "keywords": ["worldoffice", "nextcloud"],
+  "license": "AGPL-3.0",
+  "private": true,
+  "scripts": {
+    "build": "vite build --mode production",
+    "dev": "vite build --mode development"
+  },
+  "dependencies": {
+    "@nextcloud/auth": "^2.5.2",
+    "@nextcloud/event-bus": "^3.3.3",
+    "@nextcloud/files": "^3.12.2",
+    "@nextcloud/initial-state": "^3.0.0",
+    "@nextcloud/l10n": "^3.4.1",
+    "@nextcloud/router": "^3.1.0",
+    "@nextcloud/sharing": "^0.4.0",
+    "@nextcloud/vue": "^9.5.0",
+    "vue": "^3.5.28"
+  },
+  "devDependencies": {
+    "@nextcloud/browserslist-config": "^3.1.2",
+    "@nextcloud/eslint-config": "^8.4.1",
+    "@nextcloud/stylelint-config": "^3.0.1",
+    "@nextcloud/vite-config": "^2.5.2",
+    "stylelint": "^16.26.1",
+    "stylelint-config-standard": "^36.0.1",
+    "vite": "^7.3.1"
+  }
 }

@@ -12,8 +12,6 @@
     "sockjs": "0.3.21"
   },
   "pkg": {
-    "assets": [
-      "dictionaries/**/*"
-    ]
+    "assets": ["dictionaries/**/*"]
   }
 }

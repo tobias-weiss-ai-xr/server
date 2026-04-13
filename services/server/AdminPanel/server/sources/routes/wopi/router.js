@@ -1,47 +1,20 @@
-/*
- * (c) Copyright Ascensio System SIA 2010-2024
- *
- * This program is a free software product. You can redistribute it and/or
- * modify it under the terms of the GNU Affero General Public License (AGPL)
- * version 3 as published by the Free Software Foundation. In accordance with
- * Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
- * that Ascensio System SIA expressly excludes the warranty of non-infringement
- * of any third-party rights.
- *
- * This program is distributed WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For
- * details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
- *
- * The  interactive user interfaces in modified source and object code versions
- * of the Program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU AGPL version 3.
- *
- * All the Product's GUI elements, including illustrations and icon sets, as
- * well as technical writing content are licensed under the terms of the
- * Creative Commons Attribution-ShareAlike 4.0 International. See the License
- * terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
- *
- */
+const config = require("config")
+const express = require("express")
+const crypto = require("node:crypto")
+const utils = require("../../../../../Common/sources/utils")
+const runtimeConfigManager = require("../../../../../Common/sources/runtimeConfigManager")
+const tenantManager = require("../../../../../Common/sources/tenantManager")
+const { validateJWT } = require("../../middleware/auth")
+const { getConfig } = require("../../../../../Common/sources/runtimeConfigManager")
+const cookieParser = require("cookie-parser")
 
-'use strict';
+const cfgWopiPublicKey = config.get("wopi.publicKey")
+const cfgWopiModulus = config.get("wopi.modulus")
+const cfgWopiPrivateKey = config.get("wopi.privateKey")
+const cfgWopiExponent = config.get("wopi.exponent")
 
-const config = require('config');
-const express = require('express');
-const crypto = require('crypto');
-const utils = require('../../../../../Common/sources/utils');
-const runtimeConfigManager = require('../../../../../Common/sources/runtimeConfigManager');
-const tenantManager = require('../../../../../Common/sources/tenantManager');
-const {validateJWT} = require('../../middleware/auth');
-const {getConfig} = require('../../../../../Common/sources/runtimeConfigManager');
-const cookieParser = require('cookie-parser');
-
-const cfgWopiPublicKey = config.get('wopi.publicKey');
-const cfgWopiModulus = config.get('wopi.modulus');
-const cfgWopiPrivateKey = config.get('wopi.privateKey');
-const cfgWopiExponent = config.get('wopi.exponent');
-
-const router = express.Router();
-router.use(cookieParser());
+const router = express.Router()
+router.use(cookieParser())
 
 /**
  * Decode a base64url string into a Buffer (RFC 7515)
@@ -50,10 +23,10 @@ router.use(cookieParser());
  */
 function base64UrlToBuffer(b64url) {
   const b64 = b64url
-    .replace(/-/g, '+')
-    .replace(/_/g, '/')
-    .padEnd(Math.ceil(b64url.length / 4) * 4, '=');
-  return Buffer.from(b64, 'base64');
+    .replace(/-/g, "+")
+    .replace(/_/g, "/")
+    .padEnd(Math.ceil(b64url.length / 4) * 4, "=")
+  return Buffer.from(b64, "base64")
 }
 
 /**
@@ -63,11 +36,11 @@ function base64UrlToBuffer(b64url) {
  * @returns {number} numeric value
  */
 function bufferBEToNumber(buf) {
-  let n = 0;
+  let n = 0
   for (const byte of buf.values()) {
-    n = (n << 8) | byte;
+    n = (n << 8) | byte
   }
-  return n >>> 0;
+  return n >>> 0
 }
 
 /**
@@ -83,25 +56,25 @@ function bufferBEToNumber(buf) {
  * @returns {Buffer} PUBLICKEYBLOB bytes
  */
 function makeMsPublicKeyBlob(modulusBE, exponent) {
-  const keySizeBytes = modulusBE.length;
-  const header = Buffer.alloc(8);
+  const keySizeBytes = modulusBE.length
+  const header = Buffer.alloc(8)
   // BLOBHEADER
-  header.writeUInt8(0x06, 0); // PUBLICKEYBLOB
-  header.writeUInt8(0x02, 1); // version
-  header.writeUInt16LE(0, 2); // reserved
-  header.writeUInt32LE(0x0000a400, 4); // CALG_RSA_KEYX
+  header.writeUInt8(0x06, 0) // PUBLICKEYBLOB
+  header.writeUInt8(0x02, 1) // version
+  header.writeUInt16LE(0, 2) // reserved
+  header.writeUInt32LE(0x0000a400, 4) // CALG_RSA_KEYX
 
-  const rsapub = Buffer.alloc(12);
+  const rsapub = Buffer.alloc(12)
   // 'RSA1' magic LE
-  rsapub.writeUInt32LE(0x31415352, 0);
-  rsapub.writeUInt32LE(keySizeBytes * 8, 4); // bit length
-  rsapub.writeUInt32LE(exponent >>> 0, 8); // exponent (fits in 32-bit)
+  rsapub.writeUInt32LE(0x31415352, 0)
+  rsapub.writeUInt32LE(keySizeBytes * 8, 4) // bit length
+  rsapub.writeUInt32LE(exponent >>> 0, 8) // exponent (fits in 32-bit)
 
   // modulus little-endian
-  const modulusLE = Buffer.from(modulusBE);
-  modulusLE.reverse();
+  const modulusLE = Buffer.from(modulusBE)
+  modulusLE.reverse()
 
-  return Buffer.concat([header, rsapub, modulusLE]);
+  return Buffer.concat([header, rsapub, modulusLE])
 }
 
 /**
@@ -111,61 +84,61 @@ function makeMsPublicKeyBlob(modulusBE, exponent) {
  */
 function generateWopiKeys() {
   // Generate RSA private key (2048 bits)
-  const {privateKey, publicKey} = crypto.generateKeyPairSync('rsa', {
+  const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
     modulusLength: 2048,
     publicKeyEncoding: {
-      type: 'spki',
-      format: 'pem'
+      type: "spki",
+      format: "pem",
     },
     privateKeyEncoding: {
-      type: 'pkcs8',
-      format: 'pem'
-    }
-  });
+      type: "pkcs8",
+      format: "pem",
+    },
+  })
 
   // Extract modulus (n) and exponent (e) via JWK for compatibility
-  const publicKeyObj = crypto.createPublicKey(publicKey);
+  const publicKeyObj = crypto.createPublicKey(publicKey)
   /** @type {{kty:string,n:string,e:string}} */
-  const jwk = publicKeyObj.export({format: 'jwk'});
-  const modulusBE = base64UrlToBuffer(jwk.n); // big-endian bytes
-  const exponent = bufferBEToNumber(base64UrlToBuffer(jwk.e));
+  const jwk = publicKeyObj.export({ format: "jwk" })
+  const modulusBE = base64UrlToBuffer(jwk.n) // big-endian bytes
+  const exponent = bufferBEToNumber(base64UrlToBuffer(jwk.e))
 
   // Create MS PUBLICKEYBLOB format (matches bash script behavior)
-  const publicKeyBlob = makeMsPublicKeyBlob(modulusBE, exponent);
+  const publicKeyBlob = makeMsPublicKeyBlob(modulusBE, exponent)
 
   // Convert modulus to base64 (same as bash script: xxd -r -p | openssl base64 -A)
-  const modulus = modulusBE.toString('base64');
+  const modulus = modulusBE.toString("base64")
 
   // Convert keys to base64 for storage
-  const publicKeyBase64 = publicKeyBlob.toString('base64');
+  const publicKeyBase64 = publicKeyBlob.toString("base64")
 
   return {
     publicKey: publicKeyBase64,
     modulus,
     exponent,
-    privateKey
-  };
+    privateKey,
+  }
 }
 
 /**
  * Rotates WOPI keys - moves current keys to Old and generates new ones.
  */
-router.post('/rotate-keys', validateJWT, express.json(), async (req, res) => {
-  const ctx = req.ctx;
+router.post("/rotate-keys", validateJWT, express.json(), async (req, res) => {
+  const ctx = req.ctx
   try {
-    ctx.initTenantCache();
-    ctx.logger.info('WOPI key rotation start');
+    ctx.initTenantCache()
+    ctx.logger.info("WOPI key rotation start")
 
-    const currentConfig = await getConfig(ctx);
+    const currentConfig = await getConfig(ctx)
 
-    const newWopiConfig = generateWopiKeys();
+    const newWopiConfig = generateWopiKeys()
 
-    const publicKey = ctx.getCfg('wopi.publicKey', cfgWopiPublicKey);
-    const modulus = ctx.getCfg('wopi.modulus', cfgWopiModulus);
-    const privateKey = ctx.getCfg('wopi.privateKey', cfgWopiPrivateKey);
-    const exponent = ctx.getCfg('wopi.exponent', cfgWopiExponent);
+    const publicKey = ctx.getCfg("wopi.publicKey", cfgWopiPublicKey)
+    const modulus = ctx.getCfg("wopi.modulus", cfgWopiModulus)
+    const privateKey = ctx.getCfg("wopi.privateKey", cfgWopiPrivateKey)
+    const exponent = ctx.getCfg("wopi.exponent", cfgWopiExponent)
 
-    const hasEmptyKeys = !(publicKey && modulus && privateKey && exponent);
+    const hasEmptyKeys = !(publicKey && modulus && privateKey && exponent)
 
     const configUpdate = {
       wopi: {
@@ -176,31 +149,31 @@ router.post('/rotate-keys', validateJWT, express.json(), async (req, res) => {
         publicKey: newWopiConfig.publicKey,
         modulus: newWopiConfig.modulus,
         exponent: newWopiConfig.exponent,
-        privateKey: newWopiConfig.privateKey
-      }
-    };
-
-    const newConfig = utils.deepMergeObjects(currentConfig, configUpdate);
-
-    if (tenantManager.isMultitenantMode(ctx) && !tenantManager.isDefaultTenant(ctx)) {
-      await tenantManager.setTenantConfig(ctx, newConfig);
-    } else {
-      await runtimeConfigManager.saveConfig(ctx, newConfig);
+        privateKey: newWopiConfig.privateKey,
+      },
     }
 
-    res.status(200).json(newConfig);
+    const newConfig = utils.deepMergeObjects(currentConfig, configUpdate)
+
+    if (tenantManager.isMultitenantMode(ctx) && !tenantManager.isDefaultTenant(ctx)) {
+      await tenantManager.setTenantConfig(ctx, newConfig)
+    } else {
+      await runtimeConfigManager.saveConfig(ctx, newConfig)
+    }
+
+    res.status(200).json(newConfig)
   } catch (error) {
-    ctx.logger.error('WOPI key rotation error: %s', error.stack);
+    ctx.logger.error("WOPI key rotation error: %s", error.stack)
     res.status(500).json({
       success: false,
-      error: 'Failed to rotate WOPI keys',
-      details: error.message
-    });
+      error: "Failed to rotate WOPI keys",
+      details: error.message,
+    })
   } finally {
-    ctx.logger.info('WOPI key rotation end');
+    ctx.logger.info("WOPI key rotation end")
   }
-});
+})
 
 // Export router and helper for reuse in tests or other modules
-module.exports = router;
-module.exports.generateWopiKeys = generateWopiKeys;
+module.exports = router
+module.exports.generateWopiKeys = generateWopiKeys

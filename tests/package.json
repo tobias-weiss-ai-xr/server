@@ -12,14 +12,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "keywords": [
-    "word-office",
-    "e2e",
-    "tests",
-    "wopi",
-    "ocis",
-    "document-server"
-  ],
+  "keywords": ["word-office", "e2e", "tests", "wopi", "ocis", "document-server"],
   "author": "World Office",
   "license": "AGPL-3.0",
   "dependencies": {

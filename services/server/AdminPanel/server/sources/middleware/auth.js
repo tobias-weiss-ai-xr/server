@@ -1,8 +1,6 @@
-'use strict';
-
-const jwt = require('jsonwebtoken');
-const operationContext = require('../../../../Common/sources/operationContext');
-const adminPanelJwtSecret = require('../jwtSecret');
+const jwt = require("jsonwebtoken")
+const operationContext = require("../../../../Common/sources/operationContext")
+const adminPanelJwtSecret = require("../jwtSecret")
 
 /**
  * JWT Authentication Middleware
@@ -12,23 +10,23 @@ const adminPanelJwtSecret = require('../jwtSecret');
  * @param {Function} next - Express next function
  */
 const validateJWT = async (req, res, next) => {
-  const ctx = new operationContext.Context();
+  const ctx = new operationContext.Context()
   try {
-    const token = req.cookies.accessToken;
+    const token = req.cookies.accessToken
     if (!token) {
-      return res.status(401).json({error: 'Unauthorized - No token provided'});
+      return res.status(401).json({ error: "Unauthorized - No token provided" })
     }
-    const decoded = jwt.verify(token, adminPanelJwtSecret);
-    ctx.init(decoded.tenant);
-    await ctx.initTenantCache();
-    req.user = decoded;
-    req.ctx = ctx;
-    return next();
+    const decoded = jwt.verify(token, adminPanelJwtSecret)
+    ctx.init(decoded.tenant)
+    await ctx.initTenantCache()
+    req.user = decoded
+    req.ctx = ctx
+    return next()
   } catch {
-    return res.status(401).json({error: 'Unauthorized'});
+    return res.status(401).json({ error: "Unauthorized" })
   }
-};
+}
 
 module.exports = {
-  validateJWT
-};
+  validateJWT,
+}

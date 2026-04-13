@@ -16,8 +16,8 @@
     "date": "2025-09-05T12:00:00Z"
   },
   "quota": {
-    "edit": {"usersCount": {"unique": 1, "anonymous": 0}},
-    "view": {"usersCount": {"unique": 1, "anonymous": 0}},
+    "edit": { "usersCount": { "unique": 1, "anonymous": 0 } },
+    "view": { "usersCount": { "unique": 1, "anonymous": 0 } },
     "byMonth": []
   },
   "connectionsStat": {}

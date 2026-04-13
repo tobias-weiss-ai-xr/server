@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test"
 
 test.describe("API: Conversion", () => {
   test("should return error for unsupported format", async ({ request }) => {
@@ -6,7 +6,7 @@ test.describe("API: Conversion", () => {
       data: {
         filetype: "xyz",
       },
-    });
-    expect(response.status()).toBe(400);
-  });
-});
+    })
+    expect(response.status()).toBe(400)
+  })
+})

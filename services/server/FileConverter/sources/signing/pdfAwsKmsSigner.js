@@ -1,21 +1,3 @@
-/*
- * (c) Copyright Ascensio System SIA 2010-2024
- *
- * This program is a free software product. You can redistribute it and/or
- * modify it under the terms of the GNU Affero General Public License (AGPL)
- * version 3 as published by the Free Software Foundation. In accordance with
- * Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
- * that Ascensio System SIA expressly excludes the warranty of non-infringement
- * of any third-party rights.
- *
- * This program is distributed WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For
- * details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
- *
- */
-
-'use strict';
-
 /**
  * PDF AWS KMS Signer — PAdES-B-B signing via AWS KMS.
  *
@@ -39,14 +21,14 @@
  *   });
  */
 
-const {signPdfWithSigner} = require('./pdfSigningCore');
+const { signPdfWithSigner } = require("./pdfSigningCore")
 
 // AWS KMS signing algorithms (PKCS#1 v1.5)
 const KMS_ALGORITHMS = {
-  sha256: 'RSASSA_PKCS1_V1_5_SHA_256',
-  sha384: 'RSASSA_PKCS1_V1_5_SHA_384',
-  sha512: 'RSASSA_PKCS1_V1_5_SHA_512'
-};
+  sha256: "RSASSA_PKCS1_V1_5_SHA_256",
+  sha384: "RSASSA_PKCS1_V1_5_SHA_384",
+  sha512: "RSASSA_PKCS1_V1_5_SHA_512",
+}
 
 /**
  * Signs digests using AWS KMS asymmetric RSA key.
@@ -63,36 +45,36 @@ class AwsKmsSigner {
    * @param {string} [config.hashAlgorithm='sha256']
    */
   constructor(config) {
-    this.keyId = config.keyId;
-    this.hashAlgorithm = config.hashAlgorithm || 'sha256';
+    this.keyId = config.keyId
+    this.hashAlgorithm = config.hashAlgorithm || "sha256"
 
     if (!KMS_ALGORITHMS[this.hashAlgorithm]) {
-      throw new Error(`Unsupported hash algorithm: ${this.hashAlgorithm}`);
+      throw new Error(`Unsupported hash algorithm: ${this.hashAlgorithm}`)
     }
 
-    const kmsOpts = {};
+    const kmsOpts = {}
     if (config.endpoint) {
-      if (config.endpoint.startsWith('http')) {
-        kmsOpts.endpoint = config.endpoint;
-        const match = config.endpoint.match(/kms\.([a-z0-9-]+)\.amazonaws/);
-        if (match) kmsOpts.region = match[1];
+      if (config.endpoint.startsWith("http")) {
+        kmsOpts.endpoint = config.endpoint
+        const match = config.endpoint.match(/kms\.([a-z0-9-]+)\.amazonaws/)
+        if (match) kmsOpts.region = match[1]
       } else {
-        kmsOpts.region = config.endpoint;
+        kmsOpts.region = config.endpoint
       }
     }
     if (!kmsOpts.region && config.keyId) {
-      const arnMatch = config.keyId.match(/^arn:aws:kms:([a-z0-9-]+):/);
-      if (arnMatch) kmsOpts.region = arnMatch[1];
+      const arnMatch = config.keyId.match(/^arn:aws:kms:([a-z0-9-]+):/)
+      if (arnMatch) kmsOpts.region = arnMatch[1]
     }
     if (config.accessKeyId && config.secretAccessKey) {
       kmsOpts.credentials = {
         accessKeyId: config.accessKeyId,
-        secretAccessKey: config.secretAccessKey
-      };
+        secretAccessKey: config.secretAccessKey,
+      }
     }
 
-    const {KMSClient} = require('@aws-sdk/client-kms');
-    this.kmsClient = new KMSClient(kmsOpts);
+    const { KMSClient } = require("@aws-sdk/client-kms")
+    this.kmsClient = new KMSClient(kmsOpts)
   }
 
   /**
@@ -100,16 +82,16 @@ class AwsKmsSigner {
    * @returns {Promise<Buffer>} raw signature bytes
    */
   async sign(digest) {
-    const {SignCommand} = require('@aws-sdk/client-kms');
+    const { SignCommand } = require("@aws-sdk/client-kms")
     const resp = await this.kmsClient.send(
       new SignCommand({
         KeyId: this.keyId,
         Message: digest,
-        MessageType: 'DIGEST',
-        SigningAlgorithm: KMS_ALGORITHMS[this.hashAlgorithm]
-      })
-    );
-    return Buffer.from(resp.Signature);
+        MessageType: "DIGEST",
+        SigningAlgorithm: KMS_ALGORITHMS[this.hashAlgorithm],
+      }),
+    )
+    return Buffer.from(resp.Signature)
   }
 }
 
@@ -128,12 +110,12 @@ class AwsKmsSigner {
  * @returns {Promise<void>}
  */
 async function signPdfFile(inputPath, outputPath, config) {
-  const signer = new AwsKmsSigner(config);
-  return signPdfWithSigner(inputPath, outputPath, config, digest => signer.sign(digest));
+  const signer = new AwsKmsSigner(config)
+  return signPdfWithSigner(inputPath, outputPath, config, (digest) => signer.sign(digest))
 }
 
 module.exports = {
   AwsKmsSigner,
   signPdfFile,
-  KMS_ALGORITHMS
-};
+  KMS_ALGORITHMS,
+}

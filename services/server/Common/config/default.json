@@ -445,7 +445,7 @@
         "monthUniqueUsers": "1y"
       },
       "ipfilter": {
-        "rules": [{"address": "*", "allowed": true}],
+        "rules": [{ "address": "*", "allowed": true }],
         "useforrequest": false,
         "errorcode": 403
       },
@@ -454,10 +454,10 @@
         "allowMetaIPAddress": false
       },
       "secret": {
-        "browser": {"string": "secret", "file": ""},
-        "inbox": {"string": "secret", "file": ""},
-        "outbox": {"string": "secret", "file": ""},
-        "session": {"string": "secret", "file": ""}
+        "browser": { "string": "secret", "file": "" },
+        "inbox": { "string": "secret", "file": "" },
+        "outbox": { "string": "secret", "file": "" },
+        "session": { "string": "secret", "file": "" }
       },
       "token": {
         "enable": {

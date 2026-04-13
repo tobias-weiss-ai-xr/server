@@ -23,14 +23,14 @@
  *
  */
 
-const {describe, test, expect} = require('@jest/globals');
+const { describe, test, expect } = require("@jest/globals")
 
-describe('Successful and failure tests', () => {
-  test('Successful test', () => {
-    expect(true).toBeTruthy();
-  });
+describe("Successful and failure tests", () => {
+  test("Successful test", () => {
+    expect(true).toBeTruthy()
+  })
 
-  test.skip('Failure test', () => {
-    expect(true).toBeFalsy();
-  });
-});
+  test.skip("Failure test", () => {
+    expect(true).toBeFalsy()
+  })
+})

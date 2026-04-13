@@ -1,16 +1,16 @@
-export function getNestedValue(obj, path, defaultValue = '') {
-  if (!obj || !path) return defaultValue;
+export function getNestedValue(obj, path, defaultValue = "") {
+  if (!obj || !path) return defaultValue
 
-  const keys = path.split('.');
-  let current = obj;
+  const keys = path.split(".")
+  let current = obj
 
   for (const key of keys) {
-    if (current && typeof current === 'object' && key in current) {
-      current = current[key];
+    if (current && typeof current === "object" && key in current) {
+      current = current[key]
     } else {
-      return defaultValue;
+      return defaultValue
     }
   }
 
-  return current !== undefined ? current : defaultValue;
+  return current !== undefined ? current : defaultValue
 }

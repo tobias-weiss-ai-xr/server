@@ -1,60 +1,60 @@
-import {useState, useEffect} from 'react';
-import {getForgottenList, getForgotten} from '../../api';
-import DownloadIcon from '../../assets/Download.svg';
-import styles from './Forgotten.module.scss';
+import { useEffect, useState } from "react"
+import { getForgotten, getForgottenList } from "../../api"
+import DownloadIcon from "../../assets/Download.svg"
+import styles from "./Forgotten.module.scss"
 
 const Forgotten = () => {
-  const [forgottenFiles, setForgottenFiles] = useState([]);
-  const [error, setError] = useState(null);
-  const [downloadingFiles, setDownloadingFiles] = useState(new Set());
+  const [forgottenFiles, setForgottenFiles] = useState([])
+  const [error, setError] = useState(null)
+  const [downloadingFiles, setDownloadingFiles] = useState(new Set())
 
   const loadForgottenFiles = async () => {
     try {
-      setError(null);
-      const files = await getForgottenList();
-      setForgottenFiles(files);
+      setError(null)
+      const files = await getForgottenList()
+      setForgottenFiles(files)
     } catch (err) {
-      console.error('Error loading forgotten files:', err);
-      setError(`Failed to load forgotten files: ${err.message}`);
+      console.error("Error loading forgotten files:", err)
+      setError(`Failed to load forgotten files: ${err.message}`)
     }
-  };
+  }
 
   useEffect(() => {
-    loadForgottenFiles();
-  }, []);
+    loadForgottenFiles()
+  }, [])
 
-  const handleDownload = async file => {
+  const handleDownload = async (file) => {
     try {
-      console.log('Downloading file:', file.name);
+      console.log("Downloading file:", file.name)
 
-      setDownloadingFiles(prev => new Set(prev).add(file.key));
+      setDownloadingFiles((prev) => new Set(prev).add(file.key))
 
-      const result = await getForgotten(file.key);
+      const result = await getForgotten(file.key)
 
       if (result.url) {
-        const link = document.createElement('a');
-        link.href = result.url;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const link = document.createElement("a")
+        link.href = result.url
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
       } else if (result.error) {
-        console.error('Backend error for file:', file.name, 'Error code:', result.error);
-        setError(`Failed to download ${file.name}: Backend error ${result.error}`);
+        console.error("Backend error for file:", file.name, "Error code:", result.error)
+        setError(`Failed to download ${file.name}: Backend error ${result.error}`)
       } else {
-        console.error('No download URL received for file:', file.name);
-        setError(`Failed to get download URL for ${file.name}`);
+        console.error("No download URL received for file:", file.name)
+        setError(`Failed to get download URL for ${file.name}`)
       }
     } catch (err) {
-      console.error('Error downloading file:', err);
-      setError(`Failed to download ${file.name}: ${err.message}`);
+      console.error("Error downloading file:", err)
+      setError(`Failed to download ${file.name}: ${err.message}`)
     } finally {
-      setDownloadingFiles(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(file.key);
-        return newSet;
-      });
+      setDownloadingFiles((prev) => {
+        const newSet = new Set(prev)
+        newSet.delete(file.key)
+        return newSet
+      })
     }
-  };
+  }
 
   if (error) {
     return (
@@ -64,7 +64,7 @@ const Forgotten = () => {
         </div>
         Failed to load forgotten files
       </div>
-    );
+    )
   }
 
   return (
@@ -89,13 +89,13 @@ const Forgotten = () => {
                   className={styles.downloadBtn}
                   onClick={() => handleDownload(file)}
                   disabled={downloadingFiles.has(file.key)}
-                  title='Download file'
+                  title="Download file"
                 >
                   <img
                     src={DownloadIcon}
-                    alt='Download'
+                    alt="Download"
                     className={styles.downloadIcon}
-                    style={{opacity: downloadingFiles.has(file.key) ? 0.5 : 1}}
+                    style={{ opacity: downloadingFiles.has(file.key) ? 0.5 : 1 }}
                   />
                 </button>
               </div>
@@ -104,7 +104,7 @@ const Forgotten = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Forgotten;
+export default Forgotten

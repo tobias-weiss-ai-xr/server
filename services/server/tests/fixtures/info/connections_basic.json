@@ -17,26 +17,26 @@
     "date": "2025-09-05T12:00:00Z"
   },
   "quota": {
-    "edit": {"connectionsCount": 20},
-    "view": {"connectionsCount": 28},
+    "edit": { "connectionsCount": 20 },
+    "view": { "connectionsCount": 28 },
     "byMonth": []
   },
   "connectionsStat": {
     "hour": {
-      "edit": {"max": 52, "avr": 40},
-      "liveview": {"max": 29, "avr": 27}
+      "edit": { "max": 52, "avr": 40 },
+      "liveview": { "max": 29, "avr": 27 }
     },
     "day": {
-      "edit": {"max": 45, "avr": 30},
-      "liveview": {"max": 30, "avr": 22}
+      "edit": { "max": 45, "avr": 30 },
+      "liveview": { "max": 30, "avr": 22 }
     },
     "week": {
-      "edit": {"max": 50, "avr": 35},
-      "liveview": {"max": 31, "avr": 26}
+      "edit": { "max": 50, "avr": 35 },
+      "liveview": { "max": 31, "avr": 26 }
     },
     "month": {
-      "edit": {"max": 40, "avr": 28},
-      "liveview": {"max": 25, "avr": 20}
+      "edit": { "max": 40, "avr": 28 },
+      "liveview": { "max": 25, "avr": 20 }
     }
   }
 }

@@ -4,17 +4,17 @@
  * @param {string} key - The key string to mask
  * @returns {string} - The masked key string
  */
-export const maskKey = key => {
-  if (!key || typeof key !== 'string') {
-    return '';
+export const maskKey = (key) => {
+  if (!key || typeof key !== "string") {
+    return ""
   }
 
   if (key.length <= 15) {
-    return key;
+    return key
   }
 
-  const firstPart = key.substring(0, 5);
-  const lastPart = key.substring(key.length - 10);
+  const firstPart = key.substring(0, 5)
+  const lastPart = key.substring(key.length - 10)
 
-  return `${firstPart}...${lastPart}`;
-};
+  return `${firstPart}...${lastPart}`
+}

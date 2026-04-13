@@ -21,19 +21,19 @@
         "static_content": {
           "/fonts": {
             "path": "/var/www/world-office/documentserver/fonts",
-            "options": {"maxAge": "7d"}
+            "options": { "maxAge": "7d" }
           },
           "/sdkjs": {
             "path": "/var/www/world-office/documentserver/sdkjs",
-            "options": {"maxAge": "7d"}
+            "options": { "maxAge": "7d" }
           },
           "/web-apps": {
             "path": "/var/www/world-office/documentserver/web-apps",
-            "options": {"maxAge": "7d"}
+            "options": { "maxAge": "7d" }
           },
           "/welcome": {
             "path": "/var/www/world-office/documentserver/server/welcome",
-            "options": {"maxAge": "7d"}
+            "options": { "maxAge": "7d" }
           },
           "/info": {
             "path": "/var/www/world-office/documentserver/server/info",
@@ -46,11 +46,11 @@
           },
           "/sdkjs-plugins": {
             "path": "/var/www/world-office/documentserver/sdkjs-plugins",
-            "options": {"maxAge": "7d"}
+            "options": { "maxAge": "7d" }
           },
           "/dictionaries": {
             "path": "/var/www/world-office/documentserver/dictionaries",
-            "options": {"maxAge": "7d"}
+            "options": { "maxAge": "7d" }
           }
         }
       },

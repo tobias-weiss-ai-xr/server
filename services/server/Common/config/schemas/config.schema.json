@@ -107,12 +107,12 @@
               "additionalProperties": false,
               "x-scope": ["admin", "tenant"],
               "properties": {
-                "filesCron": {"$ref": "#/$defs/cron6", "x-scope": "admin"},
-                "documentsCron": {"$ref": "#/$defs/cron6", "x-scope": "admin"},
-                "files": {"type": "integer", "minimum": 0, "x-scope": "admin"},
-                "filesremovedatonce": {"type": "integer", "minimum": 0, "x-scope": "admin"},
-                "sessionidle": {"type": "string", "x-scope": ["admin", "tenant"]},
-                "sessionabsolute": {"type": "string", "x-scope": ["admin", "tenant"]}
+                "filesCron": { "$ref": "#/$defs/cron6", "x-scope": "admin" },
+                "documentsCron": { "$ref": "#/$defs/cron6", "x-scope": "admin" },
+                "files": { "type": "integer", "minimum": 0, "x-scope": "admin" },
+                "filesremovedatonce": { "type": "integer", "minimum": 0, "x-scope": "admin" },
+                "sessionidle": { "type": "string", "x-scope": ["admin", "tenant"] },
+                "sessionabsolute": { "type": "string", "x-scope": ["admin", "tenant"] }
               }
             },
             "request-filtering-agent": {
@@ -135,7 +135,7 @@
               "additionalProperties": false,
               "x-scope": ["admin", "tenant"],
               "properties": {
-                "step": {"type": "string", "enum": ["1m", "5m", "10m", "15m", "30m"]}
+                "step": { "type": "string", "enum": ["1m", "5m", "10m", "15m", "30m"] }
               }
             },
             "ipfilter": {
@@ -216,7 +216,12 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "maxDownloadBytes": {"type": "integer", "minimum": 0, "maximum": 10485760000, "x-scope": ["admin", "tenant"]},
+            "maxDownloadBytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10485760000,
+              "x-scope": ["admin", "tenant"]
+            },
             "signingKeyStorePath": {
               "type": "string",
               "description": "Legacy. Path to signing certificate file. Use signing.keyStorePath instead.",
@@ -237,10 +242,16 @@
                   "additionalProperties": false,
                   "description": "Signature metadata fields embedded in the PDF digital signature.",
                   "properties": {
-                    "reason": {"type": "string", "description": "Purpose of signing (e.g. Approved)."},
-                    "name": {"type": "string", "description": "Signer name."},
-                    "location": {"type": "string", "description": "Signing location."},
-                    "contactInfo": {"type": "string", "description": "Contact details (URL or email)."}
+                    "reason": {
+                      "type": "string",
+                      "description": "Purpose of signing (e.g. Approved)."
+                    },
+                    "name": { "type": "string", "description": "Signer name." },
+                    "location": { "type": "string", "description": "Signing location." },
+                    "contactInfo": {
+                      "type": "string",
+                      "description": "Contact details (URL or email)."
+                    }
                   }
                 },
                 "awsKms": {
@@ -248,10 +259,19 @@
                   "additionalProperties": false,
                   "description": "AWS KMS (or compatible) settings. Set keyId to enable.",
                   "properties": {
-                    "endpoint": {"type": "string", "description": "KMS endpoint URL. Allows alternative KMS-compatible services."},
-                    "keyId": {"type": "string", "description": "KMS key ID or ARN. If set, AWS KMS signing is active."},
-                    "accessKeyId": {"type": "string", "description": "AWS access key. Empty = default credential chain."},
-                    "secretAccessKey": {"type": "string", "description": "AWS secret access key."}
+                    "endpoint": {
+                      "type": "string",
+                      "description": "KMS endpoint URL. Allows alternative KMS-compatible services."
+                    },
+                    "keyId": {
+                      "type": "string",
+                      "description": "KMS key ID or ARN. If set, AWS KMS signing is active."
+                    },
+                    "accessKeyId": {
+                      "type": "string",
+                      "description": "AWS access key. Empty = default credential chain."
+                    },
+                    "secretAccessKey": { "type": "string", "description": "AWS secret access key." }
                   }
                 },
                 "csc": {
@@ -259,19 +279,49 @@
                   "additionalProperties": false,
                   "description": "CSC API v2 (ETSI TS 119 432) settings. Set baseUrl to enable.",
                   "properties": {
-                    "baseUrl": {"type": "string", "description": "CSC API base URL. If set, CSC signing is active."},
-                    "tokenUrl": {"type": "string", "description": "OAuth2 token endpoint."},
-                    "clientId": {"type": "string", "description": "OAuth2 client ID."},
-                    "clientSecret": {"type": "string", "description": "OAuth2 client secret."},
-                    "grantType": {"type": "string", "description": "Optional. OAuth2 grant type: '' (auto-detect), 'password', or 'client_credentials'. Empty selects based on presence of username/password."},
-                    "clientAuth": {"type": "string", "description": "Optional. How client authenticates to token endpoint: '' (body), 'basic', 'body', or 'both'."},
-                    "tokenBodyFormat": {"type": "string", "description": "Optional. Token request body format: 'form' (default, RFC 6749) or 'json'."},
-                    "username": {"type": "string", "description": "Optional. Username for password grant type."},
-                    "password": {"type": "string", "description": "Optional. Password for password grant type."},
-                    "credentialId": {"type": "string", "description": "Optional. Signing credential ID. Auto-discovered via credentials/list when empty."},
-                    "clientData": {"type": "string", "description": "Optional. Provider-specific clientData for credentials/list (e.g. eSeal credential type)."},
-                    "scope": {"type": "string", "description": "Optional. OAuth2 scope (e.g. 'service')."},
-                    "audience": {"type": "string", "description": "Optional. OAuth2 audience parameter."}
+                    "baseUrl": {
+                      "type": "string",
+                      "description": "CSC API base URL. If set, CSC signing is active."
+                    },
+                    "tokenUrl": { "type": "string", "description": "OAuth2 token endpoint." },
+                    "clientId": { "type": "string", "description": "OAuth2 client ID." },
+                    "clientSecret": { "type": "string", "description": "OAuth2 client secret." },
+                    "grantType": {
+                      "type": "string",
+                      "description": "Optional. OAuth2 grant type: '' (auto-detect), 'password', or 'client_credentials'. Empty selects based on presence of username/password."
+                    },
+                    "clientAuth": {
+                      "type": "string",
+                      "description": "Optional. How client authenticates to token endpoint: '' (body), 'basic', 'body', or 'both'."
+                    },
+                    "tokenBodyFormat": {
+                      "type": "string",
+                      "description": "Optional. Token request body format: 'form' (default, RFC 6749) or 'json'."
+                    },
+                    "username": {
+                      "type": "string",
+                      "description": "Optional. Username for password grant type."
+                    },
+                    "password": {
+                      "type": "string",
+                      "description": "Optional. Password for password grant type."
+                    },
+                    "credentialId": {
+                      "type": "string",
+                      "description": "Optional. Signing credential ID. Auto-discovered via credentials/list when empty."
+                    },
+                    "clientData": {
+                      "type": "string",
+                      "description": "Optional. Provider-specific clientData for credentials/list (e.g. eSeal credential type)."
+                    },
+                    "scope": {
+                      "type": "string",
+                      "description": "Optional. OAuth2 scope (e.g. 'service')."
+                    },
+                    "audience": {
+                      "type": "string",
+                      "description": "Optional. OAuth2 audience parameter."
+                    }
                   }
                 }
               }
@@ -331,8 +381,8 @@
       "additionalProperties": false,
       "x-scope": ["admin", "tenant"],
       "properties": {
-        "enable": {"type": "boolean"},
-        "publicKey": {"type": "string"},
+        "enable": { "type": "boolean" },
+        "publicKey": { "type": "string" },
         "refreshLockInterval": {
           "type": "string",
           "pattern": "^(\\d+[smhd]|\\d+\\s*(second|minute|hour|day)s?)$",
@@ -349,14 +399,14 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "host": {"type": "string"},
-            "port": {"type": "integer", "minimum": 1, "maximum": 65535},
+            "host": { "type": "string" },
+            "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
             "auth": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "user": {"type": "string"},
-                "pass": {"type": "string"}
+                "user": { "type": "string" },
+                "pass": { "type": "string" }
               }
             }
           }
@@ -365,8 +415,8 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "from": {"type": "string", "format": "email"},
-            "to": {"type": "string", "format": "email"}
+            "from": { "type": "string", "format": "email" },
+            "to": { "type": "string", "format": "email" }
           }
         }
       }
@@ -416,7 +466,7 @@
               "additionalProperties": false,
               "x-scope": ["admin", "tenant"],
               "properties": {
-                "enable": {"type": "boolean", "x-scope": ["admin", "tenant"]},
+                "enable": { "type": "boolean", "x-scope": ["admin", "tenant"] },
                 "policies": {
                   "type": "object",
                   "additionalProperties": false,
@@ -437,7 +487,7 @@
               "additionalProperties": false,
               "x-scope": ["admin", "tenant"],
               "properties": {
-                "enable": {"type": "boolean", "x-scope": ["admin", "tenant"]},
+                "enable": { "type": "boolean", "x-scope": ["admin", "tenant"] },
                 "policies": {
                   "type": "object",
                   "additionalProperties": false,
@@ -458,7 +508,7 @@
               "additionalProperties": false,
               "x-scope": ["admin", "tenant"],
               "properties": {
-                "enable": {"type": "boolean", "x-scope": ["admin", "tenant"]},
+                "enable": { "type": "boolean", "x-scope": ["admin", "tenant"] },
                 "policies": {
                   "type": "object",
                   "additionalProperties": false,
@@ -479,7 +529,7 @@
               "additionalProperties": false,
               "x-scope": ["admin", "tenant"],
               "properties": {
-                "enable": {"type": "boolean", "x-scope": ["admin", "tenant"]},
+                "enable": { "type": "boolean", "x-scope": ["admin", "tenant"] },
                 "policies": {
                   "type": "object",
                   "additionalProperties": false,

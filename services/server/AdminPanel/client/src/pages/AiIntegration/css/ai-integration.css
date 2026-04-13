@@ -24,7 +24,7 @@
 }
 
 .ai-spoiler::after {
-  content: '▼';
+  content: "▼";
   position: absolute;
   right: 15px;
   top: 50%;

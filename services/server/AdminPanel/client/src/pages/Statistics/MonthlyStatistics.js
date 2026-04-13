@@ -1,7 +1,7 @@
-import {memo, useMemo} from 'react';
-import InfoTable from './InfoTable/index';
+import { memo, useMemo } from "react"
+import InfoTable from "./InfoTable/index"
 
-const MILLISECONDS_PER_DAY = 86400000;
+const MILLISECONDS_PER_DAY = 86400000
 
 /**
  * Count internal/external users.
@@ -9,14 +9,14 @@ const MILLISECONDS_PER_DAY = 86400000;
  * @returns {{internal: number, external: number}}
  */
 function countUsers(users = {}) {
-  let internal = 0;
-  let external = 0;
+  let internal = 0
+  let external = 0
   for (const uid in users) {
     if (Object.prototype.hasOwnProperty.call(users, uid)) {
-      users[uid]?.anonym ? external++ : internal++;
+      users[uid]?.anonym ? external++ : internal++
     }
   }
-  return {internal, external};
+  return { internal, external }
 }
 
 /**
@@ -25,20 +25,20 @@ function countUsers(users = {}) {
  *
  * @param {{ byMonth?: Array<any>, mode: 'all'|'edit'|'view' }} props
  */
-function MonthlyStatistics({byMonth, mode}) {
+function MonthlyStatistics({ byMonth, mode }) {
   const periods = useMemo(() => {
-    if (!Array.isArray(byMonth) || byMonth.length < 1) return [];
+    if (!Array.isArray(byMonth) || byMonth.length < 1) return []
 
     // Build periods in chronological order, then reverse for display.
     const mapped = byMonth
       .map((item, index) => {
-        const date = item?.date ? new Date(item.date) : null;
-        if (!date) return null;
+        const date = item?.date ? new Date(item.date) : null
+        if (!date) return null
 
-        const editCounts = countUsers(item?.users);
-        const viewCounts = countUsers(item?.usersView);
+        const editCounts = countUsers(item?.users)
+        const viewCounts = countUsers(item?.usersView)
 
-        const nextDate = index + 1 < byMonth.length ? new Date(byMonth[index + 1].date) : null;
+        const nextDate = index + 1 < byMonth.length ? new Date(byMonth[index + 1].date) : null
 
         return {
           startDate: date,
@@ -46,41 +46,52 @@ function MonthlyStatistics({byMonth, mode}) {
           internalEdit: editCounts.internal,
           externalEdit: editCounts.external,
           internalView: viewCounts.internal,
-          externalView: viewCounts.external
-        };
+          externalView: viewCounts.external,
+        }
       })
       .filter(Boolean)
-      .reverse();
+      .reverse()
 
-    return mapped;
-  }, [byMonth]);
+    return mapped
+  }, [byMonth])
 
-  if (periods.length < 1) return null;
+  if (periods.length < 1) return null
 
   return (
     <>
-      <div style={{textAlign: 'center', fontWeight: 600, margin: '16px 0'}}>Usage statistics for the reporting period</div>
+      <div style={{ textAlign: "center", fontWeight: 600, margin: "16px 0" }}>
+        Usage statistics for the reporting period
+      </div>
       {periods.map((p, idx) => {
         const caption = p.endDate
           ? `${p.startDate.toLocaleDateString()} - ${p.endDate.toLocaleDateString()}`
-          : `From ${p.startDate.toLocaleDateString()}`;
+          : `From ${p.startDate.toLocaleDateString()}`
 
         const editor = [
-          [p.internalEdit, ''],
-          [p.externalEdit, ''],
-          [p.internalEdit + p.externalEdit, '']
-        ];
+          [p.internalEdit, ""],
+          [p.externalEdit, ""],
+          [p.internalEdit + p.externalEdit, ""],
+        ]
         const viewer = [
-          [p.internalView, ''],
-          [p.externalView, ''],
-          [p.internalView + p.externalView, '']
-        ];
-        const desc = ['Internal', 'External', 'Active', ''];
+          [p.internalView, ""],
+          [p.externalView, ""],
+          [p.internalView + p.externalView, ""],
+        ]
+        const desc = ["Internal", "External", "Active", ""]
 
-        return <InfoTable key={idx} mode={mode} caption={caption} editor={editor} viewer={viewer} desc={desc} />;
+        return (
+          <InfoTable
+            key={idx}
+            mode={mode}
+            caption={caption}
+            editor={editor}
+            viewer={viewer}
+            desc={desc}
+          />
+        )
       })}
     </>
-  );
+  )
 }
 
-export default memo(MonthlyStatistics);
+export default memo(MonthlyStatistics)

@@ -1,39 +1,39 @@
-import {useState, useEffect} from 'react';
-import {checkHealth} from '../../api';
-import PageHeader from '../../components/PageHeader/PageHeader';
-import PageDescription from '../../components/PageDescription/PageDescription';
-import FixedSaveButton from '../../components/FixedSaveButton/FixedSaveButton';
-import Section from '../../components/Section/Section';
-import styles from './HealthCheck.module.scss';
+import { useEffect, useState } from "react"
+import { checkHealth } from "../../api"
+import FixedSaveButton from "../../components/FixedSaveButton/FixedSaveButton"
+import PageDescription from "../../components/PageDescription/PageDescription"
+import PageHeader from "../../components/PageHeader/PageHeader"
+import Section from "../../components/Section/Section"
+import styles from "./HealthCheck.module.scss"
 
 function HealthCheck() {
-  const [healthStatus, setHealthStatus] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [healthStatus, setHealthStatus] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   const fetchHealthStatus = async () => {
     try {
-      setLoading(true);
-      setError(null);
-      const status = await checkHealth();
-      setHealthStatus(status);
+      setLoading(true)
+      setError(null)
+      const status = await checkHealth()
+      setHealthStatus(status)
     } catch (err) {
-      setError(err.message);
-      setHealthStatus(null);
+      setError(err.message)
+      setHealthStatus(null)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchHealthStatus();
-  }, []);
+    fetchHealthStatus()
+  }, [])
 
   const getStatusColor = () => {
-    if (loading) return '#666';
-    if (error) return '#dc3545';
-    return '#28a745';
-  };
+    if (loading) return "#666"
+    if (error) return "#dc3545"
+    return "#28a745"
+  }
 
   return (
     <div className={`${styles.healthCheck} ${styles.pageWithFixedSave}`}>
@@ -42,7 +42,7 @@ function HealthCheck() {
 
       <Section>
         <div className={styles.statusHeader}>
-          <div className={styles.statusIndicator} style={{backgroundColor: getStatusColor()}} />
+          <div className={styles.statusIndicator} style={{ backgroundColor: getStatusColor() }} />
           <h3 className={styles.statusTitle}>DocService Status</h3>
         </div>
 
@@ -62,10 +62,10 @@ function HealthCheck() {
       </Section>
 
       <FixedSaveButton onClick={fetchHealthStatus} disabled={loading} disableResult={true}>
-        {loading ? 'Checking...' : 'Refresh'}
+        {loading ? "Checking..." : "Refresh"}
       </FixedSaveButton>
     </div>
-  );
+  )
 }
 
-export default HealthCheck;
+export default HealthCheck

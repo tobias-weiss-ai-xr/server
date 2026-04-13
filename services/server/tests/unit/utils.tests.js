@@ -23,32 +23,35 @@
  *
  */
 
-const {describe, test, expect} = require('@jest/globals');
-const config = require('../../Common/node_modules/config');
+const { describe, test, expect } = require("@jest/globals")
+const config = require("../../Common/node_modules/config")
 
-const operationContext = require('../../Common/sources/operationContext');
-const utils = require('../../Common/sources/utils');
+const operationContext = require("../../Common/sources/operationContext")
+const utils = require("../../Common/sources/utils")
 
-const ctx = new operationContext.Context();
-const minimumIterationsByteLength = 4;
+const ctx = new operationContext.Context()
+const minimumIterationsByteLength = 4
 
-describe('AES encryption & decryption', () => {
-  test('Iterations range', async () => {
-    const configuration = config.util.cloneDeep(config.get('aesEncrypt.config'));
-    const encrypted = await utils.encryptPassword(ctx, 'secretstring');
-    const {iterationsByteLength = 5} = configuration;
+describe("AES encryption & decryption", () => {
+  test("Iterations range", async () => {
+    const configuration = config.util.cloneDeep(config.get("aesEncrypt.config"))
+    const encrypted = await utils.encryptPassword(ctx, "secretstring")
+    const { iterationsByteLength = 5 } = configuration
 
-    const [iterationsHex] = encrypted.split(':');
-    const iterations = parseInt(iterationsHex, 16);
+    const [iterationsHex] = encrypted.split(":")
+    const iterations = Number.parseInt(iterationsHex, 16)
 
-    const iterationsLength = iterationsByteLength < minimumIterationsByteLength ? minimumIterationsByteLength : iterationsByteLength;
-    expect(iterations).toBeGreaterThanOrEqual(Math.pow(10, iterationsLength - 1));
-    expect(iterations).toBeLessThanOrEqual(Math.pow(10, iterationsLength) - 1);
-  });
+    const iterationsLength =
+      iterationsByteLength < minimumIterationsByteLength
+        ? minimumIterationsByteLength
+        : iterationsByteLength
+    expect(iterations).toBeGreaterThanOrEqual(10 ** (iterationsLength - 1))
+    expect(iterations).toBeLessThanOrEqual(10 ** iterationsLength - 1)
+  })
 
-  test('Correct workflow', async () => {
-    const encrypted = await utils.encryptPassword(ctx, 'secretstring');
-    const decrypted = await utils.decryptPassword(ctx, encrypted);
-    expect(decrypted).toEqual('secretstring');
-  });
-});
+  test("Correct workflow", async () => {
+    const encrypted = await utils.encryptPassword(ctx, "secretstring")
+    const decrypted = await utils.decryptPassword(ctx, encrypted)
+    expect(decrypted).toEqual("secretstring")
+  })
+})

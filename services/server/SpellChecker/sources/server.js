@@ -1,39 +1,17 @@
-/*
- * (c) Copyright Ascensio System SIA 2010-2024
- *
- * This program is a free software product. You can redistribute it and/or
- * modify it under the terms of the GNU Affero General Public License (AGPL)
- * version 3 as published by the Free Software Foundation. In accordance with
- * Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
- * that Ascensio System SIA expressly excludes the warranty of non-infringement
- * of any third-party rights.
- *
- * This program is distributed WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For
- * details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
- *
- * The  interactive user interfaces in modified source and object code versions
- * of the Program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU AGPL version 3.
- *
- * All the Product's GUI elements, including illustrations and icon sets, as
- * well as technical writing content are licensed under the terms of the
- * Creative Commons Attribution-ShareAlike 4.0 International. See the License
- * terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
- *
- */
 
-'use strict';
 
-const cluster = require('cluster');
+const cluster = require('node:cluster');
 const config = require('config').get('SpellChecker');
 
 //process.env.NODE_ENV = config.get('server.mode');
 
 const logger = require('./../../Common/sources/logger');
 
-const c_nCheckHealth = 60000, c_sCheckWord = 'color', c_sCheckLang = 1033;
-let idCheckInterval, canStartCheck = true;
+const c_nCheckHealth = 60000;
+const c_sCheckWord = 'color';
+const c_sCheckLang = 1033;
+let idCheckInterval;
+let canStartCheck = true;
 let statusCheckHealth = true;
 function checkHealth (worker) {
 	logger.info('checkHealth');
@@ -53,11 +31,11 @@ function endCheckHealth (msg) {
 const workersCount = 1;	// ToDo So far, we will use only 1 process. But in the future it is worth considering a few.
 if (cluster.isMaster) {
 	logger.warn('start cluster with %s workers', workersCount);
-	cluster.on('listening', function(worker) {
+	cluster.on('listening', (worker) => {
 		if (canStartCheck) {
 			canStartCheck = false;
-			idCheckInterval = setInterval(function(){checkHealth(worker);}, c_nCheckHealth);
-			worker.on('message', function(msg){endCheckHealth(msg);});
+			idCheckInterval = setInterval(()=> {checkHealth(worker);}, c_nCheckHealth);
+			worker.on('message', (msg)=> {endCheckHealth(msg);});
 		}
 	});
 	for (let nIndexWorker = 0; nIndexWorker < workersCount; ++nIndexWorker) {
@@ -72,12 +50,12 @@ if (cluster.isMaster) {
 		cluster.fork();
 	});
 } else {
-	const express = require('express'),
-		http = require('http'),
-		https = require('https'),
-		fs = require("fs"),
-		app = express(),
-		spellCheck  = require('./spellCheck');
+	const express = require('express');
+	const http = require('node:http');
+	const https = require('node:https');
+	const fs = require("node:fs");
+	const app = express();
+	const spellCheck  = require('./spellCheck');
 	let server = null;
 
 
@@ -98,27 +76,27 @@ if (cluster.isMaster) {
 		// If you want to use 'development' and 'production',
 		// then with app.settings.env (https://github.com/strongloop/express/issues/936)
 		// If error handling is needed, now it's like this https://github.com/expressjs/errorhandler	spellCheck.install(server, function(){
-		server.listen(config.get('server.port'), function(){
+		server.listen(config.get('server.port'), ()=> {
 			logger.warn("Express server listening on port %d in %s mode", config.get('server.port'), app.settings.env);
 		});
 
-		app.get('/index.html', function(req, res) {
+		app.get('/index.html', (req, res) => {
 			res.send('Server is functioning normally');
 		});
 	});
 
-	process.on('message', function(msg) {
+	process.on('message', (msg) => {
 		if (!spellCheck)
 			return;
-		spellCheck.spellSuggest(msg.type, c_sCheckWord, c_sCheckLang, function(res) {
+		spellCheck.spellSuggest(msg.type, c_sCheckWord, c_sCheckLang, (res) => {
 			process.send({type: msg.type, res: res});
 		});
 	});
 
-	process.on('uncaughtException', function(err) {
-		logger.error((new Date).toUTCString() + ' uncaughtException:', err.message);
+	process.on('uncaughtException', (err) => {
+		logger.error(`${(new Date).toUTCString()} uncaughtException:`, err.message);
 		logger.error(err.stack);
-		logger.shutdown(function () {
+		logger.shutdown(() => {
 			process.exit(1);
 		});
 	});

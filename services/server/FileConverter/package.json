@@ -23,8 +23,6 @@
       "../DocService/sources/editorDataMemory.js",
       "../DocService/sources/editorDataRedis.js"
     ],
-    "assets": [
-      "../DocService/node_modules/oracledb/build/Release/oracledb-*.node"
-    ]
+    "assets": ["../DocService/node_modules/oracledb/build/Release/oracledb-*.node"]
   }
 }

@@ -7,6 +7,7 @@
 
 const axios = require('axios');
 const config = require('../../setup');
+const { describe, test, expect } = require('@jest/globals');
 
 // Test configuration
 const TEST_URL = process.env.DOCUMENT_SERVER_URL || config.documentServerUrl;

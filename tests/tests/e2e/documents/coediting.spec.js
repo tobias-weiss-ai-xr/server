@@ -177,4 +177,203 @@ test.describe('Co-editing Infrastructure @headed', () => {
     console.log(`✅ Token 1 exp: ${new Date(claims1.exp * 1000).toISOString()}`);
     console.log(`✅ Token 2 exp: ${new Date(claims2.exp * 1000).toISOString()}`);
   });
+
+  test('user A types text and both sessions remain stable', async ({ browser }) => {
+    const ctx = await browser.newContext({ ignoreHTTPSErrors: true });
+    const pageA = await ctx.newPage();
+    const pageB = await ctx.newPage();
+
+    try {
+      const token = await loginToOCIS(pageA);
+      const filename = uniqueFilename('coedit-type');
+      const uploadStatus = await uploadTestDoc(pageA, token, filename);
+      expect(uploadStatus).toBe(201);
+
+      const fileId = await getFileId(pageA, token, filename);
+
+      // Get two separate sessions
+      const session1 = await callAppOpen(pageA, token, fileId);
+      const session2 = await callAppOpen(pageA, token, fileId);
+
+      const { wopiSrc: ws1, wopiToken: wt1 } = parseWopiSession(session1);
+      const { wopiSrc: ws2, wopiToken: wt2 } = parseWopiSession(session2);
+
+      // Open editors in both pages
+      await Promise.all([
+        openEditorInBrowser(pageA, ws1, wt1),
+        openEditorInBrowser(pageB, ws2, wt2),
+      ]);
+
+      const [frame1, frame2] = await Promise.all([
+        waitForEditorFrame(pageA, 15000),
+        waitForEditorFrame(pageB, 15000),
+      ]);
+
+      expect(frame1).not.toBeNull();
+      expect(frame2).not.toBeNull();
+
+      // Wait for canvases
+      await Promise.all([
+        frame1.waitForSelector('canvas', { timeout: 30000 }),
+        frame2.waitForSelector('canvas', { timeout: 30000 }),
+      ]);
+
+      // User A types text
+      await frame1.click('canvas');
+      await pageA.waitForTimeout(1000);
+      await frame1.keyboard.type('User A content', { delay: 50 });
+      await pageA.waitForTimeout(2000);
+
+      // Both sessions should remain stable (no crash, no error page)
+      const [state1, state2] = await Promise.all([
+        getEditorState(frame1),
+        getEditorState(frame2),
+      ]);
+
+      expect(state1.hasCanvas).toBe(true);
+      expect(state1.isError).toBe(false);
+      expect(state2.hasCanvas).toBe(true);
+      expect(state2.isError).toBe(false);
+
+      console.log(`✅ User A typed — both sessions stable`);
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  test('both users edit different areas without conflict', async ({ browser }) => {
+    const ctx = await browser.newContext({ ignoreHTTPSErrors: true });
+    const pageA = await ctx.newPage();
+    const pageB = await ctx.newPage();
+
+    try {
+      const token = await loginToOCIS(pageA);
+      const filename = uniqueFilename('coedit-different');
+      const uploadStatus = await uploadTestDoc(pageA, token, filename);
+      expect(uploadStatus).toBe(201);
+
+      const fileId = await getFileId(pageA, token, filename);
+
+      const session1 = await callAppOpen(pageA, token, fileId);
+      const session2 = await callAppOpen(pageA, token, fileId);
+
+      const { wopiSrc: ws1, wopiToken: wt1 } = parseWopiSession(session1);
+      const { wopiSrc: ws2, wopiToken: wt2 } = parseWopiSession(session2);
+
+      await Promise.all([
+        openEditorInBrowser(pageA, ws1, wt1),
+        openEditorInBrowser(pageB, ws2, wt2),
+      ]);
+
+      const [frame1, frame2] = await Promise.all([
+        waitForEditorFrame(pageA, 15000),
+        waitForEditorFrame(pageB, 15000),
+      ]);
+
+      expect(frame1).not.toBeNull();
+      expect(frame2).not.toBeNull();
+
+      await Promise.all([
+        frame1.waitForSelector('canvas', { timeout: 30000 }),
+        frame2.waitForSelector('canvas', { timeout: 30000 }),
+      ]);
+
+      // User A types at the beginning
+      await frame1.click('canvas');
+      await pageA.waitForTimeout(500);
+      await frame1.keyboard.type('User A section', { delay: 50 });
+      await pageA.waitForTimeout(500);
+
+      // User B types at the end (navigate to end first)
+      await frame2.click('canvas');
+      await pageB.waitForTimeout(500);
+      await frame2.keyboard.press('End');
+      await pageB.waitForTimeout(500);
+      await frame2.keyboard.type('User B section', { delay: 50 });
+      await pageB.waitForTimeout(3000);
+
+      // Both sessions should remain stable with no conflict errors
+      const [state1, state2] = await Promise.all([
+        getEditorState(frame1),
+        getEditorState(frame2),
+      ]);
+
+      expect(state1.hasCanvas).toBe(true);
+      expect(state1.isError).toBe(false);
+      expect(state2.hasCanvas).toBe(true);
+      expect(state2.isError).toBe(false);
+
+      console.log(`✅ Both users edited different areas — no conflicts`);
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  test('both users edit same section — last-write-wins or conflict resolution', async ({ browser }) => {
+    const ctx = await browser.newContext({ ignoreHTTPSErrors: true });
+    const pageA = await ctx.newPage();
+    const pageB = await ctx.newPage();
+
+    try {
+      const token = await loginToOCIS(pageA);
+      const filename = uniqueFilename('coedit-conflict');
+      const uploadStatus = await uploadTestDoc(pageA, token, filename);
+      expect(uploadStatus).toBe(201);
+
+      const fileId = await getFileId(pageA, token, fileId);
+
+      const session1 = await callAppOpen(pageA, token, fileId);
+      const session2 = await callAppOpen(pageA, token, fileId);
+
+      const { wopiSrc: ws1, wopiToken: wt1 } = parseWopiSession(session1);
+      const { wopiSrc: ws2, wopiToken: wt2 } = parseWopiSession(session2);
+
+      await Promise.all([
+        openEditorInBrowser(pageA, ws1, wt1),
+        openEditorInBrowser(pageB, ws2, wt2),
+      ]);
+
+      const [frame1, frame2] = await Promise.all([
+        waitForEditorFrame(pageA, 15000),
+        waitForEditorFrame(pageB, 15000),
+      ]);
+
+      expect(frame1).not.toBeNull();
+      expect(frame2).not.toBeNull();
+
+      await Promise.all([
+        frame1.waitForSelector('canvas', { timeout: 30000 }),
+        frame2.waitForSelector('canvas', { timeout: 30000 }),
+      ]);
+
+      // Both users type at the same position simultaneously
+      await frame1.click('canvas');
+      await frame2.click('canvas');
+      await pageA.waitForTimeout(500);
+
+      // Type concurrently — both into the same area
+      await Promise.all([
+        frame1.keyboard.type('AAA', { delay: 30 }),
+        frame2.keyboard.type('BBB', { delay: 30 }),
+      ]);
+
+      await pageA.waitForTimeout(3000);
+
+      // Both sessions should still be stable (conflict resolved, not crashed)
+      const [state1, state2] = await Promise.all([
+        getEditorState(frame1),
+        getEditorState(frame2),
+      ]);
+
+      expect(state1.hasCanvas).toBe(true);
+      // Editor may show conflict UI but should NOT crash
+      expect(state1.isError).toBe(false);
+      expect(state2.hasCanvas).toBe(true);
+      expect(state2.isError).toBe(false);
+
+      console.log(`✅ Same-section edit — sessions stable after conflict`);
+    } finally {
+      await ctx.close();
+    }
+  });
 });

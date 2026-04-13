@@ -64,6 +64,9 @@ app.set('view engine', 'ejs'); // specify which template engine is used
 
 app.use((req, res, next) => {
   const corsOrigin = configServer.has('cors_allow_origin') ? configServer.get('cors_allow_origin') : '*';
+  res.setHeader('Access-Control-Allow-Origin', corsOrigin);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
 

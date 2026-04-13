@@ -61,6 +61,8 @@ import static com.worldoffice.integration.documentserver.util.Constants.ANONYMOU
 @Controller
 public class EditorController {
 
+    private static final Logger logger = LoggerFactory.getLogger(EditorController.class);
+
     @Value("${files.docservice.languages}")
     private String langs;
 

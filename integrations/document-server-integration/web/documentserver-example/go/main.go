@@ -18,16 +18,16 @@
 package main
 
 import (
-	"github.com/WORLDOFFICE/document-server-integration/config"
-	"github.com/WORLDOFFICE/document-server-integration/server"
-	"github.com/WORLDOFFICE/document-server-integration/server/api"
-	defaultApi "github.com/WORLDOFFICE/document-server-integration/server/api/default"
-	bootstrapper "github.com/WORLDOFFICE/document-server-integration/server/config"
-	"github.com/WORLDOFFICE/document-server-integration/server/handlers"
-	dhandlers "github.com/WORLDOFFICE/document-server-integration/server/handlers/default"
-	"github.com/WORLDOFFICE/document-server-integration/server/log"
-	"github.com/WORLDOFFICE/document-server-integration/server/managers"
-	dmanagers "github.com/WORLDOFFICE/document-server-integration/server/managers/default"
+	"github.com/World-Office/document-server-integration/config"
+	"github.com/World-Office/document-server-integration/server"
+	"github.com/World-Office/document-server-integration/server/api"
+	defaultApi "github.com/World-Office/document-server-integration/server/api/default"
+	bootstrapper "github.com/World-Office/document-server-integration/server/config"
+	"github.com/World-Office/document-server-integration/server/handlers"
+	dhandlers "github.com/World-Office/document-server-integration/server/handlers/default"
+	"github.com/World-Office/document-server-integration/server/log"
+	"github.com/World-Office/document-server-integration/server/managers"
+	dmanagers "github.com/World-Office/document-server-integration/server/managers/default"
 	"go.uber.org/fx"
 )
 

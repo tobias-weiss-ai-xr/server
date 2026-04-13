@@ -25,10 +25,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WORLDOFFICE/document-server-integration/server/managers"
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
-	"github.com/WORLDOFFICE/document-server-integration/server/shared"
-	"github.com/WORLDOFFICE/document-server-integration/utils"
+	"github.com/World-Office/document-server-integration/server/managers"
+	"github.com/World-Office/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/server/shared"
+	"github.com/World-Office/document-server-integration/utils"
 	"github.com/golang-jwt/jwt/v5"
 )
 

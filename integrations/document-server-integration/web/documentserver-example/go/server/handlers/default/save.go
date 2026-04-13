@@ -18,9 +18,9 @@
 package dhandlers
 
 import (
-	"github.com/WORLDOFFICE/document-server-integration/server/handlers"
-	"github.com/WORLDOFFICE/document-server-integration/server/managers"
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/server/handlers"
+	"github.com/World-Office/document-server-integration/server/managers"
+	"github.com/World-Office/document-server-integration/server/models"
 	"go.uber.org/zap"
 )
 

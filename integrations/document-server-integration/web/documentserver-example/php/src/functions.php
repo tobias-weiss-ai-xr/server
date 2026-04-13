@@ -722,8 +722,8 @@ function sendRequestToConvertService(
  *
  * Example:
  * string convertedDocumentUri;
- * getConvertedData("http://helpcenter.world-office.com/content/GettingStarted.pdf",
- * ".pdf", ".docx", "http://helpcenter.world-office.com/content/GettingStarted.pdf", false, out convertedDocumentUri);
+ * getConvertedData("http://helpcenter.worldoffice.com/content/GettingStarted.pdf",
+ * ".pdf", ".docx", "http://helpcenter.worldoffice.com/content/GettingStarted.pdf", false, out convertedDocumentUri);
  *
  * @param string $documentURL Uri for the document to convert
  * @param string $fromExtension Document extension

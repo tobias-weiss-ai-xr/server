@@ -26,9 +26,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
-	"github.com/WORLDOFFICE/document-server-integration/server/shared"
-	"github.com/WORLDOFFICE/document-server-integration/utils"
+	"github.com/World-Office/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/server/shared"
+	"github.com/World-Office/document-server-integration/utils"
 )
 
 func (srv *DefaultServerEndpointsHandler) Create(w http.ResponseWriter, r *http.Request) {

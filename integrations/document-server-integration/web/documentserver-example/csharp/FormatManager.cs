@@ -200,7 +200,7 @@ namespace OnlineEditorsExample
 
         private static string GetPath()
         {
-            string path = Path.Combine(GetDirectory(), "world-office-docs-formats.json");
+            string path = Path.Combine(GetDirectory(), "worldoffice-docs-formats.json");
             if (File.Exists(path))
             {
                 return path;

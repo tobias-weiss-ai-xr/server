@@ -1,4 +1,4 @@
-﻿<%@ Page Title="WORLDOFFICE" Language="C#" Inherits="System.Web.Mvc.ViewPage<OnlineEditorsExampleMVC.Models.ForgottenFilesModel>" %>
+<%@ Page Title="World-Office" Language="C#" Inherits="System.Web.Mvc.ViewPage<OnlineEditorsExampleMVC.Models.ForgottenFilesModel>" %>
 
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="System.Web.Configuration" %>
@@ -29,7 +29,7 @@
     * limitations under the License.
     *
     -->
-    <title>WORLDOFFICE</title>
+    <title>World-Office</title>
 
     <link href="<%: Url.Content("~/favicon.ico") %>" rel="shortcut icon" type="image/x-icon" />
 
@@ -42,18 +42,18 @@
     <header>
         <div class="center main-nav">
             <a href="./">
-                <img src ="content/images/logo.svg" alt="WORLDOFFICE" />
+                <img src ="content/images/logo.svg" alt="World-Office" />
             </a>
         </div>
         <menu class="responsive-nav">
             <li>
               <a href="#" onclick="toggleSidePanel(event)">
-                <img src="content/images/mobile-menu.svg" alt="WORLDOFFICE" />
+                <img src="content/images/mobile-menu.svg" alt="World-Office" />
               </a>
             </li>
             <li>
               <a href="./">
-                <img src ="content/images/mobile-logo.svg" alt="WORLDOFFICE" />
+                <img src ="content/images/mobile-logo.svg" alt="World-Office" />
               </a>
             </li>
         </menu>
@@ -125,10 +125,10 @@
                 <tbody>
                     <tr>
                         <td>
-                            <a href="https://api.world-office.com/docs/docs-api/get-started/how-it-works/" target="_blank">API Documentation</a>
+                            <a href="https://api.worldoffice.com/docs/docs-api/get-started/how-it-works/" target="_blank">API Documentation</a>
                         </td>
                         <td>
-                            <a href="mailto:sales@world-office.com">Submit your request</a>
+                            <a href="mailto:sales@worldoffice.com">Submit your request</a>
                         </td>
                         <td class="copy">
                             &copy; Ascensio System SIA <%= DateTime.Now.Year.ToString() %>. All rights reserved.

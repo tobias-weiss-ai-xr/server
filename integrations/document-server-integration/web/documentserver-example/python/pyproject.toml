@@ -20,8 +20,8 @@ dependencies = [
 text = "Apache-2.0"
 
 [[project.authors]]
-name = "WORLDOFFICE"
-email = "support@world-office.com"
+name = "World-Office"
+email = "support@worldoffice.com"
 
 [project.optional-dependencies]
 development = [

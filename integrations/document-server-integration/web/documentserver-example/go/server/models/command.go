@@ -22,11 +22,11 @@ import "github.com/golang-jwt/jwt/v5"
 type Command int
 
 const (
-	WORLDOFFICE_COMMAND_DROP Command = iota
-	WORLDOFFICE_COMMAND_FORCESAVE
-	WORLDOFFICE_COMMAND_INFO
-	WORLDOFFICE_COMMAND_META
-	WORLDOFFICE_COMMAND_VERSION
+	World-Office_COMMAND_DROP Command = iota
+	World-Office_COMMAND_FORCESAVE
+	World-Office_COMMAND_INFO
+	World-Office_COMMAND_META
+	World-Office_COMMAND_VERSION
 )
 
 func (c Command) String() string {

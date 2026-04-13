@@ -20,9 +20,9 @@ package dapi
 import (
 	"net/http"
 
-	"github.com/WORLDOFFICE/document-server-integration/server/managers"
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
-	"github.com/WORLDOFFICE/document-server-integration/server/shared"
+	"github.com/World-Office/document-server-integration/server/managers"
+	"github.com/World-Office/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/server/shared"
 )
 
 func (srv *DefaultServerEndpointsHandler) Editor(w http.ResponseWriter, r *http.Request) {

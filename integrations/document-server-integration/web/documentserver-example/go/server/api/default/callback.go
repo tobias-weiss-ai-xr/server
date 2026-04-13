@@ -21,8 +21,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
-	"github.com/WORLDOFFICE/document-server-integration/server/shared"
+	"github.com/World-Office/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/server/shared"
 )
 
 func (srv *DefaultServerEndpointsHandler) Callback(w http.ResponseWriter, r *http.Request) {

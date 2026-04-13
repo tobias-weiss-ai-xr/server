@@ -24,10 +24,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WORLDOFFICE/document-server-integration/config"
-	"github.com/WORLDOFFICE/document-server-integration/server/managers"
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
-	"github.com/WORLDOFFICE/document-server-integration/utils"
+	"github.com/World-Office/document-server-integration/config"
+	"github.com/World-Office/document-server-integration/server/managers"
+	"github.com/World-Office/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 )
@@ -43,14 +43,14 @@ type DefaultDocumentManager struct {
 }
 
 const (
-	world-office_permission_edit         = "edit"
-	world-office_permission_view         = "view"
-	world-office_permission_fill_forms   = "fillForms"
-	world-office_permission_embedded     = "embedded"
-	world-office_permission_blockcontent = "blockcontent"
-	world-office_permission_filter       = "filter"
-	world-office_permission_review       = "review"
-	world-office_permission_comment      = "comment"
+	worldoffice_permission_edit         = "edit"
+	worldoffice_permission_view         = "view"
+	worldoffice_permission_fill_forms   = "fillForms"
+	worldoffice_permission_embedded     = "embedded"
+	worldoffice_permission_blockcontent = "blockcontent"
+	worldoffice_permission_filter       = "filter"
+	worldoffice_permission_review       = "review"
+	worldoffice_permission_comment      = "comment"
 )
 
 func NewDefaultDocumentManager(config config.ApplicationConfig, specification config.SpecificationConfig,
@@ -168,24 +168,24 @@ func (dm DefaultDocumentManager) BuildDocumentConfig(
 			},
 			Permissions: models.Permissions{
 				Chat: user.Id != "uid-1",
-				Comment: parameters.PermissionsMode != world-office_permission_view &&
-					parameters.PermissionsMode != world-office_permission_fill_forms &&
-					parameters.PermissionsMode != world-office_permission_embedded &&
-					parameters.PermissionsMode != world-office_permission_blockcontent,
+				Comment: parameters.PermissionsMode != worldoffice_permission_view &&
+					parameters.PermissionsMode != worldoffice_permission_fill_forms &&
+					parameters.PermissionsMode != worldoffice_permission_embedded &&
+					parameters.PermissionsMode != worldoffice_permission_blockcontent,
 				Copy:     !slices.Contains(user.DeniedPermissions, "copy"),
 				Download: true,
-				Edit: parameters.CanEdit && (parameters.PermissionsMode == world-office_permission_edit ||
-					parameters.PermissionsMode == world-office_permission_filter ||
-					parameters.PermissionsMode == world-office_permission_blockcontent),
-				FillForms: parameters.PermissionsMode != world-office_permission_view &&
-					parameters.PermissionsMode != world-office_permission_comment &&
-					parameters.PermissionsMode != world-office_permission_embedded &&
-					parameters.PermissionsMode != world-office_permission_blockcontent,
-				ModifyFilter:         parameters.PermissionsMode != world-office_permission_filter,
-				ModifyContentControl: parameters.PermissionsMode != world-office_permission_blockcontent,
+				Edit: parameters.CanEdit && (parameters.PermissionsMode == worldoffice_permission_edit ||
+					parameters.PermissionsMode == worldoffice_permission_filter ||
+					parameters.PermissionsMode == worldoffice_permission_blockcontent),
+				FillForms: parameters.PermissionsMode != worldoffice_permission_view &&
+					parameters.PermissionsMode != worldoffice_permission_comment &&
+					parameters.PermissionsMode != worldoffice_permission_embedded &&
+					parameters.PermissionsMode != worldoffice_permission_blockcontent,
+				ModifyFilter:         parameters.PermissionsMode != worldoffice_permission_filter,
+				ModifyContentControl: parameters.PermissionsMode != worldoffice_permission_blockcontent,
 				Print:                !slices.Contains(user.DeniedPermissions, "print"),
-				Review: parameters.PermissionsMode == world-office_permission_edit ||
-					parameters.PermissionsMode == world-office_permission_review,
+				Review: parameters.PermissionsMode == worldoffice_permission_edit ||
+					parameters.PermissionsMode == worldoffice_permission_review,
 				RewiewGroups:   user.ReviewGroups,
 				CommentGroups:  user.CommentGroups,
 				UserInfoGroups: user.UserInfoGroups,

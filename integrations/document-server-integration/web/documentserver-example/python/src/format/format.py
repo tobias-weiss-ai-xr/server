@@ -147,7 +147,7 @@ class FormatManager():
 
     def __file(self) -> Path:
         directory = self.__directory()
-        return directory.joinpath('world-office-docs-formats.json')
+        return directory.joinpath('worldoffice-docs-formats.json')
 
     def __directory(self) -> Path:
         current_file = Path(__file__)

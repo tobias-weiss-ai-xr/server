@@ -25,11 +25,11 @@ import (
 	"path"
 	"time"
 
-	"github.com/WORLDOFFICE/document-server-integration/config"
-	"github.com/WORLDOFFICE/document-server-integration/server/managers"
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
-	"github.com/WORLDOFFICE/document-server-integration/server/shared"
-	"github.com/WORLDOFFICE/document-server-integration/utils"
+	"github.com/World-Office/document-server-integration/config"
+	"github.com/World-Office/document-server-integration/server/managers"
+	"github.com/World-Office/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/server/shared"
+	"github.com/World-Office/document-server-integration/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 )
@@ -135,7 +135,7 @@ func (hm DefaultHistoryManager) fetchNextHistoryEntry(
 		return hresp, hsresp, err
 	}
 
-	histPath := path.Join(storagePath, filename+shared.WORLDOFFICE_HISTORY_POSTFIX, fmt.Sprint(version))
+	histPath := path.Join(storagePath, filename+shared.World-Office_HISTORY_POSTFIX, fmt.Sprint(version))
 	mchanges, err := hm.readHistory(path.Join(histPath, "changes.json"))
 	if err != nil {
 		meta := hm.GetFileData(filename)
@@ -162,7 +162,7 @@ func (hm DefaultHistoryManager) fetchNextHistoryEntry(
 	})
 
 	if version > 1 {
-		prevHistPath := path.Join(storagePath, filename+shared.WORLDOFFICE_HISTORY_POSTFIX, fmt.Sprint(version-1))
+		prevHistPath := path.Join(storagePath, filename+shared.World-Office_HISTORY_POSTFIX, fmt.Sprint(version-1))
 		prevKey, err := hm.readHistoryFileKey(path.Join(prevHistPath, "key.txt"))
 		if err != nil {
 			return hresp, hsresp, err
@@ -175,7 +175,7 @@ func (hm DefaultHistoryManager) fetchNextHistoryEntry(
 
 		var changesUrl string
 		if hm.StorageManager.PathExists(
-			path.Join(storagePath, filename+shared.WORLDOFFICE_HISTORY_POSTFIX, fmt.Sprint(version-1), "diff.zip"),
+			path.Join(storagePath, filename+shared.World-Office_HISTORY_POSTFIX, fmt.Sprint(version-1), "diff.zip"),
 		) {
 			changesUrl = hm.StorageManager.GeneratePublicFileUri(filename, remoteAddress, managers.FileMeta{
 				Version:         version - 1,
@@ -227,7 +227,7 @@ func (hm DefaultHistoryManager) GetHistory(
 	}
 
 	for {
-		hpath := path.Join(rootPath, filename+shared.WORLDOFFICE_HISTORY_POSTFIX, fmt.Sprint(version))
+		hpath := path.Join(rootPath, filename+shared.World-Office_HISTORY_POSTFIX, fmt.Sprint(version))
 		if hm.StorageManager.PathExists(hpath) {
 			hist, histSet, err := hm.fetchNextHistoryEntry(remoteAddress, filename, version)
 			if err != nil {
@@ -243,7 +243,7 @@ func (hm DefaultHistoryManager) GetHistory(
 	}
 
 	rhist.CurrentVersion = fmt.Sprint(version)
-	currMeta, err := hm.readHistory(path.Join(rootPath, filename+shared.WORLDOFFICE_HISTORY_POSTFIX, filename+".json"))
+	currMeta, err := hm.readHistory(path.Join(rootPath, filename+shared.World-Office_HISTORY_POSTFIX, filename+".json"))
 	if err != nil {
 		return rhist, setHist, err
 	}
@@ -255,7 +255,7 @@ func (hm DefaultHistoryManager) GetHistory(
 
 	var changesUrl string
 	if hm.StorageManager.PathExists(
-		path.Join(rootPath, filename+shared.WORLDOFFICE_HISTORY_POSTFIX, fmt.Sprint(version-1), "diff.zip"),
+		path.Join(rootPath, filename+shared.World-Office_HISTORY_POSTFIX, fmt.Sprint(version-1), "diff.zip"),
 	) {
 		changesUrl = hm.StorageManager.GeneratePublicFileUri(filename, remoteAddress, managers.FileMeta{
 			Version:         version - 1,
@@ -302,7 +302,7 @@ func (hm DefaultHistoryManager) CreateMeta(filename string, history models.Histo
 		return err
 	}
 
-	hpath := path.Join(rootPath, filename+shared.WORLDOFFICE_HISTORY_POSTFIX)
+	hpath := path.Join(rootPath, filename+shared.World-Office_HISTORY_POSTFIX)
 	bdata, err := json.MarshalIndent(history, " ", "")
 	if err != nil {
 		return err
@@ -321,7 +321,7 @@ func (hm DefaultHistoryManager) isMeta(filename string) bool {
 		return false
 	}
 
-	hpath := path.Join(rootPath, filename+shared.WORLDOFFICE_HISTORY_POSTFIX)
+	hpath := path.Join(rootPath, filename+shared.World-Office_HISTORY_POSTFIX)
 	return hm.StorageManager.PathExists(path.Join(hpath, filename+".json"))
 }
 
@@ -338,7 +338,7 @@ func (hm DefaultHistoryManager) GetFileData(filename string) map[string]string {
 	if err != nil {
 		return empty
 	}
-	file, err := hm.StorageManager.ReadFile(path.Join(root, filename+shared.WORLDOFFICE_HISTORY_POSTFIX, filename+".json"))
+	file, err := hm.StorageManager.ReadFile(path.Join(root, filename+shared.World-Office_HISTORY_POSTFIX, filename+".json"))
 	if err != nil {
 		return empty
 	}
@@ -367,7 +367,7 @@ func (hm DefaultHistoryManager) CreateHistory(cbody models.Callback) error {
 		return err
 	}
 
-	hdir := path.Join(spath, cbody.Filename+shared.WORLDOFFICE_HISTORY_POSTFIX)
+	hdir := path.Join(spath, cbody.Filename+shared.World-Office_HISTORY_POSTFIX)
 	if !hm.isMeta(cbody.Filename) {
 		return fmt.Errorf("file %s no longer exists", cbody.Filename)
 	}

@@ -20,7 +20,7 @@ package dapi
 import (
 	"net/http"
 
-	"github.com/WORLDOFFICE/document-server-integration/server/shared"
+	"github.com/World-Office/document-server-integration/server/shared"
 )
 
 func (srv *DefaultServerEndpointsHandler) Remove(w http.ResponseWriter, r *http.Request) {

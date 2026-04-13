@@ -26,10 +26,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WORLDOFFICE/document-server-integration/config"
-	"github.com/WORLDOFFICE/document-server-integration/server/managers"
-	"github.com/WORLDOFFICE/document-server-integration/server/shared"
-	"github.com/WORLDOFFICE/document-server-integration/utils"
+	"github.com/World-Office/document-server-integration/config"
+	"github.com/World-Office/document-server-integration/server/managers"
+	"github.com/World-Office/document-server-integration/server/shared"
+	"github.com/World-Office/document-server-integration/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 )
@@ -57,31 +57,31 @@ func (cm DefaultConversionManager) GetFileType(filename string) string {
 	exts := cm.specification.ExtensionTypes
 
 	if utils.IsInList(ext, exts.Pdf) {
-		return shared.WORLDOFFICE_PDF
+		return shared.World-Office_PDF
 	}
 	if utils.IsInList(ext, exts.Document) {
-		return shared.WORLDOFFICE_DOCUMENT
+		return shared.World-Office_DOCUMENT
 	}
 	if utils.IsInList(ext, exts.Spreadsheet) {
-		return shared.WORLDOFFICE_SPREADSHEET
+		return shared.World-Office_SPREADSHEET
 	}
 	if utils.IsInList(ext, exts.Presentation) {
-		return shared.WORLDOFFICE_PRESENTATION
+		return shared.World-Office_PRESENTATION
 	}
 	if utils.IsInList(ext, exts.Diagram) {
-		return shared.WORLDOFFICE_DIAGRAM
+		return shared.World-Office_DIAGRAM
 	}
 
-	return shared.WORLDOFFICE_DOCUMENT
+	return shared.World-Office_DOCUMENT
 }
 
 func (cm DefaultConversionManager) GetInternalExtension(fileType string) string {
 	switch fileType {
-	case shared.WORLDOFFICE_DOCUMENT:
+	case shared.World-Office_DOCUMENT:
 		return ".docx"
-	case shared.WORLDOFFICE_SPREADSHEET:
+	case shared.World-Office_SPREADSHEET:
 		return ".xlsx"
-	case shared.WORLDOFFICE_PRESENTATION:
+	case shared.World-Office_PRESENTATION:
 		return ".pptx"
 	default:
 		return ".docx"

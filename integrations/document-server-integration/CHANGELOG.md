@@ -39,13 +39,13 @@
 - golang: new integration example
 - golang: upload files to the server
 - golang: create blank files and files with sample content
-- golang: edit uploaded files in world-office editor
+- golang: edit uploaded files in worldoffice editor
 - golang: delete files on the server
 - golang: show files history
 - php-laravel: new integration example
 - php-laravel: upload files to the server
 - php-laravel: create blank files and files with sample content
-- php-laravel: edit uploaded files in world-office editor
+- php-laravel: edit uploaded files in worldoffice editor
 - php-laravel: delete files on the server
 - php-laravel: create, edit, and submit pdf forms
 - php-laravel: show forgotten files on a seperate page

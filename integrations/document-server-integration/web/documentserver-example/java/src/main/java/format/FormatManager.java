@@ -111,7 +111,7 @@ public final class FormatManager {
     private Path file() throws URISyntaxException {
         return this
             .directory()
-            .resolve("world-office-docs-formats.json");
+            .resolve("worldoffice-docs-formats.json");
     }
 
     private Path directory() throws URISyntaxException {

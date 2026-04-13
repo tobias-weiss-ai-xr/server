@@ -21,8 +21,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/WORLDOFFICE/document-server-integration/server/shared"
-	"github.com/WORLDOFFICE/document-server-integration/utils"
+	"github.com/World-Office/document-server-integration/server/shared"
+	"github.com/World-Office/document-server-integration/utils"
 )
 
 func (srv *DefaultServerEndpointsHandler) Formats(w http.ResponseWriter, r *http.Request) {

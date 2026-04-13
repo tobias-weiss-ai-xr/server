@@ -184,7 +184,7 @@ class FormatManager
     private function file(): Path
     {
         $directory = $this->directory();
-        return $directory->joinPath('world-office-docs-formats.json');
+        return $directory->joinPath('worldoffice-docs-formats.json');
     }
 
     private function directory(): Path

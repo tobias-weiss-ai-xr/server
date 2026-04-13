@@ -1,4 +1,4 @@
-﻿<%@ Page Title="WORLDOFFICE" Language="C#" Inherits="System.Web.Mvc.ViewPage<OnlineEditorsExampleMVC.Models.FileModel>" %>
+<%@ Page Title="World-Office" Language="C#" Inherits="System.Web.Mvc.ViewPage<OnlineEditorsExampleMVC.Models.FileModel>" %>
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="System.Web.Configuration" %>
 <%@ Import Namespace="OnlineEditorsExampleMVC.Helpers" %>
@@ -30,7 +30,7 @@
     *
     -->
     <link rel="icon" href="<%= "content/images/" + Model.DocumentType + ".ico" %>" type="image/x-icon" />
-    <title><%= Model.FileName + " - WORLDOFFICE" %></title>
+    <title><%= Model.FileName + " - World-Office" %></title>
 
     <%: Styles.Render("~/Content/editor") %>
 
@@ -118,7 +118,7 @@
         // the meta information of the document is changed via the meta command
         var onMetaChange = function (event) {
             if (event.data.title !== undefined) {
-                document.title = event.data.title + " - WORLDOFFICE";
+                document.title = event.data.title + " - World-Office";
             }
 
             if (event.data.favorite !== undefined) {

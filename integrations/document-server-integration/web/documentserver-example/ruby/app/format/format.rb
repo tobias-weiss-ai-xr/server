@@ -172,7 +172,7 @@ class FormatManager
 
   sig { returns(Pathname) }
   private def file
-    directory.join('world-office-docs-formats.json')
+    directory.join('worldoffice-docs-formats.json')
   end
 
   sig { returns(Pathname) }

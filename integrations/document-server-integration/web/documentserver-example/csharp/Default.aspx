@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="OnlineEditorsExample._Default" Title="WORLDOFFICE" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="OnlineEditorsExample._Default" Title="World-Office" %>
 
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="System.Web.WebPages" %>
@@ -14,7 +14,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="server-version" content=<%= GetVersion() %> />
-    <title>WORLDOFFICE</title>
+    <title>World-Office</title>
     <!--
     *
     * (c) Copyright Ascensio System SIA 2026
@@ -47,18 +47,18 @@
         <header>
             <div class="center main-nav">
                 <a href="./">
-                    <img src ="app_themes/images/logo.svg" alt="WORLDOFFICE" />
+                    <img src ="app_themes/images/logo.svg" alt="World-Office" />
                 </a>
             </div>
             <menu class="responsive-nav">
                 <li>
                   <a href="#" onclick="toggleSidePanel(event)">
-                    <img src="app_themes/images/mobile-menu.svg" alt="WORLDOFFICE" />
+                    <img src="app_themes/images/mobile-menu.svg" alt="World-Office" />
                   </a>
                 </li>
                 <li>
                   <a href="./">
-                    <img src ="app_themes/images/mobile-logo.svg" alt="WORLDOFFICE" />
+                    <img src ="app_themes/images/mobile-logo.svg" alt="World-Office" />
                   </a>
                 </li>
             </menu>
@@ -114,7 +114,7 @@
                                             <td valign="middle">
                                                 <span class="select-user">Language</span>
                                             <img class="info info-tooltip" data-id="language"
-                                                 data-tooltip="Choose the language for WORLDOFFICE editors interface"
+                                                 data-tooltip="Choose the language for World-Office editors interface"
                                                  src="app_themes/images/info.svg" />
                                                 <select class="select-user" id="language">
                                                     <% Dictionary<string, string> languages = GetLanguages(); 
@@ -156,8 +156,8 @@
                                     <% } %>
                                 </menu>
                                 <div id="portal-info" style="display: <%= storedFiles.Any() ? "none" : "table-cell" %>">
-                                    <span class="portal-name">Welcome to WORLDOFFICE Docs!</span>
-                                    <span class="portal-descr">Get started with a live demo of WORLDOFFICE Docs, a powerful open-source office suite for your browser.</span>
+                                    <span class="portal-name">Welcome to World-Office Docs!</span>
+                                    <span class="portal-descr">Get started with a live demo of World-Office Docs, a powerful open-source office suite for your browser.</span>
                                     <span class="portal-descr">
                                         You can test editing features in real-time and explore multi-user collaboration:
                                         <ul>
@@ -422,10 +422,10 @@
                     <tbody>
                         <tr>
                             <td>
-                                <a href="https://api.world-office.com/docs/docs-api/get-started/how-it-works/" target="_blank">API Documentation</a>
+                                <a href="https://api.worldoffice.com/docs/docs-api/get-started/how-it-works/" target="_blank">API Documentation</a>
                             </td>
                             <td>
-                                <a href="mailto:sales@world-office.com">Submit your request</a>
+                                <a href="mailto:sales@worldoffice.com">Submit your request</a>
                             </td>
                             <td class="copy">
                                 &copy; Ascensio System SIA <%= DateTime.Now.Year.ToString() %>. All rights reserved.

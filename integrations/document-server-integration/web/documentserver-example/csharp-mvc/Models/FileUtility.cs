@@ -1,4 +1,4 @@
-﻿/**
+/**
  *
  * (c) Copyright Ascensio System SIA 2026
  *
@@ -241,7 +241,7 @@ namespace OnlineEditorsExampleMVC.Models
 
         private static string GetPath()
         {
-            string path = Path.Combine(GetDirectory(), "world-office-docs-formats.json");
+            string path = Path.Combine(GetDirectory(), "worldoffice-docs-formats.json");
             if (File.Exists(path))
             {
                 return path;

@@ -18,8 +18,8 @@
 package dmanager
 
 import (
-	"github.com/WORLDOFFICE/document-server-integration/server/managers"
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/server/managers"
+	"github.com/World-Office/document-server-integration/server/models"
 	"go.uber.org/zap"
 )
 

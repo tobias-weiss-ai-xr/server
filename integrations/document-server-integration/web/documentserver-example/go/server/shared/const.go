@@ -18,10 +18,10 @@
 package shared
 
 const (
-	WORLDOFFICE_DOCUMENT        = "word"
-	WORLDOFFICE_SPREADSHEET     = "cell"
-	WORLDOFFICE_PRESENTATION    = "slide"
-	WORLDOFFICE_PDF             = "pdf"
-	WORLDOFFICE_DIAGRAM         = "diagram"
-	WORLDOFFICE_HISTORY_POSTFIX = "-hist"
+	World-Office_DOCUMENT        = "word"
+	World-Office_SPREADSHEET     = "cell"
+	World-Office_PRESENTATION    = "slide"
+	World-Office_PDF             = "pdf"
+	World-Office_DIAGRAM         = "diagram"
+	World-Office_HISTORY_POSTFIX = "-hist"
 )

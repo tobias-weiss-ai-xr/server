@@ -18,7 +18,7 @@
 package log
 
 import (
-	"github.com/WORLDOFFICE/document-server-integration/config"
+	"github.com/World-Office/document-server-integration/config"
 	"go.uber.org/zap"
 )
 

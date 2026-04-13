@@ -48,7 +48,7 @@ Any value defined here will override the pom.xml file value but is only applicab
         <word>ods</word>
         <word>odt</word>
         <word>OfficeWeb</word>
-        <word>WORLDOFFICE</word>
+        <word>World-Office</word>
         <word>pdf</word>
         <word>pps</word>
         <word>ppsx</word>

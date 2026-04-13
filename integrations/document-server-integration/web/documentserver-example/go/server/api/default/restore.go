@@ -27,9 +27,9 @@ import (
 	"path"
 	"time"
 
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
-	"github.com/WORLDOFFICE/document-server-integration/server/shared"
-	"github.com/WORLDOFFICE/document-server-integration/utils"
+	"github.com/World-Office/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/server/shared"
+	"github.com/World-Office/document-server-integration/utils"
 )
 
 func (srv *DefaultServerEndpointsHandler) Restore(w http.ResponseWriter, r *http.Request) {
@@ -72,7 +72,7 @@ func (srv *DefaultServerEndpointsHandler) Restore(w http.ResponseWriter, r *http
 		return
 	}
 	rootPath, _ := srv.GetRootFolder()
-	historyPath := path.Join(rootPath, fileName+shared.WORLDOFFICE_HISTORY_POSTFIX)
+	historyPath := path.Join(rootPath, fileName+shared.World-Office_HISTORY_POSTFIX)
 	newVersion := srv.HistoryManager.CountVersion(historyPath)
 	versionPath := path.Join(historyPath, version, "prev"+utils.GetFileExt(fileName, false))
 	newVersionPath := path.Join(historyPath, fmt.Sprint(newVersion))

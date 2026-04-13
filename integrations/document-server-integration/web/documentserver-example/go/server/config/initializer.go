@@ -20,7 +20,7 @@ package config
 import (
 	"context"
 
-	"github.com/WORLDOFFICE/document-server-integration/server"
+	"github.com/World-Office/document-server-integration/server"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="server-version" content="{serverVersion}">
-    <title>WORLDOFFICE Document Editors</title>
+    <title>World-Office Document Editors</title>
 
     <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
 
@@ -20,18 +20,18 @@
     <header>
         <div class="center main-nav">
             <a href="./">
-                <img src ="assets/images/logo.svg" alt="WORLDOFFICE" />
+                <img src ="assets/images/logo.svg" alt="World-Office" />
             </a>
         </div>
         <menu class="responsive-nav">
             <li>
                 <a href="#" onclick="toggleSidePanel(event)">
-                    <img src ="assets/images/mobile-menu.svg" alt="WORLDOFFICE" />
+                    <img src ="assets/images/mobile-menu.svg" alt="World-Office" />
                 </a>
             </li>
             <li>
                 <a href="./">
-                    <img src ="assets/images/mobile-logo.svg" alt="WORLDOFFICE" />
+                    <img src ="assets/images/mobile-logo.svg" alt="World-Office" />
                 </a>
             </li>
         </menu>
@@ -89,7 +89,7 @@
                                     <td valign="middle">
                                         <span class="select-user">Language</span>
                                         <img class="info info-tooltip" data-id="language"
-                                             data-tooltip="Choose the language for WORLDOFFICE editors interface"
+                                             data-tooltip="Choose the language for World-Office editors interface"
                                              src="assets/images/info.svg" />
                                         <select class="select-user" id="language">
                                             {langs}
@@ -127,8 +127,8 @@
                             {forgottenLink}
                         </menu>
                         <div id="portal-info" style="display: {portalInfoDisplay}">
-                            <span class="portal-name">Welcome to WORLDOFFICE Docs!</span>
-                            <span class="portal-descr">Get started with a live demo of WORLDOFFICE Docs, a powerful open-source office suite for your browser.</span>
+                            <span class="portal-name">Welcome to World-Office Docs!</span>
+                            <span class="portal-descr">Get started with a live demo of World-Office Docs, a powerful open-source office suite for your browser.</span>
                             <span class="portal-descr">
                                 You can test editing features in real-time and explore multi-user collaboration:
                                 <ul>
@@ -235,12 +235,12 @@
                 <tbody>
                 <tr>
                     <td>
-                        <a href="https://api.world-office.com/docs/docs-api/get-started/how-it-works/" target="_blank">
+                        <a href="https://api.worldoffice.com/docs/docs-api/get-started/how-it-works/" target="_blank">
                             API Documentation
                         </a>
                     </td>
                     <td>
-                        <a href="mailto:sales@world-office.com">Submit your request</a>
+                        <a href="mailto:sales@worldoffice.com">Submit your request</a>
                     </td>
                     <td class="copy">
                         &copy; Ascensio Systems SIA {date}. All rights reserved.

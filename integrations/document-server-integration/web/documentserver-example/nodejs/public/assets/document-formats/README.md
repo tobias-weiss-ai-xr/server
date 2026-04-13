@@ -1,34 +1,34 @@
-﻿## Overview
+## Overview
 
-This repository contains the list of file formats (electronic documents, forms, spreadsheets, presentations) supported by WORLDOFFICE editors and describes the properties of each file format type.
+This repository contains the list of file formats (electronic documents, forms, spreadsheets, presentations) supported by World-Office editors and describes the properties of each file format type.
 
 The repository is used in:
-- [Document Server integration example](https://github.com/WORLDOFFICE/document-server-integration)
-- [WORLDOFFICE add-on for Thunderbird](https://github.com/WORLDOFFICE/world-office-thunderbird)
-- [WORLDOFFICE addon for Plone](https://github.com/WORLDOFFICE/world-office-plone)
-- [WORLDOFFICE app for Box](https://github.com/WORLDOFFICE/world-office-box)
-- [WORLDOFFICE app for Confluence Cloud](https://github.com/WORLDOFFICE/world-office-confluence-cloud)
-- [WORLDOFFICE app for Dropbox](https://github.com/WORLDOFFICE/world-office-dropbox)
-- [WORLDOFFICE app for Mattermost](https://github.com/WORLDOFFICE/world-office-mattermost)
-- [WORLDOFFICE app for Miro](https://github.com/WORLDOFFICE/world-office-miro)
-- [WORLDOFFICE app for Nextcloud](https://github.com/WORLDOFFICE/world-office-nextcloud)
-- [WORLDOFFICE app for Odoo](https://github.com/WORLDOFFICE/world-office_odoo)
-- [WORLDOFFICE app for ownCloud](https://github.com/WORLDOFFICE/world-office-owncloud)
-- [WORLDOFFICE app for Slack](https://github.com/WORLDOFFICE/world-office-slack)
-- [WORLDOFFICE bot for Telegram](https://github.com/WORLDOFFICE/world-office-telegram)
-- [WORLDOFFICE DocSpace](https://github.com/WORLDOFFICE/DocSpace)
-- [WORLDOFFICE Docs Integration Java SDK](https://github.com/WORLDOFFICE/docs-integration-sdk-java)
-- [WORLDOFFICE Docs Integration PHP SDK](https://github.com/WORLDOFFICE/docs-integration-sdk-php)
-- [WORLDOFFICE extension for Directus](https://github.com/WORLDOFFICE/world-office-directus)
-- [WORLDOFFICE module for HumHub](https://github.com/WORLDOFFICE/world-office-humhub)
-- [WORLDOFFICE plugin for Redmine](https://github.com/WORLDOFFICE/world-office-redmine)
-- [WORLDOFFICE Docs plugin for WordPress](https://github.com/WORLDOFFICE/world-office-wordpress)
+- [Document Server integration example](https://github.com/World-Office/document-server-integration)
+- [World-Office add-on for Thunderbird](https://github.com/World-Office/worldoffice-thunderbird)
+- [World-Office addon for Plone](https://github.com/World-Office/worldoffice-plone)
+- [World-Office app for Box](https://github.com/World-Office/worldoffice-box)
+- [World-Office app for Confluence Cloud](https://github.com/World-Office/worldoffice-confluence-cloud)
+- [World-Office app for Dropbox](https://github.com/World-Office/worldoffice-dropbox)
+- [World-Office app for Mattermost](https://github.com/World-Office/worldoffice-mattermost)
+- [World-Office app for Miro](https://github.com/World-Office/worldoffice-miro)
+- [World-Office app for Nextcloud](https://github.com/World-Office/worldoffice-nextcloud)
+- [World-Office app for Odoo](https://github.com/World-Office/worldoffice_odoo)
+- [World-Office app for ownCloud](https://github.com/World-Office/worldoffice-owncloud)
+- [World-Office app for Slack](https://github.com/World-Office/worldoffice-slack)
+- [World-Office bot for Telegram](https://github.com/World-Office/worldoffice-telegram)
+- [World-Office DocSpace](https://github.com/World-Office/DocSpace)
+- [World-Office Docs Integration Java SDK](https://github.com/World-Office/docs-integration-sdk-java)
+- [World-Office Docs Integration PHP SDK](https://github.com/World-Office/docs-integration-sdk-php)
+- [World-Office extension for Directus](https://github.com/World-Office/worldoffice-directus)
+- [World-Office module for HumHub](https://github.com/World-Office/worldoffice-humhub)
+- [World-Office plugin for Redmine](https://github.com/World-Office/worldoffice-redmine)
+- [World-Office Docs plugin for WordPress](https://github.com/World-Office/worldoffice-wordpress)
 
 ## Project info
 
-WORLDOFFICE Docs (Document Server): [github.com/WORLDOFFICE/DocumentServer](https://github.com/WORLDOFFICE/DocumentServer)
+World-Office Docs (Document Server): [github.com/World-Office/DocumentServer](https://github.com/World-Office/DocumentServer)
 
-Official website: [www.world-office.com](https://www.world-office.com/)
+Official website: [www.worldoffice.com](https://www.worldoffice.com/)
 
 ## Supported formats
 

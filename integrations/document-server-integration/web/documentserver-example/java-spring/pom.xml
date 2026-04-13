@@ -8,11 +8,11 @@
 		<version>2.5.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.world-office</groupId>
+	<groupId>com.worldoffice</groupId>
 	<artifactId>integration</artifactId>
 	<version>1.0</version>
 	<name>Java Spring Integration Example</name>
-	<description>WORLDOFFICE Java Spring Integration</description>
+	<description>World-Office Java Spring Integration</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -82,7 +82,7 @@
 			<version>20231013</version>
 		</dependency>
 		<dependency>
-			<groupId>com.world-office</groupId>
+			<groupId>com.worldoffice</groupId>
 			<artifactId>docs-integration-sdk</artifactId>
 			<version>1.6.0</version>
 		</dependency>

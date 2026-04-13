@@ -54,7 +54,7 @@ type FormatManager interface {
 func NewFormatManager() (FormatManager, error) {
 	_, b, _, _ := runtime.Caller(0)
 	parentDir := filepath.Dir(filepath.Dir(b))
-	path := filepath.Join(parentDir, "static", "assets", "document-formats", "world-office-docs-formats.json")
+	path := filepath.Join(parentDir, "static", "assets", "document-formats", "worldoffice-docs-formats.json")
 
 	fileContent, err := os.Open(path)
 	if err != nil {

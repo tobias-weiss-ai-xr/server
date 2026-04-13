@@ -20,7 +20,7 @@ package handlers
 import (
 	"sync"
 
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/server/models"
 	"go.uber.org/zap"
 )
 

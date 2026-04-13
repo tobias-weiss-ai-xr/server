@@ -20,7 +20,7 @@ package managers
 import (
 	"errors"
 
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/server/models"
 	"github.com/golang-jwt/jwt/v5"
 )
 

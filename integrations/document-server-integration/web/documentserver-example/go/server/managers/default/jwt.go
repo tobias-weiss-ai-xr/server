@@ -21,9 +21,9 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/WORLDOFFICE/document-server-integration/config"
-	"github.com/WORLDOFFICE/document-server-integration/server/managers"
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/config"
+	"github.com/World-Office/document-server-integration/server/managers"
+	"github.com/World-Office/document-server-integration/server/models"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/mitchellh/mapstructure"
 	"go.uber.org/zap"

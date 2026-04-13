@@ -9,9 +9,9 @@
   },
   "bin": "bin/www",
   "description": "OnlineEditorsExampleNodeJS",
-  "author": "Ascensio System SIA <integration@world-office.com> (https://www.world-office.com)",
+  "author": "Ascensio System SIA <integration@worldoffice.com> (https://www.worldoffice.com)",
   "bugs": {
-    "url": "https://github.com/WORLDOFFICE/document-server-integration/issues"
+    "url": "https://github.com/World-Office/document-server-integration/issues"
   },
   "dependencies": {
     "@mercadoeletronico/wopi-proof-validator": "^1.0.2",
@@ -34,7 +34,7 @@
   "license": "Apache",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WORLDOFFICE/document-server-integration.git"
+    "url": "git+https://github.com/World-Office/document-server-integration.git"
   },
   "pkg": {
     "assets": [

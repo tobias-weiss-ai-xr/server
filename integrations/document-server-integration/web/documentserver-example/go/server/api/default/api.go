@@ -22,10 +22,10 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/WORLDOFFICE/document-server-integration/config"
-	"github.com/WORLDOFFICE/document-server-integration/server/api"
-	"github.com/WORLDOFFICE/document-server-integration/server/handlers"
-	"github.com/WORLDOFFICE/document-server-integration/server/managers"
+	"github.com/World-Office/document-server-integration/config"
+	"github.com/World-Office/document-server-integration/server/api"
+	"github.com/World-Office/document-server-integration/server/handlers"
+	"github.com/World-Office/document-server-integration/server/managers"
 	"github.com/gorilla/schema"
 	"go.uber.org/zap"
 )

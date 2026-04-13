@@ -1,6 +1,6 @@
 import fs from "fs";
 
-const formatsPath = "./world-office-docs-formats.json";
+const formatsPath = "./worldoffice-docs-formats.json";
 const readmePath = "./README.md";
 
 const filterByAction = (formats, action) => {

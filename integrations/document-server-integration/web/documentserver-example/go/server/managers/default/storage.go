@@ -27,11 +27,11 @@ import (
 	"sort"
 	"time"
 
-	"github.com/WORLDOFFICE/document-server-integration/config"
-	"github.com/WORLDOFFICE/document-server-integration/server/managers"
-	"github.com/WORLDOFFICE/document-server-integration/server/models"
-	"github.com/WORLDOFFICE/document-server-integration/server/shared"
-	"github.com/WORLDOFFICE/document-server-integration/utils"
+	"github.com/World-Office/document-server-integration/config"
+	"github.com/World-Office/document-server-integration/server/managers"
+	"github.com/World-Office/document-server-integration/server/models"
+	"github.com/World-Office/document-server-integration/server/shared"
+	"github.com/World-Office/document-server-integration/utils"
 	"go.uber.org/zap"
 )
 
@@ -104,11 +104,11 @@ func (sm DefaultStorageManager) GetStoredFiles(remoteAddress string) ([]models.D
 		filename := v.Name()
 
 		version := 1
-		hpath := path.Join(dir, filename+shared.WORLDOFFICE_HISTORY_POSTFIX, fmt.Sprint(version))
+		hpath := path.Join(dir, filename+shared.World-Office_HISTORY_POSTFIX, fmt.Sprint(version))
 		for {
 			if sm.PathExists(hpath) {
 				version++
-				hpath = path.Join(dir, filename+shared.WORLDOFFICE_HISTORY_POSTFIX, fmt.Sprint(version))
+				hpath = path.Join(dir, filename+shared.World-Office_HISTORY_POSTFIX, fmt.Sprint(version))
 			} else {
 				break
 			}
@@ -155,7 +155,7 @@ func (sm DefaultStorageManager) GenerateFilestoreUri(originalName string, meta m
 	return fmt.Sprintf(
 		"/static/%s/%s/%s/%s",
 		sm.config.StoragePath,
-		originalName+shared.WORLDOFFICE_HISTORY_POSTFIX,
+		originalName+shared.World-Office_HISTORY_POSTFIX,
 		fmt.Sprint(meta.Version),
 		meta.DestinationPath,
 	)
@@ -263,7 +263,7 @@ func (sm DefaultStorageManager) RemoveFile(filename string) error {
 		return err
 	}
 
-	hpath := path.Join(rootPath, filename+shared.WORLDOFFICE_HISTORY_POSTFIX)
+	hpath := path.Join(rootPath, filename+shared.World-Office_HISTORY_POSTFIX)
 
 	os.Remove(fpath)
 	os.RemoveAll(hpath)

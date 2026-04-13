@@ -25,8 +25,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WORLDOFFICE/document-server-integration/config"
-	"github.com/WORLDOFFICE/document-server-integration/server/managers"
+	"github.com/World-Office/document-server-integration/config"
+	"github.com/World-Office/document-server-integration/server/managers"
 	"github.com/golang-jwt/jwt/v5"
 )
 

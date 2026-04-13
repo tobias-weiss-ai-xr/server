@@ -24,7 +24,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="server-version" content="{{ env('DOCUMENT_SERVER_VERSION') }}">
-    <title>WORLDOFFICE Document Editors</title>
+    <title>World-Office Document Editors</title>
 
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
 
@@ -43,7 +43,7 @@
         <header>
             <div class="center">
                 <a href="./">
-                    <img src="/images/logo.svg" alt="WORLDOFFICE" />
+                    <img src="/images/logo.svg" alt="World-Office" />
                 </a>
             </div>
         </header>
@@ -97,7 +97,7 @@
                                         <tr>
                                             <td valign="middle">
                                                 <span class="select-user">Language</span>
-                                                <img class="info info-tooltip" data-id="language" data-tooltip="Choose the language for WORLDOFFICE editors interface" src="/images/info.svg" />
+                                                <img class="info info-tooltip" data-id="language" data-tooltip="Choose the language for World-Office editors interface" src="/images/info.svg" />
                                                 <select class="select-user" id="language">
                                                     @foreach ($languages as $key => $language)
                                                     <option value="{{ $key }}">{{ $language }}</option>
@@ -278,8 +278,8 @@
                                 </div>
                                 @endif
                                 <div id="portal-info" @if ($files) style="display: none" @endif>
-                                    <span class="portal-name">Welcome to WORLDOFFICE Docs!</span>
-                                    <span class="portal-descr">Get started with a live demo of WORLDOFFICE Docs, a powerful open-source office suite for your browser.</span>
+                                    <span class="portal-name">Welcome to World-Office Docs!</span>
+                                    <span class="portal-descr">Get started with a live demo of World-Office Docs, a powerful open-source office suite for your browser.</span>
                                     <span class="portal-descr">
                                         You can test editing features in real-time and explore multi-user collaboration:
                                         <ul>
@@ -393,12 +393,12 @@
                     <tbody>
                         <tr>
                             <td>
-                                <a href="https://api.world-office.com/docs/docs-api/get-started/how-it-works/" target="_blank">
+                                <a href="https://api.worldoffice.com/docs/docs-api/get-started/how-it-works/" target="_blank">
                                     API Documentation
                                 </a>
                             </td>
                             <td>
-                                <a href="mailto:sales@world-office.com">Submit your request</a>
+                                <a href="mailto:sales@worldoffice.com">Submit your request</a>
                             </td>
                             <td class="copy">
                                 &copy; Ascensio Systems SIA {{ now()->year }}. All rights reserved.

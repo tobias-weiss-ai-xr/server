@@ -22,7 +22,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/WORLDOFFICE/document-server-integration/utils"
+	"github.com/World-Office/document-server-integration/utils"
 	"github.com/spf13/viper"
 	"go.uber.org/fx"
 )

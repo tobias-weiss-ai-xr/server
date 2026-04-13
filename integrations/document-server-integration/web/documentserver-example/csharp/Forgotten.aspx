@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Forgotten.aspx.cs" Inherits="OnlineEditorsExample.Forgotten" Title="WORLDOFFICE" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Forgotten.aspx.cs" Inherits="OnlineEditorsExample.Forgotten" Title="World-Office" %>
 
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="OnlineEditorsExample" %>
@@ -10,7 +10,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="server-version" content=<%= GetVersion() %> />
-    <title>WORLDOFFICE</title>
+    <title>World-Office</title>
     <!--
     *
     * (c) Copyright Ascensio System SIA 2026
@@ -44,18 +44,18 @@
         <header>
             <div class="center main-nav">
                 <a href="./">
-                    <img src ="app_themes/images/logo.svg" alt="WORLDOFFICE" />
+                    <img src ="app_themes/images/logo.svg" alt="World-Office" />
                 </a>
             </div>
             <menu class="responsive-nav">
                 <li>
                   <a href="#">
-                    <img src="app_themes/images/mobile-menu.svg" alt="WORLDOFFICE" />
+                    <img src="app_themes/images/mobile-menu.svg" alt="World-Office" />
                   </a>
                 </li>
                 <li>
                   <a href="./">
-                    <img src ="app_themes/images/mobile-logo.svg" alt="WORLDOFFICE" />
+                    <img src ="app_themes/images/mobile-logo.svg" alt="World-Office" />
                   </a>
                 </li>
             </menu>
@@ -126,10 +126,10 @@
                     <tbody>
                         <tr>
                             <td>
-                                <a href="https://api.world-office.com/docs/docs-api/get-started/how-it-works/" target="_blank">API Documentation</a>
+                                <a href="https://api.worldoffice.com/docs/docs-api/get-started/how-it-works/" target="_blank">API Documentation</a>
                             </td>
                             <td>
-                                <a href="mailto:sales@world-office.com">Submit your request</a>
+                                <a href="mailto:sales@worldoffice.com">Submit your request</a>
                             </td>
                             <td class="copy">
                                 &copy; Ascensio System SIA <%= DateTime.Now.Year.ToString() %>. All rights reserved.

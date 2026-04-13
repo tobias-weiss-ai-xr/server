@@ -17,7 +17,7 @@
  */
 
 const pathModule = require('path');
-const supportedFormats = require('../public/assets/document-formats/world-office-docs-formats.json'); // eslint-disable-line
+const supportedFormats = require('../public/assets/document-formats/worldoffice-docs-formats.json'); // eslint-disable-line
 
 const fileUtility = {};
 

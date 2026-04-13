@@ -1,4 +1,4 @@
-﻿/**
+/**
  *
  * (c) Copyright Ascensio System SIA 2026
  *
@@ -74,7 +74,7 @@ namespace ASC.Api.DocumentConverter
         /// <returns>The percentage of conversion completion</returns>
         /// <example>
         /// Dictionary<string, string> convertedDocumentData;
-        /// GetConvertedData("http://helpcenter.world-office.com/content/GettingStarted.pdf", ".pdf", ".docx", "http://helpcenter.world-office.com/content/GettingStarted.pdf", false, out convertedDocumentData);
+        /// GetConvertedData("http://helpcenter.worldoffice.com/content/GettingStarted.pdf", ".pdf", ".docx", "http://helpcenter.worldoffice.com/content/GettingStarted.pdf", false, out convertedDocumentData);
         /// </example>
         /// <exception>
         /// </exception>

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="server-version" content="{serverVersion}">
-    <title>WORLDOFFICE Document Editors</title>
+    <title>World-Office Document Editors</title>
 
     <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
 
@@ -21,18 +21,18 @@
     <header>
         <div class="center main-nav">
             <a href="./">
-                <img src ="assets/images/logo.svg" alt="WORLDOFFICE" />
+                <img src ="assets/images/logo.svg" alt="World-Office" />
             </a>
         </div>
         <menu class="responsive-nav">
             <li>
                 <a href="#">
-                    <img src ="assets/images/mobile-menu.svg" alt="WORLDOFFICE" />
+                    <img src ="assets/images/mobile-menu.svg" alt="World-Office" />
                 </a>
             </li>
             <li>
                 <a href="./">
-                    <img src ="assets/images/mobile-logo.svg" alt="WORLDOFFICE" />
+                    <img src ="assets/images/mobile-logo.svg" alt="World-Office" />
                 </a>
             </li>
         </menu>
@@ -88,12 +88,12 @@
                 <tbody>
                 <tr>
                     <td>
-                        <a href="https://api.world-office.com/docs/docs-api/get-started/how-it-works/" target="_blank">
+                        <a href="https://api.worldoffice.com/docs/docs-api/get-started/how-it-works/" target="_blank">
                             API Documentation
                         </a>
                     </td>
                     <td>
-                        <a href="mailto:sales@world-office.com">Submit your request</a>
+                        <a href="mailto:sales@worldoffice.com">Submit your request</a>
                     </td>
                     <td class="copy">
                         &copy; Ascensio Systems SIA {date}. All rights reserved.

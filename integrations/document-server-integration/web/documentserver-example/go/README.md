@@ -1,19 +1,19 @@
 ## Overview
 
-This example will help you integrate WORLDOFFICE Docs into your web application written in Go.
+This example will help you integrate World-Office Docs into your web application written in Go.
 
 It is aimed at testing the editors. Please, do not use it for production without proper modifications.
 ## Installation
 
-### Step 1. Install WORLDOFFICE Docs
+### Step 1. Install World-Office Docs
 
-Download and install WORLDOFFICE Docs (packaged as Document Server).
+Download and install World-Office Docs (packaged as Document Server).
 
-See the detailed guide to learn how to install Document Server [for Windows](https://helpcenter.world-office.com/installation/docs-developer-install-windows.aspx).
+See the detailed guide to learn how to install Document Server [for Windows](https://helpcenter.worldoffice.com/installation/docs-developer-install-windows.aspx).
 
 ### Step 2. Download the Go code for the editors integration
 
-Download the [Go example](https://api.world-office.com/docs/docs-api/samples/language-specific-examples/) from our site.
+Download the [Go example](https://api.worldoffice.com/docs/docs-api/samples/language-specific-examples/) from our site.
 
 To connect the editors to your website, specify the path to the editors installation, server protocol, address and port  in the *configuration.env* file:
 
@@ -28,10 +28,10 @@ JWT_SECRET=secret
 JWT_HEADER=Authorization
 ```
 
-where the **documentserver** is the name of the server with the WORLDOFFICE Document Server installed.
+where the **documentserver** is the name of the server with the World-Office Document Server installed.
 **address** is the address of the server, **port** is the server port.
 
-If you want to experiment with the editor configuration, modify the [parameters](https://api.world-office.com/docs/docs-api/usage-api/advanced-parameters/) it the *templates/editor.html* file.
+If you want to experiment with the editor configuration, modify the [parameters](https://api.worldoffice.com/docs/docs-api/usage-api/advanced-parameters/) it the *templates/editor.html* file.
 
 ### Step 3. Install the prerequisites
 To run the Go example code, install the Go compiler:
@@ -58,7 +58,7 @@ Open the *config/configuration.json* file and enable JWT:
 }
 ```
 
-Also, [specify the same secret key](https://helpcenter.world-office.com/installation/docs-configure-jwt.aspx) as used in your Document Server: 
+Also, [specify the same secret key](https://helpcenter.worldoffice.com/installation/docs-configure-jwt.aspx) as used in your Document Server: 
 
 ```
 {

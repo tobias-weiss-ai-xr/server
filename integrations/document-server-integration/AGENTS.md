@@ -1,12 +1,12 @@
 # DOCUMENT-SERVER-INTEGRATION
 
 **Generated:** 2026-03-31
-**Source:** codeberg.org/World-Office/document-server-integration
-**Files:** ~1.2k | **License:** AGPL-3.0
+**Source:** codeberg.org/World Office/document-server-integration
+**Files:** ~1.2k | **License:** MIT-3.0
 
 ## OVERVIEW
 
-Integration API and examples for connecting applications to WORLDOFFICE Document Server — shows how to embed editors in web apps.
+Integration API and examples for connecting applications to World-Office Document Server — shows how to embed editors in web apps.
 
 ## STRUCTURE
 

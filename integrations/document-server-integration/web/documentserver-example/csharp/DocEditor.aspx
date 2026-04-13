@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DocEditor.aspx.cs" Inherits="OnlineEditorsExample.DocEditor" Title="WORLDOFFICE" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DocEditor.aspx.cs" Inherits="OnlineEditorsExample.DocEditor" Title="World-Office" %>
 
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="OnlineEditorsExample" %>
@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <link rel="icon" href="<%= "app_themes/images/" + DocumentType + ".ico" %>" type="image/x-icon" />
-    <title><%= FileName + " - WORLDOFFICE" %></title>
+    <title><%= FileName + " - World-Office" %></title>
     <!--
     *
     * (c) Copyright Ascensio System SIA 2026
@@ -136,7 +136,7 @@
         // the meta information of the document is changed via the meta command
         var onMetaChange = function (event) {
             if (event.data.title !== undefined) {
-                document.title = event.data.title + " - WORLDOFFICE";
+                document.title = event.data.title + " - World-Office";
             }
 
             if (event.data.favorite !== undefined) {

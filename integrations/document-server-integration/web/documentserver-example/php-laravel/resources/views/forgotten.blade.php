@@ -24,7 +24,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="server-version" content="{{ env('DOCUMENT_SERVER_VERSION') }}">
-    <title>WORLDOFFICE Document Editors</title>
+    <title>World-Office Document Editors</title>
 
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
 
@@ -44,7 +44,7 @@
         <header>
             <div class="center">
                 <a href="./">
-                    <img src="/images/logo.svg" alt="WORLDOFFICE" />
+                    <img src="/images/logo.svg" alt="World-Office" />
                 </a>
             </div>
         </header>
@@ -115,12 +115,12 @@
                     <tbody>
                         <tr>
                             <td>
-                                <a href="https://api.world-office.com/docs/docs-api/get-started/how-it-works/" target="_blank">
+                                <a href="https://api.worldoffice.com/docs/docs-api/get-started/how-it-works/" target="_blank">
                                     API Documentation
                                 </a>
                             </td>
                             <td>
-                                <a href="mailto:sales@world-office.com">Submit your request</a>
+                                <a href="mailto:sales@worldoffice.com">Submit your request</a>
                             </td>
                             <td class="copy">
                                 &copy; Ascensio Systems SIA {date}. All rights reserved.

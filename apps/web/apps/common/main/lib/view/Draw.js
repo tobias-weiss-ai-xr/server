@@ -31,7 +31,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Views = Common.Views || {};
 
@@ -41,11 +41,10 @@ define([
     'common/main/lib/component/Layout',
     'common/main/lib/component/Window',
     'common/main/lib/component/UpDownPicker'
-], function (template) {
-    'use strict';
+], (template) => {
 
-    Common.Views.Draw = Common.UI.BaseView.extend(_.extend((function(){
-        var template =
+    Common.Views.Draw = Common.UI.BaseView.extend(_.extend(((()=> {
+        const template =
             '<div class="group">' +
             '<span id="slot-btn-draw-select" class="btn-slot text x-huge"></span>' +
             '<span id="slot-btn-draw-pen-0" class="btn-slot text x-huge emptycaption"></span>' +
@@ -53,28 +52,25 @@ define([
             '<span id="slot-btn-draw-pen-2" class="btn-slot text x-huge emptycaption"></span>' +
             '<span id="slot-btn-draw-eraser" class="btn-slot text x-huge"></span>' +
             '</div>';
-        var templateSection =
-            '<section id="draw-ink-panel" class="panel" data-tab="draw" role="tabpanel" aria-labelledby="draw">' +
-            template +
-            '</section>';
+        const templateSection =
+            `<section id="draw-ink-panel" class="panel" data-tab="draw" role="tabpanel" aria-labelledby="draw">${template}</section>`;
         function setEvents() {
-            var me = this;
-            me.btnEraser.on('click', function (b) {
-                me.fireEvent('draw:eraser', [b]);
+            this.btnEraser.on('click', (b) => {
+                this.fireEvent('draw:eraser', [b]);
             });
-            me.btnsPen.forEach(function(button) {
-                button.on('click', function (b, e) {
-                    me.fireEvent('draw:pen', [b]);
+            this.btnsPen.forEach((button) => {
+                button.on('click', (b, e) => {
+                    this.fireEvent('draw:pen', [b]);
                 });
-                button.on('color:select', function (b, color) {
-                    me.fireEvent('draw:color', [b, color]);
+                button.on('color:select', (b, color) => {
+                    this.fireEvent('draw:color', [b, color]);
                 });
             });
-            me.btnSelect.on('click', function (b) {
-                me.fireEvent('draw:select', [b]);
+            this.btnSelect.on('click', (b) => {
+                this.fireEvent('draw:select', [b]);
             });
 
-            me._isSetEvents = true;
+            this._isSetEvents = true;
         }
 
         return {
@@ -90,11 +86,11 @@ define([
                 this.btnsPen = [];
                 this.isPDFEditor = !!window.PDFE;
 
-                var filter = Common.localStorage.getKeysFilter();
-                this.appPrefix = (filter && filter.length) ? filter.split(',')[0] : '';
+                const filter = Common.localStorage.getKeysFilter();
+                this.appPrefix = (filter?.length) ? filter.split(',')[0] : '';
 
-                var _set = Common.enumLock;
-                var penOptions = [
+                const _set = Common.enumLock;
+                const penOptions = [
                         {hint: this.txtPen,  color: '3D8A44',  opacity: 100, size: {arr: [0.25, 0.5, 1, 2, 3.5], idx: 2}, iconCls: 'btn-pen-tool', idx: 0},
                         {hint: this.txtPen,  color: 'D43230',  opacity: 100, size: {arr: [0.25, 0.5, 1, 2, 3.5], idx: 2}, iconCls: 'btn-pen-tool', idx: 1},
                         {hint: this.txtHighlighter,  color: 'FFFC54',  opacity: 50, size: {arr: [2, 4, 6, 8, 10], idx: 2}, iconCls: 'btn-highlighter-tool', idx: 2,
@@ -102,16 +98,15 @@ define([
                              'FFFC54', '72F54A', '74F9FD', 'EB51F7', 'A900F9', 'EF8B3A', '7272FF', 'FF63A4', '1DFF92', '03DA18',
                              '249B01', 'C504D2', '0633D1', 'FFF7A0', 'FF0303', 'FFFFFF', 'D3D3D4', '969696', '606060', '000000'
                          ]}
-                    ],
-                    lock = (this.appPrefix === 'de-') ? [_set.headerLock, _set.previewReviewMode, _set.viewFormMode, _set.lostConnect, _set.docLockViewIns, _set.docLockForms, _set.docLockCommentsIns, _set.viewMode] :
+                    ];
+                const lock = (this.appPrefix === 'de-') ? [_set.headerLock, _set.previewReviewMode, _set.viewFormMode, _set.lostConnect, _set.docLockViewIns, _set.docLockForms, _set.docLockCommentsIns, _set.viewMode] :
                            (this.appPrefix === 'pe-') ? [_set.slideDeleted, _set.lostConnect, _set.noSlides] :
                            (this.appPrefix === 'pdfe-') ? [_set.pageDeleted, _set.lostConnect] :
-                                                        [_set.editCell, _set.lostConnect, _set.coAuth, _set['Objects']],
-                    me = this;
-                penOptions.forEach(function (props) {
-                    var btn = new Common.UI.ButtonColored({
+                                                        [_set.editCell, _set.lostConnect, _set.coAuth, _set.Objects];
+                penOptions.forEach((props) => {
+                    const btn = new Common.UI.ButtonColored({
                         cls: 'btn-toolbar x-huge icon-top',
-                        iconCls: 'toolbar__icon ' + props.iconCls,
+                        iconCls: `toolbar__icon ${props.iconCls}`,
                         caption: ' ',
                         menu: true,
                         split: true,
@@ -123,8 +118,8 @@ define([
                         penOptions: props,
                         lock: lock
                     });
-                    me.btnsPen.push(btn);
-                    me.lockedControls.push(btn);
+                    this.btnsPen.push(btn);
+                    this.lockedControls.push(btn);
                 });
 
                 this.btnEraser = new Common.UI.Button({
@@ -163,15 +158,14 @@ define([
             },
 
             updateButtonHint: function(button) {
-                var config = button.options.penOptions;
-                button.updateHint(config.hint + ': ' + Common.Utils.ThemeColor.getTranslation(Common.Utils.ThemeColor.getRgbColor(config.color).asc_getName()) + Common.Utils.String.textComma + ' ' + config.size.arr[config.size.idx] + ' ' + this.txtMM);
-                button.sizePicker && button.sizePicker.setValue(config.size.arr[config.size.idx] + ' ' + this.txtMM);
+                const config = button.options.penOptions;
+                button.updateHint(`${config.hint}: ${Common.Utils.ThemeColor.getTranslation(Common.Utils.ThemeColor.getRgbColor(config.color).asc_getName())}${Common.Utils.String.textComma} ${config.size.arr[config.size.idx]} ${this.txtMM}`);
+                button.sizePicker?.setValue(`${config.size.arr[config.size.idx]} ${this.txtMM}`);
             },
 
             createPen: function(button) {
-                var config = button.options.penOptions,
-                    id = Common.UI.getId(),
-                    me = this;
+                const config = button.options.penOptions;
+                const id = Common.UI.getId();
                 this.updateButtonHint(button);
                 button.setMenu(
                     new Common.UI.Menu({
@@ -179,16 +173,16 @@ define([
                         style: 'min-width: 100px;',
                         items: [
                             {
-                                template: _.template('<div id="id-toolbar-menu-draw-pen-' + id + '" style="width: 174px; display: inline-block;" class="palette-large"></div>'),
+                                template: _.template(`<div id="id-toolbar-menu-draw-pen-${id}" style="width: 174px; display: inline-block;" class="palette-large"></div>`),
                                 stopPropagation: true
                             },
                             {
-                                id: id + '-color-new',
-                                template: _.template('<a tabindex="-1" type="menuitem" style="">' + button.textNewColor + '</a>')
+                                id: `${id}-color-new`,
+                                template: _.template(`<a tabindex="-1" type="menuitem" style="">${button.textNewColor}</a>`)
                             },
                             {caption: '--'},
                             {
-                                template: _.template('<div id="id-toolbar-draw-updownpicker-' + id + '" class="custom-scale" data-stopPropagation="true"></div>'),
+                                template: _.template(`<div id="id-toolbar-draw-updownpicker-${id}" class="custom-scale" data-stopPropagation="true"></div>`),
                                 stopPropagation: true
                             }
                         ]
@@ -196,8 +190,8 @@ define([
                 // color
                 button.currentColor = config.color;
                 button.setColor(button.currentColor);
-                var picker = new Common.UI.ThemeColorPalette({
-                    el: $('#id-toolbar-menu-draw-pen-' + id),
+                const picker = new Common.UI.ThemeColorPalette({
+                    el: $(`#id-toolbar-menu-draw-pen-${id}`),
                     colors: config.colors || [
                         '1755A0', 'D43230', 'F5C346', 'EA3368', '12A489', '552F8B', '9D1F87', 'BB2765', '479ED2', '67C9FA',
                         '3D8A44', '80CA3D', '1C19B4', '7F4B0F', 'FF7E07', 'FFFFFF', 'D3D3D4', '879397', '575757', '000000'
@@ -213,20 +207,20 @@ define([
                 button.setPicker(picker);
                 picker.on('select', _.bind(button.onColorSelect, button));
                 button.menu.setInnerMenu([{menu: picker, index: 0}]);
-                button.menu.cmpEl.find('#' + id + '-color-new').on('click',  function() {
+                button.menu.cmpEl.find(`#${id}-color-new`).on('click',  () => {
                     picker.addNewColor(button.currentColor);
                 });
                 // size
-                var onShowAfter = function(menu) {
-                    var sizePicker = new Common.UI.UpDownPicker({
-                        el: $('#id-toolbar-draw-updownpicker-' + id),
-                        caption: me.txtSize,
+                const onShowAfter = (menu) => {
+                    const sizePicker = new Common.UI.UpDownPicker({
+                        el: $(`#id-toolbar-draw-updownpicker-${id}`),
+                        caption: this.txtSize,
                         minWidth: 50
                     });
-                    sizePicker.on('click', function (direction) {
-                        me.fireEvent('draw:size', [button, direction]);
+                    sizePicker.on('click', (direction) => {
+                        this.fireEvent('draw:size', [button, direction]);
                     });
-                    sizePicker.setValue(button.options.penOptions.size.arr[button.options.penOptions.size.idx] + ' ' + me.txtMM);
+                    sizePicker.setValue(`${button.options.penOptions.size.arr[button.options.penOptions.size.idx]} ${this.txtMM}`);
                     button.sizePicker = sizePicker;
                     menu.off('show:after', onShowAfter);
                 };
@@ -234,30 +228,28 @@ define([
             },
 
             onAppReady: function (config) {
-                var me = this;
-                (new Promise(function (accept, reject) {
+                (new Promise((accept, reject) => {
                     accept();
-                })).then(function(){
-                    me.btnsPen.forEach(function(button) {
-                        me.createPen(button);
+                })).then(()=> {
+                    this.btnsPen.forEach((button) => {
+                        this.createPen(button);
                     });
-                    me.btnEraser.updateHint(me.hintEraser);
-                    me.btnSelect.updateHint(me.hintSelect);
+                    this.btnEraser.updateHint(this.hintEraser);
+                    this.btnSelect.updateHint(this.hintSelect);
                     Common.NotificationCenter.trigger('tab:visible', 'draw', Common.UI.LayoutManager.isElementVisible('toolbar-draw'));
 
-                    setEvents.call(me);
+                    setEvents.call(this);
                 });
             },
 
             getPanel: function (groups) {
                 this.$el = $(_.template(groups ? template : templateSection)( {} ));
-                var me = this;
 
-                this.btnsPen.forEach(function(button, index) {
-                    button.render(me.$el.find('#slot-btn-draw-pen-' + index));
+                this.btnsPen.forEach((button, index) => {
+                    button.render(this.$el.find(`#slot-btn-draw-pen-${index}`));
                 });
-                this.btnEraser && this.btnEraser.render(this.$el.find('#slot-btn-draw-eraser'));
-                this.btnSelect && this.btnSelect.render(this.$el.find('#slot-btn-draw-select'));
+                this.btnEraser?.render(this.$el.find('#slot-btn-draw-eraser'));
+                this.btnSelect?.render(this.$el.find('#slot-btn-draw-select'));
                 return this.$el;
             },
 
@@ -271,7 +263,7 @@ define([
             },
 
             depressButtons: function(btn) {
-                this.btnsPen.forEach(function(button) {
+                this.btnsPen.forEach((button) => {
                     (button !== btn) && button.toggle(false, true);
                 });
                 (this.btnEraser !== btn) && this.btnEraser.toggle(false, true);
@@ -290,5 +282,5 @@ define([
             hintSelect: 'Select',
             txtMM: 'mm'
         }
-    }()), Common.Views.Draw || {}));
+    })()), Common.Views.Draw || {}));
 });

@@ -30,11 +30,11 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView'
-], function () { 'use strict';
+], () => { 
 
     Common.UI.ColorPalette = Common.UI.BaseView.extend({
         options: {
@@ -54,23 +54,20 @@ define([
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
 
-            var me = this;
+            this.id = this.options.id;
+            this.cls = this.options.cls;
+            this.style = this.options.style;
+            this.colors = this.options.colors || [];
+            this.value = this.options.value;
 
-            this.id = me.options.id;
-            this.cls = me.options.cls;
-            this.style = me.options.style;
-            this.colors = me.options.colors || [];
-            this.value = me.options.value;
-
-            if (me.options.el) {
-                me.render();
+            if (this.options.el) {
+                this.render();
             }
         },
 
         render: function (parentEl) {
-            var me = this;
 
-            if (!me.rendered) {
+            if (!this.rendered) {
                 this.cmpEl = $(this.template({
                     id          : this.id,
                     cls         : this.cls,
@@ -82,30 +79,29 @@ define([
                     this.setElement(parentEl, false);
                     parentEl.html(this.cmpEl);
                 } else {
-                    me.$el.html(this.cmpEl);
+                    this.$el.html(this.cmpEl);
                 }
             } else {
-                this.cmpEl = me.$el || $(this.el);
+                this.cmpEl = this.$el || $(this.el);
             }
 
-            if (!me.rendered) {
-                me.cmpEl.on('click', 'span.color-item', me.itemClick.bind(me));
+            if (!this.rendered) {
+                this.cmpEl.on('click', 'span.color-item', this.itemClick.bind(this));
             }
 
-            me.rendered = true;
+            this.rendered = true;
 
             return this;
         },
 
         itemClick: function(e) {
-            var item = $(e.target);
+            const item = $(e.target);
 
             this.select(item.attr('data-color'));
         },
 
         select: function(color, suppressEvent) {
-            if (this.value != color) {
-                var me = this;
+            if (this.value !== color) {
 
                 // Remove selection with other elements
                 $('span.color-item', this.cmpEl).removeClass('selected');
@@ -115,10 +111,10 @@ define([
                 if (color && /#?[a-fA-F0-9]{6}/.test(color)) {
                     color = /#?([a-fA-F0-9]{6})/.exec(color)[1].toUpperCase();
 
-                    $('span[data-color=' + color + ']', this.cmpEl).addClass('selected');
+                    $(`span[data-color=${color}]`, this.cmpEl).addClass('selected');
 
                     if (!suppressEvent)
-                        me.trigger('select', me, this.value);
+                        this.trigger('select', this, this.value);
                 }
             }
         }

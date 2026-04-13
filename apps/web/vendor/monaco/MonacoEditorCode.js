@@ -23,141 +23,145 @@
  *
  */
 
-var codeEditor = new window.MonacoEditor();
-codeEditor.create("editor", window.editorTheme === "dark" ? "vs-dark" : "vs-light", "", {
+var codeEditor = new window.MonacoEditor()
+codeEditor.create(
+  "editor",
+  window.editorTheme === "dark" ? "vs-dark" : "vs-light",
+  "",
+  {
     minimap: {
-        enabled: false
+      enabled: false,
     },
-    language: window.language
-}, function() {
+    language: window.language,
+  },
+  () => {
     _postMessage({
-        command: 'monacoEditorReady',
-    });
-});
+      command: "monacoEditorReady",
+    })
+  },
+)
 
-if(window.language == 'javascript') {
-    codeEditor.addLibrary({
-        url: "./libs/" + window.editorType + "/api.js",
-        name : "Word Office"
-    });
+if (window.language == "javascript") {
+  codeEditor.addLibrary({
+    url: "./libs/" + window.editorType + "/api.js",
+    name: "Word Office",
+  })
 }
 
-var _postMessage = function(msg) {
-    if(window.parent && window.JSON) {
-        msg.referer = 'monaco-editor-' + window.id;
-        window.parent.postMessage(window.JSON.stringify(msg), "*");
+var _postMessage = (msg) => {
+  if (window.parent && window.JSON) {
+    msg.referer = "monaco-editor-" + window.id
+    window.parent.postMessage(window.JSON.stringify(msg), "*")
+  }
+}
+
+;((window, undefined) => {
+  var _dropDisabled = undefined
+
+  codeEditor.on("onDidChangeModelContent", (event) => {
+    if (window.isDisable) return
+    var pos = codeEditor.getPosition()
+    _postMessage({
+      command: "changeValue",
+      data: { value: codeEditor.getValue(), pos: { row: pos.lineNumber, column: pos.column } },
+    })
+  })
+
+  var editorSetValue = (data) => {
+    window.isDisable = true
+    codeEditor.setValue(data.value || "")
+    codeEditor.setPosition({
+      lineNumber: data.currentPos ? data.currentPos.row : 0,
+      column: data.currentPos ? data.currentPos.column : 0,
+    })
+    codeEditor.setReadonly(!!data.readonly)
+    codeEditor.setFocus()
+    window.isDisable = false
+  }
+
+  var editorDisableDrop = (disable) => {
+    if (_dropDisabled === undefined) {
+      var el = document.getElementById("editor")
+      el.ondrop = (e) => {
+        if (!_dropDisabled) return
+        if (e && e.preventDefault) e.preventDefault()
+        return false
+      }
+      el.ondragenter = (e) => {
+        if (!_dropDisabled) return
+        if (e && e.preventDefault) e.preventDefault()
+        return false
+      }
+      el.ondragover = (e) => {
+        if (!_dropDisabled) return
+        if (e && e.preventDefault) e.preventDefault()
+        if (e && e.dataTransfer) e.dataTransfer.dropEffect = "none"
+        return false
+      }
     }
-};
+    _dropDisabled = disable
+  }
 
-(function (window, undefined) {
-    var _dropDisabled = undefined;
+  var onThemeChanged = (colors) => {
+    if (!colors) return
 
-    codeEditor.on('onDidChangeModelContent', function(event) {
-        if (window.isDisable) return;
-        var pos = codeEditor.getPosition();
-        _postMessage({
-            command: 'changeValue',
-            data: { value: codeEditor.getValue(), pos: {row: pos.lineNumber, column: pos.column} },
-        });
-    });
+    if (colors.type === "dark") codeEditor.setTheme("vs-dark")
+    else codeEditor.setTheme("vs-light")
+  }
 
-    var editorSetValue = function(data) {
-        window.isDisable = true;
-        codeEditor.setValue(data.value || '');
-        codeEditor.setPosition({lineNumber: data.currentPos ? data.currentPos.row : 0, column: data.currentPos ? data.currentPos.column : 0});
-        codeEditor.setReadonly(!!data.readonly);
-        codeEditor.setFocus();
-        window.isDisable = false;
-    };
+  var _onMessage = (msg) => {
+    var data = msg.data
+    if (Object.prototype.toString.apply(data) !== "[object String]" || !window.JSON) {
+      return
+    }
+    var cmd, handler
 
-    var editorDisableDrop = function(disable) {
-        if (_dropDisabled===undefined) {
-            var el = document.getElementById('editor');
-            el.ondrop = function(e) {
-                if (!_dropDisabled) return;
-                if (e && e.preventDefault)
-                    e.preventDefault();
-                return false;
-            };
-            el.ondragenter = function(e) {
-                if (!_dropDisabled) return;
-                if (e && e.preventDefault)
-                    e.preventDefault();
-                return false;
-            };
-            el.ondragover = function(e) {
-                if (!_dropDisabled) return;
-                if (e && e.preventDefault)
-                    e.preventDefault();
-                if (e && e.dataTransfer)
-                    e.dataTransfer.dropEffect = "none";
-                return false;
-            };
-        }
-        _dropDisabled = disable;
-    };
-
-    var onThemeChanged = function(colors) {
-        if (!colors) return;
-
-        if (colors.type === 'dark')
-            codeEditor.setTheme("vs-dark");
-        else
-            codeEditor.setTheme("vs-light");
-
-    };
-
-    var _onMessage = function(msg) {
-        var data = msg.data;
-        if (Object.prototype.toString.apply(data) !== '[object String]' || !window.JSON) {
-            return;
-        }
-        var cmd, handler;
-
-        try {
-            cmd = window.JSON.parse(data)
-        } catch(e) {
-            cmd = '';
-        }
-
-        if (cmd && cmd.referer == "monaco-editor-" + window.id) {
-            if (cmd.command==='setValue') {
-                editorSetValue(cmd.data);
-            } else if (cmd.command==='setTheme') {
-                onThemeChanged(cmd.data);
-            }else if (cmd.command==='disableDrop') {
-                editorDisableDrop(cmd.data);
-            } else if(cmd.command==='revealPositionInCenter') {
-                codeEditor.revealPositionInCenter();
-            } else if(cmd.command==='undo') {
-                codeEditor.undo();
-            } else if(cmd.command==='redo') {
-                codeEditor.redo();
-            } 
-        }
-    };
-
-    var fn = function(e) { _onMessage(e); };
-    if (window.attachEvent) {
-        window.attachEvent('onmessage', fn);
-    } else {
-        window.addEventListener('message', fn, false);
+    try {
+      cmd = window.JSON.parse(data)
+    } catch (e) {
+      cmd = ""
     }
 
-    var _onResize = function() {
-        var styleTag = document.getElementById('dynamic-styles');
-        if (!styleTag) {
-            styleTag = document.createElement('style');
-            styleTag.id = 'dynamic-styles';
-            document.head.appendChild(styleTag);
-        }
-        //Calculate tooltip height(20px - height text row)
-        var maxHeight = Math.min((window.innerHeight - 20) / 2, 250);
-        var content = '.monaco-hover { max-height:' + maxHeight + 'px !important; }';
-        content += '.scrollbar, .scrollbar .slider { pointer-events: auto !important; }';
-        styleTag.textContent = content;
-    };
+    if (cmd && cmd.referer == "monaco-editor-" + window.id) {
+      if (cmd.command === "setValue") {
+        editorSetValue(cmd.data)
+      } else if (cmd.command === "setTheme") {
+        onThemeChanged(cmd.data)
+      } else if (cmd.command === "disableDrop") {
+        editorDisableDrop(cmd.data)
+      } else if (cmd.command === "revealPositionInCenter") {
+        codeEditor.revealPositionInCenter()
+      } else if (cmd.command === "undo") {
+        codeEditor.undo()
+      } else if (cmd.command === "redo") {
+        codeEditor.redo()
+      }
+    }
+  }
 
-    _onResize();
-    window.addEventListener('resize', _onResize);
-})(window, undefined);
+  var fn = (e) => {
+    _onMessage(e)
+  }
+  if (window.attachEvent) {
+    window.attachEvent("onmessage", fn)
+  } else {
+    window.addEventListener("message", fn, false)
+  }
+
+  var _onResize = () => {
+    var styleTag = document.getElementById("dynamic-styles")
+    if (!styleTag) {
+      styleTag = document.createElement("style")
+      styleTag.id = "dynamic-styles"
+      document.head.appendChild(styleTag)
+    }
+    //Calculate tooltip height(20px - height text row)
+    var maxHeight = Math.min((window.innerHeight - 20) / 2, 250)
+    var content = ".monaco-hover { max-height:" + maxHeight + "px !important; }"
+    content += ".scrollbar, .scrollbar .slider { pointer-events: auto !important; }"
+    styleTag.textContent = content
+  }
+
+  _onResize()
+  window.addEventListener("resize", _onResize)
+})(window, undefined)

@@ -24,10 +24,9 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () {
-    'use strict';
+define([], () => {
 
     Common.UI.MonacoEditor = Common.UI.BaseView.extend({
         initialize : function(options) {
@@ -54,19 +53,17 @@ define([], function () {
             this.loadMask = new Common.UI.LoadMask({owner: this.parentEl});
             this.loadMask.show();
 
-            var src = '../../../vendor/monaco/MonacoEditor.html';
-            src += '?editorType=' + (window.SSE ? 'cell' : window.PE ? 'slide' : 'word');
-            src += '&language=' + this.language;
-            src += '&id=' + this.id;
+            let src = '../../../vendor/monaco/MonacoEditor.html';
+            src += `?editorType=${window.SSE ? 'cell' : window.PE ? 'slide' : 'word'}`;
+            src += `&language=${this.language}`;
+            src += `&id=${this.id}`;
 
             this.iframe.src = src;
-
-            var me = this;
-            this._eventfunc = function(msg) {
-                me._onMessage(msg);
+            this._eventfunc = (msg) => {
+                this._onMessage(msg);
             };
-            this._updatebind = function() {
-                me.updateTheme();
+            this._updatebind = () => {
+                this.updateTheme();
             };
             this._bindWindowEvents.call(this);
         },
@@ -90,18 +87,19 @@ define([], function () {
         },
 
         _postMessage: function(wnd, msg) {
-            if (wnd && wnd.postMessage && window.JSON) {
-                msg.referer = 'monaco-editor-' + this.id;
+            if (wnd?.postMessage && window.JSON) {
+                msg.referer = `monaco-editor-${this.id}`;
                 wnd.postMessage(window.JSON.stringify(msg), "*");
             }
         },
 
         _onMessage: function(msg) {
-            var data = msg.data;
+            let data = msg.data;
             if (Object.prototype.toString.apply(data) !== '[object String]' || !window.JSON) {
                 return;
             }
-            var cmd, handler;
+            let cmd;
+            let handler;
 
             try {
                 cmd = window.JSON.parse(data)
@@ -109,7 +107,7 @@ define([], function () {
                 cmd = '';
             }
 
-            if (cmd && cmd.referer == 'monaco-editor-' + this.id) {
+            if (cmd && cmd.referer === `monaco-editor-${this.id}`) {
                 switch (cmd.command) {
                     case 'changeValue':
                         data = cmd.data || {};

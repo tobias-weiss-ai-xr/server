@@ -29,34 +29,26 @@
  *
  */
 
+define(["backbone"], (Backbone) => {
+  DE.Models = DE.Models || {}
 
-define([
-    'backbone'
-], function(Backbone){ 'use strict';
+  DE.Models.EquationModel = Backbone.Model.extend({
+    defaults: () => ({
+      id: Common.UI.getId(),
+      data: null,
+      width: 0,
+      height: 0,
+      posX: 0,
+      posY: 0,
+    }),
+  })
 
-    DE.Models = DE.Models || {};
-
-    DE.Models.EquationModel = Backbone.Model.extend({
-        defaults: function() {
-            return {
-                id          : Common.UI.getId(),
-                data        : null,
-                width       : 0,
-                height      : 0,
-                posX        : 0,
-                posY        : 0
-            }
-        }
-    });
-
-    DE.Models.EquationGroup = Backbone.Model.extend({
-        defaults: function() {
-            return {
-                id          : Common.UI.getId(),
-                groupName   : null,
-                groupId     : null,
-                groupStore  : null
-            }
-        }
-    });
-});
+  DE.Models.EquationGroup = Backbone.Model.extend({
+    defaults: () => ({
+      id: Common.UI.getId(),
+      groupName: null,
+      groupId: null,
+      groupStore: null,
+    }),
+  })
+})

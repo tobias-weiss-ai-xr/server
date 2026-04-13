@@ -30,15 +30,13 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView'
-], function () {
-    'use strict';
+], () => {
 
-    Common.UI.DimensionPicker = Common.UI.BaseView.extend((function(){
-        return {
+    Common.UI.DimensionPicker = Common.UI.BaseView.extend((()=> ({
             options: {
                 itemSize    : 20,
                 minRows     : 5,
@@ -66,83 +64,81 @@ define([
             initialize : function(options) {
                 Common.UI.BaseView.prototype.initialize.call(this, options);
 
-                var me = this;
-
                 this.render();
 
-                this.cmpEl = me.$el || $(this.el);
-                me.options.width = me.options.itemSize* this.options.minColumns;
-                me.options.height = me.options.itemSize* this.options.minRows;
-                var rootEl = this.cmpEl;
+                this.cmpEl = this.$el || $(this.el);
+                this.options.width = this.options.itemSize* this.options.minColumns;
+                this.options.height = this.options.itemSize* this.options.minRows;
+                const rootEl = this.cmpEl;
 
-                me.borderColor = Common.Utils.isIE ?'#000000' :Common.UI.Themes.currentThemeColor('--canvas-high-contrast');
-                me.fillColor = Common.Utils.isIE ?'#fff' :Common.UI.Themes.currentThemeColor('--background-normal');
-                me.borderColorHighlighted = Common.Utils.isIE ?'#bababa' :Common.UI.Themes.currentThemeColor('--border-preview-hover');
-                me.fillColorHighlighted = Common.Utils.isIE ?'#446995' :Common.UI.Themes.currentThemeColor('--background-accent-button');
+                this.borderColor = Common.Utils.isIE ?'#000000' :Common.UI.Themes.currentThemeColor('--canvas-high-contrast');
+                this.fillColor = Common.Utils.isIE ?'#fff' :Common.UI.Themes.currentThemeColor('--background-normal');
+                this.borderColorHighlighted = Common.Utils.isIE ?'#bababa' :Common.UI.Themes.currentThemeColor('--border-preview-hover');
+                this.fillColorHighlighted = Common.Utils.isIE ?'#446995' :Common.UI.Themes.currentThemeColor('--background-accent-button');
 
-                me.itemSize    = me.options.itemSize;
-                me.minRows     = me.options.minRows;
-                me.minColumns  = me.options.minColumns;
-                me.maxRows     = me.options.maxRows;
-                me.maxColumns  = me.options.maxColumns;
-                me.scale       = me.options.scale >= 1 ? me.options.scale : 1;
-                me.width       = ((me.options.width * me.scale) >> 0) / me.scale;
-                me.height      = ((me.options.height * me.scale) >> 0) / me.scale;
-                me.borderSize  = 1;
-                me.direction   = me.options.direction;
-                if (Common.UI.isRTL() && !me.direction) {
-                    me.direction = 'right';
+                this.itemSize    = this.options.itemSize;
+                this.minRows     = this.options.minRows;
+                this.minColumns  = this.options.minColumns;
+                this.maxRows     = this.options.maxRows;
+                this.maxColumns  = this.options.maxColumns;
+                this.scale       = this.options.scale >= 1 ? this.options.scale : 1;
+                this.width       = ((this.options.width * this.scale) >> 0) / this.scale;
+                this.height      = ((this.options.height * this.scale) >> 0) / this.scale;
+                this.borderSize  = 1;
+                this.direction   = this.options.direction;
+                if (Common.UI.isRTL() && !this.direction) {
+                    this.direction = 'right';
                 }
 
-                me.curColumns = 0;
-                me.curRows = 0;
+                this.curColumns = 0;
+                this.curRows = 0;
 
-                var onMouseMove = function(event){
-                    var offsetX;
-                    if (me.direction === 'right' && me.areaMouseCatcher) {
-                        var width = me.areaMouseCatcher.width();
+                const onMouseMove = (event)=> {
+                    let offsetX;
+                    if (this.direction === 'right' && this.areaMouseCatcher) {
+                        const width = this.areaMouseCatcher.width();
                         offsetX = event.offsetX === undefined ? (width - event.originalEvent.layerX) : (width - event.offsetX)*Common.Utils.zoom();
                     } else {
                         offsetX = event.offsetX === undefined ? event.originalEvent.layerX : event.offsetX*Common.Utils.zoom();
                     }
-                    me.setTableSize(
-                        Math.ceil(offsetX / me.itemSize),
-                        Math.ceil((event.offsetY === undefined ? event.originalEvent.layerY : event.offsetY*Common.Utils.zoom()) / me.itemSize),
+                    this.setTableSize(
+                        Math.ceil(offsetX / this.itemSize),
+                        Math.ceil((event.offsetY === undefined ? event.originalEvent.layerY : event.offsetY*Common.Utils.zoom()) / this.itemSize),
                         event
                     );
                 };
 
-                var onMouseLeave = function(event){
+                const onMouseLeave = (event)=> {
                     if (!options.customClear && event.relatedTarget !== null) {
-                        me.setTableSize(0, 0, event);
+                        this.setTableSize(0, 0, event);
                     }
                 };
 
-                var onHighLightedMouseClick = function(e){
-                    me.trigger('select', me, me.curColumns, me.curRows, e);
+                const onHighLightedMouseClick = (e)=> {
+                    this.trigger('select', this, this.curColumns, this.curRows, e);
                 };
 
                 if (rootEl){
-                    me.areaMouseCatcher    = rootEl.find('.dimension-picker-mousecatcher');
-                    me.areaUnHighLighted   = rootEl.find('.dimension-picker-unhighlighted');
-                    me.areaStatus          = rootEl.find('.dimension-picker-status');
-                    me.canv = rootEl.find('#dimension-picker--canvas')[0];
-                    me.context = me.canv.getContext('2d');
+                    this.areaMouseCatcher    = rootEl.find('.dimension-picker-mousecatcher');
+                    this.areaUnHighLighted   = rootEl.find('.dimension-picker-unhighlighted');
+                    this.areaStatus          = rootEl.find('.dimension-picker-status');
+                    this.canv = rootEl.find('#dimension-picker--canvas')[0];
+                    this.context = this.canv.getContext('2d');
 
-                    rootEl.css({width: me.minColumns + 'em'});
-                    me.areaMouseCatcher.css('z-index', 1);
-                    me.areaMouseCatcher.width(me.maxColumns + 'em').height(me.maxRows + 'em');
-                    me.areaMouseCatcher.on('mousemove', onMouseMove);
-                    me.areaMouseCatcher.on('click', onHighLightedMouseClick);
-                    me.areaMouseCatcher.on('mouseleave', onMouseLeave);
-                    me.areaStatus.html(!Common.UI.isRTL() ? this.curColumns + ' x ' + this.curRows : this.curRows + ' x ' + this.curColumns);
-                    me.resizeCanvas();
-                    $(window).resize(_.bind(me.resizeCanvas,me));
-                    (!Common.Utils.isIE) && Common.NotificationCenter.on('uitheme:changed', me.changeColors.bind(me));
+                    rootEl.css({width: `${this.minColumns}em`});
+                    this.areaMouseCatcher.css('z-index', 1);
+                    this.areaMouseCatcher.width(`${this.maxColumns}em`).height(`${this.maxRows}em`);
+                    this.areaMouseCatcher.on('mousemove', onMouseMove);
+                    this.areaMouseCatcher.on('click', onHighLightedMouseClick);
+                    this.areaMouseCatcher.on('mouseleave', onMouseLeave);
+                    this.areaStatus.html(!Common.UI.isRTL() ? `${this.curColumns} x ${this.curRows}` : `${this.curRows} x ${this.curColumns}`);
+                    this.resizeCanvas();
+                    $(window).resize(_.bind(this.resizeCanvas,this));
+                    (!Common.Utils.isIE) && Common.NotificationCenter.on('uitheme:changed', this.changeColors.bind(this));
 
 
-                    if (me.direction === 'right') {
-                        me.areaUnHighLighted.css({left: 'auto', right: '0'});
+                    if (this.direction === 'right') {
+                        this.areaUnHighLighted.css({left: 'auto', right: '0'});
                     }
                 }
             },
@@ -180,21 +176,21 @@ define([
             },
 
             drawTable: function (maxCol, maxRow,fillColor, borderColor) {
-                var startCol =!Common.UI.isRTL() ? 0 :  this.areaUnHighLighted.width()/this.itemSize-1,
-                    delCol=!Common.UI.isRTL() ? 1 : -1;
+                const startCol =!Common.UI.isRTL() ? 0 :  this.areaUnHighLighted.width()/this.itemSize-1;
+                const delCol=!Common.UI.isRTL() ? 1 : -1;
 
-                for (var row = 0; row < maxRow; row++){
-                    for (var col = startCol; !Common.UI.isRTL()?col < maxCol:col>startCol-maxCol; col += delCol){
+                for (let row = 0; row < maxRow; row++){
+                    for (let col = startCol; !Common.UI.isRTL()?col < maxCol:col>startCol-maxCol; col += delCol){
                         this.drawCell(col,row, fillColor, borderColor);
                     }
                 }
             },
 
             drawCell: function (column, row, fillColor,borderColor){
-                var x1 = (((this.itemSize*column+1)*this.scale+0.5)>>0) + this.borderSize/2,
-                    x2 = (((this.itemSize*(column+1)-1)*this.scale+0.5)>>0) - this.borderSize/2,
-                    y1 = (((this.itemSize*row+1)*this.scale+0.5)>>0) + this.borderSize/2,
-                    y2 = (((this.itemSize*(row+1)-1)*this.scale+0.5)>>0) - this.borderSize/2;
+                const x1 = (((this.itemSize*column+1)*this.scale+0.5)>>0) + this.borderSize/2;
+                const x2 = (((this.itemSize*(column+1)-1)*this.scale+0.5)>>0) - this.borderSize/2;
+                const y1 = (((this.itemSize*row+1)*this.scale+0.5)>>0) + this.borderSize/2;
+                const y2 = (((this.itemSize*(row+1)-1)*this.scale+0.5)>>0) - this.borderSize/2;
 
                 this.context.beginPath();
                 this.context.moveTo(x1,y1);
@@ -213,26 +209,26 @@ define([
                 if (columns > this.maxColumns)  columns = this.maxColumns;
                 if (rows > this.maxRows)        rows = this.maxRows;
 
-                if (this.curColumns != columns || this.curRows != rows){
-                    var delCol = columns - this.curColumns,
-                        delRow = rows - this.curRows;
+                if (this.curColumns !== columns || this.curRows !== rows){
+                    const delCol = columns - this.curColumns;
+                    const delRow = rows - this.curRows;
                     this.curColumns  = columns;
                     this.curRows     = rows;
 
-                    var _cols =(this.curColumns < this.minColumns)
+                    const _cols =(this.curColumns < this.minColumns)
                         ? this.minColumns
                         : ((this.curColumns + 1 > this.maxColumns)
                             ? this.maxColumns
-                            : this.curColumns + 1),
-                        _rows =(this.curRows < this.minRows)
+                            : this.curColumns + 1);
+                    const _rows =(this.curRows < this.minRows)
                             ? this.minRows
                             : ((this.curRows + 1 > this.maxRows)
                                 ? this.maxRows
-                                : this.curRows + 1),
-                        width = ((_cols*this.itemSize* this.scale )>>0) /this.scale ,
-                        height = ((_rows*this.itemSize * this.scale) >> 0)/ this.scale;
+                                : this.curRows + 1);
+                    const width = ((_cols*this.itemSize* this.scale )>>0) /this.scale ;
+                    const height = ((_rows*this.itemSize * this.scale) >> 0)/ this.scale;
 
-                    if(this.areaUnHighLighted.width() != width || this.areaUnHighLighted.height() != height) {
+                    if(this.areaUnHighLighted.width() !== width || this.areaUnHighLighted.height() !== height) {
                         this.drawTable(this.curColumns, this.curRows, this.fillColorHighlighted, this.fillColorHighlighted);
                         if(width < this.areaUnHighLighted.width()){
                             this.context.clearRect(!Common.UI.isRTL() ? width : 0, 0, this.areaUnHighLighted.width() - width, this.areaUnHighLighted.height());
@@ -246,18 +242,18 @@ define([
                     }
 
                     this.drawTable(_cols,_rows,this.fillColor, this.borderColor);
-                    var startCol= !Common.UI.isRTL() ? this.curColumns+1 : _cols - this.curColumns,
-                        decC=!Common.UI.isRTL()?1:-1;
+                    const startCol= !Common.UI.isRTL() ? this.curColumns+1 : _cols - this.curColumns;
+                    const decC=!Common.UI.isRTL()?1:-1;
                     if(delCol < 0 ){
-                        for(var col = startCol; !Common.UI.isRTL() ? col < this.curColumns+delCol: col > this.curColumns-delCol; col += decC) {
-                            for(var row = 0;  row < _rows; row++) {
+                        for(let col = startCol; !Common.UI.isRTL() ? col < this.curColumns+delCol: col > this.curColumns-delCol; col += decC) {
+                            for(let row = 0;  row < _rows; row++) {
                                 this.drawCell(col, row, this.fillColor, this.borderColor);
                             }
                         }
                     }
                     if(delRow < 0) {
-                        for(var  col = startCol; !Common.UI.isRTL() ? col < _cols : col>0 ; col += decC) {
-                            for(var row = 0;  row < this.curRows+delRow; row++) {
+                        for(let  col = startCol; !Common.UI.isRTL() ? col < _cols : col>0 ; col += decC) {
+                            for(let row = 0;  row < this.curRows+delRow; row++) {
                                 this.drawCell(col, row, this.fillColor, this.borderColor);
                             }
                         }
@@ -268,7 +264,7 @@ define([
                     this.drawTable(this.curColumns, this.curRows, this.fillColorHighlighted, this.borderColorHighlighted);
 
                     this.cmpEl.width(this.areaUnHighLighted.width());
-                    this.areaStatus.html(!Common.UI.isRTL() ? this.curColumns + ' x ' + this.curRows : this.curRows + ' x ' + this.curColumns);
+                    this.areaStatus.html(!Common.UI.isRTL() ? `${this.curColumns} x ${this.curRows}` : `${this.curRows} x ${this.curColumns}`);
                     this.areaStatus.width(this.areaUnHighLighted.width());
 
                     this.trigger('change', this, this.curColumns, this.curRows, event);
@@ -282,6 +278,5 @@ define([
             getRowsCount: function() {
                 return this.curRows;
             }
-        }
-    })())
+        }))())
 });

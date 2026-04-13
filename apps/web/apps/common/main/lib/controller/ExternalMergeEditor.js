@@ -30,22 +30,22 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Controllers = Common.Controllers || {};
 
 define([
     'core',
-], function () { 'use strict';
-    Common.Controllers.ExternalMergeEditor = Backbone.Controller.extend(_.extend((function() {
-        var appLang         = '{{DEFAULT_LANG}}',
-            customization   = undefined,
-            targetApp       = '',
-            externalEditor  = null,
-            isAppFirstOpened = true;
+], () => { 
+    Common.Controllers.ExternalMergeEditor = Backbone.Controller.extend(_.extend((() => {
+        let appLang         = '{{DEFAULT_LANG}}';
+        let customization   = undefined;
+        let targetApp       = '';
+        let externalEditor  = null;
+        let isAppFirstOpened = true;
 
 
-        var createExternalEditor = function() {
+        const createExternalEditor = function() {
             Common.UI.HintManager.setInternalEditorLoading(true);
             externalEditor = new DocsAPI.DocEditor('id-merge-editor-placeholder', {
                 width       : '100%',
@@ -66,12 +66,12 @@ define([
                     canBackToFolder : false,
                     canCreateNew    : false,
                     customization   : customization,
-                    user            : {id: ('uid-'+Date.now())}
+                    user            : {id: (`uid-${Date.now()}`)}
                 },
                 events: {
-                    'onAppReady'            : function() {},
-                    'onDocumentStateChange' : function() {},
-                    'onError'               : function() {},
+                    'onAppReady'            : () => {},
+                    'onDocumentStateChange' : () => {},
+                    'onError'               : () => {},
                     'onInternalMessage'     : _.bind(this.onInternalMessage, this)
                 }
             });
@@ -85,20 +85,20 @@ define([
                 this.addListeners({
                     'Common.Views.ExternalMergeEditor': {
                         'setmergedata': _.bind(this.setMergeData, this),
-                        'drag': _.bind(function(o, state){
-                            externalEditor && externalEditor.serviceCommand('window:drag', state == 'start');
+                        'drag': _.bind((o, state)=> {
+                            externalEditor?.serviceCommand('window:drag', state === 'start');
                         },this),
-                        'resize': _.bind(function(o, state){
-                            externalEditor && externalEditor.serviceCommand('window:resize', state == 'start');
+                        'resize': _.bind((o, state)=> {
+                            externalEditor?.serviceCommand('window:resize', state === 'start');
                         },this),
                         'animate:before': _.bind(function(){
                             if(!this.isAppFirstOpened) {
-                                externalEditor && externalEditor.serviceCommand('reshow');
+                                externalEditor?.serviceCommand('reshow');
                             }
                         },this),
                         'show': _.bind(function(cmp){
-                            var h = this.mergeEditorView.getHeight(),
-                                innerHeight = Common.Utils.innerHeight();
+                            const h = this.mergeEditorView.getHeight();
+                            const innerHeight = Common.Utils.innerHeight();
                             if (innerHeight<h) {
                                 this.mergeEditorView.setHeight(innerHeight);
                             }
@@ -134,7 +134,7 @@ define([
                 Common.NotificationCenter.on('script:loaded', _.bind(this.onPostLoadComplete, this));
             },
 
-            onLaunch: function() {},
+            onLaunch: () => {},
 
             onPostLoadComplete: function() {
                 this.views = this.getApplication().getClasseRefs('view', ['Common.Views.ExternalMergeEditor']);
@@ -151,7 +151,7 @@ define([
                 if (this.isHandlerCalled) return;
                 this.isHandlerCalled = true;
                 if (this.mergeEditorView._isExternalDocReady)
-                    externalEditor && externalEditor.serviceCommand('queryClose',{mr:result});
+                    externalEditor?.serviceCommand('queryClose',{mr:result});
                 else {
                     this.mergeEditorView.hide();
                     this.isHandlerCalled = false;
@@ -160,14 +160,14 @@ define([
 
             setMergeData: function() {
                 if (!isAppFirstOpened) {
-                    externalEditor && externalEditor.serviceCommand('setMergeData', this.mergeEditorView._mergeData);
+                    externalEditor?.serviceCommand('setMergeData', this.mergeEditorView._mergeData);
                     this.mergeEditorView.setEditMode(true);
                     this.mergeEditorView._mergeData = null;
                 }
             },
 
-            loadConfig: function(data) {
-                if (data && data.config) {
+            loadConfig: (data) => {
+                if (data?.config) {
                     if (data.config.lang) appLang = data.config.lang;
                     if (data.config.customization) customization = data.config.customization;
                     if (data.config.targetApp) targetApp = data.config.targetApp;
@@ -197,64 +197,64 @@ define([
             },
 
             onInternalMessage: function(data) {
-                var eventData  = data.data;
+                const eventData  = data.data;
 
                 if (this.mergeEditorView) {
-                    if (eventData.type == 'documentReady') {
+                    if (eventData.type === 'documentReady') {
                         this.mergeEditorView._isExternalDocReady = true;
                         this.isExternalEditorVisible && (isAppFirstOpened = false);
                         this.mergeEditorView.setControlsDisabled(false);
                         if (this.mergeEditorView._mergeData) {
-                            externalEditor && externalEditor.serviceCommand('setMergeData', this.mergeEditorView._mergeData);
+                            externalEditor?.serviceCommand('setMergeData', this.mergeEditorView._mergeData);
                             this.mergeEditorView._mergeData = null;
                         }
                         if (this.needDisableEditing) {
                             this.onMergeEditingDisabled();
                         }
                     } else
-                    if (eventData.type == "shortcut") {
-                        if (eventData.data.key == 'escape')
+                    if (eventData.type === "shortcut") {
+                        if (eventData.data.key === 'escape')
                             this.mergeEditorView.hide();
                     } else
-                    if (eventData.type == "canClose") {
+                    if (eventData.type === "canClose") {
                         if (eventData.data.answer === true) {
                             if (externalEditor) {
                                 externalEditor.serviceCommand('setAppDisabled',true);
-                                if (eventData.data.mr == 'ok')
+                                if (eventData.data.mr === 'ok')
                                 externalEditor.serviceCommand('getMergeData');
                             }
                             this.mergeEditorView.hide();
                         }
                         this.isHandlerCalled = false;
                     } else
-                    if (eventData.type == "processMouse") {
-                        if (eventData.data.event == 'mouse:up') {
+                    if (eventData.type === "processMouse") {
+                        if (eventData.data.event === 'mouse:up') {
                             this.mergeEditorView.binding.dragStop();
                             if (this.mergeEditorView.binding.resizeStop)  this.mergeEditorView.binding.resizeStop();
                         } else
-                        if (eventData.data.event == 'mouse:move') {
-                            var x = parseInt(this.mergeEditorView.$window.css('left')) + eventData.data.pagex,
-                                y = parseInt(this.mergeEditorView.$window.css('top')) + eventData.data.pagey + 34;
+                        if (eventData.data.event === 'mouse:move') {
+                            const x = Number.parseInt(this.mergeEditorView.$window.css('left')) + eventData.data.pagex;
+                            const y = Number.parseInt(this.mergeEditorView.$window.css('top')) + eventData.data.pagey + 34;
                             this.mergeEditorView.binding.drag({pageX:x, pageY:y});
                             if (this.mergeEditorView.binding.resize)  this.mergeEditorView.binding.resize({pageX:x, pageY:y});
                         }
                     } else
-                    if (eventData.type == "resize") {
-                        var w = eventData.data.width,
-                            h = eventData.data.height;
+                    if (eventData.type === "resize") {
+                        const w = eventData.data.width;
+                        const h = eventData.data.height;
                         if (w>0 && h>0)
                             this.mergeEditorView.setInnerSize(w, h);
                     } else
-                    if (eventData.type == "frameToGeneralData") {
-                        this.api && this.api.asc_getInformationBetweenFrameAndGeneralEditor(eventData.data);
+                    if (eventData.type === "frameToGeneralData") {
+                        this.api?.asc_getInformationBetweenFrameAndGeneralEditor(eventData.data);
                     } else
                         this.mergeEditorView.fireEvent('internalmessage', this.mergeEditorView, eventData);
                 }
             } ,
 
             onProcessMouse: function(data) {
-                if (data.type == 'mouseup' && this.isExternalEditorVisible) {
-                    externalEditor && externalEditor.serviceCommand('processmouse', data);
+                if (data.type === 'mouseup' && this.isExternalEditorVisible) {
+                    externalEditor?.serviceCommand('processmouse', data);
                 }
             },
 

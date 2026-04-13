@@ -32,67 +32,70 @@
  */
 
 define([
-    'jquery',
-    'underscore',
-    'backbone',
-    'gateway',
-    'common/main/lib/util/utils',
-    'common/main/lib/component/Menu'
-], function ($, _, Backbone, gateway) { 'use strict';
-
-    VE.Views.DocumentHolder =  Backbone.View.extend(_.extend({
-        el: '#editor_sdk',
+  "jquery",
+  "underscore",
+  "backbone",
+  "gateway",
+  "common/main/lib/util/utils",
+  "common/main/lib/component/Menu",
+], ($, _, Backbone, gateway) => {
+  VE.Views.DocumentHolder = Backbone.View.extend(
+    _.extend(
+      {
+        el: "#editor_sdk",
 
         // Compile our stats template
         template: null,
 
         // Delegated events for creating new items, and clearing completed ones.
-        events: {
-        },
+        events: {},
 
         initialize: function () {
-            this._isDisabled = false;
-            this._preventCustomClick = null;
-            this._hasCustomItems = false;
+          this._isDisabled = false
+          this._preventCustomClick = null
+          this._hasCustomItems = false
         },
 
         render: function () {
-            this.fireEvent('render:before', this);
+          this.fireEvent("render:before", this)
 
-            this.cmpEl = $(this.el);
+          this.cmpEl = $(this.el)
 
-            this.fireEvent('render:after', this);
-            return this;
+          this.fireEvent("render:after", this)
+          return this
         },
 
-        setApi: function(o) {
-            this.api = o;
-            return this;
+        setApi: function (o) {
+          this.api = o
+          return this
         },
 
-        setMode: function(m) {
-            this.mode = m;
-            return this;
+        setMode: function (m) {
+          this.mode = m
+          return this
         },
 
-        createDelayedElementsViewer: function() {},
+        createDelayedElementsViewer: () => {},
 
-        createDelayedElementsEditor: function() {},
+        createDelayedElementsEditor: () => {},
 
-        focus: function() {
-            var me = this;
-            _.defer(function(){  me.cmpEl.focus(); }, 50);
+        focus: function () {
+          _.defer(() => {
+            this.cmpEl.focus()
+          }, 50)
         },
 
-        SetDisabled: function(state, canProtect, fillFormMode) {
-            this._isDisabled = state;
+        SetDisabled: function (state, canProtect, fillFormMode) {
+          this._isDisabled = state
         },
 
-        updateCustomItems: function() {},
+        updateCustomItems: () => {},
 
-        clearCustomItems: function() {},
+        clearCustomItems: () => {},
 
-        parseIcons: function() {}
-
-    }, VE.Views.DocumentHolder || {}));
-});
+        parseIcons: () => {},
+      },
+      VE.Views.DocumentHolder || {},
+    ),
+  )
+})

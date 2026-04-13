@@ -1,21 +1,21 @@
-import {action, observable, makeObservable} from 'mobx';
+import { action, makeObservable, observable } from "mobx"
 
 export class storeSpreadsheetInfo {
-    constructor() {
-        makeObservable(this, {
-            dataDoc: observable,
-            setDataDoc: action,
-            changeTitle: action
-        })
-    }
-    
-    dataDoc;
+  constructor() {
+    makeObservable(this, {
+      dataDoc: observable,
+      setDataDoc: action,
+      changeTitle: action,
+    })
+  }
 
-    setDataDoc(obj) {
-        this.dataDoc = obj;
-    }
+  dataDoc
 
-    changeTitle(title) {
-        this.dataDoc.title = title;
-    }
+  setDataDoc(obj) {
+    this.dataDoc = obj
+  }
+
+  changeTitle(title) {
+    this.dataDoc.title = title
+  }
 }

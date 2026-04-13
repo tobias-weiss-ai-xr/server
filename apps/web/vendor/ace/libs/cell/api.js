@@ -4,8 +4,8 @@
  * @class
  * @name ApiInterface
  */
-var ApiInterface = function() {};
-var Api = new ApiInterface();
+const ApiInterface = () => {};
+const Api = new ApiInterface();
 
 
 /**
@@ -633,7 +633,7 @@ function ApiWatermarkSettings(oSettings){}
  * @typeofeditors ["CDE", "CSE"]
  * @returns {ApiParagraph}
  */
-ApiInterface.prototype.CreateParagraph = function(){ return new ApiParagraph(); };
+ApiInterface.prototype.CreateParagraph = ()=> new ApiParagraph();
 
 /**
  * Creates a new smaller text block to be inserted to the current paragraph or table.
@@ -641,7 +641,7 @@ ApiInterface.prototype.CreateParagraph = function(){ return new ApiParagraph(); 
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiRun}
  */
-ApiInterface.prototype.CreateRun = function(){ return new ApiRun(); };
+ApiInterface.prototype.CreateRun = ()=> new ApiRun();
 
 /**
  * Creates an RGB color setting the appropriate values for the red, green and blue color components.
@@ -652,7 +652,7 @@ ApiInterface.prototype.CreateRun = function(){ return new ApiRun(); };
  * @param {byte} b - Blue color component value.
  * @returns {ApiRGBColor}
  */
-ApiInterface.prototype.CreateRGBColor = function(r, g, b){ return new ApiRGBColor(); };
+ApiInterface.prototype.CreateRGBColor = (r, g, b)=> new ApiRGBColor();
 
 /**
  * Creates a complex color scheme selecting from one of the available schemes.
@@ -661,7 +661,7 @@ ApiInterface.prototype.CreateRGBColor = function(r, g, b){ return new ApiRGBColo
  * @param {SchemeColorId} sSchemeColorId - The color scheme identifier.
  * @returns {ApiSchemeColor}
  */
-ApiInterface.prototype.CreateSchemeColor = function(sSchemeColorId){ return new ApiSchemeColor(); };
+ApiInterface.prototype.CreateSchemeColor = (sSchemeColorId)=> new ApiSchemeColor();
 
 /**
  * Creates a color selecting it from one of the available color presets.
@@ -670,7 +670,7 @@ ApiInterface.prototype.CreateSchemeColor = function(sSchemeColorId){ return new 
  * @param {PresetColor} sPresetColor - A preset selected from the list of the available color preset names.
  * @returns {ApiPresetColor};
  * */
-ApiInterface.prototype.CreatePresetColor = function(sPresetColor){ return new ApiPresetColor(); };
+ApiInterface.prototype.CreatePresetColor = (sPresetColor)=> new ApiPresetColor();
 
 /**
  * Creates a solid fill to apply to the object using a selected solid color as the object background.
@@ -679,7 +679,7 @@ ApiInterface.prototype.CreatePresetColor = function(sPresetColor){ return new Ap
  * @param {ApiUniColor} oUniColor - The color used for the element fill.
  * @returns {ApiFill}
  * */
-ApiInterface.prototype.CreateSolidFill = function(oUniColor){ return new ApiFill(); };
+ApiInterface.prototype.CreateSolidFill = (oUniColor)=> new ApiFill();
 
 /**
  * Creates a linear gradient fill to apply to the object using the selected linear gradient as the object background.
@@ -689,7 +689,7 @@ ApiInterface.prototype.CreateSolidFill = function(oUniColor){ return new ApiFill
  * @param {PositiveFixedAngle} Angle - The angle measured in 60000th of a degree that will define the gradient direction.
  * @returns {ApiFill}
  */
-ApiInterface.prototype.CreateLinearGradientFill = function(aGradientStop, Angle){ return new ApiFill(); };
+ApiInterface.prototype.CreateLinearGradientFill = (aGradientStop, Angle)=> new ApiFill();
 
 /**
  * Creates a radial gradient fill to apply to the object using the selected radial gradient as the object background.
@@ -698,7 +698,7 @@ ApiInterface.prototype.CreateLinearGradientFill = function(aGradientStop, Angle)
  * @param {Array} aGradientStop - The array of gradient color stops measured in 1000th of percent.
  * @returns {ApiFill}
  */
-ApiInterface.prototype.CreateRadialGradientFill = function(aGradientStop){ return new ApiFill(); };
+ApiInterface.prototype.CreateRadialGradientFill = (aGradientStop)=> new ApiFill();
 
 /**
  * Creates a pattern fill to apply to the object using the selected pattern as the object background.
@@ -709,7 +709,7 @@ ApiInterface.prototype.CreateRadialGradientFill = function(aGradientStop){ retur
  * @param {ApiUniColor} FgColor - The foreground color used for the pattern creation.
  * @returns {ApiFill}
  */
-ApiInterface.prototype.CreatePatternFill = function(sPatternType, BgColor, FgColor){ return new ApiFill(); };
+ApiInterface.prototype.CreatePatternFill = (sPatternType, BgColor, FgColor)=> new ApiFill();
 
 /**
  * Creates a blip fill to apply to the object using the selected image as the object background.
@@ -719,7 +719,7 @@ ApiInterface.prototype.CreatePatternFill = function(sPatternType, BgColor, FgCol
  * @param {BlipFillType} sBlipFillType - The type of the fill used for the blip fill (tile or stretch).
  * @returns {ApiFill}
  * */
-ApiInterface.prototype.CreateBlipFill = function(sImageUrl, sBlipFillType){ return new ApiFill(); };
+ApiInterface.prototype.CreateBlipFill = (sImageUrl, sBlipFillType)=> new ApiFill();
 
 /**
  * Creates no fill and removes the fill from the element.
@@ -727,7 +727,7 @@ ApiInterface.prototype.CreateBlipFill = function(sImageUrl, sBlipFillType){ retu
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiFill}
  * */
-ApiInterface.prototype.CreateNoFill = function(){ return new ApiFill(); };
+ApiInterface.prototype.CreateNoFill = ()=> new ApiFill();
 
 /**
  * Creates a stroke adding shadows to the element.
@@ -737,7 +737,7 @@ ApiInterface.prototype.CreateNoFill = function(){ return new ApiFill(); };
  * @param {ApiFill} oFill - The fill type used to create the shadow.
  * @returns {ApiStroke}
  * */
-ApiInterface.prototype.CreateStroke = function(nWidth, oFill){ return new ApiStroke(); };
+ApiInterface.prototype.CreateStroke = (nWidth, oFill)=> new ApiStroke();
 
 /**
  * Creates a gradient stop used for different types of gradients.
@@ -747,7 +747,7 @@ ApiInterface.prototype.CreateStroke = function(nWidth, oFill){ return new ApiStr
  * @param {PositivePercentage} nPos - The position of the gradient stop measured in 1000th of percent.
  * @returns {ApiGradientStop}
  * */
-ApiInterface.prototype.CreateGradientStop = function(oUniColor, nPos){ return new ApiGradientStop(); };
+ApiInterface.prototype.CreateGradientStop = (oUniColor, nPos)=> new ApiGradientStop();
 
 /**
  * Creates a bullet for a paragraph with the character or symbol specified with the sSymbol parameter.
@@ -756,7 +756,7 @@ ApiInterface.prototype.CreateGradientStop = function(oUniColor, nPos){ return ne
  * @param {string} sSymbol - The character or symbol which will be used to create the bullet for the paragraph.
  * @returns {ApiBullet}
  * */
-ApiInterface.prototype.CreateBullet = function(sSymbol){ return new ApiBullet(); };
+ApiInterface.prototype.CreateBullet = (sSymbol)=> new ApiBullet();
 
 /**
  * Creates a bullet for a paragraph with the numbering character or symbol specified with the sType parameter.
@@ -766,7 +766,7 @@ ApiInterface.prototype.CreateBullet = function(sSymbol){ return new ApiBullet();
  * @param {number} nStartAt - The number the first numbered paragraph will start with.
  * @returns {ApiBullet}
  * */
-ApiInterface.prototype.CreateNumbering = function(sType, nStartAt){ return new ApiBullet(); };
+ApiInterface.prototype.CreateNumbering = (sType, nStartAt)=> new ApiBullet();
 
 /**
  * Returns a type of the ApiDocumentContent class. 
@@ -774,7 +774,7 @@ ApiInterface.prototype.CreateNumbering = function(sType, nStartAt){ return new A
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"documentContent"}
  */
-ApiDocumentContent.prototype.GetClassType = function(){ return ""; };
+ApiDocumentContent.prototype.GetClassType = ()=> "";
 
 /**
  * Returns a number of elements in the current document.
@@ -782,7 +782,7 @@ ApiDocumentContent.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {number}
  */
-ApiDocumentContent.prototype.GetElementsCount = function(){ return 0; };
+ApiDocumentContent.prototype.GetElementsCount = ()=> 0;
 
 /**
  * Returns an element by its position in the document.
@@ -791,7 +791,7 @@ ApiDocumentContent.prototype.GetElementsCount = function(){ return 0; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {DocumentElement}
  */
-ApiDocumentContent.prototype.GetElement = function(nPos){ return new DocumentElement(); };
+ApiDocumentContent.prototype.GetElement = (nPos)=> new DocumentElement();
 
 /**
  * Adds a paragraph or a table or a blockLvl content control using its position in the document content.
@@ -800,7 +800,7 @@ ApiDocumentContent.prototype.GetElement = function(nPos){ return new DocumentEle
  * @param {number} nPos - The position where the current element will be added.
  * @param {DocumentElement} oElement - The document element which will be added at the current position.
  */
-ApiDocumentContent.prototype.AddElement = function(nPos, oElement){};
+ApiDocumentContent.prototype.AddElement = (nPos, oElement)=> {};
 
 /**
  * Pushes a paragraph or a table to actually add it to the document.
@@ -809,7 +809,7 @@ ApiDocumentContent.prototype.AddElement = function(nPos, oElement){};
  * @param {DocumentElement} oElement - The element type which will be pushed to the document.
  * @returns {boolean} - returns false if oElement is unsupported.
  */
-ApiDocumentContent.prototype.Push = function(oElement){ return true; };
+ApiDocumentContent.prototype.Push = (oElement)=> true;
 
 /**
  * Removes all the elements from the current document or from the current document element.
@@ -818,7 +818,7 @@ ApiDocumentContent.prototype.Push = function(oElement){ return true; };
  * @memberof ApiDocumentContent
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiDocumentContent.prototype.RemoveAllElements = function(){};
+ApiDocumentContent.prototype.RemoveAllElements = ()=> {};
 
 /**
  * Removes an element using the position specified.
@@ -826,13 +826,13 @@ ApiDocumentContent.prototype.RemoveAllElements = function(){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {number} nPos - The element number (position) in the document or inside other element.
  */
-ApiDocumentContent.prototype.RemoveElement = function(nPos){};
+ApiDocumentContent.prototype.RemoveElement = (nPos)=> {};
 
 /**
  * Creates a new history point.
  * @memberof ApiDocument
  */
-ApiDocument.prototype.CreateNewHistoryPoint = function(){};
+ApiDocument.prototype.CreateNewHistoryPoint = ()=> {};
 
 /**
  * Record of one comment.
@@ -911,7 +911,7 @@ ApiDocument.prototype.CreateNewHistoryPoint = function(){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"paragraph"}
  */
-ApiParagraph.prototype.GetClassType = function(){ return ""; };
+ApiParagraph.prototype.GetClassType = ()=> "";
 
 /**
  * Adds some text to the current paragraph.
@@ -920,7 +920,7 @@ ApiParagraph.prototype.GetClassType = function(){ return ""; };
  * @param {string} [sText=""] - The text that we want to insert into the current document element.
  * @returns {ApiRun}
  */
-ApiParagraph.prototype.AddText = function(sText){ return new ApiRun(); };
+ApiParagraph.prototype.AddText = (sText)=> new ApiRun();
 
 /**
  * Adds a line break to the current position and starts the next element from a new line.
@@ -928,7 +928,7 @@ ApiParagraph.prototype.AddText = function(sText){ return new ApiRun(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiRun}
  */
-ApiParagraph.prototype.AddLineBreak = function(){ return new ApiRun(); };
+ApiParagraph.prototype.AddLineBreak = ()=> new ApiRun();
 
 /**
  * Returns the paragraph properties.
@@ -936,7 +936,7 @@ ApiParagraph.prototype.AddLineBreak = function(){ return new ApiRun(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiParaPr}
  */
-ApiParagraph.prototype.GetParaPr = function(){ return new ApiParaPr(); };
+ApiParagraph.prototype.GetParaPr = ()=> new ApiParaPr();
 
 /**
  * Returns a number of elements in the current paragraph.
@@ -944,7 +944,7 @@ ApiParagraph.prototype.GetParaPr = function(){ return new ApiParaPr(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {number}
  */
-ApiParagraph.prototype.GetElementsCount = function(){ return 0; };
+ApiParagraph.prototype.GetElementsCount = ()=> 0;
 
 /**
  * Returns a paragraph element using the position specified.
@@ -953,7 +953,7 @@ ApiParagraph.prototype.GetElementsCount = function(){ return 0; };
  * @param {number} nPos - The position where the element which content we want to get must be located.
  * @returns {ParagraphContent}
  */
-ApiParagraph.prototype.GetElement = function(nPos){ return new ParagraphContent(); };
+ApiParagraph.prototype.GetElement = (nPos)=> new ParagraphContent();
 
 /**
  * Removes an element using the position specified.
@@ -964,7 +964,7 @@ ApiParagraph.prototype.GetElement = function(nPos){ return new ParagraphContent(
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {number} nPos - The element position which we want to remove from the paragraph.
  */
-ApiParagraph.prototype.RemoveElement = function(nPos){};
+ApiParagraph.prototype.RemoveElement = (nPos)=> {};
 
 /**
  * Removes all the elements from the current paragraph.
@@ -973,7 +973,7 @@ ApiParagraph.prototype.RemoveElement = function(nPos){};
  * @memberof ApiParagraph
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiParagraph.prototype.RemoveAllElements = function(){};
+ApiParagraph.prototype.RemoveAllElements = ()=> {};
 
 /**
  * Deletes the current paragraph.
@@ -981,7 +981,7 @@ ApiParagraph.prototype.RemoveAllElements = function(){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {boolean} - returns false if paragraph haven't parent.
  */
-ApiParagraph.prototype.Delete = function(){ return true; };
+ApiParagraph.prototype.Delete = ()=> true;
 
 /**
  * Returns the next paragraph.
@@ -989,7 +989,7 @@ ApiParagraph.prototype.Delete = function(){ return true; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiParagraph | null} - returns null if paragraph is last.
  */
-ApiParagraph.prototype.GetNext = function(){ return new ApiParagraph(); };
+ApiParagraph.prototype.GetNext = ()=> new ApiParagraph();
 
 /**
  * Returns the previous paragraph.
@@ -997,7 +997,7 @@ ApiParagraph.prototype.GetNext = function(){ return new ApiParagraph(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiParagraph} - returns null if paragraph is first.
  */
-ApiParagraph.prototype.GetPrevious = function(){ return new ApiParagraph(); };
+ApiParagraph.prototype.GetPrevious = ()=> new ApiParagraph();
 
 /**
  * Creates a paragraph copy. Ingnore comments, footnote references, complex fields.
@@ -1005,7 +1005,7 @@ ApiParagraph.prototype.GetPrevious = function(){ return new ApiParagraph(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiParagraph}
  */
-ApiParagraph.prototype.Copy = function(){ return new ApiParagraph(); };
+ApiParagraph.prototype.Copy = ()=> new ApiParagraph();
 
 /**
  * Adds an element to the current paragraph.
@@ -1018,7 +1018,7 @@ ApiParagraph.prototype.Copy = function(){ return new ApiParagraph(); };
  * @returns {boolean} Returns <code>false</code> if the type of <code>oElement</code> is not supported by paragraph
  * content.
  */
-ApiParagraph.prototype.AddElement = function(oElement, nPos){ return true; };
+ApiParagraph.prototype.AddElement = (oElement, nPos)=> true;
 
 /**
  * Adds a tab stop to the current paragraph.
@@ -1026,7 +1026,7 @@ ApiParagraph.prototype.AddElement = function(oElement, nPos){ return true; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiRun}
  */
-ApiParagraph.prototype.AddTabStop = function(){ return new ApiRun(); };
+ApiParagraph.prototype.AddTabStop = ()=> new ApiRun();
 
 /**
  * Returns a type of the ApiRun class.
@@ -1034,7 +1034,7 @@ ApiParagraph.prototype.AddTabStop = function(){ return new ApiRun(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"run"}
  */
-ApiRun.prototype.GetClassType = function(){ return ""; };
+ApiRun.prototype.GetClassType = ()=> "";
 
 /**
  * Returns the text properties of the current run.
@@ -1042,28 +1042,28 @@ ApiRun.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.GetTextPr = function(){ return new ApiTextPr(); };
+ApiRun.prototype.GetTextPr = ()=> new ApiTextPr();
 
 /**
  * Clears the content from the current run.
  * @memberof ApiRun
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiRun.prototype.ClearContent = function(){};
+ApiRun.prototype.ClearContent = ()=> {};
 
 /**
  * Removes all the elements from the current run.
  * @memberof ApiRun
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiRun.prototype.RemoveAllElements = function(){};
+ApiRun.prototype.RemoveAllElements = ()=> {};
 
 /**
  * Deletes the current run.
  * @memberof ApiRun
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiRun.prototype.Delete = function(){};
+ApiRun.prototype.Delete = ()=> {};
 
 /**
  * Adds some text to the current run.
@@ -1071,21 +1071,21 @@ ApiRun.prototype.Delete = function(){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {string} sText - The text which will be added to the current run.
  */
-ApiRun.prototype.AddText = function(sText){};
+ApiRun.prototype.AddText = (sText)=> {};
 
 /**
  * Adds a line break to the current run position and starts the next element from a new line.
  * @memberof ApiRun
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiRun.prototype.AddLineBreak = function(){};
+ApiRun.prototype.AddLineBreak = ()=> {};
 
 /**
  * Adds a tab stop to the current run.
  * @memberof ApiRun
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiRun.prototype.AddTabStop = function(){};
+ApiRun.prototype.AddTabStop = ()=> {};
 
 /**
  * Creates a copy of the current run.
@@ -1093,7 +1093,7 @@ ApiRun.prototype.AddTabStop = function(){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiRun}
  */
-ApiRun.prototype.Copy = function(){ return new ApiRun(); };
+ApiRun.prototype.Copy = ()=> new ApiRun();
 
 /**
  * Sets the text properties to the current run.
@@ -1102,7 +1102,7 @@ ApiRun.prototype.Copy = function(){ return new ApiRun(); };
  * @param {ApiTextPr} oTextPr - The text properties that will be set to the current run.
  * @returns {ApiTextPr}  
  */
-ApiRun.prototype.SetTextPr = function(oTextPr){ return new ApiTextPr(); };
+ApiRun.prototype.SetTextPr = (oTextPr)=> new ApiTextPr();
 
 /**
  * Sets the bold property to the text character.
@@ -1111,7 +1111,7 @@ ApiRun.prototype.SetTextPr = function(oTextPr){ return new ApiTextPr(); };
  * @param {boolean} isBold - Specifies that the contents of the current run are displayed bold.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetBold = function(isBold){ return new ApiTextPr(); };
+ApiRun.prototype.SetBold = (isBold)=> new ApiTextPr();
 
 /**
  * Specifies that any lowercase characters in the current text run are formatted for display only as their capital letter character equivalents.
@@ -1120,7 +1120,7 @@ ApiRun.prototype.SetBold = function(isBold){ return new ApiTextPr(); };
  * @param {boolean} isCaps - Specifies that the contents of the current run are displayed capitalized.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetCaps = function(isCaps){ return new ApiTextPr(); };
+ApiRun.prototype.SetCaps = (isCaps)=> new ApiTextPr();
 
 /**
  * Sets the text color for the current text run in the RGB format.
@@ -1132,7 +1132,7 @@ ApiRun.prototype.SetCaps = function(isCaps){ return new ApiTextPr(); };
  * @param {boolean} [isAuto=false] - If this parameter is set to "true", then r,g,b parameters will be ignored.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetColor = function(r, g, b, isAuto){ return new ApiTextPr(); };
+ApiRun.prototype.SetColor = (r, g, b, isAuto)=> new ApiTextPr();
 
 /**
  * Specifies that the contents of the current run are displayed with two horizontal lines through each character displayed on the line.
@@ -1141,7 +1141,7 @@ ApiRun.prototype.SetColor = function(r, g, b, isAuto){ return new ApiTextPr(); }
  * @param {boolean} isDoubleStrikeout - Specifies that the contents of the current run are displayed double struck through.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetDoubleStrikeout = function(isDoubleStrikeout){ return new ApiTextPr(); };
+ApiRun.prototype.SetDoubleStrikeout = (isDoubleStrikeout)=> new ApiTextPr();
 
 /**
  * Sets the text color to the current text run.
@@ -1150,7 +1150,7 @@ ApiRun.prototype.SetDoubleStrikeout = function(isDoubleStrikeout){ return new Ap
  * @param {ApiFill} oApiFill - The color or pattern used to fill the text color.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetFill = function(oApiFill){ return new ApiTextPr(); };
+ApiRun.prototype.SetFill = (oApiFill)=> new ApiTextPr();
 
 /**
  * Sets all 4 font slots with the specified font family.
@@ -1159,7 +1159,7 @@ ApiRun.prototype.SetFill = function(oApiFill){ return new ApiTextPr(); };
  * @param {string} sFontFamily - The font family or families used for the current text run.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetFontFamily = function(sFontFamily){ return new ApiTextPr(); };
+ApiRun.prototype.SetFontFamily = (sFontFamily)=> new ApiTextPr();
 
 /**
  * Returns all font names from all elements inside the current run.
@@ -1167,7 +1167,7 @@ ApiRun.prototype.SetFontFamily = function(sFontFamily){ return new ApiTextPr(); 
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {string[]} - The font names used for the current run.
  */
-ApiRun.prototype.GetFontNames = function(){ return [""]; };
+ApiRun.prototype.GetFontNames = ()=> [""];
 
 /**
  * Sets the font size to the characters of the current text run.
@@ -1176,7 +1176,7 @@ ApiRun.prototype.GetFontNames = function(){ return [""]; };
  * @param {hps} nSize - The text size value measured in half-points (1/144 of an inch).
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetFontSize = function(nSize){ return new ApiTextPr(); };
+ApiRun.prototype.SetFontSize = (nSize)=> new ApiTextPr();
 
 /**
  * Specifies a highlighting color which is applied as a background to the contents of the current run.
@@ -1185,7 +1185,7 @@ ApiRun.prototype.SetFontSize = function(nSize){ return new ApiTextPr(); };
  * @param {highlightColor} sColor - Available highlight color.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetHighlight = function(sColor){ return new ApiTextPr(); };
+ApiRun.prototype.SetHighlight = (sColor)=> new ApiTextPr();
 
 /**
  * Sets the italic property to the text character.
@@ -1194,7 +1194,7 @@ ApiRun.prototype.SetHighlight = function(sColor){ return new ApiTextPr(); };
  * @param {boolean} isItalic - Specifies that the contents of the current run are displayed italicized.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetItalic = function(isItalic){ return new ApiTextPr(); };
+ApiRun.prototype.SetItalic = (isItalic)=> new ApiTextPr();
 
 /**
  * Specifies the languages which will be used to check spelling and grammar (if requested) when processing
@@ -1205,7 +1205,7 @@ ApiRun.prototype.SetItalic = function(isItalic){ return new ApiTextPr(); };
  * RFC 4646/BCP 47. Example: "en-CA".
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetLanguage = function(sLangId){ return new ApiTextPr(); };
+ApiRun.prototype.SetLanguage = (sLangId)=> new ApiTextPr();
 
 /**
  * Specifies an amount by which text is raised or lowered for this run in relation to the default
@@ -1216,7 +1216,7 @@ ApiRun.prototype.SetLanguage = function(sLangId){ return new ApiTextPr(); };
  * measurement in half-points (1/144 of an inch).
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetPosition = function(nPosition){ return new ApiTextPr(); };
+ApiRun.prototype.SetPosition = (nPosition)=> new ApiTextPr();
 
 /**
  * Specifies the shading applied to the contents of the current text run.
@@ -1228,7 +1228,7 @@ ApiRun.prototype.SetPosition = function(nPosition){ return new ApiTextPr(); };
  * @param {byte} b - Blue color component value.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetShd = function(sType, r, g, b){ return new ApiTextPr(); };
+ApiRun.prototype.SetShd = (sType, r, g, b)=> new ApiTextPr();
 
 /**
  * Specifies that all the small letter characters in this text run are formatted for display only as their capital
@@ -1238,7 +1238,7 @@ ApiRun.prototype.SetShd = function(sType, r, g, b){ return new ApiTextPr(); };
  * @param {boolean} isSmallCaps - Specifies if the contents of the current run are displayed capitalized two points smaller or not.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetSmallCaps = function(isSmallCaps){ return new ApiTextPr(); };
+ApiRun.prototype.SetSmallCaps = (isSmallCaps)=> new ApiTextPr();
 
 /**
  * Sets the text spacing measured in twentieths of a point.
@@ -1247,7 +1247,7 @@ ApiRun.prototype.SetSmallCaps = function(isSmallCaps){ return new ApiTextPr(); }
  * @param {twips} nSpacing - The value of the text spacing measured in twentieths of a point (1/1440 of an inch).
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetSpacing = function(nSpacing){ return new ApiTextPr(); };
+ApiRun.prototype.SetSpacing = (nSpacing)=> new ApiTextPr();
 
 /**
  * Specifies that the contents of the current run are displayed with a single horizontal line through the center of the line.
@@ -1256,7 +1256,7 @@ ApiRun.prototype.SetSpacing = function(nSpacing){ return new ApiTextPr(); };
  * @param {boolean} isStrikeout - Specifies that the contents of the current run are displayed struck through.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetStrikeout = function(isStrikeout){ return new ApiTextPr(); };
+ApiRun.prototype.SetStrikeout = (isStrikeout)=> new ApiTextPr();
 
 /**
  * Sets a style to the current run.
@@ -1265,7 +1265,7 @@ ApiRun.prototype.SetStrikeout = function(isStrikeout){ return new ApiTextPr(); }
  * @param {ApiStyle} oStyle - The style which must be applied to the text run.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetStyle = function(oStyle){ return new ApiTextPr(); };
+ApiRun.prototype.SetStyle = (oStyle)=> new ApiTextPr();
 
 /**
  * Specifies that the contents of the current run are displayed along with a line appearing directly below the character
@@ -1275,7 +1275,7 @@ ApiRun.prototype.SetStyle = function(oStyle){ return new ApiTextPr(); };
  * @param {boolean} isUnderline - Specifies that the contents of the current run are displayed underlined.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetUnderline = function(isUnderline){ return new ApiTextPr(); };
+ApiRun.prototype.SetUnderline = (isUnderline)=> new ApiTextPr();
 
 /**
  * Specifies the alignment which will be applied to the contents of the current run in relation to the default appearance of the text run:
@@ -1287,7 +1287,7 @@ ApiRun.prototype.SetUnderline = function(isUnderline){ return new ApiTextPr(); }
  * @param {("baseline" | "subscript" | "superscript")} sType - The vertical alignment type applied to the text contents.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetVertAlign = function(sType){ return new ApiTextPr(); };
+ApiRun.prototype.SetVertAlign = (sType)=> new ApiTextPr();
 
 /**
  * Returns a type of the ApiTextPr class.
@@ -1295,7 +1295,7 @@ ApiRun.prototype.SetVertAlign = function(sType){ return new ApiTextPr(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"textPr"}
  */
-ApiTextPr.prototype.GetClassType = function(){ return ""; };
+ApiTextPr.prototype.GetClassType = ()=> "";
 
 /**
  * Sets the bold property to the text character.
@@ -1304,7 +1304,7 @@ ApiTextPr.prototype.GetClassType = function(){ return ""; };
  * @param {boolean} isBold - Specifies that the contents of the run are displayed bold.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetBold = function(isBold){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetBold = (isBold)=> new ApiTextPr();
 
 /**
  * Gets the bold property from the current text properties.
@@ -1313,7 +1313,7 @@ ApiTextPr.prototype.SetBold = function(isBold){ return new ApiTextPr(); };
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetBold = function(){ return true; };
+ApiTextPr.prototype.GetBold = ()=> true;
 
 /**
  * Sets the italic property to the text character.
@@ -1322,7 +1322,7 @@ ApiTextPr.prototype.GetBold = function(){ return true; };
  * @param {boolean} isItalic - Specifies that the contents of the current run are displayed italicized.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetItalic = function(isItalic){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetItalic = (isItalic)=> new ApiTextPr();
 
 /**
  * Gets the italic property from the current text properties.
@@ -1331,7 +1331,7 @@ ApiTextPr.prototype.SetItalic = function(isItalic){ return new ApiTextPr(); };
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetItalic = function(){ return true; };
+ApiTextPr.prototype.GetItalic = ()=> true;
 
 /**
  * Specifies that the contents of the run are displayed with a single horizontal line through the center of the line.
@@ -1340,7 +1340,7 @@ ApiTextPr.prototype.GetItalic = function(){ return true; };
  * @param {boolean} isStrikeout - Specifies that the contents of the current run are displayed struck through.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetStrikeout = function(isStrikeout){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetStrikeout = (isStrikeout)=> new ApiTextPr();
 
 /**
  * Gets the strikeout property from the current text properties.
@@ -1349,7 +1349,7 @@ ApiTextPr.prototype.SetStrikeout = function(isStrikeout){ return new ApiTextPr()
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetStrikeout = function(){ return true; };
+ApiTextPr.prototype.GetStrikeout = ()=> true;
 
 /**
  * Specifies that the contents of the run are displayed along with a line appearing directly below the character
@@ -1359,7 +1359,7 @@ ApiTextPr.prototype.GetStrikeout = function(){ return true; };
  * @param {boolean} isUnderline - Specifies that the contents of the current run are displayed underlined.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetUnderline = function(isUnderline){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetUnderline = (isUnderline)=> new ApiTextPr();
 
 /**
  * Gets the underline property from the current text properties.
@@ -1368,7 +1368,7 @@ ApiTextPr.prototype.SetUnderline = function(isUnderline){ return new ApiTextPr()
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetUnderline = function(){ return true; };
+ApiTextPr.prototype.GetUnderline = ()=> true;
 
 /**
  * Sets all 4 font slots with the specified font family.
@@ -1377,7 +1377,7 @@ ApiTextPr.prototype.GetUnderline = function(){ return true; };
  * @param {string} sFontFamily - The font family or families used for the current text run.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetFontFamily = function(sFontFamily){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetFontFamily = (sFontFamily)=> new ApiTextPr();
 
 /**
  * Gets the font family from the current text properties.
@@ -1386,7 +1386,7 @@ ApiTextPr.prototype.SetFontFamily = function(sFontFamily){ return new ApiTextPr(
  * @returns {string}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetFontFamily = function(){ return ""; };
+ApiTextPr.prototype.GetFontFamily = ()=> "";
 
 /**
  * Sets the font size to the characters of the current text run.
@@ -1395,7 +1395,7 @@ ApiTextPr.prototype.GetFontFamily = function(){ return ""; };
  * @param {hps} nSize - The text size value measured in half-points (1/144 of an inch).
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetFontSize = function(nSize){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetFontSize = (nSize)=> new ApiTextPr();
 
 /**
  * Gets the font size from the current text properties.
@@ -1404,7 +1404,7 @@ ApiTextPr.prototype.SetFontSize = function(nSize){ return new ApiTextPr(); };
  * @returns {hps}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetFontSize = function(){ return new hps(); };
+ApiTextPr.prototype.GetFontSize = ()=> new hps();
 
 /**
  * Specifies the alignment which will be applied to the contents of the run in relation to the default appearance of the run text:
@@ -1416,7 +1416,7 @@ ApiTextPr.prototype.GetFontSize = function(){ return new hps(); };
  * @param {("baseline" | "subscript" | "superscript")} sType - The vertical alignment type applied to the text contents.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetVertAlign = function(sType){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetVertAlign = (sType)=> new ApiTextPr();
 
 /**
  * Sets the text spacing measured in twentieths of a point.
@@ -1425,7 +1425,7 @@ ApiTextPr.prototype.SetVertAlign = function(sType){ return new ApiTextPr(); };
  * @param {twips} nSpacing - The value of the text spacing measured in twentieths of a point (1/1440 of an inch).
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetSpacing = function(nSpacing){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetSpacing = (nSpacing)=> new ApiTextPr();
 
 /**
  * Gets the text spacing from the current text properties measured in twentieths of a point.
@@ -1434,7 +1434,7 @@ ApiTextPr.prototype.SetSpacing = function(nSpacing){ return new ApiTextPr(); };
  * @returns {twips}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetSpacing = function(){ return new twips(); };
+ApiTextPr.prototype.GetSpacing = ()=> new twips();
 
 /**
  * Specifies that the contents of the run are displayed with two horizontal lines through each character displayed on the line.
@@ -1443,7 +1443,7 @@ ApiTextPr.prototype.GetSpacing = function(){ return new twips(); };
  * @param {boolean} isDoubleStrikeout - Specifies that the contents of the current run are displayed double struck through.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetDoubleStrikeout = function(isDoubleStrikeout){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetDoubleStrikeout = (isDoubleStrikeout)=> new ApiTextPr();
 
 /**
  * Gets the double strikeout property from the current text properties.
@@ -1452,7 +1452,7 @@ ApiTextPr.prototype.SetDoubleStrikeout = function(isDoubleStrikeout){ return new
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetDoubleStrikeout = function(){ return true; };
+ApiTextPr.prototype.GetDoubleStrikeout = ()=> true;
 
 /**
  * Specifies that any lowercase characters in the text run are formatted for display only as their capital letter character equivalents.
@@ -1461,7 +1461,7 @@ ApiTextPr.prototype.GetDoubleStrikeout = function(){ return true; };
  * @param {boolean} isCaps - Specifies that the contents of the current run are displayed capitalized.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetCaps = function(isCaps){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetCaps = (isCaps)=> new ApiTextPr();
 
 /**
  * Specifies whether the text with the current text properties are capitalized.
@@ -1470,7 +1470,7 @@ ApiTextPr.prototype.SetCaps = function(isCaps){ return new ApiTextPr(); };
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetCaps = function(){ return true; };
+ApiTextPr.prototype.GetCaps = ()=> true;
 
 /**
  * Specifies that all the small letter characters in the text run are formatted for display only as their capital
@@ -1480,7 +1480,7 @@ ApiTextPr.prototype.GetCaps = function(){ return true; };
  * @param {boolean} isSmallCaps - Specifies if the contents of the current run are displayed capitalized two points smaller or not.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetSmallCaps = function(isSmallCaps){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetSmallCaps = (isSmallCaps)=> new ApiTextPr();
 
 /**
  * Specifies whether the text with the current text properties are displayed capitalized two points smaller than the actual font size.
@@ -1489,7 +1489,7 @@ ApiTextPr.prototype.SetSmallCaps = function(isSmallCaps){ return new ApiTextPr()
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetSmallCaps = function(){ return true; };
+ApiTextPr.prototype.GetSmallCaps = ()=> true;
 
 /**
  * Sets the text color to the current text run.
@@ -1498,7 +1498,7 @@ ApiTextPr.prototype.GetSmallCaps = function(){ return true; };
  * @param {ApiFill} oApiFill - The color or pattern used to fill the text color.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetFill = function(oApiFill){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetFill = (oApiFill)=> new ApiTextPr();
 
 /**
  * Gets the text color from the current text properties.
@@ -1507,7 +1507,7 @@ ApiTextPr.prototype.SetFill = function(oApiFill){ return new ApiTextPr(); };
  * @returns {ApiFill}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetFill = function(){ return new ApiFill(); };
+ApiTextPr.prototype.GetFill = ()=> new ApiFill();
 
 /**
  * Sets the text fill to the current text run.
@@ -1516,7 +1516,7 @@ ApiTextPr.prototype.GetFill = function(){ return new ApiFill(); };
  * @param {ApiFill} oApiFill - The color or pattern used to fill the text color.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetTextFill = function(oApiFill){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetTextFill = (oApiFill)=> new ApiTextPr();
 
 /**
  * Gets the text fill from the current text properties.
@@ -1525,7 +1525,7 @@ ApiTextPr.prototype.SetTextFill = function(oApiFill){ return new ApiTextPr(); };
  * @returns {ApiFill}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetTextFill = function(){ return new ApiFill(); };
+ApiTextPr.prototype.GetTextFill = ()=> new ApiFill();
 
 /**
  * Sets the text outline to the current text run.
@@ -1534,7 +1534,7 @@ ApiTextPr.prototype.GetTextFill = function(){ return new ApiFill(); };
  * @param {ApiStroke} oStroke - The stroke used to create the text outline.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetOutLine = function(oStroke){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetOutLine = (oStroke)=> new ApiTextPr();
 
 /**
  * Gets the text outline from the current text properties.
@@ -1543,7 +1543,7 @@ ApiTextPr.prototype.SetOutLine = function(oStroke){ return new ApiTextPr(); };
  * @returns {ApiStroke}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetOutLine = function(){ return new ApiStroke(); };
+ApiTextPr.prototype.GetOutLine = ()=> new ApiStroke();
 
 /**
  * Returns a type of the ApiParaPr class.
@@ -1551,7 +1551,7 @@ ApiTextPr.prototype.GetOutLine = function(){ return new ApiStroke(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"paraPr"}
  */
-ApiParaPr.prototype.GetClassType = function(){ return ""; };
+ApiParaPr.prototype.GetClassType = ()=> "";
 
 /**
  * Sets the paragraph left side indentation.
@@ -1559,7 +1559,7 @@ ApiParaPr.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {twips} nValue - The paragraph left side indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.SetIndLeft = function(nValue){};
+ApiParaPr.prototype.SetIndLeft = (nValue)=> {};
 
 /**
  * Returns the paragraph left side indentation.
@@ -1567,7 +1567,7 @@ ApiParaPr.prototype.SetIndLeft = function(nValue){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {twips | undefined} - The paragraph left side indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.GetIndLeft = function(){ return new twips(); };
+ApiParaPr.prototype.GetIndLeft = ()=> new twips();
 
 /**
  * Sets the paragraph right side indentation.
@@ -1575,7 +1575,7 @@ ApiParaPr.prototype.GetIndLeft = function(){ return new twips(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {twips} nValue - The paragraph right side indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.SetIndRight = function(nValue){};
+ApiParaPr.prototype.SetIndRight = (nValue)=> {};
 
 /**
  * Returns the paragraph right side indentation.
@@ -1583,7 +1583,7 @@ ApiParaPr.prototype.SetIndRight = function(nValue){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {twips | undefined} - The paragraph right side indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.GetIndRight = function(){ return new twips(); };
+ApiParaPr.prototype.GetIndRight = ()=> new twips();
 
 /**
  * Sets the paragraph first line indentation.
@@ -1591,7 +1591,7 @@ ApiParaPr.prototype.GetIndRight = function(){ return new twips(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {twips} nValue - The paragraph first line indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.SetIndFirstLine = function(nValue){};
+ApiParaPr.prototype.SetIndFirstLine = (nValue)=> {};
 
 /**
  * Returns the paragraph first line indentation.
@@ -1599,7 +1599,7 @@ ApiParaPr.prototype.SetIndFirstLine = function(nValue){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {twips | undefined} - The paragraph first line indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.GetIndFirstLine = function(){ return new twips(); };
+ApiParaPr.prototype.GetIndFirstLine = ()=> new twips();
 
 /**
  * Sets the paragraph contents justification.
@@ -1608,7 +1608,7 @@ ApiParaPr.prototype.GetIndFirstLine = function(){ return new twips(); };
  * @param {("left" | "right" | "both" | "center")} sJc - The justification type that
  * will be applied to the paragraph contents.
  */
-ApiParaPr.prototype.SetJc = function(sJc){};
+ApiParaPr.prototype.SetJc = (sJc)=> {};
 
 /**
  * Returns the paragraph contents justification.
@@ -1616,7 +1616,7 @@ ApiParaPr.prototype.SetJc = function(sJc){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {("left" | "right" | "both" | "center" | undefined)} 
  */
-ApiParaPr.prototype.GetJc = function(){ return ""; };
+ApiParaPr.prototype.GetJc = ()=> "";
 
 /**
  * Sets the paragraph line spacing. If the value of the sLineRule parameter is either 
@@ -1628,7 +1628,7 @@ ApiParaPr.prototype.GetJc = function(){ return ""; };
  * @param {(twips | line240)} nLine - The line spacing value measured either in twentieths of a point (1/1440 of an inch) or in 240ths of a line.
  * @param {("auto" | "atLeast" | "exact")} sLineRule - The rule that determines the measuring units of the line spacing.
  */
-ApiParaPr.prototype.SetSpacingLine = function(nLine, sLineRule){};
+ApiParaPr.prototype.SetSpacingLine = (nLine, sLineRule)=> {};
 
 /**
  * Returns the paragraph line spacing value.
@@ -1636,7 +1636,7 @@ ApiParaPr.prototype.SetSpacingLine = function(nLine, sLineRule){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {twips | line240 | undefined} - to know is twips or line240 use ApiParaPr.prototype.GetSpacingLineRule().
  */
-ApiParaPr.prototype.GetSpacingLineValue = function(){ return new twips(); };
+ApiParaPr.prototype.GetSpacingLineValue = ()=> new twips();
 
 /**
  * Returns the paragraph line spacing rule.
@@ -1644,7 +1644,7 @@ ApiParaPr.prototype.GetSpacingLineValue = function(){ return new twips(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"auto" | "atLeast" | "exact" | undefined} 
  */
-ApiParaPr.prototype.GetSpacingLineRule = function(){ return ""; };
+ApiParaPr.prototype.GetSpacingLineRule = ()=> "";
 
 /**
  * Sets the spacing before the current paragraph. If the value of the isBeforeAuto parameter is true, then 
@@ -1655,7 +1655,7 @@ ApiParaPr.prototype.GetSpacingLineRule = function(){ return ""; };
  * @param {twips} nBefore - The value of the spacing before the current paragraph measured in twentieths of a point (1/1440 of an inch).
  * @param {boolean} [isBeforeAuto=false] - The true value disables the spacing before the current paragraph.
  */
-ApiParaPr.prototype.SetSpacingBefore = function(nBefore, isBeforeAuto){};
+ApiParaPr.prototype.SetSpacingBefore = (nBefore, isBeforeAuto)=> {};
 
 /**
  * Returns the spacing before value of the current paragraph.
@@ -1663,7 +1663,7 @@ ApiParaPr.prototype.SetSpacingBefore = function(nBefore, isBeforeAuto){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {twips} - The value of the spacing before the current paragraph measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.GetSpacingBefore = function(){ return new twips(); };
+ApiParaPr.prototype.GetSpacingBefore = ()=> new twips();
 
 /**
  * Sets the spacing after the current paragraph. If the value of the isAfterAuto parameter is true, then 
@@ -1674,7 +1674,7 @@ ApiParaPr.prototype.GetSpacingBefore = function(){ return new twips(); };
  * @param {twips} nAfter - The value of the spacing after the current paragraph measured in twentieths of a point (1/1440 of an inch).
  * @param {boolean} [isAfterAuto=false] - The true value disables the spacing after the current paragraph.
  */
-ApiParaPr.prototype.SetSpacingAfter = function(nAfter, isAfterAuto){};
+ApiParaPr.prototype.SetSpacingAfter = (nAfter, isAfterAuto)=> {};
 
 /**
  * Returns the spacing after value of the current paragraph. 
@@ -1682,7 +1682,7 @@ ApiParaPr.prototype.SetSpacingAfter = function(nAfter, isAfterAuto){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {twips} - The value of the spacing after the current paragraph measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.GetSpacingAfter = function(){ return new twips(); };
+ApiParaPr.prototype.GetSpacingAfter = ()=> new twips();
 
 /**
  * Specifies a sequence of custom tab stops which will be used for any tab characters in the current paragraph.
@@ -1694,7 +1694,7 @@ ApiParaPr.prototype.GetSpacingAfter = function(){ return new twips(); };
  * @param {TabJc[]} aVal - An array of the styles of custom tab stops, which determines the behavior of the tab
  * stop and the alignment which will be applied to text entered at the current custom tab stop.
  */
-ApiParaPr.prototype.SetTabs = function(aPos, aVal){};
+ApiParaPr.prototype.SetTabs = (aPos, aVal)=> {};
 
 /**
  * Sets the bullet or numbering to the current paragraph.
@@ -1702,7 +1702,7 @@ ApiParaPr.prototype.SetTabs = function(aPos, aVal){};
  * @typeofeditors ["CSE", "CPE"]
  * @param {?ApiBullet} oBullet - The bullet object created with the {@link Api#CreateBullet} or {@link Api#CreateNumbering} method.
  */
-ApiParaPr.prototype.SetBullet = function(oBullet){};
+ApiParaPr.prototype.SetBullet = (oBullet)=> {};
 
 /**
  * Returns a type of the ApiFill class.
@@ -1710,7 +1710,7 @@ ApiParaPr.prototype.SetBullet = function(oBullet){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"fill"}
  */
-ApiFill.prototype.GetClassType = function(){ return ""; };
+ApiFill.prototype.GetClassType = ()=> "";
 
 /**
  * Returns a type of the ApiStroke class.
@@ -1718,7 +1718,7 @@ ApiFill.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"stroke"}
  */
-ApiStroke.prototype.GetClassType = function(){ return ""; };
+ApiStroke.prototype.GetClassType = ()=> "";
 
 /**
  * Returns a type of the ApiGradientStop class.
@@ -1726,7 +1726,7 @@ ApiStroke.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"gradientStop"}
  */
-ApiGradientStop.prototype.GetClassType = function (){ return ""; };
+ApiGradientStop.prototype.GetClassType = ()=> "";
 
 /**
  * Returns a type of the ApiUniColor class.
@@ -1734,7 +1734,7 @@ ApiGradientStop.prototype.GetClassType = function (){ return ""; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"uniColor"}
  */
-ApiUniColor.prototype.GetClassType = function (){ return ""; };
+ApiUniColor.prototype.GetClassType = ()=> "";
 
 /**
  * Returns a type of the ApiRGBColor class.
@@ -1742,7 +1742,7 @@ ApiUniColor.prototype.GetClassType = function (){ return ""; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"rgbColor"}
  */
-ApiRGBColor.prototype.GetClassType = function (){ return ""; };
+ApiRGBColor.prototype.GetClassType = ()=> "";
 
 /**
  * Returns a type of the ApiSchemeColor class.
@@ -1750,7 +1750,7 @@ ApiRGBColor.prototype.GetClassType = function (){ return ""; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"schemeColor"}
  */
-ApiSchemeColor.prototype.GetClassType = function (){ return ""; };
+ApiSchemeColor.prototype.GetClassType = ()=> "";
 
 /**
  * Returns a type of the ApiPresetColor class.
@@ -1758,7 +1758,7 @@ ApiSchemeColor.prototype.GetClassType = function (){ return ""; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"presetColor"}
  */
-ApiPresetColor.prototype.GetClassType = function (){ return ""; };
+ApiPresetColor.prototype.GetClassType = ()=> "";
 
 /**
  * Returns a type of the ApiBullet class.
@@ -1766,7 +1766,7 @@ ApiPresetColor.prototype.GetClassType = function (){ return ""; };
  * @typeofeditors ["CSE", "CPE"]
  * @returns {"bullet"}
  */
-ApiBullet.prototype.GetClassType = function(){ return ""; };
+ApiBullet.prototype.GetClassType = ()=> "";
 
 /**
  * Replaces each paragraph (or text in cell) in the select with the corresponding text from an array of strings.
@@ -1776,7 +1776,7 @@ ApiBullet.prototype.GetClassType = function(){ return ""; };
  * @param {string} [sParaTab=" "] - A character which is used to specify the tab in the source text.
  * @param {string} [sParaNewLine=" "] - A character which is used to specify the line break character in the source text.
  */
-ApiInterface.prototype.ReplaceTextSmart = function(arrString, sParaTab, sParaNewLine){};
+ApiInterface.prototype.ReplaceTextSmart = (arrString, sParaTab, sParaNewLine)=> {};
 
 /**
  * Creates the empty text properties.
@@ -1784,7 +1784,7 @@ ApiInterface.prototype.ReplaceTextSmart = function(arrString, sParaTab, sParaNew
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiTextPr}
  */
-ApiInterface.prototype.CreateTextPr = function () { return new ApiTextPr(); };
+ApiInterface.prototype.CreateTextPr = () => new ApiTextPr();
 
 /**
  * Returns the full name of the currently opened file.
@@ -1792,7 +1792,7 @@ ApiInterface.prototype.CreateTextPr = function () { return new ApiTextPr(); };
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {string}
  */
-ApiInterface.prototype.GetFullName = function () { return ""; };
+ApiInterface.prototype.GetFullName = () => "";
 
 /**
  * Returns the full name of the currently opened file.
@@ -2050,7 +2050,7 @@ function ApiTableCell(oCell){}
  * @param {Array} aDrawings - The array of drawings.
  * @returns {ApiGroup}
  * */
-ApiInterface.prototype.CreateGroup = function(aDrawings){ return new ApiGroup(); };
+ApiInterface.prototype.CreateGroup = (aDrawings)=> new ApiGroup();
 
 /**
  * Creates a table.
@@ -2058,7 +2058,7 @@ ApiInterface.prototype.CreateGroup = function(aDrawings){ return new ApiGroup();
  * @param nRows - Number of rows.
  * @returns {ApiTable}
  */
-ApiInterface.prototype.CreateTable = function(nCols, nRows){ return new ApiTable(); };
+ApiInterface.prototype.CreateTable = (nCols, nRows)=> new ApiTable();
 
 /**
  * Returns a slide by its position in the presentation.
@@ -2066,20 +2066,20 @@ ApiInterface.prototype.CreateTable = function(nCols, nRows){ return new ApiTable
  * @param {number} nIndex - The slide number (position) in the presentation.
  * @returns {ApiSlide}
  */
-ApiPresentation.prototype.GetSlideByIndex = function(nIndex){ return new ApiSlide(); };
+ApiPresentation.prototype.GetSlideByIndex = (nIndex)=> new ApiSlide();
 
 /**
  * Returns the type of the ApiTable object.
  * @returns {"table"}
  * */
-ApiTable.prototype.GetClassType = function(){ return ""; };
+ApiTable.prototype.GetClassType = ()=> "";
 
 /**
  * Returns a row by its index.
  * @param nIndex {number} - The row index (position) in the table.
  * @returns {ApiTableRow}
  * */
-ApiTable.prototype.GetRow = function(nIndex){ return new ApiTableRow(); };
+ApiTable.prototype.GetRow = (nIndex)=> new ApiTableRow();
 
 /**
  * Merges an array of cells. If merge is successful, it will return merged cell, otherwise "null".
@@ -2087,7 +2087,7 @@ ApiTable.prototype.GetRow = function(nIndex){ return new ApiTableRow(); };
  * @param {ApiTableCell[]} aCells - The array of cells.
  * @returns {ApiTableCell}
  */
-ApiTable.prototype.MergeCells = function(aCells){ return new ApiTableCell(); };
+ApiTable.prototype.MergeCells = (aCells)=> new ApiTableCell();
 
 /**
  * Specifies the components of the conditional formatting of the referenced table style (if one exists)
@@ -2108,7 +2108,7 @@ ApiTable.prototype.MergeCells = function(aCells){ return new ApiTableCell(); };
  * @param {boolean} isVerBand - Specifies that the vertical banding conditional formatting shall not be applied to
  *     the table.
  */
-ApiTable.prototype.SetTableLook = function(isFirstColumn, isFirstRow, isLastColumn, isLastRow, isHorBand, isVerBand){};
+ApiTable.prototype.SetTableLook = (isFirstColumn, isFirstRow, isLastColumn, isLastRow, isHorBand, isVerBand)=> {};
 
 /**
  * Adds a new row to the current table.
@@ -2117,7 +2117,7 @@ ApiTable.prototype.SetTableLook = function(isFirstColumn, isFirstRow, isLastColu
  * then this parameter will be ignored.
  * @returns {ApiTableRow}
  */
-ApiTable.prototype.AddRow = function(oCell, isBefore){ return new ApiTableRow(); };
+ApiTable.prototype.AddRow = (oCell, isBefore)=> new ApiTableRow();
 
 /**
  * Adds a new column to the end of the current table.
@@ -2125,58 +2125,58 @@ ApiTable.prototype.AddRow = function(oCell, isBefore){ return new ApiTableRow();
  * @param {boolean} [isBefore=false] - Add a new column before or after the specified cell. If no cell is specified,
  * then this parameter will be ignored.
  */
-ApiTable.prototype.AddColumn = function(oCell, isBefore){};
+ApiTable.prototype.AddColumn = (oCell, isBefore)=> {};
 
 /**
  * Removes a table row with the specified cell.
  * @param {ApiTableCell} oCell - The table cell from the row which will be removed.
  * @returns {boolean} - defines if the table is empty after removing or not.
  */
-ApiTable.prototype.RemoveRow = function(oCell){ return true; };
+ApiTable.prototype.RemoveRow = (oCell)=> true;
 
 /**
  * Removes a table column with the specified cell.
  * @param {ApiTableCell} oCell - The table cell from the column which will be removed.
  * @returns {boolean} - defines if the table is empty after removing or not.
  */
-ApiTable.prototype.RemoveColumn = function(oCell){ return true; };
+ApiTable.prototype.RemoveColumn = (oCell)=> true;
 
 /**
  * Returns the type of the ApiTableRow class.
  * @returns {"tableRow"}
  */
-ApiTableRow.prototype.GetClassType = function(){ return ""; };
+ApiTableRow.prototype.GetClassType = ()=> "";
 
 /**
  * Returns a number of cells in the current row.
  * @returns {number}
  */
-ApiTableRow.prototype.GetCellsCount = function(){ return 0; };
+ApiTableRow.prototype.GetCellsCount = ()=> 0;
 
 /**
  * Returns a cell by its position in the current row.
  * @param {number} nPos - The cell position in the table row.
  * @returns {ApiTableCell}
  */
-ApiTableRow.prototype.GetCell = function(nPos){ return new ApiTableCell(); };
+ApiTableRow.prototype.GetCell = (nPos)=> new ApiTableCell();
 
 /**
  * Sets the height to the current table row.
  * @param {EMU} [nValue] - The row height in English measure units.
  */
-ApiTableRow.prototype.SetHeight = function(nValue){};
+ApiTableRow.prototype.SetHeight = (nValue)=> {};
 
 /**
  * Returns the type of the ApiTableCell class.
  * @returns {"tableCell"}
  */
-ApiTableCell.prototype.GetClassType = function(){ return ""; };
+ApiTableCell.prototype.GetClassType = ()=> "";
 
 /**
  * Returns the current cell content.
  * @returns {ApiDocumentContent}
  */
-ApiTableCell.prototype.GetContent = function(){ return new ApiDocumentContent(); };
+ApiTableCell.prototype.GetContent = ()=> new ApiDocumentContent();
 
 /**
  * Specifies an amount of space which shall be left between the bottom extent of the cell contents and the border
@@ -2184,7 +2184,7 @@ ApiTableCell.prototype.GetContent = function(){ return new ApiDocumentContent();
  * @param {?twips} nValue - If this value is <code>null</code>, then default table cell bottom margin shall be used,
  * otherwise override the table cell bottom margin with specified value for the current cell.
  */
-ApiTableCell.prototype.SetCellMarginBottom = function(nValue){};
+ApiTableCell.prototype.SetCellMarginBottom = (nValue)=> {};
 
 /**
  * Specifies an amount of space which shall be left between the left extent of the current cell contents and the
@@ -2192,7 +2192,7 @@ ApiTableCell.prototype.SetCellMarginBottom = function(nValue){};
  * @param {?twips} nValue - If this value is <code>null</code>, then default table cell left margin shall be used,
  * otherwise override the table cell left margin with specified value for the current cell.
  */
-ApiTableCell.prototype.SetCellMarginLeft = function(nValue){};
+ApiTableCell.prototype.SetCellMarginLeft = (nValue)=> {};
 
 /**
  * Specifies an amount of space which shall be left between the right extent of the current cell contents and the
@@ -2200,7 +2200,7 @@ ApiTableCell.prototype.SetCellMarginLeft = function(nValue){};
  * @param {?twips} nValue - If this value is <code>null</code>, then default table cell right margin shall be used,
  * otherwise override the table cell right margin with specified value for the current cell.
  */
-ApiTableCell.prototype.SetCellMarginRight = function(nValue){};
+ApiTableCell.prototype.SetCellMarginRight = (nValue)=> {};
 
 /**
  * Specifies an amount of space which shall be left between the top extent of the current cell contents and the
@@ -2208,41 +2208,41 @@ ApiTableCell.prototype.SetCellMarginRight = function(nValue){};
  * @param {?twips} nValue - If this value is <code>null</code>, then default table cell top margin shall be used,
  * otherwise override the table cell top margin with specified value for the current cell.
  */
-ApiTableCell.prototype.SetCellMarginTop = function(nValue){};
+ApiTableCell.prototype.SetCellMarginTop = (nValue)=> {};
 
 /**
  * Sets the border which shall be displayed at the bottom of the current table cell.
  * @param {mm} fSize - The width of the current border.
  * @param {ApiFill} oApiFill - The color or pattern used to fill the current border.
  */
-ApiTableCell.prototype.SetCellBorderBottom = function(fSize, oApiFill){};
+ApiTableCell.prototype.SetCellBorderBottom = (fSize, oApiFill)=> {};
 
 /**
  * Sets the border which shall be displayed at the left of the current table cell.
  * @param {mm} fSize - The width of the current border.
  * @param {ApiFill} oApiFill - The color or pattern used to fill the current border.
  */
-ApiTableCell.prototype.SetCellBorderLeft = function(fSize, oApiFill){};
+ApiTableCell.prototype.SetCellBorderLeft = (fSize, oApiFill)=> {};
 
 /**
  * Sets the border which shall be displayed at the right of the current table cell.
  * @param {mm} fSize - The width of the current border.
  * @param {ApiFill} oApiFill - The color or pattern used to fill the current border.
  */
-ApiTableCell.prototype.SetCellBorderRight = function(fSize, oApiFill){};
+ApiTableCell.prototype.SetCellBorderRight = (fSize, oApiFill)=> {};
 
 /**
  * Sets the border which shall be displayed at the top of the current table cell.
  * @param {mm} fSize - The width of the current border.
  * @param {ApiFill} oApiFill - The color or pattern used to fill the current border.
  */
-ApiTableCell.prototype.SetCellBorderTop = function(fSize, oApiFill){};
+ApiTableCell.prototype.SetCellBorderTop = (fSize, oApiFill)=> {};
 
 /**
  * Specifies the vertical alignment for text within the current table cell.
  * @param {("top" | "center" | "bottom")} sType - The type of the vertical alignment.
  */
-ApiTableCell.prototype.SetVerticalAlign = function(sType){};
+ApiTableCell.prototype.SetVerticalAlign = (sType)=> {};
 
 /**
  * The callback function which is called when the specified range of the current sheet changes.
@@ -2538,7 +2538,7 @@ function ApiFreezePanes(ws) {}
  * @param {string} [format] - A valid named or user-defined format expression.
  * @returns {string}
  */
-ApiInterface.prototype.Format = function (expression, format) { return ""; };
+ApiInterface.prototype.Format = (expression, format) => "";
 
 /**
  * Creates a new custom function.
@@ -2554,7 +2554,7 @@ ApiInterface.prototype.Format = function (expression, format) { return ""; };
  *   };
  *   Api.AddCustomFunction(add);
  */
-ApiInterface.prototype.AddCustomFunction = function (fCustom) {};
+ApiInterface.prototype.AddCustomFunction = (fCustom) => {};
 
 /**
  * Remove a custom function.
@@ -2563,7 +2563,7 @@ ApiInterface.prototype.AddCustomFunction = function (fCustom) {};
  * @param {string} sName - The name of a custom function.
  * @returns {boolean} - returns false if such a function does not exist.
  */
-ApiInterface.prototype.RemoveCustomFunction = function (sName) { return true; };
+ApiInterface.prototype.RemoveCustomFunction = (sName) => true;
 
 /**
  * Creates a new worksheet. The new worksheet becomes the active sheet.
@@ -2571,7 +2571,7 @@ ApiInterface.prototype.RemoveCustomFunction = function (sName) { return true; };
  * @typeofeditors ["CSE"]
  * @param {string} sName - The name of a new worksheet.
  */
-ApiInterface.prototype.AddSheet = function (sName) {};
+ApiInterface.prototype.AddSheet = (sName) => {};
 
 /**
  * Returns a sheet collection that represents all the sheets in the active workbook.
@@ -2579,7 +2579,7 @@ ApiInterface.prototype.AddSheet = function (sName) {};
  * @typeofeditors ["CSE"]
  * @returns {ApiWorksheet[]}
  */
-ApiInterface.prototype.GetSheets = function () { return [new ApiWorksheet()]; };
+ApiInterface.prototype.GetSheets = () => [new ApiWorksheet()];
 
 /**
  * Returns a sheet collection that represents all the sheets in the active workbook.
@@ -2595,7 +2595,7 @@ ApiInterface.prototype.Sheets = ApiInterface.prototype.GetSheets ();
  * @typeofeditors ["CSE"]
  * @param {number} LCID - The locale specified.
  */
-ApiInterface.prototype.SetLocale = function (LCID) {};
+ApiInterface.prototype.SetLocale = (LCID) => {};
 
 /**
  * Returns the current locale ID.
@@ -2603,7 +2603,7 @@ ApiInterface.prototype.SetLocale = function (LCID) {};
  * @typeofeditors ["CSE"]
  * @returns {number}
  */
-ApiInterface.prototype.GetLocale = function () { return 0; };
+ApiInterface.prototype.GetLocale = () => 0;
 
 /**
  * Returns an object that represents the active sheet.
@@ -2611,7 +2611,7 @@ ApiInterface.prototype.GetLocale = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {ApiWorksheet}
  */
-ApiInterface.prototype.GetActiveSheet = function () { return new ApiWorksheet(); };
+ApiInterface.prototype.GetActiveSheet = () => new ApiWorksheet();
 
 /**
  * Returns an object that represents the active sheet.
@@ -2628,7 +2628,7 @@ ApiInterface.prototype.ActiveSheet = ApiInterface.prototype.GetActiveSheet ();
  * @param {string | number} nameOrIndex - Sheet name or sheet index.
  * @returns {ApiWorksheet | null}
  */
-ApiInterface.prototype.GetSheet = function (nameOrIndex) { return new ApiWorksheet(); };
+ApiInterface.prototype.GetSheet = (nameOrIndex) => new ApiWorksheet();
 
 /**
  * Returns a list of all the available theme colors for the spreadsheet.
@@ -2636,7 +2636,7 @@ ApiInterface.prototype.GetSheet = function (nameOrIndex) { return new ApiWorkshe
  * @typeofeditors ["CSE"]
  * @returns {string[]}
  */
-ApiInterface.prototype.GetThemesColors = function () { return [""]; };
+ApiInterface.prototype.GetThemesColors = () => [""];
 
 /**
  * Sets the theme colors to the current spreadsheet.
@@ -2645,14 +2645,14 @@ ApiInterface.prototype.GetThemesColors = function () { return [""]; };
  * @param {string} sTheme - The color scheme that will be set to the current spreadsheet.
  * @returns {boolean} - returns false if sTheme isn't a string.
  */
-ApiInterface.prototype.SetThemeColors = function (sTheme) { return true; };
+ApiInterface.prototype.SetThemeColors = (sTheme) => true;
 
 /**
  * Creates a new history point.
  * @memberof ApiInterface
  * @typeofeditors ["CSE"]
  */
-ApiInterface.prototype.CreateNewHistoryPoint = function () {};
+ApiInterface.prototype.CreateNewHistoryPoint = () => {};
 
 /**
  * Creates an RGB color setting the appropriate values for the red, green and blue color components.
@@ -2663,7 +2663,7 @@ ApiInterface.prototype.CreateNewHistoryPoint = function () {};
  * @param {byte} b - Blue color component value.
  * @returns {ApiColor}
  */
-ApiInterface.prototype.CreateColorFromRGB = function (r, g, b) { return new ApiColor(); };
+ApiInterface.prototype.CreateColorFromRGB = (r, g, b) => new ApiColor();
 
 /**
  * Creates a color selecting it from one of the available color presets.
@@ -2672,7 +2672,7 @@ ApiInterface.prototype.CreateColorFromRGB = function (r, g, b) { return new ApiC
  * @param {PresetColor} sPresetColor - A preset selected from the list of the available color preset names.
  * @returns {ApiColor}
  */
-ApiInterface.prototype.CreateColorByName = function (sPresetColor) { return new ApiColor(); };
+ApiInterface.prototype.CreateColorByName = (sPresetColor) => new ApiColor();
 
 /**
  * Returns the ApiRange object that represents the rectangular intersection of two or more ranges. If one or more ranges from a different worksheet are specified, an error will be returned.
@@ -2682,7 +2682,7 @@ ApiInterface.prototype.CreateColorByName = function (sPresetColor) { return new 
  * @param {ApiRange} Range2 - One of the intersecting ranges. At least two Range objects must be specified.
  * @returns {ApiRange | null}
  */
-ApiInterface.prototype.Intersect = function (Range1, Range2) { return new ApiRange(); };
+ApiInterface.prototype.Intersect = (Range1, Range2) => new ApiRange();
 
 /**
  * Returns an object that represents the selected range.
@@ -2690,7 +2690,7 @@ ApiInterface.prototype.Intersect = function (Range1, Range2) { return new ApiRan
  * @typeofeditors ["CSE"]
  * @returns {ApiRange}
  */
-ApiInterface.prototype.GetSelection = function () { return new ApiRange(); };
+ApiInterface.prototype.GetSelection = () => new ApiRange();
 
 /**
  * Returns an object that represents the selected range.
@@ -2710,7 +2710,7 @@ ApiInterface.prototype.Selection = ApiInterface.prototype.GetSelection ();
  * @param {boolean} isHidden - Defines if the range name is hidden or not.
  * @returns {boolean} - returns false if sName or sRef are invalid.
  */
-ApiInterface.prototype.AddDefName = function (sName, sRef, isHidden) { return true; };
+ApiInterface.prototype.AddDefName = (sName, sRef, isHidden) => true;
 
 /**
  * Returns the ApiName object by the range name.
@@ -2719,14 +2719,14 @@ ApiInterface.prototype.AddDefName = function (sName, sRef, isHidden) { return tr
  * @param {string} defName - The range name.
  * @returns {ApiName}
  */
-ApiInterface.prototype.GetDefName = function (defName) { return new ApiName(); };
+ApiInterface.prototype.GetDefName = (defName) => new ApiName();
 
 /**
  * Saves changes to the specified document.
  * @memberof ApiInterface
  * @typeofeditors ["CSE"]
  */
-ApiInterface.prototype.Save = function () {};
+ApiInterface.prototype.Save = () => {};
 
 /**
  * Returns the ApiRange object by the range reference.
@@ -2735,7 +2735,7 @@ ApiInterface.prototype.Save = function () {};
  * @param {string} sRange - The range of cells from the current sheet.
  * @returns {ApiRange}
  */
-ApiInterface.prototype.GetRange = function (sRange) { return new ApiRange(); };
+ApiInterface.prototype.GetRange = (sRange) => new ApiRange();
 
 /**
  * Returns the ApiWorksheetFunction object.
@@ -2743,7 +2743,7 @@ ApiInterface.prototype.GetRange = function (sRange) { return new ApiRange(); };
  * @typeofeditors ["CSE"]
  * @returns {ApiWorksheetFunction}
  */
-ApiInterface.prototype.GetWorksheetFunction = function () { return new ApiWorksheetFunction(); };
+ApiInterface.prototype.GetWorksheetFunction = () => new ApiWorksheetFunction();
 
 /**
  * Returns the ApiWorksheetFunction object.
@@ -2760,7 +2760,7 @@ ApiInterface.prototype.WorksheetFunction = ApiInterface.prototype.GetWorksheetFu
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ASC = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ASC = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2769,7 +2769,7 @@ ApiWorksheetFunction.prototype.ASC = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CHAR = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.CHAR = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2778,7 +2778,7 @@ ApiWorksheetFunction.prototype.CHAR = function (arg1) { return 0; };
  * @param {string} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CLEAN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.CLEAN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2787,7 +2787,7 @@ ApiWorksheetFunction.prototype.CLEAN = function (arg1) { return 0; };
  * @param {string} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CODE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.CODE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2795,7 +2795,7 @@ ApiWorksheetFunction.prototype.CODE = function (arg1) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CONCATENATE = function () { return 0; };
+ApiWorksheetFunction.prototype.CONCATENATE = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2805,7 +2805,7 @@ ApiWorksheetFunction.prototype.CONCATENATE = function () { return 0; };
  * @param {number} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DOLLAR = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.DOLLAR = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2815,18 +2815,7 @@ ApiWorksheetFunction.prototype.DOLLAR = function (arg1, arg2) { return 0; };
  * @param {string} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.EXACT = function (arg1, arg2) { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {string} arg1.
- * @param {string} arg2.
- * @param {number} [arg3].
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.FIND = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.EXACT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2837,7 +2826,18 @@ ApiWorksheetFunction.prototype.FIND = function (arg1, arg2, arg3) { return 0; };
  * @param {number} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FINDB = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.FIND = (arg1, arg2, arg3) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {string} arg1.
+ * @param {string} arg2.
+ * @param {number} [arg3].
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.FINDB = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2848,7 +2848,7 @@ ApiWorksheetFunction.prototype.FINDB = function (arg1, arg2, arg3) { return 0; }
  * @param {boolean} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FIXED = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.FIXED = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2858,7 +2858,7 @@ ApiWorksheetFunction.prototype.FIXED = function (arg1, arg2, arg3) { return 0; }
  * @param {number} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LEFT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.LEFT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2868,7 +2868,7 @@ ApiWorksheetFunction.prototype.LEFT = function (arg1, arg2) { return 0; };
  * @param {number} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LEFTB = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.LEFTB = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2877,7 +2877,7 @@ ApiWorksheetFunction.prototype.LEFTB = function (arg1, arg2) { return 0; };
  * @param {string} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LEN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.LEN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2886,7 +2886,7 @@ ApiWorksheetFunction.prototype.LEN = function (arg1) { return 0; };
  * @param {string} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LENB = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.LENB = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2895,7 +2895,7 @@ ApiWorksheetFunction.prototype.LENB = function (arg1) { return 0; };
  * @param {string} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LOWER = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.LOWER = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2906,7 +2906,7 @@ ApiWorksheetFunction.prototype.LOWER = function (arg1) { return 0; };
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MID = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.MID = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2917,7 +2917,7 @@ ApiWorksheetFunction.prototype.MID = function (arg1, arg2, arg3) { return 0; };
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MIDB = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.MIDB = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2928,7 +2928,7 @@ ApiWorksheetFunction.prototype.MIDB = function (arg1, arg2, arg3) { return 0; };
  * @param {string} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NUMBERVALUE = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.NUMBERVALUE = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2937,19 +2937,7 @@ ApiWorksheetFunction.prototype.NUMBERVALUE = function (arg1, arg2, arg3) { retur
  * @param {string} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PROPER = function (arg1) { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {string} arg1.
- * @param {number} arg2.
- * @param {number} arg3.
- * @param {string} arg4.
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.REPLACE = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.PROPER = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2961,7 +2949,19 @@ ApiWorksheetFunction.prototype.REPLACE = function (arg1, arg2, arg3, arg4) { ret
  * @param {string} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.REPLACEB = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.REPLACE = (arg1, arg2, arg3, arg4) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {string} arg1.
+ * @param {number} arg2.
+ * @param {number} arg3.
+ * @param {string} arg4.
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.REPLACEB = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2971,7 +2971,7 @@ ApiWorksheetFunction.prototype.REPLACEB = function (arg1, arg2, arg3, arg4) { re
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.REPT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.REPT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2981,7 +2981,7 @@ ApiWorksheetFunction.prototype.REPT = function (arg1, arg2) { return 0; };
  * @param {number} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.RIGHT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.RIGHT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -2991,7 +2991,7 @@ ApiWorksheetFunction.prototype.RIGHT = function (arg1, arg2) { return 0; };
  * @param {number} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.RIGHTB = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.RIGHTB = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3002,7 +3002,7 @@ ApiWorksheetFunction.prototype.RIGHTB = function (arg1, arg2) { return 0; };
  * @param {number} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SEARCH = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.SEARCH = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3013,7 +3013,7 @@ ApiWorksheetFunction.prototype.SEARCH = function (arg1, arg2, arg3) { return 0; 
  * @param {number} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SEARCHB = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.SEARCHB = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3025,7 +3025,7 @@ ApiWorksheetFunction.prototype.SEARCHB = function (arg1, arg2, arg3) { return 0;
  * @param {string} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SUBSTITUTE = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.SUBSTITUTE = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3034,7 +3034,7 @@ ApiWorksheetFunction.prototype.SUBSTITUTE = function (arg1, arg2, arg3, arg4) { 
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.T = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.T = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3044,7 +3044,7 @@ ApiWorksheetFunction.prototype.T = function (arg1) { return 0; };
  * @param {string} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TEXT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.TEXT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3053,7 +3053,7 @@ ApiWorksheetFunction.prototype.TEXT = function (arg1, arg2) { return 0; };
  * @param {string} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TRIM = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.TRIM = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3062,7 +3062,7 @@ ApiWorksheetFunction.prototype.TRIM = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.UNICHAR = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.UNICHAR = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3071,7 +3071,7 @@ ApiWorksheetFunction.prototype.UNICHAR = function (arg1) { return 0; };
  * @param {string} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.UNICODE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.UNICODE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3080,7 +3080,7 @@ ApiWorksheetFunction.prototype.UNICODE = function (arg1) { return 0; };
  * @param {string} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.UPPER = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.UPPER = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3089,7 +3089,7 @@ ApiWorksheetFunction.prototype.UPPER = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.VALUE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.VALUE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3097,7 +3097,7 @@ ApiWorksheetFunction.prototype.VALUE = function (arg1) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.AVEDEV = function () { return 0; };
+ApiWorksheetFunction.prototype.AVEDEV = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3105,7 +3105,7 @@ ApiWorksheetFunction.prototype.AVEDEV = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.AVERAGE = function () { return 0; };
+ApiWorksheetFunction.prototype.AVERAGE = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3113,7 +3113,7 @@ ApiWorksheetFunction.prototype.AVERAGE = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.AVERAGEA = function () { return 0; };
+ApiWorksheetFunction.prototype.AVERAGEA = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3124,7 +3124,7 @@ ApiWorksheetFunction.prototype.AVERAGEA = function () { return 0; };
  * @param {ApiRange} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.AVERAGEIF = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.AVERAGEIF = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3132,7 +3132,7 @@ ApiWorksheetFunction.prototype.AVERAGEIF = function (arg1, arg2, arg3) { return 
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.AVERAGEIFS = function () { return 0; };
+ApiWorksheetFunction.prototype.AVERAGEIFS = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3145,7 +3145,7 @@ ApiWorksheetFunction.prototype.AVERAGEIFS = function () { return 0; };
  * @param {number} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BETADIST = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.BETADIST = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3159,7 +3159,7 @@ ApiWorksheetFunction.prototype.BETADIST = function (arg1, arg2, arg3, arg4, arg5
  * @param {number} [arg6].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BETA_DIST = function (arg1, arg2, arg3, arg4, arg5, arg6) { return 0; };
+ApiWorksheetFunction.prototype.BETA_DIST = (arg1, arg2, arg3, arg4, arg5, arg6) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3172,7 +3172,7 @@ ApiWorksheetFunction.prototype.BETA_DIST = function (arg1, arg2, arg3, arg4, arg
  * @param {number} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BETA_INV = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.BETA_INV = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3185,7 +3185,7 @@ ApiWorksheetFunction.prototype.BETA_INV = function (arg1, arg2, arg3, arg4, arg5
  * @param {number} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BETAINV = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.BETAINV = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3197,7 +3197,7 @@ ApiWorksheetFunction.prototype.BETAINV = function (arg1, arg2, arg3, arg4, arg5)
  * @param {boolean} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BINOMDIST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.BINOMDIST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3209,7 +3209,7 @@ ApiWorksheetFunction.prototype.BINOMDIST = function (arg1, arg2, arg3, arg4) { r
  * @param {boolean} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BINOM_DIST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.BINOM_DIST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3221,7 +3221,7 @@ ApiWorksheetFunction.prototype.BINOM_DIST = function (arg1, arg2, arg3, arg4) { 
  * @param {number} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BINOM_DIST.RANGE = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.BINOM_DIST.RANGE = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3232,7 +3232,7 @@ ApiWorksheetFunction.prototype.BINOM_DIST.RANGE = function (arg1, arg2, arg3, ar
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BINOM_INV = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.BINOM_INV = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3242,7 +3242,7 @@ ApiWorksheetFunction.prototype.BINOM_INV = function (arg1, arg2, arg3) { return 
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CHIDIST = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.CHIDIST = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3252,7 +3252,7 @@ ApiWorksheetFunction.prototype.CHIDIST = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CHIINV = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.CHIINV = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3263,7 +3263,7 @@ ApiWorksheetFunction.prototype.CHIINV = function (arg1, arg2) { return 0; };
  * @param {boolean} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CHISQ_DIST = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.CHISQ_DIST = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3273,7 +3273,7 @@ ApiWorksheetFunction.prototype.CHISQ_DIST = function (arg1, arg2, arg3) { return
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CHISQ_DIST_RT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.CHISQ_DIST_RT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3283,7 +3283,7 @@ ApiWorksheetFunction.prototype.CHISQ_DIST_RT = function (arg1, arg2) { return 0;
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CHISQ_INV = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.CHISQ_INV = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3293,7 +3293,7 @@ ApiWorksheetFunction.prototype.CHISQ_INV = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CHISQ_INV.RT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.CHISQ_INV.RT = (arg1, arg2) => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -3324,7 +3324,7 @@ ApiWorksheetFunction.prototype.CHISQ_INV.RT = function (arg1, arg2) { return 0; 
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CONFIDENCE = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.CONFIDENCE = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3335,7 +3335,7 @@ ApiWorksheetFunction.prototype.CONFIDENCE = function (arg1, arg2, arg3) { return
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CONFIDENCE_NORM = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.CONFIDENCE_NORM = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3346,7 +3346,7 @@ ApiWorksheetFunction.prototype.CONFIDENCE_NORM = function (arg1, arg2, arg3) { r
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CONFIDENCE_T = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.CONFIDENCE_T = (arg1, arg2, arg3) => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -3364,7 +3364,7 @@ ApiWorksheetFunction.prototype.CONFIDENCE_T = function (arg1, arg2, arg3) { retu
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COUNT = function () { return 0; };
+ApiWorksheetFunction.prototype.COUNT = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3372,7 +3372,7 @@ ApiWorksheetFunction.prototype.COUNT = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COUNTA = function () { return 0; };
+ApiWorksheetFunction.prototype.COUNTA = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3381,7 +3381,7 @@ ApiWorksheetFunction.prototype.COUNTA = function () { return 0; };
  * @param {ApiRange} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COUNTBLANK = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.COUNTBLANK = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3391,7 +3391,7 @@ ApiWorksheetFunction.prototype.COUNTBLANK = function (arg1) { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COUNTIF = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.COUNTIF = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3399,7 +3399,7 @@ ApiWorksheetFunction.prototype.COUNTIF = function (arg1, arg2) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COUNTIFS = function () { return 0; };
+ApiWorksheetFunction.prototype.COUNTIFS = () => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -3440,7 +3440,7 @@ ApiWorksheetFunction.prototype.COUNTIFS = function () { return 0; };
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CRITBINOM = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.CRITBINOM = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3448,18 +3448,7 @@ ApiWorksheetFunction.prototype.CRITBINOM = function (arg1, arg2, arg3) { return 
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DEVSQ = function () { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {number} arg1.
- * @param {number} arg2.
- * @param {boolean} arg3.
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.EXPON_DIST = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DEVSQ = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3470,7 +3459,18 @@ ApiWorksheetFunction.prototype.EXPON_DIST = function (arg1, arg2, arg3) { return
  * @param {boolean} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.EXPONDIST = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.EXPON_DIST = (arg1, arg2, arg3) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {number} arg1.
+ * @param {number} arg2.
+ * @param {boolean} arg3.
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.EXPONDIST = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3482,7 +3482,7 @@ ApiWorksheetFunction.prototype.EXPONDIST = function (arg1, arg2, arg3) { return 
  * @param {boolean} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.F_DIST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.F_DIST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3493,7 +3493,7 @@ ApiWorksheetFunction.prototype.F_DIST = function (arg1, arg2, arg3, arg4) { retu
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FDIST = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.FDIST = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3504,7 +3504,7 @@ ApiWorksheetFunction.prototype.FDIST = function (arg1, arg2, arg3) { return 0; }
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.F_DIST.RT = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.F_DIST.RT = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3515,7 +3515,7 @@ ApiWorksheetFunction.prototype.F_DIST.RT = function (arg1, arg2, arg3) { return 
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.F_INV = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.F_INV = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3526,7 +3526,7 @@ ApiWorksheetFunction.prototype.F_INV = function (arg1, arg2, arg3) { return 0; }
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FINV = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.FINV = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3537,7 +3537,7 @@ ApiWorksheetFunction.prototype.FINV = function (arg1, arg2, arg3) { return 0; };
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.F_INV.RT = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.F_INV.RT = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3546,7 +3546,7 @@ ApiWorksheetFunction.prototype.F_INV.RT = function (arg1, arg2, arg3) { return 0
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FISHER = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.FISHER = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3555,7 +3555,7 @@ ApiWorksheetFunction.prototype.FISHER = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FISHERINV = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.FISHERINV = (arg1) => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -3580,7 +3580,7 @@ ApiWorksheetFunction.prototype.FISHERINV = function (arg1) { return 0; };
  * @param {number} [arg6].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FORECAST_ETS = function (arg1, arg2, arg3, arg4, arg5, arg6) { return 0; };
+ApiWorksheetFunction.prototype.FORECAST_ETS = (arg1, arg2, arg3, arg4, arg5, arg6) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3595,7 +3595,7 @@ ApiWorksheetFunction.prototype.FORECAST_ETS = function (arg1, arg2, arg3, arg4, 
  * @param {number} [arg7].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FORECAST_ETS.CONFINT = function (arg1, arg2, arg3, arg4, arg5, arg6, arg7) { return 0; };
+ApiWorksheetFunction.prototype.FORECAST_ETS.CONFINT = (arg1, arg2, arg3, arg4, arg5, arg6, arg7) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3607,7 +3607,7 @@ ApiWorksheetFunction.prototype.FORECAST_ETS.CONFINT = function (arg1, arg2, arg3
  * @param {number} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FORECAST_ETS.SEASONALITY = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.FORECAST_ETS.SEASONALITY = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3621,7 +3621,7 @@ ApiWorksheetFunction.prototype.FORECAST_ETS.SEASONALITY = function (arg1, arg2, 
  * @param {number} [arg6].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FORECAST_ETS.STAT = function (arg1, arg2, arg3, arg4, arg5, arg6) { return 0; };
+ApiWorksheetFunction.prototype.FORECAST_ETS.STAT = (arg1, arg2, arg3, arg4, arg5, arg6) => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -3642,7 +3642,7 @@ ApiWorksheetFunction.prototype.FORECAST_ETS.STAT = function (arg1, arg2, arg3, a
  * @param {ApiRange} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FREQUENCY = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.FREQUENCY = (arg1, arg2) => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -3671,7 +3671,7 @@ ApiWorksheetFunction.prototype.FREQUENCY = function (arg1, arg2) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.GAMMA = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.GAMMA = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3683,7 +3683,7 @@ ApiWorksheetFunction.prototype.GAMMA = function (arg1) { return 0; };
  * @param {boolean} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.GAMMA_DIST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.GAMMA_DIST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3695,7 +3695,7 @@ ApiWorksheetFunction.prototype.GAMMA_DIST = function (arg1, arg2, arg3, arg4) { 
  * @param {boolean} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.GAMMADIST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.GAMMADIST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3706,7 +3706,7 @@ ApiWorksheetFunction.prototype.GAMMADIST = function (arg1, arg2, arg3, arg4) { r
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.GAMMA_INV = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.GAMMA_INV = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3717,7 +3717,7 @@ ApiWorksheetFunction.prototype.GAMMA_INV = function (arg1, arg2, arg3) { return 
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.GAMMAINV = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.GAMMAINV = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3726,7 +3726,7 @@ ApiWorksheetFunction.prototype.GAMMAINV = function (arg1, arg2, arg3) { return 0
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.GAMMALN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.GAMMALN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3735,7 +3735,7 @@ ApiWorksheetFunction.prototype.GAMMALN = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.GAMMALN_PRECISE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.GAMMALN_PRECISE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3744,7 +3744,7 @@ ApiWorksheetFunction.prototype.GAMMALN_PRECISE = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.GAUSS = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.GAUSS = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3752,7 +3752,7 @@ ApiWorksheetFunction.prototype.GAUSS = function (arg1) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.GEOMEAN = function () { return 0; };
+ApiWorksheetFunction.prototype.GEOMEAN = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3764,7 +3764,7 @@ ApiWorksheetFunction.prototype.GEOMEAN = function () { return 0; };
  * @param {boolean} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.GROWTH = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.GROWTH = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3772,7 +3772,7 @@ ApiWorksheetFunction.prototype.GROWTH = function (arg1, arg2, arg3, arg4) { retu
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.HARMEAN = function () { return 0; };
+ApiWorksheetFunction.prototype.HARMEAN = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3784,7 +3784,7 @@ ApiWorksheetFunction.prototype.HARMEAN = function () { return 0; };
  * @param {number} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.HYPGEOMDIST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.HYPGEOMDIST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3797,7 +3797,7 @@ ApiWorksheetFunction.prototype.HYPGEOMDIST = function (arg1, arg2, arg3, arg4) {
  * @param {boolean} arg5.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.HYPGEOM_DIST = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.HYPGEOM_DIST = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -3815,7 +3815,7 @@ ApiWorksheetFunction.prototype.HYPGEOM_DIST = function (arg1, arg2, arg3, arg4, 
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.KURT = function () { return 0; };
+ApiWorksheetFunction.prototype.KURT = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3825,7 +3825,7 @@ ApiWorksheetFunction.prototype.KURT = function () { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LARGE = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.LARGE = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3837,7 +3837,7 @@ ApiWorksheetFunction.prototype.LARGE = function (arg1, arg2) { return 0; };
  * @param {boolean} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LINEST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.LINEST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3849,7 +3849,7 @@ ApiWorksheetFunction.prototype.LINEST = function (arg1, arg2, arg3, arg4) { retu
  * @param {boolean} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LOGEST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.LOGEST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3860,7 +3860,7 @@ ApiWorksheetFunction.prototype.LOGEST = function (arg1, arg2, arg3, arg4) { retu
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LOGINV = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.LOGINV = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3872,7 +3872,7 @@ ApiWorksheetFunction.prototype.LOGINV = function (arg1, arg2, arg3) { return 0; 
  * @param {boolean} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LOGNORM_DIST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.LOGNORM_DIST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3883,7 +3883,7 @@ ApiWorksheetFunction.prototype.LOGNORM_DIST = function (arg1, arg2, arg3, arg4) 
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LOGNORM_INV = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.LOGNORM_INV = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3894,7 +3894,7 @@ ApiWorksheetFunction.prototype.LOGNORM_INV = function (arg1, arg2, arg3) { retur
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LOGNORMDIST = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.LOGNORMDIST = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3902,7 +3902,7 @@ ApiWorksheetFunction.prototype.LOGNORMDIST = function (arg1, arg2, arg3) { retur
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MAX = function () { return 0; };
+ApiWorksheetFunction.prototype.MAX = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3910,7 +3910,7 @@ ApiWorksheetFunction.prototype.MAX = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MAXA = function () { return 0; };
+ApiWorksheetFunction.prototype.MAXA = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3918,7 +3918,7 @@ ApiWorksheetFunction.prototype.MAXA = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MEDIAN = function () { return 0; };
+ApiWorksheetFunction.prototype.MEDIAN = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3926,7 +3926,7 @@ ApiWorksheetFunction.prototype.MEDIAN = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MIN = function () { return 0; };
+ApiWorksheetFunction.prototype.MIN = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3934,7 +3934,7 @@ ApiWorksheetFunction.prototype.MIN = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MINA = function () { return 0; };
+ApiWorksheetFunction.prototype.MINA = () => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -3969,7 +3969,7 @@ ApiWorksheetFunction.prototype.MINA = function () { return 0; };
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NEGBINOMDIST = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.NEGBINOMDIST = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3981,7 +3981,7 @@ ApiWorksheetFunction.prototype.NEGBINOMDIST = function (arg1, arg2, arg3) { retu
  * @param {boolean} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NEGBINOM_DIST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.NEGBINOM_DIST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -3993,7 +3993,7 @@ ApiWorksheetFunction.prototype.NEGBINOM_DIST = function (arg1, arg2, arg3, arg4)
  * @param {any} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NORMDIST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.NORMDIST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4005,7 +4005,7 @@ ApiWorksheetFunction.prototype.NORMDIST = function (arg1, arg2, arg3, arg4) { re
  * @param {boolean} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NORM_DIST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.NORM_DIST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4016,7 +4016,7 @@ ApiWorksheetFunction.prototype.NORM_DIST = function (arg1, arg2, arg3, arg4) { r
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NORMINV = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.NORMINV = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4027,7 +4027,7 @@ ApiWorksheetFunction.prototype.NORMINV = function (arg1, arg2, arg3) { return 0;
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NORM_INV = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.NORM_INV = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4036,7 +4036,7 @@ ApiWorksheetFunction.prototype.NORM_INV = function (arg1, arg2, arg3) { return 0
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NORMSDIST = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.NORMSDIST = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4046,7 +4046,7 @@ ApiWorksheetFunction.prototype.NORMSDIST = function (arg1) { return 0; };
  * @param {boolean} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NORM_S_DIST = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.NORM_S_DIST = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4055,7 +4055,7 @@ ApiWorksheetFunction.prototype.NORM_S_DIST = function (arg1, arg2) { return 0; }
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NORMSINV = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.NORMSINV = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4064,7 +4064,7 @@ ApiWorksheetFunction.prototype.NORMSINV = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NORM_S_INV = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.NORM_S_INV = (arg1) => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -4084,7 +4084,7 @@ ApiWorksheetFunction.prototype.NORM_S_INV = function (arg1) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PERCENTILE = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.PERCENTILE = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4094,7 +4094,7 @@ ApiWorksheetFunction.prototype.PERCENTILE = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PERCENTILE_EXC = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.PERCENTILE_EXC = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4104,18 +4104,7 @@ ApiWorksheetFunction.prototype.PERCENTILE_EXC = function (arg1, arg2) { return 0
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PERCENTILE_INC = function (arg1, arg2) { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {number} arg1.
- * @param {number} arg2.
- * @param {number} [arg3].
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.PERCENTRANK = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.PERCENTILE_INC = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4126,7 +4115,7 @@ ApiWorksheetFunction.prototype.PERCENTRANK = function (arg1, arg2, arg3) { retur
  * @param {number} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PERCENTRANK_EXC = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.PERCENTRANK = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4137,7 +4126,18 @@ ApiWorksheetFunction.prototype.PERCENTRANK_EXC = function (arg1, arg2, arg3) { r
  * @param {number} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PERCENTRANK_INC = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.PERCENTRANK_EXC = (arg1, arg2, arg3) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {number} arg1.
+ * @param {number} arg2.
+ * @param {number} [arg3].
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.PERCENTRANK_INC = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4147,7 +4147,7 @@ ApiWorksheetFunction.prototype.PERCENTRANK_INC = function (arg1, arg2, arg3) { r
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PERMUT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.PERMUT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4157,7 +4157,7 @@ ApiWorksheetFunction.prototype.PERMUT = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PERMUTATIONA = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.PERMUTATIONA = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4166,7 +4166,7 @@ ApiWorksheetFunction.prototype.PERMUTATIONA = function (arg1, arg2) { return 0; 
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PHI = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.PHI = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4177,7 +4177,7 @@ ApiWorksheetFunction.prototype.PHI = function (arg1) { return 0; };
  * @param {boolean} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.POISSON = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.POISSON = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4188,7 +4188,7 @@ ApiWorksheetFunction.prototype.POISSON = function (arg1, arg2, arg3) { return 0;
  * @param {boolean} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.POISSON_DIST = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.POISSON_DIST = (arg1, arg2, arg3) => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -4210,7 +4210,7 @@ ApiWorksheetFunction.prototype.POISSON_DIST = function (arg1, arg2, arg3) { retu
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.QUARTILE = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.QUARTILE = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4220,7 +4220,7 @@ ApiWorksheetFunction.prototype.QUARTILE = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.QUARTILE_EXC = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.QUARTILE_EXC = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4230,7 +4230,7 @@ ApiWorksheetFunction.prototype.QUARTILE_EXC = function (arg1, arg2) { return 0; 
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.QUARTILE_INC = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.QUARTILE_INC = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4241,7 +4241,7 @@ ApiWorksheetFunction.prototype.QUARTILE_INC = function (arg1, arg2) { return 0; 
  * @param {boolean} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.RANK = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.RANK = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4252,7 +4252,7 @@ ApiWorksheetFunction.prototype.RANK = function (arg1, arg2, arg3) { return 0; };
  * @param {boolean} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.RANK_AVG = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.RANK_AVG = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4263,7 +4263,7 @@ ApiWorksheetFunction.prototype.RANK_AVG = function (arg1, arg2, arg3) { return 0
  * @param {boolean} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.RANK_EQ = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.RANK_EQ = (arg1, arg2, arg3) => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -4281,7 +4281,7 @@ ApiWorksheetFunction.prototype.RANK_EQ = function (arg1, arg2, arg3) { return 0;
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SKEW = function () { return 0; };
+ApiWorksheetFunction.prototype.SKEW = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4289,7 +4289,7 @@ ApiWorksheetFunction.prototype.SKEW = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SKEW_P = function () { return 0; };
+ApiWorksheetFunction.prototype.SKEW_P = () => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -4309,7 +4309,7 @@ ApiWorksheetFunction.prototype.SKEW_P = function () { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SMALL = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.SMALL = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4320,7 +4320,7 @@ ApiWorksheetFunction.prototype.SMALL = function (arg1, arg2) { return 0; };
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.STANDARDIZE = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.STANDARDIZE = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4328,7 +4328,7 @@ ApiWorksheetFunction.prototype.STANDARDIZE = function (arg1, arg2, arg3) { retur
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.STDEV = function () { return 0; };
+ApiWorksheetFunction.prototype.STDEV = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4336,7 +4336,7 @@ ApiWorksheetFunction.prototype.STDEV = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.STDEV_S = function () { return 0; };
+ApiWorksheetFunction.prototype.STDEV_S = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4344,7 +4344,7 @@ ApiWorksheetFunction.prototype.STDEV_S = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.STDEVA = function () { return 0; };
+ApiWorksheetFunction.prototype.STDEVA = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4352,7 +4352,7 @@ ApiWorksheetFunction.prototype.STDEVA = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.STDEVP = function () { return 0; };
+ApiWorksheetFunction.prototype.STDEVP = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4360,7 +4360,7 @@ ApiWorksheetFunction.prototype.STDEVP = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.STDEV_P = function () { return 0; };
+ApiWorksheetFunction.prototype.STDEV_P = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4368,7 +4368,7 @@ ApiWorksheetFunction.prototype.STDEV_P = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.STDEVPA = function () { return 0; };
+ApiWorksheetFunction.prototype.STDEVPA = () => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -4389,7 +4389,7 @@ ApiWorksheetFunction.prototype.STDEVPA = function () { return 0; };
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TDIST = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.TDIST = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4400,7 +4400,7 @@ ApiWorksheetFunction.prototype.TDIST = function (arg1, arg2, arg3) { return 0; }
  * @param {boolean} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.T_DIST = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.T_DIST = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4410,7 +4410,7 @@ ApiWorksheetFunction.prototype.T_DIST = function (arg1, arg2, arg3) { return 0; 
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.T_DIST_2T = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.T_DIST_2T = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4420,7 +4420,7 @@ ApiWorksheetFunction.prototype.T_DIST_2T = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.T_DIST_RT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.T_DIST_RT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4430,7 +4430,7 @@ ApiWorksheetFunction.prototype.T_DIST_RT = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.T_INV = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.T_INV = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4440,7 +4440,7 @@ ApiWorksheetFunction.prototype.T_INV = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.T_INV_2T = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.T_INV_2T = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4450,7 +4450,7 @@ ApiWorksheetFunction.prototype.T_INV_2T = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TINV = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.TINV = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4462,7 +4462,7 @@ ApiWorksheetFunction.prototype.TINV = function (arg1, arg2) { return 0; };
  * @param {boolean} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TREND = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.TREND = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4472,7 +4472,7 @@ ApiWorksheetFunction.prototype.TREND = function (arg1, arg2, arg3, arg4) { retur
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TRIMMEAN = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.TRIMMEAN = (arg1, arg2) => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -4504,7 +4504,7 @@ ApiWorksheetFunction.prototype.TRIMMEAN = function (arg1, arg2) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.VAR = function () { return 0; };
+ApiWorksheetFunction.prototype.VAR = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4512,7 +4512,7 @@ ApiWorksheetFunction.prototype.VAR = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.VARA = function () { return 0; };
+ApiWorksheetFunction.prototype.VARA = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4520,7 +4520,7 @@ ApiWorksheetFunction.prototype.VARA = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.VARP = function () { return 0; };
+ApiWorksheetFunction.prototype.VARP = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4528,7 +4528,7 @@ ApiWorksheetFunction.prototype.VARP = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.VAR_P = function () { return 0; };
+ApiWorksheetFunction.prototype.VAR_P = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4536,7 +4536,7 @@ ApiWorksheetFunction.prototype.VAR_P = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.VAR_S = function () { return 0; };
+ApiWorksheetFunction.prototype.VAR_S = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4544,19 +4544,7 @@ ApiWorksheetFunction.prototype.VAR_S = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.VARPA = function () { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {number} arg1.
- * @param {number} arg2.
- * @param {number} arg3.
- * @param {boolean} arg4.
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.WEIBULL = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.VARPA = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4568,7 +4556,19 @@ ApiWorksheetFunction.prototype.WEIBULL = function (arg1, arg2, arg3, arg4) { ret
  * @param {boolean} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.WEIBULL_DIST = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.WEIBULL = (arg1, arg2, arg3, arg4) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {number} arg1.
+ * @param {number} arg2.
+ * @param {number} arg3.
+ * @param {boolean} arg4.
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.WEIBULL_DIST = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4579,7 +4579,7 @@ ApiWorksheetFunction.prototype.WEIBULL_DIST = function (arg1, arg2, arg3, arg4) 
  * @param {number} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ZTEST = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.ZTEST = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4590,7 +4590,7 @@ ApiWorksheetFunction.prototype.ZTEST = function (arg1, arg2, arg3) { return 0; }
  * @param {number} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.Z_TEST = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.Z_TEST = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4601,7 +4601,7 @@ ApiWorksheetFunction.prototype.Z_TEST = function (arg1, arg2, arg3) { return 0; 
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DATE = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DATE = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4610,7 +4610,7 @@ ApiWorksheetFunction.prototype.DATE = function (arg1, arg2, arg3) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DATEVALUE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.DATEVALUE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4619,7 +4619,7 @@ ApiWorksheetFunction.prototype.DATEVALUE = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DAY = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.DAY = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4629,7 +4629,7 @@ ApiWorksheetFunction.prototype.DAY = function (arg1) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DAYS = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.DAYS = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4640,7 +4640,7 @@ ApiWorksheetFunction.prototype.DAYS = function (arg1, arg2) { return 0; };
  * @param {boolean} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DAYS360 = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DAYS360 = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4650,7 +4650,7 @@ ApiWorksheetFunction.prototype.DAYS360 = function (arg1, arg2, arg3) { return 0;
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.EDATE = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.EDATE = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4660,7 +4660,7 @@ ApiWorksheetFunction.prototype.EDATE = function (arg1, arg2) { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.EOMONTH = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.EOMONTH = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4669,7 +4669,7 @@ ApiWorksheetFunction.prototype.EOMONTH = function (arg1, arg2) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.HOUR = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.HOUR = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4678,7 +4678,7 @@ ApiWorksheetFunction.prototype.HOUR = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISOWEEKNUM = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ISOWEEKNUM = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4687,7 +4687,7 @@ ApiWorksheetFunction.prototype.ISOWEEKNUM = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MINUTE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.MINUTE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4696,7 +4696,7 @@ ApiWorksheetFunction.prototype.MINUTE = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MONTH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.MONTH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4707,7 +4707,7 @@ ApiWorksheetFunction.prototype.MONTH = function (arg1) { return 0; };
  * @param {any} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NETWORKDAYS = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.NETWORKDAYS = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4719,7 +4719,7 @@ ApiWorksheetFunction.prototype.NETWORKDAYS = function (arg1, arg2, arg3) { retur
  * @param {any} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NETWORKDAYS_INTL = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.NETWORKDAYS_INTL = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4727,7 +4727,7 @@ ApiWorksheetFunction.prototype.NETWORKDAYS_INTL = function (arg1, arg2, arg3, ar
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NOW = function () { return 0; };
+ApiWorksheetFunction.prototype.NOW = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4736,7 +4736,7 @@ ApiWorksheetFunction.prototype.NOW = function () { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SECOND = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.SECOND = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4747,7 +4747,7 @@ ApiWorksheetFunction.prototype.SECOND = function (arg1) { return 0; };
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TIME = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.TIME = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4756,7 +4756,7 @@ ApiWorksheetFunction.prototype.TIME = function (arg1, arg2, arg3) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TIMEVALUE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.TIMEVALUE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4764,7 +4764,7 @@ ApiWorksheetFunction.prototype.TIMEVALUE = function (arg1) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TODAY = function () { return 0; };
+ApiWorksheetFunction.prototype.TODAY = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4774,7 +4774,7 @@ ApiWorksheetFunction.prototype.TODAY = function () { return 0; };
  * @param {number} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.WEEKDAY = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.WEEKDAY = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4784,7 +4784,7 @@ ApiWorksheetFunction.prototype.WEEKDAY = function (arg1, arg2) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.WEEKNUM = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.WEEKNUM = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4795,7 +4795,7 @@ ApiWorksheetFunction.prototype.WEEKNUM = function (arg1, arg2) { return 0; };
  * @param {any} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.WORKDAY = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.WORKDAY = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4807,7 +4807,7 @@ ApiWorksheetFunction.prototype.WORKDAY = function (arg1, arg2, arg3) { return 0;
  * @param {any} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.WORKDAY_INTL = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.WORKDAY_INTL = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4816,7 +4816,7 @@ ApiWorksheetFunction.prototype.WORKDAY_INTL = function (arg1, arg2, arg3, arg4) 
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.YEAR = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.YEAR = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4827,7 +4827,7 @@ ApiWorksheetFunction.prototype.YEAR = function (arg1) { return 0; };
  * @param {any} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.YEARFRAC = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.YEARFRAC = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4837,7 +4837,7 @@ ApiWorksheetFunction.prototype.YEARFRAC = function (arg1, arg2, arg3) { return 0
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BESSELI = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.BESSELI = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4847,7 +4847,7 @@ ApiWorksheetFunction.prototype.BESSELI = function (arg1, arg2) { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BESSELJ = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.BESSELJ = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4857,7 +4857,7 @@ ApiWorksheetFunction.prototype.BESSELJ = function (arg1, arg2) { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BESSELK = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.BESSELK = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4867,7 +4867,7 @@ ApiWorksheetFunction.prototype.BESSELK = function (arg1, arg2) { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BESSELY = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.BESSELY = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4876,7 +4876,7 @@ ApiWorksheetFunction.prototype.BESSELY = function (arg1, arg2) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BIN2DEC = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.BIN2DEC = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4886,7 +4886,7 @@ ApiWorksheetFunction.prototype.BIN2DEC = function (arg1) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BIN2HEX = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.BIN2HEX = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4896,7 +4896,7 @@ ApiWorksheetFunction.prototype.BIN2HEX = function (arg1, arg2) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BIN2OCT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.BIN2OCT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4906,7 +4906,7 @@ ApiWorksheetFunction.prototype.BIN2OCT = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BITAND = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.BITAND = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4916,7 +4916,7 @@ ApiWorksheetFunction.prototype.BITAND = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BITLSHIFT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.BITLSHIFT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4926,7 +4926,7 @@ ApiWorksheetFunction.prototype.BITLSHIFT = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BITOR = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.BITOR = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4936,7 +4936,7 @@ ApiWorksheetFunction.prototype.BITOR = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BITRSHIFT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.BITRSHIFT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4946,7 +4946,7 @@ ApiWorksheetFunction.prototype.BITRSHIFT = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BITXOR = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.BITXOR = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4957,7 +4957,7 @@ ApiWorksheetFunction.prototype.BITXOR = function (arg1, arg2) { return 0; };
  * @param {any} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COMPLEX = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.COMPLEX = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4968,7 +4968,7 @@ ApiWorksheetFunction.prototype.COMPLEX = function (arg1, arg2, arg3) { return 0;
  * @param {any} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CONVERT = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.CONVERT = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4978,7 +4978,7 @@ ApiWorksheetFunction.prototype.CONVERT = function (arg1, arg2, arg3) { return 0;
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DEC2BIN = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.DEC2BIN = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4988,7 +4988,7 @@ ApiWorksheetFunction.prototype.DEC2BIN = function (arg1, arg2) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DEC2HEX = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.DEC2HEX = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -4998,7 +4998,7 @@ ApiWorksheetFunction.prototype.DEC2HEX = function (arg1, arg2) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DEC2OCT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.DEC2OCT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5008,7 +5008,7 @@ ApiWorksheetFunction.prototype.DEC2OCT = function (arg1, arg2) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DELTA = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.DELTA = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5018,7 +5018,7 @@ ApiWorksheetFunction.prototype.DELTA = function (arg1, arg2) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ERF = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.ERF = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5027,7 +5027,7 @@ ApiWorksheetFunction.prototype.ERF = function (arg1, arg2) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ERF_PRECISE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ERF_PRECISE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5036,7 +5036,7 @@ ApiWorksheetFunction.prototype.ERF_PRECISE = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ERFC = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ERFC = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5045,17 +5045,7 @@ ApiWorksheetFunction.prototype.ERFC = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ERFC_PRECISE = function (arg1) { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {any} arg1.
- * @param {any} [arg2].
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.GESTEP = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.ERFC_PRECISE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5065,16 +5055,7 @@ ApiWorksheetFunction.prototype.GESTEP = function (arg1, arg2) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.HEX2BIN = function (arg1, arg2) { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {any} arg1.
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.HEX2DEC = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.GESTEP = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5084,7 +5065,7 @@ ApiWorksheetFunction.prototype.HEX2DEC = function (arg1) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.HEX2OCT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.HEX2BIN = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5093,7 +5074,17 @@ ApiWorksheetFunction.prototype.HEX2OCT = function (arg1, arg2) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMABS = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.HEX2DEC = (arg1) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {any} arg1.
+ * @param {any} [arg2].
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.HEX2OCT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5102,7 +5093,7 @@ ApiWorksheetFunction.prototype.IMABS = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMAGINARY = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMABS = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5111,7 +5102,7 @@ ApiWorksheetFunction.prototype.IMAGINARY = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMARGUMENT = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMAGINARY = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5120,7 +5111,7 @@ ApiWorksheetFunction.prototype.IMARGUMENT = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMCONJUGATE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMARGUMENT = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5129,7 +5120,7 @@ ApiWorksheetFunction.prototype.IMCONJUGATE = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMCOS = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMCONJUGATE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5138,7 +5129,7 @@ ApiWorksheetFunction.prototype.IMCOS = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMCOSH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMCOS = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5147,7 +5138,7 @@ ApiWorksheetFunction.prototype.IMCOSH = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMCOT = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMCOSH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5156,7 +5147,7 @@ ApiWorksheetFunction.prototype.IMCOT = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMCSC = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMCOT = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5165,7 +5156,16 @@ ApiWorksheetFunction.prototype.IMCSC = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMCSCH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMCSC = (arg1) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {any} arg1.
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.IMCSCH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5175,7 +5175,7 @@ ApiWorksheetFunction.prototype.IMCSCH = function (arg1) { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMDIV = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.IMDIV = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5184,7 +5184,7 @@ ApiWorksheetFunction.prototype.IMDIV = function (arg1, arg2) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMEXP = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMEXP = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5193,7 +5193,7 @@ ApiWorksheetFunction.prototype.IMEXP = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMLN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMLN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5202,7 +5202,7 @@ ApiWorksheetFunction.prototype.IMLN = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMLOG10 = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMLOG10 = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5211,79 +5211,7 @@ ApiWorksheetFunction.prototype.IMLOG10 = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMLOG2 = function (arg1) { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {any} arg1.
- * @param {any} arg2.
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.IMPOWER = function (arg1, arg2) { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.IMPRODUCT = function () { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {any} arg1.
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.IMREAL = function (arg1) { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {any} arg1.
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.IMSEC = function (arg1) { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {any} arg1.
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.IMSECH = function (arg1) { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {any} arg1.
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.IMSIN = function (arg1) { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {any} arg1.
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.IMSINH = function (arg1) { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {any} arg1.
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.IMSQRT = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMLOG2 = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5293,7 +5221,7 @@ ApiWorksheetFunction.prototype.IMSQRT = function (arg1) { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMSUB = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.IMPOWER = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5301,7 +5229,7 @@ ApiWorksheetFunction.prototype.IMSUB = function (arg1, arg2) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMSUM = function () { return 0; };
+ApiWorksheetFunction.prototype.IMPRODUCT = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5310,7 +5238,79 @@ ApiWorksheetFunction.prototype.IMSUM = function () { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IMTAN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.IMREAL = (arg1) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {any} arg1.
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.IMSEC = (arg1) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {any} arg1.
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.IMSECH = (arg1) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {any} arg1.
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.IMSIN = (arg1) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {any} arg1.
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.IMSINH = (arg1) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {any} arg1.
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.IMSQRT = (arg1) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {any} arg1.
+ * @param {any} arg2.
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.IMSUB = (arg1, arg2) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.IMSUM = () => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {any} arg1.
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.IMTAN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5320,7 +5320,7 @@ ApiWorksheetFunction.prototype.IMTAN = function (arg1) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.OCT2BIN = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.OCT2BIN = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5329,7 +5329,7 @@ ApiWorksheetFunction.prototype.OCT2BIN = function (arg1, arg2) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.OCT2DEC = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.OCT2DEC = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5339,7 +5339,7 @@ ApiWorksheetFunction.prototype.OCT2DEC = function (arg1) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.OCT2HEX = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.OCT2HEX = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5350,7 +5350,7 @@ ApiWorksheetFunction.prototype.OCT2HEX = function (arg1, arg2) { return 0; };
  * @param {string} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DAVERAGE = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DAVERAGE = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5361,7 +5361,7 @@ ApiWorksheetFunction.prototype.DAVERAGE = function (arg1, arg2, arg3) { return 0
  * @param {string} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DCOUNT = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DCOUNT = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5372,7 +5372,7 @@ ApiWorksheetFunction.prototype.DCOUNT = function (arg1, arg2, arg3) { return 0; 
  * @param {string} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DCOUNTA = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DCOUNTA = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5383,7 +5383,7 @@ ApiWorksheetFunction.prototype.DCOUNTA = function (arg1, arg2, arg3) { return 0;
  * @param {string} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DGET = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DGET = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5394,7 +5394,7 @@ ApiWorksheetFunction.prototype.DGET = function (arg1, arg2, arg3) { return 0; };
  * @param {string} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DMAX = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DMAX = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5405,7 +5405,7 @@ ApiWorksheetFunction.prototype.DMAX = function (arg1, arg2, arg3) { return 0; };
  * @param {string} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DMIN = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DMIN = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5416,7 +5416,7 @@ ApiWorksheetFunction.prototype.DMIN = function (arg1, arg2, arg3) { return 0; };
  * @param {string} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DPRODUCT = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DPRODUCT = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5427,7 +5427,7 @@ ApiWorksheetFunction.prototype.DPRODUCT = function (arg1, arg2, arg3) { return 0
  * @param {string} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DSTDEV = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DSTDEV = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5438,7 +5438,7 @@ ApiWorksheetFunction.prototype.DSTDEV = function (arg1, arg2, arg3) { return 0; 
  * @param {string} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DSTDEVP = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DSTDEVP = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5449,7 +5449,7 @@ ApiWorksheetFunction.prototype.DSTDEVP = function (arg1, arg2, arg3) { return 0;
  * @param {string} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DSUM = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DSUM = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5460,7 +5460,7 @@ ApiWorksheetFunction.prototype.DSUM = function (arg1, arg2, arg3) { return 0; };
  * @param {string} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DVAR = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DVAR = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5471,7 +5471,7 @@ ApiWorksheetFunction.prototype.DVAR = function (arg1, arg2, arg3) { return 0; };
  * @param {string} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DVARP = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.DVARP = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5487,7 +5487,7 @@ ApiWorksheetFunction.prototype.DVARP = function (arg1, arg2, arg3) { return 0; }
  * @param {any} [arg8].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ACCRINT = function (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) { return 0; };
+ApiWorksheetFunction.prototype.ACCRINT = (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5500,7 +5500,7 @@ ApiWorksheetFunction.prototype.ACCRINT = function (arg1, arg2, arg3, arg4, arg5,
  * @param {any} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ACCRINTM = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.ACCRINTM = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5515,7 +5515,7 @@ ApiWorksheetFunction.prototype.ACCRINTM = function (arg1, arg2, arg3, arg4, arg5
  * @param {any} [arg7].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.AMORDEGRC = function (arg1, arg2, arg3, arg4, arg5, arg6, arg7) { return 0; };
+ApiWorksheetFunction.prototype.AMORDEGRC = (arg1, arg2, arg3, arg4, arg5, arg6, arg7) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5530,7 +5530,7 @@ ApiWorksheetFunction.prototype.AMORDEGRC = function (arg1, arg2, arg3, arg4, arg
  * @param {any} [arg7].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.AMORLINC = function (arg1, arg2, arg3, arg4, arg5, arg6, arg7) { return 0; };
+ApiWorksheetFunction.prototype.AMORLINC = (arg1, arg2, arg3, arg4, arg5, arg6, arg7) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5542,7 +5542,7 @@ ApiWorksheetFunction.prototype.AMORLINC = function (arg1, arg2, arg3, arg4, arg5
  * @param {any} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COUPDAYBS = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.COUPDAYBS = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5554,7 +5554,7 @@ ApiWorksheetFunction.prototype.COUPDAYBS = function (arg1, arg2, arg3, arg4) { r
  * @param {any} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COUPDAYS = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.COUPDAYS = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5566,7 +5566,7 @@ ApiWorksheetFunction.prototype.COUPDAYS = function (arg1, arg2, arg3, arg4) { re
  * @param {any} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COUPDAYSNC = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.COUPDAYSNC = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5578,7 +5578,7 @@ ApiWorksheetFunction.prototype.COUPDAYSNC = function (arg1, arg2, arg3, arg4) { 
  * @param {any} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COUPNCD = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.COUPNCD = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5590,7 +5590,7 @@ ApiWorksheetFunction.prototype.COUPNCD = function (arg1, arg2, arg3, arg4) { ret
  * @param {any} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COUPNUM = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.COUPNUM = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5602,7 +5602,7 @@ ApiWorksheetFunction.prototype.COUPNUM = function (arg1, arg2, arg3, arg4) { ret
  * @param {any} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COUPPCD = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.COUPPCD = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5616,7 +5616,7 @@ ApiWorksheetFunction.prototype.COUPPCD = function (arg1, arg2, arg3, arg4) { ret
  * @param {any} arg6.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CUMIPMT = function (arg1, arg2, arg3, arg4, arg5, arg6) { return 0; };
+ApiWorksheetFunction.prototype.CUMIPMT = (arg1, arg2, arg3, arg4, arg5, arg6) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5630,7 +5630,7 @@ ApiWorksheetFunction.prototype.CUMIPMT = function (arg1, arg2, arg3, arg4, arg5,
  * @param {any} arg6.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CUMPRINC = function (arg1, arg2, arg3, arg4, arg5, arg6) { return 0; };
+ApiWorksheetFunction.prototype.CUMPRINC = (arg1, arg2, arg3, arg4, arg5, arg6) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5643,7 +5643,7 @@ ApiWorksheetFunction.prototype.CUMPRINC = function (arg1, arg2, arg3, arg4, arg5
  * @param {number} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DB = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.DB = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5656,7 +5656,7 @@ ApiWorksheetFunction.prototype.DB = function (arg1, arg2, arg3, arg4, arg5) { re
  * @param {number} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DDB = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.DDB = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5669,7 +5669,7 @@ ApiWorksheetFunction.prototype.DDB = function (arg1, arg2, arg3, arg4, arg5) { r
  * @param {any} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DISC = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.DISC = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5679,7 +5679,7 @@ ApiWorksheetFunction.prototype.DISC = function (arg1, arg2, arg3, arg4, arg5) { 
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DOLLARDE = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.DOLLARDE = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5689,7 +5689,7 @@ ApiWorksheetFunction.prototype.DOLLARDE = function (arg1, arg2) { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DOLLARFR = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.DOLLARFR = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5703,7 +5703,7 @@ ApiWorksheetFunction.prototype.DOLLARFR = function (arg1, arg2) { return 0; };
  * @param {any} [arg6].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DURATION = function (arg1, arg2, arg3, arg4, arg5, arg6) { return 0; };
+ApiWorksheetFunction.prototype.DURATION = (arg1, arg2, arg3, arg4, arg5, arg6) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5713,7 +5713,7 @@ ApiWorksheetFunction.prototype.DURATION = function (arg1, arg2, arg3, arg4, arg5
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.EFFECT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.EFFECT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5726,7 +5726,7 @@ ApiWorksheetFunction.prototype.EFFECT = function (arg1, arg2) { return 0; };
  * @param {number} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FV = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.FV = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5736,7 +5736,7 @@ ApiWorksheetFunction.prototype.FV = function (arg1, arg2, arg3, arg4, arg5) { re
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FVSCHEDULE = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.FVSCHEDULE = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5749,7 +5749,7 @@ ApiWorksheetFunction.prototype.FVSCHEDULE = function (arg1, arg2) { return 0; };
  * @param {any} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.INTRATE = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.INTRATE = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5763,7 +5763,7 @@ ApiWorksheetFunction.prototype.INTRATE = function (arg1, arg2, arg3, arg4, arg5)
  * @param {number} [arg6].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IPMT = function (arg1, arg2, arg3, arg4, arg5, arg6) { return 0; };
+ApiWorksheetFunction.prototype.IPMT = (arg1, arg2, arg3, arg4, arg5, arg6) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5773,7 +5773,7 @@ ApiWorksheetFunction.prototype.IPMT = function (arg1, arg2, arg3, arg4, arg5, ar
  * @param {number} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IRR = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.IRR = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5785,7 +5785,7 @@ ApiWorksheetFunction.prototype.IRR = function (arg1, arg2) { return 0; };
  * @param {number} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISPMT = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.ISPMT = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5799,7 +5799,7 @@ ApiWorksheetFunction.prototype.ISPMT = function (arg1, arg2, arg3, arg4) { retur
  * @param {any} [arg6].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MDURATION = function (arg1, arg2, arg3, arg4, arg5, arg6) { return 0; };
+ApiWorksheetFunction.prototype.MDURATION = (arg1, arg2, arg3, arg4, arg5, arg6) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5810,7 +5810,7 @@ ApiWorksheetFunction.prototype.MDURATION = function (arg1, arg2, arg3, arg4, arg
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MIRR = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.MIRR = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5820,7 +5820,7 @@ ApiWorksheetFunction.prototype.MIRR = function (arg1, arg2, arg3) { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NOMINAL = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.NOMINAL = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5833,7 +5833,7 @@ ApiWorksheetFunction.prototype.NOMINAL = function (arg1, arg2) { return 0; };
  * @param {number} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NPER = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.NPER = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5841,7 +5841,7 @@ ApiWorksheetFunction.prototype.NPER = function (arg1, arg2, arg3, arg4, arg5) { 
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NPV = function () { return 0; };
+ApiWorksheetFunction.prototype.NPV = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5858,7 +5858,7 @@ ApiWorksheetFunction.prototype.NPV = function () { return 0; };
  * @param {any} [arg9].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ODDFPRICE = function (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) { return 0; };
+ApiWorksheetFunction.prototype.ODDFPRICE = (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5875,7 +5875,7 @@ ApiWorksheetFunction.prototype.ODDFPRICE = function (arg1, arg2, arg3, arg4, arg
  * @param {any} [arg9].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ODDFYIELD = function (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) { return 0; };
+ApiWorksheetFunction.prototype.ODDFYIELD = (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5891,7 +5891,7 @@ ApiWorksheetFunction.prototype.ODDFYIELD = function (arg1, arg2, arg3, arg4, arg
  * @param {any} [arg8].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ODDLPRICE = function (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) { return 0; };
+ApiWorksheetFunction.prototype.ODDLPRICE = (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5907,7 +5907,7 @@ ApiWorksheetFunction.prototype.ODDLPRICE = function (arg1, arg2, arg3, arg4, arg
  * @param {any} [arg8].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ODDLYIELD = function (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) { return 0; };
+ApiWorksheetFunction.prototype.ODDLYIELD = (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5918,7 +5918,7 @@ ApiWorksheetFunction.prototype.ODDLYIELD = function (arg1, arg2, arg3, arg4, arg
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PDURATION = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.PDURATION = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5931,7 +5931,7 @@ ApiWorksheetFunction.prototype.PDURATION = function (arg1, arg2, arg3) { return 
  * @param {number} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PMT = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.PMT = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5945,7 +5945,7 @@ ApiWorksheetFunction.prototype.PMT = function (arg1, arg2, arg3, arg4, arg5) { r
  * @param {number} [arg6].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PPMT = function (arg1, arg2, arg3, arg4, arg5, arg6) { return 0; };
+ApiWorksheetFunction.prototype.PPMT = (arg1, arg2, arg3, arg4, arg5, arg6) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5960,7 +5960,7 @@ ApiWorksheetFunction.prototype.PPMT = function (arg1, arg2, arg3, arg4, arg5, ar
  * @param {any} [arg7].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PRICE = function (arg1, arg2, arg3, arg4, arg5, arg6, arg7) { return 0; };
+ApiWorksheetFunction.prototype.PRICE = (arg1, arg2, arg3, arg4, arg5, arg6, arg7) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5973,7 +5973,7 @@ ApiWorksheetFunction.prototype.PRICE = function (arg1, arg2, arg3, arg4, arg5, a
  * @param {any} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PRICEDISC = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.PRICEDISC = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -5987,7 +5987,7 @@ ApiWorksheetFunction.prototype.PRICEDISC = function (arg1, arg2, arg3, arg4, arg
  * @param {any} [arg6].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PRICEMAT = function (arg1, arg2, arg3, arg4, arg5, arg6) { return 0; };
+ApiWorksheetFunction.prototype.PRICEMAT = (arg1, arg2, arg3, arg4, arg5, arg6) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6000,7 +6000,7 @@ ApiWorksheetFunction.prototype.PRICEMAT = function (arg1, arg2, arg3, arg4, arg5
  * @param {number} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PV = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.PV = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6014,7 +6014,7 @@ ApiWorksheetFunction.prototype.PV = function (arg1, arg2, arg3, arg4, arg5) { re
  * @param {number} [arg6].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.RATE = function (arg1, arg2, arg3, arg4, arg5, arg6) { return 0; };
+ApiWorksheetFunction.prototype.RATE = (arg1, arg2, arg3, arg4, arg5, arg6) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6027,7 +6027,7 @@ ApiWorksheetFunction.prototype.RATE = function (arg1, arg2, arg3, arg4, arg5, ar
  * @param {any} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.RECEIVED = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.RECEIVED = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6038,7 +6038,7 @@ ApiWorksheetFunction.prototype.RECEIVED = function (arg1, arg2, arg3, arg4, arg5
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.RRI = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.RRI = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6049,7 +6049,7 @@ ApiWorksheetFunction.prototype.RRI = function (arg1, arg2, arg3) { return 0; };
  * @param {number} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SLN = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.SLN = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6061,7 +6061,7 @@ ApiWorksheetFunction.prototype.SLN = function (arg1, arg2, arg3) { return 0; };
  * @param {number} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SYD = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.SYD = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6072,7 +6072,7 @@ ApiWorksheetFunction.prototype.SYD = function (arg1, arg2, arg3, arg4) { return 
  * @param {any} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TBILLEQ = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.TBILLEQ = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6083,7 +6083,7 @@ ApiWorksheetFunction.prototype.TBILLEQ = function (arg1, arg2, arg3) { return 0;
  * @param {any} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TBILLPRICE = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.TBILLPRICE = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6094,7 +6094,7 @@ ApiWorksheetFunction.prototype.TBILLPRICE = function (arg1, arg2, arg3) { return
  * @param {any} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TBILLYIELD = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.TBILLYIELD = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6109,7 +6109,7 @@ ApiWorksheetFunction.prototype.TBILLYIELD = function (arg1, arg2, arg3) { return
  * @param {boolean} [arg7].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.VDB = function (arg1, arg2, arg3, arg4, arg5, arg6, arg7) { return 0; };
+ApiWorksheetFunction.prototype.VDB = (arg1, arg2, arg3, arg4, arg5, arg6, arg7) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6120,7 +6120,7 @@ ApiWorksheetFunction.prototype.VDB = function (arg1, arg2, arg3, arg4, arg5, arg
  * @param {any} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.XIRR = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.XIRR = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6131,7 +6131,7 @@ ApiWorksheetFunction.prototype.XIRR = function (arg1, arg2, arg3) { return 0; };
  * @param {any} arg3.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.XNPV = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.XNPV = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6146,7 +6146,7 @@ ApiWorksheetFunction.prototype.XNPV = function (arg1, arg2, arg3) { return 0; };
  * @param {any} [arg7].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.YIELD = function (arg1, arg2, arg3, arg4, arg5, arg6, arg7) { return 0; };
+ApiWorksheetFunction.prototype.YIELD = (arg1, arg2, arg3, arg4, arg5, arg6, arg7) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6159,7 +6159,7 @@ ApiWorksheetFunction.prototype.YIELD = function (arg1, arg2, arg3, arg4, arg5, a
  * @param {any} [arg5].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.YIELDDISC = function (arg1, arg2, arg3, arg4, arg5) { return 0; };
+ApiWorksheetFunction.prototype.YIELDDISC = (arg1, arg2, arg3, arg4, arg5) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6173,7 +6173,7 @@ ApiWorksheetFunction.prototype.YIELDDISC = function (arg1, arg2, arg3, arg4, arg
  * @param {any} [arg6].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.YIELDMAT = function (arg1, arg2, arg3, arg4, arg5, arg6) { return 0; };
+ApiWorksheetFunction.prototype.YIELDMAT = (arg1, arg2, arg3, arg4, arg5, arg6) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6182,7 +6182,7 @@ ApiWorksheetFunction.prototype.YIELDMAT = function (arg1, arg2, arg3, arg4, arg5
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ABS = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ABS = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6191,7 +6191,7 @@ ApiWorksheetFunction.prototype.ABS = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ACOS = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ACOS = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6200,7 +6200,7 @@ ApiWorksheetFunction.prototype.ACOS = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ACOSH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ACOSH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6209,7 +6209,7 @@ ApiWorksheetFunction.prototype.ACOSH = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ACOT = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ACOT = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6218,7 +6218,7 @@ ApiWorksheetFunction.prototype.ACOT = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ACOTH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ACOTH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6226,7 +6226,7 @@ ApiWorksheetFunction.prototype.ACOTH = function (arg1) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.AGGREGATE = function () { return 0; };
+ApiWorksheetFunction.prototype.AGGREGATE = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6235,7 +6235,7 @@ ApiWorksheetFunction.prototype.AGGREGATE = function () { return 0; };
  * @param {string} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ARABIC = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ARABIC = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6244,7 +6244,7 @@ ApiWorksheetFunction.prototype.ARABIC = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ASIN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ASIN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6253,7 +6253,7 @@ ApiWorksheetFunction.prototype.ASIN = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ASINH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ASINH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6262,7 +6262,7 @@ ApiWorksheetFunction.prototype.ASINH = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ATAN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ATAN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6272,7 +6272,7 @@ ApiWorksheetFunction.prototype.ATAN = function (arg1) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ATAN2 = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.ATAN2 = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6281,7 +6281,7 @@ ApiWorksheetFunction.prototype.ATAN2 = function (arg1, arg2) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ATANH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ATANH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6292,7 +6292,7 @@ ApiWorksheetFunction.prototype.ATANH = function (arg1) { return 0; };
  * @param {number} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.BASE = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.BASE = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6302,7 +6302,7 @@ ApiWorksheetFunction.prototype.BASE = function (arg1, arg2, arg3) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CEILING = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.CEILING = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6313,7 +6313,7 @@ ApiWorksheetFunction.prototype.CEILING = function (arg1, arg2) { return 0; };
  * @param {number} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CEILING_MATH = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.CEILING_MATH = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6323,7 +6323,7 @@ ApiWorksheetFunction.prototype.CEILING_MATH = function (arg1, arg2, arg3) { retu
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CEILING_PRECISE = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.CEILING_PRECISE = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6333,7 +6333,7 @@ ApiWorksheetFunction.prototype.CEILING_PRECISE = function (arg1, arg2) { return 
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COMBIN = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.COMBIN = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6343,7 +6343,7 @@ ApiWorksheetFunction.prototype.COMBIN = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COMBINA = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.COMBINA = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6352,7 +6352,7 @@ ApiWorksheetFunction.prototype.COMBINA = function (arg1, arg2) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COS = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.COS = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6361,7 +6361,7 @@ ApiWorksheetFunction.prototype.COS = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COSH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.COSH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6370,7 +6370,7 @@ ApiWorksheetFunction.prototype.COSH = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COT = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.COT = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6379,7 +6379,7 @@ ApiWorksheetFunction.prototype.COT = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COTH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.COTH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6388,7 +6388,7 @@ ApiWorksheetFunction.prototype.COTH = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CSC = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.CSC = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6397,7 +6397,7 @@ ApiWorksheetFunction.prototype.CSC = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CSCH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.CSCH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6407,7 +6407,7 @@ ApiWorksheetFunction.prototype.CSCH = function (arg1) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DECIMAL = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.DECIMAL = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6416,7 +6416,7 @@ ApiWorksheetFunction.prototype.DECIMAL = function (arg1, arg2) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.DEGREES = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.DEGREES = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6426,7 +6426,7 @@ ApiWorksheetFunction.prototype.DEGREES = function (arg1) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ECMA_CEILING = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.ECMA_CEILING = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6435,7 +6435,7 @@ ApiWorksheetFunction.prototype.ECMA_CEILING = function (arg1, arg2) { return 0; 
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.EVEN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.EVEN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6444,7 +6444,7 @@ ApiWorksheetFunction.prototype.EVEN = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.EXP = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.EXP = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6453,7 +6453,7 @@ ApiWorksheetFunction.prototype.EXP = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FACT = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.FACT = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6462,7 +6462,7 @@ ApiWorksheetFunction.prototype.FACT = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FACTDOUBLE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.FACTDOUBLE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6472,7 +6472,7 @@ ApiWorksheetFunction.prototype.FACTDOUBLE = function (arg1) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FLOOR = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.FLOOR = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6482,7 +6482,7 @@ ApiWorksheetFunction.prototype.FLOOR = function (arg1, arg2) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FLOOR_PRECISE = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.FLOOR_PRECISE = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6493,7 +6493,7 @@ ApiWorksheetFunction.prototype.FLOOR_PRECISE = function (arg1, arg2) { return 0;
  * @param {number} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FLOOR_MATH = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.FLOOR_MATH = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6501,7 +6501,7 @@ ApiWorksheetFunction.prototype.FLOOR_MATH = function (arg1, arg2, arg3) { return
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.GCD = function () { return 0; };
+ApiWorksheetFunction.prototype.GCD = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6510,7 +6510,7 @@ ApiWorksheetFunction.prototype.GCD = function () { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.INT = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.INT = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6520,7 +6520,7 @@ ApiWorksheetFunction.prototype.INT = function (arg1) { return 0; };
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISO_CEILING = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.ISO_CEILING = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6528,7 +6528,7 @@ ApiWorksheetFunction.prototype.ISO_CEILING = function (arg1, arg2) { return 0; }
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LCM = function () { return 0; };
+ApiWorksheetFunction.prototype.LCM = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6537,7 +6537,7 @@ ApiWorksheetFunction.prototype.LCM = function () { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.LN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6547,7 +6547,7 @@ ApiWorksheetFunction.prototype.LN = function (arg1) { return 0; };
  * @param {number} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LOG = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.LOG = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6556,7 +6556,7 @@ ApiWorksheetFunction.prototype.LOG = function (arg1, arg2) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LOG10 = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.LOG10 = (arg1) => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -6594,7 +6594,7 @@ ApiWorksheetFunction.prototype.LOG10 = function (arg1) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MOD = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.MOD = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6604,7 +6604,7 @@ ApiWorksheetFunction.prototype.MOD = function (arg1, arg2) { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MROUND = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.MROUND = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6612,16 +6612,7 @@ ApiWorksheetFunction.prototype.MROUND = function (arg1, arg2) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MULTINOMIAL = function () { return 0; };
-
-/**
- * Returns the result of calculating the function.
- * @memberof ApiWorksheetFunction
- * @typeofeditors ["CSE"]
- * @param {number} arg1.
- * @returns {number | string | boolean}
- */
-ApiWorksheetFunction.prototype.MUNIT = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.MULTINOMIAL = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6630,7 +6621,16 @@ ApiWorksheetFunction.prototype.MUNIT = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ODD = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.MUNIT = (arg1) => 0;
+
+/**
+ * Returns the result of calculating the function.
+ * @memberof ApiWorksheetFunction
+ * @typeofeditors ["CSE"]
+ * @param {number} arg1.
+ * @returns {number | string | boolean}
+ */
+ApiWorksheetFunction.prototype.ODD = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6638,7 +6638,7 @@ ApiWorksheetFunction.prototype.ODD = function (arg1) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PI = function () { return 0; };
+ApiWorksheetFunction.prototype.PI = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6648,7 +6648,7 @@ ApiWorksheetFunction.prototype.PI = function () { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.POWER = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.POWER = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6656,7 +6656,7 @@ ApiWorksheetFunction.prototype.POWER = function (arg1, arg2) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.PRODUCT = function () { return 0; };
+ApiWorksheetFunction.prototype.PRODUCT = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6666,7 +6666,7 @@ ApiWorksheetFunction.prototype.PRODUCT = function () { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.QUOTIENT = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.QUOTIENT = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6675,7 +6675,7 @@ ApiWorksheetFunction.prototype.QUOTIENT = function (arg1, arg2) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.RADIANS = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.RADIANS = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6683,7 +6683,7 @@ ApiWorksheetFunction.prototype.RADIANS = function (arg1) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.RAND = function () { return 0; };
+ApiWorksheetFunction.prototype.RAND = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6693,7 +6693,7 @@ ApiWorksheetFunction.prototype.RAND = function () { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.RANDBETWEEN = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.RANDBETWEEN = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6703,7 +6703,7 @@ ApiWorksheetFunction.prototype.RANDBETWEEN = function (arg1, arg2) { return 0; }
  * @param {number} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ROMAN = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.ROMAN = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6713,7 +6713,7 @@ ApiWorksheetFunction.prototype.ROMAN = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ROUND = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.ROUND = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6723,7 +6723,7 @@ ApiWorksheetFunction.prototype.ROUND = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ROUNDDOWN = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.ROUNDDOWN = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6733,7 +6733,7 @@ ApiWorksheetFunction.prototype.ROUNDDOWN = function (arg1, arg2) { return 0; };
  * @param {number} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ROUNDUP = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.ROUNDUP = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6742,7 +6742,7 @@ ApiWorksheetFunction.prototype.ROUNDUP = function (arg1, arg2) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SEC = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.SEC = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6751,7 +6751,7 @@ ApiWorksheetFunction.prototype.SEC = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SECH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.SECH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6763,7 +6763,7 @@ ApiWorksheetFunction.prototype.SECH = function (arg1) { return 0; };
  * @param {any} arg4.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SERIESSUM = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.SERIESSUM = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6772,7 +6772,7 @@ ApiWorksheetFunction.prototype.SERIESSUM = function (arg1, arg2, arg3, arg4) { r
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SIGN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.SIGN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6781,7 +6781,7 @@ ApiWorksheetFunction.prototype.SIGN = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SIN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.SIN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6790,7 +6790,7 @@ ApiWorksheetFunction.prototype.SIN = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SINH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.SINH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6799,7 +6799,7 @@ ApiWorksheetFunction.prototype.SINH = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SQRT = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.SQRT = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6808,7 +6808,7 @@ ApiWorksheetFunction.prototype.SQRT = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SQRTPI = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.SQRTPI = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6816,7 +6816,7 @@ ApiWorksheetFunction.prototype.SQRTPI = function (arg1) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SUBTOTAL = function () { return 0; };
+ApiWorksheetFunction.prototype.SUBTOTAL = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6824,7 +6824,7 @@ ApiWorksheetFunction.prototype.SUBTOTAL = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SUM = function () { return 0; };
+ApiWorksheetFunction.prototype.SUM = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6835,7 +6835,7 @@ ApiWorksheetFunction.prototype.SUM = function () { return 0; };
  * @param {ApiRange} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SUMIF = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.SUMIF = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6843,7 +6843,7 @@ ApiWorksheetFunction.prototype.SUMIF = function (arg1, arg2, arg3) { return 0; }
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SUMIFS = function () { return 0; };
+ApiWorksheetFunction.prototype.SUMIFS = () => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -6859,7 +6859,7 @@ ApiWorksheetFunction.prototype.SUMIFS = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SUMSQ = function () { return 0; };
+ApiWorksheetFunction.prototype.SUMSQ = () => 0;
 
 /**
 //  * Returns the result of calculating the function.
@@ -6898,7 +6898,7 @@ ApiWorksheetFunction.prototype.SUMSQ = function () { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TAN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.TAN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6907,7 +6907,7 @@ ApiWorksheetFunction.prototype.TAN = function (arg1) { return 0; };
  * @param {number} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TANH = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.TANH = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6917,7 +6917,7 @@ ApiWorksheetFunction.prototype.TANH = function (arg1) { return 0; };
  * @param {number} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TRUNC = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.TRUNC = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6925,7 +6925,7 @@ ApiWorksheetFunction.prototype.TRUNC = function (arg1, arg2) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.CHOOSE = function () { return 0; };
+ApiWorksheetFunction.prototype.CHOOSE = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6934,7 +6934,7 @@ ApiWorksheetFunction.prototype.CHOOSE = function () { return 0; };
  * @param {ApiRange} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.COLUMNS = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.COLUMNS = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6946,7 +6946,7 @@ ApiWorksheetFunction.prototype.COLUMNS = function (arg1) { return 0; };
  * @param {boolean} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.HLOOKUP = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.HLOOKUP = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6956,7 +6956,7 @@ ApiWorksheetFunction.prototype.HLOOKUP = function (arg1, arg2, arg3, arg4) { ret
  * @param {any} [arg2].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.HYPERLINK = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.HYPERLINK = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6968,7 +6968,7 @@ ApiWorksheetFunction.prototype.HYPERLINK = function (arg1, arg2) { return 0; };
  * @param {any} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.INDEX = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.INDEX = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6979,7 +6979,7 @@ ApiWorksheetFunction.prototype.INDEX = function (arg1, arg2, arg3, arg4) { retur
  * @param {ApiRange} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.LOOKUP = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.LOOKUP = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6990,7 +6990,7 @@ ApiWorksheetFunction.prototype.LOOKUP = function (arg1, arg2, arg3) { return 0; 
  * @param {number} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.MATCH = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.MATCH = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -6999,7 +6999,7 @@ ApiWorksheetFunction.prototype.MATCH = function (arg1, arg2, arg3) { return 0; }
  * @param {ApiRange} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ROWS = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ROWS = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7008,7 +7008,7 @@ ApiWorksheetFunction.prototype.ROWS = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TRANSPOSE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.TRANSPOSE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7020,7 +7020,7 @@ ApiWorksheetFunction.prototype.TRANSPOSE = function (arg1) { return 0; };
  * @param {boolean} [arg4].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.VLOOKUP = function (arg1, arg2, arg3, arg4) { return 0; };
+ApiWorksheetFunction.prototype.VLOOKUP = (arg1, arg2, arg3, arg4) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7029,7 +7029,7 @@ ApiWorksheetFunction.prototype.VLOOKUP = function (arg1, arg2, arg3, arg4) { ret
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ERROR_TYPE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ERROR_TYPE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7038,7 +7038,7 @@ ApiWorksheetFunction.prototype.ERROR_TYPE = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISERR = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ISERR = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7047,7 +7047,7 @@ ApiWorksheetFunction.prototype.ISERR = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISERROR = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ISERROR = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7056,7 +7056,7 @@ ApiWorksheetFunction.prototype.ISERROR = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISEVEN = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ISEVEN = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7065,7 +7065,7 @@ ApiWorksheetFunction.prototype.ISEVEN = function (arg1) { return 0; };
  * @param {ApiRange} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISFORMULA = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ISFORMULA = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7074,7 +7074,7 @@ ApiWorksheetFunction.prototype.ISFORMULA = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISLOGICAL = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ISLOGICAL = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7083,7 +7083,7 @@ ApiWorksheetFunction.prototype.ISLOGICAL = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISNA = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ISNA = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7092,7 +7092,7 @@ ApiWorksheetFunction.prototype.ISNA = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISNONTEXT = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ISNONTEXT = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7101,7 +7101,7 @@ ApiWorksheetFunction.prototype.ISNONTEXT = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISNUMBER = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ISNUMBER = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7110,7 +7110,7 @@ ApiWorksheetFunction.prototype.ISNUMBER = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISODD = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ISODD = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7119,7 +7119,7 @@ ApiWorksheetFunction.prototype.ISODD = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISREF = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ISREF = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7128,7 +7128,7 @@ ApiWorksheetFunction.prototype.ISREF = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.ISTEXT = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.ISTEXT = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7137,7 +7137,7 @@ ApiWorksheetFunction.prototype.ISTEXT = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.N = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.N = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7145,7 +7145,7 @@ ApiWorksheetFunction.prototype.N = function (arg1) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NA = function () { return 0; };
+ApiWorksheetFunction.prototype.NA = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7154,7 +7154,7 @@ ApiWorksheetFunction.prototype.NA = function () { return 0; };
  * @param {string} [arg1].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SHEET = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.SHEET = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7163,7 +7163,7 @@ ApiWorksheetFunction.prototype.SHEET = function (arg1) { return 0; };
  * @param {ApiRange} [arg1].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.SHEETS = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.SHEETS = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7172,7 +7172,7 @@ ApiWorksheetFunction.prototype.SHEETS = function (arg1) { return 0; };
  * @param {any} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TYPE = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.TYPE = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7180,7 +7180,7 @@ ApiWorksheetFunction.prototype.TYPE = function (arg1) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.AND = function () { return 0; };
+ApiWorksheetFunction.prototype.AND = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7188,7 +7188,7 @@ ApiWorksheetFunction.prototype.AND = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.FALSE = function () { return 0; };
+ApiWorksheetFunction.prototype.FALSE = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7199,7 +7199,7 @@ ApiWorksheetFunction.prototype.FALSE = function () { return 0; };
  * @param {any} [arg3].
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IF = function (arg1, arg2, arg3) { return 0; };
+ApiWorksheetFunction.prototype.IF = (arg1, arg2, arg3) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7209,7 +7209,7 @@ ApiWorksheetFunction.prototype.IF = function (arg1, arg2, arg3) { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IFERROR = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.IFERROR = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7219,7 +7219,7 @@ ApiWorksheetFunction.prototype.IFERROR = function (arg1, arg2) { return 0; };
  * @param {any} arg2.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.IFNA = function (arg1, arg2) { return 0; };
+ApiWorksheetFunction.prototype.IFNA = (arg1, arg2) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7228,7 +7228,7 @@ ApiWorksheetFunction.prototype.IFNA = function (arg1, arg2) { return 0; };
  * @param {boolean} arg1.
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.NOT = function (arg1) { return 0; };
+ApiWorksheetFunction.prototype.NOT = (arg1) => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7236,7 +7236,7 @@ ApiWorksheetFunction.prototype.NOT = function (arg1) { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.OR = function () { return 0; };
+ApiWorksheetFunction.prototype.OR = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7244,7 +7244,7 @@ ApiWorksheetFunction.prototype.OR = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.TRUE = function () { return 0; };
+ApiWorksheetFunction.prototype.TRUE = () => 0;
 
 /**
  * Returns the result of calculating the function.
@@ -7252,7 +7252,7 @@ ApiWorksheetFunction.prototype.TRUE = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @returns {number | string | boolean}
  */
-ApiWorksheetFunction.prototype.XOR = function () { return 0; };
+ApiWorksheetFunction.prototype.XOR = () => 0;
 
 /**
  * Returns the mail merge data.
@@ -7262,7 +7262,7 @@ ApiWorksheetFunction.prototype.XOR = function () { return 0; };
  * @param {boolean} [bWithFormat=false] - Specifies that the data will be received with the format.
  * @returns {string[][]}
  */
-ApiInterface.prototype.GetMailMergeData = function (nSheet, bWithFormat) { return [""]; };
+ApiInterface.prototype.GetMailMergeData = (nSheet, bWithFormat) => [""];
 
 /**
  * Recalculates all formulas in the active workbook.
@@ -7271,7 +7271,7 @@ ApiInterface.prototype.GetMailMergeData = function (nSheet, bWithFormat) { retur
  * @param {Function} fLogger - A function which specifies the logger object for checking recalculation of formulas.
  * @returns {boolean}
  */
-ApiInterface.prototype.RecalculateAllFormulas = function (fLogger) { return true; };
+ApiInterface.prototype.RecalculateAllFormulas = (fLogger) => true;
 
 /**
  * Subscribes to the specified event and calls the callback function when the event fires.
@@ -7282,7 +7282,7 @@ ApiInterface.prototype.RecalculateAllFormulas = function (fLogger) { return true
  * @param {function} callback - Function to be called when the event fires.
  * @fires Api#onWorksheetChange
  */
-ApiInterface.prototype["attachEvent"] = ApiInterface.prototype.attachEvent;{};
+ApiInterface.prototype.attachEvent = ApiInterface.prototype.attachEvent;{};
 
 /**
  * Unsubscribes from the specified event.
@@ -7292,7 +7292,7 @@ ApiInterface.prototype["attachEvent"] = ApiInterface.prototype.attachEvent;{};
  * @param {string} eventName - The event name.
  * @fires Api#onWorksheetChange
  */
-ApiInterface.prototype["detachEvent"] = ApiInterface.prototype.detachEvent;{};
+ApiInterface.prototype.detachEvent = ApiInterface.prototype.detachEvent;{};
 
 /**
  * Returns an array of ApiComment objects.
@@ -7303,7 +7303,7 @@ ApiInterface.prototype["detachEvent"] = ApiInterface.prototype.detachEvent;{};
  * @returns {ApiComment | null}
  * @since 7.5.0
  */
-ApiInterface.prototype.AddComment = function (sText, sAuthor) { return new ApiComment(); };
+ApiInterface.prototype.AddComment = (sText, sAuthor) => new ApiComment();
 
 /**
  * Returns a comment from the current document by its ID.
@@ -7312,7 +7312,7 @@ ApiInterface.prototype.AddComment = function (sText, sAuthor) { return new ApiCo
  * @param {string} sId - The comment ID.
  * @returns {ApiComment}
  */
-ApiInterface.prototype.GetCommentById = function (sId) { return new ApiComment(); };
+ApiInterface.prototype.GetCommentById = (sId) => new ApiComment();
 
 /**
  * Returns all comments related to the whole workbook.
@@ -7320,7 +7320,7 @@ ApiInterface.prototype.GetCommentById = function (sId) { return new ApiComment()
  * @typeofeditors ["CSE"]
  * @returns {ApiComment[]}
  */
-ApiInterface.prototype.GetComments = function () { return [new ApiComment()]; };
+ApiInterface.prototype.GetComments = () => [new ApiComment()];
 
 /**
  * Returns all comments related to the whole workbook.
@@ -7336,7 +7336,7 @@ ApiInterface.prototype.Comments = ApiInterface.prototype.GetComments ();
  * @typeofeditors ["CSE"]
  * @returns {ApiComment[]}
  */
-ApiInterface.prototype.GetAllComments = function () { return [new ApiComment()]; };
+ApiInterface.prototype.GetAllComments = () => [new ApiComment()];
 
 /**
  * Returns all comments from the current workbook including comments from all worksheets.
@@ -7358,7 +7358,7 @@ ApiInterface.prototype.AllComments = ApiInterface.prototype.GetAllComments ();
  * @param {FreezePaneType} FreezePaneType - The freeze panes type ("null" to unfreeze).
  * @since 8.0.0
  */
-ApiInterface.prototype.SetFreezePanesType = function (FreezePaneType) {};
+ApiInterface.prototype.SetFreezePanesType = (FreezePaneType) => {};
 
 /**
  * Returns the freeze panes type.
@@ -7367,7 +7367,7 @@ ApiInterface.prototype.SetFreezePanesType = function (FreezePaneType) {};
  * @returns {FreezePaneType} FreezePaneType - The freeze panes type ("null" if there are no freeze panes).
  * @since 8.0.0
  */
-ApiInterface.prototype.GetFreezePanesType = function () { return new FreezePaneType(); };
+ApiInterface.prototype.GetFreezePanesType = () => new FreezePaneType();
 
 /**
  * Returns the freeze panes type.
@@ -7384,7 +7384,7 @@ ApiInterface.prototype.FreezePanes = ApiInterface.prototype.GetFreezePanesType (
  * @typeofeditors ["CSE"]
  * @returns {ReferenceStyle}
  * */
-ApiInterface.prototype.GetReferenceStyle = function () { return new ReferenceStyle(); };
+ApiInterface.prototype.GetReferenceStyle = () => new ReferenceStyle();
 
 /**
  * Sets the cell references style.
@@ -7392,7 +7392,7 @@ ApiInterface.prototype.GetReferenceStyle = function () { return new ReferenceSty
  * @typeofeditors ["CSE"]
  * @param {ReferenceStyle} sReferenceStyle - Type of reference style
  */
-ApiInterface.prototype.SetReferenceStyle = function (sReferenceStyle) {};
+ApiInterface.prototype.SetReferenceStyle = (sReferenceStyle) => {};
 
 /**
  * Sets the cell references style.
@@ -7408,7 +7408,7 @@ ApiInterface.prototype.ReferenceStyle = ApiInterface.prototype.SetReferenceStyle
  * @typeofeditors ["CSE"]
  * @returns {boolean}
  */
-ApiWorksheet.prototype.GetVisible = function () { return true; };
+ApiWorksheet.prototype.GetVisible = () => true;
 
 /**
  * Sets the state of sheet visibility.
@@ -7416,7 +7416,7 @@ ApiWorksheet.prototype.GetVisible = function () { return true; };
  * @typeofeditors ["CSE"]
  * @param {boolean} isVisible - Specifies if the sheet is visible or not.
  */
-ApiWorksheet.prototype.SetVisible = function (isVisible) {};
+ApiWorksheet.prototype.SetVisible = (isVisible) => {};
 
 /**
  * Sets the state of sheet visibility.
@@ -7431,7 +7431,7 @@ ApiWorksheet.prototype.Visible = ApiWorksheet.prototype.SetVisible ();
  * @memberof ApiWorksheet
  * @typeofeditors ["CSE"]
  */
-ApiWorksheet.prototype.SetActive = function () {};
+ApiWorksheet.prototype.SetActive = () => {};
 
 /**
  * Makes the current sheet active.
@@ -7446,7 +7446,7 @@ ApiWorksheet.prototype.Active = ApiWorksheet.prototype.SetActive ();
  * @typeofeditors ["CSE"]
  * @returns {ApiRange}
  */
-ApiWorksheet.prototype.GetActiveCell = function () { return new ApiRange(); };
+ApiWorksheet.prototype.GetActiveCell = () => new ApiRange();
 
 /**
  * Returns an object that represents an active cell.
@@ -7462,7 +7462,7 @@ ApiWorksheet.prototype.ActiveCell = ApiWorksheet.prototype.GetActiveCell ();
  * @typeofeditors ["CSE"]
  * @returns {ApiRange}
  */
-ApiWorksheet.prototype.GetSelection = function () { return new ApiRange(); };
+ApiWorksheet.prototype.GetSelection = () => new ApiRange();
 
 /**
  * Returns an object that represents the selected range.
@@ -7480,7 +7480,7 @@ ApiWorksheet.prototype.Selection = ApiWorksheet.prototype.GetSelection ();
  * @param {number} col - The column number.
  * @returns {ApiRange | null}
  */
-ApiWorksheet.prototype.GetCells = function (row, col) { return new ApiRange(); };
+ApiWorksheet.prototype.GetCells = (row, col) => new ApiRange();
 
 /**
  * Returns the ApiRange that represents all the cells on the worksheet (not just the cells that are currently in use).
@@ -7499,7 +7499,7 @@ ApiWorksheet.prototype.Cells = ApiWorksheet.prototype.GetCells ();
  * @param {string | number} value - Specifies the rows range in the string or number format.
  * @returns {ApiRange | null}
  */
-ApiWorksheet.prototype.GetRows = function (value) { return new ApiRange(); };
+ApiWorksheet.prototype.GetRows = (value) => new ApiRange();
 
 /**
  * Returns the ApiRange object that represents all the cells on the columns range.
@@ -7508,7 +7508,7 @@ ApiWorksheet.prototype.GetRows = function (value) { return new ApiRange(); };
  * @param {string} sRange - Specifies the columns range in the string format.
  * @returns {ApiRange}
  */
-ApiWorksheet.prototype.GetCols = function (sRange) { return new ApiRange(); };
+ApiWorksheet.prototype.GetCols = (sRange) => new ApiRange();
 
 /**
  * Returns the ApiRange object that represents all the cells on the columns range.
@@ -7525,7 +7525,7 @@ ApiWorksheet.prototype.Cols = ApiWorksheet.prototype.GetCols ();
  * @typeofeditors ["CSE"]
  * @returns {ApiRange}
  */
-ApiWorksheet.prototype.GetUsedRange = function () { return new ApiRange(); };
+ApiWorksheet.prototype.GetUsedRange = () => new ApiRange();
 
 /**
  * Returns the ApiRange object that represents the used range on the specified worksheet.
@@ -7541,7 +7541,7 @@ ApiWorksheet.prototype.UsedRange = ApiWorksheet.prototype.GetUsedRange ();
  * @typeofeditors ["CSE"]
  * @returns {string}
  */
-ApiWorksheet.prototype.GetName = function () { return ""; };
+ApiWorksheet.prototype.GetName = () => "";
 
 /**
  * Sets a name to the current active sheet.
@@ -7549,7 +7549,7 @@ ApiWorksheet.prototype.GetName = function () { return ""; };
  * @typeofeditors ["CSE"]
  * @param {string} sName - The name which will be displayed for the current sheet at the sheet tab.
  */
-ApiWorksheet.prototype.SetName = function (sName) {};
+ApiWorksheet.prototype.SetName = (sName) => {};
 
 /**
  * Sets a name to the current active sheet.
@@ -7565,7 +7565,7 @@ ApiWorksheet.prototype.Name = ApiWorksheet.prototype.SetName ();
  * @typeofeditors ["CSE"]
  * @returns {number}
  */
-ApiWorksheet.prototype.GetIndex = function () { return 0; };
+ApiWorksheet.prototype.GetIndex = () => 0;
 
 /**
  * Returns a sheet index.
@@ -7584,7 +7584,7 @@ ApiWorksheet.prototype.Index = ApiWorksheet.prototype.GetIndex ();
  * @param {string | ApiRange} Range2 - The range of cells from the current sheet.
  * @returns {ApiRange | null} - returns null if such a range does not exist.
  */
-ApiWorksheet.prototype.GetRange = function (Range1, Range2) { return new ApiRange(); };
+ApiWorksheet.prototype.GetRange = (Range1, Range2) => new ApiRange();
 
 /**
  * Returns an object that represents the selected range of the current sheet using the <b>row/column</b> coordinates for the cell selection.
@@ -7594,7 +7594,7 @@ ApiWorksheet.prototype.GetRange = function (Range1, Range2) { return new ApiRang
  * @param {number} nCol - The column number.
  * @returns {ApiRange}
  */
-ApiWorksheet.prototype.GetRangeByNumber = function (nRow, nCol) { return new ApiRange(); };
+ApiWorksheet.prototype.GetRangeByNumber = (nRow, nCol) => new ApiRange();
 
 /**
  * Formats the selected range of cells from the current sheet as a table (with the first row formatted as a header).
@@ -7603,7 +7603,7 @@ ApiWorksheet.prototype.GetRangeByNumber = function (nRow, nCol) { return new Api
  * @typeofeditors ["CSE"]
  * @param {string} sRange - The range of cells from the current sheet which will be formatted as a table.
  */
-ApiWorksheet.prototype.FormatAsTable = function (sRange) {};
+ApiWorksheet.prototype.FormatAsTable = (sRange) => {};
 
 /**
  * Sets the width of the specified column.
@@ -7615,7 +7615,7 @@ ApiWorksheet.prototype.FormatAsTable = function (sRange) {};
  * @param {number} nWidth - The width of the column divided by 7 pixels.
  * @param {boolean} [bWithotPaddings=false] - Specifies whether nWidth will be set without standard paddings.
  */
-ApiWorksheet.prototype.SetColumnWidth = function (nColumn, nWidth, bWithotPaddings) {};
+ApiWorksheet.prototype.SetColumnWidth = (nColumn, nWidth, bWithotPaddings) => {};
 
 /**
  * Sets the height of the specified row measured in points.
@@ -7625,7 +7625,7 @@ ApiWorksheet.prototype.SetColumnWidth = function (nColumn, nWidth, bWithotPaddin
  * @param {number} nRow - The number of the row to set the height to.
  * @param {number} nHeight - The height of the row measured in points.
  */
-ApiWorksheet.prototype.SetRowHeight = function (nRow, nHeight) {};
+ApiWorksheet.prototype.SetRowHeight = (nRow, nHeight) => {};
 
 /**
  * Specifies whether the current sheet gridlines must be displayed or not.
@@ -7633,7 +7633,7 @@ ApiWorksheet.prototype.SetRowHeight = function (nRow, nHeight) {};
  * @typeofeditors ["CSE"]
  * @param {boolean} isDisplayed - Specifies whether the current sheet gridlines must be displayed or not. The default value is <b>true</b>.
  */
-ApiWorksheet.prototype.SetDisplayGridlines = function (isDisplayed) {};
+ApiWorksheet.prototype.SetDisplayGridlines = (isDisplayed) => {};
 
 /**
  * Specifies whether the current sheet row/column headers must be displayed or not.
@@ -7641,7 +7641,7 @@ ApiWorksheet.prototype.SetDisplayGridlines = function (isDisplayed) {};
  * @typeofeditors ["CSE"]
  * @param {boolean} isDisplayed - Specifies whether the current sheet row/column headers must be displayed or not. The default value is <b>true</b>.
  */
-ApiWorksheet.prototype.SetDisplayHeadings = function (isDisplayed) {};
+ApiWorksheet.prototype.SetDisplayHeadings = (isDisplayed) => {};
 
 /**
  * Sets the left margin of the sheet.
@@ -7649,7 +7649,7 @@ ApiWorksheet.prototype.SetDisplayHeadings = function (isDisplayed) {};
  * @typeofeditors ["CSE"]
  * @param {number} nPoints - The left margin size measured in points.
  */
-ApiWorksheet.prototype.SetLeftMargin = function (nPoints) {};
+ApiWorksheet.prototype.SetLeftMargin = (nPoints) => {};
 
 /**
  * Returns the left margin of the sheet.
@@ -7657,7 +7657,7 @@ ApiWorksheet.prototype.SetLeftMargin = function (nPoints) {};
  * @typeofeditors ["CSE"]
  * @returns {number} - The left margin size measured in points.
  */
-ApiWorksheet.prototype.GetLeftMargin = function () { return 0; };
+ApiWorksheet.prototype.GetLeftMargin = () => 0;
 
 /**
  * Returns the left margin of the sheet.
@@ -7673,7 +7673,7 @@ ApiWorksheet.prototype.LeftMargin = ApiWorksheet.prototype.GetLeftMargin ();
  * @typeofeditors ["CSE"]
  * @param {number} nPoints - The right margin size measured in points.
  */
-ApiWorksheet.prototype.SetRightMargin = function (nPoints) {};
+ApiWorksheet.prototype.SetRightMargin = (nPoints) => {};
 
 /**
  * Returns the right margin of the sheet.
@@ -7681,7 +7681,7 @@ ApiWorksheet.prototype.SetRightMargin = function (nPoints) {};
  * @typeofeditors ["CSE"]
  * @returns {number} - The right margin size measured in points.
  */
-ApiWorksheet.prototype.GetRightMargin = function () { return 0; };
+ApiWorksheet.prototype.GetRightMargin = () => 0;
 
 /**
  * Returns the right margin of the sheet.
@@ -7697,7 +7697,7 @@ ApiWorksheet.prototype.RightMargin = ApiWorksheet.prototype.GetRightMargin ();
  * @typeofeditors ["CSE"]
  * @param {number} nPoints - The top margin size measured in points.
  */
-ApiWorksheet.prototype.SetTopMargin = function (nPoints) {};
+ApiWorksheet.prototype.SetTopMargin = (nPoints) => {};
 
 /**
  * Returns the top margin of the sheet.
@@ -7705,7 +7705,7 @@ ApiWorksheet.prototype.SetTopMargin = function (nPoints) {};
  * @typeofeditors ["CSE"]
  * @returns {number} - The top margin size measured in points.
  */
-ApiWorksheet.prototype.GetTopMargin = function () { return 0; };
+ApiWorksheet.prototype.GetTopMargin = () => 0;
 
 /**
  * Returns the top margin of the sheet.
@@ -7721,7 +7721,7 @@ ApiWorksheet.prototype.TopMargin = ApiWorksheet.prototype.GetTopMargin ();
  * @typeofeditors ["CSE"]
  * @param {number} nPoints - The bottom margin size measured in points.
  */
-ApiWorksheet.prototype.SetBottomMargin = function (nPoints) {};
+ApiWorksheet.prototype.SetBottomMargin = (nPoints) => {};
 
 /**
  * Returns the bottom margin of the sheet.
@@ -7729,7 +7729,7 @@ ApiWorksheet.prototype.SetBottomMargin = function (nPoints) {};
  * @typeofeditors ["CSE"]
  * @returns {number} - The bottom margin size measured in points.
  */
-ApiWorksheet.prototype.GetBottomMargin = function () { return 0; };
+ApiWorksheet.prototype.GetBottomMargin = () => 0;
 
 /**
  * Returns the bottom margin of the sheet.
@@ -7745,7 +7745,7 @@ ApiWorksheet.prototype.BottomMargin = ApiWorksheet.prototype.GetBottomMargin ();
  * @typeofeditors ["CSE"]
  * @param {PageOrientation} sPageOrientation - The page orientation type.
  * */
-ApiWorksheet.prototype.SetPageOrientation = function (sPageOrientation) {};
+ApiWorksheet.prototype.SetPageOrientation = (sPageOrientation) => {};
 
 /**
  * Returns the page orientation.
@@ -7753,7 +7753,7 @@ ApiWorksheet.prototype.SetPageOrientation = function (sPageOrientation) {};
  * @typeofeditors ["CSE"]
  * @returns {PageOrientation}
  * */
-ApiWorksheet.prototype.GetPageOrientation = function () { return new PageOrientation(); };
+ApiWorksheet.prototype.GetPageOrientation = () => new PageOrientation();
 
 /**
  * Returns the page orientation.
@@ -7769,7 +7769,7 @@ ApiWorksheet.prototype.PageOrientation = ApiWorksheet.prototype.GetPageOrientati
  * @typeofeditors ["CSE"]
  * @returns {boolean} - Specifies whether the current sheet row/column headings must be printed or not.
  * */
-ApiWorksheet.prototype.GetPrintHeadings = function () { return true; };
+ApiWorksheet.prototype.GetPrintHeadings = () => true;
 
 /**
  * Specifies whether the current sheet row/column headers must be printed or not.
@@ -7777,7 +7777,7 @@ ApiWorksheet.prototype.GetPrintHeadings = function () { return true; };
  * @typeofeditors ["CSE"]
  * @param {boolean} bPrint - Specifies whether the current sheet row/column headers must be printed or not.
  * */
-ApiWorksheet.prototype.SetPrintHeadings = function (bPrint) {};
+ApiWorksheet.prototype.SetPrintHeadings = (bPrint) => {};
 
 /**
  * Specifies whether the current sheet row/column headers must be printed or not.
@@ -7793,7 +7793,7 @@ ApiWorksheet.prototype.PrintHeadings = ApiWorksheet.prototype.SetPrintHeadings (
  * @typeofeditors ["CSE"]
  * @returns {boolean} - True if cell gridlines are printed on this page.
  * */
-ApiWorksheet.prototype.GetPrintGridlines = function () { return true; };
+ApiWorksheet.prototype.GetPrintGridlines = () => true;
 
 /**
  * Specifies whether the current sheet gridlines must be printed or not.
@@ -7801,7 +7801,7 @@ ApiWorksheet.prototype.GetPrintGridlines = function () { return true; };
  * @typeofeditors ["CSE"]
  * @param {boolean} bPrint - Defines if cell gridlines are printed on this page or not.
  * */
-ApiWorksheet.prototype.SetPrintGridlines = function (bPrint) {};
+ApiWorksheet.prototype.SetPrintGridlines = (bPrint) => {};
 
 /**
  * Specifies whether the current sheet gridlines must be printed or not.
@@ -7817,7 +7817,7 @@ ApiWorksheet.prototype.PrintGridlines = ApiWorksheet.prototype.SetPrintGridlines
  * @typeofeditors ["CSE"]
  * @returns {ApiName[]}
  */
-ApiWorksheet.prototype.GetDefNames = function () { return [new ApiName()]; };
+ApiWorksheet.prototype.GetDefNames = () => [new ApiName()];
 
 /**
  * Returns the ApiName object by the worksheet name.
@@ -7826,7 +7826,7 @@ ApiWorksheet.prototype.GetDefNames = function () { return [new ApiName()]; };
  * @param {string} defName - The worksheet name.
  * @returns {ApiName | null} - returns null if definition name doesn't exist.
  */
-ApiWorksheet.prototype.GetDefName = function (defName) { return new ApiName(); };
+ApiWorksheet.prototype.GetDefName = (defName) => new ApiName();
 
 /**
  * Adds a new name to the current worksheet.
@@ -7838,7 +7838,7 @@ ApiWorksheet.prototype.GetDefName = function (defName) { return new ApiName(); }
  * @param {boolean} isHidden - Defines if the range name is hidden or not.
  * @returns {boolean} - returns false if sName or sRef are invalid.
  */
-ApiWorksheet.prototype.AddDefName = function (sName, sRef, isHidden) { return true; };
+ApiWorksheet.prototype.AddDefName = (sName, sRef, isHidden) => true;
 
 /**
  * Adds a new name to the current worksheet.
@@ -7858,7 +7858,7 @@ ApiWorksheet.prototype.DefNames = ApiWorksheet.prototype.AddDefName ();
  * @typeofeditors ["CSE"]
  * @returns {ApiComment[]}
  */
-ApiWorksheet.prototype.GetComments = function () { return [new ApiComment()]; };
+ApiWorksheet.prototype.GetComments = () => [new ApiComment()];
 
 /**
  * Returns all comments from the current worksheet.
@@ -7873,7 +7873,7 @@ ApiWorksheet.prototype.Comments = ApiWorksheet.prototype.GetComments ();
  * @memberof ApiWorksheet
  * @typeofeditors ["CSE"]
  */
-ApiWorksheet.prototype.Delete = function () {};
+ApiWorksheet.prototype.Delete = () => {};
 
 /**
  * Adds a hyperlink to the specified range.
@@ -7885,7 +7885,7 @@ ApiWorksheet.prototype.Delete = function () {};
  * @param {string} sScreenTip - The screen tip text.
  * @param {string} sTextToDisplay - The link text that will be displayed on the sheet.
  * */
-ApiWorksheet.prototype.SetHyperlink = function (sRange, sAddress, subAddress, sScreenTip, sTextToDisplay) {};
+ApiWorksheet.prototype.SetHyperlink = (sRange, sAddress, subAddress, sScreenTip, sTextToDisplay) => {};
 
 /**
  * Creates a chart of the specified type from the selected data range of the current sheet.
@@ -7905,7 +7905,7 @@ ApiWorksheet.prototype.SetHyperlink = function (sRange, sAddress, subAddress, sS
  * @param {EMU} nRowOffset - The offset from the nFromRow row to the upper part of the chart measured in English measure units.
  * @returns {ApiChart}
  */
-ApiWorksheet.prototype.AddChart = function (sDataRange, bInRows, sType, nStyleIndex, nExtX, nExtY, nFromCol, nColOffset, nFromRow, nRowOffset) { return new ApiChart(); };
+ApiWorksheet.prototype.AddChart = (sDataRange, bInRows, sType, nStyleIndex, nExtX, nExtY, nFromCol, nColOffset, nFromRow, nRowOffset) => new ApiChart();
 
 /**
  * Adds a shape to the current sheet with the parameters specified.
@@ -7925,7 +7925,7 @@ ApiWorksheet.prototype.AddChart = function (sDataRange, bInRows, sType, nStyleIn
  * @param {EMU} nRowOffset - The offset from the nFromRow row to the upper part of the shape measured in English measure units.
  * @returns {ApiShape}
  * */
-ApiWorksheet.prototype.AddShape = function (sType, nWidth, nHeight, oFill, oStroke, nFromCol, nColOffset, nFromRow, nRowOffset) { return new ApiShape(); };
+ApiWorksheet.prototype.AddShape = (sType, nWidth, nHeight, oFill, oStroke, nFromCol, nColOffset, nFromRow, nRowOffset) => new ApiShape();
 
 /**
  * Adds an image to the current sheet with the parameters specified.
@@ -7940,7 +7940,7 @@ ApiWorksheet.prototype.AddShape = function (sType, nWidth, nHeight, oFill, oStro
  * @param {EMU} nRowOffset - The offset from the nFromRow row to the upper part of the image measured in English measure units.
  * @returns {ApiImage}
  */
-ApiWorksheet.prototype.AddImage = function (sImageSrc, nWidth, nHeight, nFromCol, nColOffset, nFromRow, nRowOffset) { return new ApiImage(); };
+ApiWorksheet.prototype.AddImage = (sImageSrc, nWidth, nHeight, nFromCol, nColOffset, nFromRow, nRowOffset) => new ApiImage();
 
 /**
  * Adds a Text Art object to the current sheet with the parameters specified.
@@ -7960,7 +7960,7 @@ ApiWorksheet.prototype.AddImage = function (sImageSrc, nWidth, nHeight, nFromCol
  * @param {EMU} [nRowOffset=0] - The offset from the nFromRow row to the upper part of the Text Art object measured in English measure units.
  * @returns {ApiDrawing}
  */
-ApiWorksheet.prototype.AddWordArt = function (oTextPr, sText, sTransform, oFill, oStroke, nRotAngle, nWidth, nHeight, nFromCol, nFromRow, nColOffset, nRowOffset) { return new ApiDrawing(); };
+ApiWorksheet.prototype.AddWordArt = (oTextPr, sText, sTransform, oFill, oStroke, nRotAngle, nWidth, nHeight, nFromCol, nFromRow, nColOffset, nRowOffset) => new ApiDrawing();
 
 /**
  * Adds an OLE object to the current sheet with the parameters specified.
@@ -7977,7 +7977,7 @@ ApiWorksheet.prototype.AddWordArt = function (oTextPr, sText, sTransform, oFill,
  * @param {EMU} nRowOffset - The offset from the nFromRow row to the upper part of the OLE object measured in English measure units.
  * @returns {ApiOleObject}
  */
-ApiWorksheet.prototype.AddOleObject = function (sImageSrc, nWidth, nHeight, sData, sAppId, nFromCol, nColOffset, nFromRow, nRowOffset) { return new ApiOleObject(); };
+ApiWorksheet.prototype.AddOleObject = (sImageSrc, nWidth, nHeight, sData, sAppId, nFromCol, nColOffset, nFromRow, nRowOffset) => new ApiOleObject();
 
 /**
  * Replaces the current image with a new one.
@@ -7987,7 +7987,7 @@ ApiWorksheet.prototype.AddOleObject = function (sImageSrc, nWidth, nHeight, sDat
  * @param {EMU} nWidth - The image width in English measure units.
  * @param {EMU} nHeight - The image height in English measure units.
  */
-ApiWorksheet.prototype.ReplaceCurrentImage = function (sImageUrl, nWidth, nHeight) {};
+ApiWorksheet.prototype.ReplaceCurrentImage = (sImageUrl, nWidth, nHeight) => {};
 
 /**
  * Returns all drawings from the current sheet.
@@ -7995,7 +7995,7 @@ ApiWorksheet.prototype.ReplaceCurrentImage = function (sImageUrl, nWidth, nHeigh
  * @typeofeditors ["CSE"]
  * @returns {ApiDrawing[]}.
  */
-ApiWorksheet.prototype.GetAllDrawings = function () { return [new ApiDrawing()]; };
+ApiWorksheet.prototype.GetAllDrawings = () => [new ApiDrawing()];
 
 /**
  * Returns all images from the current sheet.
@@ -8003,7 +8003,7 @@ ApiWorksheet.prototype.GetAllDrawings = function () { return [new ApiDrawing()];
  * @typeofeditors ["CSE"]
  * @returns {ApiImage[]}.
  */
-ApiWorksheet.prototype.GetAllImages = function () { return [new ApiImage()]; };
+ApiWorksheet.prototype.GetAllImages = () => [new ApiImage()];
 
 /**
  * Returns all shapes from the current sheet.
@@ -8011,7 +8011,7 @@ ApiWorksheet.prototype.GetAllImages = function () { return [new ApiImage()]; };
  * @typeofeditors ["CSE"]
  * @returns {ApiShape[]}.
  */
-ApiWorksheet.prototype.GetAllShapes = function () { return [new ApiShape()]; };
+ApiWorksheet.prototype.GetAllShapes = () => [new ApiShape()];
 
 /**
  * Returns all charts from the current sheet.
@@ -8019,7 +8019,7 @@ ApiWorksheet.prototype.GetAllShapes = function () { return [new ApiShape()]; };
  * @typeofeditors ["CSE"]
  * @returns {ApiChart[]}.
  */
-ApiWorksheet.prototype.GetAllCharts = function () { return [new ApiChart()]; };
+ApiWorksheet.prototype.GetAllCharts = () => [new ApiChart()];
 
 /**
  * Returns all OLE objects from the current sheet.
@@ -8027,7 +8027,7 @@ ApiWorksheet.prototype.GetAllCharts = function () { return [new ApiChart()]; };
  * @typeofeditors ["CSE"]
  * @returns {ApiOleObject[]}.
  */
-ApiWorksheet.prototype.GetAllOleObjects = function () { return [new ApiOleObject()]; };
+ApiWorksheet.prototype.GetAllOleObjects = () => [new ApiOleObject()];
 
 /**
  * Moves the current sheet to another location in the workbook.
@@ -8036,7 +8036,7 @@ ApiWorksheet.prototype.GetAllOleObjects = function () { return [new ApiOleObject
  * @param {ApiWorksheet} before - The sheet before which the current sheet will be placed. You cannot specify "before" if you specify "after".
  * @param {ApiWorksheet} after - The sheet after which the current sheet will be placed. You cannot specify "after" if you specify "before".
  */
-ApiWorksheet.prototype.Move = function (before, after) {};
+ApiWorksheet.prototype.Move = (before, after) => {};
 
 /**
  * Returns the freeze panes from the current worksheet.
@@ -8045,7 +8045,7 @@ ApiWorksheet.prototype.Move = function (before, after) {};
  * @returns {ApiFreezePanes}
  * @since 8.0.0
  */
-ApiWorksheet.prototype.GetFreezePanes = function () { return new ApiFreezePanes(); };
+ApiWorksheet.prototype.GetFreezePanes = () => new ApiFreezePanes();
 
 /**
  * Returns the freeze panes from the current worksheet.
@@ -8065,7 +8065,7 @@ ApiWorksheet.prototype.FreezePanes = ApiWorksheet.prototype.GetFreezePanes ();
  * @returns {ApiProtectedRange | null}
  * @since 8.1.0
  */
-ApiWorksheet.prototype.AddProtectedRange = function (sTitle, sDataRange) { return new ApiProtectedRange(); };
+ApiWorksheet.prototype.AddProtectedRange = (sTitle, sDataRange) => new ApiProtectedRange();
 
 /**
  * Returns a protected range object by its title.
@@ -8075,7 +8075,7 @@ ApiWorksheet.prototype.AddProtectedRange = function (sTitle, sDataRange) { retur
  * @returns {ApiProtectedRange | null}
  * @since 8.1.0
  */
-ApiWorksheet.prototype.GetProtectedRange = function (sTitle) { return new ApiProtectedRange(); };
+ApiWorksheet.prototype.GetProtectedRange = (sTitle) => new ApiProtectedRange();
 
 /**
  * Returns all protected ranges from the current worksheet.
@@ -8084,7 +8084,7 @@ ApiWorksheet.prototype.GetProtectedRange = function (sTitle) { return new ApiPro
  * @returns {ApiProtectedRange[] | null}
  * @since 8.1.0
  */
-ApiWorksheet.prototype.GetAllProtectedRanges = function () { return [new ApiProtectedRange()]; };
+ApiWorksheet.prototype.GetAllProtectedRanges = () => [new ApiProtectedRange()];
 
 /**
  * Returns all protected ranges from the current worksheet.
@@ -8102,7 +8102,7 @@ ApiWorksheet.prototype.AllProtectedRanges = ApiWorksheet.prototype.GetAllProtect
  * @param {ApiRange} [destination] - Object that specifies where the Clipboard contents should be pasted. If this argument is omitted, the current selection is used.
  * @since 8.1.0
  */
-ApiWorksheet.prototype.Paste = function (destination) {};
+ApiWorksheet.prototype.Paste = (destination) => {};
 
 /**
  * Specifies the cell border position.
@@ -8145,7 +8145,7 @@ ApiWorksheet.prototype.Paste = function (destination) {};
  * @typeofeditors ["CSE"]
  * @returns {"range"}
  */
-ApiRange.prototype.GetClassType = function () { return ""; };
+ApiRange.prototype.GetClassType = () => "";
 
 /**
  * Returns a row number for the selected cell.
@@ -8153,7 +8153,7 @@ ApiRange.prototype.GetClassType = function () { return ""; };
  * @typeofeditors ["CSE"]
  * @returns {number}
  */
-ApiRange.prototype.GetRow = function () { return 0; };
+ApiRange.prototype.GetRow = () => 0;
 
 /**
  * Returns a row number for the selected cell.
@@ -8169,7 +8169,7 @@ ApiRange.prototype.Row = ApiRange.prototype.GetRow ();
  * @typeofeditors ["CSE"]
  * @returns {number}
  */
-ApiRange.prototype.GetCol = function () { return 0; };
+ApiRange.prototype.GetCol = () => 0;
 
 /**
  * Returns a column number for the selected cell.
@@ -8184,7 +8184,7 @@ ApiRange.prototype.Col = ApiRange.prototype.GetCol ();
  * @memberof ApiRange
  * @typeofeditors ["CSE"]
  */
-ApiRange.prototype.Clear = function () {};
+ApiRange.prototype.Clear = () => {};
 
 /**
  * Returns a Range object that represents the rows in the specified range. If the specified row is outside the Range object, a new Range will be returned that represents the cells between the columns of the original range in the specified row.
@@ -8193,7 +8193,7 @@ ApiRange.prototype.Clear = function () {};
  * @param {number} nRow - The row number (starts counting from 1, the 0 value returns an error).
  * @returns {ApiRange | null}
  */
-ApiRange.prototype.GetRows = function (nRow) { return new ApiRange(); };
+ApiRange.prototype.GetRows = (nRow) => new ApiRange();
 
 /**
  * Returns a Range object that represents the rows in the specified range. If the specified row is outside the Range object, a new Range will be returned that represents the cells between the columns of the original range in the specified row.
@@ -8211,7 +8211,7 @@ ApiRange.prototype.Rows = ApiRange.prototype.GetRows ();
  * @param {number} nCol - The column number. *
  * @returns {ApiRange | null}
  */
-ApiRange.prototype.GetCols = function (nCol) { return new ApiRange(); };
+ApiRange.prototype.GetCols = (nCol) => new ApiRange();
 
 /**
  * Returns a Range object that represents the columns in the specified range.
@@ -8229,7 +8229,7 @@ ApiRange.prototype.Cols = ApiRange.prototype.GetCols ();
  * @param {Direction} direction - The direction of end in the specified range. *
  * @returns {ApiRange}
  */
-ApiRange.prototype.End = function (direction) { return new ApiRange(); };
+ApiRange.prototype.End = (direction) => new ApiRange();
 
 /**
  * Returns a Range object that represents all the cells in the specified range or a specified cell.
@@ -8239,7 +8239,7 @@ ApiRange.prototype.End = function (direction) { return new ApiRange(); };
  * @param {number} col - The column number.
  * @returns {ApiRange}
  */
-ApiRange.prototype.GetCells = function (row, col) { return new ApiRange(); };
+ApiRange.prototype.GetCells = (row, col) => new ApiRange();
 
 /**
  * Returns a Range object that represents all the cells in the specified range or a specified cell.
@@ -8258,7 +8258,7 @@ ApiRange.prototype.Cells = ApiRange.prototype.GetCells ();
  * @param {number} nRow - The row number.
  * @param {number} nCol - The column number.
  */
-ApiRange.prototype.SetOffset = function (nRow, nCol) {};
+ApiRange.prototype.SetOffset = (nRow, nCol) => {};
 
 /**
  * Returns the range address.
@@ -8271,7 +8271,7 @@ ApiRange.prototype.SetOffset = function (nRow, nCol) {};
  * @param {range} RelativeTo - The range which the current range is relative to.
  * @returns {string | null} - returns address of range as string.
  */
-ApiRange.prototype.GetAddress = function (RowAbs, ColAbs, RefStyle, External, RelativeTo) { return ""; };
+ApiRange.prototype.GetAddress = (RowAbs, ColAbs, RefStyle, External, RelativeTo) => "";
 
 /**
  * Returns the range address.
@@ -8292,7 +8292,7 @@ ApiRange.prototype.Address = ApiRange.prototype.GetAddress ();
  * @typeofeditors ["CSE"]
  * @returns {number}
  */
-ApiRange.prototype.GetCount = function () { return 0; };
+ApiRange.prototype.GetCount = () => 0;
 
 /**
  * Returns the rows or columns count.
@@ -8308,7 +8308,7 @@ ApiRange.prototype.Count = ApiRange.prototype.GetCount ();
  * @typeofeditors ["CSE"]
  * @returns {string | string[][]}
  */
-ApiRange.prototype.GetValue = function () { return [""]; };
+ApiRange.prototype.GetValue = () => [""];
 
 /**
  * Sets a value to the current cell or cell range.
@@ -8317,7 +8317,7 @@ ApiRange.prototype.GetValue = function () { return [""]; };
  * @param {string | bool | number | Array[] | Array[][]} data - The general value for the cell or cell range.
  * @returns {boolean} - returns false if such a range does not exist.
  */
-ApiRange.prototype.SetValue = function (data) { return true; };
+ApiRange.prototype.SetValue = (data) => true;
 
 /**
  * Sets a value to the current cell or cell range.
@@ -8334,7 +8334,7 @@ ApiRange.prototype.Value = ApiRange.prototype.SetValue ();
  * @memberof ApiRange
  * @returns {string | string[][]} - return Value2 property (value without format) if formula doesn't exist.
  */
-ApiRange.prototype.GetFormula = function () { return [""]; };
+ApiRange.prototype.GetFormula = () => [""];
 
 /**
  * Returns a formula of the specified range.
@@ -8350,7 +8350,7 @@ ApiRange.prototype.Formula = ApiRange.prototype.GetFormula ();
  * @memberof ApiRange
  * @returns {string | string[][]}
  */
-ApiRange.prototype.GetValue2 = function () { return [""]; };
+ApiRange.prototype.GetValue2 = () => [""];
 
 /**
  * Returns the Value2 property (value without format) of the specified range.
@@ -8366,7 +8366,7 @@ ApiRange.prototype.Value2 = ApiRange.prototype.GetValue2 ();
  * @memberof ApiRange
  * @returns {string | string[][]}
  */
-ApiRange.prototype.GetText = function () { return [""]; };
+ApiRange.prototype.GetText = () => [""];
 
 /**
  * Returns the text of the specified range.
@@ -8382,7 +8382,7 @@ ApiRange.prototype.Text = ApiRange.prototype.GetText ();
  * @typeofeditors ["CSE"]
  * @param {ApiColor} oColor - The color object which specifies the color to be set to the text in the cell / cell range.
  */
-ApiRange.prototype.SetFontColor = function (oColor) {};
+ApiRange.prototype.SetFontColor = (oColor) => {};
 
 /**
  * Sets the text color to the current cell range with the previously created color object.
@@ -8398,7 +8398,7 @@ ApiRange.prototype.FontColor = ApiRange.prototype.SetFontColor ();
  * @typeofeditors ["CSE"]
  * @returns {boolean} - returns true if the values in the range specified are hidden.
  */
-ApiRange.prototype.GetHidden = function () { return true; };
+ApiRange.prototype.GetHidden = () => true;
 
 /**
  * Sets the value hiding property. The specified range must span an entire column or row.
@@ -8406,7 +8406,7 @@ ApiRange.prototype.GetHidden = function () { return true; };
  * @typeofeditors ["CSE"]
  * @param {boolean} isHidden - Specifies if the values in the current range are hidden or not.
  */
-ApiRange.prototype.SetHidden = function (isHidden) {};
+ApiRange.prototype.SetHidden = (isHidden) => {};
 
 /**
  * Sets the value hiding property. The specified range must span an entire column or row.
@@ -8422,7 +8422,7 @@ ApiRange.prototype.Hidden = ApiRange.prototype.SetHidden ();
  * @typeofeditors ["CSE"]
  * @returns {number}
  */
-ApiRange.prototype.GetColumnWidth = function () { return 0; };
+ApiRange.prototype.GetColumnWidth = () => 0;
 
 /**
  * Sets the width of all the columns in the current range.
@@ -8432,7 +8432,7 @@ ApiRange.prototype.GetColumnWidth = function () { return 0; };
  * @typeofeditors ["CSE"]
  * @param {number} nWidth - The width of the column divided by 7 pixels.
  */
-ApiRange.prototype.SetColumnWidth = function (nWidth) {};
+ApiRange.prototype.SetColumnWidth = (nWidth) => {};
 
 /**
  * Sets the width of all the columns in the current range.
@@ -8450,7 +8450,7 @@ ApiRange.prototype.ColumnWidth = ApiRange.prototype.SetColumnWidth ();
  * @typeofeditors ["CSE"]
  * @returns {pt} - The row height in the range specified, measured in points.
  */
-ApiRange.prototype.GetRowHeight = function () { return new pt(); };
+ApiRange.prototype.GetRowHeight = () => new pt();
 
 /**
  * Sets the row height value.
@@ -8458,7 +8458,7 @@ ApiRange.prototype.GetRowHeight = function () { return new pt(); };
  * @typeofeditors ["CSE"]
  * @param {pt} nHeight - The row height in the current range measured in points.
  */
-ApiRange.prototype.SetRowHeight = function (nHeight) {};
+ApiRange.prototype.SetRowHeight = (nHeight) => {};
 
 /**
  * Sets the row height value.
@@ -8474,7 +8474,7 @@ ApiRange.prototype.RowHeight = ApiRange.prototype.SetRowHeight ();
  * @typeofeditors ["CSE"]
  * @param {number} nSize - The font size value measured in points.
  */
-ApiRange.prototype.SetFontSize = function (nSize) {};
+ApiRange.prototype.SetFontSize = (nSize) => {};
 
 /**
  * Sets the font size to the characters of the current cell range.
@@ -8490,7 +8490,7 @@ ApiRange.prototype.FontSize = ApiRange.prototype.SetFontSize ();
  * @typeofeditors ["CSE"]
  * @param {string} sName - The font family name used for the current cell range.
  */
-ApiRange.prototype.SetFontName = function (sName) {};
+ApiRange.prototype.SetFontName = (sName) => {};
 
 /**
  * Sets the specified font family as the font name for the current cell range.
@@ -8507,7 +8507,7 @@ ApiRange.prototype.FontName = ApiRange.prototype.SetFontName ();
  * @param {'center' | 'bottom' | 'top' | 'distributed' | 'justify'} sAligment - The vertical alignment that will be applied to the cell contents.
  * @returns {boolean} - return false if sAligment doesn't exist.
  */
-ApiRange.prototype.SetAlignVertical = function (sAligment) { return true; };
+ApiRange.prototype.SetAlignVertical = (sAligment) => true;
 
 /**
  * Sets the vertical alignment of the text in the current cell range.
@@ -8525,7 +8525,7 @@ ApiRange.prototype.AlignVertical = ApiRange.prototype.SetAlignVertical ();
  * @param {'left' | 'right' | 'center' | 'justify'} sAlignment - The horizontal alignment that will be applied to the cell contents.
  * @returns {boolean} - return false if sAligment doesn't exist.
  */
-ApiRange.prototype.SetAlignHorizontal = function (sAlignment) { return true; };
+ApiRange.prototype.SetAlignHorizontal = (sAlignment) => true;
 
 /**
  * Sets the horizontal alignment of the text in the current cell range.
@@ -8542,7 +8542,7 @@ ApiRange.prototype.AlignHorizontal = ApiRange.prototype.SetAlignHorizontal ();
  * @typeofeditors ["CSE"]
  * @param {boolean} isBold - Specifies that the contents of the current cell / cell range are displayed bold.
  */
-ApiRange.prototype.SetBold = function (isBold) {};
+ApiRange.prototype.SetBold = (isBold) => {};
 
 /**
  * Sets the bold property to the text characters in the current cell or cell range.
@@ -8558,7 +8558,7 @@ ApiRange.prototype.Bold = ApiRange.prototype.SetBold ();
  * @typeofeditors ["CSE"]
  * @param {boolean} isItalic - Specifies that the contents of the current cell / cell range are displayed italicized.
  */
-ApiRange.prototype.SetItalic = function (isItalic) {};
+ApiRange.prototype.SetItalic = (isItalic) => {};
 
 /**
  * Sets the italic property to the text characters in the current cell or cell range.
@@ -8580,7 +8580,7 @@ ApiRange.prototype.Italic = ApiRange.prototype.SetItalic ();
  * * <b>"double"</b> - for a double line underlining the cell contents;
  * * <b>"doubleAccounting"</b> - for a double line underlining the cell contents but not protruding beyond the cell borders.
  */
-ApiRange.prototype.SetUnderline = function (undelineType) {};
+ApiRange.prototype.SetUnderline = (undelineType) => {};
 
 /**
  * Specifies that the contents of the current cell / cell range are displayed along with a line appearing directly below the character.
@@ -8602,7 +8602,7 @@ ApiRange.prototype.Underline = ApiRange.prototype.SetUnderline ();
  * @typeofeditors ["CSE"]
  * @param {boolean} isStrikeout - Specifies if the contents of the current cell / cell range are displayed struck through.
  */
-ApiRange.prototype.SetStrikeout = function (isStrikeout) {};
+ApiRange.prototype.SetStrikeout = (isStrikeout) => {};
 
 /**
  * Specifies that the contents of the cell / cell range are displayed with a single horizontal line through the center of the contents.
@@ -8618,7 +8618,7 @@ ApiRange.prototype.Strikeout = ApiRange.prototype.SetStrikeout ();
  * @typeofeditors ["CSE"]
  * @param {boolean} isWrap - Specifies if the words in the cell will be wrapped to fit the cell size.
  */
-ApiRange.prototype.SetWrap = function (isWrap) {};
+ApiRange.prototype.SetWrap = (isWrap) => {};
 
 /**
  * Returns the information about the wrapping cell style.
@@ -8626,7 +8626,7 @@ ApiRange.prototype.SetWrap = function (isWrap) {};
  * @typeofeditors ["CSE"]
  * @returns {boolean}
  */
-ApiRange.prototype.GetWrapText = function () { return true; };
+ApiRange.prototype.GetWrapText = () => true;
 
 /**
  * Returns the information about the wrapping cell style.
@@ -8643,7 +8643,7 @@ ApiRange.prototype.WrapText = ApiRange.prototype.GetWrapText ();
  * @typeofeditors ["CSE"]
  * @param {ApiColor} oColor - The color object which specifies the color to be set to the background in the cell / cell range.
  */
-ApiRange.prototype.SetFillColor = function (oColor) {};
+ApiRange.prototype.SetFillColor = (oColor) => {};
 
 /**
  * Returns the background color for the current cell range. Returns 'No Fill' when the color of the background in the cell / cell range is null.
@@ -8651,7 +8651,7 @@ ApiRange.prototype.SetFillColor = function (oColor) {};
  * @typeofeditors ["CSE"]
  * @returns {ApiColor|'No Fill'} - return 'No Fill' when the color to the background in the cell / cell range is null.
  */
-ApiRange.prototype.GetFillColor = function () { return new ApiColor(); };
+ApiRange.prototype.GetFillColor = () => new ApiColor();
 
 /**
  * Returns the background color for the current cell range. Returns 'No Fill' when the color of the background in the cell / cell range is null.
@@ -8667,7 +8667,7 @@ ApiRange.prototype.FillColor = ApiRange.prototype.GetFillColor ();
  * @typeofeditors ["CSE"]
  * @returns {string | null} This property returns null if all cells in the specified range don't have the same number format.
  */
-ApiRange.prototype.GetNumberFormat = function () { return ""; };
+ApiRange.prototype.GetNumberFormat = () => "";
 
 /**
  * Specifies whether a number in the cell should be treated like number, currency, date, time, etc. or just like text.
@@ -8675,7 +8675,7 @@ ApiRange.prototype.GetNumberFormat = function () { return ""; };
  * @typeofeditors ["CSE"]
  * @param {string} sFormat - Specifies the mask applied to the number in the cell.
  */
-ApiRange.prototype.SetNumberFormat = function (sFormat) {};
+ApiRange.prototype.SetNumberFormat = (sFormat) => {};
 
 /**
  * Specifies whether a number in the cell should be treated like number, currency, date, time, etc. or just like text.
@@ -8693,7 +8693,7 @@ ApiRange.prototype.NumberFormat = ApiRange.prototype.SetNumberFormat ();
  * @param {LineStyle} lineStyle - Specifies the line style used to form the cell border.
  * @param {ApiColor} oColor - The color object which specifies the color to be set to the cell border.
  */
-ApiRange.prototype.SetBorders = function (bordersIndex, lineStyle, oColor) {};
+ApiRange.prototype.SetBorders = (bordersIndex, lineStyle, oColor) => {};
 
 /**
  * Merges the selected cell range into a single cell or a cell row.
@@ -8702,14 +8702,14 @@ ApiRange.prototype.SetBorders = function (bordersIndex, lineStyle, oColor) {};
  * @param {boolean} isAcross - When set to <b>true</b>, the cells within the selected range will be merged along the rows,
  * but remain split in the columns. When set to <b>false</b>, the whole selected range of cells will be merged into a single cell.
  */
-ApiRange.prototype.Merge = function (isAcross) {};
+ApiRange.prototype.Merge = (isAcross) => {};
 
 /**
  * Splits the selected merged cell range into the single cells.
  * @memberof ApiRange
  * @typeofeditors ["CSE"]
  */
-ApiRange.prototype.UnMerge = function () {};
+ApiRange.prototype.UnMerge = () => {};
 
 /**
  * Returns one cell or cells from the merge area.
@@ -8733,7 +8733,7 @@ ApiRange.prototype.MergeArea = new ApiRange();
  * @typeofeditors ["CSE"]
  * @param {Function} fCallback - A function which will be executed for each cell.
  */
-ApiRange.prototype.ForEach = function (fCallback) {};
+ApiRange.prototype.ForEach = (fCallback) => {};
 
 /**
  * Adds a comment to the current range.
@@ -8743,7 +8743,7 @@ ApiRange.prototype.ForEach = function (fCallback) {};
  * @param {string} sAuthor - The author's name (optional).
  * @returns {ApiComment | null} - returns false if comment can't be added.
  */
-ApiRange.prototype.AddComment = function (sText, sAuthor) { return new ApiComment(); };
+ApiRange.prototype.AddComment = (sText, sAuthor) => new ApiComment();
 
 /**
  * Returns the Worksheet object that represents the worksheet containing the specified range. It will be available in the read-only mode.
@@ -8751,7 +8751,7 @@ ApiRange.prototype.AddComment = function (sText, sAuthor) { return new ApiCommen
  * @typeofeditors ["CSE"]
  * @returns {ApiWorksheet}
  */
-ApiRange.prototype.GetWorksheet = function () { return new ApiWorksheet(); };
+ApiRange.prototype.GetWorksheet = () => new ApiWorksheet();
 
 /**
  * Returns the Worksheet object that represents the worksheet containing the specified range. It will be available in the read-only mode.
@@ -8767,7 +8767,7 @@ ApiRange.prototype.Worksheet = ApiRange.prototype.GetWorksheet ();
  * @typeofeditors ["CSE"]
  * @returns {ApiName}
  */
-ApiRange.prototype.GetDefName = function () { return new ApiName(); };
+ApiRange.prototype.GetDefName = () => new ApiName();
 
 /**
  * Returns the ApiName object of the current range.
@@ -8783,7 +8783,7 @@ ApiRange.prototype.DefName = ApiRange.prototype.GetDefName ();
  * @typeofeditors ["CSE"]
  * @returns {ApiComment | null} - returns null if range does not consist of one cell.
  */
-ApiRange.prototype.GetComment = function () { return new ApiComment(); };
+ApiRange.prototype.GetComment = () => new ApiComment();
 
 /**
  * Returns the ApiComment object of the current range.
@@ -8798,7 +8798,7 @@ ApiRange.prototype.Comments = ApiRange.prototype.GetComment ();
  * @memberof ApiRange
  * @typeofeditors ["CSE"]
  */
-ApiRange.prototype.Select = function () {};
+ApiRange.prototype.Select = () => {};
 
 /**
  * Returns the current range angle.
@@ -8806,7 +8806,7 @@ ApiRange.prototype.Select = function () {};
  * @typeofeditors ["CSE"]
  * @returns {Angle}
  */
-ApiRange.prototype.GetOrientation = function () { return new Angle(); };
+ApiRange.prototype.GetOrientation = () => new Angle();
 
 /**
  * Sets an angle to the current cell range.
@@ -8814,7 +8814,7 @@ ApiRange.prototype.GetOrientation = function () { return new Angle(); };
  * @typeofeditors ["CSE"]
  * @param {Angle} angle - Specifies the range angle.
  */
-ApiRange.prototype.SetOrientation = function (angle) {};
+ApiRange.prototype.SetOrientation = (angle) => {};
 
 /**
  * Sets an angle to the current cell range.
@@ -8837,7 +8837,7 @@ ApiRange.prototype.Orientation = ApiRange.prototype.SetOrientation ();
  * @param {SortHeader} sHeader - Specifies whether the first row contains header information.
  * @param {SortOrientation} sOrientation - Specifies if the sort should be by row (default) or column.
  */
-ApiRange.prototype.SetSort = function (key1, sSortOrder1, key2, /*Type,*/ sSortOrder2, key3, sSortOrder3, sHeader, /*OrderCustom, MatchCase,*/ sOrientation/*, SortMethod, DataOption1, DataOption2, DataOption3*/) {};
+ApiRange.prototype.SetSort = (key1, sSortOrder1, key2, /*Type,*/ sSortOrder2, key3, sSortOrder3, sHeader, /*OrderCustom, MatchCase,*/ sOrientation/*, SortMethod, DataOption1, DataOption2, DataOption3*/) => {};
 
 /**
  * Sorts the cells in the given range by the parameters specified in the request.
@@ -8860,7 +8860,7 @@ ApiRange.prototype.Sort = ApiRange.prototype.SetSort ();
  * @typeofeditors ["CSE"]
  * @param {?string} shift - Specifies how to shift cells to replace the deleted cells ("up", "left").
  */
-ApiRange.prototype.Delete = function (shift) {};
+ApiRange.prototype.Delete = (shift) => {};
 
 /**
  * Inserts a cell or a range of cells into the worksheet or macro sheet and shifts other cells away to make space.
@@ -8868,7 +8868,7 @@ ApiRange.prototype.Delete = function (shift) {};
  * @typeofeditors ["CSE"]
  * @param {?string} shift - Specifies which way to shift the cells ("right", "down").
  */
-ApiRange.prototype.Insert = function (shift) {};
+ApiRange.prototype.Insert = (shift) => {};
 
 /**
  * Changes the width of the columns or the height of the rows in the range to achieve the best fit.
@@ -8877,7 +8877,7 @@ ApiRange.prototype.Insert = function (shift) {};
  * @param {?bool} bRows - Specifies if the width of the columns will be autofit.
  * @param {?bool} bCols - Specifies if the height of the rows will be autofit.
  */
-ApiRange.prototype.AutoFit = function (bRows, bCols) {};
+ApiRange.prototype.AutoFit = (bRows, bCols) => {};
 
 /**
  * Returns a collection of the ranges.
@@ -8885,7 +8885,7 @@ ApiRange.prototype.AutoFit = function (bRows, bCols) {};
  * @typeofeditors ["CSE"]
  * @returns {ApiAreas}
  */
-ApiRange.prototype.GetAreas = function () { return new ApiAreas(); };
+ApiRange.prototype.GetAreas = () => new ApiAreas();
 
 /**
  * Returns a collection of the ranges.
@@ -8901,7 +8901,7 @@ ApiRange.prototype.Areas = ApiRange.prototype.GetAreas ();
  * @typeofeditors ["CSE"]
  * @param {ApiRange} [destination] - Specifies the new range to which the specified range will be copied. If this argument is omitted, Word Office copies the range to the Clipboard.
  */
-ApiRange.prototype.Copy = function (destination) {};
+ApiRange.prototype.Copy = (destination) => {};
 
 /**
  * Cuts the range to the specified range or to the Clipboard.
@@ -8909,7 +8909,7 @@ ApiRange.prototype.Copy = function (destination) {};
  * @typeofeditors ["CSE"]
  * @param {ApiRange} [destination] - Specifies the new range to which the specified range will be cuted. If this argument is omitted, Word Office copies the range to the Clipboard.
  */
-ApiRange.prototype.Cut = function (destination) {};
+ApiRange.prototype.Cut = (destination) => {};
 
 /**
  * Pastes the Range object to the specified range.
@@ -8917,7 +8917,7 @@ ApiRange.prototype.Cut = function (destination) {};
  * @typeofeditors ["CSE"]
  * @param {ApiRange} rangeFrom - Specifies the range to be pasted to the current range
  */
-ApiRange.prototype.Paste = function (rangeFrom) {};
+ApiRange.prototype.Paste = (rangeFrom) => {};
 
 /**
  * Pastes the Range object to the specified range.
@@ -8928,7 +8928,7 @@ ApiRange.prototype.Paste = function (rangeFrom) {};
  * @param {boolean} bSkipBlanks [bSkipBlanks=false] - Case sensitive or not. The default value is "false".
  * @param {boolean} bTranspose [bTranspose=false] - Case sensitive or not. The default value is "false".
  */
-ApiRange.prototype.PasteSpecial = function (sPasteType, sPasteSpecialOperation, bSkipBlanks, bTranspose) {};
+ApiRange.prototype.PasteSpecial = (sPasteType, sPasteSpecialOperation, bSkipBlanks, bTranspose) => {};
 
 /**
  * Search data type (formulas or values).
@@ -8993,7 +8993,7 @@ ApiRange.prototype.PasteSpecial = function (sPasteType, sPasteSpecialOperation, 
  * @param {boolean} MatchCase - Case sensitive or not. The default value is "false".
  * @returns {ApiRange | null} - Returns null if the current range does not contain such text.
  */
-ApiRange.prototype.Find = function (oSearchData) { return new ApiRange(); };
+ApiRange.prototype.Find = (oSearchData) => new ApiRange();
 
 /**
  * Continues a search that was begun with the {@link ApiRange#Find} method. Finds the next cell that matches those same conditions and returns the ApiRange object that represents that cell. This does not affect the selection or the active cell.
@@ -9003,7 +9003,7 @@ ApiRange.prototype.Find = function (oSearchData) { return new ApiRange(); };
  * @returns {ApiRange | null} - Returns null if the range does not contain such text.
  *
  */
-ApiRange.prototype.FindNext = function (After) { return new ApiRange(); };
+ApiRange.prototype.FindNext = (After) => new ApiRange();
 
 /**
  * Continues a search that was begun with the {@link ApiRange#Find} method. Finds the previous cell that matches those same conditions and returns the ApiRange object that represents that cell. This does not affect the selection or the active cell.
@@ -9013,7 +9013,7 @@ ApiRange.prototype.FindNext = function (After) { return new ApiRange(); };
  * @returns {ApiRange | null} - Returns null if the range does not contain such text.
  *
  */
-ApiRange.prototype.FindPrevious = function (Before) { return new ApiRange(); };
+ApiRange.prototype.FindPrevious = (Before) => new ApiRange();
 
 /**
  * Replaces specific information to another one in a range.
@@ -9033,7 +9033,7 @@ ApiRange.prototype.FindPrevious = function (Before) { return new ApiRange(); };
  * @param {boolean} MatchCase - Case sensitive or not. The default value is "false".
  * @param {boolean} ReplaceAll - Specifies if all the found data will be replaced or not. The default value is "true".
  */
-ApiRange.prototype.Replace = function (oReplaceData) { return new ApiRange(); };
+ApiRange.prototype.Replace = (oReplaceData) => new ApiRange();
 
 /**
  * Returns the ApiCharacters object that represents a range of characters within the object text. Use the ApiCharacters object to format characters within a text string.
@@ -9044,7 +9044,7 @@ ApiRange.prototype.Replace = function (oReplaceData) { return new ApiRange(); };
  * @returns {ApiCharacters}
  * @since 7.4.0
  */
-ApiRange.prototype.GetCharacters = function (Start, Length) { return new ApiCharacters(); };
+ApiRange.prototype.GetCharacters = (Start, Length) => new ApiCharacters();
 
 /**
  * Returns the ApiCharacters object that represents a range of characters within the object text. Use the ApiCharacters object to format characters within a text string.
@@ -9063,7 +9063,7 @@ ApiRange.prototype.Characters = ApiRange.prototype.GetCharacters ();
  * @typeofeditors ["CSE"]
  * @returns {"drawing"}
  */
-ApiDrawing.prototype.GetClassType = function () { return ""; };
+ApiDrawing.prototype.GetClassType = () => "";
 
 /**
  * Sets a size of the object (image, shape, chart) bounding box.
@@ -9072,7 +9072,7 @@ ApiDrawing.prototype.GetClassType = function () { return ""; };
  * @param {EMU} nWidth - The object width measured in English measure units.
  * @param {EMU} nHeight - The object height measured in English measure units.
  */
-ApiDrawing.prototype.SetSize = function (nWidth, nHeight) {};
+ApiDrawing.prototype.SetSize = (nWidth, nHeight) => {};
 
 /**
  * Changes the position for the drawing object.
@@ -9085,7 +9085,7 @@ ApiDrawing.prototype.SetSize = function (nWidth, nHeight) {};
  * @param {number} nFromRow - The number of the row where the beginning of the drawing object will be placed.
  * @param {EMU} nRowOffset - The offset from the nFromRow row to the upper part of the drawing object measured in English measure units.
  * */
-ApiDrawing.prototype.SetPosition = function (nFromCol, nColOffset, nFromRow, nRowOffset) {};
+ApiDrawing.prototype.SetPosition = (nFromCol, nColOffset, nFromRow, nRowOffset) => {};
 
 /**
  * Returns the width of the current drawing.
@@ -9093,7 +9093,7 @@ ApiDrawing.prototype.SetPosition = function (nFromCol, nColOffset, nFromRow, nRo
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {EMU}
  */
-ApiDrawing.prototype.GetWidth = function () { return new EMU(); };
+ApiDrawing.prototype.GetWidth = () => new EMU();
 
 /**
  * Returns the height of the current drawing.
@@ -9101,7 +9101,7 @@ ApiDrawing.prototype.GetWidth = function () { return new EMU(); };
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {EMU}
  */
-ApiDrawing.prototype.GetHeight = function () { return new EMU(); };
+ApiDrawing.prototype.GetHeight = () => new EMU();
 
 /**
  * Returns the lock value for the specified lock type of the current drawing.
@@ -9110,7 +9110,7 @@ ApiDrawing.prototype.GetHeight = function () { return new EMU(); };
  * | "noChangeArrowheads" | "noChangeShapeType" | "noDrilldown" | "noTextEdit" | "noCrop" | "txBox"} sType - Lock type in the string format.
  * @returns {bool}
  */
-ApiDrawing.prototype.GetLockValue = function (sType) { return true; };
+ApiDrawing.prototype.GetLockValue = (sType) => true;
 
 /**
  * Sets the lock value to the specified lock type of the current drawing.
@@ -9120,7 +9120,7 @@ ApiDrawing.prototype.GetLockValue = function (sType) { return true; };
  * @param {bool} bValue - Specifies if the specified lock is applied to the current drawing.
  * @returns {bool}
  */
-ApiDrawing.prototype.SetLockValue = function (sType, bValue) { return true; };
+ApiDrawing.prototype.SetLockValue = (sType, bValue) => true;
 
 /**
  * Returns a type of the ApiImage class.
@@ -9128,7 +9128,7 @@ ApiDrawing.prototype.SetLockValue = function (sType, bValue) { return true; };
  * @typeofeditors ["CDE", "CSE"]
  * @returns {"image"}
  */
-ApiImage.prototype.GetClassType = function () { return ""; };
+ApiImage.prototype.GetClassType = () => "";
 
 /**
  * Returns a type of the ApiShape class.
@@ -9136,7 +9136,7 @@ ApiImage.prototype.GetClassType = function () { return ""; };
  * @typeofeditors ["CSE"]
  * @returns {"shape"}
  */
-ApiShape.prototype.GetClassType = function () { return ""; };
+ApiShape.prototype.GetClassType = () => "";
 
 /**
  * Returns the shape inner contents where a paragraph or text runs can be inserted.
@@ -9144,7 +9144,7 @@ ApiShape.prototype.GetClassType = function () { return ""; };
  * @typeofeditors ["CSE"]
  * @returns {ApiDocumentContent}
  */
-ApiShape.prototype.GetContent = function () { return new ApiDocumentContent(); };
+ApiShape.prototype.GetContent = () => new ApiDocumentContent();
 
 /**
  * Returns the shape inner contents where a paragraph or text runs can be inserted.
@@ -9152,7 +9152,7 @@ ApiShape.prototype.GetContent = function () { return new ApiDocumentContent(); }
  * @typeofeditors ["CSE"]
  * @returns {ApiDocumentContent}
  */
-ApiShape.prototype.GetDocContent = function () { return new ApiDocumentContent(); };
+ApiShape.prototype.GetDocContent = () => new ApiDocumentContent();
 
 /**
  * Sets the vertical alignment to the shape content where a paragraph or text runs can be inserted.
@@ -9161,7 +9161,7 @@ ApiShape.prototype.GetDocContent = function () { return new ApiDocumentContent()
  * @param {"top" | "center" | "bottom" } sVerticalAlign - The vertical alignment type for the shape inner contents.
  * @returns {boolean} - returns false if shape or aligment doesn't exist.
  */
-ApiShape.prototype.SetVerticalTextAlign = function (sVerticalAlign) { return true; };
+ApiShape.prototype.SetVerticalTextAlign = (sVerticalAlign) => true;
 
 /**
  * Returns a type of the ApiChart class.
@@ -9169,7 +9169,7 @@ ApiShape.prototype.SetVerticalTextAlign = function (sVerticalAlign) { return tru
  * @typeofeditors ["CSE"]
  * @returns {"chart"}
  */
-ApiChart.prototype.GetClassType = function () { return ""; };
+ApiChart.prototype.GetClassType = () => "";
 
 /**
  *  Specifies the chart title with the specified parameters.
@@ -9179,7 +9179,7 @@ ApiChart.prototype.GetClassType = function () { return ""; };
  *  @param {pt} nFontSize - The text size value measured in points.
  *  @param {?bool} bIsBold - Specifies if the chart title is written in bold font or not.
  */
-ApiChart.prototype.SetTitle = function (sTitle, nFontSize, bIsBold) {};
+ApiChart.prototype.SetTitle = (sTitle, nFontSize, bIsBold) => {};
 
 /**
  *  Specifies the chart horizontal axis title.
@@ -9189,7 +9189,7 @@ ApiChart.prototype.SetTitle = function (sTitle, nFontSize, bIsBold) {};
  *  @param {pt} nFontSize - The text size value measured in points.
  *  @param {?bool} bIsBold - Specifies if the horizontal axis title is written in bold font or not.
  * */
-ApiChart.prototype.SetHorAxisTitle = function (sTitle, nFontSize, bIsBold) {};
+ApiChart.prototype.SetHorAxisTitle = (sTitle, nFontSize, bIsBold) => {};
 
 /**
  *  Specifies the chart vertical axis title.
@@ -9199,7 +9199,7 @@ ApiChart.prototype.SetHorAxisTitle = function (sTitle, nFontSize, bIsBold) {};
  *  @param {pt} nFontSize - The text size value measured in points.
  *  @param {?bool} bIsBold - Specifies if the vertical axis title is written in bold font or not.
  * */
-ApiChart.prototype.SetVerAxisTitle = function (sTitle, nFontSize, bIsBold) {};
+ApiChart.prototype.SetVerAxisTitle = (sTitle, nFontSize, bIsBold) => {};
 
 /**
  * Specifies the direction of the data displayed on the vertical axis.
@@ -9208,7 +9208,7 @@ ApiChart.prototype.SetVerAxisTitle = function (sTitle, nFontSize, bIsBold) {};
  * @param {boolean} bIsMinMax - The <code>true</code> value sets the normal data direction for the vertical axis (from minimum to maximum).
  * The <code>false</code> value sets the inverted data direction for the vertical axis (from maximum to minimum).
  * */
-ApiChart.prototype.SetVerAxisOrientation = function (bIsMinMax) {};
+ApiChart.prototype.SetVerAxisOrientation = (bIsMinMax) => {};
 
 /**
  * Specifies the major tick mark for the horizontal axis.
@@ -9216,7 +9216,7 @@ ApiChart.prototype.SetVerAxisOrientation = function (bIsMinMax) {};
  * @typeofeditors ["CSE"]
  * @param {TickMark} sTickMark - The type of tick mark appearance.
  * */
-ApiChart.prototype.SetHorAxisMajorTickMark = function (sTickMark) {};
+ApiChart.prototype.SetHorAxisMajorTickMark = (sTickMark) => {};
 
 /**
  * Specifies the minor tick mark for the horizontal axis.
@@ -9224,7 +9224,7 @@ ApiChart.prototype.SetHorAxisMajorTickMark = function (sTickMark) {};
  * @typeofeditors ["CSE"]
  * @param {TickMark} sTickMark - The type of tick mark appearance.
  * */
-ApiChart.prototype.SetHorAxisMinorTickMark = function (sTickMark) {};
+ApiChart.prototype.SetHorAxisMinorTickMark = (sTickMark) => {};
 
 /**
  * Specifies the major tick mark for the vertical axis.
@@ -9232,7 +9232,7 @@ ApiChart.prototype.SetHorAxisMinorTickMark = function (sTickMark) {};
  * @typeofeditors ["CSE"]
  * @param {TickMark} sTickMark - The type of tick mark appearance.
  * */
-ApiChart.prototype.SetVertAxisMajorTickMark = function (sTickMark) {};
+ApiChart.prototype.SetVertAxisMajorTickMark = (sTickMark) => {};
 
 /**
  * Specifies the minor tick mark for the vertical axis.
@@ -9240,7 +9240,7 @@ ApiChart.prototype.SetVertAxisMajorTickMark = function (sTickMark) {};
  * @typeofeditors ["CSE"]
  * @param {TickMark} sTickMark - The type of tick mark appearance.
  * */
-ApiChart.prototype.SetVertAxisMinorTickMark = function (sTickMark) {};
+ApiChart.prototype.SetVertAxisMinorTickMark = (sTickMark) => {};
 
 /**
  * Specifies the direction of the data displayed on the horizontal axis.
@@ -9249,7 +9249,7 @@ ApiChart.prototype.SetVertAxisMinorTickMark = function (sTickMark) {};
  * @param {boolean} bIsMinMax - The <code>true</code> value sets the normal data direction for the horizontal axis
  * (from minimum to maximum). The <code>false</code> value sets the inverted data direction for the horizontal axis (from maximum to minimum).
  * */
-ApiChart.prototype.SetHorAxisOrientation = function (bIsMinMax) {};
+ApiChart.prototype.SetHorAxisOrientation = (bIsMinMax) => {};
 
 /**
  * Specifies the chart legend position.
@@ -9257,7 +9257,7 @@ ApiChart.prototype.SetHorAxisOrientation = function (bIsMinMax) {};
  * @typeofeditors ["CSE"]
  * @param {"left" | "top" | "right" | "bottom" | "none"} sLegendPos - The position of the chart legend inside the chart window.
  * */
-ApiChart.prototype.SetLegendPos = function (sLegendPos) {};
+ApiChart.prototype.SetLegendPos = (sLegendPos) => {};
 
 /**
  * Specifies the legend font size.
@@ -9265,7 +9265,7 @@ ApiChart.prototype.SetLegendPos = function (sLegendPos) {};
  * @typeofeditors ["CSE"]
  * @param {pt} nFontSize - The text size value measured in points.
  * */
-ApiChart.prototype.SetLegendFontSize = function (nFontSize) {};
+ApiChart.prototype.SetLegendFontSize = (nFontSize) => {};
 
 /**
  * Specifies which chart data labels are shown for the chart.
@@ -9276,7 +9276,7 @@ ApiChart.prototype.SetLegendFontSize = function (nFontSize) {};
  * @param {boolean} bShowVal - Whether to show or hide the chart data values.
  * @param {boolean} bShowPercent - Whether to show or hide the percent for the data values (works with stacked chart types).
  * */
-ApiChart.prototype.SetShowDataLabels = function (bShowSerName, bShowCatName, bShowVal, bShowPercent) {};
+ApiChart.prototype.SetShowDataLabels = (bShowSerName, bShowCatName, bShowVal, bShowPercent) => {};
 
 /**
  * Spicifies the show options for the data labels.
@@ -9289,7 +9289,7 @@ ApiChart.prototype.SetShowDataLabels = function (bShowSerName, bShowCatName, bSh
  * @param {boolean} bShowVal - Whether to show or hide the chart data values.
  * @param {boolean} bShowPercent - Whether to show or hide the percent for the data values (works with stacked chart types).
  * */
-ApiChart.prototype.SetShowPointDataLabel = function (nSeriesIndex, nPointIndex, bShowSerName, bShowCatName, bShowVal, bShowPercent) {};
+ApiChart.prototype.SetShowPointDataLabel = (nSeriesIndex, nPointIndex, bShowSerName, bShowCatName, bShowVal, bShowPercent) => {};
 
 /**
  * Sets the possible values for the position of the chart tick labels in relation to the main vertical label or the chart data values.
@@ -9297,7 +9297,7 @@ ApiChart.prototype.SetShowPointDataLabel = function (nSeriesIndex, nPointIndex, 
  * @typeofeditors ["CSE"]
  * @param {TickLabelPosition} sTickLabelPosition - The type for the position of chart vertical tick labels.
  * */
-ApiChart.prototype.SetVertAxisTickLabelPosition = function (sTickLabelPosition) {};
+ApiChart.prototype.SetVertAxisTickLabelPosition = (sTickLabelPosition) => {};
 
 /**
  * Sets the possible values for the position of the chart tick labels in relation to the main horizontal label or the chart data values.
@@ -9305,7 +9305,7 @@ ApiChart.prototype.SetVertAxisTickLabelPosition = function (sTickLabelPosition) 
  * @typeofeditors ["CSE"]
  * @param {TickLabelPosition} sTickLabelPosition - The type for the position of chart horizontal tick labels.
  * */
-ApiChart.prototype.SetHorAxisTickLabelPosition = function (sTickLabelPosition) {};
+ApiChart.prototype.SetHorAxisTickLabelPosition = (sTickLabelPosition) => {};
 
 /**
  * Specifies the visual properties of the major vertical gridline.
@@ -9313,7 +9313,7 @@ ApiChart.prototype.SetHorAxisTickLabelPosition = function (sTickLabelPosition) {
  * @typeofeditors ["CSE"]
  * @param {?ApiStroke} oStroke - The stroke used to create the element shadow.
  * */
-ApiChart.prototype.SetMajorVerticalGridlines = function (oStroke) {};
+ApiChart.prototype.SetMajorVerticalGridlines = (oStroke) => {};
 
 /**
  * Specifies the visual properties of the minor vertical gridline.
@@ -9321,7 +9321,7 @@ ApiChart.prototype.SetMajorVerticalGridlines = function (oStroke) {};
  * @typeofeditors ["CSE"]
  * @param {?ApiStroke} oStroke - The stroke used to create the element shadow.
  * */
-ApiChart.prototype.SetMinorVerticalGridlines = function (oStroke) {};
+ApiChart.prototype.SetMinorVerticalGridlines = (oStroke) => {};
 
 /**
  * Specifies the visual properties of the major horizontal gridline.
@@ -9329,7 +9329,7 @@ ApiChart.prototype.SetMinorVerticalGridlines = function (oStroke) {};
  * @typeofeditors ["CSE"]
  * @param {?ApiStroke} oStroke - The stroke used to create the element shadow.
  * */
-ApiChart.prototype.SetMajorHorizontalGridlines = function (oStroke) {};
+ApiChart.prototype.SetMajorHorizontalGridlines = (oStroke) => {};
 
 /**
  * Specifies the visual properties of the minor vertical gridline.
@@ -9337,7 +9337,7 @@ ApiChart.prototype.SetMajorHorizontalGridlines = function (oStroke) {};
  * @typeofeditors ["CSE"]
  * @param {?ApiStroke} oStroke - The stroke used to create the element shadow.
  */
-ApiChart.prototype.SetMinorHorizontalGridlines = function (oStroke) {};
+ApiChart.prototype.SetMinorHorizontalGridlines = (oStroke) => {};
 
 /**
  * Specifies the font size to the horizontal axis labels.
@@ -9345,7 +9345,7 @@ ApiChart.prototype.SetMinorHorizontalGridlines = function (oStroke) {};
  * @typeofeditors ["CSE"]
  * @param {pt} nFontSize - The text size value measured in points.
  */
-ApiChart.prototype.SetHorAxisLablesFontSize = function (nFontSize) {};
+ApiChart.prototype.SetHorAxisLablesFontSize = (nFontSize) => {};
 
 /**
  * Specifies the font size to the vertical axis labels.
@@ -9353,7 +9353,7 @@ ApiChart.prototype.SetHorAxisLablesFontSize = function (nFontSize) {};
  * @typeofeditors ["CSE"]
  * @param {pt} nFontSize - The text size value measured in points.
  */
-ApiChart.prototype.SetVertAxisLablesFontSize = function (nFontSize) {};
+ApiChart.prototype.SetVertAxisLablesFontSize = (nFontSize) => {};
 
 /**
  * Sets a style to the current chart by style ID.
@@ -9362,7 +9362,7 @@ ApiChart.prototype.SetVertAxisLablesFontSize = function (nFontSize) {};
  * @param nStyleId - One of the styles available in the editor.
  * @returns {boolean}
  */
-ApiChart.prototype.ApplyChartStyle = function (nStyleId) { return true; };
+ApiChart.prototype.ApplyChartStyle = (nStyleId) => true;
 
 /**
  * Sets values from the specified range to the specified series.
@@ -9375,7 +9375,7 @@ ApiChart.prototype.ApplyChartStyle = function (nStyleId) { return true; };
  * @param {number} nSeria - The index of the chart series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetSeriaValues = function (sRange, nSeria) { return true; };
+ApiChart.prototype.SetSeriaValues = (sRange, nSeria) => true;
 
 /**
  * Sets the x-axis values from the specified range to the specified series. It is used with the scatter charts only.
@@ -9388,7 +9388,7 @@ ApiChart.prototype.SetSeriaValues = function (sRange, nSeria) { return true; };
  * @param {number} nSeria - The index of the chart series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetSeriaXValues = function (sRange, nSeria) { return true; };
+ApiChart.prototype.SetSeriaXValues = (sRange, nSeria) => true;
 
 /**
  * Sets a name to the specified series.
@@ -9401,7 +9401,7 @@ ApiChart.prototype.SetSeriaXValues = function (sRange, nSeria) { return true; };
  * @param {number} nSeria - The index of the chart series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetSeriaName = function (sNameRange, nSeria) { return true; };
+ApiChart.prototype.SetSeriaName = (sNameRange, nSeria) => true;
 
 /**
  * Sets a range with the category values to the current chart.
@@ -9411,7 +9411,7 @@ ApiChart.prototype.SetSeriaName = function (sNameRange, nSeria) { return true; }
  * * "'sheet 1'!$A$2:$A$5" - must be a single cell, row or column,
  * * "A1:A5" - must be a single cell, row or column.
  */
-ApiChart.prototype.SetCatFormula = function (sRange) {};
+ApiChart.prototype.SetCatFormula = (sRange) => {};
 
 /**
  * Adds a new series to the current chart.
@@ -9428,7 +9428,7 @@ ApiChart.prototype.SetCatFormula = function (sRange) {};
  * * "'sheet 1'!$A$2:$A$5" - must be a single cell, row or column,
  * * "A1:A5" - must be a single cell, row or column.
  */
-ApiChart.prototype.AddSeria = function (sNameRange, sValuesRange, sXValuesRange) {};
+ApiChart.prototype.AddSeria = (sNameRange, sValuesRange, sXValuesRange) => {};
 
 /**
  * Removes the specified series from the current chart.
@@ -9437,7 +9437,7 @@ ApiChart.prototype.AddSeria = function (sNameRange, sValuesRange, sXValuesRange)
  * @param {number} nSeria - The index of the chart series.
  * @returns {boolean}
  */
-ApiChart.prototype.RemoveSeria = function (nSeria) { return true; };
+ApiChart.prototype.RemoveSeria = (nSeria) => true;
 
 /**
  * Sets the fill to the chart plot area.
@@ -9446,7 +9446,7 @@ ApiChart.prototype.RemoveSeria = function (nSeria) { return true; };
  * @param {ApiFill} oFill - The fill type used to fill the plot area.
  * @returns {boolean}
  */
-ApiChart.prototype.SetPlotAreaFill = function (oFill) { return true; };
+ApiChart.prototype.SetPlotAreaFill = (oFill) => true;
 
 /**
  * Sets the outline to the chart plot area.
@@ -9455,7 +9455,7 @@ ApiChart.prototype.SetPlotAreaFill = function (oFill) { return true; };
  * @param {ApiStroke} oStroke - The stroke used to create the plot area outline.
  * @returns {boolean}
  */
-ApiChart.prototype.SetPlotAreaOutLine = function (oStroke) { return true; };
+ApiChart.prototype.SetPlotAreaOutLine = (oStroke) => true;
 
 /**
  * Sets the fill to the specified chart series.
@@ -9466,7 +9466,7 @@ ApiChart.prototype.SetPlotAreaOutLine = function (oStroke) { return true; };
  * @param {boolean} [bAll=false] - Specifies if the fill will be applied to all series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetSeriesFill = function (oFill, nSeries, bAll) { return true; };
+ApiChart.prototype.SetSeriesFill = (oFill, nSeries, bAll) => true;
 
 /**
  * Sets the outline to the specified chart series.
@@ -9477,7 +9477,7 @@ ApiChart.prototype.SetSeriesFill = function (oFill, nSeries, bAll) { return true
  * @param {boolean} [bAll=false] - Specifies if the outline will be applied to all series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetSeriesOutLine = function (oStroke, nSeries, bAll) { return true; };
+ApiChart.prototype.SetSeriesOutLine = (oStroke, nSeries, bAll) => true;
 
 /**
  * Sets the fill to the data point in the specified chart series.
@@ -9489,7 +9489,7 @@ ApiChart.prototype.SetSeriesOutLine = function (oStroke, nSeries, bAll) { return
  * @param {boolean} [bAllSeries=false] - Specifies if the fill will be applied to the specified data point in all series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetDataPointFill = function (oFill, nSeries, nDataPoint, bAllSeries) { return true; };
+ApiChart.prototype.SetDataPointFill = (oFill, nSeries, nDataPoint, bAllSeries) => true;
 
 /**
  * Sets the outline to the data point in the specified chart series.
@@ -9501,7 +9501,7 @@ ApiChart.prototype.SetDataPointFill = function (oFill, nSeries, nDataPoint, bAll
  * @param {boolean} bAllSeries - Specifies if the outline will be applied to the specified data point in all series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetDataPointOutLine = function (oStroke, nSeries, nDataPoint, bAllSeries) { return true; };
+ApiChart.prototype.SetDataPointOutLine = (oStroke, nSeries, nDataPoint, bAllSeries) => true;
 
 /**
  * Sets the fill to the marker in the specified chart series.
@@ -9513,7 +9513,7 @@ ApiChart.prototype.SetDataPointOutLine = function (oStroke, nSeries, nDataPoint,
  * @param {boolean} [bAllMarkers=false] - Specifies if the fill will be applied to all markers in the specified chart series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetMarkerFill = function (oFill, nSeries, nMarker, bAllMarkers) { return true; };
+ApiChart.prototype.SetMarkerFill = (oFill, nSeries, nMarker, bAllMarkers) => true;
 
 /**
  * Sets the outline to the marker in the specified chart series.
@@ -9525,7 +9525,7 @@ ApiChart.prototype.SetMarkerFill = function (oFill, nSeries, nMarker, bAllMarker
  * @param {boolean} [bAllMarkers=false] - Specifies if the outline will be applied to all markers in the specified chart series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetMarkerOutLine = function (oStroke, nSeries, nMarker, bAllMarkers) { return true; };
+ApiChart.prototype.SetMarkerOutLine = (oStroke, nSeries, nMarker, bAllMarkers) => true;
 
 /**
  * Sets the fill to the chart title.
@@ -9534,7 +9534,7 @@ ApiChart.prototype.SetMarkerOutLine = function (oStroke, nSeries, nMarker, bAllM
  * @param {ApiFill} oFill - The fill type used to fill the title.
  * @returns {boolean}
  */
-ApiChart.prototype.SetTitleFill = function (oFill) { return true; };
+ApiChart.prototype.SetTitleFill = (oFill) => true;
 
 /**
  * Sets the outline to the chart title.
@@ -9543,7 +9543,7 @@ ApiChart.prototype.SetTitleFill = function (oFill) { return true; };
  * @param {ApiStroke} oStroke - The stroke used to create the title outline.
  * @returns {boolean}
  */
-ApiChart.prototype.SetTitleOutLine = function (oStroke) { return true; };
+ApiChart.prototype.SetTitleOutLine = (oStroke) => true;
 
 /**
  * Sets the fill to the chart legend.
@@ -9552,7 +9552,7 @@ ApiChart.prototype.SetTitleOutLine = function (oStroke) { return true; };
  * @param {ApiFill} oFill - The fill type used to fill the legend.
  * @returns {boolean}
  */
-ApiChart.prototype.SetLegendFill = function (oFill) { return true; };
+ApiChart.prototype.SetLegendFill = (oFill) => true;
 
 /**
  * Sets the outline to the chart legend.
@@ -9561,7 +9561,7 @@ ApiChart.prototype.SetLegendFill = function (oFill) { return true; };
  * @param {ApiStroke} oStroke - The stroke used to create the legend outline.
  * @returns {boolean}
  */
-ApiChart.prototype.SetLegendOutLine = function (oStroke) { return true; };
+ApiChart.prototype.SetLegendOutLine = (oStroke) => true;
 
 /**
  * Sets the specified numeric format to the axis values.
@@ -9571,7 +9571,7 @@ ApiChart.prototype.SetLegendOutLine = function (oStroke) { return true; };
  * @param {AxisPos} - Axis position.
  * @returns {boolean}
  */
-ApiChart.prototype.SetAxieNumFormat = function (sFormat, sAxiePos) { return true; };
+ApiChart.prototype.SetAxieNumFormat = (sFormat, sAxiePos) => true;
 
 /**
  * Returns a type of the ApiOleObject class.
@@ -9579,7 +9579,7 @@ ApiChart.prototype.SetAxieNumFormat = function (sFormat, sAxiePos) { return true
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {"oleObject"}
  */
-ApiOleObject.prototype.GetClassType = function () { return ""; };
+ApiOleObject.prototype.GetClassType = () => "";
 
 /**
  * Sets the data to the current OLE object.
@@ -9588,7 +9588,7 @@ ApiOleObject.prototype.GetClassType = function () { return ""; };
  * @param {string} sData - The OLE object string data.
  * @returns {boolean}
  */
-ApiOleObject.prototype.SetData = function (sData) { return true; };
+ApiOleObject.prototype.SetData = (sData) => true;
 
 /**
  * Returns the string data from the current OLE object.
@@ -9596,7 +9596,7 @@ ApiOleObject.prototype.SetData = function (sData) { return true; };
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {string}
  */
-ApiOleObject.prototype.GetData = function () { return ""; };
+ApiOleObject.prototype.GetData = () => "";
 
 /**
  * Sets the application ID to the current OLE object.
@@ -9605,7 +9605,7 @@ ApiOleObject.prototype.GetData = function () { return ""; };
  * @param {string} sAppId - The application ID associated with the current OLE object.
  * @returns {boolean}
  */
-ApiOleObject.prototype.SetApplicationId = function (sAppId) { return true; };
+ApiOleObject.prototype.SetApplicationId = (sAppId) => true;
 
 /**
  * Returns the application ID from the current OLE object.
@@ -9613,7 +9613,7 @@ ApiOleObject.prototype.SetApplicationId = function (sAppId) { return true; };
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {string}
  */
-ApiOleObject.prototype.GetApplicationId = function () { return ""; };
+ApiOleObject.prototype.GetApplicationId = () => "";
 
 /**
  * Returns a type of the ApiColor class.
@@ -9621,7 +9621,7 @@ ApiOleObject.prototype.GetApplicationId = function () { return ""; };
  * @typeofeditors ["CSE"]
  * @returns {"color"}
  */
-ApiColor.prototype.GetClassType = function () { return ""; };
+ApiColor.prototype.GetClassType = () => "";
 
 /**
  * Returns a type of the ApiName class.
@@ -9629,7 +9629,7 @@ ApiColor.prototype.GetClassType = function () { return ""; };
  * @typeofeditors ["CSE"]
  * @returns {string}
  */
-ApiName.prototype.GetName = function () { return ""; };
+ApiName.prototype.GetName = () => "";
 
 /**
  * Sets a string value representing the object name.
@@ -9638,7 +9638,7 @@ ApiName.prototype.GetName = function () { return ""; };
  * @param {string} sName - New name for the range.
  * @returns {boolean} - returns false if sName is invalid.
  */
-ApiName.prototype.SetName = function (sName) { return true; };
+ApiName.prototype.SetName = (sName) => true;
 
 /**
  * Sets a string value representing the object name.
@@ -9654,7 +9654,7 @@ ApiName.prototype.Name = ApiName.prototype.SetName ();
  * @memberof ApiName
  * @typeofeditors ["CSE"]
  */
-ApiName.prototype.Delete = function () {};
+ApiName.prototype.Delete = () => {};
 
 /**
  * Sets a formula that the name is defined to refer to.
@@ -9663,7 +9663,7 @@ ApiName.prototype.Delete = function () {};
  * @param {string} sRef    - The range reference which must contain the sheet name, followed by sign ! and a range of cells.
  * Example: "Sheet1!$A$1:$B$2".
  */
-ApiName.prototype.SetRefersTo = function (sRef) {};
+ApiName.prototype.SetRefersTo = (sRef) => {};
 
 /**
  * Returns a formula that the name is defined to refer to.
@@ -9671,7 +9671,7 @@ ApiName.prototype.SetRefersTo = function (sRef) {};
  * @typeofeditors ["CSE"]
  * @returns {string}
  */
-ApiName.prototype.GetRefersTo = function () { return ""; };
+ApiName.prototype.GetRefersTo = () => "";
 
 /**
  * Returns a formula that the name is defined to refer to.
@@ -9687,7 +9687,7 @@ ApiName.prototype.RefersTo = ApiName.prototype.GetRefersTo ();
  * @typeofeditors ["CSE"]
  * @returns {ApiRange}
  */
-ApiName.prototype.GetRefersToRange = function () { return new ApiRange(); };
+ApiName.prototype.GetRefersToRange = () => new ApiRange();
 
 /**
  * Returns the ApiRange object by its name.
@@ -9703,7 +9703,7 @@ ApiName.prototype.RefersToRange = ApiName.prototype.GetRefersToRange ();
  * @typeofeditors ["CSE"]
  * @returns {"comment"}
  */
-ApiComment.prototype.GetClassType = function () { return ""; };
+ApiComment.prototype.GetClassType = () => "";
 
 /**
  * Returns the comment text.
@@ -9711,7 +9711,7 @@ ApiComment.prototype.GetClassType = function () { return ""; };
  * @typeofeditors ["CSE"]
  * @returns {string}
  */
-ApiComment.prototype.GetText = function () { return ""; };
+ApiComment.prototype.GetText = () => "";
 
 /**
  * Sets the comment text.
@@ -9720,7 +9720,7 @@ ApiComment.prototype.GetText = function () { return ""; };
  * @param {string} text - New text for comment.
  * @since 7.5.0
  */
-ApiComment.prototype.SetText = function (text) {};
+ApiComment.prototype.SetText = (text) => {};
 
 /**
  * Sets the comment text.
@@ -9738,7 +9738,7 @@ ApiComment.prototype.Text = ApiComment.prototype.SetText ();
  * @returns {string}
  * @since 7.5.0
  */
-ApiComment.prototype.GetId = function () { return ""; };
+ApiComment.prototype.GetId = () => "";
 
 /**
  * Returns the current comment ID.
@@ -9756,7 +9756,7 @@ ApiComment.prototype.Id = ApiComment.prototype.GetId ();
  * @returns {string}
  * @since 7.5.0
  */
-ApiComment.prototype.GetAuthorName = function () { return ""; };
+ApiComment.prototype.GetAuthorName = () => "";
 
 /**
  * Sets the comment author's name.
@@ -9765,7 +9765,7 @@ ApiComment.prototype.GetAuthorName = function () { return ""; };
  * @param {string} sAuthorName - The comment author's name.
  * @since 7.5.0
  */
-ApiComment.prototype.SetAuthorName = function (sAuthorName) {};
+ApiComment.prototype.SetAuthorName = (sAuthorName) => {};
 
 /**
  * Sets the comment author's name.
@@ -9783,7 +9783,7 @@ ApiComment.prototype.AuthorName = ApiComment.prototype.SetAuthorName ();
  * @returns {string}
  * @since 7.5.0
  */
-ApiComment.prototype.GetUserId = function () { return ""; };
+ApiComment.prototype.GetUserId = () => "";
 
 /**
  * Sets the user ID to the comment author.
@@ -9792,7 +9792,7 @@ ApiComment.prototype.GetUserId = function () { return ""; };
  * @param {string} sUserId - The user ID of the comment author.
  * @since 7.5.0
  */
-ApiComment.prototype.SetUserId = function (sUserId) {};
+ApiComment.prototype.SetUserId = (sUserId) => {};
 
 /**
  * Sets the user ID to the comment author.
@@ -9810,7 +9810,7 @@ ApiComment.prototype.UserId = ApiComment.prototype.SetUserId ();
  * @returns {boolean}
  * @since 7.5.0
  */
-ApiComment.prototype.IsSolved = function () { return true; };
+ApiComment.prototype.IsSolved = () => true;
 
 /**
  * Marks a comment as solved.
@@ -9819,7 +9819,7 @@ ApiComment.prototype.IsSolved = function () { return true; };
  * @param {boolean} bSolved - Specifies if a comment is solved or not.
  * @since 7.5.0
  */
-ApiComment.prototype.SetSolved = function (bSolved) {};
+ApiComment.prototype.SetSolved = (bSolved) => {};
 
 /**
  * Marks a comment as solved.
@@ -9837,7 +9837,7 @@ ApiComment.prototype.Solved = ApiComment.prototype.SetSolved ();
  * @returns {Number}
  * @since 7.5.0
  */
-ApiComment.prototype.GetTimeUTC = function () { return 0; };
+ApiComment.prototype.GetTimeUTC = () => 0;
 
 /**
  * Sets the timestamp of the comment creation in UTC format.
@@ -9846,7 +9846,7 @@ ApiComment.prototype.GetTimeUTC = function () { return 0; };
  * @param {Number | String} nTimeStamp - The timestamp of the comment creation in UTC format.
  * @since 7.5.0
  */
-ApiComment.prototype.SetTimeUTC = function (timeStamp) {};
+ApiComment.prototype.SetTimeUTC = (timeStamp) => {};
 
 /**
  * Sets the timestamp of the comment creation in UTC format.
@@ -9864,7 +9864,7 @@ ApiComment.prototype.TimeUTC = ApiComment.prototype.SetTimeUTC ();
  * @returns {Number}
  * @since 7.5.0
  */
-ApiComment.prototype.GetTime = function () { return 0; };
+ApiComment.prototype.GetTime = () => 0;
 
 /**
  * Sets the timestamp of the comment creation in the current time zone format.
@@ -9873,7 +9873,7 @@ ApiComment.prototype.GetTime = function () { return 0; };
  * @param {Number | String} nTimeStamp - The timestamp of the comment creation in the current time zone format.
  * @since 7.5.0
  */
-ApiComment.prototype.SetTime = function (timeStamp) {};
+ApiComment.prototype.SetTime = (timeStamp) => {};
 
 /**
  * Sets the timestamp of the comment creation in the current time zone format.
@@ -9891,7 +9891,7 @@ ApiComment.prototype.Time = ApiComment.prototype.SetTime ();
  * @returns {String | null}
  * @since 7.5.0
  */
-ApiComment.prototype.GetQuoteText = function () { return ""; };
+ApiComment.prototype.GetQuoteText = () => "";
 
 /**
  * Returns the quote text of the current comment.
@@ -9909,7 +9909,7 @@ ApiComment.prototype.QuoteText = ApiComment.prototype.GetQuoteText ();
  * @returns {Number}
  * @since 7.5.0
  */
-ApiComment.prototype.GetRepliesCount = function () { return 0; };
+ApiComment.prototype.GetRepliesCount = () => 0;
 
 /**
  * Returns a number of the comment replies.
@@ -9928,7 +9928,7 @@ ApiComment.prototype.RepliesCount = ApiComment.prototype.GetRepliesCount ();
  * @returns {ApiCommentReply}
  * @since 7.5.0
  */
-ApiComment.prototype.GetReply = function (nIndex) { return new ApiCommentReply(); };
+ApiComment.prototype.GetReply = (nIndex) => new ApiCommentReply();
 
 /**
  * Adds a reply to a comment.
@@ -9940,7 +9940,7 @@ ApiComment.prototype.GetReply = function (nIndex) { return new ApiCommentReply()
  * @param {Number} [nPos=this.GetRepliesCount()] - The comment reply position.
  * @since 7.5.0
  */
-ApiComment.prototype.AddReply = function (sText, sAuthorName, sUserId, nPos) {};
+ApiComment.prototype.AddReply = (sText, sAuthorName, sUserId, nPos) => {};
 
 /**
  * Removes the specified comment replies.
@@ -9951,14 +9951,14 @@ ApiComment.prototype.AddReply = function (sText, sAuthorName, sUserId, nPos) {};
  * @param {boolean} [bRemoveAll = false] - Specifies whether to remove all comment replies or not.
  * @since 7.5.0
  */
-ApiComment.prototype.RemoveReplies = function (nPos, nCount, bRemoveAll) {};
+ApiComment.prototype.RemoveReplies = (nPos, nCount, bRemoveAll) => {};
 
 /**
  * Deletes the ApiComment object.
  * @memberof ApiComment
  * @typeofeditors ["CSE"]
  */
-ApiComment.prototype.Delete = function () {};
+ApiComment.prototype.Delete = () => {};
 
 /**
  * Returns a type of the ApiCommentReply class.
@@ -9967,7 +9967,7 @@ ApiComment.prototype.Delete = function () {};
  * @returns {"commentReply"}
  * @since 7.5.0
  */
-ApiCommentReply.prototype.GetClassType = function () { return ""; };
+ApiCommentReply.prototype.GetClassType = () => "";
 
 /**
  * Returns the comment reply text.
@@ -9976,7 +9976,7 @@ ApiCommentReply.prototype.GetClassType = function () { return ""; };
  * @returns {string}
  * @since 7.5.0
  */
-ApiCommentReply.prototype.GetText = function () { return ""; };
+ApiCommentReply.prototype.GetText = () => "";
 
 /**
  * Sets the comment reply text.
@@ -9985,7 +9985,7 @@ ApiCommentReply.prototype.GetText = function () { return ""; };
  * @param {string} sText - The comment reply text.
  * @since 7.5.0
  */
-ApiCommentReply.prototype.SetText = function (sText) {};
+ApiCommentReply.prototype.SetText = (sText) => {};
 
 /**
  * Sets the comment reply text.
@@ -10003,7 +10003,7 @@ ApiCommentReply.prototype.Text = ApiCommentReply.prototype.SetText ();
  * @returns {string}
  * @since 7.5.0
  */
-ApiCommentReply.prototype.GetAuthorName = function () { return ""; };
+ApiCommentReply.prototype.GetAuthorName = () => "";
 
 /**
  * Sets the comment reply author's name.
@@ -10012,7 +10012,7 @@ ApiCommentReply.prototype.GetAuthorName = function () { return ""; };
  * @param {string} sAuthorName - The comment reply author's name.
  * @since 7.5.0
  */
-ApiCommentReply.prototype.SetAuthorName = function (sAuthorName) {};
+ApiCommentReply.prototype.SetAuthorName = (sAuthorName) => {};
 
 /**
  * Sets the comment reply author's name.
@@ -10030,7 +10030,7 @@ ApiCommentReply.prototype.AuthorName = ApiCommentReply.prototype.SetAuthorName (
  * @returns {string}
  * @since 7.5.0
  */
-ApiCommentReply.prototype.GetUserId = function () { return ""; };
+ApiCommentReply.prototype.GetUserId = () => "";
 
 /**
  * Sets the user ID to the comment reply author.
@@ -10039,7 +10039,7 @@ ApiCommentReply.prototype.GetUserId = function () { return ""; };
  * @param {string} sUserId - The user ID of the comment reply author.
  * @since 7.5.0
  */
-ApiCommentReply.prototype.SetUserId = function (sUserId) {};
+ApiCommentReply.prototype.SetUserId = (sUserId) => {};
 
 /**
  * Sets the user ID to the comment reply author.
@@ -10057,7 +10057,7 @@ ApiCommentReply.prototype.UserId = ApiCommentReply.prototype.SetUserId ();
  * @returns {Number}
  * @since 7.5.0
  */
-ApiCommentReply.prototype.GetTimeUTC = function () { return 0; };
+ApiCommentReply.prototype.GetTimeUTC = () => 0;
 
 /**
  * Sets the timestamp of the comment reply creation in UTC format.
@@ -10066,7 +10066,7 @@ ApiCommentReply.prototype.GetTimeUTC = function () { return 0; };
  * @param {Number | String} nTimeStamp - The timestamp of the comment reply creation in UTC format.
  * @since 7.5.0
  */
-ApiCommentReply.prototype.SetTimeUTC = function (timeStamp) {};
+ApiCommentReply.prototype.SetTimeUTC = (timeStamp) => {};
 
 /**
  * Sets the timestamp of the comment reply creation in UTC format.
@@ -10084,7 +10084,7 @@ ApiCommentReply.prototype.TimeUTC = ApiCommentReply.prototype.SetTimeUTC ();
  * @returns {Number}
  * @since 7.5.0
  */
-ApiCommentReply.prototype.GetTime = function () { return 0; };
+ApiCommentReply.prototype.GetTime = () => 0;
 
 /**
  * Sets the timestamp of the comment reply creation in the current time zone format.
@@ -10093,7 +10093,7 @@ ApiCommentReply.prototype.GetTime = function () { return 0; };
  * @param {Number | String} nTimeStamp - The timestamp of the comment reply creation in the current time zone format.
  * @since 7.5.0
  */
-ApiCommentReply.prototype.SetTime = function (timeStamp) {};
+ApiCommentReply.prototype.SetTime = (timeStamp) => {};
 
 /**
  * Sets the timestamp of the comment reply creation in the current time zone format.
@@ -10110,7 +10110,7 @@ ApiCommentReply.prototype.Time = ApiCommentReply.prototype.SetTime ();
  * @typeofeditors ["CSE"]
  * @returns {number}
  */
-ApiAreas.prototype.GetCount = function () { return 0; };
+ApiAreas.prototype.GetCount = () => 0;
 
 /**
  * Returns a value that represents the number of objects in the collection.
@@ -10127,7 +10127,7 @@ ApiAreas.prototype.Count = ApiAreas.prototype.GetCount ();
  * @param {number} ind - The index number of the object.
  * @returns {ApiRange}
  */
-ApiAreas.prototype.GetItem = function (ind) { return new ApiRange(); };
+ApiAreas.prototype.GetItem = (ind) => new ApiRange();
 
 /**
  * Returns the parent object for the specified collection.
@@ -10135,7 +10135,7 @@ ApiAreas.prototype.GetItem = function (ind) { return new ApiRange(); };
  * @typeofeditors ["CSE"]
  * @returns {number}
  */
-ApiAreas.prototype.GetParent = function () { return 0; };
+ApiAreas.prototype.GetParent = () => 0;
 
 /**
  * Returns the parent object for the specified collection.
@@ -10152,7 +10152,7 @@ ApiAreas.prototype.Parent = ApiAreas.prototype.GetParent ();
  * @returns {number}
  * @since 7.4.0
  */
-ApiCharacters.prototype.GetCount = function () { return 0; };
+ApiCharacters.prototype.GetCount = () => 0;
 
 /**
  * Returns a value that represents a number of objects in the collection.
@@ -10170,7 +10170,7 @@ ApiCharacters.prototype.Count = ApiCharacters.prototype.GetCount ();
  * @returns {ApiRange}
  * @since 7.4.0
  */
-ApiCharacters.prototype.GetParent = function () { return new ApiRange(); };
+ApiCharacters.prototype.GetParent = () => new ApiRange();
 
 /**
  * Returns the parent object of the specified characters.
@@ -10187,7 +10187,7 @@ ApiCharacters.prototype.Parent = ApiCharacters.prototype.GetParent ();
  * @typeofeditors ["CSE"]
  * @since 7.4.0
  */
-ApiCharacters.prototype.Delete = function () {};
+ApiCharacters.prototype.Delete = () => {};
 
 /**
  * Inserts a string replacing the specified characters.
@@ -10196,7 +10196,7 @@ ApiCharacters.prototype.Delete = function () {};
  * @param {string} String - The string to insert.
  * @since 7.4.0
  */
-ApiCharacters.prototype.Insert = function (String) {};
+ApiCharacters.prototype.Insert = (String) => {};
 
 /**
  * Sets a string value that represents the text of the specified range of characters.
@@ -10205,7 +10205,7 @@ ApiCharacters.prototype.Insert = function (String) {};
  * @param {string} Caption - A string value that represents the text of the specified range of characters.
  * @since 7.4.0
  */
-ApiCharacters.prototype.SetCaption = function (Caption) {};
+ApiCharacters.prototype.SetCaption = (Caption) => {};
 
 /**
  * Returns a string value that represents the text of the specified range of characters.
@@ -10214,7 +10214,7 @@ ApiCharacters.prototype.SetCaption = function (Caption) {};
  * @returns {string} - A string value that represents the text of the specified range of characters.
  * @since 7.4.0
  */
-ApiCharacters.prototype.GetCaption = function () { return ""; };
+ApiCharacters.prototype.GetCaption = () => "";
 
 /**
  * Returns a string value that represents the text of the specified range of characters.
@@ -10232,7 +10232,7 @@ ApiCharacters.prototype.Caption = ApiCharacters.prototype.GetCaption ();
  * @param {string} Text - The text to be set.
  * @since 7.4.0
  */
-ApiCharacters.prototype.SetText = function (Text) {};
+ApiCharacters.prototype.SetText = (Text) => {};
 
 /**
  * Returns the text of the specified range of characters.
@@ -10241,7 +10241,7 @@ ApiCharacters.prototype.SetText = function (Text) {};
  * @returns {string} - The text of the specified range of characters.
  * @since 7.4.0
  */
-ApiCharacters.prototype.GetText = function () { return ""; };
+ApiCharacters.prototype.GetText = () => "";
 
 /**
  * Returns the text of the specified range of characters.
@@ -10259,7 +10259,7 @@ ApiCharacters.prototype.Text = ApiCharacters.prototype.GetText ();
  * @returns {ApiFont}
  * @since 7.4.0
  */
-ApiCharacters.prototype.GetFont = function () { return new ApiFont(); };
+ApiCharacters.prototype.GetFont = () => new ApiFont();
 
 /**
  * Returns the ApiFont object that represents the font of the specified characters.
@@ -10277,7 +10277,7 @@ ApiCharacters.prototype.Font = ApiCharacters.prototype.GetFont ();
  * @returns {ApiCharacters} - The parent ApiCharacters object.
  * @since 7.4.0
  */
-ApiFont.prototype.GetParent = function () { return new ApiCharacters(); };
+ApiFont.prototype.GetParent = () => new ApiCharacters();
 
 /**
  * Returns the parent ApiCharacters object of the specified font.
@@ -10295,7 +10295,7 @@ ApiFont.prototype.Parent = ApiFont.prototype.GetParent ();
  * @returns {boolean | null}
  * @since 7.4.0
  */
-ApiFont.prototype.GetBold = function () { return true; };
+ApiFont.prototype.GetBold = () => true;
 
 /**
  * Sets the bold property to the specified font.
@@ -10305,7 +10305,7 @@ ApiFont.prototype.GetBold = function () { return true; };
  * @param {boolean} isBold - Specifies that the text characters are displayed bold.
  * @since 7.4.0
  */
-ApiFont.prototype.SetBold = function (isBold) {};
+ApiFont.prototype.SetBold = (isBold) => {};
 
 /**
  * Sets the bold property to the specified font.
@@ -10324,7 +10324,7 @@ ApiFont.prototype.Bold = ApiFont.prototype.SetBold ();
  * @returns {boolean | null}
  * @since 7.4.0
  */
-ApiFont.prototype.GetItalic = function () { return true; };
+ApiFont.prototype.GetItalic = () => true;
 
 /**
  * Sets the italic property to the specified font.
@@ -10334,7 +10334,7 @@ ApiFont.prototype.GetItalic = function () { return true; };
  * @param {boolean} isItalic - Specifies that the text characters are displayed italic.
  * @since 7.4.0
  */
-ApiFont.prototype.SetItalic = function (isItalic) {};
+ApiFont.prototype.SetItalic = (isItalic) => {};
 
 /**
  * Sets the italic property to the specified font.
@@ -10353,7 +10353,7 @@ ApiFont.prototype.Italic = ApiFont.prototype.SetItalic ();
  * @returns {number | null}
  * @since 7.4.0
  */
-ApiFont.prototype.GetSize = function () { return 0; };
+ApiFont.prototype.GetSize = () => 0;
 
 /**
  * Sets the font size property to the specified font.
@@ -10363,7 +10363,7 @@ ApiFont.prototype.GetSize = function () { return 0; };
  * @param {number} Size - Font size.
  * @since 7.4.0
  */
-ApiFont.prototype.SetSize = function (Size) {};
+ApiFont.prototype.SetSize = (Size) => {};
 
 /**
  * Sets the font size property to the specified font.
@@ -10382,7 +10382,7 @@ ApiFont.prototype.Size = ApiFont.prototype.SetSize ();
  * @returns {boolean | null}
  * @since 7.4.0
  */
-ApiFont.prototype.GetStrikethrough = function () { return true; };
+ApiFont.prototype.GetStrikethrough = () => true;
 
 /**
  * Sets the strikethrough property to the specified font.
@@ -10392,7 +10392,7 @@ ApiFont.prototype.GetStrikethrough = function () { return true; };
  * @param {boolean} isStrikethrough - Specifies that the text characters are displayed strikethrough.
  * @since 7.4.0
  */
-ApiFont.prototype.SetStrikethrough = function (isStrikethrough) {};
+ApiFont.prototype.SetStrikethrough = (isStrikethrough) => {};
 
 /**
  * Sets the strikethrough property to the specified font.
@@ -10416,7 +10416,7 @@ ApiFont.prototype.Strikethrough = ApiFont.prototype.SetStrikethrough ();
  * @returns {XlUnderlineStyle | null}
  * @since 7.4.0
  */
-ApiFont.prototype.GetUnderline = function () { return new XlUnderlineStyle(); };
+ApiFont.prototype.GetUnderline = () => new XlUnderlineStyle();
 
 /**
  * Sets an underline of the type specified in the request to the current font.
@@ -10426,7 +10426,7 @@ ApiFont.prototype.GetUnderline = function () { return new XlUnderlineStyle(); };
  * @param {XlUnderlineStyle} Underline - Underline type.
  * @since 7.4.0
  */
-ApiFont.prototype.SetUnderline = function (Underline) {};
+ApiFont.prototype.SetUnderline = (Underline) => {};
 
 /**
  * Sets an underline of the type specified in the request to the current font.
@@ -10445,7 +10445,7 @@ ApiFont.prototype.Underline = ApiFont.prototype.SetUnderline ();
  * @returns {boolean | null}
  * @since 7.4.0
  */
-ApiFont.prototype.GetSubscript = function () { return true; };
+ApiFont.prototype.GetSubscript = () => true;
 
 /**
  * Sets the subscript property to the specified font.
@@ -10455,7 +10455,7 @@ ApiFont.prototype.GetSubscript = function () { return true; };
  * @param {boolean} isSubscript - Specifies that the text characters are displayed subscript.
  * @since 7.4.0
  */
-ApiFont.prototype.SetSubscript = function (isSubscript) {};
+ApiFont.prototype.SetSubscript = (isSubscript) => {};
 
 /**
  * Sets the subscript property to the specified font.
@@ -10474,7 +10474,7 @@ ApiFont.prototype.Subscript = ApiFont.prototype.SetSubscript ();
  * @returns {boolean | null}
  * @since 7.4.0
  */
-ApiFont.prototype.GetSuperscript = function () { return true; };
+ApiFont.prototype.GetSuperscript = () => true;
 
 /**
  * Sets the superscript property to the specified font.
@@ -10484,7 +10484,7 @@ ApiFont.prototype.GetSuperscript = function () { return true; };
  * @param {boolean} isSuperscript - Specifies that the text characters are displayed superscript.
  * @since 7.4.0
  */
-ApiFont.prototype.SetSuperscript = function (isSuperscript) {};
+ApiFont.prototype.SetSuperscript = (isSuperscript) => {};
 
 /**
  * Sets the superscript property to the specified font.
@@ -10503,7 +10503,7 @@ ApiFont.prototype.Superscript = ApiFont.prototype.SetSuperscript ();
  * @returns {string | null}
  * @since 7.4.0
  */
-ApiFont.prototype.GetName = function () { return ""; };
+ApiFont.prototype.GetName = () => "";
 
 /**
  * Sets the font name property to the specified font.
@@ -10513,7 +10513,7 @@ ApiFont.prototype.GetName = function () { return ""; };
  * @param {string} FontName - Font name.
  * @since 7.4.0
  */
-ApiFont.prototype.SetName = function (FontName) {};
+ApiFont.prototype.SetName = (FontName) => {};
 
 /**
  * Sets the font name property to the specified font.
@@ -10532,7 +10532,7 @@ ApiFont.prototype.Name = ApiFont.prototype.SetName ();
  * @returns {ApiColor | null}
  * @since 7.4.0
  */
-ApiFont.prototype.GetColor = function () { return new ApiColor(); };
+ApiFont.prototype.GetColor = () => new ApiColor();
 
 /**
  * Sets the font color property to the specified font.
@@ -10542,7 +10542,7 @@ ApiFont.prototype.GetColor = function () { return new ApiColor(); };
  * @param {ApiColor} Color - Font color.
  * @since 7.4.0
  */
-ApiFont.prototype.SetColor = function (Color) {};
+ApiFont.prototype.SetColor = (Color) => {};
 
 /**
  * Sets the font color property to the specified font.
@@ -10561,7 +10561,7 @@ ApiFont.prototype.Color = ApiFont.prototype.SetColor ();
  * @param {ApiRange | String} frozenRange - A range that represents the cells to be frozen.
  * @since 8.0.0
  */
-ApiFreezePanes.prototype.FreezeAt = function (frozenRange) {};
+ApiFreezePanes.prototype.FreezeAt = (frozenRange) => {};
 
 /**
  * Freezes the first column or columns of the current worksheet.
@@ -10570,7 +10570,7 @@ ApiFreezePanes.prototype.FreezeAt = function (frozenRange) {};
  * @param {Number} [count=0] - Optional number of columns to freeze, or zero to unfreeze all columns.
  * @since 8.0.0
  */
-ApiFreezePanes.prototype.FreezeColumns = function (count) {};
+ApiFreezePanes.prototype.FreezeColumns = (count) => {};
 
 /**
  * Freezes the top row or rows of the current worksheet.
@@ -10579,7 +10579,7 @@ ApiFreezePanes.prototype.FreezeColumns = function (count) {};
  * @param {Number} [count=0] - Optional number of rows to freeze, or zero to unfreeze all rows.
  * @since 8.0.0
  */
-ApiFreezePanes.prototype.FreezeRows = function (count) {};
+ApiFreezePanes.prototype.FreezeRows = (count) => {};
 
 /**
  * Returns a range that describes the frozen cells in the active worksheet view.
@@ -10588,7 +10588,7 @@ ApiFreezePanes.prototype.FreezeRows = function (count) {};
  * @returns {ApiRange | null} - Returns null if there is no frozen pane.
  * @since 8.0.0
  */
-ApiFreezePanes.prototype.GetLocation = function () { return new ApiRange(); };
+ApiFreezePanes.prototype.GetLocation = () => new ApiRange();
 
 /**
  * Class representing a user-protected range.
@@ -10604,7 +10604,7 @@ function ApiProtectedRange(protectedRange) {}
  * @returns {boolean} - Returns false if a user doesn't have permission to modify the protected range.
  * @since 8.1.0
  */
-ApiProtectedRange.prototype.SetTitle = function (sTitle) { return true; };
+ApiProtectedRange.prototype.SetTitle = (sTitle) => true;
 
 /**
  * Sets a range to the current protected range.
@@ -10614,7 +10614,7 @@ ApiProtectedRange.prototype.SetTitle = function (sTitle) { return true; };
  * @returns {boolean} - Returns false if a user doesn't have permission to modify the protected range.
  * @since 8.1.0
  */
-ApiProtectedRange.prototype.SetRange = function (sRange) { return true; };
+ApiProtectedRange.prototype.SetRange = (sRange) => true;
 
 /**
  * Specifies the user type of the protected range.
@@ -10631,7 +10631,7 @@ ApiProtectedRange.prototype.SetRange = function (sRange) { return true; };
  * @returns {ApiProtectedRangeUserInfo | null} - Returns null if a user doesn't have permission to modify the protected range.
  * @since 8.1.0
  */
-ApiProtectedRange.prototype.AddUser = function (sId, sName, protectedRangeUserType) { return new ApiProtectedRangeUserInfo(); };
+ApiProtectedRange.prototype.AddUser = (sId, sName, protectedRangeUserType) => new ApiProtectedRangeUserInfo();
 
 /**
  * Removes a user from the current protected range.
@@ -10640,7 +10640,7 @@ ApiProtectedRange.prototype.AddUser = function (sId, sName, protectedRangeUserTy
  * @returns {bool}
  * @since 8.1.0
  */
-ApiProtectedRange.prototype.DeleteUser = function (sId) { return true; };
+ApiProtectedRange.prototype.DeleteUser = (sId) => true;
 
 /**
  * Returns all users from the current protected range.
@@ -10649,7 +10649,7 @@ ApiProtectedRange.prototype.DeleteUser = function (sId) { return true; };
  * @returns {ApiProtectedRangeUserInfo[] | null}
  * @since 8.1.0
  */
-ApiProtectedRange.prototype.GetAllUsers = function () { return [new ApiProtectedRangeUserInfo()]; };
+ApiProtectedRange.prototype.GetAllUsers = () => [new ApiProtectedRangeUserInfo()];
 
 /**
  * Sets the type of the "Anyone" user to the current protected range.
@@ -10659,7 +10659,7 @@ ApiProtectedRange.prototype.GetAllUsers = function () { return [new ApiProtected
  * @returns {bool}
  * @since 8.1.0
  */
-ApiProtectedRange.prototype.SetAnyoneType = function (protectedRangeUserType) { return true; };
+ApiProtectedRange.prototype.SetAnyoneType = (protectedRangeUserType) => true;
 
 /**
  * Returns an object that represents a user from the current protected range.
@@ -10668,7 +10668,7 @@ ApiProtectedRange.prototype.SetAnyoneType = function (protectedRangeUserType) { 
  * @returns {ApiProtectedRangeUserInfo | null}
  * @since 8.1.0
  */
-ApiProtectedRange.prototype.GetUser = function (sId) { return new ApiProtectedRangeUserInfo(); };
+ApiProtectedRange.prototype.GetUser = (sId) => new ApiProtectedRangeUserInfo();
 
 /**
  * Class representing a user from the current protected range.
@@ -10683,7 +10683,7 @@ function ApiProtectedRangeUserInfo(userInfo, protectedRange) {}
  * @returns {string | null}
  * @since 8.1.0
  */
-ApiProtectedRangeUserInfo.prototype.GetName = function () { return ""; };
+ApiProtectedRangeUserInfo.prototype.GetName = () => "";
 
 /**
  * Returns the type property of the current user's information.
@@ -10692,7 +10692,7 @@ ApiProtectedRangeUserInfo.prototype.GetName = function () { return ""; };
  * @returns {ProtectedRangeUserType}
  * @since 8.1.0
  */
-ApiProtectedRangeUserInfo.prototype.GetType = function () { return new ProtectedRangeUserType(); };
+ApiProtectedRangeUserInfo.prototype.GetType = () => new ProtectedRangeUserType();
 
 /**
  * Returns the ID property of the current user's information.
@@ -10701,6 +10701,6 @@ ApiProtectedRangeUserInfo.prototype.GetType = function () { return new Protected
  * @returns {string | null}
  * @since 8.1.0
  */
-ApiProtectedRangeUserInfo.prototype.GetId = function () { return ""; };
+ApiProtectedRangeUserInfo.prototype.GetId = () => "";
 
 

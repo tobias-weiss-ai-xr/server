@@ -23,18 +23,13 @@
  *
  */
 
-define([
-    'underscore',
-    'backbone'
-], function(_, Backbone){
-    'use strict';
+define(["underscore", "backbone"], (_, Backbone) => {
+  DE.Models = DE.Models || {}
 
-    DE.Models = DE.Models||{};
-
-    DE.Models.Pages = Backbone.Model.extend({
-        defaults: {
-            current: 0,
-            count: 0
-        }
-    });
-});
+  DE.Models.Pages = Backbone.Model.extend({
+    defaults: {
+      current: 0,
+      count: 0,
+    },
+  })
+})

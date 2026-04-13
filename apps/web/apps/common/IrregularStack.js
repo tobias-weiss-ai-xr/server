@@ -23,57 +23,53 @@
  *
  */
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-Common.IrregularStack = function(config) {
+Common.IrregularStack = (config) => {
 
-    var _stack = [];
+    const _stack = [];
 
-    var _compare = function(obj1, obj2){
+    const _compare = (obj1, obj2)=> {
         if (typeof obj1 === 'object' && typeof obj2 === 'object' && window.JSON)
             return window.JSON.stringify(obj1) === window.JSON.stringify(obj2);
         return obj1 === obj2;
     }
 
     config = config || {};
-    var _strongCompare = config.strongCompare || _compare;
-    var _weakCompare = config.weakCompare || _compare;
+    const _strongCompare = config.strongCompare || _compare;
+    const _weakCompare = config.weakCompare || _compare;
 
-    var _indexOf = function(obj, compare) {
-        for (var i = _stack.length - 1; i >= 0; i--) {
+    const _indexOf = (obj, compare) => {
+        for (let i = _stack.length - 1; i >= 0; i--) {
             if (compare(_stack[i], obj))
                 return i;
         }
         return -1;
     }
 
-    var _push = function(obj) {
+    const _push = (obj) => {
         _stack.push(obj);
     }
 
-    var _pop = function(obj) {
-        var index = _indexOf(obj, _strongCompare);
-        if (index != -1) {
-            var removed = _stack.splice(index, 1);
+    const _pop = (obj) => {
+        const index = _indexOf(obj, _strongCompare);
+        if (index !== -1) {
+            const removed = _stack.splice(index, 1);
             return removed[0];
         }
         return undefined;
     }
 
-    var _get = function(obj) {
-        var index = (typeof obj === 'object')? _indexOf(obj, _weakCompare) : obj;
-        if (index != -1) 
+    const _get = (obj) => {
+        const index = (typeof obj === 'object')? _indexOf(obj, _weakCompare) : obj;
+        if (index !== -1) 
             return _stack[index];
         return undefined;
     }
 
-    var _exist = function(obj) {
-        return !(_indexOf(obj, _strongCompare) < 0);
-    }
+    const _exist = (obj) => !(_indexOf(obj, _strongCompare) < 0)
 
-    var _length = function() {
-        return _stack.length;
-    }
+    const _length = () => _stack.length
 
     return {
         push: _push,

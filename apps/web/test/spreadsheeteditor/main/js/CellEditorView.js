@@ -23,17 +23,15 @@
  *
  */
 if (SSE === undefined) {
-    var SSE = {};
+  const SSE = {}
 }
 
-SSE.CellEditorView = new(function (){
-    var  me;
+SSE.CellEditorView = new (function () {
+  let me
 
-    function  createView()
-    {
-    }
-    
-    return {
-        create: createView
-    }
-})();
+  function createView() {}
+
+  return {
+    create: createView,
+  }
+})()

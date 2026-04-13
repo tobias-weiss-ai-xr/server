@@ -32,9 +32,7 @@
  */
 
 // Include and setup all the stuff for testing
-define([
-    'chai'
-],function(chai) {
-    window.expect = chai.expect;
-    window.assert = chai.assert;
-});
+define(["chai"], (chai) => {
+  window.expect = chai.expect
+  window.assert = chai.assert
+})

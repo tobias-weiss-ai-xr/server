@@ -22,13 +22,11 @@
  * terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
-(function ($) {
-
-    $(function(){
-        Common.Locale.apply(function() {
-            SSE.ApplicationView.create();
-            SSE.ApplicationController.create();
-        });
+;(($) => {
+  $(() => {
+    Common.Locale.apply(() => {
+      SSE.ApplicationView.create()
+      SSE.ApplicationController.create()
     })
-
-})(window.jQuery);
+  })
+})(window.jQuery)

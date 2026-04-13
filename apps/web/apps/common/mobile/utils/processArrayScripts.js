@@ -1,15 +1,14 @@
 export const processArrayScripts = async (array, fn) => {
-	const results = [];
+  const results = []
 
-	for (const item of array) {
-        try {
-            const data = await fn(item);
-            results.push(data);
-        } catch (error) {
-            console.log(`Error with processing element ${item}:`, error);
-            continue;
-        }
-	}
+  for (const item of array) {
+    try {
+      const data = await fn(item)
+      results.push(data)
+    } catch (error) {
+      console.log(`Error with processing element ${item}:`, error)
+    }
+  }
 
-	return results;
-};
+  return results
+}

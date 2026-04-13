@@ -2,26 +2,26 @@
 // For example:
 // npm install karma-firefox-launcher
 // karma start --browsers=Firefox
-module.exports = function(config) {
+module.exports = (config) => {
   config.set({
-    basePath: '',
-    frameworks: ['qunit'],
+    basePath: "",
+    frameworks: ["qunit"],
 
     // list of files / patterns to load in the browser
     files: [
-        'test/vendor/jquery.js',
-        'test/vendor/json2.js',
-        'test/vendor/underscore.js',
-        'backbone.js',
-        'debug-info.js',
-        'test/setup/*.js',
-        'test/*.js'
+      "test/vendor/jquery.js",
+      "test/vendor/json2.js",
+      "test/vendor/underscore.js",
+      "backbone.js",
+      "debug-info.js",
+      "test/setup/*.js",
+      "test/*.js",
     ],
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ["progress"],
 
     // web server port
     port: 9877,
@@ -38,7 +38,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: ["PhantomJS"],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
@@ -46,10 +46,10 @@ module.exports = function(config) {
 
     // See http://stackoverflow.com/a/27873086/1517919
     customLaunchers: {
-        Chrome_sandbox: {
-            base: 'Chrome',
-            flags: ['--no-sandbox']
-        }
-    }
-  });
-};
+      Chrome_sandbox: {
+        base: "Chrome",
+        flags: ["--no-sandbox"],
+      },
+    },
+  })
+}

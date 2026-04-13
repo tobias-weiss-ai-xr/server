@@ -31,54 +31,54 @@
 
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 if (Common.UI === undefined) {
     Common.UI = {};
 }
 
 Common.UI.LayoutManager = new(function() {
-    var _config,
-        _licensed,
-        _api,
-        _lastInternalTabIdx = 10,
-        _toolbar,
-        _arrControls = [], // all toolbar controls that plugin can add menu items to
-        _actionsStack = [],
-        _processActions = 0, // 0 - processing stopped, 1 - in process, 2 - need to process again
-        _arrPlugins = []; // all plugins that add controls to toolbar or menu items to toolbar buttons
-    var _init = function(config, licensed, api) {
+    let _config;
+    let _licensed;
+    let _api;
+    const _lastInternalTabIdx = 10;
+    let _toolbar;
+    const _arrControls = []; // all toolbar controls that plugin can add menu items to
+    const _actionsStack = [];
+    let _processActions = 0; // 0 - processing stopped, 1 - in process, 2 - need to process again
+    const _arrPlugins = []; // all plugins that add controls to toolbar or menu items to toolbar buttons
+    const _init = (config, licensed, api) => {
         _config = config;
         _licensed = licensed;
         _api = api;
     };
 
-    var _applyCustomization = function(config, el, prefix) {
+    const _applyCustomization = (config, el, prefix) => {
         !config && (config = _config);
         if (!_licensed || !config) return;
 
-        for (var name in config) {
+        for (const name in config) {
             if(config.hasOwnProperty(name)) {
                 if(typeof config[name] === 'object')
-                    _applyCustomization(config[name], el, (prefix || '') + name + '-');
+                    _applyCustomization(config[name], el, `${(prefix || '') + name}-`);
                 else if (config[name] === false) {
-                    var selector = '[data-layout-name=' + (prefix || '') + name + ']',
-                        cmp = el ? el.find(selector) : $(selector);
-                    cmp && cmp.hide && cmp.hide();
+                    const selector = `[data-layout-name=${prefix || ''}${name}]`;
+                    const cmp = el ? el.find(selector) : $(selector);
+                    cmp?.hide?.();
                 }
             }
         }
     };
 
-    var _isElementVisible = function(value, config, prefix) {
+    const _isElementVisible = (value, config, prefix) => {
         !config && (config = _config);
         if (!_licensed || !config) return true;
 
-        var res = true;
-        for (var name in config) {
+        let res = true;
+        for (const name in config) {
             if(config.hasOwnProperty(name)) {
                 if(typeof config[name] === 'object')
-                    res = _isElementVisible(value, config[name], (prefix || '') + name + '-');
+                    res = _isElementVisible(value, config[name], `${(prefix || '') + name}-`);
                 else {
                     if (value === (prefix || '') + name) { // checked value is in config
                         res = config[name];
@@ -90,11 +90,11 @@ Common.UI.LayoutManager = new(function() {
         return res;
     };
 
-    var _getInitValue = function(name) {
+    const _getInitValue = (name) => {
         if (_licensed && _config) {
-            var arr = name.split('-'),
-                i = 0,
-                obj = _config;
+            const arr = name.split('-');
+            let i = 0;
+            let obj = _config;
             for (i=0; i<arr.length; i++) {
                 if (typeof obj[arr[i]] === 'object' && obj[arr[i]]) {
                     obj = obj[arr[i]];
@@ -104,30 +104,28 @@ Common.UI.LayoutManager = new(function() {
             if (i===arr.length) {
                 if (typeof obj === 'object' && obj)
                     return obj.mode;
-                else
+                
                     return obj;
             }
         }
     };
 
-    var _addControls = function(arr) {
-        if (Object.prototype.toString.call(arr) === '[object Array]' || arr instanceof Array)
+    const _addControls = (arr) => {
+        if (Object.prototype.toString.call(arr) === '[object Array]' || Array.isArray(arr))
             Array.prototype.push.apply(_arrControls, arr);
         else
             Array.prototype.push.apply(_arrControls, [arr]);
         _actionsStack.length && _tryToProcessActions();
     };
 
-    var _getControls = function() {
-        return _arrControls;
-    };
+    const _getControls = () => _arrControls;
 
     // add custom controls to toolbar
 
-    var _findCustomControl = function(toolbar, action, guid, id) {
-        if (toolbar && toolbar.customButtonsArr && toolbar.customButtonsArr[guid] ) {
-            for (var i=0; i< toolbar.customButtonsArr[guid].length; i++) {
-                var btn = toolbar.customButtonsArr[guid][i];
+    const _findCustomControl = (toolbar, action, guid, id) => {
+        if (toolbar?.customButtonsArr?.[guid] ) {
+            for (let i=0; i< toolbar.customButtonsArr[guid].length; i++) {
+                const btn = toolbar.customButtonsArr[guid][i];
                 if (btn.options.tabid === action && btn.options.guid === guid && btn.options.value === id) {
                     return btn;
                 }
@@ -135,10 +133,10 @@ Common.UI.LayoutManager = new(function() {
         }
     }
 
-    var _findAndRemoveCustomControl = function(toolbar, action, guid, id) {
-        if (toolbar && toolbar.customButtonsArr && toolbar.customButtonsArr[guid] ) {
-            for (var i=0; i< toolbar.customButtonsArr[guid].length; i++) {
-                var btn = toolbar.customButtonsArr[guid][i];
+    const _findAndRemoveCustomControl = (toolbar, action, guid, id) => {
+        if (toolbar?.customButtonsArr?.[guid] ) {
+            for (let i=0; i< toolbar.customButtonsArr[guid].length; i++) {
+                const btn = toolbar.customButtonsArr[guid][i];
                 if (btn.options.tabid === action && btn.options.guid === guid && btn.options.value === id) {
                     toolbar.customButtonsArr[guid].splice(i, 1);
                     return btn;
@@ -147,15 +145,15 @@ Common.UI.LayoutManager = new(function() {
         }
     }
 
-    var _findRemovedControls = function(toolbar, action, guid, items) {
-        var arr = [];
-        if (toolbar && toolbar.customButtonsArr && toolbar.customButtonsArr[guid] ) {
+    const _findRemovedControls = (toolbar, action, guid, items) => {
+        let arr = [];
+        if (toolbar?.customButtonsArr?.[guid] ) {
             if (!items || items.length<1) {
                 arr = toolbar.customButtonsArr[guid];
                 toolbar.customButtonsArr[guid] = undefined;
             } else {
-                for (var i=0; i< toolbar.customButtonsArr[guid].length; i++) {
-                    var btn = toolbar.customButtonsArr[guid][i];
+                for (let i=0; i< toolbar.customButtonsArr[guid].length; i++) {
+                    const btn = toolbar.customButtonsArr[guid][i];
                     if (btn.options.tabid === action && !_.findWhere(items, {id: btn.options.value})) {
                         arr.push(btn);
                         toolbar.customButtonsArr[guid].splice(i, 1);
@@ -167,7 +165,7 @@ Common.UI.LayoutManager = new(function() {
         return arr;
     }
 
-    var _fillButtonMenu = function(items, guid, callback, toMenu) {
+    const _fillButtonMenu = (items, guid, callback, toMenu) => {
         if (toMenu)
             toMenu.removeAll();
         else {
@@ -175,12 +173,12 @@ Common.UI.LayoutManager = new(function() {
                 menuAlign: 'tl-tr',
                 items: []
             });
-            toMenu.on('item:custom-click', function(menu, mi, e) {
-                callback && callback(mi.options.guid, mi.value);
+            toMenu.on('item:custom-click', (menu, mi, e) => {
+                callback?.(mi.options.guid, mi.value);
             });
         }
-        var hasIcons = false;
-        items.forEach(function(menuItem) {
+        let hasIcons = false;
+        items.forEach((menuItem) => {
             if (menuItem.separator) toMenu.addItem(new Common.UI.MenuItemCustom({caption: '--'}));
             menuItem.text && toMenu.addItem(new Common.UI.MenuItemCustom({
                 caption: menuItem.text || '',
@@ -196,13 +194,13 @@ Common.UI.LayoutManager = new(function() {
         return toMenu;
     }
 
-    var _addCustomControls = function (toolbar, data, callback, preventRemove) {
+    const _addCustomControls = (toolbar, data, callback, preventRemove) => {
         if (!data) return;
 
         _toolbar = toolbar;
 
-        var btns = [];
-        data.forEach(function(plugin) {
+        const btns = [];
+        data.forEach((plugin) => {
             /*
             plugin = {
                 guid: 'plugin-guid',
@@ -241,10 +239,10 @@ Common.UI.LayoutManager = new(function() {
                 ]
             }
             */
-            plugin.tabs && plugin.tabs.forEach(function(tab) {
+            plugin.tabs?.forEach((tab) => {
                 if (tab) {
-                    var added = [],
-                        removed = preventRemove ? [] : _findRemovedControls(toolbar, tab.id, plugin.guid, tab.items);
+                    const added = [];
+                    const removed = preventRemove ? [] : _findRemovedControls(toolbar, tab.id, plugin.guid, tab.items);
 
                     if (!_arrPlugins[plugin.guid])
                         _arrPlugins[plugin.guid] = {actions: [], tabs: []};
@@ -252,18 +250,18 @@ Common.UI.LayoutManager = new(function() {
                     if (_.indexOf(_arrPlugins[plugin.guid].tabs, tab)<0)
                         _arrPlugins[plugin.guid].tabs.push(tab.id);
 
-                    tab.items && tab.items.forEach(function(item, index) {
+                    tab.items?.forEach((item, index) => {
                         if (item.removed) { // need to remove button from the toolbar
-                            let btn = _findAndRemoveCustomControl(toolbar, tab.id, plugin.guid, item.id);
+                            const btn = _findAndRemoveCustomControl(toolbar, tab.id, plugin.guid, item.id);
                             btn && removed.push(btn);
                             return;
                         }
 
-                        let btn = _findCustomControl(toolbar, tab.id, plugin.guid, item.id),
-                            _set = Common.enumLock;
+                        let btn = _findCustomControl(toolbar, tab.id, plugin.guid, item.id);
+                        const _set = Common.enumLock;
                         if (btn) { // change caption, hint, disable state, menu items
                             if (btn instanceof Common.UI.Button) {
-                                var caption = item.text || '';
+                                const caption = item.text || '';
                                 if (btn.options.caption !== (caption || ' ')) {
                                     btn.cmpEl.closest('.btn-slot.x-huge').toggleClass('nocaption', !caption);
                                     btn.setCaption(caption || ' ');
@@ -274,8 +272,8 @@ Common.UI.LayoutManager = new(function() {
                                 if (btn.menu && item.items && item.items.length > 0) {// update menu items
                                     if (typeof btn.menu !== 'object') {
                                         btn.setMenu(new Common.UI.Menu({items: []}));
-                                        btn.menu.on('item:custom-click', function(menu, mi, e) {
-                                            callback && callback(mi.options.guid, mi.value);
+                                        btn.menu.on('item:custom-click', (menu, mi, e) => {
+                                            callback?.(mi.options.guid, mi.value);
                                         });
                                     }
                                     _fillButtonMenu(item.items, plugin.guid, callback, btn.menu);
@@ -306,14 +304,14 @@ Common.UI.LayoutManager = new(function() {
 
                             if (item.items && typeof item.items === 'object') {
                                 btn.setMenu(new Common.UI.Menu({items: []}));
-                                btn.menu.on('item:custom-click', function(menu, mi, e) {
-                                    callback && callback(mi.options.guid, mi.value);
+                                btn.menu.on('item:custom-click', (menu, mi, e) => {
+                                    callback?.(mi.options.guid, mi.value);
                                 });
                                 _fillButtonMenu(item.items, plugin.guid, callback, btn.menu);
                             }
                             if ( !btn.menu || btn.split) {
-                                btn.on('click', function(b, e) {
-                                    callback && callback(b.options.guid, b.options.value, b.pressed);
+                                btn.on('click', (b, e) => {
+                                    callback?.(b.options.guid, b.options.value, b.pressed);
                                 });
                             }
                             added.push(btn);
@@ -334,10 +332,10 @@ Common.UI.LayoutManager = new(function() {
         return btns;
     };
 
-    var _clearCustomControls = function(guid) {
+    const _clearCustomControls = (guid) => {
         if (!_toolbar) return;
-        if (_arrPlugins[guid] && _arrPlugins[guid].tabs) {
-            _arrPlugins[guid].tabs.forEach(function(tab) {
+        if (_arrPlugins[guid]?.tabs) {
+            _arrPlugins[guid].tabs.forEach((tab) => {
                 _toolbar.addCustomControls({action: tab}, undefined, _findRemovedControls(_toolbar, tab, guid));
             });
             _arrPlugins[guid].tabs = [];
@@ -346,34 +344,34 @@ Common.UI.LayoutManager = new(function() {
 
     // add custom items to button menu
 
-    var _addCustomMenuItems = function (action, data, callback) {
+    const _addCustomMenuItems = (action, data, callback) => {
         if (!data) return;
 
-        var btns = _findButtonByAction(action);
-        if (!btns || btns.length==0) {
+        const btns = _findButtonByAction(action);
+        if (!btns || btns.length===0) {
             _actionsStack.push({action: action, data: data, callback: callback});
             return;
         }
 
-        btns.forEach(function(btn) {
-            var _action = action;
+        btns.forEach((btn) => {
+            const _action = action;
             if (typeof btn.menu === 'object')
                 _updateCustomMenuItems(_action, btn.menu, data, callback);
             else if (btn.menu) {
-                let btnData = data,
-                    btnCallback = callback;
-                btn.on('menu:created', function() {
+                const btnData = data;
+                const btnCallback = callback;
+                btn.on('menu:created', () => {
                     _updateCustomMenuItems(_action, btn.menu, btnData, btnCallback);
                 });
             }
         });
     };
 
-    var _clearCustomMenuItems = function(guid) {
-        if (_arrPlugins[guid] && _arrPlugins[guid].actions) {
-            _arrPlugins[guid].actions.forEach(function(action) {
-                var btns = _findButtonByAction(action);
-                btns && btns.forEach(function(btn) {
+    const _clearCustomMenuItems = (guid) => {
+        if (_arrPlugins[guid]?.actions) {
+            _arrPlugins[guid].actions.forEach((action) => {
+                const btns = _findButtonByAction(action);
+                btns?.forEach((btn) => {
                     (typeof btn.menu === 'object') && _removeCustomMenuItems(btn.menu, guid);
                 });
             });
@@ -381,7 +379,7 @@ Common.UI.LayoutManager = new(function() {
         }
     };
 
-    var _tryToProcessActions = function() { //
+    const _tryToProcessActions = () => { //
         if (_processActions) {
             _processActions = 2;
             return;
@@ -389,7 +387,7 @@ Common.UI.LayoutManager = new(function() {
         _processActions = 1;
         let arrLen = _actionsStack.length;
         while (arrLen>0) {
-            let data = _actionsStack.shift();
+            const data = _actionsStack.shift();
             _addCustomMenuItems(data.action, data.data, data.callback);
             arrLen--;
         }
@@ -400,11 +398,11 @@ Common.UI.LayoutManager = new(function() {
             _processActions = 0;
     };
 
-    var _findButtonByAction = function(action) {
+    const _findButtonByAction = (action) => {
         if (!_arrControls) return;
 
-        var arr = [];
-        _arrControls.forEach(function(item) {
+        const arr = [];
+        _arrControls.forEach((item) => {
             if (item instanceof Common.UI.Button && item.action === action) {
                 arr.push(item);
             }
@@ -412,9 +410,9 @@ Common.UI.LayoutManager = new(function() {
         return arr;
     };
 
-    var _findCustomMenuItem = function(menu, guid, id) {
+    const _findCustomMenuItem = (menu, guid, id) => {
         if (menu && menu.items.length>0) {
-            for (var i = menu.items.length-1; i >=0 ; i--) {
+            for (let i = menu.items.length-1; i >=0 ; i--) {
                 if (menu.items[i].isCustomItem && (id===undefined && menu.items[i].options.guid === guid || menu.items[i].options.guid === guid && menu.items[i].value === id)) {
                     return menu.items[i];
                 }
@@ -422,9 +420,8 @@ Common.UI.LayoutManager = new(function() {
         }
     };
 
-    var _getMenu = function(items, guid, callback, toMenu) {
-        var me = this,
-            hasIcons = false;
+    const _getMenu = function(items, guid, callback, toMenu) {
+        let hasIcons = false;
         if (toMenu)
             toMenu.removeAll();
         else {
@@ -432,14 +429,14 @@ Common.UI.LayoutManager = new(function() {
                 menuAlign: 'tl-tr',
                 items: []
             });
-            toMenu.on('item:custom-click', function(menu, item, e) {
-                !me._preventCustomClick && callback && callback(item.options.guid, item.value);
+            toMenu.on('item:custom-click', (menu, item, e) => {
+                !this._preventCustomClick && callback && callback(item.options.guid, item.value);
             });
-            toMenu.on('menu:click', function(menu, e) {
-                me._preventCustomClick && e.stopPropagation();
+            toMenu.on('menu:click', (menu, e) => {
+                this._preventCustomClick && e.stopPropagation();
             });
         }
-        items.forEach(function(item) {
+        items.forEach((item) => {
             item.separator && toMenu.addItem(new Common.UI.MenuItemCustom({
                 caption: '--',
                 guid: guid
@@ -459,25 +456,23 @@ Common.UI.LayoutManager = new(function() {
         return toMenu;
     };
 
-    var _updateCustomMenuItems = function (action, menu, data, callback) {
+    const _updateCustomMenuItems = function (action, menu, data, callback) {
         if (!menu) return;
         if (!data || data.length<1) {
             _removeCustomMenuItems(menu);
             menu._hasCustomItems = false;
             return;
         }
-
-        var me = this;
-        me._preventCustomClick && clearTimeout(me._preventCustomClick);
-        menu._hasCustomItems && (me._preventCustomClick = setTimeout(function () {
-            me._preventCustomClick = null;
+        this._preventCustomClick && clearTimeout(this._preventCustomClick);
+        menu._hasCustomItems && (this._preventCustomClick = setTimeout(() => {
+            this._preventCustomClick = null;
         },500)); // set delay only on update existing items
 
-        var focused,
-            hasIcons = false,
-            newItems = [];
+        let focused;
+        let hasIcons = false;
+        const newItems = [];
         menu._hasCustomItems = false;
-        data.forEach(function(plugin) {
+        data.forEach((plugin) => {
             /*
              plugin = {
                     guid: 'plugin-guid',
@@ -512,10 +507,10 @@ Common.UI.LayoutManager = new(function() {
 
             _removeCustomMenuItems(menu, plugin.guid, plugin.items);
 
-            var isnew = !_findCustomMenuItem(menu, plugin.guid);
-            if (plugin && plugin.items && plugin.items.length>0) {
+            const isnew = !_findCustomMenuItem(menu, plugin.guid);
+            if (plugin?.items && plugin.items.length>0) {
                 menu._hasCustomItems = true;
-                plugin.items.forEach(function(item) {
+                plugin.items.forEach((item) => {
                     if (item.separator && isnew) {// add separator only to new plugins menu
                         menu.addItem(new Common.UI.MenuItemCustom({
                             caption: '--',
@@ -524,8 +519,8 @@ Common.UI.LayoutManager = new(function() {
                     }
 
                     if (!item.text) return;
-                    var mnu = _findCustomMenuItem(menu, plugin.guid, item.id),
-                        caption = item.text || '';
+                    const mnu = _findCustomMenuItem(menu, plugin.guid, item.id);
+                    const caption = item.text || '';
                     if (mnu) {
                         mnu.setCaption(caption);
                         mnu.setDisabled(!!item.disabled);
@@ -540,7 +535,7 @@ Common.UI.LayoutManager = new(function() {
                                 mnu.setMenu(_getMenu(item.items, plugin.guid, callback));
                         }
                     } else {
-                        var mnu = new Common.UI.MenuItemCustom({
+                        const mnu = new Common.UI.MenuItemCustom({
                             caption     : caption,
                             value: item.id,
                             guid: plugin.guid,
@@ -548,8 +543,8 @@ Common.UI.LayoutManager = new(function() {
                             iconsSet: item.icons,
                             baseUrl: '', // base url is included in icon path
                             disabled: !!item.disabled
-                        }).on('click', function(item, e) {
-                            !me._preventCustomClick && callback && callback(item.options.guid, item.value);
+                        }).on('click', (item, e) => {
+                            !this._preventCustomClick && callback && callback(item.options.guid, item.value);
                         });
                         hasIcons = hasIcons || !!item.icons;
                         menu.addItem(mnu);
@@ -560,11 +555,11 @@ Common.UI.LayoutManager = new(function() {
         });
 
         if (focused) {
-            var $subitems = $('> [role=menu]', focused).find('> li:not(.divider):not(.disabled):visible > a');
+            const $subitems = $('> [role=menu]', focused).find('> li:not(.divider):not(.disabled):visible > a');
             ($subitems.length>0) && $subitems.eq(0).focus();
         }
         if (hasIcons) {
-            for (var i=0; i<newItems.length; i++) {
+            for (let i=0; i<newItems.length; i++) {
                 hasIcons && (newItems[i].cmpEl ? newItems[i].cmpEl.toggleClass('shifted-right', true) : (newItems[i].options.cls = newItems[i].cls = 'shifted-right'));
             }
         }
@@ -572,9 +567,9 @@ Common.UI.LayoutManager = new(function() {
         menu.rendered && menu.alignPosition();
     };
 
-    _removeCustomMenuItems = function(menu, guid, items) {
+    _removeCustomMenuItems = (menu, guid, items) => {
         if (menu && menu.items.length>0) {
-            for (var i = 0; i < menu.items.length; i++) {
+            for (let i = 0; i < menu.items.length; i++) {
                 if (menu.items[i].isCustomItem && (guid===undefined || menu.items[i].options.guid === guid && !_.findWhere((items || []), {id: menu.items[i].options.value}))) {
                     menu.removeItem(menu.items[i]);
                     i--;
@@ -607,18 +602,16 @@ Common.UI.LayoutManager = new(function() {
  * }
  */
 Common.UI.FeaturesManager = new(function() {
-    var _config,
-        _licensed;
-    var _init = function(config, licensed) {
+    let _config;
+    let _licensed;
+    const _init = (config, licensed) => {
         _config = config;
         _licensed = licensed;
     };
 
-    var _canChange = function(name, force) {
-        return !((_licensed || force) && _config && typeof _config[name] === 'object' && _config[name] && _config[name].change===false);
-    };
+    const _canChange = (name, force) => !((_licensed || force) && _config && typeof _config[name] === 'object' && _config[name] && _config[name].change===false);
 
-    var _getInitValue2 = function(name, defValue, force) {
+    const _getInitValue2 = (name, defValue, force) => {
         if ((_licensed || force) && _config && _config[name] !== undefined ) {
             if (typeof _config[name] === 'object' && _config[name]) { // object and not null
                 if (_config[name].mode!==undefined)
@@ -630,7 +623,7 @@ Common.UI.FeaturesManager = new(function() {
         return defValue;
     };
 
-    var _getInitValue = function(name, force) {
+    const _getInitValue = (name, force) => {
         if ((_licensed || force) && _config && _config[name] !== undefined ) {
             if (typeof _config[name] === 'object' && _config[name]) { // object and not null
                 if (_config[name].mode!==undefined)
@@ -640,7 +633,7 @@ Common.UI.FeaturesManager = new(function() {
         }
     };
 
-    var _isFeatureEnabled = function(name, force) {
+    const _isFeatureEnabled = (name, force) => {
         if (!(_licensed || force) || !_config) return true;
 
         return _config[name]!==false;

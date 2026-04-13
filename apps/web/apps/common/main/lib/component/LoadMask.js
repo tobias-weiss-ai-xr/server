@@ -51,15 +51,13 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView'
-], function () {
-    'use strict';
+], () => {
 
-    Common.UI.LoadMask = Common.UI.BaseView.extend((function() {
-        return {
+    Common.UI.LoadMask = Common.UI.BaseView.extend((() => ({
             options : {
                 cls     : '',
                 style   : '',
@@ -99,12 +97,12 @@ define([
                 this.ownerEl.append(this.loaderEl);
                 this.loaderEl.css('min-width', $('.asc-loadmask-title', this.loaderEl).width() + 105);
 
-                if (this.ownerEl && this.ownerEl.closest('.asc-window.modal').length==0)
+                if (this.ownerEl && this.ownerEl.closest('.asc-window.modal').length===0)
                     Common.util.Shortcuts.suspendEvents();
             },
 
             internalShowMask: function() {
-                if (!!this.ownerEl.ismasked) return;
+                if (this.ownerEl.ismasked) return;
 
                 this.ownerEl.ismasked = true;
                 this.ownerEl.append(this.maskeEl);
@@ -114,23 +112,21 @@ define([
                 this.internalShowMask();
 
                 // The owner is already masked
-                if (!!this.ownerEl.hasloader)
+                if (this.ownerEl.hasloader)
                     return this;
 
                 this.ownerEl.hasloader = true;
-
-                var me = this;
-                if (me.title != me.options.title) {
-                    me.options.title = me.title;
-                    $('.asc-loadmask-title', this.loaderEl).html(Common.Utils.String.htmlEncode(me.title));
+                if (this.title !== this.options.title) {
+                    this.options.title = this.title;
+                    $('.asc-loadmask-title', this.loaderEl).html(Common.Utils.String.htmlEncode(this.title));
                 }
 
                 if (immediately) {
-                    me.internalShowLoader();
-                } else if (!me.timerId) {
+                    this.internalShowLoader();
+                } else if (!this.timerId) {
                     // show mask after 500 ms if it wont be hided
-                    me.timerId = setTimeout(function () {
-                        me.internalShowLoader();
+                    this.timerId = setTimeout(() => {
+                        this.internalShowLoader();
                     },500);
                 }
 
@@ -138,29 +134,29 @@ define([
             },
 
             hide: function() {
-                var ownerEl = this.ownerEl;
+                const ownerEl = this.ownerEl;
                 if (this.timerId) {
                     clearTimeout(this.timerId);
                     this.timerId = 0;
                 }
 
-                ownerEl && ownerEl.ismasked && this.maskeEl && this.maskeEl.remove();
-                delete ownerEl.ismasked;
+                ownerEl?.ismasked && this.maskeEl && this.maskeEl.remove();
+                ownerEl.ismasked = undefined;
 
-                if (ownerEl && ownerEl.hasloader) {
-                    if (ownerEl.closest('.asc-window.modal').length==0 && !Common.Utils.ModalWindow.isVisible())
+                if (ownerEl?.hasloader) {
+                    if (ownerEl.closest('.asc-window.modal').length===0 && !Common.Utils.ModalWindow.isVisible())
                         Common.util.Shortcuts.resumeEvents();
 
-                    this.loaderEl    && this.loaderEl.remove();
+                    this.loaderEl?.remove();
                 }
-                delete ownerEl.hasloader;
+                ownerEl.hasloader = undefined;
             },
 
             setTitle: function(title) {
                 this.title = title;
 
-                if (this.ownerEl && this.ownerEl.hasloader && this.loaderEl){
-                    var el = $('.asc-loadmask-title', this.loaderEl);
+                if (this.ownerEl?.hasloader && this.loaderEl){
+                    const el = $('.asc-loadmask-title', this.loaderEl);
                     el.html(Common.Utils.String.htmlEncode(title));
                     this.loaderEl.css('min-width', el.width() + 105);
                 }
@@ -171,17 +167,16 @@ define([
             },
 
             updatePosition: function() {
-                var ownerEl = this.ownerEl,
-                    loaderEl = this.loaderEl;
-                if (ownerEl && ownerEl.hasloader && loaderEl){
+                const ownerEl = this.ownerEl;
+                const loaderEl = this.loaderEl;
+                if (ownerEl?.hasloader && loaderEl){
                     loaderEl.css({
-                        top : Math.round(ownerEl.height() / 2 - (loaderEl.height() + parseInt(loaderEl.css('padding-top'))  + parseInt(loaderEl.css('padding-bottom'))) / 2) + 'px',
-                        left: Math.round(ownerEl.width()  / 2 - (loaderEl.width()  + parseInt(loaderEl.css('padding-left')) + parseInt(loaderEl.css('padding-right')))  / 2) + 'px'
+                        top : `${Math.round(ownerEl.height() / 2 - (loaderEl.height() + Number.parseInt(loaderEl.css('padding-top'))  + Number.parseInt(loaderEl.css('padding-bottom'))) / 2)}px`,
+                        left: `${Math.round(ownerEl.width()  / 2 - (loaderEl.width()  + Number.parseInt(loaderEl.css('padding-left')) + Number.parseInt(loaderEl.css('padding-right')))  / 2)}px`
                     });
                     loaderEl.css({visibility: 'visible'});
                 }
             }
-        }
-    })())
+        }))())
 });
 

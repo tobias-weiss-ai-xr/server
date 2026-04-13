@@ -29,20 +29,15 @@
  *
  */
 
-define([
-    'backbone'
-], function(Backbone){ 'use strict';
+define(["backbone"], (Backbone) => {
+  PE.Models = PE.Models || {}
 
-    PE.Models = PE.Models||{};
-
-    PE.Models.SlideLayout = Backbone.Model.extend({
-        defaults: function() {
-            return {
-                id      : Common.UI.getId(),
-                imageUrl: null,
-                title   : null,
-                data    : null
-            }
-        }
-    });
-});
+  PE.Models.SlideLayout = Backbone.Model.extend({
+    defaults: () => ({
+      id: Common.UI.getId(),
+      imageUrl: null,
+      title: null,
+      data: null,
+    }),
+  })
+})

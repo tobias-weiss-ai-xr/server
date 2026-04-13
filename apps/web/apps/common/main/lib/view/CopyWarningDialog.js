@@ -31,9 +31,9 @@
 
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () { 'use strict';
+define([], () => { 
 
     Common.Views.CopyWarningDialog = Common.UI.Window.extend(_.extend({
         options: {
@@ -54,26 +54,26 @@ define([], function () { 'use strict';
             const keysShortcuts = { Copy: '', Cut: '', Paste: ''};
             for (const actionType in keysShortcuts) {
                 const shortcuts = shortcutsController.getShortcutsByActionType(actionType);
-                if(shortcuts && shortcuts[0]) {
+                if(shortcuts?.[0]) {
                     keysShortcuts[actionType] = shortcuts[0].keys.join('+');
                 }
             }
 
             this.template = [
                 '<div class="box">',
-                    '<p class="message">' + this.textMsg + '</p>',
+                    `<p class="message">${this.textMsg}</p>`,
                     '<div class="hotkeys">',
                         '<div>',
-                            '<p class="hotkey">' + keysShortcuts.Copy + '</p>',
-                            '<p class="message">' + this.textToCopy + '</p>',
+                            `<p class="hotkey">${keysShortcuts.Copy}</p>`,
+                            `<p class="message">${this.textToCopy}</p>`,
                         '</div>',
                         '<div>',
-                        '<p class="hotkey">' + keysShortcuts.Cut + '</p>',
-                            '<p class="message">' + this.textToCut + '</p>',
+                        `<p class="hotkey">${keysShortcuts.Cut}</p>`,
+                            `<p class="message">${this.textToCut}</p>`,
                         '</div>',
                         '<div>',
-                            '<p class="hotkey">' + keysShortcuts.Paste + '</p>',
-                            '<p class="message">' + this.textToPaste + '</p>',
+                            `<p class="hotkey">${keysShortcuts.Paste}</p>`,
+                            `<p class="message">${this.textToPaste}</p>`,
                         '</div>',
                     '</div>',
                     '<div id="copy-warning-checkbox" class="text-align-left" style="padding: 15px 0;"></div>',
@@ -106,19 +106,19 @@ define([], function () { 'use strict';
         },
 
         onBtnClick: function(event) {
-            if (this.options.handler) this.options.handler.call(this, this.chDontShow.getValue() == 'checked');
+            if (this.options.handler) this.options.handler.call(this, this.chDontShow.getValue() === 'checked');
             this.close();
         },
 
         onKeyPress: function(event) {
-            if (event.keyCode == Common.UI.Keys.RETURN) {
-                if (this.options.handler) this.options.handler.call(this, this.chDontShow.getValue() == 'checked');
+            if (event.keyCode === Common.UI.Keys.RETURN) {
+                if (this.options.handler) this.options.handler.call(this, this.chDontShow.getValue() === 'checked');
                 this.close();
             }
         },
 
         getSettings: function() {
-            return (this.chDontShow.getValue() == 'checked');
+            return (this.chDontShow.getValue() === 'checked');
         },
 
         textTitle   : 'Copy, Cut and Paste Actions',

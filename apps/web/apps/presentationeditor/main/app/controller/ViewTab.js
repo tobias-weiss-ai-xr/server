@@ -31,467 +31,526 @@
  */
 
 define([
-    'core',
-    'presentationeditor/main/app/view/ViewTab',
-    'presentationeditor/main/app/view/GridSettings'
-], function () {
-    'use strict';
+  "core",
+  "presentationeditor/main/app/view/ViewTab",
+  "presentationeditor/main/app/view/GridSettings",
+], () => {
+  PE.Controllers.ViewTab = Backbone.Controller.extend(
+    _.extend(
+      {
+        models: [],
+        collections: [],
+        views: ["ViewTab"],
+        sdkViewName: "#id_main",
 
-    PE.Controllers.ViewTab = Backbone.Controller.extend(_.extend({
-        models : [],
-        collections : [
-        ],
-        views : [
-            'ViewTab'
-        ],
-        sdkViewName : '#id_main',
-
-        initialize: function () {
-        },
+        initialize: () => {},
         onLaunch: function () {
-            this._state = {
-                zoom_type: undefined,
-                zoom_percent: undefined,
-                unitsChanged: true,
-                lock_viewProps: false,
-                slideMasterMode: false
-            };
-            Common.NotificationCenter.on('uitheme:changed', this.onThemeChanged.bind(this));
-            Common.NotificationCenter.on('document:ready', _.bind(this.onDocumentReady, this));
-            Common.NotificationCenter.on('settings:unitschanged', _.bind(this.unitsChanged, this));
-            Common.NotificationCenter.on('tabstyle:changed', this.onTabStyleChange.bind(this));
-            Common.NotificationCenter.on('app:ready', this.onAppReady.bind(this));
+          this._state = {
+            zoom_type: undefined,
+            zoom_percent: undefined,
+            unitsChanged: true,
+            lock_viewProps: false,
+            slideMasterMode: false,
+          }
+          Common.NotificationCenter.on("uitheme:changed", this.onThemeChanged.bind(this))
+          Common.NotificationCenter.on("document:ready", _.bind(this.onDocumentReady, this))
+          Common.NotificationCenter.on("settings:unitschanged", _.bind(this.unitsChanged, this))
+          Common.NotificationCenter.on("tabstyle:changed", this.onTabStyleChange.bind(this))
+          Common.NotificationCenter.on("app:ready", this.onAppReady.bind(this))
         },
 
         setApi: function (api) {
-            if (api) {
-                this.api = api;
-                this.api.asc_registerCallback('asc_onZoomChange', _.bind(this.onZoomChange, this));
-                this.api.asc_registerCallback('asc_onNotesShow', _.bind(this.onNotesShow, this));
-                this.api.asc_registerCallback('asc_onCoAuthoringDisconnect', _.bind(this.onCoAuthoringDisconnect, this));
-                Common.NotificationCenter.on('api:disconnect', _.bind(this.onCoAuthoringDisconnect, this));
-                this.api.asc_registerCallback('asc_onLockViewProps', _.bind(this.onLockViewProps, this, true));
-                this.api.asc_registerCallback('asc_onUnLockViewProps', _.bind(this.onLockViewProps, this, false));
-                this.api.asc_registerCallback('asc_onChangeViewMode', _.bind(this.onApiChangeViewMode, this));
-                this.api.asc_registerCallback('asc_onMacroRecordingStart', _.bind(this.updateMacroState, this, true, false));
-                this.api.asc_registerCallback('asc_onMacroRecordingStop', _.bind(this.updateMacroState, this, false));
-                this.api.asc_registerCallback('asc_onMacroRecordingPause', _.bind(this.updateMacroState, this, true, true));
-                this.api.asc_registerCallback('asc_onMacroRecordingResume', _.bind(this.updateMacroState, this, true, false));
-            }
-            return this;
+          if (api) {
+            this.api = api
+            this.api.asc_registerCallback("asc_onZoomChange", _.bind(this.onZoomChange, this))
+            this.api.asc_registerCallback("asc_onNotesShow", _.bind(this.onNotesShow, this))
+            this.api.asc_registerCallback(
+              "asc_onCoAuthoringDisconnect",
+              _.bind(this.onCoAuthoringDisconnect, this),
+            )
+            Common.NotificationCenter.on(
+              "api:disconnect",
+              _.bind(this.onCoAuthoringDisconnect, this),
+            )
+            this.api.asc_registerCallback(
+              "asc_onLockViewProps",
+              _.bind(this.onLockViewProps, this, true),
+            )
+            this.api.asc_registerCallback(
+              "asc_onUnLockViewProps",
+              _.bind(this.onLockViewProps, this, false),
+            )
+            this.api.asc_registerCallback(
+              "asc_onChangeViewMode",
+              _.bind(this.onApiChangeViewMode, this),
+            )
+            this.api.asc_registerCallback(
+              "asc_onMacroRecordingStart",
+              _.bind(this.updateMacroState, this, true, false),
+            )
+            this.api.asc_registerCallback(
+              "asc_onMacroRecordingStop",
+              _.bind(this.updateMacroState, this, false),
+            )
+            this.api.asc_registerCallback(
+              "asc_onMacroRecordingPause",
+              _.bind(this.updateMacroState, this, true, true),
+            )
+            this.api.asc_registerCallback(
+              "asc_onMacroRecordingResume",
+              _.bind(this.updateMacroState, this, true, false),
+            )
+          }
+          return this
         },
 
-        setConfig: function(config) {
-            var mode = config.mode;
-            this.toolbar = config.toolbar;
-            this.view = this.createView('ViewTab', {
-                toolbar: this.toolbar.toolbar,
-                mode: mode,
-                compactToolbar: this.toolbar.toolbar.isCompactView
-            });
-            this.addListeners({
-                'ViewTab': {
-                    'mode:normal': _.bind(this.onChangeViewMode, this, 'normal'),
-                    'mode:master': _.bind(this.onChangeViewMode, this, 'master'),
-                    'zoom:selected': _.bind(this.onSelectedZoomValue, this),
-                    'zoom:changedbefore': _.bind(this.onZoomChanged, this),
-                    'zoom:changedafter': _.bind(this.onZoomChanged, this),
-                    'zoom:toslide': _.bind(this.onBtnZoomTo, this, 'toslide'),
-                    'zoom:towidth': _.bind(this.onBtnZoomTo, this, 'towidth'),
-                    'rulers:change': _.bind(this.onChangeRulers, this),
-                    'notes:change': _.bind(this.onChangeNotes, this),
-                    'guides:show': _.bind(this.onGuidesShow, this),
-                    'guides:aftershow': _.bind(this.onGuidesAfterShow, this),
-                    'guides:add': _.bind(this.onGuidesAdd, this),
-                    'guides:clear': _.bind(this.onGuidesClear, this),
-                    'guides:smart': _.bind(this.onGuidesSmartShow, this),
-                    'gridlines:show': _.bind(this.onGridlinesShow, this),
-                    'gridlines:snap': _.bind(this.onGridlinesSnap, this),
-                    'gridlines:spacing': _.bind(this.onGridlinesSpacing, this),
-                    'gridlines:custom': _.bind(this.onGridlinesCustom, this),
-                    'gridlines:aftershow': _.bind(this.onGridlinesAfterShow, this),
-                    'macros:click':  _.bind(this.onClickMacros, this),
-                    'macros:record':  _.bind(this.onClickMacrosRec, this),
-                    'macros:pause':  _.bind(this.onClickMacrosPause, this),
-                    'pointer:select': _.bind(this.onPointerType, this, 'select'),
-                    'pointer:hand': _.bind(this.onPointerType, this, 'hand')
-                },
-                'Toolbar': {
-                    'view:compact': _.bind(function (toolbar, state) {
-                        this.view.chToolbar.setValue(!state, true);
-                    }, this),
-                    'close:slide-master': _.bind(function () {
-                        this.onChangeViewMode('normal');
-                    }, this)
-                },
-                'Statusbar': {
-                    'view:hide': _.bind(function (statusbar, state) {
-                        this.view.chStatusbar.setValue(!state, true);
-                    }, this)
-                },
-                'DocumentHolder': {
-                    'guides:show': _.bind(this.onGuidesShow, this),
-                    'guides:add': _.bind(this.onGuidesAdd, this),
-                    'guides:delete': _.bind(this.onGuidesDelete, this),
-                    'guides:clear': _.bind(this.onGuidesClear, this),
-                    'guides:smart': _.bind(this.onGuidesSmartShow, this),
-                    'gridlines:show': _.bind(this.onGridlinesShow, this),
-                    'gridlines:snap': _.bind(this.onGridlinesSnap, this),
-                    'gridlines:spacing': _.bind(this.onGridlinesSpacing, this),
-                    'gridlines:custom': _.bind(this.onGridlinesCustom, this),
-                    'rulers:change': _.bind(this.onChangeRulers, this)
-                },
-                'LeftMenu': {
-                    'view:hide': _.bind(function (leftmenu, state) {
-                        this.view.chLeftMenu.setValue(!state, true);
-                    }, this)
-                },
-                'RightMenu': {
-                    'view:hide': _.bind(function (leftmenu, state) {
-                        this.view.chRightMenu.setValue(!state, true);
-                    }, this)
-                }
-            });
+        setConfig: function (config) {
+          const mode = config.mode
+          this.toolbar = config.toolbar
+          this.view = this.createView("ViewTab", {
+            toolbar: this.toolbar.toolbar,
+            mode: mode,
+            compactToolbar: this.toolbar.toolbar.isCompactView,
+          })
+          this.addListeners({
+            ViewTab: {
+              "mode:normal": _.bind(this.onChangeViewMode, this, "normal"),
+              "mode:master": _.bind(this.onChangeViewMode, this, "master"),
+              "zoom:selected": _.bind(this.onSelectedZoomValue, this),
+              "zoom:changedbefore": _.bind(this.onZoomChanged, this),
+              "zoom:changedafter": _.bind(this.onZoomChanged, this),
+              "zoom:toslide": _.bind(this.onBtnZoomTo, this, "toslide"),
+              "zoom:towidth": _.bind(this.onBtnZoomTo, this, "towidth"),
+              "rulers:change": _.bind(this.onChangeRulers, this),
+              "notes:change": _.bind(this.onChangeNotes, this),
+              "guides:show": _.bind(this.onGuidesShow, this),
+              "guides:aftershow": _.bind(this.onGuidesAfterShow, this),
+              "guides:add": _.bind(this.onGuidesAdd, this),
+              "guides:clear": _.bind(this.onGuidesClear, this),
+              "guides:smart": _.bind(this.onGuidesSmartShow, this),
+              "gridlines:show": _.bind(this.onGridlinesShow, this),
+              "gridlines:snap": _.bind(this.onGridlinesSnap, this),
+              "gridlines:spacing": _.bind(this.onGridlinesSpacing, this),
+              "gridlines:custom": _.bind(this.onGridlinesCustom, this),
+              "gridlines:aftershow": _.bind(this.onGridlinesAfterShow, this),
+              "macros:click": _.bind(this.onClickMacros, this),
+              "macros:record": _.bind(this.onClickMacrosRec, this),
+              "macros:pause": _.bind(this.onClickMacrosPause, this),
+              "pointer:select": _.bind(this.onPointerType, this, "select"),
+              "pointer:hand": _.bind(this.onPointerType, this, "hand"),
+            },
+            Toolbar: {
+              "view:compact": _.bind(function (toolbar, state) {
+                this.view.chToolbar.setValue(!state, true)
+              }, this),
+              "close:slide-master": _.bind(function () {
+                this.onChangeViewMode("normal")
+              }, this),
+            },
+            Statusbar: {
+              "view:hide": _.bind(function (statusbar, state) {
+                this.view.chStatusbar.setValue(!state, true)
+              }, this),
+            },
+            DocumentHolder: {
+              "guides:show": _.bind(this.onGuidesShow, this),
+              "guides:add": _.bind(this.onGuidesAdd, this),
+              "guides:delete": _.bind(this.onGuidesDelete, this),
+              "guides:clear": _.bind(this.onGuidesClear, this),
+              "guides:smart": _.bind(this.onGuidesSmartShow, this),
+              "gridlines:show": _.bind(this.onGridlinesShow, this),
+              "gridlines:snap": _.bind(this.onGridlinesSnap, this),
+              "gridlines:spacing": _.bind(this.onGridlinesSpacing, this),
+              "gridlines:custom": _.bind(this.onGridlinesCustom, this),
+              "rulers:change": _.bind(this.onChangeRulers, this),
+            },
+            LeftMenu: {
+              "view:hide": _.bind(function (leftmenu, state) {
+                this.view.chLeftMenu.setValue(!state, true)
+              }, this),
+            },
+            RightMenu: {
+              "view:hide": _.bind(function (leftmenu, state) {
+                this.view.chRightMenu.setValue(!state, true)
+              }, this),
+            },
+          })
         },
 
-        SetDisabled: function(state) {
-            this.view && this.view.SetDisabled(state);
+        SetDisabled: function (state) {
+          this.view?.SetDisabled(state)
         },
 
-        createToolbarPanel: function() {
-            return this.view.getPanel();
+        createToolbarPanel: function () {
+          return this.view.getPanel()
         },
 
-        getView: function(name) {
-            return !name && this.view ?
-                this.view : Backbone.Controller.prototype.getView.call(this, name);
+        getView: function (name) {
+          return !name && this.view
+            ? this.view
+            : Backbone.Controller.prototype.getView.call(this, name)
         },
 
-        onCoAuthoringDisconnect: function() {
-            this.SetDisabled(true);
+        onCoAuthoringDisconnect: function () {
+          this.SetDisabled(true)
         },
 
-        onDocumentReady: function() {
-            Common.Utils.lockControls(Common.enumLock.disableOnStart, false, {array: this.view.lockedControls});
+        onDocumentReady: function () {
+          Common.Utils.lockControls(Common.enumLock.disableOnStart, false, {
+            array: this.view.lockedControls,
+          })
         },
 
         onZoomChange: function (percent, type) {
-            if (this._state.zoom_type !== type) {
-                this.view.btnFitToSlide.toggle(type == 2, true);
-                this.view.btnFitToWidth.toggle(type == 1, true);
-                this._state.zoom_type = type;
-            }
-            if (this._state.zoom_percent !== percent) {
-                this.view.cmbZoom.setValue(percent, percent + '%');
-                this._state.zoom_percent = percent;
-            }
+          if (this._state.zoom_type !== type) {
+            this.view.btnFitToSlide.toggle(type === 2, true)
+            this.view.btnFitToWidth.toggle(type === 1, true)
+            this._state.zoom_type = type
+          }
+          if (this._state.zoom_percent !== percent) {
+            this.view.cmbZoom.setValue(percent, `${percent}%`)
+            this._state.zoom_percent = percent
+          }
         },
 
-        onNotesShow: function(bIsShow) {
-            this.view.chNotes.setValue(bIsShow, true);
-            Common.localStorage.setBool('pe-hidden-notes', !bIsShow);
+        onNotesShow: function (bIsShow) {
+          this.view.chNotes.setValue(bIsShow, true)
+          Common.localStorage.setBool("pe-hidden-notes", !bIsShow)
         },
 
         onBtnZoomTo: function (type, btn) {
-            this._state.zoom_type = undefined;
-            this._state.zoom_percent = undefined;
-            if (!btn.pressed)
-                this.api.zoomCustomMode();
-            else
-                this.api[type === 'toslide' ? 'zoomFitToPage' : 'zoomFitToWidth']();
-            Common.NotificationCenter.trigger('edit:complete', this.view);
+          this._state.zoom_type = undefined
+          this._state.zoom_percent = undefined
+          if (!btn.pressed) this.api.zoomCustomMode()
+          else this.api[type === "toslide" ? "zoomFitToPage" : "zoomFitToWidth"]()
+          Common.NotificationCenter.trigger("edit:complete", this.view)
         },
 
         onChangeRulers: function (checked) {
-            this.api.asc_SetViewRulers(checked);
-            this.view.chRulers.setValue(checked, true);
-            Common.localStorage.setBool('pe-hidden-rulers', !checked);
-            Common.Utils.InternalSettings.set("pe-hidden-rulers", !checked);
-            Common.NotificationCenter.trigger('layout:changed', 'rulers');
-            Common.NotificationCenter.trigger('edit:complete', this.view);
+          this.api.asc_SetViewRulers(checked)
+          this.view.chRulers.setValue(checked, true)
+          Common.localStorage.setBool("pe-hidden-rulers", !checked)
+          Common.Utils.InternalSettings.set("pe-hidden-rulers", !checked)
+          Common.NotificationCenter.trigger("layout:changed", "rulers")
+          Common.NotificationCenter.trigger("edit:complete", this.view)
         },
 
         onChangeNotes: function (btn, checked) {
-            this.api.asc_ShowNotes(checked);
-            Common.localStorage.setBool('pe-hidden-notes', !checked);
-            Common.NotificationCenter.trigger('edit:complete', this.view);
+          this.api.asc_ShowNotes(checked)
+          Common.localStorage.setBool("pe-hidden-notes", !checked)
+          Common.NotificationCenter.trigger("edit:complete", this.view)
         },
 
         onThemeChanged: function () {
-            if (this.view && Common.UI.Themes.available() && this.view.btnInterfaceTheme.menu && (typeof (this.view.btnInterfaceTheme.menu) === 'object')) {
-                var current_theme = Common.UI.Themes.currentThemeId() || Common.UI.Themes.defaultThemeId(),
-                    menu_item = _.findWhere(this.view.btnInterfaceTheme.menu.getItems(true), {value: current_theme});
-                if ( !!menu_item ) {
-                    this.view.btnInterfaceTheme.menu.clearAll(true);
-                    menu_item.setChecked(true, true);
-                }
+          if (
+            this.view &&
+            Common.UI.Themes.available() &&
+            this.view.btnInterfaceTheme.menu &&
+            typeof this.view.btnInterfaceTheme.menu === "object"
+          ) {
+            const current_theme =
+              Common.UI.Themes.currentThemeId() || Common.UI.Themes.defaultThemeId()
+            const menu_item = _.findWhere(this.view.btnInterfaceTheme.menu.getItems(true), {
+              value: current_theme,
+            })
+            if (menu_item) {
+              this.view.btnInterfaceTheme.menu.clearAll(true)
+              menu_item.setChecked(true, true)
             }
+          }
         },
 
         applyZoom: function (value) {
-            this._state.zoom_percent = undefined;
-            this._state.zoom_type = undefined;
-            var val = Math.max(10, Math.min(500, value));
-            if (this._state.zoomValue === val)
-                this.view.cmbZoom.setValue(this._state.zoomValue, this._state.zoomValue + '%');
-            this.api.zoom(val);
-            Common.NotificationCenter.trigger('edit:complete', this.view);
+          this._state.zoom_percent = undefined
+          this._state.zoom_type = undefined
+          const val = Math.max(10, Math.min(500, value))
+          if (this._state.zoomValue === val)
+            this.view.cmbZoom.setValue(this._state.zoomValue, `${this._state.zoomValue}%`)
+          this.api.zoom(val)
+          Common.NotificationCenter.trigger("edit:complete", this.view)
         },
 
         onSelectedZoomValue: function (combo, record) {
-            this.applyZoom(record.value);
+          this.applyZoom(record.value)
         },
 
         onZoomChanged: function (before, combo, record, e) {
-            var value = parseFloat(record.value);
-            if (before) {
-                var expr = new RegExp('^\\s*(\\d*(\\.|,)?\\d+)\\s*(%)?\\s*$');
-                if (!expr.exec(record.value)) {
-                    this.view.cmbZoom.setValue(this._state.zoom_percent, this._state.zoom_percent + '%');
-                    Common.NotificationCenter.trigger('edit:complete', this.view);
-                }
+          const value = Number.parseFloat(record.value)
+          if (before) {
+            const expr = /^\s*(\d*(\.|,)?\d+)\s*(%)?\s*$/
+            if (!expr.exec(record.value)) {
+              this.view.cmbZoom.setValue(this._state.zoom_percent, `${this._state.zoom_percent}%`)
+              Common.NotificationCenter.trigger("edit:complete", this.view)
+            }
+          } else {
+            if (this._state.zoom_percent !== value && !Number.isNaN(value)) {
+              this.applyZoom(value)
+            } else if (record.value !== `${this._state.zoom_percent}%`) {
+              this.view.cmbZoom.setValue(this._state.zoom_percent, `${this._state.zoom_percent}%`)
+            }
+          }
+        },
+
+        onComboBlur: function () {
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        onGuidesShow: function (state) {
+          this.api.asc_setShowGuides(state)
+          this.view.btnGuides.toggle(state, true)
+          Common.localStorage.setBool("pe-settings-showguides", state)
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        onGuidesAfterShow: function () {
+          if (this.view) {
+            this.view.btnGuides.menu.items[2].setDisabled(this._state.lock_viewProps) // add v guides
+            this.view.btnGuides.menu.items[3].setDisabled(this._state.lock_viewProps) // add h guides
+            this.view.btnGuides.menu.items[6].setDisabled(
+              this._state.lock_viewProps || !this.api.asc_canClearGuides(),
+            ) // clear guides
+
+            this.view.btnGuides.menu.items[0].setChecked(this.api.asc_getShowGuides(), true)
+            this.view.btnGuides.menu.items[5].setChecked(this.api.asc_getShowSmartGuides(), true)
+          }
+        },
+
+        onGuidesAdd: function (type) {
+          if (type === "add-vert") this.api.asc_addVerticalGuide()
+          else this.api.asc_addHorizontalGuide()
+
+          !this.api.asc_getShowGuides() && this.onGuidesShow(true)
+
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        onGuidesDelete: function (id) {
+          this.api.asc_deleteGuide(id)
+          this.api.asc_getShowGuides() &&
+            this.api.asc_getGuidesCount() < 1 &&
+            this.onGuidesShow(false)
+
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        onGuidesClear: function () {
+          this.api.asc_clearGuides()
+          this.api.asc_getShowGuides() && this.onGuidesShow(false)
+
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        onGuidesSmartShow: function (state) {
+          this.api.asc_setShowSmartGuides(state)
+          Common.localStorage.setBool("pe-settings-showsnaplines", state)
+          Common.Utils.InternalSettings.set("pe-settings-showsnaplines", state)
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        onGridlinesShow: function (state) {
+          this.api.asc_setShowGridlines(state)
+          this.view.btnGridlines.toggle(state, true)
+          Common.localStorage.setBool("pe-settings-showgrid", state)
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        onGridlinesSnap: function (state) {
+          this.api.asc_setSnapToGrid(state)
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        onGridlinesSpacing: function (value) {
+          this.api.asc_setGridSpacing(Common.Utils.Metric.fnRecalcToMM(value) * 36000)
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        onGridlinesCustom: function (state) {
+          let win
+          let props
+          win = new PE.Views.GridSettings({
+            handler: (dlg, result) => {
+              if (result === "ok") {
+                props = dlg.getSettings()
+                this.api.asc_setGridSpacing(Common.Utils.Metric.fnRecalcToMM(props) * 36000)
+                Common.NotificationCenter.trigger("edit:complete", this.view)
+              }
+            },
+          })
+          win.show()
+          win.setSettings(this.api.asc_getGridSpacing())
+        },
+
+        onGridlinesAfterShow: function () {
+          if (this.view) {
+            const menu = this.view.btnGridlines.menu
+            if (this._state.unitsChanged) {
+              for (let i = 3; i < menu.getItemsLength(true) - 2; i++) {
+                menu.removeItem(menu.items[i])
+                i--
+              }
+              const arr = Common.define.gridlineData.getGridlineData(
+                Common.Utils.Metric.getCurrentMetric(),
+              )
+              for (let i = 0; i < arr.length; i++) {
+                const menuItem = new Common.UI.MenuItem({
+                  caption: arr[i].caption,
+                  value: arr[i].value,
+                  checkable: true,
+                  toggleGroup: "tb-gridlines",
+                })
+                menu.insertItem(3 + i, menuItem)
+              }
+              this._state.unitsChanged = false
+            }
+
+            menu.items[0].setChecked(this.api.asc_getShowGridlines(), true)
+            menu.items[1].setChecked(this.api.asc_getSnapToGrid(), true)
+
+            const value = Common.Utils.Metric.fnRecalcFromMM(this.api.asc_getGridSpacing() / 36000)
+            const items = menu.getItems(true)
+            for (let i = 3; i < items.length - 2; i++) {
+              const item = items[i]
+              if (item.value < 1 && Math.abs(item.value - value) < 0.005) item.setChecked(true)
+              else if (item.value >= 1 && Math.abs(item.value - value) < 0.001)
+                item.setChecked(true)
+              else item.setChecked(false)
+              item.setDisabled(this._state.lock_viewProps)
+            }
+            menu.items[1].setDisabled(this._state.lock_viewProps) // snap to grid
+            menu.items[items.length - 1].setDisabled(this._state.lock_viewProps) // custom
+          }
+        },
+
+        onClickMacros: function () {
+          const macrosWindow = new Common.Views.MacrosDialog({
+            api: this.api,
+          })
+          macrosWindow.show()
+        },
+
+        onClickMacrosRec: function () {
+          const recorder = this.api.getMacroRecorder()
+          recorder.isInProgress() ? recorder.stop() : recorder.start()
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        onClickMacrosPause: function () {
+          const recorder = this.api.getMacroRecorder()
+          if (recorder.isInProgress()) {
+            recorder.isPaused() ? recorder.resume() : recorder.pause()
+          }
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        updateMacroState: function (inProgress, paused) {
+          if (this.view) {
+            this.view.btnRecMacro.changeIcon({
+              next: inProgress ? "btn-macros-stop" : "btn-macros-record",
+              curr: inProgress ? "btn-macros-record" : "btn-macros-stop",
+            })
+            this.view.btnRecMacro.setCaption(
+              inProgress ? this.view.textStopMacro : this.view.textRecMacro,
+            )
+            this.view.btnRecMacro.updateHint(
+              inProgress ? this.view.tipStopMacro : this.view.tipRecMacro,
+            )
+            Common.Utils.lockControls(Common.enumLock.macrosStopped, !inProgress, {
+              array: [this.view.btnPauseMacro],
+            })
+            if (!inProgress) {
+              this.view.btnPauseMacro.setCaption(this.view.textPauseMacro)
+              this.view.btnPauseMacro.updateHint(this.view.tipPauseMacro)
             } else {
-                if (this._state.zoom_percent !== value && !isNaN(value)) {
-                    this.applyZoom(value);
-                } else if (record.value !== this._state.zoom_percent + '%') {
-                    this.view.cmbZoom.setValue(this._state.zoom_percent, this._state.zoom_percent + '%');
-                }
+              this.view.btnPauseMacro.setCaption(
+                paused ? this.view.textResumeMacro : this.view.textPauseMacro,
+              )
+              this.view.btnPauseMacro.updateHint(
+                paused ? this.view.tipResumeMacro : this.view.tipPauseMacro,
+              )
             }
+          }
         },
 
-        onComboBlur: function() {
-            Common.NotificationCenter.trigger('edit:complete', this.view);
+        onLockViewProps: function (lock) {
+          this._state.lock_viewProps = lock
+          Common.Utils.InternalSettings.set("pe-lock-view-props", lock)
+          if (this.view) {
+            if (
+              this.view.btnGridlines &&
+              typeof this.view.btnGridlines.menu === "object" &&
+              this.view.btnGridlines.menu.isVisible()
+            )
+              this.onGridlinesAfterShow()
+            if (
+              this.view.btnGuides &&
+              typeof this.view.btnGuides.menu === "object" &&
+              this.view.btnGuides.menu.isVisible()
+            )
+              this.onGuidesAfterShow()
+          }
         },
 
-        onGuidesShow: function(state) {
-            this.api.asc_setShowGuides(state);
-            this.view.btnGuides.toggle(state, true);
-            Common.localStorage.setBool('pe-settings-showguides', state);
-            Common.NotificationCenter.trigger('edit:complete', this.view);
-        },
-
-        onGuidesAfterShow: function() {
-            if (this.view) {
-                this.view.btnGuides.menu.items[2].setDisabled(this._state.lock_viewProps); // add v guides
-                this.view.btnGuides.menu.items[3].setDisabled(this._state.lock_viewProps); // add h guides
-                this.view.btnGuides.menu.items[6].setDisabled(this._state.lock_viewProps || !this.api.asc_canClearGuides()); // clear guides
-
-                this.view.btnGuides.menu.items[0].setChecked(this.api.asc_getShowGuides(), true);
-                this.view.btnGuides.menu.items[5].setChecked(this.api.asc_getShowSmartGuides(), true);
-            }
-        },
-
-        onGuidesAdd: function(type) {
-            if (type==='add-vert')
-                this.api.asc_addVerticalGuide();
-            else
-                this.api.asc_addHorizontalGuide();
-
-            !this.api.asc_getShowGuides() && this.onGuidesShow(true);
-
-            Common.NotificationCenter.trigger('edit:complete', this.view);
-        },
-
-        onGuidesDelete: function(id) {
-            this.api.asc_deleteGuide(id);
-            this.api.asc_getShowGuides() && (this.api.asc_getGuidesCount()<1) && this.onGuidesShow(false);
-
-            Common.NotificationCenter.trigger('edit:complete', this.view);
-        },
-
-        onGuidesClear: function() {
-            this.api.asc_clearGuides();
-            this.api.asc_getShowGuides() && this.onGuidesShow(false);
-
-            Common.NotificationCenter.trigger('edit:complete', this.view);
-        },
-
-        onGuidesSmartShow: function(state) {
-            this.api.asc_setShowSmartGuides(state);
-            Common.localStorage.setBool('pe-settings-showsnaplines', state);
-            Common.Utils.InternalSettings.set("pe-settings-showsnaplines", state);
-            Common.NotificationCenter.trigger('edit:complete', this.view);
-        },
-
-        onGridlinesShow: function(state) {
-            this.api.asc_setShowGridlines(state);
-            this.view.btnGridlines.toggle(state, true);
-            Common.localStorage.setBool('pe-settings-showgrid', state);
-            Common.NotificationCenter.trigger('edit:complete', this.view);
-        },
-
-        onGridlinesSnap: function(state) {
-            this.api.asc_setSnapToGrid(state);
-            Common.NotificationCenter.trigger('edit:complete', this.view);
-        },
-
-        onGridlinesSpacing: function(value) {
-            this.api.asc_setGridSpacing(Common.Utils.Metric.fnRecalcToMM(value) * 36000);
-            Common.NotificationCenter.trigger('edit:complete', this.view);
-        },
-
-        onGridlinesCustom: function(state) {
-            var win, props,
-                me = this;
-            win = new PE.Views.GridSettings({
-                handler: function(dlg, result) {
-                    if (result == 'ok') {
-                        props = dlg.getSettings();
-                        me.api.asc_setGridSpacing(Common.Utils.Metric.fnRecalcToMM(props) * 36000);
-                        Common.NotificationCenter.trigger('edit:complete', me.view);
-                    }
-                }
-            });
-            win.show();
-            win.setSettings(me.api.asc_getGridSpacing());
-        },
-
-        onGridlinesAfterShow: function() {
-            if (this.view) {
-                var menu = this.view.btnGridlines.menu;
-                if (this._state.unitsChanged) {
-                    for (var i = 3; i < menu.getItemsLength(true)-2; i++) {
-                        menu.removeItem(menu.items[i]);
-                        i--;
-                    }
-                    var arr = Common.define.gridlineData.getGridlineData(Common.Utils.Metric.getCurrentMetric());
-                    for (var i = 0; i < arr.length; i++) {
-                        var menuItem = new Common.UI.MenuItem({
-                            caption: arr[i].caption,
-                            value: arr[i].value,
-                            checkable: true,
-                            toggleGroup: 'tb-gridlines'
-                        });
-                        menu.insertItem(3+i, menuItem);
-                    }
-                    this._state.unitsChanged = false;
-                }
-
-                menu.items[0].setChecked(this.api.asc_getShowGridlines(), true);
-                menu.items[1].setChecked(this.api.asc_getSnapToGrid(), true);
-
-                var value = Common.Utils.Metric.fnRecalcFromMM(this.api.asc_getGridSpacing()/36000),
-                    items = menu.getItems(true);
-                for (var i=3; i<items.length-2; i++) {
-                    var item = items[i];
-                    if (item.value<1 && Math.abs(item.value - value)<0.005)
-                        item.setChecked(true);
-                    else if (item.value>=1 && Math.abs(item.value - value)<0.001)
-                        item.setChecked(true);
-                    else
-                        item.setChecked(false);
-                    item.setDisabled(this._state.lock_viewProps);
-                }
-                menu.items[1].setDisabled(this._state.lock_viewProps); // snap to grid
-                menu.items[items.length-1].setDisabled(this._state.lock_viewProps); // custom
-            }
-        },
-
-        onClickMacros: function() {
-            var me = this;
-            var macrosWindow = new Common.Views.MacrosDialog({
-                api: this.api,
-            });
-            macrosWindow.show();
-        },
-
-        onClickMacrosRec: function() {
-            var recorder = this.api.getMacroRecorder();
-            recorder.isInProgress() ? recorder.stop() : recorder.start();
-            Common.NotificationCenter.trigger('edit:complete', this.view);
-        },
-
-        onClickMacrosPause: function() {
-            var recorder = this.api.getMacroRecorder();
-            if (recorder.isInProgress()) {
-                recorder.isPaused() ? recorder.resume() : recorder.pause();
-            }
-            Common.NotificationCenter.trigger('edit:complete', this.view);
-        },
-
-        updateMacroState: function(inProgress, paused) {
-            if (this.view) {
-                this.view.btnRecMacro.changeIcon({
-                    next: inProgress ? 'btn-macros-stop' : 'btn-macros-record',
-                    curr: inProgress ? 'btn-macros-record' : 'btn-macros-stop'
-                });
-                this.view.btnRecMacro.setCaption(inProgress ? this.view.textStopMacro : this.view.textRecMacro);
-                this.view.btnRecMacro.updateHint(inProgress ? this.view.tipStopMacro : this.view.tipRecMacro);
-                Common.Utils.lockControls(Common.enumLock.macrosStopped, !inProgress, {array: [this.view.btnPauseMacro]});
-                if (!inProgress) {
-                    this.view.btnPauseMacro.setCaption(this.view.textPauseMacro);
-                    this.view.btnPauseMacro.updateHint(this.view.tipPauseMacro);
-                } else {
-                    this.view.btnPauseMacro.setCaption(paused ? this.view.textResumeMacro : this.view.textPauseMacro);
-                    this.view.btnPauseMacro.updateHint(paused ? this.view.tipResumeMacro : this.view.tipPauseMacro);
-                }
-            }
-        },
-
-        onLockViewProps: function(lock) {
-            this._state.lock_viewProps = lock;
-            Common.Utils.InternalSettings.set("pe-lock-view-props", lock);
-            if (this.view) {
-                if (this.view.btnGridlines && (typeof this.view.btnGridlines.menu === 'object') && this.view.btnGridlines.menu.isVisible())
-                    this.onGridlinesAfterShow();
-                if (this.view.btnGuides && (typeof this.view.btnGuides.menu === 'object') && this.view.btnGuides.menu.isVisible())
-                    this.onGuidesAfterShow();
-            }
-        },
-
-        unitsChanged: function(m) {
-            this._state.unitsChanged = true;
+        unitsChanged: function (m) {
+          this._state.unitsChanged = true
         },
 
         changeViewMode: function (mode) {
-            if (!this.view.btnSlideMaster || !this.view.btnNormal) return;
-            
-            var isMaster = mode === 'master';
-            this.view.btnSlideMaster.toggle(isMaster, true);
-            this.view.btnNormal.toggle(!isMaster, true);
-            if (this._state.slideMasterMode !== isMaster) {
-                this._state.slideMasterMode = isMaster;
-                this.view.fireEvent('viewmode:change', [isMaster ? 'master' : 'normal']);
-                this.api.asc_changePresentationViewMode(isMaster ? Asc.c_oAscPresentationViewMode.masterSlide : Asc.c_oAscPresentationViewMode.normal);
-            } // Asc.c_oAscPresentationViewMode.sorter;
+          if (!this.view.btnSlideMaster || !this.view.btnNormal) return
+
+          const isMaster = mode === "master"
+          this.view.btnSlideMaster.toggle(isMaster, true)
+          this.view.btnNormal.toggle(!isMaster, true)
+          if (this._state.slideMasterMode !== isMaster) {
+            this._state.slideMasterMode = isMaster
+            this.view.fireEvent("viewmode:change", [isMaster ? "master" : "normal"])
+            this.api.asc_changePresentationViewMode(
+              isMaster
+                ? Asc.c_oAscPresentationViewMode.masterSlide
+                : Asc.c_oAscPresentationViewMode.normal,
+            )
+          } // Asc.c_oAscPresentationViewMode.sorter;
         },
 
         onApiChangeViewMode: function (mode) {
-            var isMaster = mode === Asc.c_oAscPresentationViewMode.masterSlide;
-            this.changeViewMode(isMaster ? 'master' : 'normal');
+          const isMaster = mode === Asc.c_oAscPresentationViewMode.masterSlide
+          this.changeViewMode(isMaster ? "master" : "normal")
         },
 
         onChangeViewMode: function (mode) {
-            this.changeViewMode(mode);
+          this.changeViewMode(mode)
         },
 
         onPointerType: function (type) {
-            if (this.api) {
-                this.api.asc_setViewerTargetType(type);
-                Common.NotificationCenter.trigger('edit:complete', this.view);
-            }
+          if (this.api) {
+            this.api.asc_setViewerTargetType(type)
+            Common.NotificationCenter.trigger("edit:complete", this.view)
+          }
         },
 
         onTabStyleChange: function () {
-            if (this.view && this.view.menuTabStyle) {
-                _.each(this.view.menuTabStyle.items, function(item){
-                    item.setChecked(Common.Utils.InternalSettings.get("settings-tab-style")===item.value, true);
-                });
-            }
+          if (this.view?.menuTabStyle) {
+            _.each(this.view.menuTabStyle.items, (item) => {
+              item.setChecked(
+                Common.Utils.InternalSettings.get("settings-tab-style") === item.value,
+                true,
+              )
+            })
+          }
         },
 
         onAppReady: function (config) {
-            var me = this;
-            (new Promise(function (accept, reject) {
-                accept();
-            })).then(function () {
-                if (me.view && me.view.btnHandTool) {
-                    var hand = config && config.customization && config.customization.pointerMode==='hand';
-                    me.api && me.api.asc_setViewerTargetType(hand ? 'hand' : 'select');
-                    me.view[hand ? 'btnHandTool' : 'btnSelectTool'].toggle(true, true);
-                }
-            });
-        }
-
-    }, PE.Controllers.ViewTab || {}));
-});
+          new Promise((accept, reject) => {
+            accept()
+          }).then(() => {
+            if (this.view?.btnHandTool) {
+              const hand = config?.customization && config.customization.pointerMode === "hand"
+              this.api?.asc_setViewerTargetType(hand ? "hand" : "select")
+              this.view[hand ? "btnHandTool" : "btnSelectTool"].toggle(true, true)
+            }
+          })
+        },
+      },
+      PE.Controllers.ViewTab || {},
+    ),
+  )
+})

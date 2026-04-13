@@ -31,60 +31,64 @@
  *
  */
 
-define([
-    'backbone',
-    'common/main/lib/model/User'
-], function(Backbone){
-    'use strict';
+define(["backbone", "common/main/lib/model/User"], (Backbone) => {
+  Common.Collections = Common.Collections || {}
 
-    Common.Collections = Common.Collections || {};
+  Common.Collections.Users = Backbone.Collection.extend({
+    model: Common.Models.User,
 
-    Common.Collections.Users = Backbone.Collection.extend({
-        model: Common.Models.User,
+    getOnlineCount: function () {
+      let count = 0
+      this.each((user) => {
+        user.get("online") && ++count
+      })
 
-        getOnlineCount: function() {
-            var count = 0;
-            this.each(function(user){
-                user.get('online') && ++count;
-            });
+      return count
+    },
 
-            return count;
-        },
+    getEditingCount: function () {
+      return this.filter((item) => item.get("online") && !item.get("view")).length
+    },
 
-        getEditingCount: function() {
-            return this.filter(function(item){return item.get('online') && !item.get('view')}).length;
-        },
+    getVisibleEditingCount: function () {
+      return this.filter((item) => item.get("online") && !item.get("view") && !item.get("hidden"))
+        .length
+    },
 
-        getVisibleEditingCount: function() {
-            return this.filter(function(item){return item.get('online') && !item.get('view') && !item.get('hidden')}).length;
-        },
+    getEditingOriginalCount: function () {
+      return this.chain()
+        .filter((item) => item.get("online") && !item.get("view"))
+        .groupBy((item) => item.get("idOriginal"))
+        .size()
+        .value()
+    },
 
-        getEditingOriginalCount: function() {
-            return this.chain().filter(function(item){return item.get('online') && !item.get('view')}).groupBy(function(item) { return item.get('idOriginal'); }).size().value();
-        },
+    getVisibleEditingOriginalCount: function () {
+      return this.chain()
+        .filter((item) => item.get("online") && !item.get("view") && !item.get("hidden"))
+        .groupBy((item) => item.get("idOriginal"))
+        .size()
+        .value()
+    },
 
-        getVisibleEditingOriginalCount: function() {
-            return this.chain().filter(function(item){return item.get('online') && !item.get('view') && !item.get('hidden')}).groupBy(function(item) { return item.get('idOriginal'); }).size().value();
-        },
+    findUser: function (id) {
+      return this.findWhere({ id: id })
+    },
 
-        findUser: function(id) {
-            return this.findWhere({id: id});
-        },
+    findOriginalUser: function (id) {
+      return this.findWhere({ idOriginal: id })
+    },
 
-        findOriginalUser: function(id) {
-            return this.findWhere({idOriginal: id});
-        },
+    findOriginalUsers: function (id) {
+      return this.where({ idOriginal: id })
+    },
+  })
 
-        findOriginalUsers: function(id) {
-            return this.where({idOriginal: id});
-        }
-    });
+  Common.Collections.HistoryUsers = Backbone.Collection.extend({
+    model: Common.Models.User,
 
-    Common.Collections.HistoryUsers = Backbone.Collection.extend({
-        model: Common.Models.User,
-
-        findUser: function(id) {
-            return this.findWhere({id: id});
-        }
-    });
-});
+    findUser: function (id) {
+      return this.findWhere({ id: id })
+    },
+  })
+})

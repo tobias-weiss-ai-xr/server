@@ -26,10 +26,10 @@
  * Created on 26.05.15.
  */
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
-], function () { 'use strict';
+], () => { 
 
     DE.Views.StyleTitleDialog = Common.UI.Window.extend(_.extend({
         options: {
@@ -46,10 +46,10 @@ define([
 
                 this.template = [
                     '<div class="box">',
-                        '<label class="input-row" style="margin-bottom: -5px;">' + this.textTitle + ' </label>',
+                        `<label class="input-row" style="margin-bottom: -5px;">${this.textTitle} </label>`,
                         '<div id="id-dlg-style-title" class="input-row" style="margin-bottom: 5px;"></div>',
 
-                        '<label class="input-row" style="margin-bottom: -5px; margin-top: 5px;">' + this.textNextStyle + '</label>',
+                        `<label class="input-row" style="margin-bottom: -5px; margin-top: 5px;">${this.textNextStyle}</label>`,
                         '<div id="id-dlg-style-next-par" class="input-group-nr" style="margin-bottom: 5px;" ></div>',
                     '</div>'
                 ].join('');
@@ -62,25 +62,22 @@ define([
 
         render: function() {
             Common.UI.Window.prototype.render.call(this);
+            const $window = this.getChild();
 
-            var me = this,
-                $window = this.getChild();
-
-            me.inputTitle = new Common.UI.InputField({
+            this.inputTitle = new Common.UI.InputField({
                 el          : $('#id-dlg-style-title'),
                 allowBlank  : false,
-                blankError  : me.txtEmpty,
+                blankError  : this.txtEmpty,
                 style       : 'width: 100%;',
                 validateOnBlur: false,
-                validation  : function(value) {
+                validation  : (value) => {
                     value = value.trim();
-                    var isvalid = value != '';
+                    const isvalid = value !== '';
 
                     if (isvalid) {
                         return true;
-                    } else {
-                        return me.txtNotEmpty;
                     }
+                        return this.txtNotEmpty;
                 }
             });
 
@@ -95,7 +92,7 @@ define([
                 takeFocusOnClose: true,
                 cls         : 'input-group-nr',
                 data        : this.options.formats,
-                disabled    : (this.options.formats.length==0)
+                disabled    : (this.options.formats.length===0)
             });
             this.cmbNextStyle.setValue(-1);
         },
@@ -109,17 +106,16 @@ define([
         },
 
         getTitle: function () {
-            var me = this;
-            return me.inputTitle.getValue().trim();
+            return this.inputTitle.getValue().trim();
         },
 
         getNextStyle: function () {
-            var val = this.cmbNextStyle.getValue();
-            return (val!=-1) ? val : null;
+            const val = this.cmbNextStyle.getValue();
+            return (val!==-1) ? val : null;
         },
 
         onBtnClick: function(event) {
-            this._handleInput(event.currentTarget.attributes['result'].value);
+            this._handleInput(event.currentTarget.attributes.result.value);
         },
 
         onPrimary: function(event) {
@@ -129,8 +125,8 @@ define([
 
         _handleInput: function(state) {
             if (this.options.handler) {
-                if (state == 'ok') {
-                    var checkurl = this.inputTitle.checkValidate();
+                if (state === 'ok') {
+                    const checkurl = this.inputTitle.checkValidate();
                     if (checkurl !== true)  {
                         this.inputTitle.focus();
                         return;

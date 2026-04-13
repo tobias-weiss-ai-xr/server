@@ -23,20 +23,15 @@
  *
  */
 if (DE === undefined) {
-    var DE = {};
+  const DE = {}
 }
 
-DE.ApplicationView = new(function(){
+DE.ApplicationView = new (function () {
+  // Initialize view
 
+  function createView() {}
 
-    // Initialize view
-
-    function createView(){
-
-    }
-
-    return {
-        create: createView
-
-    }
-})();
+  return {
+    create: createView,
+  }
+})()

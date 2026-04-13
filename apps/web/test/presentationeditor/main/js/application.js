@@ -22,7 +22,7 @@
  * terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
-(function ($) {
-    PE.ApplicationView.create();
-    PE.ApplicationController.create();
-})(window.jQuery);
+;(($) => {
+  PE.ApplicationView.create()
+  PE.ApplicationController.create()
+})(window.jQuery)

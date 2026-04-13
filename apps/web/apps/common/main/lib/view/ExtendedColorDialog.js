@@ -23,14 +23,13 @@
  *
  */
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'text!common/main/lib/template/ExtendedColorDialog.template',
     'common/main/lib/component/HSBColorPicker',
     'common/main/lib/component/MaskedField'
-], function (dlgTemplate) {
-    'use strict';
+], (dlgTemplate) => {
 
     Common.UI.ExtendedColorDialog = Common.UI.Window.extend(_.extend({
         tpl: _.template(dlgTemplate),
@@ -54,7 +53,7 @@ define([
         },
 
         render: function() {
-            var me = this;
+            const me = this;
             Common.UI.Window.prototype.render.call(this);
 
             this.colorsPicker = new Common.UI.HSBColorPicker({
@@ -113,19 +112,19 @@ define([
             this.spinB.on('change', _.bind(this.showColor, this, null, true)).on('changing', _.bind(this.onChangingRGB, this, 3));
             this.textColor.on('change', _.bind(this.onChangeMaskedField, this));
             this.textColor.on('changed', _.bind(this.onChangedMaskedField, this));
-            this.textColor.$el.on('focus', function() {
-                setTimeout(function(){me.textColor.$el && me.textColor.$el.select();}, 1);
+            this.textColor.$el.on('focus', () => {
+                setTimeout(()=> {me.textColor.$el?.select();}, 1);
             });
             this.spinR.$el.find('input').attr('maxlength', 3);
             this.spinG.$el.find('input').attr('maxlength', 3);
             this.spinB.$el.find('input').attr('maxlength', 3);
 
-            this.on('close', function() {
+            this.on('close', () => {
                 me.trigger('onmodalresult', 0);
             });
 
             function onBtnClick(event) {
-                me.trigger('onmodalresult', parseInt(event.currentTarget.attributes['result'].value));
+                me.trigger('onmodalresult', Number.parseInt(event.currentTarget.attributes.result.value));
                 me.close(true);
             }
             $(this)[0].getChild('.footer .dlg-btn').on('click', onBtnClick);
@@ -149,39 +148,42 @@ define([
             this.colorNew.css({'background-color' : color});
 
             this.stopevents = true;
-            var values = color.match(this.hexRe);
-            this.spinR.setValue(parseInt(values[1], 16));
-            this.spinG.setValue(parseInt(values[2], 16));
-            this.spinB.setValue(parseInt(values[3], 16));
+            const values = color.match(this.hexRe);
+            this.spinR.setValue(Number.parseInt(values[1], 16));
+            this.spinG.setValue(Number.parseInt(values[2], 16));
+            this.spinB.setValue(Number.parseInt(values[3], 16));
             this.textColor.setValue((values[1]+values[2]+values[3]).toUpperCase());
             this.stopevents = false;
         },
 
         showColor: function (exlude, validate) {
             if (!this.stopevents) {
-                var val = this.spinR.getNumberValue();
-                var r = (val==null||val<0) ? 0 : (val>255 ? 255 : val);
+                let val = this.spinR.getNumberValue();
+                let r = (val==null||val<0) ? 0 : (val>255 ? 255 : val);
                 if (validate) this.spinR.setValue(r, true); r = r.toString(16);
                 val = this.spinG.getNumberValue();
-                var g = (val==null||val<0) ? 0 : (val>255 ? 255 : val);
+                let g = (val==null||val<0) ? 0 : (val>255 ? 255 : val);
                 if (validate) this.spinG.setValue(g, true); g = g.toString(16);
                 val = this.spinB.getNumberValue();
-                var b = ((val==null||val<0) ? 0 : (val>255 ? 255 : val));
+                let b = ((val==null||val<0) ? 0 : (val>255 ? 255 : val));
                 if (validate) this.spinB.setValue(b, true); b = b.toString(16);
-                var color = (r.length==1?'0'+r:r)+(g.length==1?'0'+g:g)+(b.length==1?'0'+b:b);
-                this.colorsPicker.setColor('#'+color);
-                if (exlude!='hex') this.textColor.setValue(color.toUpperCase());
-                this.colorNew.css('background-color','#'+color);
+                const color = (r.length===1?`0${r}`:r)+(g.length===1?`0${g}`:g)+(b.length===1?`0${b}`:b);
+                this.colorsPicker.setColor(`#${color}`);
+                if (exlude!=='hex') this.textColor.setValue(color.toUpperCase());
+                this.colorNew.css('background-color',`#${color}`);
             }
         },
 
         onChangingRGB: function (type, cmp, newValue, e) {
             if (!this.stopevents) {
-                var r, g, b, val;
-                newValue = (_.isEmpty(newValue) ||isNaN(parseInt(newValue))) ? parseInt(cmp.getValue()) : parseInt(newValue);
+                let r;
+                let g;
+                let b;
+                let val;
+                newValue = (_.isEmpty(newValue) ||Number.isNaN(Number.parseInt(newValue))) ? Number.parseInt(cmp.getValue()) : Number.parseInt(newValue);
                 switch (type)  {
                     case 1:
-                        r = ((newValue==null || isNaN(newValue) || newValue<0) ? 0 : (newValue>255 ? 255 : newValue)).toString(16);
+                        r = ((newValue==null || Number.isNaN(newValue) || newValue<0) ? 0 : (newValue>255 ? 255 : newValue)).toString(16);
                         val = this.spinG.getNumberValue();
                         g = ((val==null||val<0) ? 0 : (val>255 ? 255 : val)).toString(16);
                         val = this.spinB.getNumberValue();
@@ -190,7 +192,7 @@ define([
                     case 2:
                         val = this.spinR.getNumberValue();
                         r = ((val==null||val<0) ? 0 : (val>255 ? 255 : val)).toString(16);
-                        g = ((newValue==null || isNaN(newValue) || newValue<0) ? 0 : (newValue>255 ? 255 : newValue)).toString(16);
+                        g = ((newValue==null || Number.isNaN(newValue) || newValue<0) ? 0 : (newValue>255 ? 255 : newValue)).toString(16);
                         val = this.spinB.getNumberValue();
                         b = ((val==null||val<0) ? 0 : (val>255 ? 255 : val)).toString(16);
                         break;
@@ -199,30 +201,29 @@ define([
                         r = ((val==null||val<0) ? 0 : (val>255 ? 255 : val)).toString(16);
                         val = this.spinG.getNumberValue();
                         g = ((val==null||val<0) ? 0 : (val>255 ? 255 : val)).toString(16);
-                        b = ((newValue==null || isNaN(newValue) || newValue<0) ? 0 : (newValue>255 ? 255 : newValue)).toString(16);
+                        b = ((newValue==null || Number.isNaN(newValue) || newValue<0) ? 0 : (newValue>255 ? 255 : newValue)).toString(16);
                         break;
                 }
-                var color = (r.length==1?'0'+r:r)+(g.length==1?'0'+g:g)+(b.length==1?'0'+b:b);
-                this.colorsPicker.setColor('#'+color);
+                const color = (r.length===1?`0${r}`:r)+(g.length===1?`0${g}`:g)+(b.length===1?`0${b}`:b);
+                this.colorsPicker.setColor(`#${color}`);
                 this.textColor.setValue(color.toUpperCase());
-                this.colorNew.css('background-color','#'+color);
+                this.colorNew.css('background-color',`#${color}`);
             }
         },
 
         onChangeMaskedField: function(field, newValue) {
             newValue = ((/^[a-fA-F0-9]{0,6}$/.test(newValue))) ? newValue : '000000';
-            newValue = '000000' + newValue;
-            var colors = newValue.match(/([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/i);
+            newValue = `000000${newValue}`;
+            const colors = newValue.match(/([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/i);
             this.stopevents = true;
-            this.spinR.setValue(parseInt(colors[1], 16));
-            this.spinG.setValue(parseInt(colors[2], 16));
-            this.spinB.setValue(parseInt(colors[3], 16));
+            this.spinR.setValue(Number.parseInt(colors[1], 16));
+            this.spinG.setValue(Number.parseInt(colors[2], 16));
+            this.spinB.setValue(Number.parseInt(colors[3], 16));
             this.stopevents = false;
             if (this.rendered) this.showColor('hex');
         },
 
         onChangedMaskedField: function(field, newValue) {
-            var me = this;
             if (!/^[a-fA-F0-9]{0,6}$/.test(newValue) || _.isEmpty(newValue)) {
                 field.setValue('000000');
             }
@@ -230,39 +231,39 @@ define([
         },
 
         getColor: function() {
-            var color = /#?([a-fA-F0-9]{6})/.exec(this.colorsPicker.getColor());
+            const color = /#?([a-fA-F0-9]{6})/.exec(this.colorsPicker.getColor());
             return color ? color[1] : null;
         },
 
         setColor: function(cl) {
-            var me = this;
+            const me = this;
 
             if (this.rendered!==true) {
                 this.color = cl;
                 return;
             }
 
-            var color = /#?([a-fA-F0-9]{6})/.test(cl) ? cl : 'ff0000';
-            me.colorsPicker.setColor('#'+color);
+            const color = /#?([a-fA-F0-9]{6})/.test(cl) ? cl : 'ff0000';
+            me.colorsPicker.setColor(`#${color}`);
 
             function keepcolor() {
-                if (cl == 'transparent') {
+                if (cl === 'transparent') {
                     me.colorSaved.addClass('color-transparent');
                 } else {
                     me.colorSaved.removeClass('color-transparent');
-                    me.colorSaved.css('background-color','#'+cl);
+                    me.colorSaved.css('background-color',`#${cl}`);
                 }
 
-                me.colorNew.css('background-color','#'+color);
+                me.colorNew.css('background-color',`#${color}`);
             }
 
             keepcolor();
 
             me.stopevents = true;
-            var values = me.hexRe.exec(color);
-            me.spinR.setValue(parseInt(values[1], 16));
-            me.spinG.setValue(parseInt(values[2], 16));
-            me.spinB.setValue(parseInt(values[3], 16));
+            const values = me.hexRe.exec(color);
+            me.spinR.setValue(Number.parseInt(values[1], 16));
+            me.spinG.setValue(Number.parseInt(values[2], 16));
+            me.spinB.setValue(Number.parseInt(values[3], 16));
             me.textColor.setValue((values[1]+values[2]+values[3]).toUpperCase());
             me.stopevents = false;
         },

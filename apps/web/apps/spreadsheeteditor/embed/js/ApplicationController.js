@@ -23,25 +23,25 @@
  *
  */
 SSE.ApplicationController = new(function(){
-    var me,
-        api,
-        config = {},
-        docConfig = {},
-        embedConfig = {},
-        permissions = {},
-        appOptions = {},
-        maxPages = 0,
-        created = false,
-        iframePrint = null,
-        isRtlSheet = false,
-        requireUserAction = true;
-    var $ttEl,
-        $tooltip,
-        ttOffset = [6, -15],
-        labelDocName;
+    let me;
+    let api;
+    let config = {};
+    let docConfig = {};
+    let embedConfig = {};
+    let permissions = {};
+    const appOptions = {};
+    let maxPages = 0;
+    let created = false;
+    const iframePrint = null;
+    let isRtlSheet = false;
+    let requireUserAction = true;
+    let $ttEl;
+    let $tooltip;
+    const ttOffset = [6, -15];
+    let labelDocName;
 
-    var LoadingDocument = -256,
-        WarningShown = false;
+    const LoadingDocument = -256;
+    let WarningShown = false;
 
     // Initialize analytics
     // -------------------------
@@ -84,9 +84,9 @@ SSE.ApplicationController = new(function(){
 
         config.mode = 'view'; // always view for embedded
         config.canCloseEditor = false;
-        var _canback = false;
+        let _canback = false;
         if (typeof config.customization === 'object') {
-            if (typeof config.customization.goback == 'object' && config.canBackToFolder!==false) {
+            if (typeof config.customization.goback === 'object' && config.canBackToFolder!==false) {
                 _canback = config.customization.close===undefined ?
                     config.customization.goback.url || config.customization.goback.requestClose && config.canRequestClose :
                     config.customization.goback.url && !config.customization.goback.requestClose;
@@ -99,12 +99,12 @@ SSE.ApplicationController = new(function(){
         }
         config.canBackToFolder = !!_canback;
 
-        var reg = (typeof (config.region) == 'string') ? config.region.toLowerCase() : config.region;
+        let reg = (typeof (config.region) === 'string') ? config.region.toLowerCase() : config.region;
         reg = Common.util.LanguageInfo.getLanguages().hasOwnProperty(reg) ? reg : Common.util.LanguageInfo.getLocalLanguageCode(reg);
         if (reg!==null)
-            reg = parseInt(reg);
+            reg = Number.parseInt(reg);
         else
-            reg = (config.lang) ? parseInt(Common.util.LanguageInfo.getLocalLanguageCode(config.lang)) : 0x0409;
+            reg = (config.lang) ? Number.parseInt(Common.util.LanguageInfo.getLocalLanguageCode(config.lang)) : 0x0409;
         api.asc_setLocale(reg);
     }
 
@@ -114,16 +114,16 @@ SSE.ApplicationController = new(function(){
         if (docConfig) {
             permissions = $.extend(permissions, docConfig.permissions);
 
-            var docInfo = new Asc.asc_CDocInfo(),
-                _user = new Asc.asc_CUserInfo();
+            const docInfo = new Asc.asc_CDocInfo();
+            const _user = new Asc.asc_CUserInfo();
 
-            var canRenameAnonymous = !((typeof (config.customization) == 'object') && (typeof (config.customization.anonymous) == 'object') && (config.customization.anonymous.request===false)),
-                guestName = (typeof (config.customization) == 'object') && (typeof (config.customization.anonymous) == 'object') &&
-                (typeof (config.customization.anonymous.label) == 'string') && config.customization.anonymous.label.trim()!=='' ?
-                    common.utils.htmlEncode(config.customization.anonymous.label) : me.textGuest,
-                value = canRenameAnonymous ? common.localStorage.getItem("guest-username") : null,
-                user = common.utils.fillUserInfo(config.user, config.lang, value ? (value + ' (' + guestName + ')' ) : me.textAnonymous,
-                    common.localStorage.getItem("guest-id") || ('uid-' + Date.now()));
+            const canRenameAnonymous = !((typeof (config.customization) === 'object') && (typeof (config.customization.anonymous) === 'object') && (config.customization.anonymous.request===false));
+            const guestName = (typeof (config.customization) === 'object') && (typeof (config.customization.anonymous) === 'object') &&
+                (typeof (config.customization.anonymous.label) === 'string') && config.customization.anonymous.label.trim()!=='' ?
+                    common.utils.htmlEncode(config.customization.anonymous.label) : me.textGuest;
+            const value = canRenameAnonymous ? common.localStorage.getItem("guest-username") : null;
+            const user = common.utils.fillUserInfo(config.user, config.lang, value ? (`${value} (${guestName})` ) : me.textAnonymous,
+                    common.localStorage.getItem("guest-id") || (`uid-${Date.now()}`));
             user.anonymous && common.localStorage.setItem("guest-id", user.id);
 
             _user.put_Id(user.id);
@@ -146,7 +146,7 @@ SSE.ApplicationController = new(function(){
             docInfo.put_Wopi(config.wopi);
             config.shardkey && docInfo.put_Shardkey(config.shardkey);
 
-            var enable = !config.customization || (config.customization.macros!==false);
+            let enable = !config.customization || (config.customization.macros!==false);
             docInfo.asc_putIsEnabledMacroses(!!enable);
             enable = !config.customization || (config.customization.plugins!==false);
             docInfo.asc_putIsEnabledPlugins(!!enable);
@@ -175,9 +175,9 @@ SSE.ApplicationController = new(function(){
     }
 
     function setActiveWorkSheet(index) {
-        var $box = $('#worksheets');
+        const $box = $('#worksheets');
         $box.find('> li').removeClass('active');
-        $box.find('#worksheet' + index).addClass('active');
+        $box.find(`#worksheet${index}`).addClass('active');
 
         api.asc_showWorksheet(index);
         updateRtlSheet();
@@ -186,28 +186,28 @@ SSE.ApplicationController = new(function(){
     function onSheetsChanged(){
         maxPages = api.asc_getWorksheetsCount();
 
-        var handleWorksheet = function(e){
-            var $worksheet = $(this);
-            var index = $worksheet.attr('id').match(/\d+$/);
+        const handleWorksheet = function(e){
+            const $worksheet = $(this);
+            let index = $worksheet.attr('id').match(/\d+$/);
 
             if (index.length > 0) {
-                index = parseInt(index[0]);
+                index = Number.parseInt(index[0]);
 
                 if (index > -1 && index < maxPages)
                     setActiveWorkSheet(index);
             }
         };
 
-        var $box = $('#worksheets');
+        const $box = $('#worksheets');
         $box.find('li').off();
         $box.empty();
 
-        var tpl = '<li id="worksheet{index}" tabtitle="{tabtitle}" {style}>{title}</li>';
-        for (var i = 0; i < maxPages; i++) {
+        const tpl = '<li id="worksheet{index}" tabtitle="{tabtitle}" {style}>{title}</li>';
+        for (let i = 0; i < maxPages; i++) {
             if (api.asc_isWorksheetHidden(i)) continue;
 
-            var styleAttr = "";
-            var color = api.asc_getWorksheetTabColor(i);
+            let styleAttr = "";
+            const color = api.asc_getWorksheetTabColor(i);
 
             if (color) {
                 styleAttr = 'style="box-shadow: inset 0 4px 0 rgb({r}, {g}, {b})"'
@@ -217,17 +217,15 @@ SSE.ApplicationController = new(function(){
             }
 
             // escape html
-            var name = api.asc_getWorksheetName(i).replace(/[&<>"']/g, function (match) {
-                return {
+            const name = api.asc_getWorksheetName(i).replace(/[&<>"']/g, (match) => {
                     '&': '&amp;',
                     '<': '&lt;',
                     '>': '&gt;',
                     '"': '&quot;',
                     "'": '&#39;'
-                }[match];
-            });
+                }[match]);
 
-            var item = tpl
+            const item = tpl
                 .replace(/\{index}/, i)
                 .replace(/\{tabtitle}/, name)
                 .replace(/\{title}/, name)
@@ -240,23 +238,23 @@ SSE.ApplicationController = new(function(){
     }
 
     function updateRtlSheet() {
-        var $container = $('#worksheet-container');
+        const $container = $('#worksheet-container');
         isRtlSheet = api && !common.utils.isIE ? !!api.asc_getSheetViewSettings().asc_getRightToLeft() : false;
         $container.toggleClass('rtl-sheet', isRtlSheet);
         $container.attr({dir: isRtlSheet ? 'rtl' : 'ltr'});
     }
 
     function setupScrollButtons() {
-        var $container = $('#worksheet-container');
-        var $prevButton = $('#worksheet-list-button-prev');
-        var $nextButton = $('#worksheet-list-button-next');
-        var $box = $('#worksheets');
+        const $container = $('#worksheet-container');
+        const $prevButton = $('#worksheet-list-button-prev');
+        const $nextButton = $('#worksheet-list-button-next');
+        const $box = $('#worksheets');
 
-        var handleScrollButtonsState = function() {
+        const handleScrollButtonsState = () => {
             if ($container[0].scrollWidth > $container[0].clientWidth) {
-                var scrollLeft = $container.scrollLeft();
-                var scrollWidth = $container[0].scrollWidth;
-                var containerWidth = $container.innerWidth();
+                const scrollLeft = $container.scrollLeft();
+                const scrollWidth = $container[0].scrollWidth;
+                const containerWidth = $container.innerWidth();
 
                 if (isRtlSheet) {
                     if (Math.abs(scrollLeft) + containerWidth >= scrollWidth - 1) {
@@ -292,14 +290,14 @@ SSE.ApplicationController = new(function(){
 
         handleScrollButtonsState();
 
-        var buttonWidth = $('.worksheet-list-buttons').outerWidth();
+        const buttonWidth = $('.worksheet-list-buttons').outerWidth();
 
-        $prevButton.on('click', function() {
+        $prevButton.on('click', () => {
             if (isRtlSheet) {
-                var rightBound = $container.width();
+                const rightBound = $container.width();
                 $($box.children().get().reverse()).each(function () {
-                    var $tab = $(this);
-                    var right = common.utils.getPosition($tab).left + $tab.outerWidth() + buttonWidth;
+                    const $tab = $(this);
+                    const right = common.utils.getPosition($tab).left + $tab.outerWidth() + buttonWidth;
     
                     if (right > rightBound ) {
                         $container.scrollLeft($container.scrollLeft() + right - rightBound + ($container.width() > 400 ? 20 : 5));
@@ -308,8 +306,8 @@ SSE.ApplicationController = new(function(){
                 });
             } else {
                 $($box.children().get().reverse()).each(function () {
-                    var $tab = $(this);
-                    var left = common.utils.getPosition($tab).left - buttonWidth;
+                    const $tab = $(this);
+                    const left = common.utils.getPosition($tab).left - buttonWidth;
     
                     if (left < 0) {
                         $container.scrollLeft($container.scrollLeft() + left - 26);
@@ -319,11 +317,11 @@ SSE.ApplicationController = new(function(){
             }
         });
 
-        $nextButton.on('click', function() {
+        $nextButton.on('click', () => {
             if (isRtlSheet) {
                 $($box.children()).each(function () {
-                    var $tab = $(this);
-                    var left = common.utils.getPosition($tab).left - buttonWidth;
+                    const $tab = $(this);
+                    const left = common.utils.getPosition($tab).left - buttonWidth;
     
                     if (left < 0) {
                         $container.scrollLeft($container.scrollLeft() + left - 26);
@@ -331,10 +329,10 @@ SSE.ApplicationController = new(function(){
                     }
                 });
             } else {
-                var rightBound = $container.width();
+                const rightBound = $container.width();
                 $box.children().each(function () {
-                    var $tab = $(this);
-                    var right = common.utils.getPosition($tab).left + $tab.outerWidth();
+                    const $tab = $(this);
+                    const right = common.utils.getPosition($tab).left + $tab.outerWidth();
     
                     if (right > rightBound) {
                         $container.scrollLeft($container.scrollLeft() + right - rightBound + ($container.width() > 400 ? 20 : 5));
@@ -364,16 +362,16 @@ SSE.ApplicationController = new(function(){
 
     function onDocumentContentReady() {
         hidePreloader();
-        onLongActionEnd(Asc.c_oAscAsyncActionType['BlockInteraction'], LoadingDocument);
+        onLongActionEnd(Asc.c_oAscAsyncActionType.BlockInteraction, LoadingDocument);
 
         if (api) {
             api.asc_Resize();
-            var zf = (config.customization && config.customization.zoom ? parseInt(config.customization.zoom)/100 : 1);
+            const zf = (config.customization?.zoom ? Number.parseInt(config.customization.zoom)/100 : 1);
             api.asc_setZoom(zf>0 ? zf : 1);
         }
 
-        var dividers = $('#box-tools .divider');
-        var itemsCount = $('#box-tools a').length;
+        const dividers = $('#box-tools .divider');
+        let itemsCount = $('#box-tools a').length;
 
         if ( permissions.print === false) {
             $('#idt-print').hide();
@@ -394,8 +392,8 @@ SSE.ApplicationController = new(function(){
             $('#idt-close').hide();
             itemsCount--;
         } else {
-            var text = config.customization.goback.text;
-            text && (typeof text == 'string') && $('#idt-close .caption').text(text);
+            const text = config.customization.goback.text;
+            text && (typeof text === 'string') && $('#idt-close .caption').text(text);
         }
 
         if (config.canCloseEditor) {
@@ -441,12 +439,12 @@ SSE.ApplicationController = new(function(){
         Common.Gateway.on('requestclose',       onRequestClose);
 
         SSE.ApplicationView.tools.get('#idt-fullscreen')
-            .on('click', function(){
+            .on('click', ()=> {
                 common.utils.openLink(embedConfig.fullscreenUrl);
             });
 
         SSE.ApplicationView.tools.get('#idt-download')
-            .on('click', function(){
+            .on('click', ()=> {
                 if ( !!embedConfig.saveUrl && permissions.download !== false){
                     common.utils.openLink(embedConfig.saveUrl);
                 }
@@ -455,14 +453,14 @@ SSE.ApplicationController = new(function(){
             });
 
         SSE.ApplicationView.tools.get('#idt-print')
-            .on('click', function(){
+            .on('click', ()=> {
                 api.asc_Print(new Asc.asc_CDownloadOptions(null, $.browser.chrome || $.browser.safari || $.browser.opera || $.browser.mozilla && $.browser.versionNumber>86));
                 Common.Analytics.trackEvent('Print');
             });
 
         SSE.ApplicationView.tools.get('#idt-close')
-            .on('click', function(){
-                if (config.customization && config.customization.goback) {
+            .on('click', ()=> {
+                if (config.customization?.goback) {
                     if (config.customization.goback.requestClose && config.canRequestClose)
                         Common.Gateway.requestClose();
                     else if (config.customization.goback.url) {
@@ -475,39 +473,39 @@ SSE.ApplicationController = new(function(){
                 }
             });
 
-        $('#id-btn-close-editor').on('click', function(){
+        $('#id-btn-close-editor').on('click', ()=> {
             config.canRequestClose && Common.Gateway.requestClose();
         });
 
         SSE.ApplicationView.tools.get('#idt-search')
-            .on('click', function(){
+            .on('click', ()=> {
                 common.controller.SearchBar.show();
             });
 
-        $('#id-btn-zoom-in').on('click', function () {
+        $('#id-btn-zoom-in').on('click', () => {
             if (api){
-                var f = Math.floor(api.asc_getZoom() * 10)/10;
+                let f = Math.floor(api.asc_getZoom() * 10)/10;
                 f += .1;
                 f > 0 && !(f > 5.) && api.asc_setZoom(f);
             }
         });
-        $('#id-btn-zoom-out').on('click', function () {
+        $('#id-btn-zoom-out').on('click', () => {
             if (api){
-                var f = Math.ceil(api.asc_getZoom() * 10)/10;
+                let f = Math.ceil(api.asc_getZoom() * 10)/10;
                 f -= .1;
                 !(f < .1) && api.asc_setZoom(f);
             }
         });
 
-        var documentMoveTimer;
-        var ismoved = false;
-        $(document).mousemove(function(event) {
+        let documentMoveTimer;
+        let ismoved = false;
+        $(document).mousemove((event) => {
             $('#id-btn-zoom-in').fadeIn();
             $('#id-btn-zoom-out').fadeIn();
 
             ismoved = true;
             if (!documentMoveTimer) {
-                documentMoveTimer = setInterval(function () {
+                documentMoveTimer = setInterval(() => {
                     if (!ismoved) {
                         $('#id-btn-zoom-in').fadeOut();
                         $('#id-btn-zoom-out').fadeOut();
@@ -520,24 +518,24 @@ SSE.ApplicationController = new(function(){
             }
         });
 
-        var ismodalshown = false;
+        let ismodalshown = false;
         $(document.body).on('show.bs.modal', '.modal',
-            function(e) {
+            (e) => {
                 ismodalshown = true;
                 api.asc_enableKeyEvents(false);
             }
         ).on('hidden.bs.modal', '.modal',
-            function(e) {
+            (e) => {
                 ismodalshown = false;
                 api.asc_enableKeyEvents(true);
             }
         ).on('hidden.bs.dropdown', '.dropdown',
-            function(e) {
+            (e) => {
                 if ( !ismodalshown )
                     api.asc_enableKeyEvents(true);
             }
         ).on('blur', 'input, textarea',
-            function(e) {
+            (e) => {
                 if ( !ismodalshown ) {
                     if (!/area_id/.test(e.target.id) ) {
                         api.asc_enableKeyEvents(true);
@@ -546,15 +544,15 @@ SSE.ApplicationController = new(function(){
             }
         );
 
-        $('#editor_sdk').on('click', function(e) {
-            if ( e.target.localName == 'canvas' ) {
-                if (e.target.getAttribute && e.target.getAttribute("oo_no_focused"))
+        $('#editor_sdk').on('click', (e) => {
+            if ( e.target.localName === 'canvas' ) {
+                if (e.target.getAttribute?.("oo_no_focused"))
                     return;
                 e.currentTarget.focus();
             }
         });
 
-        $(document).on('mousewheel', function (e) {
+        $(document).on('mousewheel', (e) => {
             if ((e.ctrlKey || e.metaKey) && !e.altKey) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -569,7 +567,7 @@ SSE.ApplicationController = new(function(){
     }
 
     function onEditorPermissions(params) {
-        var licType = params.asc_getLicenseType();
+        const licType = params.asc_getLicenseType();
         if (Asc.c_oLicenseResult.Expired === licType || Asc.c_oLicenseResult.Error === licType || Asc.c_oLicenseResult.ExpiredTrial === licType ||
             Asc.c_oLicenseResult.NotBefore === licType || Asc.c_oLicenseResult.ExpiredLimited === licType) {
                 common.controller.modals.showWarning({
@@ -586,41 +584,41 @@ SSE.ApplicationController = new(function(){
         appOptions.canBranding  = params.asc_getCustomization();
         appOptions.canBranding && setBranding(config.customization);
 
-        var $parent = labelDocName.parent();
-        var _left_width = common.utils.getPosition($parent).left,
-            _right_width = $parent.next().outerWidth();
+        const $parent = labelDocName.parent();
+        const _left_width = common.utils.getPosition($parent).left;
+        const _right_width = $parent.next().outerWidth();
 
         if ( _left_width < _right_width )
-            $parent.css('padding-left', parseFloat($parent.css('padding-left')) + _right_width - _left_width);
+            $parent.css('padding-left', Number.parseFloat($parent.css('padding-left')) + _right_width - _left_width);
         else
-            $parent.css('padding-right', parseFloat($parent.css('padding-right')) + _left_width - _right_width);
+            $parent.css('padding-right', Number.parseFloat($parent.css('padding-right')) + _left_width - _right_width);
 
-        onLongActionBegin(Asc.c_oAscAsyncActionType['BlockInteraction'], LoadingDocument);
+        onLongActionBegin(Asc.c_oAscAsyncActionType.BlockInteraction, LoadingDocument);
         api.asc_setViewMode(true);
         api.asc_LoadDocument();
     }
     
     function onOpenDocument(progress) {
-        var proc = (progress.asc_getCurrentFont() + progress.asc_getCurrentImage())/(progress.asc_getFontsCount() + progress.asc_getImagesCount());
-        me.loadMask && me.loadMask.setTitle(me.textLoadingDocument + ': ' + common.utils.fixedDigits(Math.min(Math.round(proc*100), 100), 3, "  ") + '%');
+        const proc = (progress.asc_getCurrentFont() + progress.asc_getCurrentImage())/(progress.asc_getFontsCount() + progress.asc_getImagesCount());
+        me.loadMask?.setTitle(`${me.textLoadingDocument}: ${common.utils.fixedDigits(Math.min(Math.round(proc*100), 100), 3, "  ")}%`);
     }
 
     function onLongActionBegin(type, id){
-        var text = '';
+        let text = '';
         switch (id)
         {
-            case Asc.c_oAscAsyncAction['Print']:
+            case Asc.c_oAscAsyncAction.Print:
                 text = me.downloadTextText;
                 break;
             case LoadingDocument:
-                text = me.textLoadingDocument + '           ';
+                text = `${me.textLoadingDocument}           `;
                 break;
             default:
                 text = me.waitText;
                 break;
         }
 
-        if (type == Asc.c_oAscAsyncActionType['BlockInteraction']) {
+        if (type === Asc.c_oAscAsyncActionType.BlockInteraction) {
             if (!me.loadMask)
                 me.loadMask = new common.view.LoadMask();
             me.loadMask.setTitle(text);
@@ -630,25 +628,25 @@ SSE.ApplicationController = new(function(){
 
     function onLongActionEnd(type, id){
         if (type === Asc.c_oAscAsyncActionType.BlockInteraction) {
-            me.loadMask && me.loadMask.hide();
+            me.loadMask?.hide();
         }
     }
 
     function onAdvancedOptions(type, advOptions, mode, formatOptions) {
-        if (type == Asc.c_oAscAdvancedOptionsID.DRM) {
-            var isCustomLoader = !!config.customization.loaderName || !!config.customization.loaderLogo;
-            var submitPassword = function(val) {
-                api && api.asc_setAdvancedOptions(Asc.c_oAscAdvancedOptionsID.DRM, new Asc.asc_CDRMAdvancedOptions(val)); 
-                me.loadMask && me.loadMask.show();
+        if (type === Asc.c_oAscAdvancedOptionsID.DRM) {
+            const isCustomLoader = !!config.customization.loaderName || !!config.customization.loaderLogo;
+            const submitPassword = (val) => {
+                api?.asc_setAdvancedOptions(Asc.c_oAscAdvancedOptionsID.DRM, new Asc.asc_CDRMAdvancedOptions(val)); 
+                me.loadMask?.show();
                 if(!isCustomLoader) $('#loading-mask').removeClass("none-animation");
             };
             common.controller.modals.createDlgPassword(submitPassword);
             if(isCustomLoader) hidePreloader();
             else $('#loading-mask').addClass("none-animation");
-            onLongActionEnd(Asc.c_oAscAsyncActionType['BlockInteraction'], LoadingDocument);
-        } else if (type == Asc.c_oAscAdvancedOptionsID.CSV) {
-            api && api.asc_setAdvancedOptions(Asc.c_oAscAdvancedOptionsID.CSV, advOptions.asc_getRecommendedSettings() || new Asc.asc_CTextOptions());
-            onLongActionEnd(Asc.c_oAscAsyncActionType['BlockInteraction'], LoadingDocument);
+            onLongActionEnd(Asc.c_oAscAsyncActionType.BlockInteraction, LoadingDocument);
+        } else if (type === Asc.c_oAscAdvancedOptionsID.CSV) {
+            api?.asc_setAdvancedOptions(Asc.c_oAscAdvancedOptionsID.CSV, advOptions.asc_getRecommendedSettings() || new Asc.asc_CTextOptions());
+            onLongActionEnd(Asc.c_oAscAsyncActionType.BlockInteraction, LoadingDocument);
         }
         if (requireUserAction) {
             Common.Gateway.userActionRequired();
@@ -657,7 +655,7 @@ SSE.ApplicationController = new(function(){
     }
 
     function onHyperlinkClick(url) {
-        var type = api.asc_getUrlType(url);
+        const type = api.asc_getUrlType(url);
         if (type===AscCommon.c_oAscUrlType.Http || type===AscCommon.c_oAscUrlType.Email) 
             window.open(url, '_blank');  
         else {
@@ -667,13 +665,13 @@ SSE.ApplicationController = new(function(){
                     message: me.txtOpenWarning.replace('%1', url || ''),
                     buttons: [me.txtNo, me.txtYes],
                     primary: me.txtNo,
-                    callback: function (btn) {
+                    callback: (btn) => {
                         WarningShown = false; 
                         if (btn === me.txtYes) {
                             window.open(url);
                         }
                     },
-                    closecallback: function() {
+                    closecallback: () => {
                         WarningShown = false;
                     }
             }); 
@@ -681,15 +679,15 @@ SSE.ApplicationController = new(function(){
     }
 
     function onError(id, level, errData) {
-        if (id == Asc.c_oAscError.ID.LoadingScriptError) {
+        if (id === Asc.c_oAscError.ID.LoadingScriptError) {
             common.controller.modals.showWarning({
                 title: me.criticalErrorTitle,
                 message: me.scriptLoadError,
                 buttons: [me.txtClose],
-                callback: function(btn) {
+                callback: (btn) => {
                     window.location.reload();
                 },
-                closecallback: function() {
+                closecallback: () => {
                     window.location.reload();
                 }
             });
@@ -697,9 +695,9 @@ SSE.ApplicationController = new(function(){
         }
 
         hidePreloader();
-        onLongActionEnd(Asc.c_oAscAsyncActionType['BlockInteraction'], LoadingDocument);
+        onLongActionEnd(Asc.c_oAscAsyncActionType.BlockInteraction, LoadingDocument);
 
-        var message;
+        let message;
 
         switch (id)
         {
@@ -799,22 +797,22 @@ SSE.ApplicationController = new(function(){
         }
     
         common.controller.modals.showWarning({
-            title: (level == Asc.c_oAscError.Level.Critical) ? me.criticalErrorTitle : me.notcriticalErrorTitle,
+            title: (level === Asc.c_oAscError.Level.Critical) ? me.criticalErrorTitle : me.notcriticalErrorTitle,
             message: message,
             buttons: [me.txtClose],
-            callback: function(btn) {
-                if (level == Asc.c_oAscError.Level.Critical) {
+            callback: (btn) => {
+                if (level === Asc.c_oAscError.Level.Critical) {
                     window.location.reload();
                 } 
             },
-            closecallback: function() {
-                if (level == Asc.c_oAscError.Level.Critical) {
+            closecallback: () => {
+                if (level === Asc.c_oAscError.Level.Critical) {
                     window.location.reload();
                 }
             }
         });
 
-        if (level == Asc.c_oAscError.Level.Critical) {
+        if (level === Asc.c_oAscError.Level.Critical) {
             Common.Gateway.reportError(id, message);
         } else {
             Common.Gateway.reportWarning(id, message);
@@ -835,11 +833,11 @@ SSE.ApplicationController = new(function(){
     }
 
     function onProcessMouse(data) {
-        if (data.type == 'mouseup') {
-            var editor = document.getElementById('editor_sdk');
+        if (data.type === 'mouseup') {
+            const editor = document.getElementById('editor_sdk');
             if (editor) {
-                var rect = common.utils.getBoundingClientRect(editor);
-                var event = window.event || arguments.callee.caller.arguments[0];
+                const rect = common.utils.getBoundingClientRect(editor);
+                const event = window.event || arguments.callee.caller.arguments[0];
                 api.asc_onMouseUp(event, data.x - rect.left, data.y - rect.top);
             }
         }
@@ -855,7 +853,7 @@ SSE.ApplicationController = new(function(){
             return;
         }
         if (api) {
-            var options = new Asc.asc_CDownloadOptions(Asc.c_oAscFileType.XLSX, true);
+            const options = new Asc.asc_CDownloadOptions(Asc.c_oAscFileType.XLSX, true);
             options.asc_setIsSaveAs(true);
             api.asc_DownloadAs(options);
         }
@@ -868,9 +866,9 @@ SSE.ApplicationController = new(function(){
             }
         }
         if ( array.length ) {
-            var ttdata;
-            for (var i = array.length; i > 0; i--) {
-                if (array[i-1].asc_getType() == Asc.c_oAscMouseMoveType.Hyperlink) {
+            let ttdata;
+            for (let i = array.length; i > 0; i--) {
+                if (array[i-1].asc_getType() === Asc.c_oAscMouseMoveType.Hyperlink) {
                     ttdata = array[i - 1];
                     break;
                 }
@@ -880,7 +878,7 @@ SSE.ApplicationController = new(function(){
                 if (!$ttEl) {
                     $ttEl = $('.hyperlink-tooltip');
                     $ttEl.tooltip({'container': 'body', 'trigger': 'manual'});
-                    $ttEl.on('shown.bs.tooltip', function(e) {
+                    $ttEl.on('shown.bs.tooltip', (e) => {
                         $tooltip = $ttEl.data('bs.tooltip').tip();
 
                         $tooltip.css({
@@ -921,15 +919,15 @@ SSE.ApplicationController = new(function(){
     }
 
     function setBranding(value) {
-        if ( value && value.logo) {
-            var logo = $('#header-logo');
+        if ( value?.logo) {
+            const logo = $('#header-logo');
             if (value.logo.visible===false) {
                 logo.addClass('hidden');
                 return;
             }
 
             if (value.logo.image || value.logo.imageEmbedded) {
-                logo.html('<img src="'+(value.logo.image || value.logo.imageEmbedded)+'" style="max-width:300px; max-height:20px;"/>');
+                logo.html(`<img src="${value.logo.image || value.logo.imageEmbedded}" style="max-width:300px; max-height:20px;"/>`);
                 logo.css({'background-image': 'none', width: 'auto', height: 'auto'});
 
                 value.logo.imageEmbedded && console.log("Obsolete: The 'imageEmbedded' parameter of the 'customization.logo' section is deprecated. Please use 'image' parameter instead.");
@@ -958,7 +956,7 @@ SSE.ApplicationController = new(function(){
 
         // popover ui handlers
 
-        $(window).resize(function(){
+        $(window).resize(()=> {
             onDocumentResize();
         });
         window.onbeforeunload = onBeforeUnload;

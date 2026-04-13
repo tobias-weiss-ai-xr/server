@@ -27,7 +27,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Models = Common.Models || {};
 
@@ -35,12 +35,10 @@ define([
     'underscore',
     'backbone',
     'common/main/lib/component/BaseView'
-], function(_, Backbone){
-    'use strict';
+], (_, Backbone)=> {
 
     Common.Models.PluginVariation = Backbone.Model.extend({
-        defaults: function() {
-            return {
+        defaults: () => ({
                 description: "",
                 url: "",
                 index: 0,
@@ -61,13 +59,11 @@ define([
                 size: [800, 600],
                 initOnSelectionChanged: false,
                 visible: true
-            }
-        }
+            })
     });
 
     Common.Models.Plugin = Backbone.Model.extend({
-        defaults: function() {
-            return {
+        defaults: () => ({
                 id: Common.UI.getId(),
                 name : '',
                 baseUrl : '',
@@ -80,7 +76,6 @@ define([
                 visible: true,
                 groupName: '',
                 groupRank: 0
-            }
-        }
+            })
     });
 });

@@ -31,36 +31,27 @@
  *
  */
 
-define([
-    'backbone'
-], function(Backbone){
-    'use strict';
+define(["backbone"], (Backbone) => {
+  SSE.Models = SSE.Models || {}
 
-    SSE.Models = SSE.Models || {};
+  SSE.Models.FormulaModel = Backbone.Model.extend({
+    defaults: () => ({
+      id: Common.UI.getId(),
+      index: 0,
+      group: null,
+      name: null,
+      origin: null,
+      args: null,
+    }),
+  })
 
-    SSE.Models.FormulaModel = Backbone.Model.extend({
-        defaults: function () {
-            return {
-                id              : Common.UI.getId(),
-                index           : 0,
-                group           : null,
-                name            : null,
-                origin          : null,
-                args            : null
-            }
-        }
-    });
-
-    SSE.Models.FormulaGroup = Backbone.Model.extend({
-        defaults: function () {
-            return {
-                id              : Common.UI.getId(),
-                index           : 0,
-                name            : null,
-                store           : null,
-                functions       : []
-            }
-        }
-    });
-});
-
+  SSE.Models.FormulaGroup = Backbone.Model.extend({
+    defaults: () => ({
+      id: Common.UI.getId(),
+      index: 0,
+      name: null,
+      store: null,
+      functions: [],
+    }),
+  })
+})

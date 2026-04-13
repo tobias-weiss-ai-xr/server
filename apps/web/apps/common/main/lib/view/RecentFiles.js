@@ -31,14 +31,13 @@
  *
  */
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Views = Common.Views || {};
 
 define([
     'common/main/lib/component/BaseView'
-], function () {
-    'use strict'
+], () => {
     Common.Views.RecentFiles = Common.UI.BaseView.extend(_.extend({
         menu: undefined,
 
@@ -99,7 +98,7 @@ define([
 
         show: function() {
             Common.UI.BaseView.prototype.show.call(this,arguments);
-            this.scroller && this.scroller.update();
+            this.scroller?.update();
         },
 
         onRecentFileClick: function(view, itemview, record){

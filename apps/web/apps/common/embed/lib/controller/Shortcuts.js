@@ -23,359 +23,360 @@
  *
  */
 
+;+(() => {
+  !window.common && (window.common = {})
+  !common.controller && (common.controller = {})
 
-+function() {
-    !window.common && (window.common = {});
-    !common.controller && (common.controller = {});
+  common.controller.Shortcuts = new (function () {
+    let localStorageKey = ""
+    let actionsMap = {}
+    let api = null
 
-    common.controller.Shortcuts = new(function() {
-        var localStorageKey = '',
-            actionsMap = {},
-            api = null;
+    const setApi = (newApi) => {
+      api = newApi
 
+      if (window.DE) {
+        localStorageKey = "de-shortcuts"
+      } else if (window.PDFE) {
+        localStorageKey = "pdfe-shortcuts"
+      } else if (window.PE) {
+        localStorageKey = "pe-shortcuts"
+      } else if (window.SSE) {
+        localStorageKey = "sse-shortcuts"
+      } else if (window.VE) {
+        localStorageKey = "ve-shortcuts"
+      }
 
-        var setApi = function(newApi) {
-            api = newApi;
+      _fillActionsMap()
+      api && _applyShortcutsInSDK()
+    }
 
-            if(window.DE) {
-                localStorageKey = 'de-shortcuts';
-            } else if(window.PDFE) {
-                localStorageKey = 'pdfe-shortcuts';
-            } else if(window.PE) {
-                localStorageKey = 'pe-shortcuts';
-            } else if(window.SSE) {
-                localStorageKey = 'sse-shortcuts';
-            } else if(window.VE) {
-                localStorageKey = 've-shortcuts';
-            }
+    const _keyCodeToKeyName = (code) => {
+      const specialKeys = {
+        8: "Backspace",
+        9: "Tab",
+        12: "Clear",
+        13: "Enter",
+        16: common.utils.isMac ? "⇧" : "Shift",
+        17: common.utils.isMac ? "^" : "Ctrl",
+        18: common.utils.isMac ? "⌥" : "Alt",
+        19: "Pause",
+        20: "CapsLock",
+        27: "Escape",
+        32: "Space",
+        33: "PageUp",
+        34: "PageDown",
+        35: "End",
+        36: "Home",
+        37: "ArrowLeft",
+        38: "ArrowUp",
+        39: "ArrowRight",
+        40: "ArrowDown",
+        44: "PrintScreen",
+        45: "Insert",
+        46: "Delete",
+        91: common.utils.isMac ? "⌘" : "Meta",
+        93: "ContextMenu",
+        96: "Num 0",
+        97: "Num 1",
+        98: "Num 2",
+        99: "Num 3",
+        100: "Num 4",
+        101: "Num 5",
+        102: "Num 6",
+        103: "Num 7",
+        104: "Num 8",
+        105: "Num 9",
+        106: "Num *",
+        107: "Num +",
+        108: "Num Enter",
+        109: "Num -",
+        110: "Num .",
+        111: "Num /",
+        112: "F1",
+        113: "F2",
+        114: "F3",
+        115: "F4",
+        116: "F5",
+        117: "F6",
+        118: "F7",
+        119: "F8",
+        120: "F9",
+        121: "F10",
+        122: "F11",
+        123: "F12",
+        144: "NumLock",
+        145: "ScrollLock",
+        173: "ff-",
+        61: "ff=",
+        186: ";",
+        187: "=",
+        188: ",",
+        189: "-",
+        190: ".",
+        191: "/",
+        192: "`",
+        219: "[",
+        220: "\\",
+        221: "]",
+        222: "'",
+      }
 
-            _fillActionsMap();
-            api && _applyShortcutsInSDK();
-        };
+      if (specialKeys[code]) {
+        return specialKeys[code]
+      }
+      return String.fromCharCode(code)
+    }
 
-        var _keyCodeToKeyName = function(code) {
-            const specialKeys = {
-                8: 'Backspace',
-                9: 'Tab',
-                12: 'Clear',
-                13: 'Enter',
-                16: common.utils.isMac ? '⇧' : 'Shift',
-                17: common.utils.isMac ? '^' : 'Ctrl',
-                18: common.utils.isMac ? '⌥' : 'Alt',
-                19: 'Pause',
-                20: 'CapsLock',
-                27: 'Escape',
-                32: 'Space',
-                33: 'PageUp',
-                34: 'PageDown',
-                35: 'End',
-                36: 'Home',
-                37: 'ArrowLeft',
-                38: 'ArrowUp',
-                39: 'ArrowRight',
-                40: 'ArrowDown',
-                44: 'PrintScreen',
-                45: 'Insert',
-                46: 'Delete',
-                91: common.utils.isMac ? '⌘' : 'Meta',
-                93: 'ContextMenu',
-                96: "Num 0",
-                97: "Num 1",
-                98: "Num 2",
-                99: "Num 3",
-                100: "Num 4",
-                101: "Num 5",
-                102: "Num 6",
-                103: "Num 7",
-                104: "Num 8",
-                105: "Num 9",
-                106: "Num *",
-                107: "Num +",
-                108: "Num Enter",
-                109: "Num -",
-                110: "Num .",
-                111: "Num /",
-                112: 'F1',
-                113: 'F2',
-                114: 'F3',
-                115: 'F4',
-                116: 'F5',
-                117: 'F6',
-                118: 'F7',
-                119: 'F8',
-                120: 'F9',
-                121: 'F10',
-                122: 'F11',
-                123: 'F12',
-                144: 'NumLock',
-                145: 'ScrollLock',
-                173: 'ff-',
-                61: 'ff=',
-                186: ';',
-                187: '=',
-                188: ',',
-                189: '-',
-                190: '.',
-                191: '/',
-                192: '`',
-                219: '[',
-                220: '\\',
-                221: ']',
-                222: '\'',
-            };
+    const _getDefaultShortcutActions = () => {
+      if (window.DE || window.PDFE) {
+        return Asc.c_oAscDocumentShortcutType
+      }
+      if (window.PE) {
+        return Asc.c_oAscPresentationShortcutType
+      }
+      if (window.SSE) {
+        return Asc.c_oAscSpreadsheetShortcutType
+      }
+      if (window.VE) {
+        return Asc.c_oAscDiagramShortcutType
+      }
+      return {}
+    }
 
-            if (specialKeys[code]) {
-                return specialKeys[code];
-            }
-            return String.fromCharCode(code);
-        };
-        
-        var _getDefaultShortcutActions = function() {
-            if(window.DE || window.PDFE) {
-                return Asc.c_oAscDocumentShortcutType;
-            } else if(window.PE) {
-                return Asc.c_oAscPresentationShortcutType;
-            } else if(window.SSE) {
-                return Asc.c_oAscSpreadsheetShortcutType;
-            } else if(window.VE) {
-                return Asc.c_oAscDiagramShortcutType;
-            }
-            return {};
-        };
+    const _fillActionsMap = () => {
+      actionsMap = {}
 
-        var _fillActionsMap = function() {
-            actionsMap = {};
-            
-            const shortcutActions = _getDefaultShortcutActions();
-            const unlockedTypes = Asc.c_oAscUnlockedShortcutActionTypes || {};
-            for (let actionName in shortcutActions) {
-                const type = shortcutActions[actionName];
-                actionsMap[type] = {
-                    action: {
-                        name: actionName,
-                        type: type,
-                        isLocked: !unlockedTypes[type]
-                    },
-                    shortcuts: []
-                }
-            }
-
-            pairs(Asc.c_oAscDefaultShortcuts).forEach(function(item) {
-                const actionType = item[0];
-                const shortcuts = item[1];
-                const actionItem = actionsMap[actionType];
-
-                if(actionItem) {
-                    actionItem.shortcuts = shortcuts.map(function(ascShortcut) {
-                        return {
-                            keys: _getAscShortcutKeys(ascShortcut),
-                            isCustom: false,
-                            ascShortcut: ascShortcut,
-                        }
-                    });
-                }
-            });
-
-            let removableIndexes = {};
-            pairs(_getModifiedShortcuts()).forEach(function(item) {
-                const actionType = item[0];
-                const shortcuts = item[1];
-                const actionItem = actionsMap[actionType];
-                
-                if(actionItem) {
-                    shortcuts.forEach(function(ascShortcut) {
-                        const ascShortcutIndex = ascShortcut.asc_GetShortcutIndex();
-                        const defaultShortcutIndex = findIndex(actionItem.shortcuts, function(shortcut) { 
-                            return shortcut.ascShortcut.asc_GetShortcutIndex() == ascShortcutIndex;
-                        });
-
-                        if(defaultShortcutIndex != -1) {
-                            actionItem.shortcuts[defaultShortcutIndex].ascShortcut = ascShortcut;
-                        } else {
-                            removableIndexes[ascShortcutIndex] = actionType;
-                            actionItem.shortcuts.push({
-                                keys: _getAscShortcutKeys(ascShortcut),
-                                isCustom: true,
-                                ascShortcut: ascShortcut,
-                            });
-                        }    
-                    });
-                }
-            })
-
-            for (const actionType in actionsMap) {
-                const item = actionsMap[actionType];
-                const shortcuts = actionsMap[actionType].shortcuts;
-                if(shortcuts.length == 0 && item.action.isLocked) {
-                    // Delete actions if it has no shortcuts and the action is locked
-                    delete actionsMap[actionType];
-                } else if(Object.keys(removableIndexes).length > 0) {
-                    // Remove shortcuts from other actions if they conflict with updated shortcuts
-                    const foundIndex = findIndex(shortcuts, function(shortcut) {
-                        const ascShortcutIndex = shortcut.ascShortcut.asc_GetShortcutIndex();
-                        if(removableIndexes[ascShortcutIndex] && removableIndexes[ascShortcutIndex] != actionType) {
-                            delete removableIndexes[ascShortcutIndex];
-                            return true;
-                        }
-                        return false;
-                    });
-                    if(foundIndex != -1) {
-                        const copyAscShortcut = new Asc.CAscShortcut();
-                        copyAscShortcut.asc_FromJson(shortcuts[foundIndex].ascShortcut.asc_ToJson());
-                        copyAscShortcut.asc_SetIsHidden(true);
-                        shortcuts[foundIndex].ascShortcut = copyAscShortcut;
-                    }
-                }
-
-                if(actionsMap[actionType]) {
-                    actionsMap[actionType].shortcuts = shortcuts.sort(_sortComparator);
-                }
-            }
-        };
-
-        var _applyShortcutsInSDK = function() {
-            const applyMethod = function(storage) {
-                storage = JSON.parse(storage || common.localStorage.getItem(localStorageKey) || "{}");
-                for (const actionType in storage) {
-                    storage[actionType] = storage[actionType].map(function(ascShortcutJson) {
-                        const ascShortcut = new Asc.CAscShortcut();
-                        ascShortcut.asc_FromJson(ascShortcutJson);
-                        return ascShortcut;
-                    });
-                }
-
-                api.asc_resetAllShortcutTypes();
-                
-                const modifiedShortcuts = flatten(values(storage));
-                if(modifiedShortcuts.length) {
-                    api.asc_applyAscShortcuts(modifiedShortcuts);
-                }
-            };
-
-            $(window).on('storage', function (e) {
-                if(e.key == localStorageKey) {
-                    applyMethod(e.originalEvent.newValue);
-                    _fillActionsMap();
-                }
-            });
-
-            applyMethod();
-        };
-
-
-        /**
-         * Retrieves user-modified shortcuts from localStorage.
-         * @returns {Object<number, CAscShortcut[]>}
-         *  An object where keys are action types and values are arrays of ascShortcut instances.
-        */
-        var _getModifiedShortcuts = function() {
-            const storage = JSON.parse(common.localStorage.getItem(localStorageKey) || "{}");
-            for (const actionType in storage) {
-                storage[actionType] = storage[actionType].map(function(ascShortcutJson) {
-                    const ascShortcut = new Asc.CAscShortcut();
-                    ascShortcut.asc_FromJson(ascShortcutJson);
-                    return ascShortcut;
-                });
-            }
-            return storage;
-        };
-
-    
-        var _getAscShortcutKeys = function(ascShortcut) {
-            const keys = [];
-            ascShortcut.asc_IsCommand() && keys.push(_keyCodeToKeyName(91));
-            ascShortcut.asc_IsCtrl() && keys.push(_keyCodeToKeyName(17));
-            ascShortcut.asc_IsAlt() && keys.push(_keyCodeToKeyName(18));
-            ascShortcut.asc_IsShift() && keys.push(_keyCodeToKeyName(16));
-            keys.push(_keyCodeToKeyName(ascShortcut.asc_GetKeyCode()));
-            return keys;
-        };
-
-        var _sortComparator = function(first, second) {
-            const priorityModifierKeys = ['asc_IsCommand', 'asc_IsCtrl', 'asc_IsAlt', 'asc_IsShift'];
-            function getWeight(ascShortcut) {
-                // Search for the first modifier key
-                let keyIndex = priorityModifierKeys.length;
-                for (let i = 0; i < priorityModifierKeys.length; i++) {
-                    if (ascShortcut[priorityModifierKeys[i]]()) {
-                        keyIndex = i;
-                        break;
-                    }
-                }
-
-                if (keyIndex === priorityModifierKeys.length) return -1;
-
-                // Count extra modifier keys
-                let extras = 0;
-                for (let j = 0; j < priorityModifierKeys.length; j++) {
-                    if (j !== keyIndex && ascShortcut[priorityModifierKeys[j]]()) extras++;
-                }
-
-                // weight = range for main key + “cost” of extra keys
-                return keyIndex * 100 + extras;
-            }
-
-            if (first.ascShortcut.asc_IsLocked() && !second.ascShortcut.asc_IsLocked()) return -1;
-            if (!first.ascShortcut.asc_IsLocked() && second.ascShortcut.asc_IsLocked()) return 1;
-
-            let wFirst = getWeight(first.ascShortcut);
-            let wSecond = getWeight(second.ascShortcut);
-
-            if (wFirst !== wSecond) return wFirst - wSecond;
-
-            return first.ascShortcut.asc_GetKeyCode() - second.ascShortcut.asc_GetKeyCode();
-        };
-
-        // Utils
-        var pairs = function(obj)  {
-            var result = [];
-            for (var key in obj) {
-                if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                result.push([key, obj[key]]);
-                }
-            }
-            return result;
-        };
-
-        var flatten = function(array) {
-            var result = [];
-
-            function flat(arr) {
-                for (var i = 0; i < arr.length; i++) {
-                var value = arr[i];
-                if (Array.isArray(value)) {
-                    flat(value);
-                } else {
-                    result.push(value);
-                }
-                }
-            }
-
-            flat(array);
-            return result;
-        };
-
-        var values = function(obj) {
-            var result = [];
-            for (var key in obj) {
-                if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                result.push(obj[key]);
-                }
-            }
-            return result;
-        };
-
-        var findIndex = function(array, predicate) {
-            for (var i = 0; i < array.length; i++) {
-                if (predicate(array[i], i, array)) {
-                return i;
-                }
-            }
-            return -1;
-        };
-
-        return {
-            setApi: setApi
+      const shortcutActions = _getDefaultShortcutActions()
+      const unlockedTypes = Asc.c_oAscUnlockedShortcutActionTypes || {}
+      for (const actionName in shortcutActions) {
+        const type = shortcutActions[actionName]
+        actionsMap[type] = {
+          action: {
+            name: actionName,
+            type: type,
+            isLocked: !unlockedTypes[type],
+          },
+          shortcuts: [],
         }
-    });
-}();
+      }
+
+      pairs(Asc.c_oAscDefaultShortcuts).forEach((item) => {
+        const actionType = item[0]
+        const shortcuts = item[1]
+        const actionItem = actionsMap[actionType]
+
+        if (actionItem) {
+          actionItem.shortcuts = shortcuts.map((ascShortcut) => ({
+            keys: _getAscShortcutKeys(ascShortcut),
+            isCustom: false,
+            ascShortcut: ascShortcut,
+          }))
+        }
+      })
+
+      const removableIndexes = {}
+      pairs(_getModifiedShortcuts()).forEach((item) => {
+        const actionType = item[0]
+        const shortcuts = item[1]
+        const actionItem = actionsMap[actionType]
+
+        if (actionItem) {
+          shortcuts.forEach((ascShortcut) => {
+            const ascShortcutIndex = ascShortcut.asc_GetShortcutIndex()
+            const defaultShortcutIndex = findIndex(
+              actionItem.shortcuts,
+              (shortcut) => shortcut.ascShortcut.asc_GetShortcutIndex() === ascShortcutIndex,
+            )
+
+            if (defaultShortcutIndex !== -1) {
+              actionItem.shortcuts[defaultShortcutIndex].ascShortcut = ascShortcut
+            } else {
+              removableIndexes[ascShortcutIndex] = actionType
+              actionItem.shortcuts.push({
+                keys: _getAscShortcutKeys(ascShortcut),
+                isCustom: true,
+                ascShortcut: ascShortcut,
+              })
+            }
+          })
+        }
+      })
+
+      for (const actionType in actionsMap) {
+        const item = actionsMap[actionType]
+        const shortcuts = actionsMap[actionType].shortcuts
+        if (shortcuts.length === 0 && item.action.isLocked) {
+          // Delete actions if it has no shortcuts and the action is locked
+          delete actionsMap[actionType]
+        } else if (Object.keys(removableIndexes).length > 0) {
+          // Remove shortcuts from other actions if they conflict with updated shortcuts
+          const foundIndex = findIndex(shortcuts, (shortcut) => {
+            const ascShortcutIndex = shortcut.ascShortcut.asc_GetShortcutIndex()
+            if (
+              removableIndexes[ascShortcutIndex] &&
+              removableIndexes[ascShortcutIndex] !== actionType
+            ) {
+              delete removableIndexes[ascShortcutIndex]
+              return true
+            }
+            return false
+          })
+          if (foundIndex !== -1) {
+            const copyAscShortcut = new Asc.CAscShortcut()
+            copyAscShortcut.asc_FromJson(shortcuts[foundIndex].ascShortcut.asc_ToJson())
+            copyAscShortcut.asc_SetIsHidden(true)
+            shortcuts[foundIndex].ascShortcut = copyAscShortcut
+          }
+        }
+
+        if (actionsMap[actionType]) {
+          actionsMap[actionType].shortcuts = shortcuts.sort(_sortComparator)
+        }
+      }
+    }
+
+    const _applyShortcutsInSDK = () => {
+      const applyMethod = (storage) => {
+        storage = JSON.parse(storage || common.localStorage.getItem(localStorageKey) || "{}")
+        for (const actionType in storage) {
+          storage[actionType] = storage[actionType].map((ascShortcutJson) => {
+            const ascShortcut = new Asc.CAscShortcut()
+            ascShortcut.asc_FromJson(ascShortcutJson)
+            return ascShortcut
+          })
+        }
+
+        api.asc_resetAllShortcutTypes()
+
+        const modifiedShortcuts = flatten(values(storage))
+        if (modifiedShortcuts.length) {
+          api.asc_applyAscShortcuts(modifiedShortcuts)
+        }
+      }
+
+      $(window).on("storage", (e) => {
+        if (e.key === localStorageKey) {
+          applyMethod(e.originalEvent.newValue)
+          _fillActionsMap()
+        }
+      })
+
+      applyMethod()
+    }
+
+    /**
+     * Retrieves user-modified shortcuts from localStorage.
+     * @returns {Object<number, CAscShortcut[]>}
+     *  An object where keys are action types and values are arrays of ascShortcut instances.
+     */
+    const _getModifiedShortcuts = () => {
+      const storage = JSON.parse(common.localStorage.getItem(localStorageKey) || "{}")
+      for (const actionType in storage) {
+        storage[actionType] = storage[actionType].map((ascShortcutJson) => {
+          const ascShortcut = new Asc.CAscShortcut()
+          ascShortcut.asc_FromJson(ascShortcutJson)
+          return ascShortcut
+        })
+      }
+      return storage
+    }
+
+    const _getAscShortcutKeys = (ascShortcut) => {
+      const keys = []
+      ascShortcut.asc_IsCommand() && keys.push(_keyCodeToKeyName(91))
+      ascShortcut.asc_IsCtrl() && keys.push(_keyCodeToKeyName(17))
+      ascShortcut.asc_IsAlt() && keys.push(_keyCodeToKeyName(18))
+      ascShortcut.asc_IsShift() && keys.push(_keyCodeToKeyName(16))
+      keys.push(_keyCodeToKeyName(ascShortcut.asc_GetKeyCode()))
+      return keys
+    }
+
+    const _sortComparator = (first, second) => {
+      const priorityModifierKeys = ["asc_IsCommand", "asc_IsCtrl", "asc_IsAlt", "asc_IsShift"]
+      function getWeight(ascShortcut) {
+        // Search for the first modifier key
+        let keyIndex = priorityModifierKeys.length
+        for (let i = 0; i < priorityModifierKeys.length; i++) {
+          if (ascShortcut[priorityModifierKeys[i]]()) {
+            keyIndex = i
+            break
+          }
+        }
+
+        if (keyIndex === priorityModifierKeys.length) return -1
+
+        // Count extra modifier keys
+        let extras = 0
+        for (let j = 0; j < priorityModifierKeys.length; j++) {
+          if (j !== keyIndex && ascShortcut[priorityModifierKeys[j]]()) extras++
+        }
+
+        // weight = range for main key + “cost” of extra keys
+        return keyIndex * 100 + extras
+      }
+
+      if (first.ascShortcut.asc_IsLocked() && !second.ascShortcut.asc_IsLocked()) return -1
+      if (!first.ascShortcut.asc_IsLocked() && second.ascShortcut.asc_IsLocked()) return 1
+
+      const wFirst = getWeight(first.ascShortcut)
+      const wSecond = getWeight(second.ascShortcut)
+
+      if (wFirst !== wSecond) return wFirst - wSecond
+
+      return first.ascShortcut.asc_GetKeyCode() - second.ascShortcut.asc_GetKeyCode()
+    }
+
+    // Utils
+    const pairs = (obj) => {
+      const result = []
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          result.push([key, obj[key]])
+        }
+      }
+      return result
+    }
+
+    const flatten = (array) => {
+      const result = []
+
+      function flat(arr) {
+        for (let i = 0; i < arr.length; i++) {
+          const value = arr[i]
+          if (Array.isArray(value)) {
+            flat(value)
+          } else {
+            result.push(value)
+          }
+        }
+      }
+
+      flat(array)
+      return result
+    }
+
+    const values = (obj) => {
+      const result = []
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          result.push(obj[key])
+        }
+      }
+      return result
+    }
+
+    const findIndex = (array, predicate) => {
+      for (let i = 0; i < array.length; i++) {
+        if (predicate(array[i], i, array)) {
+          return i
+        }
+      }
+      return -1
+    }
+
+    return {
+      setApi: setApi,
+    }
+  })()
+})()

@@ -30,7 +30,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Models = Common.Models || {};
 
@@ -38,8 +38,7 @@ define([
     'underscore',
     'backbone',
     'common/main/lib/component/BaseView'
-], function(_, Backbone){
-    'use strict';
+], (_, Backbone)=> {
 
     Common.Models.Comment = Backbone.Model.extend({
         defaults: {

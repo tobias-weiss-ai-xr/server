@@ -9,13 +9,7 @@
     "type": "git",
     "url": "git://github.com/jashkenas/underscore.git"
   },
-  "keywords": [
-    "util",
-    "functional",
-    "server",
-    "client",
-    "browser"
-  ],
+  "keywords": ["util", "functional", "server", "client", "browser"],
   "main": "underscore-umd.js",
   "module": "modules/index-all.js",
   "type": "commonjs",

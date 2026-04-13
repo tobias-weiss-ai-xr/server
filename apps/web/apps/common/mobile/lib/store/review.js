@@ -1,24 +1,24 @@
-import {action, observable, makeObservable} from 'mobx';
+import { action, makeObservable, observable } from "mobx"
 
 export class storeReview {
-    constructor() {
-        makeObservable(this, {
-            displayMode: observable,
-            dataChanges: observable,
-            changeDisplayMode: action,
-            changeArrReview: action
-        });
-    }
+  constructor() {
+    makeObservable(this, {
+      displayMode: observable,
+      dataChanges: observable,
+      changeDisplayMode: action,
+      changeArrReview: action,
+    })
+  }
 
-    displayMode = 'markup';
+  displayMode = "markup"
 
-    changeDisplayMode (mode) {
-        this.displayMode = mode;
-    }
+  changeDisplayMode(mode) {
+    this.displayMode = mode
+  }
 
-    dataChanges = [];
+  dataChanges = []
 
-    changeArrReview (data) {
-        this.dataChanges = data && data.length > 0 ? data : [];
-    }
+  changeArrReview(data) {
+    this.dataChanges = data && data.length > 0 ? data : []
+  }
 }

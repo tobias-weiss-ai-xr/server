@@ -29,21 +29,16 @@
  *
  */
 
-define([
-    'backbone'
-], function(Backbone){ 'use strict';
+define(["backbone"], (Backbone) => {
+  SSE.Models = SSE.Models || {}
 
-    SSE.Models = SSE.Models || {};
-
-    SSE.Models.TableTemplate = Backbone.Model.extend({
-        defaults: function() {
-            return {
-                id          : Common.UI.getId(),
-                name        : null,
-                caption     : null,
-                type        : null,
-                imageUrl    : null
-            }
-        }
-    });
-});
+  SSE.Models.TableTemplate = Backbone.Model.extend({
+    defaults: () => ({
+      id: Common.UI.getId(),
+      name: null,
+      caption: null,
+      type: null,
+      imageUrl: null,
+    }),
+  })
+})

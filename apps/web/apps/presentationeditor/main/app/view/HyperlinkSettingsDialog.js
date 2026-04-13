@@ -31,14 +31,14 @@
 
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-var c_oHyperlinkType = {
+const c_oHyperlinkType = {
     InternalLink:0,
     WebLink: 1
 };
 
-define([], function () { 'use strict';
+define([], () => { 
     PE.Views.HyperlinkSettingsDialog = Common.UI.Window.extend(_.extend({
         options: {
             width: 350,
@@ -61,22 +61,22 @@ define([], function () { 'use strict';
                     '</div>',
                     '<div id="id-external-link">',
                         '<div class="input-row">',
-                            '<label>' + this.strLinkTo + '</label>',
+                            `<label>${this.strLinkTo}</label>`,
                         '</div>',
                         '<div id="id-dlg-hyperlink-url" class="input-row" style="margin-bottom: 5px;"></div>',
                     '</div>',
                     '<div id="id-internal-link" class="hidden">',
                         '<div class="input-row">',
-                            '<label>' + this.strLinkTo + '</label>',
+                            `<label>${this.strLinkTo}</label>`,
                         '</div>',
                         '<div id="id-dlg-hyperlink-list" style="width:100%; height: 171px;"></div>',
                     '</div>',
                     '<div class="input-row">',
-                        '<label>' + this.strDisplay + '</label>',
+                        `<label>${this.strDisplay}</label>`,
                     '</div>',
                     '<div id="id-dlg-hyperlink-display" class="input-row" style="margin-bottom: 5px;"></div>',
                     '<div class="input-row">',
-                        '<label>' + this.textTipText + '</label>',
+                        `<label>${this.textTipText}</label>`,
                     '</div>',
                     '<div id="id-dlg-hyperlink-tip" class="input-row" style="margin-bottom: 5px;"></div>',
                 '</div>'
@@ -94,94 +94,90 @@ define([], function () { 'use strict';
 
         render: function() {
             Common.UI.Window.prototype.render.call(this);
+            const $window = this.getChild();
 
-            var me = this,
-                $window = this.getChild();
-
-            me.btnExternal = new Common.UI.Button({
+            this.btnExternal = new Common.UI.Button({
                 el: $('#id-dlg-hyperlink-external'),
                 enableToggle: true,
                 toggleGroup: 'hyperlink-type',
                 allowDepress: false,
                 pressed: true
             });
-            me.btnExternal.on('click', _.bind(me.onLinkTypeClick, me, c_oHyperlinkType.WebLink));
+            this.btnExternal.on('click', _.bind(this.onLinkTypeClick, this, c_oHyperlinkType.WebLink));
 
-            me.btnInternal = new Common.UI.Button({
+            this.btnInternal = new Common.UI.Button({
                 el: $('#id-dlg-hyperlink-internal'),
                 enableToggle: true,
                 toggleGroup: 'hyperlink-type',
                 allowDepress: false
             });
-            me.btnInternal.on('click', _.bind(me.onLinkTypeClick, me, c_oHyperlinkType.InternalLink));
+            this.btnInternal.on('click', _.bind(this.onLinkTypeClick, this, c_oHyperlinkType.InternalLink));
 
-            Common.UI.GroupedButtons([me.btnExternal, me.btnInternal]);
+            Common.UI.GroupedButtons([this.btnExternal, this.btnInternal]);
 
-            var config = {
+            const config = {
                 el          : $('#id-dlg-hyperlink-url'),
                 allowBlank  : false,
-                blankError  : me.txtEmpty,
+                blankError  : this.txtEmpty,
                 validateOnBlur: false,
                 style       : 'width: 100%;',
                 iconCls: 'toolbar__icon btn-browse',
-                placeHolder: me.appOptions.isDesktopApp ? me.txtUrlPlaceholder : '',
-                btnHint: me.textSelectFile,
-                validation  : function(value) {
-                    var trimmed = $.trim(value);
-                    if (trimmed.length>2083) return me.txtSizeLimit;
+                placeHolder: this.appOptions.isDesktopApp ? this.txtUrlPlaceholder : '',
+                btnHint: this.textSelectFile,
+                validation  : (value) => {
+                    const trimmed = $.trim(value);
+                    if (trimmed.length>2083) return this.txtSizeLimit;
 
-                    me.urlType = me.api.asc_getUrlType(trimmed);
-                    return (me.urlType!==AscCommon.c_oAscUrlType.Invalid) ? true : me.txtNotUrl;
+                    this.urlType = this.api.asc_getUrlType(trimmed);
+                    return (this.urlType!==AscCommon.c_oAscUrlType.Invalid) ? true : this.txtNotUrl;
                 }
             };
-            me.inputUrl = me.appOptions.isDesktopApp ? new Common.UI.InputFieldBtn(config) : new Common.UI.InputField(config);
-            me.inputUrl._input.on('input', function (e) {
-                me.isInputFirstChange && me.inputUrl.showError();
-                me.isInputFirstChange = false;
-                var val = $(e.target).val();
-                if (me.isAutoUpdate) {
-                    me.inputDisplay.setValue(val);
-                    me.isTextChanged = true;
+            this.inputUrl = this.appOptions.isDesktopApp ? new Common.UI.InputFieldBtn(config) : new Common.UI.InputField(config);
+            this.inputUrl._input.on('input', (e) => {
+                this.isInputFirstChange && this.inputUrl.showError();
+                this.isInputFirstChange = false;
+                const val = $(e.target).val();
+                if (this.isAutoUpdate) {
+                    this.inputDisplay.setValue(val);
+                    this.isTextChanged = true;
                 }
-                me.btnOk.setDisabled($.trim(val)=='');
+                this.btnOk.setDisabled($.trim(val)==='');
             });
-            me.appOptions.isDesktopApp && me.inputUrl.on('button:click', _.bind(me.onSelectFile, me));
+            this.appOptions.isDesktopApp && this.inputUrl.on('button:click', _.bind(this.onSelectFile, this));
 
-            me.inputDisplay = new Common.UI.InputField({
+            this.inputDisplay = new Common.UI.InputField({
                 el          : $('#id-dlg-hyperlink-display'),
                 allowBlank  : true,
                 validateOnBlur: false,
                 style       : 'width: 100%;'
-            }).on('changed:after', function() {
-                me.isTextChanged = true;
+            }).on('changed:after', () => {
+                this.isTextChanged = true;
             });
-            me.inputDisplay._input.on('input', function (e) {
-                me.isAutoUpdate = ($(e.target).val()=='');
+            this.inputDisplay._input.on('input', (e) => {
+                this.isAutoUpdate = ($(e.target).val()==='');
             });
 
-            me.inputTip = new Common.UI.InputField({
+            this.inputTip = new Common.UI.InputField({
                 el          : $('#id-dlg-hyperlink-tip'),
                 style       : 'width: 100%;',
                 maxLength   : Asc.c_oAscMaxTooltipLength
             });
 
-            me.internalList = new Common.UI.TreeView({
+            this.internalList = new Common.UI.TreeView({
                 el: $('#id-dlg-hyperlink-list'),
                 store: new Common.UI.TreeViewStore(),
                 enableKeyEvents: true,
                 tabindex: 1
             });
-            me.internalList.on('item:select', _.bind(this.onSelectItem, this));
+            this.internalList.on('item:select', _.bind(this.onSelectItem, this));
 
-            me.btnOk = _.find(this.getFooterButtons(), function (item) {
-                return (item.$el && item.$el.find('.primary').addBack().filter('.primary').length>0);
-            }) || new Common.UI.Button({ el: $window.find('.primary') });
-            me.btnOk.setDisabled(true);
+            this.btnOk = _.find(this.getFooterButtons(), (item) => (item.$el && item.$el.find('.primary').addBack().filter('.primary').length>0)) || new Common.UI.Button({ el: $window.find('.primary') });
+            this.btnOk.setDisabled(true);
 
             $window.find('.dlg-btn').on('click', _.bind(this.onBtnClick, this));
-            me.internalList.on('entervalue', _.bind(me.onPrimary, me));
-            me.externalPanel = $window.find('#id-external-link');
-            me.internalPanel = $window.find('#id-internal-link');
+            this.internalList.on('entervalue', _.bind(this.onPrimary, this));
+            this.externalPanel = $window.find('#id-external-link');
+            this.internalPanel = $window.find('#id-internal-link');
         },
 
         getFocusedComponents: function() {
@@ -190,16 +186,15 @@ define([], function () { 'use strict';
 
         setSettings: function (props) {
             if (props) {
-                var me = this;
 
-                var type = (me.type!==undefined) ? me.type : me.parseUrl(props.get_Value());
-                (type == c_oHyperlinkType.WebLink) ? me.btnExternal.toggle(true) : me.btnInternal.toggle(true);
-                me.ShowHideElem(type, props.get_Value());
+                const type = (this.type!==undefined) ? this.type : this.parseUrl(props.get_Value());
+                (type === c_oHyperlinkType.WebLink) ? this.btnExternal.toggle(true) : this.btnInternal.toggle(true);
+                this.ShowHideElem(type, props.get_Value());
                 
                 if (props.get_Text()!==null) {
-                    me.inputDisplay.setValue(props.get_Text());
-                    me.inputDisplay.setDisabled(false);
-                    me.isAutoUpdate = (me.inputDisplay.getValue()=='' || type == c_oHyperlinkType.WebLink && me.inputUrl.getValue()==me.inputDisplay.getValue());
+                    this.inputDisplay.setValue(props.get_Text());
+                    this.inputDisplay.setDisabled(false);
+                    this.isAutoUpdate = (this.inputDisplay.getValue()==='' || type === c_oHyperlinkType.WebLink && this.inputUrl.getValue()===this.inputDisplay.getValue());
                 } else {
                     this.inputDisplay.setValue(this.textDefault);
                     this.inputDisplay.setDisabled(true);
@@ -207,20 +202,19 @@ define([], function () { 'use strict';
                 this.isTextChanged = false;
                 this.inputTip.setValue(props.get_ToolTip());
 
-                me._originalProps = props;
+                this._originalProps = props;
             }
         },
 
         getSettings: function () {
-            var me      = this,
-                props   = new Asc.CHyperlinkProperty();
-            var def_display = '',
-                type = this.btnExternal.isActive() ? c_oHyperlinkType.WebLink : c_oHyperlinkType.InternalLink;
-            if (type==c_oHyperlinkType.InternalLink) {//InternalLink
-                var url = "ppaction://hlink";
-                var tip = '';
-                var txttip = me.inputTip.getValue();
-                var rec = this.internalList.getSelectedRec();
+            const props   = new Asc.CHyperlinkProperty();
+            let def_display = '';
+            const type = this.btnExternal.isActive() ? c_oHyperlinkType.WebLink : c_oHyperlinkType.InternalLink;
+            if (type===c_oHyperlinkType.InternalLink) {//InternalLink
+                let url = "ppaction://hlink";
+                let tip = '';
+                const txttip = this.inputTip.getValue();
+                const rec = this.internalList.getSelectedRec();
                 if (rec) {
                     url = url + rec.get('type');
                     tip = rec.get('tiptext');
@@ -229,19 +223,19 @@ define([], function () { 'use strict';
                 props.put_ToolTip(_.isEmpty(txttip) ? tip : txttip);
                 def_display = tip;
             } else {
-                var url = $.trim(me.inputUrl.getValue());
-                if (me.urlType!==AscCommon.c_oAscUrlType.Unsafe && ! /(((^https?)|(^ftp)):\/\/)|(^mailto:)/i.test(url) )
-                    url = ( (me.urlType==AscCommon.c_oAscUrlType.Email) ? 'mailto:' : 'http://' ) + url;
-                url = url.replace(new RegExp("%20",'g')," ");
+                let url = $.trim(this.inputUrl.getValue());
+                if (this.urlType!==AscCommon.c_oAscUrlType.Unsafe && ! /(((^https?)|(^ftp)):\/\/)|(^mailto:)/i.test(url) )
+                    url = ( (this.urlType===AscCommon.c_oAscUrlType.Email) ? 'mailto:' : 'http://' ) + url;
+                url = url.replace(/%20/g," ");
                 props.put_Value( url );
-                props.put_ToolTip(me.inputTip.getValue());
+                props.put_ToolTip(this.inputTip.getValue());
                 def_display = url;
             }
 
-            if (!me.inputDisplay.isDisabled() && (me.isTextChanged || _.isEmpty(me.inputDisplay.getValue()))) {
-                if (_.isEmpty(me.inputDisplay.getValue()) || type==c_oHyperlinkType.WebLink && me.isAutoUpdate)
-                    me.inputDisplay.setValue(def_display);
-                props.put_Text(me.inputDisplay.getValue());
+            if (!this.inputDisplay.isDisabled() && (this.isTextChanged || _.isEmpty(this.inputDisplay.getValue()))) {
+                if (_.isEmpty(this.inputDisplay.getValue()) || type===c_oHyperlinkType.WebLink && this.isAutoUpdate)
+                    this.inputDisplay.setValue(def_display);
+                props.put_Text(this.inputDisplay.getValue());
             }
             else
                 props.put_Text(null);
@@ -250,8 +244,8 @@ define([], function () { 'use strict';
         },
 
         onBtnClick: function(event) {
-            if (event.currentTarget && event.currentTarget.attributes['result'])
-                this._handleInput(event.currentTarget.attributes['result'].value);
+            if (event.currentTarget?.attributes.result)
+                this._handleInput(event.currentTarget.attributes.result.value);
         },
 
         onPrimary: function(event) {
@@ -264,9 +258,9 @@ define([], function () { 'use strict';
                 return;
 
             if (this.options.handler) {
-                if (state == 'ok') {
-                    var checkurl = (this.btnExternal.isActive()) ? this.inputUrl.checkValidate() : true,
-                        checkdisp = this.inputDisplay.checkValidate();
+                if (state === 'ok') {
+                    const checkurl = (this.btnExternal.isActive()) ? this.inputUrl.checkValidate() : true;
+                    const checkdisp = this.inputDisplay.checkValidate();
                     if (checkurl !== true)  {
                         this.isInputFirstChange = true;
                         this.inputUrl.focus();
@@ -287,12 +281,13 @@ define([], function () { 'use strict';
         ShowHideElem: function(value, url) {
             this.externalPanel.toggleClass('hidden', value !== c_oHyperlinkType.WebLink);
             this.internalPanel.toggleClass('hidden', value !== c_oHyperlinkType.InternalLink);
-            if (value==c_oHyperlinkType.InternalLink) {
-                if (url===null || url===undefined || url=='' )
+            if (value===c_oHyperlinkType.InternalLink) {
+                if (url===null || url===undefined || url==='' )
                     url = "ppaction://hlinkshowjump?jump=firstslide";
-                var store = this.internalList.store;
+                const store = this.internalList.store;
                 if (store.length<1) {
-                    var arr = [], i = 0;
+                    const arr = [];
+                    let i = 0;
                     arr.push(new Common.UI.TreeViewModel({
                         name : this.txtFirst,
                         level: 0,
@@ -303,7 +298,7 @@ define([], function () { 'use strict';
                         hasSubItems: false,
                         type: "showjump?jump=firstslide",
                         tiptext: this.txtFirst,
-                        selected: url == "ppaction://hlinkshowjump?jump=firstslide"
+                        selected: url === "ppaction://hlinkshowjump?jump=firstslide"
                     }));
                     arr.push(new Common.UI.TreeViewModel({
                         name : this.txtLast,
@@ -315,7 +310,7 @@ define([], function () { 'use strict';
                         hasSubItems: false,
                         type: "showjump?jump=lastslide",
                         tiptext: this.txtLast,
-                        selected: url == "ppaction://hlinkshowjump?jump=lastslide"
+                        selected: url === "ppaction://hlinkshowjump?jump=lastslide"
                     }));
                     arr.push(new Common.UI.TreeViewModel({
                         name : this.txtNext,
@@ -327,7 +322,7 @@ define([], function () { 'use strict';
                         hasSubItems: false,
                         type: "showjump?jump=nextslide",
                         tiptext: this.txtNext,
-                        selected: url == "ppaction://hlinkshowjump?jump=nextslide"
+                        selected: url === "ppaction://hlinkshowjump?jump=nextslide"
                     }));
                     arr.push(new Common.UI.TreeViewModel({
                         name : this.txtPrev,
@@ -339,7 +334,7 @@ define([], function () { 'use strict';
                         hasSubItems: false,
                         type: "showjump?jump=previousslide",
                         tiptext: this.txtPrev,
-                        selected: url == "ppaction://hlinkshowjump?jump=previousslide"
+                        selected: url === "ppaction://hlinkshowjump?jump=previousslide"
                     }));
                     arr.push(new Common.UI.TreeViewModel({
                         name : this.textSlides,
@@ -350,37 +345,35 @@ define([], function () { 'use strict';
                         isNotHeader: true,
                         hasSubItems: this.api.getCountPages()>0
                     }));
-                    var mask = "ppaction://hlinksldjumpslide",
-                        indSlide = url.indexOf(mask),
-                        slideNum = (0 == indSlide) ? parseInt(url.substring(mask.length)) : -1;
-                    for (var i=0; i<this.api.getCountPages(); i++) {
+                    const mask = "ppaction://hlinksldjumpslide";
+                    const indSlide = url.indexOf(mask);
+                    const slideNum = (0 === indSlide) ? Number.parseInt(url.substring(mask.length)) : -1;
+                    for (let i=0; i<this.api.getCountPages(); i++) {
                         arr.push(new Common.UI.TreeViewModel({
-                            name : this.txtSlide + ' ' + (i+1),
+                            name : `${this.txtSlide} ${i+1}`,
                             level: 1,
                             index: arr.length,
                             hasParent: false,
                             isEmptyItem: false,
                             isNotHeader: true,
                             hasSubItems: false,
-                            type: 'sldjumpslide' + i,
-                            tiptext: this.txtSlide + ' ' + (i+1),
-                            selected: i==slideNum
+                            type: `sldjumpslide${i}`,
+                            tiptext: `${this.txtSlide} ${i+1}`,
+                            selected: i===slideNum
                         }));
                     }
                     store.reset(arr);
                 }
-                var rec = this.internalList.getSelectedRec();
+                const rec = this.internalList.getSelectedRec();
                 rec && this.internalList.scrollToRecord(rec);
-                this.btnOk.setDisabled(!rec || rec.get('index')==4);
-                var me = this;
-                _.delay(function(){
-                    me.inputDisplay.focus();
+                this.btnOk.setDisabled(!rec || rec.get('index')===4);
+                _.delay(()=> {
+                    this.inputDisplay.focus();
                 },50);
             } else {
-                this.btnOk.setDisabled($.trim(this.inputUrl.getValue())=='');
-                var me = this;
-                _.delay(function(){
-                    me.inputUrl.focus();
+                this.btnOk.setDisabled($.trim(this.inputUrl.getValue())==='');
+                _.delay(()=> {
+                    this.inputUrl.focus();
                 },50);
             }
         },
@@ -388,8 +381,8 @@ define([], function () { 'use strict';
         onLinkTypeClick: function(type, btn, event) {
             this.ShowHideElem(type);
             if (this.isAutoUpdate) {
-                if (type==c_oHyperlinkType.InternalLink) {
-                    var rec = this.internalList.getSelectedRec();
+                if (type===c_oHyperlinkType.InternalLink) {
+                    const rec = this.internalList.getSelectedRec();
                     this.inputDisplay.setValue(rec && (rec.get('level') || rec.get('index')<4) ? rec.get('name') : '');
                 } else {
                     this.inputDisplay.setValue(this.inputUrl.getValue());
@@ -399,22 +392,21 @@ define([], function () { 'use strict';
         },
 
         parseUrl: function(url) {
-            if (url===null || url===undefined || url=='' )
+            if (url===null || url===undefined || url==='' )
                 return Common.Utils.InternalSettings.get("pe-settings-link-type") ? c_oHyperlinkType.InternalLink : c_oHyperlinkType.WebLink;
 
-            var indAction = url.indexOf("ppaction://hlink");
-            if (0 == indAction)
+            const indAction = url.indexOf("ppaction://hlink");
+            if (0 === indAction)
             {
                 return c_oHyperlinkType.InternalLink;
-            } else  {
-                this.inputUrl.setValue(url ? url.replace(new RegExp(" ",'g'), "%20") : '');
-                return c_oHyperlinkType.WebLink;
             }
+                this.inputUrl.setValue(url ? url.replace(/ /g, "%20") : '');
+                return c_oHyperlinkType.WebLink;
         },
 
         onSelectItem: function(picker, item, record, e){
             if (!record) return;
-            this.btnOk.setDisabled(record.get('index')==4);
+            this.btnOk.setDisabled(record.get('index')===4);
             if (this.isAutoUpdate) {
                 this.inputDisplay.setValue((record.get('level') || record.get('index')<4) ? record.get('name') : '');
                 this.isTextChanged = true;
@@ -422,22 +414,21 @@ define([], function () { 'use strict';
         },
 
         onSelectFile: function() {
-            var me = this;
-            if (me.api) {
-                var callback = function(result) {
+            if (this.api) {
+                const callback = (result) => {
                     if (result) {
-                        me.inputUrl.setValue(result);
-                        if (me.inputUrl.checkValidate() !== true)
-                            me.isInputFirstChange = true;
-                        if (me.isAutoUpdate) {
-                            me.inputDisplay.setValue(result);
-                            me.isTextChanged = true;
+                        this.inputUrl.setValue(result);
+                        if (this.inputUrl.checkValidate() !== true)
+                            this.isInputFirstChange = true;
+                        if (this.isAutoUpdate) {
+                            this.inputDisplay.setValue(result);
+                            this.isTextChanged = true;
                         }
-                        me.btnOk.setDisabled($.trim(result)=='');
+                        this.btnOk.setDisabled($.trim(result)==='');
                     }
                 };
 
-                me.api.asc_getFilePath(callback); // change sdk function
+                this.api.asc_getFilePath(callback); // change sdk function
             }
         },
 

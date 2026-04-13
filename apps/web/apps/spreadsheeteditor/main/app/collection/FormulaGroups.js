@@ -29,14 +29,9 @@
  *
  */
 
-define([
-    'backbone',
-    'spreadsheeteditor/main/app/model/Formula'
-], function(Backbone) {
-    'use strict';
-
-    SSE.Collections = SSE.Collections || {};
-    SSE.Collections.FormulaGroups = Backbone.Collection.extend({
-        model: SSE.Models.FormulaGroup
-    });
-});
+define(["backbone", "spreadsheeteditor/main/app/model/Formula"], (Backbone) => {
+  SSE.Collections = SSE.Collections || {}
+  SSE.Collections.FormulaGroups = Backbone.Collection.extend({
+    model: SSE.Models.FormulaGroup,
+  })
+})

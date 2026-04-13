@@ -32,131 +32,142 @@
  */
 
 define([
-    'text!pdfeditor/main/app/template/Viewport.template',
-    'jquery',
-    'underscore',
-    'backbone',
-    'common/main/lib/component/Layout'
-], function (viewportTemplate, $, _, Backbone) {
-    'use strict';
+  "text!pdfeditor/main/app/template/Viewport.template",
+  "jquery",
+  "underscore",
+  "backbone",
+  "common/main/lib/component/Layout",
+], (viewportTemplate, $, _, Backbone) => {
+  PDFE.Views.Viewport = Backbone.View.extend({
+    el: "#viewport",
 
-    PDFE.Views.Viewport = Backbone.View.extend({
-        el: '#viewport',
+    // Compile our stats template
+    template: _.template(viewportTemplate),
 
-        // Compile our stats template
-        template: _.template(viewportTemplate),
+    // Delegated events for creating new items, and clearing completed ones.
+    events: {},
 
-        // Delegated events for creating new items, and clearing completed ones.
-        events: {
+    // Set innerHTML and get the references to the DOM elements
+    initialize: function () {
+      this._initEditing = true
+    },
+
+    // Render layout
+    render: function () {
+      this.$el.html(this.template({}))
+
+      // Workaround Safari's scrolling problem
+      if (Common.Utils.isSafari) {
+        $("body").addClass("safari")
+        $("body").mousewheel((e) => {
+          e.preventDefault()
+          e.stopPropagation()
+        })
+      } else if (Common.Utils.isChrome) {
+        $("body").addClass("chrome")
+      }
+
+      let $container = $("#viewport-vbox-layout", this.$el)
+      this.vlayout = new Common.UI.VBoxLayout({
+        box: $container,
+        items: [
+          {
+            el: $container.find("> .layout-item#app-title").hide(),
+            alias: "title",
+            height: Common.Utils.InternalSettings.get("document-title-height"),
+          },
+          {
+            el: $container.find(" > .layout-item#toolbar"),
+            alias: "toolbar",
+            // rely: true
+            height: Common.localStorage.getBool("pdfe-compact-toolbar")
+              ? Common.Utils.InternalSettings.get("toolbar-height-compact")
+              : Common.Utils.InternalSettings.get("toolbar-height-normal"),
+          },
+          {
+            el: $container.find(" > .layout-item.middle"),
+            stretch: true,
+          },
+          {
+            el: $container.find(" > .layout-item#statusbar"),
+            alias: "statusbar",
+            height: Number.parseInt(
+              window.getComputedStyle(document.body).getPropertyValue("--statusbar-height") || 25,
+            ),
+          },
+        ],
+      })
+
+      $container = $("#viewport-hbox-layout", this.$el)
+      const items = $container.find(" > .layout-item")
+      const iarray = [
+        {
+          // left menu chat & comment
+          el: items[0],
+          rely: true,
+          alias: "left",
+          resize: {
+            hidden: true,
+            autohide: false,
+            min: 300,
+            max: 600,
+          },
         },
-
-        // Set innerHTML and get the references to the DOM elements
-        initialize: function() {
-            this._initEditing = true;
+        {
+          // history versions
+          el: items[3],
+          rely: true,
+          alias: "history",
+          resize: {
+            hidden: true,
+            autohide: false,
+            min: 300,
+            max: 600,
+          },
         },
-
-        // Render layout
-        render: function() {
-            this.$el.html(this.template({}));
-
-            // Workaround Safari's scrolling problem
-            if (Common.Utils.isSafari) {
-                $('body').addClass('safari');
-                $('body').mousewheel(function(e){
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-            } else if (Common.Utils.isChrome) {
-                $('body').addClass('chrome');
-            }
-
-            var $container = $('#viewport-vbox-layout', this.$el);
-            this.vlayout = new Common.UI.VBoxLayout({
-                box: $container,
-                items: [{
-                        el: $container.find('> .layout-item#app-title').hide(),
-                        alias: 'title',
-                        height: Common.Utils.InternalSettings.get('document-title-height')
-                    }, {
-                        el: $container.find(' > .layout-item#toolbar'),
-                        alias: 'toolbar',
-                        // rely: true
-                        height: Common.localStorage.getBool('pdfe-compact-toolbar') ?
-                            Common.Utils.InternalSettings.get('toolbar-height-compact') : Common.Utils.InternalSettings.get('toolbar-height-normal')
-                    }, {
-                        el: $container.find(' > .layout-item.middle'),
-                        stretch: true
-                    }, {
-                        el: $container.find(' > .layout-item#statusbar'),
-                        alias: 'statusbar',
-                        height: parseInt(window.getComputedStyle(document.body).getPropertyValue('--statusbar-height') || 25)
-                    }
-                ]
-            });
-
-            $container = $('#viewport-hbox-layout', this.$el);
-            var items = $container.find(' > .layout-item');
-            let iarray = [{ // left menu chat & comment
-                el: items[0],
-                rely: true,
-                alias: 'left',
-                resize: {
-                    hidden: true,
-                    autohide: false,
-                    min: 300,
-                    max: 600
-                }}, { // history versions
-                el: items[3],
-                rely: true,
-                alias: 'history',
-                resize: {
-                    hidden: true,
-                    autohide: false,
-                    min: 300,
-                    max: 600
-                }
-            }, { // sdk
-                el: items[1],
-                stretch: true
-            }, {
-                el: $(items[2]).hide(),
-                rely: true,
-                alias: 'right',
-                resize: {
-                    hidden: false,
-                    autohide: false,
-                    min: -600,
-                    max: -260
-                }
-            }
-            ];
-
-            if ( Common.UI.isRTL() ) {
-                iarray[0].resize.min = -600;
-                iarray[0].resize.max = -300;
-                [iarray[3].resize.min, iarray[3].resize.max] = [260, 600];
-                [iarray[0], iarray[2]] = [iarray[2], iarray[0]];
-            }
-
-            this.hlayout = new Common.UI.HBoxLayout({
-                box: $container,
-                items: iarray
-            });
-
-            return this;
+        {
+          // sdk
+          el: items[1],
+          stretch: true,
         },
+        {
+          el: $(items[2]).hide(),
+          rely: true,
+          alias: "right",
+          resize: {
+            hidden: false,
+            autohide: false,
+            min: -600,
+            max: -260,
+          },
+        },
+      ]
 
-        setMode: function(mode) {
-            if (mode.isDisconnected) {
-                /** coauthoring begin **/
-                if (_.isUndefined(this.mode))
-                    this.mode = {};
+      if (Common.UI.isRTL()) {
+        iarray[0].resize.min = -600
+        iarray[0].resize.max = -300
+        ;[iarray[3].resize.min, iarray[3].resize.max] = [260, 600]
+        ;[iarray[0], iarray[2]] = [iarray[2], iarray[0]]
+      }
 
-                this.mode.canCoAuthoring = false;
-                /** coauthoring end **/
-            } else {
-                this.mode = mode;
-            }
-        }
-    });
-});
+      this.hlayout = new Common.UI.HBoxLayout({
+        box: $container,
+        items: iarray,
+      })
+
+      return this
+    },
+
+    setMode: function (mode) {
+      if (mode.isDisconnected) {
+        /** coauthoring begin **/
+        if (_.isUndefined(this.mode)) this.mode = {}
+
+        this.mode.canCoAuthoring = false
+        /** coauthoring end **/
+      } else {
+        this.mode = mode
+      }
+    },
+  })
+})

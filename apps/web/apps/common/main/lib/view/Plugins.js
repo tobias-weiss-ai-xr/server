@@ -27,7 +27,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Views = Common.Views || {};
 
@@ -36,8 +36,7 @@ define([
     'common/main/lib/component/BaseView',
     'common/main/lib/component/Layout',
     'common/main/lib/component/Window'
-], function (template) {
-    'use strict';
+], (template) => {
 
     Common.Views.Plugins = Common.UI.BaseView.extend(_.extend({
         storePlugins: undefined,
@@ -90,10 +89,10 @@ define([
         },
 
         getPanel: function () {
-            var _panel = $('<section id="plugins-panel" class="panel" data-tab="plugins" role="tabpanel" aria-labelledby="plugins"></section>');
-            var _group = $('<div class="group"></div>');
+            const _panel = $('<section id="plugins-panel" class="panel" data-tab="plugins" role="tabpanel" aria-labelledby="plugins"></section>');
+            const _group = $('<div class="group"></div>');
             if ( !this.storePlugins.isEmpty() ) {
-                this.storePlugins.each(function (model) {
+                this.storePlugins.each((model) => {
                     // var btn = new Common.UI.Button({
                     //     cls: 'btn-toolbar x-huge icon-top',
                     //     iconCls: 'img-commonctrl review-prev',
@@ -113,16 +112,15 @@ define([
 
         renderTo: function (parent) {
             if ( !this.storePlugins.isEmpty() ) {
-                var me = this;
-                var _group = $('<div class="group"></div>');
-                var _set = Common.enumLock;
-                this.storePlugins.each(function (model) {
+                const _group = $('<div class="group"></div>');
+                const _set = Common.enumLock;
+                this.storePlugins.each((model) => {
                     if (model.get('visible')) {
-                        var modes = model.get('variations'),
-                            guid = model.get('guid'),
-                            icons = modes[model.get('currentVariation')].get('icons'),
-                            _icon_url = model.get('baseUrl') + me.parseIcons(icons),
-                            btn = new Common.UI.Button({
+                        const modes = model.get('variations');
+                        const guid = model.get('guid');
+                        const icons = modes[model.get('currentVariation')].get('icons');
+                        const _icon_url = model.get('baseUrl') + this.parseIcons(icons);
+                        const btn = new Common.UI.Button({
                                 cls: 'btn-toolbar x-huge icon-top',
                                 iconImg: _icon_url,
                                 caption: Common.Utils.String.htmlEncode(model.get('name')),
@@ -136,17 +134,17 @@ define([
                                 dataHintOffset: 'small'
                             });
 
-                        var $slot = $('<span class="btn-slot text x-huge"></span>').appendTo(_group);
+                        const $slot = $('<span class="btn-slot text x-huge"></span>').appendTo(_group);
                         btn.render($slot);
 
                         model.set('button', btn);
-                        me.lockedControls.push(btn);
+                        this.lockedControls.push(btn);
                     }
                 });
-                var docProtection = me._state.docProtection
-                Common.Utils.lockControls(Common.enumLock.docLockView, docProtection.isReadOnly, {array: me.lockedControls});
-                Common.Utils.lockControls(Common.enumLock.docLockForms, docProtection.isFormsOnly, {array: me.lockedControls});
-                Common.Utils.lockControls(Common.enumLock.docLockComments, docProtection.isCommentsOnly, {array: me.lockedControls});
+                const docProtection = this._state.docProtection
+                Common.Utils.lockControls(Common.enumLock.docLockView, docProtection.isReadOnly, {array: this.lockedControls});
+                Common.Utils.lockControls(Common.enumLock.docLockForms, docProtection.isFormsOnly, {array: this.lockedControls});
+                Common.Utils.lockControls(Common.enumLock.docLockComments, docProtection.isCommentsOnly, {array: this.lockedControls});
 
                 parent.html(_group);
                 $('<div class="separator long"></div>').prependTo(parent);
@@ -164,11 +162,11 @@ define([
         disableControls: function(disable) {
             if (this._state.DisabledControls!==disable) {
                 this._state.DisabledControls = disable;
-                _.each(this.lockedControls, function(item) {
+                _.each(this.lockedControls, (item) => {
                     item.setDisabled(disable);
                 });
 
-                this.pluginsMask && this.pluginsMask.css('display', disable ? 'block' : 'none');
+                this.pluginsMask?.css('display', disable ? 'block' : 'none');
             }
         },
 
@@ -188,9 +186,9 @@ define([
             //     this.viewPluginsList.cmpEl.find('#' + rec.get('id')).parent().addClass('selected');
             // }
 
-            var model = this.storePlugins.findWhere({guid: pluginGuid});
+            const model = this.storePlugins.findWhere({guid: pluginGuid});
             if ( model ) {
-                var _btn = model.get('button');
+                const _btn = model.get('button');
                 if (_btn) {
                     if (!insideMode) {
                         _btn.toggle(true);
@@ -207,9 +205,9 @@ define([
         closedPluginMode: function(guid, insideMode) {
             // this.viewPluginsList.cmpEl.find('.selected').removeClass('selected');
 
-            var model = this.storePlugins.findWhere({guid: guid});
+            const model = this.storePlugins.findWhere({guid: guid});
             if ( model ) {
-                var _btn = model.get('button');
+                const _btn = model.get('button');
                 if (_btn) {
                     if (!insideMode) {
                         _btn.toggle(false);
@@ -223,8 +221,8 @@ define([
             }
         },
 
-        iconsStr2IconsObj: function(icons) {
-            let result = icons;
+        iconsStr2IconsObj: (icons) => {
+            const result = icons;
             if (typeof result === 'string') {
                 if (result.indexOf('%') === -1)
                     return [icons, icons];
@@ -241,15 +239,15 @@ define([
             if (!model.get('visible'))
                 return null;
 
-            var modes = model.get('variations'),
-                icons = modes[model.get('currentVariation')].get('icons');
+            const modes = model.get('variations');
+            const icons = modes[model.get('currentVariation')].get('icons');
             if (icons === '') return;
             model.set('parsedIcons', this.parseIcons(icons));
         },
 
         createBackgroundPluginsButton: function () {
-            var _set = Common.enumLock;
-            var btn = new Common.UI.Button({
+            const _set = Common.enumLock;
+            const btn = new Common.UI.Button({
                 id: 'id-toolbar-btn-background-plugin',
                 cls: 'btn-toolbar x-huge icon-top',
                 iconCls: 'toolbar__icon btn-background-plugins',
@@ -259,7 +257,7 @@ define([
                     style: 'min-width: 230px;',
                     items: [
                         {
-                            template: _.template('<div class="menu-header">' + this.textTheListOfBackgroundPlugins + '</div>'),
+                            template: _.template(`<div class="menu-header">${this.textTheListOfBackgroundPlugins}</div>`),
                             stopPropagation: true
                         }
                     ],
@@ -279,29 +277,27 @@ define([
             if (!model.get('visible'))
                 return null;
 
-            var me = this;
-
-            var modes = model.get('variations'),
-                guid = model.get('guid'),
-                icons = modes[model.get('currentVariation')].get('icons'),
-                icon_cls;
+            const modes = model.get('variations');
+            const guid = model.get('guid');
+            const icons = modes[model.get('currentVariation')].get('icons');
+            let icon_cls;
             if (icons === '') {
                 icon_cls = 'toolbar__icon btn-plugin-default'
             } else {
                 model.set('parsedIcons', this.parseIcons(icons));
             }
-            var _menu_items = [];
-            _.each(model.get('variations'), function(variation, index) {
+            const _menu_items = [];
+            _.each(model.get('variations'), (variation, index) => {
                 if (variation.get('visible'))
                     _menu_items.push({
-                        caption     : index > 0 ? variation.get('description') : me.textStart,
-                        value       : parseInt(variation.get('index')),
+                        caption     : index > 0 ? variation.get('description') : this.textStart,
+                        value       : Number.parseInt(variation.get('index')),
                         isRun       : false
                     });
             });
 
-            var _set = Common.enumLock;
-            var btn = new Common.UI.ButtonCustom({
+            const _set = Common.enumLock;
+            const btn = new Common.UI.ButtonCustom({
                 cls: 'btn-toolbar x-huge icon-top',
                 iconCls: icon_cls,
                 iconsSet: this.iconsStr2IconsObj(icons),
@@ -327,17 +323,17 @@ define([
                     })
                 );
 
-                btn.menu.on('item:click', function(menu, item, e) {
-                    me.fireEvent('plugin:select', [menu.options.pluginGuid, item.value, item.isRun, item.value === 0 && item.isRun]);
+                btn.menu.on('item:click', (menu, item, e) => {
+                    this.fireEvent('plugin:select', [menu.options.pluginGuid, item.value, item.isRun, item.value === 0 && item.isRun]);
                 });
             }
 
-            btn.on('click', function(b, e) {
-                me.fireEvent('plugin:select', [b.options.value, 0, btn.options.isRun]);
+            btn.on('click', (b, e) => {
+                this.fireEvent('plugin:select', [b.options.value, 0, btn.options.isRun]);
             });
 
             model.set('button', btn);
-            me.lockedControls.push(btn);
+            this.lockedControls.push(btn);
             return btn;
         },
 
@@ -347,15 +343,15 @@ define([
         },
 
         showPluginPanel: function (show, id) {
-            var panel = this.pluginPanels[id] ? this.pluginPanels[id] : this.customPluginPanels[id],
-                menu = this.pluginPanels[id] ? this.storePlugins.findWhere({guid: id}).get('menu') : panel.menu;
+            const panel = this.pluginPanels[id] ? this.pluginPanels[id] : this.customPluginPanels[id];
+            const menu = this.pluginPanels[id] ? this.storePlugins.findWhere({guid: id}).get('menu') : panel.menu;
             if (show) {
-                for (var key in this.pluginPanels) {
+                for (const key in this.pluginPanels) {
                     if (this.pluginPanels[key].menu === menu) {
                         this.pluginPanels[key].$el.removeClass('active');
                     }
                 }
-                for (var key in this.customPluginPanels) {
+                for (const key in this.customPluginPanels) {
                     if (this.customPluginPanels[key].menu === menu) {
                         this.customPluginPanels[key].$el.removeClass('active');
                     }

@@ -1,16 +1,16 @@
-import {action, observable, makeObservable} from 'mobx';
+import { action, makeObservable, observable } from "mobx"
 
-export class storeNavigation { 
-    constructor() {
-        makeObservable(this, {
-            bookmarks: observable,
-            initBookmarks: action
-        });
-    }
+export class storeNavigation {
+  constructor() {
+    makeObservable(this, {
+      bookmarks: observable,
+      initBookmarks: action,
+    })
+  }
 
-    bookmarks = [];
+  bookmarks = []
 
-    initBookmarks(bookmarks) {
-        this.bookmarks = bookmarks;
-    }
+  initBookmarks(bookmarks) {
+    this.bookmarks = bookmarks
+  }
 }

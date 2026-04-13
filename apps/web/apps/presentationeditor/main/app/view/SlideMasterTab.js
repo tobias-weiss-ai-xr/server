@@ -30,292 +30,322 @@
  */
 
 define([
-    'common/main/lib/util/utils',
-    'common/main/lib/component/BaseView',
-    'common/main/lib/component/Layout'
-], function () {
-    'use strict';
-
-    PE.Views.SlideMasterTab = Common.UI.BaseView.extend(_.extend((function(){
-        var template =
-            '<section class="panel" data-tab="slideMaster" role="tabpanel" aria-labelledby="view">' +
-            '<div class="group">' +
-            '<span class="btn-slot text x-huge" id="id-toolbar-btn-add-slide-master"></span>' +
-            '<span class="btn-slot text x-huge" id="id-toolbar-btn-add-layout"></span>' +
-            '</div>' +
-            '<div class="separator long"></div>' +
-            '<div class="group master-slide-mode">' +
-            '<span class="btn-slot text x-huge" id="tlbtn-insertplaceholder"></span>' +
-            '</div>' +
-            '<div class="group master-slide-mode">' +
-            '<div class="elset">' +
-            '<span class="btn-slot text x-huge" id="slot-chk-title"></span>' +
-            '</div>' +
-            '<div class="elset">' +
-            '<span class="btn-slot text x-huge" id="slot-chk-footers"></span>' +
-            '</div>' +
-            '</div>' +
-            '<div class="group master-slide-mode">' +
-            '<span class="btn-slot text x-huge" id="slot-btn-closeslidemaster"></span>' +
-            '</div>' +
-            '</section>';
+  "common/main/lib/util/utils",
+  "common/main/lib/component/BaseView",
+  "common/main/lib/component/Layout",
+], () => {
+  PE.Views.SlideMasterTab = Common.UI.BaseView.extend(
+    _.extend(
+      (() => {
+        const template =
+          '<section class="panel" data-tab="slideMaster" role="tabpanel" aria-labelledby="view">' +
+          '<div class="group">' +
+          '<span class="btn-slot text x-huge" id="id-toolbar-btn-add-slide-master"></span>' +
+          '<span class="btn-slot text x-huge" id="id-toolbar-btn-add-layout"></span>' +
+          "</div>" +
+          '<div class="separator long"></div>' +
+          '<div class="group master-slide-mode">' +
+          '<span class="btn-slot text x-huge" id="tlbtn-insertplaceholder"></span>' +
+          "</div>" +
+          '<div class="group master-slide-mode">' +
+          '<div class="elset">' +
+          '<span class="btn-slot text x-huge" id="slot-chk-title"></span>' +
+          "</div>" +
+          '<div class="elset">' +
+          '<span class="btn-slot text x-huge" id="slot-chk-footers"></span>' +
+          "</div>" +
+          "</div>" +
+          '<div class="group master-slide-mode">' +
+          '<span class="btn-slot text x-huge" id="slot-btn-closeslidemaster"></span>' +
+          "</div>" +
+          "</section>"
         return {
-            options: {},
+          options: {},
 
-            setEvents: function () {
-                var me = this;
-                me.btnCloseSlideMaster && me.btnCloseSlideMaster.on('click', _.bind(function(btn, state) {
-                    me.fireEvent('mode:normal', [state]);
-                }))
-                me.chTitle && me.chTitle.on('change', _.bind(function (checkbox, state) {
-                    me.fireEvent('title:hide', [me.chTitle, state === 'checked']);
-                }, me));
-                me.chFooters && me.chFooters.on('change', _.bind(function (checkbox, state) {
-                    me.fireEvent('footers:hide', [me.chFooters, state === 'checked']);
-                }, me));
-                me.btnInsertPlaceholder && me.btnInsertPlaceholder.on('click', function (btn, e) {
-                    me.fireEvent('insert:placeholder-btn', [btn, e]);
-                });
+          setEvents: function () {
+            this.btnCloseSlideMaster?.on(
+              "click",
+              _.bind((btn, state) => {
+                this.fireEvent("mode:normal", [state])
+              }),
+            )
+            this.chTitle?.on(
+              "change",
+              _.bind((checkbox, state) => {
+                this.fireEvent("title:hide", [this.chTitle, state === "checked"])
+              }, this),
+            )
+            this.chFooters?.on(
+              "change",
+              _.bind((checkbox, state) => {
+                this.fireEvent("footers:hide", [this.chFooters, state === "checked"])
+              }, this),
+            )
+            this.btnInsertPlaceholder?.on("click", (btn, e) => {
+              this.fireEvent("insert:placeholder-btn", [btn, e])
+            })
+          },
 
-            },
+          initialize: function (options) {
+            Common.UI.BaseView.prototype.initialize.call(this)
+            this.appConfig = options.mode
+            const _set = Common.enumLock
+            this.lockedControls = []
 
-            initialize: function (options) {
-                Common.UI.BaseView.prototype.initialize.call(this);
-                this.appConfig = options.mode;
-                var _set = Common.enumLock;
-                this.lockedControls = [];
+            if (this.appConfig.isEdit) {
+              this.btnAddLayout = new Common.UI.Button({
+                id: "id-toolbar-btn-add-layout",
+                cls: "btn-toolbar x-huge icon-top",
+                iconCls: "toolbar__icon btn-add-layout",
+                caption: this.capAddLayout,
+                lock: [_set.menuFileOpen, _set.lostConnect, _set.disableOnStart],
+                dataHint: "1",
+                dataHintDirection: "bottom",
+                dataHintOffset: "small",
+              }).on(
+                "click",
+                function (btn, e) {
+                  this.fireEvent("insert:layout", [btn, e])
+                }.bind(this),
+              )
+              this.lockedControls.push(this.btnAddLayout)
 
-                var me = this;
+              this.btnAddSlideMaster = new Common.UI.Button({
+                id: "id-toolbar-btn-add-slide-master",
+                cls: "btn-toolbar x-huge icon-top",
+                iconCls: "toolbar__icon btn-add-slide-master",
+                caption: this.capAddSlideMaster,
+                lock: [_set.menuFileOpen, _set.lostConnect, _set.disableOnStart],
+                dataHint: "1",
+                dataHintDirection: "bottom",
+                dataHintOffset: "small",
+              }).on(
+                "click",
+                function (btn, e) {
+                  this.fireEvent("insert:slide-master", [btn, e])
+                }.bind(this),
+              )
+              this.lockedControls.push(this.btnAddSlideMaster)
 
-                if (this.appConfig.isEdit) {
-                    this.btnAddLayout = new Common.UI.Button({
-                        id: 'id-toolbar-btn-add-layout',
-                        cls: 'btn-toolbar x-huge icon-top',
-                        iconCls: 'toolbar__icon btn-add-layout',
-                        caption: this.capAddLayout,
-                        lock: [_set.menuFileOpen, _set.lostConnect, _set.disableOnStart],
-                        dataHint: '1',
-                        dataHintDirection: 'bottom',
-                        dataHintOffset: 'small'
-                    }).on('click', function (btn, e) {
-                        this.fireEvent('insert:layout', [btn, e]);
-                    }.bind(this));
-                    this.lockedControls.push(this.btnAddLayout);
+              this.btnInsertPlaceholder = new Common.UI.Button({
+                id: "tlbtn-insertplaceholder",
+                cls: "btn-toolbar x-huge icon-top",
+                iconCls: "toolbar__icon btn-ins-content-placeholder",
+                caption: this.capInsertPlaceholder,
+                lock: [
+                  _set.slideDeleted,
+                  _set.lostConnect,
+                  _set.noSlides,
+                  _set.disableOnStart,
+                  _set.inSlideMaster,
+                ],
+                menu: true,
+                split: true,
+                action: "insert-placeholder",
+                enableToggle: true,
+                currentType: 1,
+                dataHint: "1",
+                dataHintDirection: "bottom",
+                dataHintOffset: "small",
+              })
+              this.lockedControls.push(this.btnInsertPlaceholder)
 
-                    me.btnAddSlideMaster = new Common.UI.Button({
-                        id: 'id-toolbar-btn-add-slide-master',
-                        cls: 'btn-toolbar x-huge icon-top',
-                        iconCls: 'toolbar__icon btn-add-slide-master',
-                        caption: this.capAddSlideMaster,
-                        lock: [_set.menuFileOpen, _set.lostConnect, _set.disableOnStart],
-                        dataHint: '1',
-                        dataHintDirection: 'bottom',
-                        dataHintOffset: 'small'
-                    }).on('click', function (btn, e) {
-                        this.fireEvent('insert:slide-master', [btn, e]);
-                    }.bind(this));
-                    this.lockedControls.push(this.btnAddSlideMaster);
+              this.btnInsertPlaceholder.setMenu(
+                new Common.UI.Menu({
+                  cls: "menu-insert-placeholder",
+                  items: [
+                    new Common.UI.MenuItem({
+                      caption: this.textContent,
+                      iconCls: "icon toolbar__icon btn-ins-content-placeholder",
+                      iconClsForMainBtn: "btn-ins-content-placeholder",
+                      hintForMainBtn: this.tipInsertContentPlaceholder,
+                      value: 1,
+                    }),
+                    new Common.UI.MenuItem({
+                      caption: this.textContentVertical,
+                      iconCls: "icon toolbar__icon btn-ins-vertical-content-placeholder",
+                      iconClsForMainBtn: "btn-ins-vertical-content-placeholder",
+                      hintForMainBtn: this.tipInsertContentVerticalPlaceholder,
+                      value: 2,
+                    }),
+                    new Common.UI.MenuItem({
+                      caption: this.textText,
+                      iconCls: "icon toolbar__icon btn-ins-text-placeholder",
+                      iconClsForMainBtn: "btn-ins-text-placeholder",
+                      hintForMainBtn: this.tipInsertTextPlaceholder,
+                      value: 3,
+                    }),
+                    new Common.UI.MenuItem({
+                      caption: this.textTextVertical,
+                      iconCls: "icon toolbar__icon btn-ins-vertical-text-placeholder",
+                      iconClsForMainBtn: "btn-ins-vertical-text-placeholder",
+                      hintForMainBtn: this.tipInsertTextVerticalPlaceholder,
+                      value: 4,
+                    }),
+                    new Common.UI.MenuItem({
+                      caption: this.textPicture,
+                      iconCls: "icon toolbar__icon btn-ins-picture-placeholder",
+                      iconClsForMainBtn: "btn-ins-picture-placeholder",
+                      hintForMainBtn: this.tipInsertPicturePlaceholder,
+                      value: 5,
+                    }),
+                    new Common.UI.MenuItem({
+                      caption: this.textChart,
+                      iconCls: "icon toolbar__icon btn-ins-chart-placeholder",
+                      iconClsForMainBtn: "btn-ins-chart-placeholder",
+                      hintForMainBtn: this.tipInsertChartPlaceholder,
+                      value: 6,
+                    }),
+                    new Common.UI.MenuItem({
+                      caption: this.textTable,
+                      iconCls: "icon toolbar__icon btn-ins-table-placeholder",
+                      iconClsForMainBtn: "btn-ins-table-placeholder",
+                      hintForMainBtn: this.tipInsertTablePlaceholder,
+                      value: 7,
+                    }),
+                    new Common.UI.MenuItem({
+                      caption: this.textSmartArt,
+                      iconCls: "icon toolbar__icon btn-ins-smartart-placeholder",
+                      iconClsForMainBtn: "btn-ins-smartart-placeholder",
+                      hintForMainBtn: this.tipInsertSmartArtPlaceholder,
+                      value: 8,
+                    }),
+                  ],
+                }).on("item:click", (btn, e) => {
+                  this.btnInsertPlaceholder.toggle(true)
+                  this.fireEvent("insert:placeholder-menu", [this.btnInsertPlaceholder, e])
+                }),
+              )
 
-                    me.btnInsertPlaceholder = new Common.UI.Button({
-                        id: 'tlbtn-insertplaceholder',
-                        cls: 'btn-toolbar x-huge icon-top',
-                        iconCls: 'toolbar__icon btn-ins-content-placeholder',
-                        caption: this.capInsertPlaceholder,
-                        lock: [_set.slideDeleted, _set.lostConnect, _set.noSlides, _set.disableOnStart, _set.inSlideMaster],
-                        menu: true,
-                        split: true,
-                        action: 'insert-placeholder',
-                        enableToggle: true,
-                        currentType: 1,
-                        dataHint: '1',
-                        dataHintDirection: 'bottom',
-                        dataHintOffset: 'small'
-                    });
-                    this.lockedControls.push(this.btnInsertPlaceholder);
+              this.chTitle = new Common.UI.CheckBox({
+                id: "slot-chk-title",
+                lock: [
+                  _set.slideDeleted,
+                  _set.lostConnect,
+                  _set.noSlides,
+                  _set.disableOnStart,
+                  _set.inSlideMaster,
+                ],
+                labelText: this.textTitle,
+                dataHint: "1",
+                dataHintDirection: "left",
+                dataHintOffset: "small",
+              })
+              this.lockedControls.push(this.chTitle)
 
-                    me.btnInsertPlaceholder.setMenu(
-                        new Common.UI.Menu({
-                            cls: 'menu-insert-placeholder',
-                            items: [
-                                new Common.UI.MenuItem({
-                                    caption: me.textContent,
-                                    iconCls: 'icon toolbar__icon btn-ins-content-placeholder',
-                                    iconClsForMainBtn: 'btn-ins-content-placeholder',
-                                    hintForMainBtn: me.tipInsertContentPlaceholder,
-                                    value: 1
-                                }),
-                                new Common.UI.MenuItem({
-                                    caption: me.textContentVertical,
-                                    iconCls: 'icon toolbar__icon btn-ins-vertical-content-placeholder',
-                                    iconClsForMainBtn: 'btn-ins-vertical-content-placeholder',
-                                    hintForMainBtn: me.tipInsertContentVerticalPlaceholder,
-                                    value: 2
-                                }),
-                                new Common.UI.MenuItem({
-                                    caption: me.textText,
-                                    iconCls: 'icon toolbar__icon btn-ins-text-placeholder',
-                                    iconClsForMainBtn: 'btn-ins-text-placeholder',
-                                    hintForMainBtn: me.tipInsertTextPlaceholder,
-                                    value: 3
-                                }),
-                                new Common.UI.MenuItem({
-                                    caption: me.textTextVertical,
-                                    iconCls: 'icon toolbar__icon btn-ins-vertical-text-placeholder',
-                                    iconClsForMainBtn: 'btn-ins-vertical-text-placeholder',
-                                    hintForMainBtn: me.tipInsertTextVerticalPlaceholder,
-                                    value: 4
-                                }),
-                                new Common.UI.MenuItem({
-                                    caption: me.textPicture,
-                                    iconCls: 'icon toolbar__icon btn-ins-picture-placeholder',
-                                    iconClsForMainBtn: 'btn-ins-picture-placeholder',
-                                    hintForMainBtn: me.tipInsertPicturePlaceholder,
-                                    value: 5
-                                }),
-                                new Common.UI.MenuItem({
-                                    caption: me.textChart,
-                                    iconCls: 'icon toolbar__icon btn-ins-chart-placeholder',
-                                    iconClsForMainBtn: 'btn-ins-chart-placeholder',
-                                    hintForMainBtn: me.tipInsertChartPlaceholder,
-                                    value: 6
-                                }),
-                                new Common.UI.MenuItem({
-                                    caption: me.textTable,
-                                    iconCls: 'icon toolbar__icon btn-ins-table-placeholder',
-                                    iconClsForMainBtn: 'btn-ins-table-placeholder',
-                                    hintForMainBtn: me.tipInsertTablePlaceholder,
-                                    value: 7
-                                }),
-                                new Common.UI.MenuItem({
-                                    caption: me.textSmartArt,
-                                    iconCls: 'icon toolbar__icon btn-ins-smartart-placeholder',
-                                    iconClsForMainBtn: 'btn-ins-smartart-placeholder',
-                                    hintForMainBtn: me.tipInsertSmartArtPlaceholder,
-                                    value: 8
-                                })
-                            ]
-                        }).on('item:click', function (btn, e) {
-                            me.btnInsertPlaceholder.toggle(true);
-                            me.fireEvent('insert:placeholder-menu', [me.btnInsertPlaceholder, e]);
-                        })
-                    );
+              this.chFooters = new Common.UI.CheckBox({
+                id: "slot-chk-footers",
+                lock: [
+                  _set.slideDeleted,
+                  _set.lostConnect,
+                  _set.noSlides,
+                  _set.disableOnStart,
+                  _set.inSlideMaster,
+                ],
+                labelText: this.textFooters,
+                dataHint: "1",
+                dataHintDirection: "left",
+                dataHintOffset: "small",
+              })
+              this.lockedControls.push(this.chFooters)
 
-                    this.chTitle = new Common.UI.CheckBox({
-                        id: 'slot-chk-title',
-                        lock: [_set.slideDeleted, _set.lostConnect, _set.noSlides, _set.disableOnStart, _set.inSlideMaster],
-                        labelText: this.textTitle,
-                        dataHint    : '1',
-                        dataHintDirection: 'left',
-                        dataHintOffset: 'small'
-                    });
-                    this.lockedControls.push(this.chTitle);
+              this.btnCloseSlideMaster = new Common.UI.Button({
+                id: "slot-btn-closeslidemaster",
+                cls: "btn-toolbar x-huge icon-top",
+                iconCls: "toolbar__icon btn-close-tab",
+                lock: [_set.slideDeleted, _set.lostConnect, _set.noSlides, _set.disableOnStart],
+                caption: this.capCloseMaster,
+                dataHint: "1",
+                dataHintDirection: "bottom",
+                dataHintOffset: "small",
+              })
+              this.lockedControls.push(this.btnCloseSlideMaster)
+            }
 
-                    this.chFooters = new Common.UI.CheckBox({
-                        id: 'slot-chk-footers',
-                        lock: [_set.slideDeleted, _set.lostConnect, _set.noSlides, _set.disableOnStart, _set.inSlideMaster],
-                        labelText: this.textFooters,
-                        dataHint    : '1',
-                        dataHintDirection: 'left',
-                        dataHintOffset: 'small'
-                    });
-                    this.lockedControls.push(this.chFooters);
+            Common.UI.LayoutManager.addControls(this.lockedControls)
+            Common.NotificationCenter.on("app:ready", this.onAppReady.bind(this))
+          },
 
-                    this.btnCloseSlideMaster = new Common.UI.Button({
-                        id: 'slot-btn-closeslidemaster',
-                        cls: 'btn-toolbar x-huge icon-top',
-                        iconCls: 'toolbar__icon btn-close-tab',
-                        lock: [_set.slideDeleted, _set.lostConnect, _set.noSlides, _set.disableOnStart],
-                        caption: me.capCloseMaster,
-                        dataHint: '1',
-                        dataHintDirection: 'bottom',
-                        dataHintOffset: 'small'
-                    });
-                    this.lockedControls.push(this.btnCloseSlideMaster);
-                }
+          render: function (el) {
+            if (el) el.html(this.getPanel())
 
-                Common.UI.LayoutManager.addControls(this.lockedControls);
-                Common.NotificationCenter.on('app:ready', this.onAppReady.bind(this));
-            },
+            return this
+          },
 
-            render: function (el) {
-                if ( el ) el.html( this.getPanel() );
+          getPanel: function () {
+            this.$el = $(_.template(template)({}))
+            const $host = this.$el
 
-                return this;
-            },
+            this.btnAddLayout?.render($host.find("#id-toolbar-btn-add-layout"))
+            this.btnInsertPlaceholder?.render($host.find("#tlbtn-insertplaceholder"))
+            this.btnAddSlideMaster?.render($host.find("#id-toolbar-btn-add-slide-master"))
+            this.chTitle?.render($host.find("#slot-chk-title"))
+            this.chFooters?.render($host.find("#slot-chk-footers"))
+            this.btnCloseSlideMaster?.render($host.find("#slot-btn-closeslidemaster"))
+            $host.find("#slot-lbl-zoom").text(this.textZoom)
+            return this.$el
+          },
 
-            getPanel: function () {
-                this.$el = $(_.template(template)( {} ));
-                var $host = this.$el;
+          onAppReady: function (config) {
+            new Promise((accept, reject) => {
+              accept()
+            }).then(() => {
+              this.btnAddLayout?.updateHint(this.tipAddLayout)
+              this.btnAddSlideMaster?.updateHint(this.tipAddSlideMaster)
+              this.btnInsertPlaceholder?.updateHint(this.tipInsertPlaceholder)
+              this.btnCloseSlideMaster?.updateHint(this.tipCloseMaster)
 
-                this.btnAddLayout && this.btnAddLayout.render($host.find('#id-toolbar-btn-add-layout'));
-                this.btnInsertPlaceholder && this.btnInsertPlaceholder.render($host.find('#tlbtn-insertplaceholder'))
-                this.btnAddSlideMaster && this.btnAddSlideMaster.render($host.find('#id-toolbar-btn-add-slide-master'));
-                this.chTitle && this.chTitle.render($host.find('#slot-chk-title'));
-                this.chFooters && this.chFooters.render($host.find('#slot-chk-footers'));
-                this.btnCloseSlideMaster && this.btnCloseSlideMaster.render($host.find('#slot-btn-closeslidemaster'));
-                $host.find('#slot-lbl-zoom').text(this.textZoom);
-                return this.$el;
-            },
+              this.setEvents()
+            })
+          },
 
-            onAppReady: function (config) {
-                var me = this;
-                (new Promise(function (accept, reject) {
-                    accept();
-                })).then(function () {
-                    me.btnAddLayout && me.btnAddLayout.updateHint(me.tipAddLayout);
-                    me.btnAddSlideMaster && me.btnAddSlideMaster.updateHint(me.tipAddSlideMaster);
-                    me.btnInsertPlaceholder && me.btnInsertPlaceholder.updateHint(me.tipInsertPlaceholder);
-                    me.btnCloseSlideMaster && me.btnCloseSlideMaster.updateHint(me.tipCloseMaster)
+          show: function () {
+            Common.UI.BaseView.prototype.show.call(this)
+            this.fireEvent("show", this)
+          },
 
-                    me.setEvents();
-                });
-            },
+          getButtons: function (type) {
+            if (type === undefined) return this.lockedControls
+            return []
+          },
 
-            show: function () {
-                Common.UI.BaseView.prototype.show.call(this);
-                this.fireEvent('show', this);
-            },
+          SetDisabled: function (state) {
+            this.lockedControls?.forEach((button) => {
+              if (button) {
+                button.setDisabled(state)
+              }
+            }, this)
+          },
 
-            getButtons: function(type) {
-                if (type===undefined)
-                    return this.lockedControls;
-                return [];
-            },
-
-            SetDisabled: function (state) {
-                this.lockedControls && this.lockedControls.forEach(function(button) {
-                    if ( button ) {
-                        button.setDisabled(state);
-                    }
-                }, this);
-            },
-
-            capAddSlideMaster: 'Add Slide Master',
-            tipAddSlideMaster: 'Add slide master',
-            capAddLayout: 'Add Layout',
-            tipAddLayout: 'Add layout',
-            textTitle: 'Title',
-            textFooters: 'Footers',
-            textContent: 'Content',
-            textContentVertical: 'Content (Vertical)',
-            textText: 'Text',
-            textTextVertical: 'Text (Vertical)',
-            textPicture: 'Picture',
-            textChart: 'Chart',
-            textTable: 'Table',
-            textSmartArt: 'SmartArt',
-            capCloseMaster: 'Close Master',
-            tipCloseMaster: 'Close master',
-            capInsertPlaceholder: 'Insert Placeholder',
-            tipInsertPlaceholder: 'Insert placeholder',
-            tipInsertContentPlaceholder: 'Insert content placeholder',
-            tipInsertContentVerticalPlaceholder: 'Insert content (vertical) placeholder',
-            tipInsertTextPlaceholder: 'Insert text placeholder',
-            tipInsertTextVerticalPlaceholder: 'Insert text (vertical) placeholder',
-            tipInsertPicturePlaceholder: 'Insert picture placeholder',
-            tipInsertChartPlaceholder: 'Insert chart placeholder',
-            tipInsertTablePlaceholder: 'Insert table placeholder',
-            tipInsertSmartArtPlaceholder: 'Insert SmartArt placeholder',
+          capAddSlideMaster: "Add Slide Master",
+          tipAddSlideMaster: "Add slide master",
+          capAddLayout: "Add Layout",
+          tipAddLayout: "Add layout",
+          textTitle: "Title",
+          textFooters: "Footers",
+          textContent: "Content",
+          textContentVertical: "Content (Vertical)",
+          textText: "Text",
+          textTextVertical: "Text (Vertical)",
+          textPicture: "Picture",
+          textChart: "Chart",
+          textTable: "Table",
+          textSmartArt: "SmartArt",
+          capCloseMaster: "Close Master",
+          tipCloseMaster: "Close master",
+          capInsertPlaceholder: "Insert Placeholder",
+          tipInsertPlaceholder: "Insert placeholder",
+          tipInsertContentPlaceholder: "Insert content placeholder",
+          tipInsertContentVerticalPlaceholder: "Insert content (vertical) placeholder",
+          tipInsertTextPlaceholder: "Insert text placeholder",
+          tipInsertTextVerticalPlaceholder: "Insert text (vertical) placeholder",
+          tipInsertPicturePlaceholder: "Insert picture placeholder",
+          tipInsertChartPlaceholder: "Insert chart placeholder",
+          tipInsertTablePlaceholder: "Insert table placeholder",
+          tipInsertSmartArtPlaceholder: "Insert SmartArt placeholder",
         }
-    }()), PE.Views.SlideMasterTab || {}));
-});
+      })(),
+      PE.Views.SlideMasterTab || {},
+    ),
+  )
+})

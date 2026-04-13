@@ -31,14 +31,13 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 Common.Controllers = Common.Controllers || {};
 
 define([
     'core',
     'common/main/lib/view/Draw'
-], function () {
-    'use strict';
+], () => {
 
     Common.Controllers.Draw = Backbone.Controller.extend(_.extend({
         models : [],
@@ -78,7 +77,7 @@ define([
             this.setApi(api);
 
             if (data) {
-                this.sdkViewName        =   data['sdkviewname'] || this.sdkViewName;
+                this.sdkViewName        =   data.sdkviewname || this.sdkViewName;
             }
         },
         setApi: function (api) {
@@ -102,21 +101,21 @@ define([
         },
 
         SetDisabled: function(state) {
-            this.view && this.view.SetDisabled(state);
+            this.view?.SetDisabled(state);
         },
 
         onInkDrawerStop: function() {
-            this.view && this.view.depressButtons();
+            this.view?.depressButtons();
             Common.NotificationCenter.trigger('draw:stop', this.view);
         },
 
         onSelect: function(btn){
-            this.api && this.api.asc_StopInkDrawer();
+            this.api?.asc_StopInkDrawer();
             Common.NotificationCenter.trigger('edit:complete', this.view);
         },
 
         startEraser: function() {
-            this.api && this.api.asc_StartInkEraser();
+            this.api?.asc_StartInkEraser();
             Common.NotificationCenter.trigger('draw:start', this.view);
         },
 
@@ -132,12 +131,12 @@ define([
         },
 
         onEraseAllInksOnSlide: function() {
-            this.api && this.api.asc_EraseAllInksOnSlide();
+            this.api?.asc_EraseAllInksOnSlide();
         },
 
         startDraw: function(options) {
             if (!this.api) { return; }
-            var stroke = new Asc.asc_CStroke();
+            const stroke = new Asc.asc_CStroke();
             stroke.put_type( Asc.c_oAscStrokeType.STROKE_COLOR);
             stroke.put_color(Common.Utils.ThemeColor.getRgbColor(options.color));
             stroke.asc_putPrstDash(Asc.c_oDashType.solid);
@@ -148,7 +147,7 @@ define([
         },
 
         stopDraw: function() {
-            this.api && this.api.asc_StopInkDrawer();
+            this.api?.asc_StopInkDrawer();
             Common.NotificationCenter.trigger('draw:stop', this.view);
         },
 
@@ -158,7 +157,7 @@ define([
                     this.api.asc_StopInkDrawer();
                 else {
                     this.view.depressButtons(btn);
-                    var options = _.clone(btn.options.penOptions);
+                    const options = _.clone(btn.options.penOptions);
                     options.size = options.size.arr[options.size.idx];
                     options.index = options.idx;
                     this.startDraw(options);
@@ -169,12 +168,12 @@ define([
         onDrawSizeClick: function(btn, direction){
             if (!btn.pressed) {
                 btn.toggle(true, true);
-                this.view && this.view.depressButtons(btn);
+                this.view?.depressButtons(btn);
             }
 
-            var options = btn.options.penOptions;
+            const options = btn.options.penOptions;
             options.size.idx =  (direction==='up') ? Math.min(options.size.idx+1, options.size.arr.length-1) : Math.max(options.size.idx-1, 0);
-            this.view && this.view.updateButtonHint(btn);
+            this.view?.updateButtonHint(btn);
 
             this.onDrawPen(btn);
         },
@@ -182,11 +181,11 @@ define([
         onDrawColorClick: function(btn, color){
             if (!btn.pressed) {
                 btn.toggle(true, true);
-                this.view && this.view.depressButtons(btn);
+                this.view?.depressButtons(btn);
             }
 
             btn.options.penOptions.color = color;
-            this.view && this.view.updateButtonHint(btn);
+            this.view?.updateButtonHint(btn);
 
             this.onDrawPen(btn);
         },
@@ -200,11 +199,10 @@ define([
                 this.view : Backbone.Controller.prototype.getView.call(this, name);
         },
 
-        onAppReady: function (config) {
-            var me = this;
-            (new Promise(function (accept, reject) {
+        onAppReady: (config) => {
+            (new Promise((accept, reject) => {
                 accept();
-            })).then(function(){
+            })).then(()=> {
             });
         },
 

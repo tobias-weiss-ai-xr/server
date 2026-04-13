@@ -29,34 +29,26 @@
  *
  */
 
+define(["backbone"], (Backbone) => {
+  PDFE.Models = PDFE.Models || {}
 
-define([
-    'backbone'
-], function(Backbone){ 'use strict';
+  PDFE.Models.EquationModel = Backbone.Model.extend({
+    defaults: () => ({
+      id: Common.UI.getId(),
+      data: null,
+      width: 0,
+      height: 0,
+      posX: 0,
+      posY: 0,
+    }),
+  })
 
-    PDFE.Models = PDFE.Models || {};
-
-    PDFE.Models.EquationModel = Backbone.Model.extend({
-        defaults: function() {
-            return {
-                id          : Common.UI.getId(),
-                data        : null,
-                width       : 0,
-                height      : 0,
-                posX        : 0,
-                posY        : 0
-            }
-        }
-    });
-
-    PDFE.Models.EquationGroup = Backbone.Model.extend({
-        defaults: function() {
-            return {
-                id          : Common.UI.getId(),
-                groupName   : null,
-                groupId     : null,
-                groupStore  : null
-            }
-        }
-    });
-});
+  PDFE.Models.EquationGroup = Backbone.Model.extend({
+    defaults: () => ({
+      id: Common.UI.getId(),
+      groupName: null,
+      groupId: null,
+      groupStore: null,
+    }),
+  })
+})

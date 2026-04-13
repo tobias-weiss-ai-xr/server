@@ -32,9 +32,9 @@
 define([
     'backbone',
     'pdfeditor/main/app/model/ShapeGroup'
-], function(Backbone){ 'use strict';
+], (Backbone)=> { 
     if (Common === undefined)
-        var Common = {};
+        const Common = {};
 
     Common.Collections = Common.Collections || {};
     PDFE.Collections = PDFE.Collections || {};

@@ -30,14 +30,14 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Collections = Common.Collections || {};
 
 define([
     'backbone',
     'common/main/lib/model/Font'
-], function(Backbone){ 'use strict';
+], (Backbone)=> { 
     Common.Collections.Fonts = Backbone.Collection.extend({
         model: Common.Models.Font
     });

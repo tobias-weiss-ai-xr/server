@@ -31,32 +31,32 @@
 
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 if (Common.UI === undefined) {
     Common.UI = {};
 }
 
 Common.UI.ScreenReaderFocusManager = new(function() {
-    var _needShow = false,
-        _focusVisible = false,
-        _focusMode = false,
-        _currentLevel = 0,
-        _lastLevel = 0,
-        _currentSection = document,
-        _lastSection = document,
-        _currentControls = [],
-        _currentItemIndex,
-        _isLockedKeyEvents = false,
-        _unlockKeyEvents = false,
-        _isDocReady = false,
-        _isEditDiagram = false,
-        _isSidePanelMode = false,
-        _api,
-        _app,
-        _appPrefix;
+    let _needShow = false;
+    let _focusVisible = false;
+    let _focusMode = false;
+    let _currentLevel = 0;
+    let _lastLevel = 0;
+    let _currentSection = document;
+    let _lastSection = document;
+    let _currentControls = [];
+    let _currentItemIndex;
+    let _isLockedKeyEvents = false;
+    let _unlockKeyEvents = false;
+    let _isDocReady = false;
+    const _isEditDiagram = false;
+    let _isSidePanelMode = false;
+    let _api;
+    let _app;
+    let _appPrefix;
 
-    var _setCurrentSection = function (btn, section) {
+    const _setCurrentSection = (btn, section) => {
         _lastSection = _currentSection;
         if (section) {
             _currentSection = section;
@@ -73,18 +73,18 @@ Common.UI.ScreenReaderFocusManager = new(function() {
         } else if ($('#file-menu-panel').is(':visible')) {
             _currentSection = $('#file-menu-panel');
         } else {
-            _currentSection = _currentLevel === 0 ? document : ((btn && btn.closest('.hint-section')) || document);
+            _currentSection = _currentLevel === 0 ? document : ((btn?.closest('.hint-section')) || document);
         }
     };
 
-    var _lockedKeyEvents = function (isLocked) {
+    const _lockedKeyEvents = (isLocked) => {
         if (_api && (isLocked || !Common.Utils.ModalWindow.isVisible())) {
             _isLockedKeyEvents = isLocked;
             _api.asc_enableKeyEvents(!isLocked);
         }
     };
 
-    var _showFocus = function () {
+    const _showFocus = () => {
         if (_currentControls.length === 0 || (($('#file-menu-panel').is(':visible') || _isEditDiagram) && _currentLevel === 1)) {
             _getControls();
             // console.log(_currentControls);
@@ -96,7 +96,7 @@ Common.UI.ScreenReaderFocusManager = new(function() {
                 _setFocusInActiveTab();
             }
         } else if (_currentLevel !== _lastLevel && (_currentLevel === 0 || _currentLevel === 1 && $('#file-menu-panel').is(':visible'))) {
-            var id = $(_lastSection).prop('id');
+            const id = $(_lastSection).prop('id');
             if (id === 'toolbar') {
                 _setFocusInActiveTab();
             } else if (id === 'left-menu' || id === 'right-menu') {
@@ -107,7 +107,7 @@ Common.UI.ScreenReaderFocusManager = new(function() {
         } else if (_currentLevel === 1 && _currentLevel !== _lastLevel && ($(_currentSection).prop('id') === 'left-menu' || $(_currentSection).prop('id') === 'right-menu')) {
             _setFocusInSideMenu($(_currentSection).prop('id') === 'left-menu');
         }
-        var currItem = _currentControls[_currentItemIndex];
+        const currItem = _currentControls[_currentItemIndex];
         // console.log(_currentControls[_currentItemIndex]);
         if (currItem) {
             if ($(currItem).parent().hasClass('ribtab') && !$(currItem).parent().hasClass('active') && $(currItem).data('tab') !== 'file') {
@@ -123,13 +123,13 @@ Common.UI.ScreenReaderFocusManager = new(function() {
         }
     };
 
-    var _hideFocus = function () {
+    const _hideFocus = () => {
         _focusVisible = false;
         _focusMode = false;
         _isSidePanelMode = false;
     };
 
-    var _nextItem = function () {
+    const _nextItem = () => {
         _lastLevel = _currentLevel;
         _currentItemIndex++;
         if (_currentItemIndex > _currentControls.length - 1) {
@@ -137,7 +137,7 @@ Common.UI.ScreenReaderFocusManager = new(function() {
         }
     };
 
-    var _prevItem = function () {
+    const _prevItem = () => {
         _lastLevel = _currentLevel;
         _currentItemIndex--;
         if (_currentItemIndex < 0) {
@@ -145,7 +145,7 @@ Common.UI.ScreenReaderFocusManager = new(function() {
         }
     };
 
-    var _nextLevel = function(level) {
+    const _nextLevel = (level) => {
         _lastLevel = _currentLevel;
         _currentItemIndex = 0;
         _currentControls.length = 0;
@@ -156,23 +156,23 @@ Common.UI.ScreenReaderFocusManager = new(function() {
         }
     };
 
-    var _prevLevel = function() {
+    const _prevLevel = () => {
         _lastLevel = _currentLevel;
         _currentControls.length = 0;
         _currentLevel--;
     };
 
-    var _resetToDefault = function() {
+    const _resetToDefault = () => {
         _currentLevel = ($('#file-menu-panel').is(':visible') || _isEditDiagram) ? 1 : 0;
         _setCurrentSection();
         _currentControls.length = 0;
     };
 
-    var _setFocusInActiveTab = function () {
-        var activeTab;
-        for (var i=0; i<_currentControls.length; i++) {
-            var parent = $(_currentControls[i]).parent();
-            if (parent && parent.hasClass('ribtab') && parent.hasClass('active')) {
+    const _setFocusInActiveTab = () => {
+        let activeTab;
+        for (let i=0; i<_currentControls.length; i++) {
+            const parent = $(_currentControls[i]).parent();
+            if (parent?.hasClass('ribtab') && parent.hasClass('active')) {
                 activeTab = _currentControls[i];
                 break;
             }
@@ -182,10 +182,10 @@ Common.UI.ScreenReaderFocusManager = new(function() {
         }
     };
 
-    var _setFocusInActiveCategory = function (id) {
-        var activeCategory;
-        for (var i=0; i<_currentControls.length; i++) {
-            var item = $(_currentControls[i]);
+    const _setFocusInActiveCategory = (id) => {
+        let activeCategory;
+        for (let i=0; i<_currentControls.length; i++) {
+            const item = $(_currentControls[i]);
             if ($(item.closest('.hint-section')).prop('id') === id && item.hasClass('btn-category') && item.hasClass('active')) {
                 activeCategory = _currentControls[i];
                 break;
@@ -196,9 +196,9 @@ Common.UI.ScreenReaderFocusManager = new(function() {
         }
     };
 
-    var _setFocusInActiveFileMenuItem = function () {
-        var activeItem;
-        for (var i=0; i<_currentControls.length; i++) {
+    const _setFocusInActiveFileMenuItem = () => {
+        let activeItem;
+        for (let i=0; i<_currentControls.length; i++) {
             if ($(_currentControls[i]).parent().hasClass('active')) {
                 activeItem = _currentControls[i];
                 break;
@@ -209,15 +209,16 @@ Common.UI.ScreenReaderFocusManager = new(function() {
         }
     };
 
-    var _setFocusInSideMenu = function (isLeftMenu) {
-        var index = 0,
-            view, btn;
+    const _setFocusInSideMenu = (isLeftMenu) => {
+        let index = 0;
+        let view;
+        let btn;
         if (isLeftMenu) {
             view = _app.getController('LeftMenu').getView('LeftMenu');
             btn = view.getFocusElement();
         }
         if (btn) {
-            for (var i=0; i<_currentControls.length; i++) {
+            for (let i=0; i<_currentControls.length; i++) {
                 if ($(_currentControls[i]).is($(btn))) {
                     index = i;
                     break;
@@ -227,58 +228,54 @@ Common.UI.ScreenReaderFocusManager = new(function() {
         _currentItemIndex = index;
     };
 
-    var _isItemDisabled = function (item) {
-        return (item.hasClass('disabled') || item.parent().hasClass('disabled') || item.attr('disabled'));
-    };
+    const _isItemDisabled = (item) => (item.hasClass('disabled') || item.parent().hasClass('disabled') || item.attr('disabled'));
 
-    var _getControls = function() {
+    const _getControls = () => {
         _currentControls = [];
-        var arr = [];
+        let arr = [];
         if (_.isArray(_currentSection)) {
-            _currentSection.forEach(function (section) {
-                arr = arr.concat($(section).find('[data-hint=' + (_currentLevel) + ']').toArray());
+            _currentSection.forEach((section) => {
+                arr = arr.concat($(section).find(`[data-hint=${_currentLevel}]`).toArray());
             });
         } else {
-            arr = $(_currentSection).find('[data-hint=' + (_currentLevel) + ']').toArray();
+            arr = $(_currentSection).find(`[data-hint=${_currentLevel}]`).toArray();
         }
-        _currentControls = arr.filter(function (item) {
-            return ($(item).is(':visible') && !_isItemDisabled($(item)));
-        });
-        _currentControls.forEach(function (item) {
+        _currentControls = arr.filter((item) => ($(item).is(':visible') && !_isItemDisabled($(item))));
+        _currentControls.forEach((item) => {
             if ($(item).attr("tabindex") === undefined) $(item).attr("tabindex", 0);
         });
     };
 
-    var _exitFocusMode = function () {
+    const _exitFocusMode = () => {
         _hideFocus();
         _resetToDefault();
         _isLockedKeyEvents && _lockedKeyEvents(false);
     };
 
-    var _init = function(api) {
+    const _init = (api) => {
         if (Common.Utils.isIE || Common.UI.isMac && Common.Utils.isGecko) // turn off hints on IE and FireFox (shortcut F6 selects link in address bar)
             return;
         _api = api;
         _app = window.DE || window.PE || window.SSE || window.PDFE || window.VE;
         _isDocReady = true;
 
-        var filter = Common.localStorage.getKeysFilter();
-        _appPrefix = (filter && filter.length) ? filter.split(',')[0] : '';
+        const filter = Common.localStorage.getKeysFilter();
+        _appPrefix = (filter?.length) ? filter.split(',')[0] : '';
 
         if ( !Common.Utils.ScreeenReaderHelper ) {
-            require(['common/main/lib/util/ScreenReaderHelper'], function () {
+            require(['common/main/lib/util/ScreenReaderHelper'], () => {
                 Common.Utils.ScreeenReaderHelper.setEnabled(true);
             });
         }
 
-        $('#editor_sdk').on('click', function () {
+        $('#editor_sdk').on('click', () => {
             _exitFocusMode();
         });
-        $(document).on('mousedown', function () {
+        $(document).on('mousedown', () => {
             _exitFocusMode();
         });
-        $(document).on('keyup', function(e) {
-            if ((e.keyCode == Common.UI.Keys.ALT || e.keyCode === 91) && _needShow && !(window.SSE && window.SSE.getController('Statusbar').getIsDragDrop())) {
+        $(document).on('keyup', (e) => {
+            if ((e.keyCode === Common.UI.Keys.ALT || e.keyCode === 91) && _needShow && !(window.SSE?.getController('Statusbar').getIsDragDrop())) {
                 e.preventDefault();
                 if (!_focusVisible) {
                     $('input:focus').blur(); // to change value in inputField
@@ -296,31 +293,31 @@ Common.UI.ScreenReaderFocusManager = new(function() {
             }
             _needShow = false;
         });
-        $(document).on('keydown.after.bs.dropdown', function(e) {
+        $(document).on('keydown.after.bs.dropdown', (e) => {
             if (_focusVisible) {
-                var tag = $(_currentControls[_currentItemIndex]).prop('tagName'),
-                    isInputFocused = tag === 'INPUT' || tag === 'TEXTAREA',
-                    isDirectionEvent = e.keyCode == Common.UI.Keys.TAB || e.keyCode == Common.UI.Keys.LEFT || e.keyCode == Common.UI.Keys.RIGHT ||
-                        e.keyCode == Common.UI.Keys.UP || e.keyCode == Common.UI.Keys.DOWN,
-                    isControlEvent = e.keyCode == Common.UI.Keys.ESC || e.keyCode == Common.UI.Keys.RETURN || e.keyCode == Common.UI.Keys.SPACE;
+                const tag = $(_currentControls[_currentItemIndex]).prop('tagName');
+                const isInputFocused = tag === 'INPUT' || tag === 'TEXTAREA';
+                const isDirectionEvent = e.keyCode === Common.UI.Keys.TAB || e.keyCode === Common.UI.Keys.LEFT || e.keyCode === Common.UI.Keys.RIGHT ||
+                        e.keyCode === Common.UI.Keys.UP || e.keyCode === Common.UI.Keys.DOWN;
+                const isControlEvent = e.keyCode === Common.UI.Keys.ESC || e.keyCode === Common.UI.Keys.RETURN || e.keyCode === Common.UI.Keys.SPACE;
                 if($(_currentControls[_currentItemIndex]).data('move-focus-only-tab') && e.keyCode !== Common.UI.Keys.TAB && !isControlEvent) return;
-                if (!(isDirectionEvent || isControlEvent) || (e.keyCode == Common.UI.Keys.SPACE && isInputFocused)) return;
+                if (!(isDirectionEvent || isControlEvent) || (e.keyCode === Common.UI.Keys.SPACE && isInputFocused)) return;
                 if (isDirectionEvent) e.preventDefault(); // allow to write in inputs
                 Common.UI.Menu.Manager.hideAll();
-                var turnOffHints = false,
-                    btn = _currentControls[_currentItemIndex] && $(_currentControls[_currentItemIndex]);
-                var isFileMenu = $('#file-menu-panel').is(':visible'),
-                    isBtnCategory = btn && btn.hasClass('btn-category'),
-                    left = e.keyCode == Common.UI.Keys.LEFT,
-                    right = e.keyCode == Common.UI.Keys.RIGHT,
-                    up = e.keyCode == Common.UI.Keys.UP,
-                    down = e.keyCode == Common.UI.Keys.DOWN,
-                    tab = e.keyCode == Common.UI.Keys.TAB,
-                    shiftTab = e.shiftKey && e.keyCode == Common.UI.Keys.TAB,
-                    isPrevItem,
-                    isNextItem,
-                    isPrevLevel,
-                    isNextLevel;
+                let turnOffHints = false;
+                const btn = _currentControls[_currentItemIndex] && $(_currentControls[_currentItemIndex]);
+                const isFileMenu = $('#file-menu-panel').is(':visible');
+                const isBtnCategory = btn?.hasClass('btn-category');
+                const left = e.keyCode === Common.UI.Keys.LEFT;
+                const right = e.keyCode === Common.UI.Keys.RIGHT;
+                const up = e.keyCode === Common.UI.Keys.UP;
+                const down = e.keyCode === Common.UI.Keys.DOWN;
+                const tab = e.keyCode === Common.UI.Keys.TAB;
+                const shiftTab = e.shiftKey && e.keyCode === Common.UI.Keys.TAB;
+                let isPrevItem;
+                let isNextItem;
+                let isPrevLevel;
+                let isNextLevel;
                 if (isFileMenu) {
                     isPrevItem = left || up;
                     isNextItem = _currentLevel === 2 ? (right || down || tab && !shiftTab) : (right || down);
@@ -342,18 +339,18 @@ Common.UI.ScreenReaderFocusManager = new(function() {
                     isPrevLevel = up;
                     isNextLevel = down;
                 }
-                if (e.keyCode == Common.UI.Keys.ESC) {
+                if (e.keyCode === Common.UI.Keys.ESC) {
                     _exitFocusMode();
                     return;
-                } else if (e.keyCode == Common.UI.Keys.RETURN || e.keyCode == Common.UI.Keys.SPACE) {
+                }if (e.keyCode === Common.UI.Keys.RETURN || e.keyCode === Common.UI.Keys.SPACE) {
                     if (btn) {
                         if (btn.attr('for')) { // to trigger event in checkbox
-                            (e.keyCode == Common.UI.Keys.RETURN) ? $('#' + btn.attr('for')).trigger(jQuery.Event('click', {which: 1})) : e.preventDefault(); // prevent type space in document
+                            (e.keyCode === Common.UI.Keys.RETURN) ? $(`#${btn.attr('for')}`).trigger(jQuery.Event('click', {which: 1})) : e.preventDefault(); // prevent type space in document
                         } else {
                             if (btn.data('tab') === 'file' || isFileMenu && _currentLevel === 1 || isBtnCategory)
                                 btn.trigger(jQuery.Event('click', {which: 1}));
                             else
-                                setTimeout(function() {btn.trigger(jQuery.Event('click', {which: 1}));}, 1); // click on toolbar buttons
+                                setTimeout(() => {btn.trigger(jQuery.Event('click', {which: 1}));}, 1); // click on toolbar buttons
                         }
                         if (btn.data('toggle') !== 'dropdown') btn.blur();
                     }
@@ -377,7 +374,7 @@ Common.UI.ScreenReaderFocusManager = new(function() {
                     _nextItem();
                 } else if (isNextLevel) {
                     if ($('.toolbar.folded').not('.expanded').length > 0) return;
-                    var attr = '[data-hint="' + (_currentLevel + 1) + '"]';
+                    const attr = `[data-hint="${_currentLevel + 1}"]`;
                     if ($(_currentSection).find(attr).length === 0 || btn && $(btn.closest('.hint-section')).find(attr).filter(':visible').length === 0) return;
                     turnOffHints = true;
                     _nextLevel();
@@ -396,8 +393,8 @@ Common.UI.ScreenReaderFocusManager = new(function() {
                 _showFocus();
             }
         });
-        $(document).on('keydown', function(e) {
-            _needShow = Common.Utils.InternalSettings.get(_appPrefix + "settings-show-alt-hints") &&  e.keyCode == Common.UI.Keys.ALT && !e.shiftKey &&
+        $(document).on('keydown', (e) => {
+            _needShow = Common.Utils.InternalSettings.get(`${_appPrefix}settings-show-alt-hints`) &&  e.keyCode === Common.UI.Keys.ALT && !e.shiftKey &&
                         !Common.Utils.ModalWindow.isVisible() && _isDocReady && !(window.PE && $('#pe-preview').is(':visible'));
 
             // Add outline style for focus elements for test
@@ -409,9 +406,7 @@ Common.UI.ScreenReaderFocusManager = new(function() {
         });
     };
 
-    var _isFocusMode = function () {
-        return !!_focusMode;
-    }
+    const _isFocusMode = () => !!_focusMode
 
     return {
         init: _init,

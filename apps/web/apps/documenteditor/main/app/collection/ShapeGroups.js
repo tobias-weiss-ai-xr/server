@@ -32,9 +32,9 @@
 define([
     'backbone',
     'documenteditor/main/app/model/ShapeGroup'
-], function(Backbone){ 'use strict';
+], (Backbone)=> { 
     if (Common === undefined)
-        var Common = {};
+        const Common = {};
 
     Common.Collections = Common.Collections || {};
     DE.Collections = DE.Collections || {};

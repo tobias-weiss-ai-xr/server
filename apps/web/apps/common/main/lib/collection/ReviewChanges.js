@@ -30,7 +30,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Collections = Common.Collections || {};
 
@@ -38,8 +38,7 @@ define([
     'underscore',
     'backbone',
     'common/main/lib/model/ReviewChange'
-], function(_, Backbone){
-    'use strict';
+], (_, Backbone)=> {
 
     Common.Collections.ReviewChanges = Backbone.Collection.extend({
         model: Common.Models.ReviewChange

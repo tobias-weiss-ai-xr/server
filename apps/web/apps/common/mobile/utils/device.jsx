@@ -1,56 +1,63 @@
-
-import React from 'react';
-import { f7 } from 'framework7-react';
-import { Dom7 } from 'framework7'
+import { Dom7 } from "framework7"
+import { f7 } from "framework7-react"
+import React from "react"
 
 class WrapDevice {
-    constructor(){
-        const ua = navigator.userAgent,
-            isMobile = /Mobile(\/|\s|;)/.test(ua);
+  constructor() {
+    const ua = navigator.userAgent
+    const isMobile = /Mobile(\/|\s|;)/.test(ua)
 
-        this.isPhone = /(iPhone|iPod)/.test(ua) ||
-            (!/(Silk)/.test(ua) && (/(Android)/.test(ua) && !/Galaxy Tab S6|SCH-I800|Lenovo YT-X705X/.test(ua) && (/(Android 2)/.test(ua) || isMobile))) ||
-            (/(BlackBerry|BB)/.test(ua) && isMobile) ||
-            /(Windows Phone)/.test(ua);
-        
-        if (this.isPhone && window.innerWidth >= 700 && window.innerHeight >= 700) {
-            this.isPhone = false;
-        }
-        
-        this.isTablet = !this.isPhone && (/iPad/.test(ua) || /Android/.test(ua) || /(RIM Tablet OS)/.test(ua) ||
-            (/MSIE 10/.test(ua) && /; Touch/.test(ua)));
+    this.isPhone =
+      /(iPhone|iPod)/.test(ua) ||
+      (!/(Silk)/.test(ua) &&
+        /(Android)/.test(ua) &&
+        !/Galaxy Tab S6|SCH-I800|Lenovo YT-X705X/.test(ua) &&
+        (/(Android 2)/.test(ua) || isMobile)) ||
+      (/(BlackBerry|BB)/.test(ua) && isMobile) ||
+      /(Windows Phone)/.test(ua)
+
+    if (this.isPhone && window.innerWidth >= 700 && window.innerHeight >= 700) {
+      this.isPhone = false
     }
 
-    initDom() {
-        const $$ = Dom7;
-        if ( this.sailfish ) {
-            $$('html').addClass('sailfish');
-        }
+    this.isTablet =
+      !this.isPhone &&
+      (/iPad/.test(ua) ||
+        /Android/.test(ua) ||
+        /(RIM Tablet OS)/.test(ua) ||
+        (/MSIE 10/.test(ua) && /; Touch/.test(ua)))
+  }
 
-        $$('html').addClass(this.phone ? 'phone' : 'tablet');
-        // $$(window).on('resize', _.bind(this.onWindowResize, this));
+  initDom() {
+    const $$ = Dom7
+    if (this.sailfish) {
+      $$("html").addClass("sailfish")
     }
 
-    get phone() {
-        return this.isPhone
-    }
+    $$("html").addClass(this.phone ? "phone" : "tablet")
+    // $$(window).on('resize', _.bind(this.onWindowResize, this));
+  }
 
-    get tablet() {
-        return this.isTablet
-    }
+  get phone() {
+    return this.isPhone
+  }
 
-    get sailfish() {
-        return /Sailfish/.test(navigator.userAgent) || /Jolla/.test(navigator.userAgent);
-    }
+  get tablet() {
+    return this.isTablet
+  }
 
-    get android() {
-        return f7.device.android;
-    }
+  get sailfish() {
+    return /Sailfish/.test(navigator.userAgent) || /Jolla/.test(navigator.userAgent)
+  }
 
-    get ios() {
-        return f7.device.ios;
-    }
+  get android() {
+    return f7.device.android
+  }
+
+  get ios() {
+    return f7.device.ios
+  }
 }
 
-const device = new WrapDevice();
-export {device as Device};
+const device = new WrapDevice()
+export { device as Device }

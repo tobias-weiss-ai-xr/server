@@ -31,14 +31,14 @@
 
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-var c_oHyperlinkType = {
+const c_oHyperlinkType = {
     InternalLink:0,
     WebLink: 1
 };
 
-define([], function () { 'use strict';
+define([], () => { 
 
     DE.Views.HyperlinkSettingsDialog = Common.UI.Window.extend(_.extend({
         options: {
@@ -62,22 +62,22 @@ define([], function () { 'use strict';
                     '</div>',
                     '<div id="id-external-link">',
                         '<div class="input-row">',
-                            '<label>' + this.textUrl + '</label>',
+                            `<label>${this.textUrl}</label>`,
                         '</div>',
                         '<div id="id-dlg-hyperlink-url" class="input-row" style="margin-bottom: 4px;"></div>',
                     '</div>',
                     '<div id="id-internal-link">',
                         '<div class="input-row">',
-                            '<label>' + this.textUrl + '</label>',
+                            `<label>${this.textUrl}</label>`,
                         '</div>',
                         '<div id="id-dlg-hyperlink-list" style="width:100%; height: 171px;"></div>',
                     '</div>',
                     '<div class="input-row">',
-                        '<label>' + this.textDisplay + '</label>',
+                        `<label>${this.textDisplay}</label>`,
                     '</div>',
                     '<div id="id-dlg-hyperlink-display" class="input-row" style="margin-bottom: 4px;"></div>',
                     '<div class="input-row">',
-                        '<label>' + this.textTooltip + '</label>',
+                        `<label>${this.textTooltip}</label>`,
                     '</div>',
                     '<div id="id-dlg-hyperlink-tip" class="input-row" style="margin-bottom: 4px;"></div>',
                 '</div>'
@@ -94,96 +94,92 @@ define([], function () { 'use strict';
 
         render: function() {
             Common.UI.Window.prototype.render.call(this);
+            const $window = this.getChild();
 
-            var me = this,
-                $window = this.getChild();
-
-            me.btnExternal = new Common.UI.Button({
+            this.btnExternal = new Common.UI.Button({
                 el: $('#id-dlg-hyperlink-external'),
                 enableToggle: true,
                 toggleGroup: 'hyperlink-type',
                 allowDepress: false,
                 pressed: true
             });
-            me.btnExternal.on('click', _.bind(me.onLinkTypeClick, me, c_oHyperlinkType.WebLink));
+            this.btnExternal.on('click', _.bind(this.onLinkTypeClick, this, c_oHyperlinkType.WebLink));
 
-            me.btnInternal = new Common.UI.Button({
+            this.btnInternal = new Common.UI.Button({
                 el: $('#id-dlg-hyperlink-internal'),
                 enableToggle: true,
                 toggleGroup: 'hyperlink-type',
                 allowDepress: false
             });
-            me.btnInternal.on('click', _.bind(me.onLinkTypeClick, me, c_oHyperlinkType.InternalLink));
+            this.btnInternal.on('click', _.bind(this.onLinkTypeClick, this, c_oHyperlinkType.InternalLink));
 
-            Common.UI.GroupedButtons([me.btnExternal, me.btnInternal]);
+            Common.UI.GroupedButtons([this.btnExternal, this.btnInternal]);
 
-            var config = {
+            const config = {
                 el          : $('#id-dlg-hyperlink-url'),
                 allowBlank  : false,
-                blankError  : me.txtEmpty,
+                blankError  : this.txtEmpty,
                 style       : 'width: 100%;',
                 validateOnBlur: false,
                 iconCls: 'toolbar__icon btn-browse',
-                placeHolder: me.appOptions.isDesktopApp ? me.txtUrlPlaceholder : '',
-                btnHint: me.textSelectFile,
-                validation  : function(value) {
-                    var trimmed = $.trim(value);
-                    if (trimmed.length>2083) return me.txtSizeLimit;
+                placeHolder: this.appOptions.isDesktopApp ? this.txtUrlPlaceholder : '',
+                btnHint: this.textSelectFile,
+                validation  : (value) => {
+                    const trimmed = $.trim(value);
+                    if (trimmed.length>2083) return this.txtSizeLimit;
 
-                    me.urlType = me.api.asc_getUrlType(trimmed);
-                    return (me.urlType!==AscCommon.c_oAscUrlType.Invalid) ? true : me.txtNotUrl;
+                    this.urlType = this.api.asc_getUrlType(trimmed);
+                    return (this.urlType!==AscCommon.c_oAscUrlType.Invalid) ? true : this.txtNotUrl;
                 },
-                ariaLabel   : me.textUrl
+                ariaLabel   : this.textUrl
             };
-            me.inputUrl = me.appOptions.isDesktopApp ? new Common.UI.InputFieldBtn(config) : new Common.UI.InputField(config);
-            me.inputUrl._input.on('input', function (e) {
-                me.isInputFirstChange && me.inputUrl.showError();
-                me.isInputFirstChange = false;
-                var val = $(e.target).val();
-                if (me.isAutoUpdate) {
-                    me.inputDisplay.setValue(val);
-                    me.isTextChanged = true;
+            this.inputUrl = this.appOptions.isDesktopApp ? new Common.UI.InputFieldBtn(config) : new Common.UI.InputField(config);
+            this.inputUrl._input.on('input', (e) => {
+                this.isInputFirstChange && this.inputUrl.showError();
+                this.isInputFirstChange = false;
+                const val = $(e.target).val();
+                if (this.isAutoUpdate) {
+                    this.inputDisplay.setValue(val);
+                    this.isTextChanged = true;
                 }
-                me.btnOk.setDisabled($.trim(val)=='');
+                this.btnOk.setDisabled($.trim(val)==='');
             });
-            me.appOptions.isDesktopApp && me.inputUrl.on('button:click', _.bind(me.onSelectFile, me));
+            this.appOptions.isDesktopApp && this.inputUrl.on('button:click', _.bind(this.onSelectFile, this));
 
-            me.inputDisplay = new Common.UI.InputField({
+            this.inputDisplay = new Common.UI.InputField({
                 el          : $('#id-dlg-hyperlink-display'),
                 allowBlank  : true,
                 validateOnBlur: false,
                 style       : 'width: 100%;',
-                ariaLabel   : me.textDisplay
-            }).on('changed:after', function() {
-                me.isTextChanged = true;
+                ariaLabel   : this.textDisplay
+            }).on('changed:after', () => {
+                this.isTextChanged = true;
             });
-            me.inputDisplay._input.on('input', function (e) {
-                me.isAutoUpdate = ($(e.target).val()=='');
+            this.inputDisplay._input.on('input', (e) => {
+                this.isAutoUpdate = ($(e.target).val()==='');
             });
 
-            me.inputTip = new Common.UI.InputField({
+            this.inputTip = new Common.UI.InputField({
                 el          : $('#id-dlg-hyperlink-tip'),
                 style       : 'width: 100%;',
                 maxLength   : Asc.c_oAscMaxTooltipLength,
-                ariaLabel   : me.textTooltip
+                ariaLabel   : this.textTooltip
             });
 
-            me.internalList = new Common.UI.TreeView({
+            this.internalList = new Common.UI.TreeView({
                 el: $('#id-dlg-hyperlink-list'),
                 store: new Common.UI.TreeViewStore(),
                 enableKeyEvents: true,
                 tabindex: 1
             });
-            me.internalList.on('item:select', _.bind(this.onSelectItem, this));
+            this.internalList.on('item:select', _.bind(this.onSelectItem, this));
 
-            me.btnOk = _.find(this.getFooterButtons(), function (item) {
-                return (item.$el && item.$el.find('.primary').addBack().filter('.primary').length>0);
-            }) || new Common.UI.Button({ el: $window.find('.primary') });
+            this.btnOk = _.find(this.getFooterButtons(), (item) => (item.$el && item.$el.find('.primary').addBack().filter('.primary').length>0)) || new Common.UI.Button({ el: $window.find('.primary') });
 
             $window.find('.dlg-btn').on('click', _.bind(this.onBtnClick, this));
-            me.internalList.on('entervalue', _.bind(me.onPrimary, me));
-            me.externalPanel = $window.find('#id-external-link');
-            me.internalPanel = $window.find('#id-internal-link');
+            this.internalList.on('entervalue', _.bind(this.onPrimary, this));
+            this.externalPanel = $window.find('#id-external-link');
+            this.internalPanel = $window.find('#id-internal-link');
         },
 
         getFocusedComponents: function() {
@@ -193,14 +189,14 @@ define([], function () { 'use strict';
         ShowHideElem: function(value) {
             this.externalPanel.toggleClass('hidden', value !== c_oHyperlinkType.WebLink);
             this.internalPanel.toggleClass('hidden', value !== c_oHyperlinkType.InternalLink);
-            var store = this.internalList.store;
-            if (value==c_oHyperlinkType.InternalLink) {
+            const store = this.internalList.store;
+            if (value===c_oHyperlinkType.InternalLink) {
                 if (store.length<1) {
-                    var anchors = this.api.asc_GetHyperlinkAnchors(),
-                        count = anchors.length,
-                        prev_level = 0,
-                        header_level = 0,
-                        arr = [];
+                    const anchors = this.api.asc_GetHyperlinkAnchors();
+                    const count = anchors.length;
+                    let prev_level = 0;
+                    let header_level = 0;
+                    const arr = [];
                     arr.push(new Common.UI.TreeViewModel({
                         name : this.txtBeginning,
                         level: 0,
@@ -221,11 +217,11 @@ define([], function () { 'use strict';
                         hasSubItems: false
                     }));
 
-                    for (var i=0; i<count; i++) {
-                        var anchor = anchors[i],
-                            level = anchors[i].asc_GetHeadingLevel()+1,
-                            hasParent = true;
-                        if (anchor.asc_GetType()== Asc.c_oAscHyperlinkAnchor.Heading){
+                    for (let i=0; i<count; i++) {
+                        const anchor = anchors[i];
+                        const level = anchors[i].asc_GetHeadingLevel()+1;
+                        let hasParent = true;
+                        if (anchor.asc_GetType()=== Asc.c_oAscHyperlinkAnchor.Heading){
                             if (level>prev_level)
                                 arr[arr.length-1].set('hasSubItems', true);
                             if (level<=header_level) {
@@ -255,10 +251,10 @@ define([], function () { 'use strict';
                     }));
 
                     prev_level = 0;
-                    for (var i=0; i<count; i++) {
-                        var anchor = anchors[i],
-                            hasParent = true;
-                        if (anchor.asc_GetType()== Asc.c_oAscHyperlinkAnchor.Bookmark){
+                    for (let i=0; i<count; i++) {
+                        const anchor = anchors[i];
+                        const hasParent = true;
+                        if (anchor.asc_GetType()=== Asc.c_oAscHyperlinkAnchor.Bookmark){
                             if (prev_level<1)
                                 arr[arr.length-1].set('hasSubItems', true);
                             arr.push(new Common.UI.TreeViewModel({
@@ -274,17 +270,15 @@ define([], function () { 'use strict';
                     store.reset(arr);
                     this.internalList.collapseAll();
                 }
-                var rec = this.internalList.getSelectedRec();
-                this.btnOk.setDisabled(!rec || rec.get('level')==0 && rec.get('index')>0);
-                var me = this;
-                _.delay(function(){
-                    me.inputDisplay.focus();
+                const rec = this.internalList.getSelectedRec();
+                this.btnOk.setDisabled(!rec || rec.get('level')===0 && rec.get('index')>0);
+                _.delay(()=> {
+                    this.inputDisplay.focus();
                 },50);
             } else {
-                this.btnOk.setDisabled($.trim(this.inputUrl.getValue())=='');
-                var me = this;
-                _.delay(function(){
-                    me.inputUrl.focus();
+                this.btnOk.setDisabled($.trim(this.inputUrl.getValue())==='');
+                _.delay(()=> {
+                    this.inputUrl.focus();
                 },50);
             }
         },
@@ -292,9 +286,9 @@ define([], function () { 'use strict';
         onLinkTypeClick: function(type, btn, event) {
             this.ShowHideElem(type);
             if (this.isAutoUpdate) {
-                if (type==c_oHyperlinkType.InternalLink) {
-                    var rec = this.internalList.getSelectedRec();
-                    this.inputDisplay.setValue(rec && (rec.get('level') || rec.get('index')==0)? rec.get('name') : '');
+                if (type===c_oHyperlinkType.InternalLink) {
+                    const rec = this.internalList.getSelectedRec();
+                    this.inputDisplay.setValue(rec && (rec.get('level') || rec.get('index')===0)? rec.get('name') : '');
                 } else {
                     this.inputDisplay.setValue(this.inputUrl.getValue());
                 }
@@ -304,9 +298,9 @@ define([], function () { 'use strict';
 
         onSelectItem: function(picker, item, record, e){
             if (!record) return;
-            this.btnOk.setDisabled(record.get('level')==0 && record.get('index')>0);
+            this.btnOk.setDisabled(record.get('level')===0 && record.get('index')>0);
             if (this.isAutoUpdate) {
-                this.inputDisplay.setValue((record.get('level') || record.get('index')==0) ? record.get('name') : '');
+                this.inputDisplay.setValue((record.get('level') || record.get('index')===0) ? record.get('name') : '');
                 this.isTextChanged = true;
             }
         },
@@ -317,102 +311,100 @@ define([], function () { 'use strict';
 
         setSettings: function (props) {
             if (props) {
-                var me = this;
 
-                var bookmark = props.get_Bookmark(),
-                    type = (bookmark === null || bookmark=='') ? ((props.get_Value() || !Common.Utils.InternalSettings.get("de-settings-link-type")) ? c_oHyperlinkType.WebLink : c_oHyperlinkType.InternalLink) : c_oHyperlinkType.InternalLink;
+                const bookmark = props.get_Bookmark();
+                const type = (bookmark === null || bookmark==='') ? ((props.get_Value() || !Common.Utils.InternalSettings.get("de-settings-link-type")) ? c_oHyperlinkType.WebLink : c_oHyperlinkType.InternalLink) : c_oHyperlinkType.InternalLink;
 
-                (type == c_oHyperlinkType.WebLink) ? me.btnExternal.toggle(true) : me.btnInternal.toggle(true);
-                me.ShowHideElem(type);
+                (type === c_oHyperlinkType.WebLink) ? this.btnExternal.toggle(true) : this.btnInternal.toggle(true);
+                this.ShowHideElem(type);
 
-                if (type == c_oHyperlinkType.WebLink) {
+                if (type === c_oHyperlinkType.WebLink) {
                     if (props.get_Value()) {
-                        me.inputUrl.setValue(props.get_Value().replace(new RegExp(" ",'g'), "%20"));
+                        this.inputUrl.setValue(props.get_Value().replace(/ /g, "%20"));
                     } else {
-                        me.inputUrl.setValue('');
+                        this.inputUrl.setValue('');
                     }
-                    this.btnOk.setDisabled($.trim(this.inputUrl.getValue())=='');
+                    this.btnOk.setDisabled($.trim(this.inputUrl.getValue())==='');
                 } else {
                     if (props.is_TopOfDocument())
                         this.internalList.selectByIndex(0);
                     else if (props.is_Heading()) {
-                        var rec = this.internalList.store.findWhere({type: Asc.c_oAscHyperlinkAnchor.Heading, headingParagraph: props.get_Heading() });
+                        const rec = this.internalList.store.findWhere({type: Asc.c_oAscHyperlinkAnchor.Heading, headingParagraph: props.get_Heading() });
                         if (rec) {
                             this.internalList.expandRecord(this.internalList.store.at(1));
                             this.internalList.scrollToRecord(this.internalList.selectRecord(rec));
                         }
                     } else {
-                        var rec = this.internalList.store.findWhere({type: Asc.c_oAscHyperlinkAnchor.Bookmark, name: bookmark});
+                        const rec = this.internalList.store.findWhere({type: Asc.c_oAscHyperlinkAnchor.Bookmark, name: bookmark});
                         if (rec) {
                             this.internalList.expandRecord(this.internalList.store.findWhere({type: Asc.c_oAscHyperlinkAnchor.Bookmark, level: 0}));
                             this.internalList.scrollToRecord(this.internalList.selectRecord(rec));
                         }
                     }
-                    var rec = this.internalList.getSelectedRec();
-                    this.btnOk.setDisabled(!rec || rec.get('level')==0 && rec.get('index')>0);
+                    const rec = this.internalList.getSelectedRec();
+                    this.btnOk.setDisabled(!rec || rec.get('level')===0 && rec.get('index')>0);
                 }
 
                 if (props.get_Text() !== null) {
-                    me.inputDisplay.setValue(props.get_Text());
-                    me.inputDisplay.setDisabled(false);
-                    me.isAutoUpdate = (me.inputDisplay.getValue()=='' || type == c_oHyperlinkType.WebLink && me.inputUrl.getValue()==me.inputDisplay.getValue());
+                    this.inputDisplay.setValue(props.get_Text());
+                    this.inputDisplay.setDisabled(false);
+                    this.isAutoUpdate = (this.inputDisplay.getValue()==='' || type === c_oHyperlinkType.WebLink && this.inputUrl.getValue()===this.inputDisplay.getValue());
                 } else {
-                    me.inputDisplay.setValue(this.textDefault);
-                    me.inputDisplay.setDisabled(true);
+                    this.inputDisplay.setValue(this.textDefault);
+                    this.inputDisplay.setDisabled(true);
                 }
 
                 this.isTextChanged = false;
 
-                me.inputTip.setValue(props.get_ToolTip());
-                me._originalProps = props;
+                this.inputTip.setValue(props.get_ToolTip());
+                this._originalProps = props;
             }
         },
 
         getSettings: function () {
-            var me      = this,
-                props   = new Asc.CHyperlinkProperty(),
-                display = '',
-                type = this.btnExternal.isActive() ? c_oHyperlinkType.WebLink : c_oHyperlinkType.InternalLink;
+            const props   = new Asc.CHyperlinkProperty();
+            let display = '';
+            const type = this.btnExternal.isActive() ? c_oHyperlinkType.WebLink : c_oHyperlinkType.InternalLink;
 
-            if (type==c_oHyperlinkType.WebLink) {//WebLink
-                var url     = $.trim(me.inputUrl.getValue());
+            if (type===c_oHyperlinkType.WebLink) {//WebLink
+                let url     = $.trim(this.inputUrl.getValue());
 
-                if (me.urlType!==AscCommon.c_oAscUrlType.Unsafe && ! /(((^https?)|(^ftp)):\/\/)|(^mailto:)/i.test(url) )
-                    url = ( (me.urlType==AscCommon.c_oAscUrlType.Email) ? 'mailto:' : 'http://' ) + url;
+                if (this.urlType!==AscCommon.c_oAscUrlType.Unsafe && ! /(((^https?)|(^ftp)):\/\/)|(^mailto:)/i.test(url) )
+                    url = ( (this.urlType===AscCommon.c_oAscUrlType.Email) ? 'mailto:' : 'http://' ) + url;
 
-                url = url.replace(new RegExp("%20",'g')," ");
+                url = url.replace(/%20/g," ");
                 props.put_Value(url);
                 props.put_Bookmark(null);
                 display = url;
             } else {
-                var rec = this.internalList.getSelectedRec();
+                const rec = this.internalList.getSelectedRec();
                 if (rec) {
                     props.put_Bookmark(rec.get('name'));
-                    if (rec.get('index')==0)
+                    if (rec.get('index')===0)
                         props.put_TopOfDocument();
-                    var para = rec.get('headingParagraph');
+                    const para = rec.get('headingParagraph');
                     if (para)
                         props.put_Heading(para);
                     display = rec.get('name');
                 }
             }
 
-            if (!me.inputDisplay.isDisabled() && ( me.isTextChanged || _.isEmpty(me.inputDisplay.getValue()))) {
-                if (_.isEmpty(me.inputDisplay.getValue()) || type==c_oHyperlinkType.WebLink && me.isAutoUpdate)
-                    me.inputDisplay.setValue(display);
-                props.put_Text(me.inputDisplay.getValue());
+            if (!this.inputDisplay.isDisabled() && ( this.isTextChanged || _.isEmpty(this.inputDisplay.getValue()))) {
+                if (_.isEmpty(this.inputDisplay.getValue()) || type===c_oHyperlinkType.WebLink && this.isAutoUpdate)
+                    this.inputDisplay.setValue(display);
+                props.put_Text(this.inputDisplay.getValue());
             } else {
                 props.put_Text(null);
             }
 
-            props.put_ToolTip(me.inputTip.getValue());
-            props.put_InternalHyperlink(me._originalProps.get_InternalHyperlink());
+            props.put_ToolTip(this.inputTip.getValue());
+            props.put_InternalHyperlink(this._originalProps.get_InternalHyperlink());
 
             return props;
         },
 
         onBtnClick: function(event) {
-            this._handleInput(event.currentTarget.attributes['result'].value);
+            this._handleInput(event.currentTarget.attributes.result.value);
         },
 
         onPrimary: function(event) {
@@ -425,7 +417,7 @@ define([], function () { 'use strict';
                 return;
 
             if (this.options.handler) {
-                if (state == 'ok') {
+                if (state === 'ok') {
                     if (this.btnExternal.isActive()) {//WebLink
                         if (this.inputUrl.checkValidate() !== true)  {
                             this.isInputFirstChange = true;
@@ -433,8 +425,8 @@ define([], function () { 'use strict';
                             return;
                         }
                     } else {
-                        var rec = this.internalList.getSelectedRec();
-                        if (!rec || rec.get('level')==0 && rec.get('index')>0)
+                        const rec = this.internalList.getSelectedRec();
+                        if (!rec || rec.get('level')===0 && rec.get('index')>0)
                             return;
                     }
                     if (this.inputDisplay.checkValidate() !== true) {
@@ -451,22 +443,21 @@ define([], function () { 'use strict';
         },
 
         onSelectFile: function() {
-            var me = this;
-            if (me.api) {
-                var callback = function(result) {
+            if (this.api) {
+                const callback = (result) => {
                     if (result) {
-                        me.inputUrl.setValue(result);
-                        if (me.inputUrl.checkValidate() !== true)
-                            me.isInputFirstChange = true;
-                        if (me.isAutoUpdate) {
-                            me.inputDisplay.setValue(result);
-                            me.isTextChanged = true;
+                        this.inputUrl.setValue(result);
+                        if (this.inputUrl.checkValidate() !== true)
+                            this.isInputFirstChange = true;
+                        if (this.isAutoUpdate) {
+                            this.inputDisplay.setValue(result);
+                            this.isTextChanged = true;
                         }
-                        me.btnOk.setDisabled($.trim(result)=='');
+                        this.btnOk.setDisabled($.trim(result)==='');
                     }
                 };
 
-                me.api.asc_getFilePath(callback); // change sdk function
+                this.api.asc_getFilePath(callback); // change sdk function
             }
         },
 

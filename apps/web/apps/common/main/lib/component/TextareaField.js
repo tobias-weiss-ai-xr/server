@@ -30,11 +30,10 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () { 'use strict';
-    Common.UI.TextareaField = Common.UI.BaseView.extend((function() {
-        return {
+define([], () => { 
+    Common.UI.TextareaField = Common.UI.BaseView.extend((() => ({
             options : {
                 id          : null,
                 cls         : '',
@@ -69,29 +68,26 @@ define([], function () { 'use strict';
             initialize : function(options) {
                 Common.UI.BaseView.prototype.initialize.call(this, options);
 
-                var me = this;
+                this.id             = this.options.id || Common.UI.getId();
+                this.cls            = this.options.cls;
+                this.style          = this.options.style;
+                this.value          = this.options.value;
+                this.placeHolder    = this.options.placeHolder;
+                this.template       = this.options.template || this.template;
+                this.disabled       = this.options.disabled;
+                this.spellcheck     = this.options.spellcheck;
+                this.maxLength      = this.options.maxLength;
 
-                this.id             = me.options.id || Common.UI.getId();
-                this.cls            = me.options.cls;
-                this.style          = me.options.style;
-                this.value          = me.options.value;
-                this.placeHolder    = me.options.placeHolder;
-                this.template       = me.options.template || me.template;
-                this.disabled       = me.options.disabled;
-                this.spellcheck     = me.options.spellcheck;
-                this.maxLength      = me.options.maxLength;
+                this.rendered         = this.options.rendered || false;
 
-                me.rendered         = me.options.rendered || false;
-
-                if (me.options.el) {
-                    me.render();
+                if (this.options.el) {
+                    this.render();
                 }
             },
 
             render : function(parentEl) {
-                var me = this;
 
-                if (!me.rendered) {
+                if (!this.rendered) {
                     this.cmpEl = $(this.template({
                         id          : this.id,
                         cls         : this.cls,
@@ -101,7 +97,7 @@ define([], function () { 'use strict';
                         dataHint    : this.options.dataHint,
                         dataHintDirection: this.options.dataHintDirection,
                         dataHintOffset: this.options.dataHintOffset,
-                        scope       : me
+                        scope       : this
                     }));
 
                     if (parentEl) {
@@ -114,8 +110,8 @@ define([], function () { 'use strict';
                     this.cmpEl = this.$el;
                 }
 
-                if (!me.rendered) {
-                    var el = this.cmpEl;
+                if (!this.rendered) {
+                    const el = this.cmpEl;
 
                     this._input = this.cmpEl.find('textarea').addBack().filter('textarea');
                     this._input.on('blur',   _.bind(this.onInputChanged, this));
@@ -127,10 +123,10 @@ define([], function () { 'use strict';
                         this.setDisabled(this.disabled);
                 }
 
-                me.rendered = true;
+                this.rendered = true;
 
-                if (me.value)
-                    me.setValue(me.value);
+                if (this.value)
+                    this.setValue(this.value);
 
                 return this;
             },
@@ -138,11 +134,11 @@ define([], function () { 'use strict';
             _doChange: function(e, extra) {
                 // skip processing for internally-generated synthetic event
                 // to avoid double processing
-                if (extra && extra.synthetic)
+                if (extra?.synthetic)
                     return;
 
-                var newValue = $(e.target).val(),
-                    oldValue = this.value;
+                const newValue = $(e.target).val();
+                const oldValue = this.value;
 
                 this.trigger('changed:before', this, newValue, oldValue, e);
 
@@ -168,9 +164,9 @@ define([], function () { 'use strict';
                 if (e.keyCode === Common.UI.Keys.RETURN) {
                     e.stopPropagation();
                 }
-                if (e.keyCode == Common.UI.Keys.ESC)
+                if (e.keyCode === Common.UI.Keys.ESC)
                     this.setValue(this.value);
-                if (e.keyCode==Common.UI.Keys.ESC)
+                if (e.keyCode===Common.UI.Keys.ESC)
                     this.trigger('inputleave', this);
             },
 
@@ -202,6 +198,5 @@ define([], function () { 'use strict';
             focus: function() {
                 this._input.focus();
             }
-        }
-    })());
+        }))());
 });

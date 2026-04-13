@@ -31,17 +31,18 @@
 
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView'
-], function () {
-    'use strict';
+], () => {
 
-    var groups = {};
+    const groups = {};
 
     function toggleGroup(cmp, state) {
-        var g, i, l;
+        let g;
+        let i;
+        let l;
         if (state) {
             g = groups[cmp.toggleGroup];
             for (i = 0, l = g.length; i < l; i++) {
@@ -60,11 +61,11 @@ define([
      * Private utility class used by component
      */
     Common.UI.ToggleManager = {
-        register: function(cmp) {
+        register: (cmp) => {
             if (!cmp.toggleGroup) {
                 return;
             }
-            var group = groups[cmp.toggleGroup];
+            let group = groups[cmp.toggleGroup];
             if (!group) {
                 group = groups[cmp.toggleGroup] = [];
             }
@@ -72,11 +73,11 @@ define([
             cmp.on('toggle', toggleGroup);
         },
 
-        unregister: function(cmp) {
+        unregister: (cmp) => {
             if (!cmp.toggleGroup) {
                 return;
             }
-            var group = groups[cmp.toggleGroup];
+            const group = groups[cmp.toggleGroup];
             if (group) {
                 _.without(group, cmp);
                 cmp.off('toggle', toggleGroup);
@@ -88,10 +89,10 @@ define([
          * @param {String} group
          * @return {Common.UI.BaseView}
          */
-        getToggled: function(group) {
-            var g = groups[group],
-                i = 0,
-                len;
+        getToggled: (group) => {
+            const g = groups[group];
+            let i = 0;
+            let len;
             if (g) {
                 for (len = g.length; i < len; i++) {
                     if (g[i].pressed === true ||

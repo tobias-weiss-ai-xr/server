@@ -31,14 +31,13 @@
 
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView'
-], function (base) {
-    'use strict';
+], (base) => {
 
-    var Tab = function(opts) {
+    const Tab = function(opts) {
         this.active     = false;
         this.label      = 'Tab';
         this.cls        = '';
@@ -63,7 +62,7 @@ define([
         },
 
         render: function() {
-            var el      = this.template(this);
+            const el      = this.template(this);
             this.$el    = $(el);
             /*this.$el.find('span').tooltip({
                 title: this.label,
@@ -133,7 +132,7 @@ define([
                 this.iconTitle = title || '';
                 this[visible ? 'addClass' : 'removeClass']('icon-visible');
                 if (title)
-                    this.$el.find('.' + this.iconCls).attr('title', title);
+                    this.$el.find(`.${this.iconCls}`).attr('title', title);
             }
         }
     });

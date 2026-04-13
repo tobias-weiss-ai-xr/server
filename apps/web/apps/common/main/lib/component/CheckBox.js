@@ -65,13 +65,12 @@
  * **/
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'underscore'
-], function (base, _) {
-    'use strict';
+], (base, _) => {
 
     Common.UI.CheckBoxTemplate = '<label class="checkbox-indeterminate">' +
             '<input id="<%= id %>" type="checkbox" class="checkbox__native">' +
@@ -116,24 +115,23 @@ define([
         },
 
         render: function (parentEl) {
-            var me = this;
-            if (!me.rendered) {
-                var elem = this.template({
+            if (!this.rendered) {
+                const elem = this.template({
                     id: Common.UI.getId('chb-'),
-                    dataHint: me.options.dataHint,
-                    dataHintDirection: me.options.dataHintDirection,
-                    dataHintOffset: me.options.dataHintOffset
+                    dataHint: this.options.dataHint,
+                    dataHintDirection: this.options.dataHintDirection,
+                    dataHintOffset: this.options.dataHintOffset
                 });
                 if (parentEl) {
                     this.setElement(parentEl, false);
                     parentEl.html(elem);
                 } else {
-                    me.$el.html(elem);
+                    this.$el.html(elem);
                 }
 
-                this.$chk = me.$el.find('input[type=checkbox]');
-                this.$label = me.$el.find('label.checkbox-indeterminate');
-                this.$span = me.$label.find('span');
+                this.$chk = this.$el.find('input[type=checkbox]');
+                this.$label = this.$el.find('label.checkbox-indeterminate');
+                this.$span = this.$label.find('span');
                 this.$chk.on('click', this.onItemCheck.bind(this));
                 this.$label.on('keydown', this.onKeyDown.bind(this));
 
@@ -196,7 +194,7 @@ define([
 
         setValue: function(value, suspendchange) {
             if (this.rendered) {
-                if ( value != this.value ) {
+                if ( value !== this.value ) {
                     this.lastValue = this.value;
                     this.setRawValue(value);
                     if (suspendchange !== true)
@@ -229,7 +227,7 @@ define([
         },
 
         focus: function() {
-            this.$label && this.$label.focus();
+            this.$label?.focus();
         },
 
         setTabIndex: function(tabindex) {

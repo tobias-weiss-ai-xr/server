@@ -27,7 +27,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Models = Common.Models || {};
 
@@ -35,12 +35,10 @@ define([
     'underscore',
     'backbone',
     'common/main/lib/component/TreeView'
-], function(_, Backbone){
-    'use strict';
+], (_, Backbone)=> {
 
     Common.Models.HistoryVersion = Common.UI.TreeViewModel.extend({
-        defaults: function() {
-            return _.extend({
+        defaults: () => _.extend({
                 version : 0,
                 revision: 0,
                 changeid : undefined,
@@ -61,7 +59,6 @@ define([
                 serverVersion: 0,
                 fileType: 'docx',
                 documentSha256: undefined
-            }, Common.UI.TreeViewModel.prototype.defaults() || {});
-        }
+            }, Common.UI.TreeViewModel.prototype.defaults() || {})
     });
 });

@@ -29,31 +29,23 @@
  *
  */
 
+define(["backbone"], (Backbone) => {
+  PDFE.Models = PDFE.Models || {}
 
-define([
-    'backbone'
-], function(Backbone){ 'use strict';
+  PDFE.Models.ShapeModel = Backbone.Model.extend({
+    defaults: () => ({
+      id: Common.UI.getId(),
+      imageUrl: null,
+      data: null,
+    }),
+  })
 
-    PDFE.Models = PDFE.Models || {};
-
-    PDFE.Models.ShapeModel = Backbone.Model.extend({
-        defaults: function() {
-            return {
-                id: Common.UI.getId(),
-                imageUrl: null,
-                data: null
-            }
-        }
-    });
-
-    PDFE.Models.ShapeGroup = Backbone.Model.extend({
-        defaults: function() {
-            return {
-                id: Common.UI.getId(),
-                groupName: null,
-                groupId: null,
-                groupStore: null
-            }
-        }
-    });
-});
+  PDFE.Models.ShapeGroup = Backbone.Model.extend({
+    defaults: () => ({
+      id: Common.UI.getId(),
+      groupName: null,
+      groupId: null,
+      groupStore: null,
+    }),
+  })
+})

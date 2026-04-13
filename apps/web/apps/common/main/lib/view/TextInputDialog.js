@@ -29,143 +29,162 @@
  *
  */
 
-define([], function () { 'use strict';
+define([], () => {
+  Common.Views.TextInputDialog = Common.UI.Window.extend(
+    _.extend(
+      {
+        initialize: function (options) {
+          const _options = {}
 
-    Common.Views.TextInputDialog = Common.UI.Window.extend(_.extend({
+          _.extend(
+            _options,
+            {
+              header: !!options.title,
+              label: options.label || "",
+              description: options.description || "",
+              width: 330 || options.width,
+              cls: "modal-dlg",
+              buttons: ["ok", "cancel"],
+            },
+            options || {},
+          )
 
-        initialize : function(options) {
-            var _options = {};
+          this.template = [
+            '<div class="box">',
+            '<div class="input-row <% if (!label) { %> hidden <% } %>">',
+            "<label><%= label %></label>",
+            "</div>",
+            '<div id="id-dlg-label-custom-input" class="input-row"></div>',
+            '<div class="input-row <% if (!description) { %> hidden <% } %>">',
+            '<label class="light"><%= description %></label>',
+            "</div>",
+            "</div>",
+          ].join("")
 
-            _.extend(_options, {
-                header: !!options.title,
-                label: options.label || '',
-                description: options.description || '',
-                width: 330 || options.width,
-                cls: 'modal-dlg',
-                buttons: ['ok', 'cancel']
-            }, options || {});
+          this.inputConfig = _.extend(
+            {
+              allowBlank: true,
+            },
+            options.inputConfig || {},
+          )
 
-            this.template = [
-                '<div class="box">',
-                    '<div class="input-row <% if (!label) { %> hidden <% } %>">',
-                        '<label><%= label %></label>',
-                    '</div>',
-                    '<div id="id-dlg-label-custom-input" class="input-row"></div>',
-                    '<div class="input-row <% if (!description) { %> hidden <% } %>">',
-                        '<label class="light"><%= description %></label>',
-                    '</div>',
-                '</div>'
-            ].join('');
+          this.inputFixedConfig = options.inputFixedConfig
 
-            this.inputConfig = _.extend({
-                allowBlank: true
-            }, options.inputConfig || {});
-
-            this.inputFixedConfig = options.inputFixedConfig;
-
-            _options.tpl = _.template(this.template)(_options);
-            Common.UI.Window.prototype.initialize.call(this, _options);
+          _options.tpl = _.template(this.template)(_options)
+          Common.UI.Window.prototype.initialize.call(this, _options)
         },
 
-        render: function() {
-            Common.UI.Window.prototype.render.call(this);
-
-            var me = this;
-            me.inputLabel = !this.inputFixedConfig ? new Common.UI.InputField({
-                el          : $('#id-dlg-label-custom-input'),
-                allowBlank  : me.inputConfig.allowBlank,
-                blankError  : me.inputConfig.blankError,
-                maxLength   : me.inputConfig.maxLength,
-                style       : 'width: 100%;',
+        render: function () {
+          Common.UI.Window.prototype.render.call(this)
+          this.inputLabel = !this.inputFixedConfig
+            ? new Common.UI.InputField({
+                el: $("#id-dlg-label-custom-input"),
+                allowBlank: this.inputConfig.allowBlank,
+                blankError: this.inputConfig.blankError,
+                maxLength: this.inputConfig.maxLength,
+                style: "width: 100%;",
                 validateOnBlur: false,
-                validation  : me.inputConfig.validation
-            }) : new Common.UI.InputFieldFixed({
-                el          : $('#id-dlg-label-custom-input'),
-                allowBlank  : me.inputConfig.allowBlank,
-                blankError  : me.inputConfig.blankError,
-                maxLength   : me.inputFixedConfig.fixedValue && me.inputConfig.maxLength ? me.inputConfig.maxLength - me.inputFixedConfig.fixedValue.length : me.inputConfig.maxLength,
-                style       : 'width: 100%;',
+                validation: this.inputConfig.validation,
+              })
+            : new Common.UI.InputFieldFixed({
+                el: $("#id-dlg-label-custom-input"),
+                allowBlank: this.inputConfig.allowBlank,
+                blankError: this.inputConfig.blankError,
+                maxLength:
+                  this.inputFixedConfig.fixedValue && this.inputConfig.maxLength
+                    ? this.inputConfig.maxLength - this.inputFixedConfig.fixedValue.length
+                    : this.inputConfig.maxLength,
+                style: "width: 100%;",
                 validateOnBlur: false,
-                validation  : me.inputConfig.validation,
-                cls         : 'text-align-left',
-                fixedValue  : me.inputFixedConfig.fixedValue,
-                fixedCls    : 'light',
-                fixedWidth  : me.inputFixedConfig.fixedWidth
-            });
-            me.inputLabel.cmpEl.on('focus', 'input.fixed-text', function() {
-                setTimeout(function(){me.inputLabel._input && me.inputLabel._input.focus();}, 1);
-            });
-            me.inputLabel.setValue(me.options.value || '');
-            var $window = this.getChild();
-            $window.find('.dlg-btn').on('click',     _.bind(this.onBtnClick, this));
+                validation: this.inputConfig.validation,
+                cls: "text-align-left",
+                fixedValue: this.inputFixedConfig.fixedValue,
+                fixedCls: "light",
+                fixedWidth: this.inputFixedConfig.fixedWidth,
+              })
+          this.inputLabel.cmpEl.on("focus", "input.fixed-text", () => {
+            setTimeout(() => {
+              this.inputLabel._input?.focus()
+            }, 1)
+          })
+          this.inputLabel.setValue(this.options.value || "")
+          const $window = this.getChild()
+          $window.find(".dlg-btn").on("click", _.bind(this.onBtnClick, this))
         },
 
-        getFocusedComponents: function() {
-            return [{cmp: this.inputLabel, selector: 'input:not(.fixed-text)'}].concat(this.getFooterButtons());
+        getFocusedComponents: function () {
+          return [{ cmp: this.inputLabel, selector: "input:not(.fixed-text)" }].concat(
+            this.getFooterButtons(),
+          )
         },
 
         getDefaultFocusableComponent: function () {
-            return this.inputLabel;
+          return this.inputLabel
         },
 
-        show: function() {
-            Common.UI.Window.prototype.show.apply(this, arguments);
-
-            var me = this;
-            _.delay(function(){
-                me.getChild('input').focus();
-            },50);
+        show: function () {
+          Common.UI.Window.prototype.show.apply(this, arguments)
+          _.delay(() => {
+            this.getChild("input").focus()
+          }, 50)
         },
 
-        onPrimary: function(event) {
-            this._handleInput('ok');
-            return false;
+        onPrimary: function (event) {
+          this._handleInput("ok")
+          return false
         },
 
-        onBtnClick: function(event) {
-            this._handleInput(event.currentTarget.attributes['result'].value);
+        onBtnClick: function (event) {
+          this._handleInput(event.currentTarget.attributes.result.value)
         },
 
-        _handleInput: function(state) {
-            if (this.options.handler) {
-                if (state == 'ok') {
-                    if (this.inputLabel.checkValidate() !== true)  {
-                        this.inputLabel.cmpEl.find('input').focus();
-                        return;
-                    }
-                }
-
-                this.options.handler.call(this, state, this.inputLabel.getValue());
+        _handleInput: function (state) {
+          if (this.options.handler) {
+            if (state === "ok") {
+              if (this.inputLabel.checkValidate() !== true) {
+                this.inputLabel.cmpEl.find("input").focus()
+                return
+              }
             }
 
-            this.close();
-        }
+            this.options.handler.call(this, state, this.inputLabel.getValue())
+          }
 
-    }, Common.Views.TextInputDialog || {}));
+          this.close()
+        },
+      },
+      Common.Views.TextInputDialog || {},
+    ),
+  )
 
-    Common.Views.ImageFromUrlDialog = Common.Views.TextInputDialog.extend(_.extend({
+  Common.Views.ImageFromUrlDialog = Common.Views.TextInputDialog.extend(
+    _.extend(
+      {
+        initialize: function (options) {
+          const _options = {}
+          _.extend(
+            _options,
+            {
+              header: false,
+              label: options.label || this.textUrl,
+              inputConfig: {
+                allowBlank: false,
+                blankError: this.txtEmpty,
+                validation: (value) =>
+                  /((^https?)|(^ftp)):\/\/.+/i.test(value) ? true : this.txtNotUrl,
+              },
+            },
+            options || {},
+          )
 
-        initialize : function(options) {
-
-            var _options = {},
-                me = this;
-            _.extend(_options, {
-                header: false,
-                label: options.label || me.textUrl,
-                inputConfig: {
-                    allowBlank  : false,
-                    blankError  : me.txtEmpty,
-                    validation  : function(value) {
-                        return (/((^https?)|(^ftp)):\/\/.+/i.test(value)) ? true : me.txtNotUrl;
-                    }
-                }
-            }, options || {});
-
-            Common.Views.TextInputDialog.prototype.initialize.call(this, _options);
+          Common.Views.TextInputDialog.prototype.initialize.call(this, _options)
         },
 
-        textUrl         : 'Paste an image URL:',
-        txtEmpty        : 'This field is required',
-        txtNotUrl       : 'This field should be a URL in the format \"http://www.example.com\"'
-    }, Common.Views.ImageFromUrlDialog || {}));
-});
+        textUrl: "Paste an image URL:",
+        txtEmpty: "This field is required",
+        txtNotUrl: 'This field should be a URL in the format "http://www.example.com"',
+      },
+      Common.Views.ImageFromUrlDialog || {},
+    ),
+  )
+})

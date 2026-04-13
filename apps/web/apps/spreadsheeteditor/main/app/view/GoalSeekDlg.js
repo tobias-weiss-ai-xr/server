@@ -29,247 +29,272 @@
  *  Created on 21.07.2023
  *
  */
-define([
-    'common/main/lib/view/AdvancedSettingsWindow',
-], function () { 'use strict';
-
-    SSE.Views.GoalSeekDlg = Common.Views.AdvancedSettingsWindow.extend(_.extend({
+define(["common/main/lib/view/AdvancedSettingsWindow"], () => {
+  SSE.Views.GoalSeekDlg = Common.Views.AdvancedSettingsWindow.extend(
+    _.extend(
+      {
         options: {
-            contentWidth: 250,
-            separator: false,
-            id: 'window-goal-seek'
+          contentWidth: 250,
+          separator: false,
+          id: "window-goal-seek",
         },
 
-        initialize : function(options) {
-            var me = this;
+        initialize: function (options) {
+          _.extend(
+            this.options,
+            {
+              title: this.textTitle,
+              contentStyle: "padding: 5px 5px 0;",
+              contentTemplate: _.template(
+                [
+                  '<div class="settings-panel active">',
+                  '<div class="inner-content">',
+                  '<table cols="1" style="width: 100%;">',
+                  "<tr>",
+                  "<td>",
+                  `<label class="input-label">${this.textSetCell}</label>`,
+                  "</td>",
+                  "</tr>",
+                  "<tr>",
+                  '<td class="padding-small">',
+                  '<div id="goal-seek-formula-cell" class="input-row"></div>',
+                  "</td>",
+                  "</tr>",
+                  "<tr>",
+                  "<td>",
+                  `<label class="input-label">${this.textToValue}</label>`,
+                  "</td>",
+                  "</tr>",
+                  "<tr>",
+                  '<td class="padding-small">',
+                  '<div id="goal-seek-expect-val" class="input-row"></div>',
+                  "</td>",
+                  "</tr>",
+                  "<tr>",
+                  "<td>",
+                  `<label class="input-label">${this.textChangingCell}</label>`,
+                  "</td>",
+                  "</tr>",
+                  "<tr>",
+                  '<td class="padding-small">',
+                  '<div id="goal-seek-change-cell" class="input-row"></div>',
+                  "</td>",
+                  "</tr>",
+                  "</table>",
+                  "</div></div>",
+                ].join(""),
+              )({ scope: this }),
+            },
+            options,
+          )
 
-            _.extend(this.options, {
-                title: this.textTitle,
-                contentStyle: 'padding: 5px 5px 0;',
-                contentTemplate: _.template([
-                    '<div class="settings-panel active">',
-                        '<div class="inner-content">',
-                                '<table cols="1" style="width: 100%;">',
-                                    '<tr>',
-                                        '<td>',
-                                            '<label class="input-label">' + me.textSetCell + '</label>',
-                                        '</td>',
-                                    '</tr>',
-                                    '<tr>',
-                                        '<td class="padding-small">',
-                                            '<div id="goal-seek-formula-cell" class="input-row"></div>',
-                                        '</td>',
-                                    '</tr>',
-                                    '<tr>',
-                                        '<td>',
-                                            '<label class="input-label">' + me.textToValue + '</label>',
-                                        '</td>',
-                                    '</tr>',
-                                    '<tr>',
-                                        '<td class="padding-small">',
-                                            '<div id="goal-seek-expect-val" class="input-row"></div>',
-                                        '</td>',
-                                    '</tr>',
-                                    '<tr>',
-                                        '<td>',
-                                            '<label class="input-label">' + me.textChangingCell + '</label>',
-                                        '</td>',
-                                    '</tr>',
-                                    '<tr>',
-                                        '<td class="padding-small">',
-                                            '<div id="goal-seek-change-cell" class="input-row"></div>',
-                                        '</td>',
-                                    '</tr>',
-                                '</table>',
-                            '</div></div>'
-                ].join(''))({scope: this})
-            }, options);
+          this.api = options.api
+          this.props = options.props
 
-            this.api        = options.api;
-            this.props      = options.props;
+          this.options.handler = function (result, value) {
+            if (result !== "ok" || this.isRangeValid()) {
+              if (options.handler) options.handler.call(this, result, value)
+              return
+            }
+            return true
+          }
 
-            this.options.handler = function(result, value) {
-                if ( result != 'ok' || this.isRangeValid() ) {
-                    if (options.handler)
-                        options.handler.call(this, result, value);
-                    return;
-                }
-                return true;
-            };
+          this.dataFormulaCellValid = ""
+          this.dataChangeCellValid = ""
 
-            this.dataFormulaCellValid = '';
-            this.dataChangeCellValid = '';
-
-            Common.Views.AdvancedSettingsWindow.prototype.initialize.call(this, this.options);
+          Common.Views.AdvancedSettingsWindow.prototype.initialize.call(this, this.options)
         },
 
-        render: function() {
-            Common.Views.AdvancedSettingsWindow.prototype.render.call(this);
+        render: function () {
+          Common.Views.AdvancedSettingsWindow.prototype.render.call(this)
 
-            this.txtFormulaCell= new Common.UI.InputFieldBtn({
-                el          : $('#goal-seek-formula-cell'),
-                name        : 'range',
-                style       : 'width: 100%;',
-                btnHint     : this.textSelectData,
-                validateOnBlur: false,
-                hideErrorOnInput: true
-            });
-            this.txtFormulaCell.on('button:click', _.bind(this.onSelectData, this, 'formula'));
+          this.txtFormulaCell = new Common.UI.InputFieldBtn({
+            el: $("#goal-seek-formula-cell"),
+            name: "range",
+            style: "width: 100%;",
+            btnHint: this.textSelectData,
+            validateOnBlur: false,
+            hideErrorOnInput: true,
+          })
+          this.txtFormulaCell.on("button:click", _.bind(this.onSelectData, this, "formula"))
 
-            this.txtChangeCell = new Common.UI.InputFieldBtn({
-                el          : $('#goal-seek-change-cell'),
-                name        : 'range',
-                style       : 'width: 100%;',
-                btnHint     : this.textSelectData,
-                validateOnBlur: false,
-                hideErrorOnInput: true
-            });
-            this.txtChangeCell.on('button:click', _.bind(this.onSelectData, this, 'change'));
+          this.txtChangeCell = new Common.UI.InputFieldBtn({
+            el: $("#goal-seek-change-cell"),
+            name: "range",
+            style: "width: 100%;",
+            btnHint: this.textSelectData,
+            validateOnBlur: false,
+            hideErrorOnInput: true,
+          })
+          this.txtChangeCell.on("button:click", _.bind(this.onSelectData, this, "change"))
 
-            this.txtExpectVal = new Common.UI.InputField({
-                el          : $('#goal-seek-expect-val'),
-                style       : 'width: 100%;',
-                maskExp     : /[0-9,\.\-]/,
-                validateOnBlur: false,
-                hideErrorOnInput: true
-            });
+          this.txtExpectVal = new Common.UI.InputField({
+            el: $("#goal-seek-expect-val"),
+            style: "width: 100%;",
+            maskExp: /[0-9,\.\-]/,
+            validateOnBlur: false,
+            hideErrorOnInput: true,
+          })
 
-            this.afterRender();
+          this.afterRender()
         },
 
-        getFocusedComponents: function() {
-            return [this.txtFormulaCell, this.txtExpectVal, this.txtChangeCell].concat(this.getFooterButtons());
+        getFocusedComponents: function () {
+          return [this.txtFormulaCell, this.txtExpectVal, this.txtChangeCell].concat(
+            this.getFooterButtons(),
+          )
         },
 
         getDefaultFocusableComponent: function () {
-            if (this._alreadyRendered) return; // focus only at first show
-            this._alreadyRendered = true;
-            return this.txtFormulaCell;
+          if (this._alreadyRendered) return // focus only at first show
+          this._alreadyRendered = true
+          return this.txtFormulaCell
         },
 
-        afterRender: function() {
-            this._setDefaults(this.props);
+        afterRender: function () {
+          this._setDefaults(this.props)
         },
 
         _setDefaults: function (props) {
-            this.txtFormulaCell.setValue(this.api.asc_getActiveRangeStr(Asc.referenceType.A));
+          this.txtFormulaCell.setValue(this.api.asc_getActiveRangeStr(Asc.referenceType.A))
         },
 
         getSettings: function () {
-            return {formulaCell: this.txtFormulaCell.getValue(), changingCell: this.txtChangeCell.getValue(), expectedValue: this.txtExpectVal.getValue()};
+          return {
+            formulaCell: this.txtFormulaCell.getValue(),
+            changingCell: this.txtChangeCell.getValue(),
+            expectedValue: this.txtExpectVal.getValue(),
+          }
         },
 
-        isRangeValid: function() {
-            var isvalid = true,
-                txtError = '',
-                value;
+        isRangeValid: function () {
+          let isvalid = true
+          let txtError = ""
+          let value
 
-            if (_.isEmpty(this.txtFormulaCell.getValue())) {
-                isvalid = false;
-                txtError = this.txtEmpty;
-            } else {
-                value = this.api.asc_checkDataRange(Asc.c_oAscSelectionDialogType.GoalSeek_Cell, this.txtFormulaCell.getValue(), true);
-                if (value != Asc.c_oAscError.ID.No) {
-                    if (value == Asc.c_oAscError.ID.DataRangeError) {
-                        txtError = this.textDataRangeError;
-                    } else if (value == Asc.c_oAscError.ID.MustSingleCell) {
-                        txtError = this.textMustSingleCell;
-                    } else if (value == Asc.c_oAscError.ID.MustContainFormula) {
-                        txtError = this.textMustContainFormula;
-                    } else if (value == Asc.c_oAscError.ID.MustFormulaResultNumber) {
-                        txtError = this.textMustFormulaResultNumber;
-                    }
-                    isvalid = false;
-                }
+          if (_.isEmpty(this.txtFormulaCell.getValue())) {
+            isvalid = false
+            txtError = this.txtEmpty
+          } else {
+            value = this.api.asc_checkDataRange(
+              Asc.c_oAscSelectionDialogType.GoalSeek_Cell,
+              this.txtFormulaCell.getValue(),
+              true,
+            )
+            if (value !== Asc.c_oAscError.ID.No) {
+              if (value === Asc.c_oAscError.ID.DataRangeError) {
+                txtError = this.textDataRangeError
+              } else if (value === Asc.c_oAscError.ID.MustSingleCell) {
+                txtError = this.textMustSingleCell
+              } else if (value === Asc.c_oAscError.ID.MustContainFormula) {
+                txtError = this.textMustContainFormula
+              } else if (value === Asc.c_oAscError.ID.MustFormulaResultNumber) {
+                txtError = this.textMustFormulaResultNumber
+              }
+              isvalid = false
             }
-            if (!isvalid) {
-                this.txtFormulaCell.showError([txtError]);
-                this.txtFormulaCell.cmpEl.find('input').focus();
-                return isvalid;
-            }
+          }
+          if (!isvalid) {
+            this.txtFormulaCell.showError([txtError])
+            this.txtFormulaCell.cmpEl.find("input").focus()
+            return isvalid
+          }
 
-            if (_.isEmpty(this.txtExpectVal.getValue())) {
-                isvalid = false;
-                txtError = this.txtEmpty;
-            } else if (!Common.UI.isValidNumber(this.txtExpectVal.getValue())) {
-                isvalid = false;
-                txtError = this.txtErrorNumber;
-            }
-            if (!isvalid) {
-                this.txtExpectVal.showError([txtError]);
-                this.txtExpectVal.cmpEl.find('input').focus();
-                return isvalid;
-            }
+          if (_.isEmpty(this.txtExpectVal.getValue())) {
+            isvalid = false
+            txtError = this.txtEmpty
+          } else if (!Common.UI.isValidNumber(this.txtExpectVal.getValue())) {
+            isvalid = false
+            txtError = this.txtErrorNumber
+          }
+          if (!isvalid) {
+            this.txtExpectVal.showError([txtError])
+            this.txtExpectVal.cmpEl.find("input").focus()
+            return isvalid
+          }
 
-            if (_.isEmpty(this.txtChangeCell.getValue())) {
-                isvalid = false;
-                txtError = this.txtEmpty;
-            } else {
-                value = this.api.asc_checkDataRange(Asc.c_oAscSelectionDialogType.GoalSeek_ChangingCell, this.txtChangeCell.getValue(), true);
-                if (value != Asc.c_oAscError.ID.No) {
-                    if (value == Asc.c_oAscError.ID.DataRangeError) {
-                        txtError = this.textDataRangeError;
-                    } else if (value == Asc.c_oAscError.ID.MustSingleCell) {
-                        txtError = this.textMustSingleCell;
-                    } else if (value == Asc.c_oAscError.ID.MustContainValue) {
-                        txtError = this.textMustContainValue;
-                    }
-                    isvalid = false;
-                }
+          if (_.isEmpty(this.txtChangeCell.getValue())) {
+            isvalid = false
+            txtError = this.txtEmpty
+          } else {
+            value = this.api.asc_checkDataRange(
+              Asc.c_oAscSelectionDialogType.GoalSeek_ChangingCell,
+              this.txtChangeCell.getValue(),
+              true,
+            )
+            if (value !== Asc.c_oAscError.ID.No) {
+              if (value === Asc.c_oAscError.ID.DataRangeError) {
+                txtError = this.textDataRangeError
+              } else if (value === Asc.c_oAscError.ID.MustSingleCell) {
+                txtError = this.textMustSingleCell
+              } else if (value === Asc.c_oAscError.ID.MustContainValue) {
+                txtError = this.textMustContainValue
+              }
+              isvalid = false
             }
-            if (!isvalid) {
-                this.txtChangeCell.showError([txtError]);
-                this.txtChangeCell.cmpEl.find('input').focus();
-                return isvalid;
-            }
+          }
+          if (!isvalid) {
+            this.txtChangeCell.showError([txtError])
+            this.txtChangeCell.cmpEl.find("input").focus()
+            return isvalid
+          }
 
-            return isvalid;
+          return isvalid
         },
 
-        onSelectData: function(type) {
-            var me = this,
-                txtRange = (type=='formula') ? me.txtFormulaCell : me.txtChangeCell;
+        onSelectData: function (type) {
+          const txtRange = type === "formula" ? this.txtFormulaCell : this.txtChangeCell
 
-            if (me.api) {
-                var handlerDlg = function(dlg, result) {
-                    if (result == 'ok') {
-                        var txt = dlg.getSettings();
-                        (type=='formula') ? (me.dataFormulaCellValid = txt) : (me.dataChangeCellValid = txt);
-                        txtRange.setValue(txt);
-                        txtRange.checkValidate();
-                    }
-                };
-
-                var win = new SSE.Views.CellRangeDialog({
-                    handler: handlerDlg
-                }).on('close', function() {
-                    me.show();
-                    _.delay(function(){
-                        txtRange.focus();
-                    },1);
-                });
-
-                var xy = Common.Utils.getOffset(me.$window);
-                me.hide();
-                win.show(me.$window, xy);
-                win.setSettings({
-                    api     : me.api,
-                    range   : (!_.isEmpty(txtRange.getValue()) && (txtRange.checkValidate()==true)) ? txtRange.getValue() : ((type=='formula') ? me.dataFormulaCellValid : me.dataChangeCellValid)
-                });
+          if (this.api) {
+            const handlerDlg = (dlg, result) => {
+              if (result === "ok") {
+                const txt = dlg.getSettings()
+                type === "formula"
+                  ? (this.dataFormulaCellValid = txt)
+                  : (this.dataChangeCellValid = txt)
+                txtRange.setValue(txt)
+                txtRange.checkValidate()
+              }
             }
+
+            const win = new SSE.Views.CellRangeDialog({
+              handler: handlerDlg,
+            }).on("close", () => {
+              this.show()
+              _.delay(() => {
+                txtRange.focus()
+              }, 1)
+            })
+
+            const xy = Common.Utils.getOffset(this.$window)
+            this.hide()
+            win.show(this.$window, xy)
+            win.setSettings({
+              api: this.api,
+              range:
+                !_.isEmpty(txtRange.getValue()) && txtRange.checkValidate() === true
+                  ? txtRange.getValue()
+                  : type === "formula"
+                    ? this.dataFormulaCellValid
+                    : this.dataChangeCellValid,
+            })
+          }
         },
 
-        textTitle: 'Goal Seek',
-        textSetCell: 'Set cell',
-        textToValue: 'To value',
-        textChangingCell: 'By changing cell',
-        txtEmpty: 'This field is required',
-        textSelectData: 'Select data',
-        textDataRangeError: 'The formula is missing a range',
-        textMustSingleCell: 'Reference must be to a single cell',
-        textMustContainFormula: 'The cell must contain a formula',
-        textMustFormulaResultNumber: 'Formula in cell must result in a number',
-        textMustContainValue: 'Cell must contain a value',
-        txtErrorNumber: 'Your entry cannot be used. An integer or decimal number may be required.'
-    }, SSE.Views.GoalSeekDlg || {}))
-});
+        textTitle: "Goal Seek",
+        textSetCell: "Set cell",
+        textToValue: "To value",
+        textChangingCell: "By changing cell",
+        txtEmpty: "This field is required",
+        textSelectData: "Select data",
+        textDataRangeError: "The formula is missing a range",
+        textMustSingleCell: "Reference must be to a single cell",
+        textMustContainFormula: "The cell must contain a formula",
+        textMustFormulaResultNumber: "Formula in cell must result in a number",
+        textMustContainValue: "Cell must contain a value",
+        txtErrorNumber: "Your entry cannot be used. An integer or decimal number may be required.",
+      },
+      SSE.Views.GoalSeekDlg || {},
+    ),
+  )
+})

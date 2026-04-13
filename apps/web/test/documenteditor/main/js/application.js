@@ -22,8 +22,7 @@
  * terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
-+function ($) {
-    DE.ApplicationView.create();
-    DE.ApplicationController.create();
-
-}();
+;+(($) => {
+  DE.ApplicationView.create()
+  DE.ApplicationController.create()
+})()

@@ -1,5 +1,5 @@
-import React from 'react';
-import { CSSTransition } from '../../../../../common/mobile/lib/component/CSSTransition'
+import React from "react"
+import { CSSTransition } from "../../../../../common/mobile/lib/component/CSSTransition"
 
 const Snackbar = ({ isShowSnackbar, message, closeCallback }) => {
   return (
@@ -10,8 +10,8 @@ const Snackbar = ({ isShowSnackbar, message, closeCallback }) => {
       mountOnEnter
       unmountOnExit
       onEntered={(node, isAppearing) => {
-        if(!isAppearing) {
-          closeCallback();
+        if (!isAppearing) {
+          closeCallback()
         }
       }}
     >
@@ -21,7 +21,7 @@ const Snackbar = ({ isShowSnackbar, message, closeCallback }) => {
         </div>
       </div>
     </CSSTransition>
-  );
+  )
 }
 
-export default Snackbar;
+export default Snackbar

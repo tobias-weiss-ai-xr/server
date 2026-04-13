@@ -31,11 +31,11 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () { 'use strict';
+define([], () => { 
 
-    var _BulletTypes = {};
+    const _BulletTypes = {};
     _BulletTypes.none = -1;
     _BulletTypes.symbol = 0;
     _BulletTypes.image = 2;
@@ -71,7 +71,7 @@ define([], function () { 'use strict';
                         '<table cols="3">',
                             '<tr>',
                                 '<td class="padding-right-5" style="padding-bottom: 8px;min-width: 50px;">',
-                                    '<label class="text">' + this.txtType + '</label>',
+                                    `<label class="text">${this.txtType}</label>`,
                                 '</td>',
                                 '<td class="padding-right-5" style="padding-bottom: 8px;width: 105px;">',
                                     '<div id="id-dlg-list-numbering-format" class="input-group-nr" style="width: 105px;"></div>',
@@ -81,7 +81,7 @@ define([], function () { 'use strict';
                             '</tr>',
                             '<tr class="image">',
                                 '<td class="padding-right-5" style="padding-bottom: 8px;min-width: 50px;">',
-                                    '<label class="text">' + this.txtImport + '</label>',
+                                    `<label class="text">${this.txtImport}</label>`,
                                 '</td>',
                                 '<td class="padding-right-5" style="padding-bottom: 8px;width: 105px;">',
                                     '<div id="id-dlg-list-image" style="width: 105px;"></div>',
@@ -90,18 +90,18 @@ define([], function () { 'use strict';
                             '</tr>',
                             '<tr>',
                                 '<td class="padding-right-5" style="padding-bottom: 8px;min-width: 50px;">',
-                                    '<label class="text">' + this.txtSize + '</label>',
+                                    `<label class="text">${this.txtSize}</label>`,
                                 '</td>',
                                 '<td class="padding-right-5" style="padding-bottom: 8px;width: 105px;">',
                                     '<div id="id-dlg-list-size"></div>',
                                 '</td>',
                                 '<td style="padding-bottom: 8px;">',
-                                    '<label class="text" style="white-space: nowrap;">' + this.txtOfText + '</label>',
+                                    `<label class="text" style="white-space: nowrap;">${this.txtOfText}</label>`,
                                 '</td>',
                             '</tr>',
                             '<tr class="numbering">',
                                 '<td class="padding-right-5" style="padding-bottom: 8px;min-width: 50px;">',
-                                    '<label class="text" style="white-space: nowrap;">' + this.txtStart + '</label>',
+                                    `<label class="text" style="white-space: nowrap;">${this.txtStart}</label>`,
                                 '</td>',
                                 '<td class="padding-right-5" style="padding-bottom: 8px;width: 105px;">',
                                     '<div id="id-dlg-list-start"></div>',
@@ -110,7 +110,7 @@ define([], function () { 'use strict';
                             '</tr>',
                             '<tr class="color">',
                                 '<td class="padding-right-5" style="padding-bottom: 8px;min-width: 50px;">',
-                                    '<label class="text">' + this.txtColor + '</label>',
+                                    `<label class="text">${this.txtColor}</label>`,
                                 '</td>',
                                 '<td class="padding-right-5" style="padding-bottom: 8px;width: 105px;">',
                                     '<div id="id-dlg-list-color"></div>',
@@ -134,8 +134,8 @@ define([], function () { 'use strict';
         render: function() {
             Common.UI.Window.prototype.render.call(this);
 
-            var me = this,
-                $window = this.getChild();
+            const me = this;
+            const $window = this.getChild();
             $window.find('.dlg-btn').on('click', _.bind(this.onBtnClick, this));
 
             me.btnBullet = new Common.UI.Button({
@@ -181,7 +181,7 @@ define([], function () { 'use strict';
             }, this));
             this.cmbNumFormat.setValue(1);
 
-            var itemsTemplate =
+            const itemsTemplate =
                 [
                     '<% _.each(items, function(item) { %>',
                     '<li id="<%= item.id %>" data-value="<%= item.value %>"><a tabindex="-1" type="menuitem">',
@@ -191,7 +191,7 @@ define([], function () { 'use strict';
                     '</a></li>',
                     '<% }); %>'
                 ];
-            var template = [
+            const template = [
                 '<div class="input-group combobox input-group-nr <%= cls %>" id="<%= id %>" style="<%= style %>">',
                 '<div class="form-control" style="padding-top:3px; line-height: 14px; cursor: pointer; <%= style %>"></div>',
                 '<div style="display: table-cell;"></div>',
@@ -210,25 +210,25 @@ define([], function () { 'use strict';
                 itemsTemplate: _.template(itemsTemplate.join('')),
                 data        : [
                     { displayValue: this.txtNone,          value: _BulletTypes.none },
-                    { displayValue: this.txtSymbol + ': ', value: _BulletTypes.symbol, symbol: "•", font: 'Arial' },
-                    { displayValue: this.txtSymbol + ': ', value: _BulletTypes.symbol, symbol: "o", font: 'Courier New' },
-                    { displayValue: this.txtSymbol + ': ', value: _BulletTypes.symbol, symbol: "§", font: 'Wingdings' },
-                    { displayValue: this.txtSymbol + ': ', value: _BulletTypes.symbol, symbol: "v", font: 'Wingdings' },
-                    { displayValue: this.txtSymbol + ': ', value: _BulletTypes.symbol, symbol: "Ø", font: 'Wingdings' },
-                    { displayValue: this.txtSymbol + ': ', value: _BulletTypes.symbol, symbol: "ü", font: 'Wingdings' },
-                    { displayValue: this.txtSymbol + ': ', value: _BulletTypes.symbol, symbol: "w", font: 'Wingdings' },
-                    { displayValue: this.txtSymbol + ': ', value: _BulletTypes.symbol, symbol: "–", font: 'Arial' },
+                    { displayValue: `${this.txtSymbol}: `, value: _BulletTypes.symbol, symbol: "•", font: 'Arial' },
+                    { displayValue: `${this.txtSymbol}: `, value: _BulletTypes.symbol, symbol: "o", font: 'Courier New' },
+                    { displayValue: `${this.txtSymbol}: `, value: _BulletTypes.symbol, symbol: "§", font: 'Wingdings' },
+                    { displayValue: `${this.txtSymbol}: `, value: _BulletTypes.symbol, symbol: "v", font: 'Wingdings' },
+                    { displayValue: `${this.txtSymbol}: `, value: _BulletTypes.symbol, symbol: "Ø", font: 'Wingdings' },
+                    { displayValue: `${this.txtSymbol}: `, value: _BulletTypes.symbol, symbol: "ü", font: 'Wingdings' },
+                    { displayValue: `${this.txtSymbol}: `, value: _BulletTypes.symbol, symbol: "w", font: 'Wingdings' },
+                    { displayValue: `${this.txtSymbol}: `, value: _BulletTypes.symbol, symbol: "–", font: 'Arial' },
                     { displayValue: this.txtNewBullet,     value: _BulletTypes.newSymbol },
                     { displayValue: this.txtNewImage,      value: _BulletTypes.newImage }
                 ],
                 updateFormControl: function(record) {
-                    var formcontrol = $(this.el).find('.form-control');
+                    const formcontrol = $(this.el).find('.form-control');
                     if (record) {
                         if (record.get('value')===_BulletTypes.symbol)
-                            formcontrol[0].innerHTML = record.get('displayValue') + '<span style="font-family:' + (record.get('font') || 'Arial') + '">' + record.get('symbol') + '</span>';
+                            formcontrol[0].innerHTML = `${record.get('displayValue')}<span style="font-family:${record.get('font') || 'Arial'}">${record.get('symbol')}</span>`;
                         else if (record.get('value')===_BulletTypes.image) {
-                            formcontrol[0].innerHTML = record.get('displayValue') + '<span id="id-dlg-list-bullet-combo-preview" class="margin-left-2" style="width:12px; height: 12px; margin-bottom: 1px;display: inline-block; vertical-align: middle;"></span>';
-                            var bullet = new Asc.asc_CBullet();
+                            formcontrol[0].innerHTML = `${record.get('displayValue')}<span id="id-dlg-list-bullet-combo-preview" class="margin-left-2" style="width:12px; height: 12px; margin-bottom: 1px;display: inline-block; vertical-align: middle;"></span>`;
+                            const bullet = new Asc.asc_CBullet();
                             bullet.asc_fillBulletImage(me.imageProps.id);
                             bullet.drawSquareImage('id-dlg-list-bullet-combo-preview');
                         } else if (record.get('value')===_BulletTypes.newImage)
@@ -239,60 +239,59 @@ define([], function () { 'use strict';
                         formcontrol[0].innerHTML = '';
                 }
             });
-            var rec = this.cmbBulletFormat.store.at(1);
+            const rec = this.cmbBulletFormat.store.at(1);
             this.cmbBulletFormat.selectRecord(rec);
             this.bulletProps = {symbol: rec.get('symbol'), font: rec.get('font')};
             this.cmbBulletFormat.on('selected', _.bind(function (combo, record) {
                 this.imageControls.toggleClass('hidden', !(record.value === _BulletTypes.image || record.value === _BulletTypes.newImage));
                 this.colorControls.toggleClass('hidden', record.value === _BulletTypes.image || record.value === _BulletTypes.newImage);
                 if (record.value === _BulletTypes.newSymbol) {
-                    var me = this,
-                        props = me.bulletProps,
-                        btn,
-                        handler = function(dlg, result, settings) {
+                    const props = this.bulletProps;
+                    let btn;
+                    const handler = (dlg, result, settings) => {
                             btn = result;
-                            if (result == 'ok') {
+                            if (result === 'ok') {
                                 props.changed = true;
                                 props.code = settings.code;
                                 props.font = settings.font;
                                 props.symbol = settings.symbol;
-                                if (me._changedProps) {
-                                    me._changedProps.asc_putFont(props.font);
-                                    me._changedProps.asc_putSymbol(props.symbol);
+                                if (this._changedProps) {
+                                    this._changedProps.asc_putFont(props.font);
+                                    this._changedProps.asc_putSymbol(props.symbol);
                                 }
                             }
-                            var store = combo.store;
+                            const store = combo.store;
                             if (!store.findWhere({value: _BulletTypes.symbol, symbol: props.symbol, font: props.font})) {
-                                var idx = store.indexOf(store.findWhere({value: _BulletTypes.image}));
+                                let idx = store.indexOf(store.findWhere({value: _BulletTypes.image}));
                                 if (idx<0)
                                     idx = store.indexOf(store.findWhere({value: _BulletTypes.newSymbol}));
-                                store.add({ displayValue: me.txtSymbol + ': ', value: _BulletTypes.symbol, symbol: props.symbol, font: props.font }, {at: idx});
+                                store.add({ displayValue: `${this.txtSymbol}: `, value: _BulletTypes.symbol, symbol: props.symbol, font: props.font }, {at: idx});
                             }
-                            if (me.imageProps)
-                                me.imageProps.redraw = true;
+                            if (this.imageProps)
+                                this.imageProps.redraw = true;
 
                             combo.setData(store.models);
                             combo.selectRecord(combo.store.findWhere({value: _BulletTypes.symbol, symbol: props.symbol, font: props.font}));
-                        },
-                        win = new Common.Views.SymbolTableDialog({
-                            api: me.options.api,
-                            lang: me.options.interfaceLang,
+                        };
+                    const win = new Common.Views.SymbolTableDialog({
+                            api: this.options.api,
+                            lang: this.options.interfaceLang,
                             modal: true,
                             type: 0,
                             font: props.font,
                             symbol: props.symbol,
                             handler: handler
-                        }).on('close', function(obj){
-                            (btn===undefined) && handler && handler.call(me);
-                            setTimeout(function(){me.cmbBulletFormat.focus();}, 1);
+                        }).on('close', (obj)=> {
+                            (btn===undefined) && handler && handler.call(this);
+                            setTimeout(()=> {this.cmbBulletFormat.focus();}, 1);
                         });
                     win.show();
                     win.on('symbol:dblclick', handler);
-                } else if (record.value == _BulletTypes.newImage) { // new image
-                } else if (record.value == _BulletTypes.image) { // image
+                } else if (record.value === _BulletTypes.newImage) { // new image
+                } else if (record.value === _BulletTypes.image) { // image
                     if (this._changedProps)
                         this._changedProps.asc_fillBulletImage(this.imageProps.id);
-                } else if (record.value == _BulletTypes.none) {
+                } else if (record.value === _BulletTypes.none) {
                     if (this._changedProps)
                         this._changedProps.asc_putListType(0, record.value);
                 } else {
@@ -318,13 +317,13 @@ define([], function () { 'use strict';
                 maxValue    : 400,
                 minValue    : 25,
                 allowDecimal: false
-            }).on('change', function(field, newValue, oldValue, eOpts){
+            }).on('change', (field, newValue, oldValue, eOpts)=> {
                 if (me._changedProps) {
                     me._changedProps.asc_putSize(field.getNumberValue());
                 }
             });
 
-            var config = this.options.colorConfig || {};
+            const config = this.options.colorConfig || {};
             this.btnColor = new Common.UI.ColorButton({
                 parentEl: $window.find('#id-dlg-list-color'),
                 style: "width:45px;",
@@ -351,7 +350,7 @@ define([], function () { 'use strict';
                 maxValue    : 32767,
                 minValue    : 1,
                 allowDecimal: false
-            }).on('change', function(field, newValue, oldValue, eOpts){
+            }).on('change', (field, newValue, oldValue, eOpts)=> {
                 if (me._changedProps) {
                     me._changedProps.asc_putNumStartAt(field.getNumberValue());
                 }
@@ -377,15 +376,13 @@ define([], function () { 'use strict';
             this.btnSelectImage.menu.on('item:click', _.bind(this.onImageSelect, this));
             this.btnSelectImage.menu.items[2].setVisible(this.storage);
 
-            this.btnOk = _.find(this.getFooterButtons(), function (item) {
-                return (item.$el && item.$el.find('.primary').addBack().filter('.primary').length>0);
-            }) || new Common.UI.Button({ el: $window.find('.primary') });
+            this.btnOk = _.find(this.getFooterButtons(), (item) => (item.$el && item.$el.find('.primary').addBack().filter('.primary').length>0)) || new Common.UI.Button({ el: $window.find('.primary') });
 
             me.numberingControls = $window.find('tr.numbering');
             me.imageControls = $window.find('tr.image');
             me.colorControls = $window.find('tr.color');
 
-            var el = $window.find('table tr:first() td:first()');
+            const el = $window.find('table tr:first() td:first()');
             el.width(Math.max($window.find('.numbering .text').width(), el.width()));
 
             this.afterRender();
@@ -398,42 +395,40 @@ define([], function () { 'use strict';
         afterRender: function() {
             !this.options.colorConfig && this.updateThemeColors();
             this._setDefaults(this.props);
-
-            var me = this;
-            var onApiImageLoaded = function(bullet) {
-                me.imageProps = {id: bullet.asc_getImageId(), redraw: true};
-                if (me._changedProps)
-                    me._changedProps.asc_fillBulletImage(me.imageProps.id);
+            const onApiImageLoaded = (bullet) => {
+                this.imageProps = {id: bullet.asc_getImageId(), redraw: true};
+                if (this._changedProps)
+                    this._changedProps.asc_fillBulletImage(this.imageProps.id);
                 // add or update record for image to btnBulletFormat and select it
-                var store = me.cmbBulletFormat.store;
+                const store = this.cmbBulletFormat.store;
                 if (!store.findWhere({value: _BulletTypes.image})) {
-                    var idx = store.indexOf(store.findWhere({value: _BulletTypes.newSymbol}));
-                    store.add({ displayValue: me.txtImage + ':', value: _BulletTypes.image }, {at: idx});
+                    const idx = store.indexOf(store.findWhere({value: _BulletTypes.newSymbol}));
+                    store.add({ displayValue: `${this.txtImage}:`, value: _BulletTypes.image }, {at: idx});
                 }
-                me.cmbBulletFormat.setData(store.models);
-                me.cmbBulletFormat.selectRecord(me.cmbBulletFormat.store.findWhere({value: _BulletTypes.image}));
-                me.btnOk.setDisabled(false);
+                this.cmbBulletFormat.setData(store.models);
+                this.cmbBulletFormat.selectRecord(this.cmbBulletFormat.store.findWhere({value: _BulletTypes.image}));
+                this.btnOk.setDisabled(false);
             };
             this.api.asc_registerCallback('asc_onBulletImageLoaded', onApiImageLoaded);
 
-            var insertImageFromStorage = function(data) {
-                if (data && data._urls && data.c=='bullet') {
+            const insertImageFromStorage = (data) => {
+                if (data?._urls && data.c==='bullet') {
                     (new Asc.asc_CBullet()).asc_putImageUrl(data._urls[0], data.token);
                 }
             };
             Common.NotificationCenter.on('storage:image-insert', insertImageFromStorage);
 
-            this.on('close', function(obj){
-                me.api.asc_unregisterCallback('asc_onBulletImageLoaded', onApiImageLoaded);
+            this.on('close', (obj)=> {
+                this.api.asc_unregisterCallback('asc_onBulletImageLoaded', onApiImageLoaded);
                 Common.NotificationCenter.off('storage:image-insert', insertImageFromStorage);
             });
         },
 
         onBulletFormatOpen: function(combo) {
-            var store = combo.store,
-                rec = store.findWhere({value: _BulletTypes.image});
+            const store = combo.store;
+            const rec = store.findWhere({value: _BulletTypes.image});
             if (rec && this.imageProps.redraw) {
-                var bullet = new Asc.asc_CBullet();
+                const bullet = new Asc.asc_CBullet();
                 bullet.asc_fillBulletImage(this.imageProps.id);
                 bullet.drawSquareImage('id-dlg-list-bullet-image-preview');
                 this.imageProps.redraw = false;
@@ -456,47 +451,46 @@ define([], function () { 'use strict';
         },
 
         ShowHideElem: function(value) {
-            var isImage = value==0 && (this.cmbBulletFormat.getValue()===_BulletTypes.image || this.cmbBulletFormat.getValue()===_BulletTypes.newImage ||
+            const isImage = value===0 && (this.cmbBulletFormat.getValue()===_BulletTypes.image || this.cmbBulletFormat.getValue()===_BulletTypes.newImage ||
                                       (this.cmbBulletFormat.getValue()===undefined || this.cmbBulletFormat.getValue()==='') && this.originalType === AscFormat.BULLET_TYPE_BULLET_BLIP);
-            this.numberingControls.toggleClass('hidden', value==0);
+            this.numberingControls.toggleClass('hidden', value===0);
             this.imageControls.toggleClass('hidden', !isImage);
             this.colorControls.toggleClass('hidden', isImage);
-            this.cmbNumFormat.setVisible(value==1);
-            this.cmbBulletFormat.setVisible(value==0);
+            this.cmbNumFormat.setVisible(value===1);
+            this.cmbBulletFormat.setVisible(value===0);
             this.btnOk.setDisabled(isImage && (this.cmbBulletFormat.getValue()===_BulletTypes.newImage));
-            var me = this;
-            _.delay(function(){
+            _.delay(()=> {
                 if (value)
-                    me.cmbNumFormat.focus();
+                    this.cmbNumFormat.focus();
                 else
-                    me.cmbBulletFormat.focus();
+                    this.cmbBulletFormat.focus();
             },50);
         },
 
         _handleInput: function(state) {
             if (this.options.handler)
             {
-                if (state == 'ok' && this.btnOk.isDisabled()) {
+                if (state === 'ok' && this.btnOk.isDisabled()) {
                     return;
                 }
-                var type = this.btnBullet.pressed ? 0 : 1;
-                if (this.originalType == AscFormat.BULLET_TYPE_BULLET_NONE) {
+                const type = this.btnBullet.pressed ? 0 : 1;
+                if (this.originalType === AscFormat.BULLET_TYPE_BULLET_NONE) {
                     this._changedProps = new Asc.asc_CBullet();
                     this._changedProps.asc_putSize(this.spnSize.getNumberValue());
-                    if (type==0 && this.cmbBulletFormat.getValue()===_BulletTypes.image && this.imageProps) {//image
+                    if (type===0 && this.cmbBulletFormat.getValue()===_BulletTypes.image && this.imageProps) {//image
                         this._changedProps.asc_fillBulletImage(this.imageProps.id);
                     } else {
                         this._changedProps.asc_putColor(Common.Utils.ThemeColor.getRgbColor(this.color));
                     }
                 }
 
-                if (this.originalType == AscFormat.BULLET_TYPE_BULLET_NONE ||
-                    (this.originalType == AscFormat.BULLET_TYPE_BULLET_CHAR || this.originalType == AscFormat.BULLET_TYPE_BULLET_BLIP) && type==1 ||
-                    this.originalType == AscFormat.BULLET_TYPE_BULLET_AUTONUM && type==0) { // changed list type
-                    if (type==0) {//markers
-                        if (this.cmbBulletFormat.getValue()==_BulletTypes.none) {
+                if (this.originalType === AscFormat.BULLET_TYPE_BULLET_NONE ||
+                    (this.originalType === AscFormat.BULLET_TYPE_BULLET_CHAR || this.originalType === AscFormat.BULLET_TYPE_BULLET_BLIP) && type===1 ||
+                    this.originalType === AscFormat.BULLET_TYPE_BULLET_AUTONUM && type===0) { // changed list type
+                    if (type===0) {//markers
+                        if (this.cmbBulletFormat.getValue()===_BulletTypes.none) {
                             this._changedProps.asc_putListType(0, -1);
-                        } else if (this.cmbBulletFormat.getValue()==_BulletTypes.image) {
+                        } else if (this.cmbBulletFormat.getValue()===_BulletTypes.image) {
 
                         } else {
                             this._changedProps.asc_putFont(this.bulletProps.font);
@@ -513,7 +507,7 @@ define([], function () { 'use strict';
         },
 
         onBtnClick: function(event) {
-            this._handleInput(event.currentTarget.attributes['result'].value);
+            this._handleInput(event.currentTarget.attributes.result.value);
         },
 
         onPrimary: function(event) {
@@ -523,16 +517,16 @@ define([], function () { 'use strict';
 
         _setDefaults: function (props) {
             if (props) {
-                var type = 0;
-                var bullet = props.asc_getBullet();
+                let type = 0;
+                const bullet = props.asc_getBullet();
                 if (bullet) {
                     this.originalType = bullet.asc_getType();
 
                     this.spnSize.setValue(bullet.asc_getSize() || '', true);
 
-                    var color = bullet.asc_getColor();
+                    let color = bullet.asc_getColor();
                     if (color) {
-                        if (color.get_type() == Asc.c_oAscColor.COLOR_TYPE_SCHEME) {
+                        if (color.get_type() === Asc.c_oAscColor.COLOR_TYPE_SCHEME) {
                             color = {color: Common.Utils.ThemeColor.getHexColor(color.get_r(), color.get_g(), color.get_b()), effectValue: color.get_value()};
                         } else {
                             color = Common.Utils.ThemeColor.getHexColor(color.get_r(), color.get_g(), color.get_b());
@@ -543,39 +537,39 @@ define([], function () { 'use strict';
                     this.btnColor.setColor(color);
                     Common.Utils.ThemeColor.selectPickerColorByEffect(color, this.colors);
 
-                    if (this.originalType == AscFormat.BULLET_TYPE_BULLET_NONE) {
+                    if (this.originalType === AscFormat.BULLET_TYPE_BULLET_NONE) {
                         this.cmbNumFormat.setValue(-1);
                         this.cmbBulletFormat.setValue(_BulletTypes.none);
                         type = this.type;
-                    } else if (this.originalType == AscFormat.BULLET_TYPE_BULLET_CHAR) {
-                        var symbol = bullet.asc_getSymbol();
+                    } else if (this.originalType === AscFormat.BULLET_TYPE_BULLET_CHAR) {
+                        const symbol = bullet.asc_getSymbol();
                         if (symbol) {
                             this.bulletProps = {symbol: symbol, font: bullet.asc_getFont()};
                             if (!this.cmbBulletFormat.store.findWhere({value: _BulletTypes.symbol, symbol: this.bulletProps.symbol, font: this.bulletProps.font}))
-                                this.cmbBulletFormat.store.add({ displayValue: this.txtSymbol + ': ', value: _BulletTypes.symbol, symbol: this.bulletProps.symbol, font: this.bulletProps.font }, {at: this.cmbBulletFormat.store.length-2});
+                                this.cmbBulletFormat.store.add({ displayValue: `${this.txtSymbol}: `, value: _BulletTypes.symbol, symbol: this.bulletProps.symbol, font: this.bulletProps.font }, {at: this.cmbBulletFormat.store.length-2});
                             this.cmbBulletFormat.setData(this.cmbBulletFormat.store.models);
                             this.cmbBulletFormat.selectRecord(this.cmbBulletFormat.store.findWhere({value: _BulletTypes.symbol, symbol: this.bulletProps.symbol, font: this.bulletProps.font}));
                         } else
                             this.cmbBulletFormat.setValue('');
                         this._changedProps = bullet;
                         type = 0;
-                    } else if (this.originalType == AscFormat.BULLET_TYPE_BULLET_BLIP) {
-                        var id = bullet.asc_getImageId();
+                    } else if (this.originalType === AscFormat.BULLET_TYPE_BULLET_BLIP) {
+                        const id = bullet.asc_getImageId();
                         if (id) {
                             this.imageProps = {id: id, redraw: true};
                             if (!this.cmbBulletFormat.store.findWhere({value: _BulletTypes.image}))
-                                this.cmbBulletFormat.store.add({ displayValue: this.txtImage + ':', value: _BulletTypes.image}, {at: this.cmbBulletFormat.store.length-2});
+                                this.cmbBulletFormat.store.add({ displayValue: `${this.txtImage}:`, value: _BulletTypes.image}, {at: this.cmbBulletFormat.store.length-2});
                             this.cmbBulletFormat.setData(this.cmbBulletFormat.store.models);
                             this.cmbBulletFormat.selectRecord(this.cmbBulletFormat.store.findWhere({value: _BulletTypes.image}));
                         } else
                             this.cmbBulletFormat.setValue('');
                         this._changedProps = bullet;
                         type = 0;
-                    } else if (this.originalType == AscFormat.BULLET_TYPE_BULLET_AUTONUM) {
-                        var autonum = bullet.asc_getAutoNumType();
+                    } else if (this.originalType === AscFormat.BULLET_TYPE_BULLET_AUTONUM) {
+                        const autonum = bullet.asc_getAutoNumType();
                         this.cmbNumFormat.setValue(autonum, '');
 
-                        var value = bullet.asc_getNumStartAt();
+                        const value = bullet.asc_getNumStartAt();
                         this.spnStart.setValue(value || '', true);
                         this.spnStart.setDisabled(value===null);
                         this._changedProps = bullet;
@@ -589,26 +583,25 @@ define([], function () { 'use strict';
                 }
             }
 
-            (type == 1) ? this.btnNumbering.toggle(true) : this.btnBullet.toggle(true);
+            (type === 1) ? this.btnNumbering.toggle(true) : this.btnBullet.toggle(true);
             this.ShowHideElem(type);
         },
 
         onImageSelect: function(menu, item) {
-            if (item.value==1) {
-                var me = this;
+            if (item.value===1) {
                 (new Common.Views.ImageFromUrlDialog({
-                    handler: function(result, value) {
-                        if (result == 'ok') {
-                            var checkUrl = value.replace(/ /g, '');
+                    handler: (result, value) => {
+                        if (result === 'ok') {
+                            const checkUrl = value.replace(/ /g, '');
                             if (!_.isEmpty(checkUrl)) {
                                 (new Asc.asc_CBullet()).asc_putImageUrl(checkUrl);
                             }
                         }
                     }
-                })).on('close', function() {
-                    me.btnSelectImage.focus();
+                })).on('close', () => {
+                    this.btnSelectImage.focus();
                 }).show();
-            } else if (item.value==2) {
+            } else if (item.value===2) {
                 Common.NotificationCenter.trigger('storage:image-load', 'bullet');
             } else {
                 (new Asc.asc_CBullet()).asc_showFileDialog();

@@ -40,16 +40,15 @@
 
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'common/main/lib/component/Tooltip',
     'common/main/lib/component/Button'
-], function () { 'use strict';
+], () => { 
 
-    Common.UI.InputField = Common.UI.BaseView.extend((function() {
-        return {
+    Common.UI.InputField = Common.UI.BaseView.extend((() => ({
             options : {
                 id          : null,
                 cls         : '',
@@ -89,38 +88,35 @@ define([
             initialize : function(options) {
                 Common.UI.BaseView.prototype.initialize.call(this, options);
 
-                var me = this;
+                this.id             = this.options.id || Common.UI.getId();
+                this.cls            = this.options.cls;
+                this.style          = this.options.style;
+                this.value          = this.options.value;
+                this.type           = this.options.type;
+                this.name           = this.options.name;
+                this.validation     = this.options.validation;
+                this.allowBlank     = this.options.allowBlank;
+                this.placeHolder    = this.options.placeHolder;
+                this.template       = this.options.template || this.template;
+                this.editable       = this.options.editable;
+                this.disabled       = this.options.disabled;
+                this.spellcheck     = this.options.spellcheck;
+                this.blankError     = this.options.blankError || this.txtEmpty;
+                this.validateOnChange = this.options.validateOnChange;
+                this.validateOnBlur = this.options.validateOnBlur;
+                this.maxLength      = this.options.maxLength;
+                this.hideErrorOnInput = this.options.hideErrorOnInput;
 
-                this.id             = me.options.id || Common.UI.getId();
-                this.cls            = me.options.cls;
-                this.style          = me.options.style;
-                this.value          = me.options.value;
-                this.type           = me.options.type;
-                this.name           = me.options.name;
-                this.validation     = me.options.validation;
-                this.allowBlank     = me.options.allowBlank;
-                this.placeHolder    = me.options.placeHolder;
-                this.template       = me.options.template || me.template;
-                this.editable       = me.options.editable;
-                this.disabled       = me.options.disabled;
-                this.spellcheck     = me.options.spellcheck;
-                this.blankError     = me.options.blankError || me.txtEmpty;
-                this.validateOnChange = me.options.validateOnChange;
-                this.validateOnBlur = me.options.validateOnBlur;
-                this.maxLength      = me.options.maxLength;
-                this.hideErrorOnInput = me.options.hideErrorOnInput;
+                this.rendered         = this.options.rendered || false;
 
-                me.rendered         = me.options.rendered || false;
-
-                if (me.options.el) {
-                    me.render();
+                if (this.options.el) {
+                    this.render();
                 }
             },
 
             render : function(parentEl) {
-                var me = this;
 
-                if (!me.rendered) {
+                if (!this.rendered) {
                     this.cmpEl = $(this.template({
                         id          : this.id,
                         cls         : this.cls,
@@ -133,7 +129,7 @@ define([
                         dataHint    : this.options.dataHint,
                         dataHintDirection: this.options.dataHintDirection,
                         dataHintOffset: this.options.dataHintOffset,
-                        scope       : me
+                        scope       : this
                     }));
 
                     if (parentEl) {
@@ -146,8 +142,8 @@ define([
                     this.cmpEl = this.$el;
                 }
 
-                if (!me.rendered) {
-                    var el = this.cmpEl;
+                if (!this.rendered) {
+                    const el = this.cmpEl;
 
                     this._input = this.cmpEl.find('input').addBack().filter('input').first();
 
@@ -165,22 +161,22 @@ define([
                         this.setDisabled(this.disabled);
 
                     if (this._input.closest('.asc-window').length>0)
-                        var onModalClose = function() {
-                            var errorTip = el.find('.input-error').data('bs.tooltip');
+                        const onModalClose = () => {
+                            const errorTip = el.find('.input-error').data('bs.tooltip');
                             if (errorTip) errorTip.tip().remove();
                             Common.NotificationCenter.off({'modal:close': onModalClose});
                         };
                         Common.NotificationCenter.on({'modal:close': onModalClose});
 
-                    var ariaLabel = this.options.ariaLabel ? this.options.ariaLabel : this.placeHolder;
+                    const ariaLabel = this.options.ariaLabel ? this.options.ariaLabel : this.placeHolder;
                     if (ariaLabel)
                         this._input.attr('aria-label', ariaLabel);
                 }
 
-                me.rendered = true;
+                this.rendered = true;
 
-                if (me.value)
-                    me.setValue(me.value);
+                if (this.value)
+                    this.setValue(this.value);
 
                 return this;
             },
@@ -188,11 +184,11 @@ define([
             _doChange: function(e, extra) {
                 // skip processing for internally-generated synthetic event
                 // to avoid double processing
-                if (extra && extra.synthetic)
+                if (extra?.synthetic)
                     return;
 
-                var newValue = $(e.target).val(),
-                    oldValue = this.value;
+                const newValue = $(e.target).val();
+                const oldValue = this.value;
 
                 this.trigger('changed:before', this, newValue, oldValue, e);
 
@@ -212,8 +208,8 @@ define([
             },
 
             onInputChanging: function(e, extra) {
-                var newValue = $(e.target).val(),
-                    oldValue = this.value;
+                const newValue = $(e.target).val();
+                const oldValue = this.value;
 
                 if (e.isDefaultPrevented())
                     return;
@@ -233,7 +229,7 @@ define([
                     return;
 
                 if (this.options.maskExp && !_.isEmpty(this.options.maskExp.source)){
-                    var charCode = String.fromCharCode(e.which);
+                    const charCode = String.fromCharCode(e.which);
                     if(!this.options.maskExp.test(charCode) && !e.ctrlKey && e.keyCode !== Common.UI.Keys.RETURN){
                         e.preventDefault();
                         e.stopPropagation();
@@ -251,9 +247,9 @@ define([
 
                 if (e.keyCode === Common.UI.Keys.RETURN)
                     this._doChange(e);
-                if (e.keyCode == Common.UI.Keys.ESC)
+                if (e.keyCode === Common.UI.Keys.ESC)
                     this.setValue(this.value);
-                if (e.keyCode==Common.UI.Keys.RETURN || e.keyCode==Common.UI.Keys.ESC)
+                if (e.keyCode===Common.UI.Keys.RETURN || e.keyCode===Common.UI.Keys.ESC)
                     this.trigger('inputleave', this);
             },
 
@@ -267,7 +263,7 @@ define([
             },
 
             setEditable: function(editable) {
-                var input = this._input;
+                const input = this._input;
 
                 this.editable = editable;
 
@@ -312,19 +308,18 @@ define([
             },
 
             focus: function() {
-                this._input && this._input.focus();
+                this._input?.focus();
             },
 
             checkValidate: function() {
-                var me = this,
-                    errors = [];
+                let errors = [];
 
-                if (!me.allowBlank && _.isEmpty(me.value)) {
-                    errors.push(me.blankError);
+                if (!this.allowBlank && _.isEmpty(this.value)) {
+                    errors.push(this.blankError);
                 }
 
-                if (_.isFunction(me.validation)) {
-                    var res = me.validation.call(me, me.value);
+                if (_.isFunction(this.validation)) {
+                    const res = this.validation.call(this, this.value);
 
                     if (res !== true) {
                         errors = _.flatten(errors.concat(res));
@@ -332,19 +327,19 @@ define([
                 }
 
                 if (!_.isEmpty(errors)) {
-                    if (me.cmpEl.hasClass('error')) {
-                        var errorTip = me.cmpEl.find('.input-error').data('bs.tooltip');
+                    if (this.cmpEl.hasClass('error')) {
+                        const errorTip = this.cmpEl.find('.input-error').data('bs.tooltip');
                         if (errorTip) {
                             errorTip.options.title = errors.join('\n');
                             errorTip.setContent();
                         }
                         return errors;
-                    } else {
-                        me.cmpEl.addClass('error');
+                    }
+                        this.cmpEl.addClass('error');
 
-                        var errorBadge = me.cmpEl.find('.input-error'),
-                            modalParents = errorBadge.closest('.asc-window'),
-                            errorTip = errorBadge.data('bs.tooltip');
+                        const errorBadge = this.cmpEl.find('.input-error');
+                        const modalParents = errorBadge.closest('.asc-window');
+                        const errorTip = errorBadge.data('bs.tooltip');
 
                         if (errorTip) errorTip.tip().remove();
                         errorBadge.attr('data-toggle', 'tooltip');
@@ -354,31 +349,28 @@ define([
                             placement   : 'cursor'
                         });
                         if (modalParents.length > 0) {
-                            errorBadge.data('bs.tooltip').tip().css('z-index', parseInt(modalParents.css('z-index')) + 10);
+                            errorBadge.data('bs.tooltip').tip().css('z-index', Number.parseInt(modalParents.css('z-index')) + 10);
                         }
-                        if (me.hideErrorOnInput) {
-                            var onInputChanging = function() {
-                                me.showError();
+                        if (this.hideErrorOnInput) {
+                            const onInputChanging = () => {
+                                this.showError();
                             };
-                            me._input.one('input', onInputChanging);
+                            this._input.one('input', onInputChanging);
                         }
                         return errors;
-                    }
-                } else {
-                    me.cmpEl.removeClass('error');
                 }
+                    this.cmpEl.removeClass('error');
 
                 return true;
             },
 
             showError: function(errors, isWarning) {
-                var me = this;
                 if (!_.isEmpty(errors)) {
-                    me.cmpEl.addClass(isWarning ? 'warning' : 'error');
+                    this.cmpEl.addClass(isWarning ? 'warning' : 'error');
 
-                    var errorBadge = me.cmpEl.find('.input-error'),
-                        modalParents = errorBadge.closest('.asc-window'),
-                        errorTip = errorBadge.data('bs.tooltip');
+                    const errorBadge = this.cmpEl.find('.input-error');
+                    const modalParents = errorBadge.closest('.asc-window');
+                    const errorTip = errorBadge.data('bs.tooltip');
 
                     if (errorTip) errorTip.tip().remove();
                     errorBadge.attr('data-toggle', 'tooltip');
@@ -389,17 +381,17 @@ define([
                     });
 
                     if (modalParents.length > 0) {
-                        errorBadge.data('bs.tooltip').tip().css('z-index', parseInt(modalParents.css('z-index')) + 10);
+                        errorBadge.data('bs.tooltip').tip().css('z-index', Number.parseInt(modalParents.css('z-index')) + 10);
                     }
-                    if (me.hideErrorOnInput) {
-                        var onInputChanging = function() {
-                            me.showError();
+                    if (this.hideErrorOnInput) {
+                        const onInputChanging = () => {
+                            this.showError();
                         };
-                        me._input.one('input', onInputChanging);
+                        this._input.one('input', onInputChanging);
                     }
                 } else {
-                    me.cmpEl.removeClass('error');
-                    me.cmpEl.removeClass('warning');
+                    this.cmpEl.removeClass('error');
+                    this.cmpEl.removeClass('warning');
                 }
             },
 
@@ -408,11 +400,9 @@ define([
             },
 
             txtEmpty: 'This field is required'
-        }
-    })());
+        }))());
 
-    Common.UI.InputFieldBtn = Common.UI.InputField.extend((function() {
-        return {
+    Common.UI.InputFieldBtn = Common.UI.InputField.extend((() => ({
             options : {
                 id          : null,
                 cls         : '',
@@ -454,9 +444,8 @@ define([
             ].join('')),
 
             render : function(parentEl) {
-                var me = this;
 
-                if (!me.rendered) {
+                if (!this.rendered) {
                     this.cmpEl = $(this.template({
                         id          : this.id,
                         cls         : this.cls,
@@ -466,7 +455,7 @@ define([
                         name        : this.name,
                         placeHolder : this.placeHolder,
                         spellcheck  : this.spellcheck,
-                        scope       : me,
+                        scope       : this,
                         dataHint    : this.options.dataHint,
                         dataHintOffset: this.options.dataHintOffset,
                         dataHintDirection: this.options.dataHintDirection
@@ -482,8 +471,8 @@ define([
                     this.cmpEl = this.$el;
                 }
 
-                if (!me.rendered) {
-                    var el = this.cmpEl;
+                if (!this.rendered) {
+                    const el = this.cmpEl;
 
                     this._button = new Common.UI.Button({
                         cls: 'btn-toolbar',
@@ -511,21 +500,21 @@ define([
                         this.setDisabled(this.disabled);
 
                     if (this._input.closest('.asc-window').length>0)
-                        var onModalClose = function() {
-                            var errorTip = el.find('.input-error').data('bs.tooltip');
+                        const onModalClose = () => {
+                            const errorTip = el.find('.input-error').data('bs.tooltip');
                             if (errorTip) errorTip.tip().remove();
                             Common.NotificationCenter.off({'modal:close': onModalClose});
                         };
                     Common.NotificationCenter.on({'modal:close': onModalClose});
 
-                    var ariaLabel = this.options.ariaLabel ? this.options.ariaLabel : this.placeHolder;
+                    const ariaLabel = this.options.ariaLabel ? this.options.ariaLabel : this.placeHolder;
                     if (ariaLabel)
                         this._input.attr('aria-label', ariaLabel);
                 }
 
-                me.rendered = true;
-                if (me.value)
-                    me.setValue(me.value);
+                this.rendered = true;
+                if (this.value)
+                    this.setValue(this.value);
 
                 return this;
             },
@@ -554,11 +543,9 @@ define([
                 if (!this.rendered) return;
                 this._button.updateHint(this.options.hint);
             }
-        }
-    })());
+        }))());
 
-    Common.UI.InputFieldBtnPassword = Common.UI.InputFieldBtn.extend(_.extend((function() {
-        return {
+    Common.UI.InputFieldBtnPassword = Common.UI.InputFieldBtn.extend(_.extend((() => ({
             options: {
                 id: null,
                 cls: '',
@@ -616,13 +603,12 @@ define([
                     this.passwordHide(e);
                     this.hidePwd = true;
                 }
-                var me = this;
-                var prevstart = me._input[0].selectionStart,
-                    prevend = me._input[0].selectionEnd;
-                setTimeout(function () {
-                    me.focus();
-                    me._input[0].selectionStart = prevstart;
-                    me._input[0].selectionEnd = prevend;
+                const prevstart = this._input[0].selectionStart;
+                const prevend = this._input[0].selectionEnd;
+                setTimeout(() => {
+                    this.focus();
+                    this._input[0].selectionStart = prevstart;
+                    this._input[0].selectionEnd = prevend;
                 }, 1);
             },
 
@@ -662,24 +648,21 @@ define([
                 else {
                     this._btnElm.off('mouseup', this.passwordHide);
                     this._btnElm.off('mouseout', this.passwordHide);
-                    var me = this;
-                    var prevstart = me._input[0].selectionStart,
-                        prevend = me._input[0].selectionEnd;
-                    setTimeout(function () {
-                        me.focus();
-                        me._input[0].selectionStart = prevstart;
-                        me._input[0].selectionEnd = prevend;
+                    const prevstart = this._input[0].selectionStart;
+                    const prevend = this._input[0].selectionEnd;
+                    setTimeout(() => {
+                        this.focus();
+                        this._input[0].selectionStart = prevstart;
+                        this._input[0].selectionEnd = prevend;
                     }, 1);
                 }
             },
             textHintShowPwd: 'Show password',
             textHintHidePwd: 'Hide password',
             textHintHold: 'Press and hold to show password'
-        }
-    })(), Common.UI.InputFieldBtnPassword || {}));
+        }))(), Common.UI.InputFieldBtnPassword || {}));
 
-    Common.UI.InputFieldBtnCalendar = Common.UI.InputFieldBtn.extend(_.extend((function() {
-        return {
+    Common.UI.InputFieldBtnCalendar = Common.UI.InputFieldBtn.extend(_.extend((() => ({
             options: {
                 id: null,
                 cls: '',
@@ -712,44 +695,43 @@ define([
             },
 
             render: function (parentEl) {
-                var me = this;
                 Common.UI.InputFieldBtn.prototype.render.call(this, parentEl);
 
-                var id = 'id-' + Common.UI.getId() + 'input-field-datetime',
-                    menu = new Common.UI.Menu({
+                const id = `id-${Common.UI.getId()}input-field-datetime`;
+                const menu = new Common.UI.Menu({
                         menuAlign: 'tr-br',
                         style: 'border: none; padding: 0;',
                         items: [
-                            {template: _.template('<div id="' + id + '" style=""></div>'), stopPropagation: true}
+                            {template: _.template(`<div id="${id}" style=""></div>`), stopPropagation: true}
                         ]
                     });
                 $('button', this._button.cmpEl).addClass('no-caret');
                 this._button.setMenu(menu);
-                this._button.menu.on('show:after', function(menu) {
-                    if (!me.cmpCalendar) {
-                        me.cmpCalendar = new Common.UI.Calendar({
-                            el: me.cmpEl.find('#' + id),
+                this._button.menu.on('show:after', (menu) => {
+                    if (!this.cmpCalendar) {
+                        this.cmpCalendar = new Common.UI.Calendar({
+                            el: this.cmpEl.find(`#${id}`),
                             enableKeyEvents: true,
                             firstday: 1
                         });
-                        me.cmpCalendar.on('date:click', function (cmp, date) {
-                            me.dateValue = date;
-                            me.trigger('date:click', me, date);
+                        this.cmpCalendar.on('date:click', (cmp, date) => {
+                            this.dateValue = date;
+                            this.trigger('date:click', this, date);
                             menu.hide();
                         });
-                        me.dateValue && me.cmpCalendar.setDate(me.dateValue);
+                        this.dateValue && this.cmpCalendar.setDate(this.dateValue);
                         menu.alignPosition();
                     }
-                    me.cmpCalendar.focus();
+                    this.cmpCalendar.focus();
                 });
-                this._input.on('input', function() {
-                    me.dateValue = undefined;
+                this._input.on('input', () => {
+                    this.dateValue = undefined;
                 });
             },
 
             setDate: function(date) {
-                if (date && date instanceof Date && !isNaN(date)) {
-                    this.cmpCalendar && this.cmpCalendar.setDate(date);
+                if (date && date instanceof Date && !Number.isNaN(date)) {
+                    this.cmpCalendar?.setDate(date);
                     this.dateValue = date;
                 }
             },
@@ -759,11 +741,9 @@ define([
             },
 
             textDate: 'Select date'
-        }
-    })(), Common.UI.InputFieldBtnCalendar || {}));
+        }))(), Common.UI.InputFieldBtnCalendar || {}));
 
-    Common.UI.InputFieldFixed = Common.UI.InputField.extend((function() {
-        return {
+    Common.UI.InputFieldFixed = Common.UI.InputField.extend((() => ({
             options : {
                 id          : null,
                 cls         : '',
@@ -841,12 +821,11 @@ define([
                 this.disabled = disabled;
                 $(this.el).toggleClass('disabled', disabled);
                 if (this.cmpEl) {
-                    var inputs = this.cmpEl.find('input').addBack().filter('input')
+                    const inputs = this.cmpEl.find('input').addBack().filter('input')
                     disabled
                         ? inputs.attr('disabled', true)
                         : inputs.removeAttr('disabled');
                 }
             },
-        }
-    })());
+        }))());
 });

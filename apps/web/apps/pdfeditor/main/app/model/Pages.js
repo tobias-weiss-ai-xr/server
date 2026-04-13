@@ -23,18 +23,13 @@
  *
  */
 
-define([
-    'underscore',
-    'backbone'
-], function(_, Backbone){
-    'use strict';
+define(["underscore", "backbone"], (_, Backbone) => {
+  PDFE.Models = PDFE.Models || {}
 
-    PDFE.Models = PDFE.Models||{};
-
-    PDFE.Models.Pages = Backbone.Model.extend({
-        defaults: {
-            current: 0,
-            count: 0
-        }
-    });
-});
+  PDFE.Models.Pages = Backbone.Model.extend({
+    defaults: {
+      current: 0,
+      count: 0,
+    },
+  })
+})

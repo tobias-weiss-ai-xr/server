@@ -63,23 +63,20 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'common/main/lib/component/Scroller'
-], function () {
-    'use strict';
+], () => {
 
     Common.UI.DataViewGroupModel = Backbone.Model.extend({
-        defaults: function() {
-            return {
+        defaults: () => ({
                 id: Common.UI.getId(),
                 caption: '',
                 inline: false,
                 headername: undefined
-            }
-        }
+            })
     });
 
     Common.UI.DataViewGroupStore = Backbone.Collection.extend({
@@ -87,15 +84,13 @@ define([
     });
 
     Common.UI.DataViewModel = Backbone.Model.extend({
-        defaults: function() {
-            return {
+        defaults: () => ({
                 id: Common.UI.getId(),
                 selected: false,
                 allowSelected: true,
                 value: null,
                 disabled: false
-            }
-        }
+            })
     });
 
     Common.UI.DataViewStore = Backbone.Collection.extend({
@@ -113,25 +108,23 @@ define([
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
 
-            var me = this;
+            this.template = this.options.template || this.template;
+            this.dataHint = this.options.dataHint || '';
+            this.dataHintDirection = this.options.dataHintDirection || '';
+            this.dataHintOffset = this.options.dataHintOffset || '';
+            this.scaling = this.options.scaling;
 
-            me.template = me.options.template || me.template;
-            me.dataHint = me.options.dataHint || '';
-            me.dataHintDirection = me.options.dataHintDirection || '';
-            me.dataHintOffset = me.options.dataHintOffset || '';
-            me.scaling = me.options.scaling;
-
-            me.listenTo(me.model, 'change', this.model.get('skipRenderOnChange') ? me.onChange : me.render);
-            me.listenTo(me.model, 'change:selected',    me.onSelectChange);
-            me.listenTo(me.model, 'change:tip',         me.onTipChange);
-            me.listenTo(me.model, 'remove',             me.remove);
+            this.listenTo(this.model, 'change', this.model.get('skipRenderOnChange') ? this.onChange : this.render);
+            this.listenTo(this.model, 'change:selected',    this.onSelectChange);
+            this.listenTo(this.model, 'change:tip',         this.onTipChange);
+            this.listenTo(this.model, 'remove',             this.remove);
         },
 
         render: function () {
             if (_.isUndefined(this.model.id))
                 return this;
 
-            var el = this.$el || $(this.el);
+            const el = this.$el || $(this.el);
 
             el.html(this.template(this.model.toJSON()));
             el.addClass('item canfocused');
@@ -156,7 +149,7 @@ define([
             if (!_.isUndefined(this.model.get('cls')))
                 el.addClass(this.model.get('cls'));
 
-            var tip = el.data('bs.tooltip');
+            const tip = el.data('bs.tooltip');
             if (tip) {
                 if (tip.dontShow===undefined && el.is(':hover'))
                     tip.dontShow = true;
@@ -167,7 +160,7 @@ define([
                 this.applyScaling(Common.UI.Scaling.currentRatio());
 
                 el.on('app:scaling', _.bind(function (e, info) {
-                    if ( this.scaling != info.ratio ) {
+                    if ( this.scaling !== info.ratio ) {
                         this.applyScaling(info.ratio);
                     }
                 }, this));
@@ -212,7 +205,7 @@ define([
         onChange: function () {
             if (_.isUndefined(this.model.id))
                 return this;
-            var el = this.$el || $(this.el);
+            const el = this.$el || $(this.el);
             el.toggleClass('selected', !!this.model.get('selected') && this.model.get('allowSelected'));
             el.toggleClass('disabled', !!this.model.get('disabled'));
 
@@ -225,14 +218,14 @@ define([
             this.scaling = ratio;
 
             if (ratio > 2) {
-                var el = this.$el || $(this.el),
-                    icon = el.find('.options__icon');
+                const el = this.$el || $(this.el);
+                const icon = el.find('.options__icon');
                 if (icon.length > 0) {
                     if (!el.find('svg.icon').length) {
-                        var iconCls = icon.attr('class'),
-                            re_icon_name = /btn-[^\s]+/.exec(iconCls),
-                            icon_name = re_icon_name ? re_icon_name[0] : "null",
-                            svg_icon = '<svg class="icon uni-scale"><use href="#%iconname"></use></svg>'.replace('%iconname', icon_name);
+                        const iconCls = icon.attr('class');
+                        const re_icon_name = /btn-[^\s]+/.exec(iconCls);
+                        const icon_name = re_icon_name ? re_icon_name[0] : "null";
+                        const svg_icon = '<svg class="icon uni-scale"><use href="#%iconname"></use></svg>'.replace('%iconname', icon_name);
                         icon.after(svg_icon);
                     }
                 }
@@ -281,83 +274,80 @@ define([
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
 
-            var me = this;
-
-            me.template       = me.options.template       || me.template;
-            me.store          = me.options.store          || new Common.UI.DataViewStore();
-            me.groups         = me.options.groups         || null;
-            me.itemTemplate   = me.options.itemTemplate   || null;
-            me.itemDataHint   = me.options.itemDataHint   || '';
-            me.itemDataHintDirection = me.options.itemDataHintDirection || '';
-            me.itemDataHintOffset = me.options.itemDataHintOffset || '';
-            me.multiSelect    = me.options.multiSelect;
-            me.handleSelect   = me.options.handleSelect;
-            me.parentMenu     = me.options.parentMenu;
-            me.outerMenu      = me.options.outerMenu;
-            me.enableKeyEvents= me.options.enableKeyEvents;
-            me.useBSKeydown   = me.options.useBSKeydown; // only with enableKeyEvents && parentMenu
-            me.showLast       = me.options.showLast;
-            me.style          = me.options.style        || '';
-            me.cls            = me.options.cls          || '';
-            me.emptyText      = me.options.emptyText    || '';
-            me.listenStoreEvents= (me.options.listenStoreEvents!==undefined) ? me.options.listenStoreEvents : true;
-            me.allowScrollbar = (me.options.allowScrollbar!==undefined) ? me.options.allowScrollbar : true;
-            me.scrollAlwaysVisible = me.options.scrollAlwaysVisible || false;
-            me.minScrollbarLength = me.options.minScrollbarLength || 40;
-            me.scrollYStyle    = me.options.scrollYStyle;
-            me.tabindex = me.options.tabindex || 0;
-            me.itemTabindex = me.options.itemTabindex!==undefined ? me.options.itemTabindex : me.tabindex>0 ? -1 : 0; //do not set focus to items when dataview get focus
-            me.delayRenderTips = me.options.delayRenderTips || false;
-            if (me.parentMenu)
-                me.parentMenu.options.restoreHeight = (me.options.restoreHeight>0);
-            me.delaySelect = me.options.delaySelect || false;
-            me.rendered       = false;
-            me.dataViewItems = [];
-            if (me.options.keyMoveDirection=='vertical')
-                me.moveKeys = [Common.UI.Keys.UP, Common.UI.Keys.DOWN];
-            else if (me.options.keyMoveDirection=='horizontal')
-                me.moveKeys = [Common.UI.Keys.LEFT, Common.UI.Keys.RIGHT];
+            this.template       = this.options.template       || this.template;
+            this.store          = this.options.store          || new Common.UI.DataViewStore();
+            this.groups         = this.options.groups         || null;
+            this.itemTemplate   = this.options.itemTemplate   || null;
+            this.itemDataHint   = this.options.itemDataHint   || '';
+            this.itemDataHintDirection = this.options.itemDataHintDirection || '';
+            this.itemDataHintOffset = this.options.itemDataHintOffset || '';
+            this.multiSelect    = this.options.multiSelect;
+            this.handleSelect   = this.options.handleSelect;
+            this.parentMenu     = this.options.parentMenu;
+            this.outerMenu      = this.options.outerMenu;
+            this.enableKeyEvents= this.options.enableKeyEvents;
+            this.useBSKeydown   = this.options.useBSKeydown; // only with enableKeyEvents && parentMenu
+            this.showLast       = this.options.showLast;
+            this.style          = this.options.style        || '';
+            this.cls            = this.options.cls          || '';
+            this.emptyText      = this.options.emptyText    || '';
+            this.listenStoreEvents= (this.options.listenStoreEvents!==undefined) ? this.options.listenStoreEvents : true;
+            this.allowScrollbar = (this.options.allowScrollbar!==undefined) ? this.options.allowScrollbar : true;
+            this.scrollAlwaysVisible = this.options.scrollAlwaysVisible || false;
+            this.minScrollbarLength = this.options.minScrollbarLength || 40;
+            this.scrollYStyle    = this.options.scrollYStyle;
+            this.tabindex = this.options.tabindex || 0;
+            this.itemTabindex = this.options.itemTabindex!==undefined ? this.options.itemTabindex : this.tabindex>0 ? -1 : 0; //do not set focus to items when dataview get focus
+            this.delayRenderTips = this.options.delayRenderTips || false;
+            if (this.parentMenu)
+                this.parentMenu.options.restoreHeight = (this.options.restoreHeight>0);
+            this.delaySelect = this.options.delaySelect || false;
+            this.rendered       = false;
+            this.dataViewItems = [];
+            if (this.options.keyMoveDirection==='vertical')
+                this.moveKeys = [Common.UI.Keys.UP, Common.UI.Keys.DOWN];
+            else if (this.options.keyMoveDirection==='horizontal')
+                this.moveKeys = [Common.UI.Keys.LEFT, Common.UI.Keys.RIGHT];
             else
-                me.moveKeys = [Common.UI.Keys.UP, Common.UI.Keys.DOWN, Common.UI.Keys.LEFT, Common.UI.Keys.RIGHT];
+                this.moveKeys = [Common.UI.Keys.UP, Common.UI.Keys.DOWN, Common.UI.Keys.LEFT, Common.UI.Keys.RIGHT];
 
-            if ( me.options.scaling === false) {
-                me.cls = me.options.cls + ' scaling-off';
+            if ( this.options.scaling === false) {
+                this.cls = `${this.options.cls} scaling-off`;
             }
 
-            if (me.options.el)
-                me.render();
+            if (this.options.el)
+                this.render();
         },
 
         render: function (parentEl) {
-            var me = this;
 
             this.trigger('render:before', this);
 
             if (parentEl) {
                 this.setElement(parentEl, false);
                 this.cmpEl = $(this.template({
-                    groups: me.groups ? me.groups.toJSON() : null,
-                    style: me.style,
-                    cls: me.cls,
-                    options: me.options
+                    groups: this.groups ? this.groups.toJSON() : null,
+                    style: this.style,
+                    cls: this.cls,
+                    options: this.options
                 }));
 
                 parentEl.html(this.cmpEl);
             } else {
-                this.cmpEl = me.$el || $(this.el);
+                this.cmpEl = this.$el || $(this.el);
                 this.cmpEl.html(this.template({
-                    groups: me.groups ? me.groups.toJSON() : null,
-                    style: me.style,
-                    cls: me.cls,
-                    options: me.options
+                    groups: this.groups ? this.groups.toJSON() : null,
+                    style: this.style,
+                    cls: this.cls,
+                    options: this.options
                 }));
             }
 
-            var modalParents = this.cmpEl.closest('.asc-window');
+            let modalParents = this.cmpEl.closest('.asc-window');
             if (modalParents.length < 1)
                 modalParents = this.cmpEl.closest('[id^="menu-container-"]'); // context menu
             if (modalParents.length > 0) {
-                this.tipZIndex = parseInt(modalParents.css('z-index')) + 10;
+                this.tipZIndex = Number.parseInt(modalParents.css('z-index')) + 10;
             }
 
             if (!this.rendered) {
@@ -378,17 +368,17 @@ define([
                 }
 
                 if (this.enableKeyEvents && this.parentMenu && this.handleSelect) {
-                    if (!me.showLast)
-                        this.parentMenu.on('show:before', function(menu) { me.deselectAll(); });
-                    this.parentMenu.on('show:after', function(menu, e) {
+                    if (!this.showLast)
+                        this.parentMenu.on('show:before', (menu) => { this.deselectAll(); });
+                    this.parentMenu.on('show:after', (menu, e) => {
                         if (e && (menu.el !== e.target)) return;
-                        if (me.showLast) me.showLastSelected();
-                        if (me.outerMenu && (me.outerMenu.focusOnShow===false)) return;
+                        if (this.showLast) this.showLastSelected();
+                        if (this.outerMenu && (this.outerMenu.focusOnShow===false)) return;
                         Common.NotificationCenter.trigger('dataview:focus');
-                        _.delay(function() {
+                        _.delay(() => {
                             menu.cmpEl.find('.dataview').focus();
                         }, 10);
-                    }).on('hide:after', function() {
+                    }).on('hide:after', () => {
                         Common.NotificationCenter.trigger('dataview:blur');
                     });
                 }
@@ -407,7 +397,7 @@ define([
 
             this.rendered = true;
 
-            (this.$el || $(this.el)).on('click', function(e){
+            (this.$el || $(this.el)).on('click', (e)=> {
                 if (/dataview|grouped-data|group-items-container/.test(e.target.className) || $(e.target).closest('.group-description').length>0) return false;
             });
 
@@ -435,8 +425,8 @@ define([
             if (suspendEvents)
                 this.suspendEvents();
             this.extremeSeletedRec = record;
-            if (!this.multiSelect || ( !this.pressedShift && !this.pressedCtrl) || !this.currentSelectedRec || (this.pressedShift && this.currentSelectedRec == record)) {
-                _.each(this.store.where({selected: true}), function(rec){
+            if (!this.multiSelect || ( !this.pressedShift && !this.pressedCtrl) || !this.currentSelectedRec || (this.pressedShift && this.currentSelectedRec === record)) {
+                _.each(this.store.where({selected: true}), (rec)=> {
                     rec.set({selected: false});
                 });
 
@@ -451,10 +441,9 @@ define([
                         this.currentSelectedRec = record;
                     }
                     else if(this.pressedShift){
-                        var me =this;
-                        var inRange=false;
-                        _.each(me.store.models, function(rec){
-                            if(me.currentSelectedRec == rec || record == rec){
+                        let inRange=false;
+                        _.each(this.store.models, (rec)=> {
+                            if(this.currentSelectedRec === rec || record === rec){
                                 inRange = !inRange;
                                 rec.set({selected: true});
                             }
@@ -481,7 +470,7 @@ define([
             if (suspendEvents)
                 this.suspendEvents();
 
-            _.each(this.store.where({selected: true}), function(record){
+            _.each(this.store.where({selected: true}), (record)=> {
                 record.set({selected: false});
             });
             this.lastSelectedRec = null;
@@ -495,7 +484,7 @@ define([
         },
 
         onAddItem: function(record, store, opts) {
-            var view = new Common.UI.DataViewItem({
+            const view = new Common.UI.DataViewItem({
                 template: this.itemTemplate,
                 model: record,
                 scaling: this.options.scaling,
@@ -506,23 +495,23 @@ define([
             });
 
             if (view) {
-                var innerEl = $(this.el).find('.inner').addBack().filter('.inner');
+                let innerEl = $(this.el).find('.inner').addBack().filter('.inner');
 
                 if (this.groups && this.groups.length > 0) {
-                    var group = this.groups.findWhere({id: record.get('group')});
+                    const group = this.groups.findWhere({id: record.get('group')});
 
                     if (group) {
-                        innerEl = innerEl.find('#' + group.id + ' ' + '.group-items-container');
+                        innerEl = innerEl.find(`#${group.id} .group-items-container`);
                     }
                 }
 
-                var idx = _.indexOf(this.store.models, record);
+                const idx = _.indexOf(this.store.models, record);
                 if (innerEl) {
                     if (opts && (typeof opts.at==='number') && opts.at >= 0) {
-                        if (opts.at == 0) {
+                        if (opts.at === 0) {
                             innerEl.prepend(view.render().el);
                         } else if (!(this.groups && this.groups.length > 0)) { // for dataview without groups
-                            var innerDivs = innerEl.find('> div');
+                            const innerDivs = innerEl.find('> div');
                             if (idx > 0)
                                 $(innerDivs.get(idx - 1)).after(view.render().el);
                             else {
@@ -535,18 +524,16 @@ define([
 
                     (this.dataViewItems.length<1) && innerEl.find('.empty-text').remove();
                     this.dataViewItems = this.dataViewItems.slice(0, idx).concat(view).concat(this.dataViewItems.slice(idx));
-
-                    var me = this,
-                        view_el = $(view.el),
-                        tip = record.get('tip');
+                    const view_el = $(view.el);
+                    const tip = record.get('tip');
                     if (tip!==undefined && tip!==null) {
                         if (this.delayRenderTips) {
-                            view_el.one('mouseenter', function () { // hide tooltip when mouse is over menu
+                            view_el.one('mouseenter', () => { // hide tooltip when mouse is over menu
                                 view_el.attr('data-toggle', 'tooltip');
                                 view_el.tooltip({
                                     title       : record.get('tip'), // use actual tip, because it can be changed
                                     placement   : 'cursor',
-                                    zIndex : me.tipZIndex
+                                    zIndex : this.tipZIndex
                                 });
                                 view_el.mouseenter();
                             });
@@ -556,7 +543,7 @@ define([
                             view_el.tooltip({
                                 title       : record.get('tip'), // use actual tip, because it can be changed
                                 placement   : 'cursor',
-                                zIndex : me.tipZIndex
+                                zIndex : this.tipZIndex
                             });
                             view_el.attr('aria-label', record.get('tip'));
                         }
@@ -579,7 +566,7 @@ define([
         },
 
         onAddGroup: function(group) {
-            var el = $(_.template([
+            const el = $(_.template([
                 '<% if (group.headername !== undefined) { %>',
                 '<div class="header-name"><%= group.headername %></div>',
                 '<% } %>',
@@ -595,10 +582,10 @@ define([
             ].join(''))({
                 group: group.toJSON()
             }));
-            var innerEl = $(this.el).find('.inner').addBack().filter('.inner');
+            const innerEl = $(this.el).find('.inner').addBack().filter('.inner');
             if (innerEl) {
-                var idx = _.indexOf(this.groups.models, group);
-                var innerDivs = innerEl.find('.grouped-data');
+                const idx = _.indexOf(this.groups.models, group);
+                const innerDivs = innerEl.find('.grouped-data');
                 if (idx > 0)
                     $(innerDivs.get(idx - 1)).after(el);
                 else {
@@ -608,10 +595,10 @@ define([
         },
 
         onRemoveGroup: function(group) {
-            var innerEl = $(this.el).find('.inner').addBack().filter('.inner');
+            const innerEl = $(this.el).find('.inner').addBack().filter('.inner');
             if (innerEl) {
-                var div = innerEl.find('#' + group.get('id') + '.grouped-data');
-                div && div.remove();
+                const div = innerEl.find(`#${group.get('id')}.grouped-data`);
+                div?.remove();
             }
             this._layoutParams = undefined;
         },
@@ -619,8 +606,8 @@ define([
         onResetItems: function() {
             this.trigger('reset:before', this);
 
-            _.each(this.dataViewItems, function(item) {
-                var tip = item.$el.data('bs.tooltip');
+            _.each(this.dataViewItems, (item) => {
+                const tip = item.$el.data('bs.tooltip');
                 if (tip) {
                     if (tip.dontShow===undefined)
                         tip.dontShow = true;
@@ -637,21 +624,19 @@ define([
 
             if (!_.isUndefined(this.scroller)) {
                 this.scroller.destroy();
-                delete this.scroller;
+                this.scroller = undefined;
             }
 
             if (this.store.length < 1 && this.emptyText.length > 0)
-                $(this.el).find('.inner').addBack().filter('.inner').append('<table cellpadding="10" class="empty-text"><tr><td>' + this.emptyText + '</td></tr></table>');
+                $(this.el).find('.inner').addBack().filter('.inner').append(`<table cellpadding="10" class="empty-text"><tr><td>${this.emptyText}</td></tr></table>`);
 
             _.each(this.dataViewItems, function(item) {
                 this.stopListening(item);
                 item.stopListening(item.model);
             }, this);
             this.dataViewItems = [];
-
-            var me = this;
-            this.store.each(function(item){
-                me.onAddItem(item, me.store);
+            this.store.each((item)=> {
+                this.onAddItem(item, this.store);
             }, this);
 
             if (this.allowScrollbar) {
@@ -681,18 +666,17 @@ define([
         },
 
         onInitItemTip: function (view, record) {
-            var me = this,
-                view_el = $(view.el),
-                tip = view_el.data('bs.tooltip');
+            const view_el = $(view.el);
+            const tip = view_el.data('bs.tooltip');
             if (!(tip === null || tip === undefined))
                 view_el.removeData('bs.tooltip');
             if (this.delayRenderTips) {
-                view_el.one('mouseenter', function () {
+                view_el.one('mouseenter', () => {
                     view_el.attr('data-toggle', 'tooltip');
                     view_el.tooltip({
                         title: record.get('tip'),
                         placement: 'cursor',
-                        zIndex: me.tipZIndex
+                        zIndex: this.tipZIndex
                     });
                     view_el.mouseenter();
                 });
@@ -702,14 +686,14 @@ define([
                 view_el.tooltip({
                     title: record.get('tip'),
                     placement: 'cursor',
-                    zIndex: me.tipZIndex
+                    zIndex: this.tipZIndex
                 });
                 view_el.attr('aria-label', record.get('tip'));
             }
         },
 
         onRemoveItem: function(view, record) {
-            var tip = view.$el.data('bs.tooltip');
+            const tip = view.$el.data('bs.tooltip');
             if (tip) {
                 if (tip.dontShow===undefined)
                     tip.dontShow = true;
@@ -719,12 +703,12 @@ define([
             view.stopListening();
 
             if (this.store.length < 1 && this.emptyText.length > 0) {
-                var el = $(this.el).find('.inner').addBack().filter('.inner');
+                const el = $(this.el).find('.inner').addBack().filter('.inner');
                 if ( el.find('.empty-text').length<=0 )
-                    el.append('<table cellpadding="10" class="empty-text"><tr><td>' + this.emptyText + '</td></tr></table>');
+                    el.append(`<table cellpadding="10" class="empty-text"><tr><td>${this.emptyText}</td></tr></table>`);
             }
 
-            for (var i=0; i < this.dataViewItems.length; i++) {
+            for (let i=0; i < this.dataViewItems.length; i++) {
                 if (_.isEqual(view, this.dataViewItems[i]) ) {
                     this.dataViewItems.splice(i, 1);
                     break;
@@ -743,9 +727,9 @@ define([
             window._event = e;  //  for FireFox only
 
             if(this.multiSelect) {
-                if (e && e.ctrlKey) {
+                if (e?.ctrlKey) {
                     this.pressedCtrl = true;
-                } else if (e && e.shiftKey) {
+                } else if (e?.shiftKey) {
                     this.pressedShift = true;
                 }
             }
@@ -754,7 +738,7 @@ define([
                 if (!this.delaySelect) {
                     this.selectRecord(record);
                 } else {
-                    _.each(this.store.where({selected: true}), function(rec){
+                    _.each(this.store.where({selected: true}), (rec)=> {
                         rec.set({selected: false});
                     });
                     if (record) {
@@ -767,7 +751,7 @@ define([
             }
             this.lastSelectedRec = null;
 
-            var tip = view.$el.data('bs.tooltip');
+            const tip = view.$el.data('bs.tooltip');
             if (tip) (tip.tip()).remove();
 
             if (!this.isSuspendEvents) {
@@ -804,15 +788,15 @@ define([
 
         scrollToRecord: function (record, force, offsetTop) {
             if (!record) return;
-            var innerEl = $(this.el).find('.inner'),
-                inner_top = Common.Utils.getOffset(innerEl).top + (offsetTop ? offsetTop : 0),
-                idx = _.indexOf(this.store.models, record),
-                div = (idx>=0 && this.dataViewItems.length>idx) ? $(this.dataViewItems[idx].el) : innerEl.find('#' + record.get('id'));
+            const innerEl = $(this.el).find('.inner');
+            const inner_top = Common.Utils.getOffset(innerEl).top + (offsetTop ? offsetTop : 0);
+            const idx = _.indexOf(this.store.models, record);
+            const div = (idx>=0 && this.dataViewItems.length>idx) ? $(this.dataViewItems[idx].el) : innerEl.find(`#${record.get('id')}`);
             if (div.length<=0) return;
             
-            var div_top = Common.Utils.getOffset(div).top,
-                div_first = $(this.dataViewItems[0].el),
-                div_first_top = (div_first.length>0) ? div_first[0].clientTop : 0;
+            const div_top = Common.Utils.getOffset(div).top;
+            const div_first = $(this.dataViewItems[0].el);
+            const div_first_top = (div_first.length>0) ? div_first[0].clientTop : 0;
             if (force || div_top < inner_top + div_first_top || div_top+div.outerHeight()*0.9 > inner_top + div_first_top + innerEl.height()) {
                 if (this.scroller && this.allowScrollbar) {
                     this.scroller.scrollTop(innerEl.scrollTop() + div_top - inner_top - div_first_top, 0);
@@ -831,20 +815,20 @@ define([
             if (!this.enableKeyEvents) return;
 
             if(this.multiSelect) {
-                if (data.keyCode == Common.UI.Keys.CTRL) {
+                if (data.keyCode === Common.UI.Keys.CTRL) {
                     this.pressedCtrl = true;
-                } else if (data.keyCode == Common.UI.Keys.SHIFT) {
+                } else if (data.keyCode === Common.UI.Keys.SHIFT) {
                     this.pressedShift = true;
                 }
             }
 
-            if (_.indexOf(this.moveKeys, data.keyCode)>-1 || data.keyCode==Common.UI.Keys.RETURN) {
+            if (_.indexOf(this.moveKeys, data.keyCode)>-1 || data.keyCode===Common.UI.Keys.RETURN) {
                 data.preventDefault();
                 data.stopPropagation();
-                var rec =(this.multiSelect) ? this.extremeSeletedRec : this.getSelectedRec();
+                let rec =(this.multiSelect) ? this.extremeSeletedRec : this.getSelectedRec();
                 if (this.lastSelectedRec === null)
                     this.lastSelectedRec = rec;
-                if (data.keyCode == Common.UI.Keys.RETURN) {
+                if (data.keyCode === Common.UI.Keys.RETURN) {
                     this.lastSelectedRec = null;
                     if (this.selectedBeforeHideRec) // only for ComboDataView menuPicker
                         rec = this.selectedBeforeHideRec;
@@ -857,7 +841,7 @@ define([
                     this.pressedCtrl=false;
                     function getFirstItemIndex() {
                         if (this.dataViewItems.length===0) return 0;
-                        var first = 0;
+                        let first = 0;
                         while(!this.dataViewItems[first] || !this.dataViewItems[first].$el || this.dataViewItems[first].$el.hasClass('disabled')) {
                             first++;
                         }
@@ -865,16 +849,16 @@ define([
                     }
                     function getLastItemIndex() {
                         if (this.dataViewItems.length===0) return 0;
-                        var last = this.dataViewItems.length-1;
+                        let last = this.dataViewItems.length-1;
                         while(!this.dataViewItems[last] || !this.dataViewItems[last].$el || this.dataViewItems[last].$el.hasClass('disabled')) {
                             last--;
                         }
                         return last;
                     }
-                    var idx = _.indexOf(this.store.models, rec);
+                    let idx = _.indexOf(this.store.models, rec);
                     if (idx<0) {
-                        if (data.keyCode==Common.UI.Keys.LEFT) {
-                            var target = $(e.target).closest('.dropdown-submenu.over');
+                        if (data.keyCode===Common.UI.Keys.LEFT) {
+                            const target = $(e.target).closest('.dropdown-submenu.over');
                             if (target.length>0) {
                                 target.removeClass('over');
                                 target.find('> a').focus();
@@ -882,55 +866,55 @@ define([
                                 idx = getFirstItemIndex.call(this);
                         } else
                             idx = getFirstItemIndex.call(this);
-                    } else if (this.options.keyMoveDirection == 'both') {
+                    } else if (this.options.keyMoveDirection === 'both') {
                         if (this._layoutParams === undefined)
                             this.fillIndexesArray();
-                        var topIdx = this.dataViewItems[idx].topIdx,
-                            leftIdx = this.dataViewItems[idx].leftIdx;
+                        let topIdx = this.dataViewItems[idx].topIdx;
+                        let leftIdx = this.dataViewItems[idx].leftIdx;
                         function checkEl() {
-                            var item = this.dataViewItems[this._layoutParams.itemsIndexes[topIdx][leftIdx]];
-                            if (item && item.$el && !item.$el.hasClass('disabled'))
+                            const item = this.dataViewItems[this._layoutParams.itemsIndexes[topIdx][leftIdx]];
+                            if (item?.$el && !item.$el.hasClass('disabled'))
                                 return this._layoutParams.itemsIndexes[topIdx][leftIdx];
                         }
 
                         idx = undefined;
-                        if (data.keyCode==Common.UI.Keys.LEFT) {
+                        if (data.keyCode===Common.UI.Keys.LEFT) {
                             while (idx===undefined) {
                                 leftIdx--;
                                 if (leftIdx<0) {
-                                    var target = $(e.target).closest('.dropdown-submenu.over');
+                                    const target = $(e.target).closest('.dropdown-submenu.over');
                                     if (target.length>0) {
                                         target.removeClass('over');
                                         target.find('> a').focus();
                                         break;
-                                    } else
+                                    }
                                         leftIdx = this._layoutParams.columns-1;
                                 }
                                 idx = checkEl.call(this);
                             }
-                        } else if (data.keyCode==Common.UI.Keys.RIGHT) {
+                        } else if (data.keyCode===Common.UI.Keys.RIGHT) {
                             while (idx===undefined) {
                                 leftIdx++;
                                 if (leftIdx>this._layoutParams.columns-1) leftIdx = 0;
                                 idx = checkEl.call(this);
                             }
-                        } else if (data.keyCode==Common.UI.Keys.UP) {
-                            if (topIdx==0 && this.outerMenu && this.outerMenu.menu) {
+                        } else if (data.keyCode===Common.UI.Keys.UP) {
+                            if (topIdx===0 && this.outerMenu && this.outerMenu.menu) {
                                 this.deselectAll(true);
-                                this.outerMenu.menu.focusOuter && this.outerMenu.menu.focusOuter(data, this.outerMenu.index);
+                                this.outerMenu.menu.focusOuter?.(data, this.outerMenu.index);
                                 return;
-                            } else
+                            }
                                 while (idx===undefined) {
                                     topIdx--;
                                     if (topIdx<0) topIdx = this._layoutParams.rows-1;
                                     idx = checkEl.call(this);
                                 }
                         } else {
-                            if (topIdx==this._layoutParams.rows-1 && this.outerMenu && this.outerMenu.menu) {
+                            if (topIdx===this._layoutParams.rows-1 && this.outerMenu && this.outerMenu.menu) {
                                 this.deselectAll(true);
-                                this.outerMenu.menu.focusOuter && this.outerMenu.menu.focusOuter(data, this.outerMenu.index);
+                                this.outerMenu.menu.focusOuter?.(data, this.outerMenu.index);
                                 return;
-                            } else
+                            }
                                 while (idx===undefined) {
                                     topIdx++;
                                     if (topIdx>this._layoutParams.rows-1) topIdx = 0;
@@ -938,17 +922,17 @@ define([
                                 }
                         }
                     } else {
-                        var topIdx = idx,
-                            firstIdx = getFirstItemIndex.call(this),
-                            lastIdx = getLastItemIndex.call(this);
+                        let topIdx = idx;
+                        const firstIdx = getFirstItemIndex.call(this);
+                        const lastIdx = getLastItemIndex.call(this);
                         idx = undefined;
                         function checkEl() {
-                            var item = this.dataViewItems[topIdx];
-                            if (item && item.$el && !item.$el.hasClass('disabled'))
+                            const item = this.dataViewItems[topIdx];
+                            if (item?.$el && !item.$el.hasClass('disabled'))
                                 return topIdx;
                         }
                         while (idx===undefined) {
-                            topIdx = (data.keyCode==Common.UI.Keys.UP || data.keyCode==Common.UI.Keys.LEFT)
+                            topIdx = (data.keyCode===Common.UI.Keys.UP || data.keyCode===Common.UI.Keys.LEFT)
                                     ? Math.max(firstIdx, topIdx-1)
                                     : Math.min(lastIdx, topIdx + 1);
                             idx = checkEl.call(this);
@@ -972,16 +956,16 @@ define([
         onKeyUp: function(e){
             if (!this.enableKeyEvents) return;
 
-            if(e.keyCode == Common.UI.Keys.SHIFT)
+            if(e.keyCode === Common.UI.Keys.SHIFT)
                 this.pressedShift = false;
-            if(e.keyCode == Common.UI.Keys.CTRL)
+            if(e.keyCode === Common.UI.Keys.CTRL)
                 this.pressedCtrl = false;
             this.trigger('item:keyup', this, e);
         },
 
         attachKeyEvents: function() {
             if (this.enableKeyEvents && this.handleSelect) {
-                var el = $(this.el).find('.inner').addBack().filter('.inner');
+                const el = $(this.el).find('.inner').addBack().filter('.inner');
                 el.addClass('canfocused');
                 el.attr('tabindex', (this.tabindex || 0).toString());
                 el.on((this.parentMenu && this.useBSKeydown) ? 'dataview:keydown' : 'keydown', _.bind(this.onKeyDown, this));
@@ -995,7 +979,7 @@ define([
                 this.scrollToRecord(this.lastSelectedRec);
                 this.lastSelectedRec = null;
             } else {
-                var selectedRec = this.getSelectedRec();
+                const selectedRec = this.getSelectedRec();
                 if (!this.multiSelect)
                     this.scrollToRecord(selectedRec);
                 else if(selectedRec && selectedRec.length > 0)
@@ -1009,7 +993,7 @@ define([
             $(this.el).find('.inner').addBack().filter('.inner').toggleClass('disabled', disabled);
 
             if (this.tabindex!==undefined) {
-                var el = $(this.el).find('.inner').addBack().filter('.inner');
+                const el = $(this.el).find('.inner').addBack().filter('.inner');
                 disabled && (this.tabindex = el.attr('tabindex'));
                 el.attr('tabindex', disabled ? "-1" : this.tabindex);
             }
@@ -1023,33 +1007,33 @@ define([
             this.emptyText = emptyText;
 
             if (this.store.length < 1) {
-                var el = $(this.el).find('.inner').addBack().filter('.inner').find('.empty-text td');
+                const el = $(this.el).find('.inner').addBack().filter('.inner').find('.empty-text td');
                 if ( el.length>0 )
                     el.text(this.emptyText);
             }
         },
 
         alignPosition: function() {
-            var menuRoot = (this.parentMenu.cmpEl.attr('role') === 'menu')
+            const menuRoot = (this.parentMenu.cmpEl.attr('role') === 'menu')
                             ? this.parentMenu.cmpEl
-                            : this.parentMenu.cmpEl.find('[role=menu]'),
-                docH = Common.Utils.innerHeight()-10,
-                innerEl = $(this.el).find('.inner').addBack().filter('.inner'),
-                // parent = innerEl.parent(),
-                // margins =  parseInt(parent.css('margin-top')) + parseInt(parent.css('margin-bottom')) + parseInt(menuRoot.css('margin-top')),
-                // paddings = parseInt(menuRoot.css('padding-top')) + parseInt(menuRoot.css('padding-bottom')),
-                menuH = menuRoot.outerHeight(),
-                innerH = innerEl.height(),
-                diff = Math.max(menuH - innerH, 0),
-                top = parseInt(menuRoot.css('top')),
-                props = {minScrollbarLength  : this.minScrollbarLength};
+                            : this.parentMenu.cmpEl.find('[role=menu]');
+            const docH = Common.Utils.innerHeight()-10;
+            const innerEl = $(this.el).find('.inner').addBack().filter('.inner');
+            // parent = innerEl.parent(),
+            // margins =  parseInt(parent.css('margin-top')) + parseInt(parent.css('margin-bottom')) + parseInt(menuRoot.css('margin-top')),
+            // paddings = parseInt(menuRoot.css('padding-top')) + parseInt(menuRoot.css('padding-bottom')),
+            const menuH = menuRoot.outerHeight();
+            const innerH = innerEl.height();
+            const diff = Math.max(menuH - innerH, 0);
+            const top = Number.parseInt(menuRoot.css('top'));
+            const props = {minScrollbarLength  : this.minScrollbarLength};
             this.scrollAlwaysVisible && (props.alwaysVisibleY = this.scrollAlwaysVisible);
 
             if (top + menuH > docH ) {
-                innerEl.css('max-height', (docH - top - diff) + 'px');
+                innerEl.css('max-height', `${docH - top - diff}px`);
                 if (this.allowScrollbar) this.scroller.update(props);
             } else if ( top + menuH < docH && innerH < this.options.restoreHeight ) {
-                innerEl.css('max-height', (Math.min(docH - top - diff, this.options.restoreHeight)) + 'px');
+                innerEl.css('max-height', `${Math.min(docH - top - diff, this.options.restoreHeight)}px`);
                 if (this.allowScrollbar) this.scroller.update(props);
             }
         },
@@ -1063,14 +1047,16 @@ define([
                 rows:           0
             };
 
-            var el = $(this.dataViewItems[0].el),
-                itemW = el.outerWidth() + parseFloat(el.css('margin-left')) + parseFloat(el.css('margin-right')),
-                offsetLeft = Common.Utils.getOffset(this.$el).left,
-                offsetTop = Common.Utils.getOffset(el).top,
-                prevtop = -1, topIdx = 0, leftIdx = 0;
+            const el = $(this.dataViewItems[0].el);
+            const itemW = el.outerWidth() + Number.parseFloat(el.css('margin-left')) + Number.parseFloat(el.css('margin-right'));
+            const offsetLeft = Common.Utils.getOffset(this.$el).left;
+            const offsetTop = Common.Utils.getOffset(el).top;
+            let prevtop = -1;
+            let topIdx = 0;
+            let leftIdx = 0;
 
-            for (var i=0; i<this.dataViewItems.length; i++) {
-                var top = Common.Utils.getOffset($(this.dataViewItems[i].el)).top - offsetTop;
+            for (let i=0; i<this.dataViewItems.length; i++) {
+                const top = Common.Utils.getOffset($(this.dataViewItems[i].el)).top - offsetTop;
                 leftIdx = Math.floor((Common.Utils.getOffset($(this.dataViewItems[i].el)).left - offsetLeft)/itemW + 0.01);
                 if (top>prevtop) {
                     prevtop = top;
@@ -1096,11 +1082,11 @@ define([
 
         focus: function(index) {
             $(this.el).find('.inner').addBack().filter('.inner').focus();
-            var rec;
-            if (typeof index == 'string') {
-                if (index == 'first') {
+            let rec;
+            if (typeof index === 'string') {
+                if (index === 'first') {
                     rec = this.selectByIndex(0, true);
-                } else if (index == 'last') {
+                } else if (index === 'last') {
                     if (this._layoutParams === undefined)
                         this.fillIndexesArray();
                     rec = this.selectByIndex(this._layoutParams.itemsIndexes[this._layoutParams.rows-1][0], true);
@@ -1111,7 +1097,7 @@ define([
         },
 
         focusInner: function(e) {
-            this.focus(e.keyCode == Common.UI.Keys.DOWN ? 'first' : 'last');
+            this.focus(e.keyCode === Common.UI.Keys.DOWN ? 'first' : 'last');
         }
     });
 
@@ -1136,62 +1122,60 @@ define([
 
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
-            var me = this;
 
-            me.template       = me.options.template       || me.template;
-            me.store          = me.options.store          || new Common.UI.DataViewStore();
-            me.itemTemplate   = me.options.itemTemplate   || null;
-            me.handleSelect   = me.options.handleSelect;
-            me.parentMenu     = me.options.parentMenu;
-            me.outerMenu      = me.options.outerMenu;
-            me.enableKeyEvents= me.options.enableKeyEvents;
-            me.useBSKeydown   = me.options.useBSKeydown; // only with enableKeyEvents && parentMenu
-            me.style          = me.options.style        || '';
-            me.scrollAlwaysVisible = me.options.scrollAlwaysVisible || false;
-            me.tabindex = me.options.tabindex || 0;
-            me.itemTabindex = me.options.itemTabindex!==undefined ? me.options.itemTabindex : me.tabindex>0 ? -1 : 0; //do not set focus to items when dataview get focus
+            this.template       = this.options.template       || this.template;
+            this.store          = this.options.store          || new Common.UI.DataViewStore();
+            this.itemTemplate   = this.options.itemTemplate   || null;
+            this.handleSelect   = this.options.handleSelect;
+            this.parentMenu     = this.options.parentMenu;
+            this.outerMenu      = this.options.outerMenu;
+            this.enableKeyEvents= this.options.enableKeyEvents;
+            this.useBSKeydown   = this.options.useBSKeydown; // only with enableKeyEvents && parentMenu
+            this.style          = this.options.style        || '';
+            this.scrollAlwaysVisible = this.options.scrollAlwaysVisible || false;
+            this.tabindex = this.options.tabindex || 0;
+            this.itemTabindex = this.options.itemTabindex!==undefined ? this.options.itemTabindex : this.tabindex>0 ? -1 : 0; //do not set focus to items when dataview get focus
 
-            if (me.parentMenu)
-                me.parentMenu.options.restoreHeight = (me.options.restoreHeight>0);
-            me.rendered       = false;
-            if (me.options.keyMoveDirection=='vertical')
-                me.moveKeys = [Common.UI.Keys.UP, Common.UI.Keys.DOWN];
-            else if (me.options.keyMoveDirection=='horizontal')
-                me.moveKeys = [Common.UI.Keys.LEFT, Common.UI.Keys.RIGHT];
+            if (this.parentMenu)
+                this.parentMenu.options.restoreHeight = (this.options.restoreHeight>0);
+            this.rendered       = false;
+            if (this.options.keyMoveDirection==='vertical')
+                this.moveKeys = [Common.UI.Keys.UP, Common.UI.Keys.DOWN];
+            else if (this.options.keyMoveDirection==='horizontal')
+                this.moveKeys = [Common.UI.Keys.LEFT, Common.UI.Keys.RIGHT];
             else
-                me.moveKeys = [Common.UI.Keys.UP, Common.UI.Keys.DOWN, Common.UI.Keys.LEFT, Common.UI.Keys.RIGHT];
-            if (me.options.el)
-                me.render();
+                this.moveKeys = [Common.UI.Keys.UP, Common.UI.Keys.DOWN, Common.UI.Keys.LEFT, Common.UI.Keys.RIGHT];
+            if (this.options.el)
+                this.render();
         },
 
         render: function (parentEl) {
-            var me = this;
             this.trigger('render:before', this);
             if (parentEl) {
                 this.setElement(parentEl, false);
                 this.cmpEl = $(this.template({
-                    items: me.store.toJSON(),
-                    itemTemplate: me.itemTemplate,
-                    style: me.style,
-                    itemTabindex: me.itemTabindex || 0
+                    items: this.store.toJSON(),
+                    itemTemplate: this.itemTemplate,
+                    style: this.style,
+                    itemTabindex: this.itemTabindex || 0
                 }));
 
                 parentEl.html(this.cmpEl);
             } else {
-                this.cmpEl = me.$el || $(this.el);
+                this.cmpEl = this.$el || $(this.el);
                 this.cmpEl.html(this.template({
-                    items: me.store.toJSON(),
-                    itemTemplate: me.itemTemplate,
-                    style: me.style,
-                    options: me.options,
-                    itemTabindex: me.itemTabindex || 0
+                    items: this.store.toJSON(),
+                    itemTemplate: this.itemTemplate,
+                    style: this.style,
+                    options: this.options,
+                    itemTabindex: this.itemTabindex || 0
                 }));
             }
-            var modalParents = this.cmpEl.closest('.asc-window');
+            let modalParents = this.cmpEl.closest('.asc-window');
             if (modalParents.length < 1)
                 modalParents = this.cmpEl.closest('[id^="menu-container-"]'); // context menu
             if (modalParents.length > 0) {
-                this.tipZIndex = parseInt(modalParents.css('z-index')) + 10;
+                this.tipZIndex = Number.parseInt(modalParents.css('z-index')) + 10;
             }
 
             if (!this.rendered) {
@@ -1204,18 +1188,18 @@ define([
                     this.onAfterShowMenu();
 
                 if (this.enableKeyEvents && this.parentMenu && this.handleSelect) {
-                    this.parentMenu.on('show:before', function(menu) { me.deselectAll(); });
-                    this.parentMenu.on('show:after', function(menu) {
+                    this.parentMenu.on('show:before', (menu) => { this.deselectAll(); });
+                    this.parentMenu.on('show:after', (menu) => {
                         Common.NotificationCenter.trigger('dataview:focus');
-                        _.delay(function() {
+                        _.delay(() => {
                             menu.cmpEl.find('.dataview').focus();
                         }, 10);
-                    }).on('hide:after', function() {
+                    }).on('hide:after', () => {
                         Common.NotificationCenter.trigger('dataview:blur');
                     });
                 }
                 this.attachKeyEvents();
-                this.cmpEl.on( "click", "div.item", _.bind(me.onClickItem, me));
+                this.cmpEl.on( "click", "div.item", _.bind(this.onClickItem, this));
             }
             if (_.isUndefined(this.scroller)) {
                 this.scroller = new Common.UI.Scroller({
@@ -1230,7 +1214,7 @@ define([
 
             this.rendered = true;
 
-            (this.$el || $(this.el)).on('click', function(e){
+            (this.$el || $(this.el)).on('click', (e)=> {
                 if (/dataview|grouped-data|group-items-container/.test(e.target.className) || $(e.target).closest('.group-description').length>0) return false;
             });
 
@@ -1249,7 +1233,7 @@ define([
 
             if (record) {
                 record.set({selected: true});
-                var idx = _.indexOf(this.store.models, record);
+                const idx = _.indexOf(this.store.models, record);
                 if (idx>=0 && this.dataViewItems && this.dataViewItems.length>idx) {
                     this.dataViewItems[idx].el.addClass('selected');
                 }
@@ -1270,7 +1254,7 @@ define([
             if (suspendEvents)
                 this.suspendEvents();
 
-            _.each(this.store.where({selected: true}), function(record){
+            _.each(this.store.where({selected: true}), (record)=> {
                 record.set({selected: false});
             });
             this.cmpEl.find('.item.selected').removeClass('selected');
@@ -1285,8 +1269,8 @@ define([
         },
 
         onResetItems: function() {
-            this.dataViewItems && _.each(this.dataViewItems, function(item) {
-                var tip = item.el.data('bs.tooltip');
+            this.dataViewItems && _.each(this.dataViewItems, (item) => {
+                const tip = item.el.data('bs.tooltip');
                 if (tip) {
                     if (tip.dontShow===undefined)
                         tip.dontShow = true;
@@ -1295,13 +1279,13 @@ define([
             }, this);
             this.dataViewItems = null;
 
-            var template = _.template([
+            const template = _.template([
                 '<% _.each(items, function(item) { %>',
                     '<% if (!item.id) item.id = Common.UI.getId(); %>',
                     '<div class="item" role="listitem" <% if(typeof itemTabindex !== undefined) { %> tabindex="<%= itemTabindex %>" <% } %> <% if(!!item.tip) { %> data-toggle="tooltip" <% } %> data-hint="<%= item.dataHint %>" data-hint-direction="<%= item.dataHintDirection %>" data-hint-offset="<%= item.dataHintOffset %>"><%= itemTemplate(item) %></div>',
                 '<% }) %>'
             ].join(''));
-            this.cmpEl && this.cmpEl.find('.inner').html(template({
+            this.cmpEl?.find('.inner').html(template({
                 items: this.store.toJSON(),
                 itemTemplate: this.itemTemplate,
                 style : this.style,
@@ -1310,7 +1294,7 @@ define([
 
             if (!_.isUndefined(this.scroller)) {
                 this.scroller.destroy();
-                delete this.scroller;
+                this.scroller = undefined;
             }
 
             this.scroller = new Common.UI.Scroller({
@@ -1339,13 +1323,13 @@ define([
 
             window._event = e;  //  for FireFox only
 
-            var index = $(e.currentTarget).closest('div.item').index(),
-                record = (index>=0) ? this.store.at(index) : null,
-                view = (index>=0) ? this.dataViewItems[index] : null;
+            const index = $(e.currentTarget).closest('div.item').index();
+            const record = (index>=0) ? this.store.at(index) : null;
+            const view = (index>=0) ? this.dataViewItems[index] : null;
             if (!record || !view) return;
 
             record.set({selected: true});
-            var tip = view.el.data('bs.tooltip');
+            const tip = view.el.data('bs.tooltip');
             if (tip) (tip.tip()).remove();
 
             if (!this.isSuspendEvents) {
@@ -1355,18 +1339,17 @@ define([
 
         onAfterShowMenu: function(e) {
             if (!this.dataViewItems) {
-                var me = this;
                 this.dataViewItems = [];
-                _.each(this.cmpEl.find('div.item'), function(item, index) {
-                    var $item = $(item),
-                        rec = me.store.at(index);
-                    me.dataViewItems.push({el: $item});
-                    var tip = rec.get('tip');
+                _.each(this.cmpEl.find('div.item'), (item, index) => {
+                    const $item = $(item);
+                    const rec = this.store.at(index);
+                    this.dataViewItems.push({el: $item});
+                    const tip = rec.get('tip');
                     if (tip) {
                         $item.tooltip({
                             title       : tip,
                             placement   : 'cursor',
-                            zIndex : me.tipZIndex
+                            zIndex : this.tipZIndex
                         });
                         $item.attr('aria-label', tip);
                     }
@@ -1376,15 +1359,15 @@ define([
 
         scrollToRecord: function (record) {
             if (!record) return;
-            var innerEl = $(this.el).find('.inner'),
-                inner_top = Common.Utils.getOffset(innerEl).top,
-                idx = _.indexOf(this.store.models, record),
-                div = (idx>=0 && this.dataViewItems.length>idx) ? this.dataViewItems[idx].el : innerEl.find('#' + record.get('id'));
+            const innerEl = $(this.el).find('.inner');
+            const inner_top = Common.Utils.getOffset(innerEl).top;
+            const idx = _.indexOf(this.store.models, record);
+            const div = (idx>=0 && this.dataViewItems.length>idx) ? this.dataViewItems[idx].el : innerEl.find(`#${record.get('id')}`);
             if (div.length<=0) return;
 
-            var div_top = Common.Utils.getOffset(div).top,
-                div_first = this.dataViewItems[0].el,
-                div_first_top = (div_first.length>0) ? div_first[0].offsetTop : 0;
+            const div_top = Common.Utils.getOffset(div).top;
+            const div_first = this.dataViewItems[0].el;
+            const div_first_top = (div_first.length>0) ? div_first[0].offsetTop : 0;
             if (div_top < inner_top + div_first_top || div_top+div.outerHeight() > inner_top + innerEl.height()) {
                 if (this.scroller) {
                     this.scroller.scrollTop(innerEl.scrollTop() + div_top - inner_top - div_first_top, 0);
@@ -1397,11 +1380,11 @@ define([
         onKeyDown: function (e, data) {
             if ( this.disabled ) return;
             if (data===undefined) data = e;
-            if (_.indexOf(this.moveKeys, data.keyCode)>-1 || data.keyCode==Common.UI.Keys.RETURN) {
+            if (_.indexOf(this.moveKeys, data.keyCode)>-1 || data.keyCode===Common.UI.Keys.RETURN) {
                 data.preventDefault();
                 data.stopPropagation();
-                var rec = this.getSelectedRec();
-                if (data.keyCode==Common.UI.Keys.RETURN) {
+                let rec = this.getSelectedRec();
+                if (data.keyCode===Common.UI.Keys.RETURN) {
                     if (this.selectedBeforeHideRec) // only for ComboDataView menuPicker
                         rec = this.selectedBeforeHideRec;
                     if (this.canAddRecents) // only for DataViewShape
@@ -1410,18 +1393,18 @@ define([
                     if (this.parentMenu)
                         this.parentMenu.hide();
                 } else {
-                    var idx = _.indexOf(this.store.models, rec);
+                    let idx = _.indexOf(this.store.models, rec);
                     if (idx<0) {
                         function getFirstItemIndex() {
                             if (this.dataViewItems.length===0) return 0;
-                            var first = 0;
+                            let first = 0;
                             while(!this.dataViewItems[first].el.is(':visible')) {
                                 first++;
                             }
                             return first;
                         }
-                        if (data.keyCode==Common.UI.Keys.LEFT) {
-                            var target = $(e.target).closest('.dropdown-submenu.over');
+                        if (data.keyCode===Common.UI.Keys.LEFT) {
+                            const target = $(e.target).closest('.dropdown-submenu.over');
                             if (target.length>0) {
                                 target.removeClass('over');
                                 target.find('> a').focus();
@@ -1429,50 +1412,50 @@ define([
                                 idx = getFirstItemIndex.call(this);
                         } else
                             idx = getFirstItemIndex.call(this);
-                    } else if (this.options.keyMoveDirection == 'both') {
+                    } else if (this.options.keyMoveDirection === 'both') {
                         if (this._layoutParams === undefined)
                             this.fillIndexesArray();
-                        var topIdx = this.dataViewItems[idx].topIdx,
-                            leftIdx = this.dataViewItems[idx].leftIdx;
+                        let topIdx = this.dataViewItems[idx].topIdx;
+                        let leftIdx = this.dataViewItems[idx].leftIdx;
 
                         idx = undefined;
-                        if (data.keyCode==Common.UI.Keys.LEFT) {
+                        if (data.keyCode===Common.UI.Keys.LEFT) {
                             while (idx===undefined) {
                                 leftIdx--;
                                 if (leftIdx<0) {
-                                    var target = $(e.target).closest('.dropdown-submenu.over');
+                                    const target = $(e.target).closest('.dropdown-submenu.over');
                                     if (target.length>0) {
                                         target.removeClass('over');
                                         target.find('> a').focus();
                                         break;
-                                    } else
+                                    }
                                         leftIdx = this._layoutParams.columns-1;
                                 }
                                 idx = this._layoutParams.itemsIndexes[topIdx][leftIdx];
                             }
-                        } else if (data.keyCode==Common.UI.Keys.RIGHT) {
+                        } else if (data.keyCode===Common.UI.Keys.RIGHT) {
                             while (idx===undefined) {
                                 leftIdx++;
                                 if (leftIdx>this._layoutParams.columns-1) leftIdx = 0;
                                 idx = this._layoutParams.itemsIndexes[topIdx][leftIdx];
                             }
-                        } else if (data.keyCode==Common.UI.Keys.UP) {
-                            if (topIdx==0 && this.outerMenu && this.outerMenu.menu) {
+                        } else if (data.keyCode===Common.UI.Keys.UP) {
+                            if (topIdx===0 && this.outerMenu && this.outerMenu.menu) {
                                 this.deselectAll(true);
-                                this.outerMenu.menu.focusOuter && this.outerMenu.menu.focusOuter(data, this.outerMenu.index);
+                                this.outerMenu.menu.focusOuter?.(data, this.outerMenu.index);
                                 return;
-                            } else
+                            }
                                 while (idx===undefined) {
                                     topIdx--;
                                     if (topIdx<0) topIdx = this._layoutParams.rows-1;
                                     idx = this._layoutParams.itemsIndexes[topIdx][leftIdx];
                                 }
                         } else {
-                            if (topIdx==this._layoutParams.rows-1 && this.outerMenu && this.outerMenu.menu) {
+                            if (topIdx===this._layoutParams.rows-1 && this.outerMenu && this.outerMenu.menu) {
                                 this.deselectAll(true);
-                                this.outerMenu.menu.focusOuter && this.outerMenu.menu.focusOuter(data, this.outerMenu.index);
+                                this.outerMenu.menu.focusOuter?.(data, this.outerMenu.index);
                                 return;
-                            } else
+                            }
                                 while (idx===undefined) {
                                     topIdx++;
                                     if (topIdx>this._layoutParams.rows-1) topIdx = 0;
@@ -1480,7 +1463,7 @@ define([
                                 }
                         }
                     } else {
-                        idx = (data.keyCode==Common.UI.Keys.UP || data.keyCode==Common.UI.Keys.LEFT)
+                        idx = (data.keyCode===Common.UI.Keys.UP || data.keyCode===Common.UI.Keys.LEFT)
                             ? Math.max(0, idx-1)
                             : Math.min(this.store.length - 1, idx + 1) ;
                     }
@@ -1501,7 +1484,7 @@ define([
 
         attachKeyEvents: function() {
             if (this.enableKeyEvents && this.handleSelect) {
-                var el = $(this.el).find('.inner').addBack().filter('.inner');
+                const el = $(this.el).find('.inner').addBack().filter('.inner');
                 el.addClass('canfocused');
                 el.attr('tabindex', this.tabindex.toString());
                 el.on((this.parentMenu && this.useBSKeydown) ? 'dataview:keydown' : 'keydown', _.bind(this.onKeyDown, this));
@@ -1519,41 +1502,41 @@ define([
         },
 
         alignPosition: function() {
-            var menuRoot = (this.parentMenu.cmpEl.attr('role') === 'menu')
+            const menuRoot = (this.parentMenu.cmpEl.attr('role') === 'menu')
                     ? this.parentMenu.cmpEl
-                    : this.parentMenu.cmpEl.find('[role=menu]'),
-                docH = Common.Utils.innerHeight()-10,
-                innerEl = $(this.el).find('.inner').addBack().filter('.inner'),
-                parent = innerEl.parent(),
-                margins =  parseInt(parent.css('margin-top')) + parseInt(parent.css('margin-bottom')) + parseInt(menuRoot.css('margin-top')),
-                paddings = parseInt(menuRoot.css('padding-top')) + parseInt(menuRoot.css('padding-bottom')),
-                menuH = menuRoot.outerHeight(),
-                top = parseInt(menuRoot.css('top')),
-                props = {minScrollbarLength  : this.minScrollbarLength};
+                    : this.parentMenu.cmpEl.find('[role=menu]');
+            const docH = Common.Utils.innerHeight()-10;
+            const innerEl = $(this.el).find('.inner').addBack().filter('.inner');
+            const parent = innerEl.parent();
+            const margins =  Number.parseInt(parent.css('margin-top')) + Number.parseInt(parent.css('margin-bottom')) + Number.parseInt(menuRoot.css('margin-top'));
+            const paddings = Number.parseInt(menuRoot.css('padding-top')) + Number.parseInt(menuRoot.css('padding-bottom'));
+            const menuH = menuRoot.outerHeight();
+            const top = Number.parseInt(menuRoot.css('top'));
+            const props = {minScrollbarLength  : this.minScrollbarLength};
             this.scrollAlwaysVisible && (props.alwaysVisibleY = this.scrollAlwaysVisible);
 
-            var menuUp = false;
+            let menuUp = false;
             if (this.parentMenu.menuAlign) {
-                var m = this.parentMenu.menuAlign.match(/^([a-z]+)-([a-z]+)/);
+                const m = this.parentMenu.menuAlign.match(/^([a-z]+)-([a-z]+)/);
                 menuUp = (m[1]==='bl' || m[1]==='br');
             }
             if (menuUp) {
-                var bottom = top + menuH;
+                const bottom = top + menuH;
                 if (top<0) {
-                    innerEl.css('max-height', (bottom - paddings - margins) + 'px');
+                    innerEl.css('max-height', `${bottom - paddings - margins}px`);
                     menuRoot.css('top', 0);
                     this.scroller.update(props);
                 } else if (top>0 && innerEl.height() < this.options.restoreHeight) {
-                    innerEl.css('max-height', (Math.min(bottom - paddings - margins, this.options.restoreHeight)) + 'px');
+                    innerEl.css('max-height', `${Math.min(bottom - paddings - margins, this.options.restoreHeight)}px`);
                     menuRoot.css('top', bottom - menuRoot.outerHeight());
                     this.scroller.update(props);
                 }
             } else {
                 if (top + menuH > docH ) {
-                    innerEl.css('max-height', (docH - top - paddings - margins) + 'px');
+                    innerEl.css('max-height', `${docH - top - paddings - margins}px`);
                     this.scroller.update(props);
                 } else if ( top + menuH < docH && innerEl.height() < this.options.restoreHeight ) {
-                    innerEl.css('max-height', (Math.min(docH - top - paddings - margins, this.options.restoreHeight)) + 'px');
+                    innerEl.css('max-height', `${Math.min(docH - top - paddings - margins, this.options.restoreHeight)}px`);
                     this.scroller.update(props);
                 }
             }
@@ -1568,15 +1551,17 @@ define([
                 rows:           0
             };
 
-            var el = this.dataViewItems[0].el,
-                itemW = el.outerWidth() + parseFloat(el.css('margin-left')) + parseFloat(el.css('margin-right')),
-                offsetLeft = Common.Utils.getOffset(this.$el).left,
-                offsetTop = Common.Utils.getOffset(el).top,
-                prevtop = -1, topIdx = 0, leftIdx = 0;
+            const el = this.dataViewItems[0].el;
+            const itemW = el.outerWidth() + Number.parseFloat(el.css('margin-left')) + Number.parseFloat(el.css('margin-right'));
+            const offsetLeft = Common.Utils.getOffset(this.$el).left;
+            const offsetTop = Common.Utils.getOffset(el).top;
+            let prevtop = -1;
+            let topIdx = 0;
+            let leftIdx = 0;
 
-            for (var i=0; i<this.dataViewItems.length; i++) {
-                var item = this.dataViewItems[i];
-                var top = Common.Utils.getOffset(item.el).top - offsetTop;
+            for (let i=0; i<this.dataViewItems.length; i++) {
+                const item = this.dataViewItems[i];
+                const top = Common.Utils.getOffset(item.el).top - offsetTop;
                 leftIdx = Math.floor((Common.Utils.getOffset(item.el).left - offsetLeft)/itemW);
                 if (top>prevtop) {
                     prevtop = top;
@@ -1597,12 +1582,12 @@ define([
         },
 
         focus: function(index) {
-            this.cmpEl && this.cmpEl.find('.dataview').focus();
-            var rec;
-            if (typeof index == 'string') {
-                if (index == 'first') {
+            this.cmpEl?.find('.dataview').focus();
+            let rec;
+            if (typeof index === 'string') {
+                if (index === 'first') {
                     rec = this.selectByIndex(0, true);
-                } else if (index == 'last') {
+                } else if (index === 'last') {
                     if (this._layoutParams === undefined)
                         this.fillIndexesArray();
                     rec = this.selectByIndex(this._layoutParams.itemsIndexes[this._layoutParams.rows-1][0], true);
@@ -1613,15 +1598,15 @@ define([
         },
 
         focusInner: function(e) {
-            this.focus(e.keyCode == Common.UI.Keys.DOWN ? 'first' : 'last');
+            this.focus(e.keyCode === Common.UI.Keys.DOWN ? 'first' : 'last');
         }
     });
 
-    $(document).on('keydown.dataview', '[data-toggle=dropdown], [role=menu]',  function(e) {
+    $(document).on('keydown.dataview', '[data-toggle=dropdown], [role=menu]',  (e) => {
         if (e.keyCode !== Common.UI.Keys.UP && e.keyCode !== Common.UI.Keys.DOWN && e.keyCode !== Common.UI.Keys.LEFT && e.keyCode !== Common.UI.Keys.RIGHT && e.keyCode !== Common.UI.Keys.RETURN) return;
 
-        _.defer(function(){
-            var target = $(e.target).closest('.dropdown-toggle');
+        _.defer(()=> {
+            const target = $(e.target).closest('.dropdown-toggle');
             if (target.length)
                 target.parent().find('.inner.canfocused').trigger('dataview:keydown', e);
             else {
@@ -1651,7 +1636,6 @@ define([
             '</div>'
         ].join('')),
         initialize : function(options) {
-            var me = this;
             this.canAddRecents = true;
 
             this._state = {
@@ -1659,34 +1643,34 @@ define([
                 hideLines: options.hideLines
             }
 
-            var filter = Common.localStorage.getKeysFilter();
-            this.appPrefix = (filter && filter.length) ? filter.split(',')[0] : '';
+            const filter = Common.localStorage.getKeysFilter();
+            this.appPrefix = (filter?.length) ? filter.split(',')[0] : '';
 
-            me.groups = options.groups.toJSON();
+            this.groups = options.groups.toJSON();
 
             // add recent shapes to store
-            var recentStore = new Common.UI.DataViewGroupStore,
-                recentArr = options.recentShapes || [],
-                cols = (recentArr.length) > 18 ? 7 : 6,
-                height = Math.ceil(recentArr.length/cols) * 35 + 3,
-                width = 30 * cols;
+            const recentStore = new Common.UI.DataViewGroupStore;
+            const recentArr = options.recentShapes || [];
+            const cols = (recentArr.length) > 18 ? 7 : 6;
+            const height = Math.ceil(recentArr.length/cols) * 35 + 3;
+            const width = 30 * cols;
 
-            me.recentShapes = recentArr;
+            this.recentShapes = recentArr;
 
             // check lang
-            if (me.recentShapes.length > 0) {
-                var isTranslated = _.findWhere(me.groups, {groupName: me.recentShapes[0].groupName});
+            if (this.recentShapes.length > 0) {
+                const isTranslated = _.findWhere(this.groups, {groupName: this.recentShapes[0].groupName});
                 if (!isTranslated) {
-                    for (var r = 0; r < me.recentShapes.length; r++) {
-                        var type = me.recentShapes[r].data.shapeType,
-                            record;
-                        for (var g = 0; g < me.groups.length; g++) {
-                            var store = me.groups[g].groupStore,
-                                groupName = me.groups[g].groupName;
-                            for (var i = 0; i < store.length; i++) {
+                    for (let r = 0; r < this.recentShapes.length; r++) {
+                        const type = this.recentShapes[r].data.shapeType;
+                        let record;
+                        for (let g = 0; g < this.groups.length; g++) {
+                            const store = this.groups[g].groupStore;
+                            const groupName = this.groups[g].groupName;
+                            for (let i = 0; i < store.length; i++) {
                                 if (store.at(i).get('data').shapeType === type) {
                                     record = store.at(i).toJSON();
-                                    me.recentShapes[r] = {
+                                    this.recentShapes[r] = {
                                         data: record.data,
                                         tip: record.tip,
                                         allowSelected: record.allowSelected,
@@ -1702,19 +1686,19 @@ define([
                             }
                         }
                     }
-                    Common.localStorage.setItem(this.appPrefix + 'recent-shapes', JSON.stringify(me.recentShapes));
+                    Common.localStorage.setItem(`${this.appPrefix}recent-shapes`, JSON.stringify(this.recentShapes));
                 }
             }
 
             // Add default recent
 
-            if (me.recentShapes.length < 12) {
-                var count = 12 - me.recentShapes.length,
-                    defaultArr = [];
+            if (this.recentShapes.length < 12) {
+                let count = 12 - this.recentShapes.length;
+                const defaultArr = [];
 
-                var addItem = function (rec, groupName) {
-                    var item = rec.toJSON(),
-                        model = {
+                const addItem = (rec, groupName) => {
+                    const item = rec.toJSON();
+                    const model = {
                             data: item.data,
                             tip: item.tip,
                             allowSelected: item.allowSelected,
@@ -1724,9 +1708,9 @@ define([
                     defaultArr.push(model);
                 };
 
-                for (var i = 0; i < me.groups.length && count > 0; i++) {
-                    var groupStore = me.groups[i].groupStore,
-                        groupName = me.groups[i].groupName;
+                for (let i = 0; i < this.groups.length && count > 0; i++) {
+                    const groupStore = this.groups[i].groupStore;
+                    const groupName = this.groups[i].groupName;
                     if (i === 0) {
                         addItem(groupStore.at(1), groupName);
                         count--;
@@ -1743,25 +1727,25 @@ define([
                         }
                     }
                 }
-                me.recentShapes = me.recentShapes.concat(defaultArr);
+                this.recentShapes = this.recentShapes.concat(defaultArr);
             }
 
-            recentStore.add(me.recentShapes);
-            me.groups.unshift({
+            recentStore.add(this.recentShapes);
+            this.groups.unshift({
                 groupName   : options.textRecentlyUsed,
                 groupStore  : recentStore,
                 groupWidth  : width,
                 groupHeight : height
             });
 
-            me.options.groupsWithRecent = me.groups;
+            this.options.groupsWithRecent = this.groups;
 
-            var store = new Common.UI.DataViewStore();
+            const store = new Common.UI.DataViewStore();
 
-            _.each(me.groups, function (group, index) {
-                var models = group.groupStore.models;
+            _.each(this.groups, (group, index) => {
+                const models = group.groupStore.models;
                 if (index > 0) {
-                    for (var i = 0; i < models.length; i++) {
+                    for (let i = 0; i < models.length; i++) {
                         models[i].set({groupName: group.groupName});
                     }
                 }
@@ -1772,30 +1756,29 @@ define([
 
             Common.UI.DataViewSimple.prototype.initialize.call(this, options);
 
-            me.parentMenu.on('show:before', function() { me.updateRecents(); });
+            this.parentMenu.on('show:before', () => { this.updateRecents(); });
 
-            if (me._state.hideLines) {
-                me.hideLinesGroup();
+            if (this._state.hideLines) {
+                this.hideLinesGroup();
             }
         },
         onAfterShowMenu: function(e) {
-            var me = this,
-                updateHideRect = false;
-            if (!me.dataViewItems) {
-                me.dataViewItems = [];
-                _.each(me.cmpEl.find('div.grouped-data'), function (group, indexGroup) {
-                    _.each($(group).find('div.item'), function (item, index) {
-                        var $item = $(item),
-                            rec = me.groups[indexGroup].groupStore.at(index);
-                        me.dataViewItems.push({el: $item, groupIndex: indexGroup, index: index});
-                        var tip = rec.get('tip');
+            let updateHideRect = false;
+            if (!this.dataViewItems) {
+                this.dataViewItems = [];
+                _.each(this.cmpEl.find('div.grouped-data'), (group, indexGroup) => {
+                    _.each($(group).find('div.item'), (item, index) => {
+                        const $item = $(item);
+                        const rec = this.groups[indexGroup].groupStore.at(index);
+                        this.dataViewItems.push({el: $item, groupIndex: indexGroup, index: index});
+                        const tip = rec.get('tip');
                         if (tip) {
-                            $item.one('mouseenter', function(){ // hide tooltip when mouse is over menu
+                            $item.one('mouseenter', ()=> { // hide tooltip when mouse is over menu
                                 $item.attr('data-toggle', 'tooltip');
                                 $item.tooltip({
                                     title       : tip,
                                     placement   : 'cursor',
-                                    zIndex : me.tipZIndex
+                                    zIndex : this.tipZIndex
                                 });
                                 $item.mouseenter();
                             });
@@ -1805,54 +1788,54 @@ define([
                 });
                 updateHideRect = true;
             }
-            if (me.updateDataViewItems && me.cmpEl.is(':visible')) {
+            if (this.updateDataViewItems && this.cmpEl.is(':visible')) {
                 // add recent item in dataViewItems
-                var recent = _.where(me.dataViewItems, {groupIndex: 0});
-                var len = recent ? recent.length : 0;
-                for (var i = 0; i < len; i++) {
-                    var tip = me.dataViewItems[i].el.data('bs.tooltip');
+                const recent = _.where(this.dataViewItems, {groupIndex: 0});
+                const len = recent ? recent.length : 0;
+                for (let i = 0; i < len; i++) {
+                    const tip = this.dataViewItems[i].el.data('bs.tooltip');
                     if (tip) {
                         if (tip.dontShow===undefined)
                             tip.dontShow = true;
                         (tip.tip()).remove();
                     }
                 }
-                me.dataViewItems = me.dataViewItems.slice(len);
-                var recentViewItems = [];
-                _.each(me.cmpEl.find('.recent-group div.item'), function (item, index) {
-                    var $item = $(item),
-                        rec = me.recentShapes[index];
+                this.dataViewItems = this.dataViewItems.slice(len);
+                const recentViewItems = [];
+                _.each(this.cmpEl.find('.recent-group div.item'), (item, index) => {
+                    const $item = $(item);
+                    const rec = this.recentShapes[index];
                     recentViewItems.push({el: $item, groupIndex: 0, index: index});
-                    var tip = rec.tip;
+                    const tip = rec.tip;
                     if (tip) {
-                        $item.one('mouseenter', function(){ // hide tooltip when mouse is over menu
+                        $item.one('mouseenter', ()=> { // hide tooltip when mouse is over menu
                             $item.attr('data-toggle', 'tooltip');
                             $item.tooltip({
                                 title: tip,
                                 placement: 'cursor',
-                                zIndex : me.tipZIndex
+                                zIndex : this.tipZIndex
                             });
                             $item.mouseenter();
                         });
                         $item.attr('aria-label', tip);
                     }
                 });
-                me.dataViewItems = recentViewItems.concat(me.dataViewItems);
+                this.dataViewItems = recentViewItems.concat(this.dataViewItems);
 
-                if (me.recentShapes.length === 1) {
+                if (this.recentShapes.length === 1) {
                     $('.recent-group').show();
                 }
-                me.updateDataViewItems = false;
+                this.updateDataViewItems = false;
 
                 updateHideRect = true;
             }
             if (this._state.hideLines) {
-                me.hideLines();
+                this.hideLines();
             }
             if (updateHideRect) {
-                me.hideTextRect(me._state.hideTextRect);
+                this.hideTextRect(this._state.hideTextRect);
             }
-            me.fillIndexesArray();
+            this.fillIndexesArray();
         },
 
         onClickItem: function(e) {
@@ -1860,17 +1843,15 @@ define([
 
             window._event = e;  //  for FireFox only
 
-            var groupIndex = $(e.currentTarget).closest('div.grouped-data').index(),
-                itemIndex = $(e.currentTarget).closest('div.item').data('index');
-            var index = _.findIndex(this.dataViewItems, function (item) {
-                    return (item.groupIndex === groupIndex && item.index === itemIndex);
-                });
-            var record = (index>=0) ? this.store.at(index) : null,
-                view = (index>=0) ? this.dataViewItems[index] : null;
+            const groupIndex = $(e.currentTarget).closest('div.grouped-data').index();
+            const itemIndex = $(e.currentTarget).closest('div.item').data('index');
+            const index = _.findIndex(this.dataViewItems, (item) => (item.groupIndex === groupIndex && item.index === itemIndex));
+            const record = (index>=0) ? this.store.at(index) : null;
+            const view = (index>=0) ? this.dataViewItems[index] : null;
             if (!record || !view) return;
 
             record.set({selected: true});
-            var tip = view.el.data('bs.tooltip');
+            const tip = view.el.data('bs.tooltip');
             if (tip) (tip.tip()).remove();
 
             if (!this.isSuspendEvents) {
@@ -1881,40 +1862,37 @@ define([
         },
         addRecentItem: function (rec) {
             if (!rec) return;
-
-            var me = this,
-                exist = false,
-                type = rec.get('data').shapeType,
-                groupName = rec.get('groupName');
-            for (var i = 0; i < me.recentShapes.length; i++) {
-                if (me.recentShapes[i].data.shapeType === type) {
+            let exist = false;
+            const type = rec.get('data').shapeType;
+            const groupName = rec.get('groupName');
+            for (let i = 0; i < this.recentShapes.length; i++) {
+                if (this.recentShapes[i].data.shapeType === type) {
                     exist = true;
                     break;
                 }
             }
             if (exist) return;
 
-            var item = rec.toJSON(),
-                model = {
+            const item = rec.toJSON();
+            const model = {
                     data: item.data,
                     tip: item.tip,
                     allowSelected: item.allowSelected,
                     selected: false,
                     groupName: groupName
                 };
-            var arr = [model].concat(me.recentShapes.slice(0, 11));
-            Common.localStorage.setItem(this.appPrefix + 'recent-shapes', JSON.stringify(arr));
-            me.recentShapes = undefined;
+            const arr = [model].concat(this.recentShapes.slice(0, 11));
+            Common.localStorage.setItem(`${this.appPrefix}recent-shapes`, JSON.stringify(arr));
+            this.recentShapes = undefined;
         },
         updateRecents: function () {
-            var me = this,
-                recents = Common.localStorage.getItem(this.appPrefix + 'recent-shapes');
+            let recents = Common.localStorage.getItem(`${this.appPrefix}recent-shapes`);
             recents = recents ? JSON.parse(recents) : [];
 
-            var diff = false;
-            if (me.recentShapes) {
-                for (var i = 0; i < recents.length; i++) {
-                    if (!me.recentShapes[i] || (me.recentShapes[i] && recents[i].tip !== me.recentShapes[i].tip)) {
+            let diff = false;
+            if (this.recentShapes) {
+                for (let i = 0; i < recents.length; i++) {
+                    if (!this.recentShapes[i] || (this.recentShapes[i] && recents[i].tip !== this.recentShapes[i].tip)) {
                         diff = true;
                     }
                 }
@@ -1923,10 +1901,10 @@ define([
             }
 
             if (recents.length > 0 && diff) {
-                me.recentShapes = recents;
-                var resentsStore = new Common.UI.DataViewStore();
-                _.each(me.recentShapes, function (recent) {
-                    var model = {
+                this.recentShapes = recents;
+                const resentsStore = new Common.UI.DataViewStore();
+                _.each(this.recentShapes, (recent) => {
+                    const model = {
                         data: {shapeType: recent.data.shapeType},
                         tip: recent.tip,
                         allowSelected: recent.allowSelected,
@@ -1935,28 +1913,28 @@ define([
                     };
                     resentsStore.push(model);
                 });
-                me.groups[0].groupStore = resentsStore;
+                this.groups[0].groupStore = resentsStore;
 
-                var store = new Common.UI.DataViewStore();
-                _.each(me.groups, function (group) {
+                const store = new Common.UI.DataViewStore();
+                _.each(this.groups, (group) => {
                     store.add(group.groupStore.models);
                 });
-                me.store = store;
+                this.store = store;
 
-                var template = _.template([
+                const template = _.template([
                     '<% _.each(items, function(item, index) { %>',
                     '<% if (!item.id) item.id = Common.UI.getId(); %>',
                     '<div class="item canfocused" role="listitem" <% if (typeof itemTabindex !== undefined) { %> tabindex="<%= itemTabindex %>" <% } %> data-index="<%= index %>"<% if(!!item.tip) { %> data-toggle="tooltip" <% } %> ><%= itemTemplate(item) %></div>',
                     '<% }) %>'
                 ].join(''));
-                me.cmpEl && me.cmpEl.find('.recent-items').html(template({
-                    items: me.recentShapes,
+                this.cmpEl?.find('.recent-items').html(template({
+                    items: this.recentShapes,
                     itemTemplate: this.itemTemplate,
                     style : this.style,
                     itemTabindex: this.itemTabindex || 0
                 }));
 
-                me.updateDataViewItems = true;
+                this.updateDataViewItems = true;
             }
         },
         fillIndexesArray: function() {
@@ -1968,23 +1946,25 @@ define([
                 rows:           0
             };
 
-            var el = this.dataViewItems[0].el,
-                first = 0;
+            let el = this.dataViewItems[0].el;
+            let first = 0;
             while (!this.dataViewItems[first].el.is(":visible")) { // if first elem is hidden
                 first++;
                 if (!this.dataViewItems[first]) return;
                 el = this.dataViewItems[first].el;
             }
 
-            var itemW = el.outerWidth() + parseInt(el.css('margin-left')) + parseInt(el.css('margin-right')),
-                offsetLeft = Common.Utils.getOffset(this.$el).left,
-                offsetTop = Common.Utils.getOffset(el).top,
-                prevtop = -1, topIdx = 0, leftIdx = first;
+            const itemW = el.outerWidth() + Number.parseInt(el.css('margin-left')) + Number.parseInt(el.css('margin-right'));
+            const offsetLeft = Common.Utils.getOffset(this.$el).left;
+            const offsetTop = Common.Utils.getOffset(el).top;
+            let prevtop = -1;
+            let topIdx = 0;
+            let leftIdx = first;
 
-            for (var i=0; i<this.dataViewItems.length; i++) {
-                var item = this.dataViewItems[i];
+            for (let i=0; i<this.dataViewItems.length; i++) {
+                const item = this.dataViewItems[i];
                 if (item.el.is(":visible")) {
-                    var top = Common.Utils.getOffset(item.el).top - offsetTop;
+                    const top = Common.Utils.getOffset(item.el).top - offsetTop;
                     leftIdx = Math.floor((Common.Utils.getOffset(item.el).left - offsetLeft) / itemW);
                     if (top > prevtop) {
                         prevtop = top;
@@ -2004,10 +1984,9 @@ define([
             this._layoutParams.columns++;
         },
         hideTextRect: function (hide) {
-            var me = this;
-            this.dataViewItems && this.store.each(function(item, index){
-                if (item.get('data').shapeType === 'textRect' && me.dataViewItems[index] && me.dataViewItems[index].el) {
-                    me.dataViewItems[index].el[hide ? 'addClass' : 'removeClass']('hidden');
+            this.dataViewItems && this.store.each((item, index)=> {
+                if (item.get('data').shapeType === 'textRect' && this.dataViewItems[index] && this.dataViewItems[index].el) {
+                    this.dataViewItems[index].el[hide ? 'addClass' : 'removeClass']('hidden');
                 }
             }, this);
             this._state.hideTextRect = hide;
@@ -2016,11 +1995,10 @@ define([
             $(this.cmpEl.find('div.grouped-data')[9]).hide();
         },
         hideLines: function () {
-            var me = this;
-            this.store.each(function(item, index){
+            this.store.each((item, index)=> {
                 if (item.get('groupName') === 'Lines') {
-                    var el = me.dataViewItems[index].el;
-                    if (el && el.is(':visible')) {
+                    const el = this.dataViewItems[index].el;
+                    if (el?.is(':visible')) {
                         el.addClass('hidden');
                     }
                 }

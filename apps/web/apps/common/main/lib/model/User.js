@@ -32,7 +32,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Models = Common.Models || {};
 
@@ -40,12 +40,10 @@ define([
     'underscore',
     'backbone',
     'common/main/lib/component/BaseView'
-], function(_, Backbone){
-    'use strict';
+], (_, Backbone)=> {
 
     Common.Models.User = Backbone.Model.extend({
-        defaults: function() {
-            return {
+        defaults: () => ({
                 iid         : Common.UI.getId(), // internal id for rendering
                 id          : undefined,
                 idOriginal   : undefined,
@@ -55,7 +53,6 @@ define([
                 online      : false,
                 view        : false,
                 hidden      : false
-            }
-        }
+            })
     });
 });

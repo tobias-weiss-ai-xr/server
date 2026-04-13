@@ -23,76 +23,66 @@
  *
  */
 
-define([], function () {
-    'use strict';
+define([], () => {
+  if (window.VE?.Views?.DocumentHolder) {
+    const dh = window.VE.Views.DocumentHolder.prototype
 
-    if (window.VE && window.VE.Views && window.VE.Views.DocumentHolder) {
-        let dh = window.VE.Views.DocumentHolder.prototype;
+    dh.createDelayedElementsViewer = function () {
+      if (this.menuViewCopy) return // menu is already inited
 
-        dh.createDelayedElementsViewer = function() {
-            var me = this;
+      this.menuViewCopy = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-copy",
+        caption: this.textCopy,
+        value: "copy",
+      })
 
-            if (me.menuViewCopy) return; // menu is already inited
+      this.viewModeMenu = new Common.UI.Menu({
+        cls: "shifted-right",
+        initMenu: (value) => {
+          this.menuViewCopy.setDisabled(!this.api?.can_CopyCut())
+        },
+        items: [this.menuViewCopy],
+      }).on("hide:after", (menu, e, isFromInputControl) => {
+        this.clearCustomItems(menu)
+        this.currentMenu = null
+        if (this.suppressEditComplete) {
+          this.suppressEditComplete = false
+          return
+        }
 
-            me.menuViewCopy = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-copy',
-                caption: me.textCopy,
-                value: 'copy'
-            });
+        if (!isFromInputControl) this.fireEvent("editcomplete", this)
+      })
 
-            this.viewModeMenu = new Common.UI.Menu({
-                cls: 'shifted-right',
-                initMenu: function (value) {
-                    me.menuViewCopy.setDisabled(!(me.api && me.api.can_CopyCut()));
-                },
-                items: [
-                    me.menuViewCopy
-                ]
-            }).on('hide:after', function (menu, e, isFromInputControl) {
-                me.clearCustomItems(menu);
-                me.currentMenu = null;
-                if (me.suppressEditComplete) {
-                    me.suppressEditComplete = false;
-                    return;
-                }
-
-                if (!isFromInputControl) me.fireEvent('editcomplete', me);
-            });
-
-            this.fireEvent('createdelayedelements', [this, 'view']);
-        };
-
-        dh.createDelayedElementsEditor = function() {
-            var me = this;
-
-            if (me.menuEditCopy) return; // menu is already inited
-
-            me.menuEditCopy = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-copy',
-                caption: me.textCopy,
-                value: 'copy'
-            });
-
-            this.editModeMenu = new Common.UI.Menu({
-                cls: 'shifted-right',
-                initMenu: function (value) {
-                    me.menuEditCopy.setDisabled(!(me.api && me.api.can_CopyCut()));
-                },
-                items: [
-                    me.menuEditCopy
-                ]
-            }).on('hide:after', function (menu, e, isFromInputControl) {
-                me.clearCustomItems(menu);
-                me.currentMenu = null;
-                if (me.suppressEditComplete) {
-                    me.suppressEditComplete = false;
-                    return;
-                }
-
-                if (!isFromInputControl) me.fireEvent('editcomplete', me);
-            });
-
-            this.fireEvent('createdelayedelements', [this, 'edit']);
-        };
+      this.fireEvent("createdelayedelements", [this, "view"])
     }
-});
+
+    dh.createDelayedElementsEditor = function () {
+      if (this.menuEditCopy) return // menu is already inited
+
+      this.menuEditCopy = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-copy",
+        caption: this.textCopy,
+        value: "copy",
+      })
+
+      this.editModeMenu = new Common.UI.Menu({
+        cls: "shifted-right",
+        initMenu: (value) => {
+          this.menuEditCopy.setDisabled(!this.api?.can_CopyCut())
+        },
+        items: [this.menuEditCopy],
+      }).on("hide:after", (menu, e, isFromInputControl) => {
+        this.clearCustomItems(menu)
+        this.currentMenu = null
+        if (this.suppressEditComplete) {
+          this.suppressEditComplete = false
+          return
+        }
+
+        if (!isFromInputControl) this.fireEvent("editcomplete", this)
+      })
+
+      this.fireEvent("createdelayedelements", [this, "edit"])
+    }
+  }
+})

@@ -30,12 +30,12 @@
  *
  */
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/util/character'
-], function () { 'use strict';
-    var oRangeNames = {};
+], () => { 
+    const oRangeNames = {};
     oRangeNames[1] =  'Basic Latin';
     oRangeNames[2] =  'Latin 1 Supplement';
     oRangeNames[3] =  'Latin Extended A';
@@ -310,48 +310,48 @@ define([
     oRangeNames[272] =  'Supplementary Private Use Area A';
     oRangeNames[273] =  'Supplementary Private Use Area B';
 
-    var CELL_WIDTH = 31;
-    var CELL_HEIGHT = 33;
+    const CELL_WIDTH = 31;
+    const CELL_HEIGHT = 33;
 
-    var aFontSelects = [];
-    var aRanges = [];
-    var aRecents = [];
-    var nCurrentFont = -1;// индекс в aFontSelects
-    var nCurrentSymbol = -1;// code
-    var bMainFocus = true;//фокус в основной таблице
-    var nFontNameRecent = -1;
+    let aFontSelects = [];
+    let aRanges = [];
+    let aRecents = [];
+    let nCurrentFont = -1;// индекс в aFontSelects
+    let nCurrentSymbol = -1;// code
+    let bMainFocus = true;//фокус в основной таблице
+    let nFontNameRecent = -1;
 
-    var nMaxRecent = 36;
-    var bScrollMouseUp = false;
+    const nMaxRecent = 36;
+    let bScrollMouseUp = false;
 
-    var sInitFont = "";
-    var sInitSymbol = "";
+    let sInitFont = "";
+    const sInitSymbol = "";
 
-    var nLastScroll = -1000;
+    let nLastScroll = -1000;
 
-    var sLastId = "";
-    var nLastTime = -1000;
+    let sLastId = "";
+    let nLastTime = -1000;
 
-    var lastTime = -1;
-    var lastKeyCode = -1;
+    let lastTime = -1;
+    let lastKeyCode = -1;
 
-    var minScrollbarLength = 20;
-    var wheelSpeed = 20;
-    var _4letterLangs = ['pt-pt', 'zh-tw', 'sr-cyrl'];
+    let minScrollbarLength = 20;
+    let wheelSpeed = 20;
+    const _4letterLangs = ['pt-pt', 'zh-tw', 'sr-cyrl'];
 
-    var loadTranslation = function(lang, callback) {
+    const loadTranslation = (lang, callback) => {
         lang = lang.toLowerCase().split(/[\-_]/);
-        lang = lang[0] + (lang.length>1 ? '-' + lang[1] : '');
-        var idx4Letters = _4letterLangs.indexOf(lang); // try to load 4 letters language
+        lang = lang[0] + (lang.length>1 ? `-${lang[1]}` : '');
+        const idx4Letters = _4letterLangs.indexOf(lang); // try to load 4 letters language
         lang = (idx4Letters<0) ? lang.split(/[\-]/)[0] : _4letterLangs[idx4Letters];
-        Common.Utils.loadConfig('resources/symboltable/' + lang + '.json', function (langJson) {
+        Common.Utils.loadConfig(`resources/symboltable/${lang}.json`, (langJson) => {
             if ( langJson !== 'error' ) {
-                for (var i=1; i<274; i++) {
-                    var val = oRangeNames[i];
+                for (let i=1; i<274; i++) {
+                    const val = oRangeNames[i];
                     oRangeNames[i] = langJson[val] || val;
                 }
             }
-            callback && callback();
+            callback?.();
         });
     };
 
@@ -367,7 +367,7 @@ define([
         },
 
         initialize : function(options) {
-            var config = {
+            const config = {
                 resizable       : true,
                 minwidth        : 448,
                 minheight       : 420,
@@ -377,12 +377,12 @@ define([
                 buttons: ['ok', 'cancel']
             };
 
-            var filter = Common.localStorage.getKeysFilter();
-            this.appPrefix = (filter && filter.length) ? filter.split(',')[0] : '';
+            const filter = Common.localStorage.getKeysFilter();
+            this.appPrefix = (filter?.length) ? filter.split(',')[0] : '';
 
-            var path = this.appPrefix + 'settings-size-symbol-table',
-                size = Common.Utils.InternalSettings.get(path);
-            if (size==null || size==undefined) {
+            const path = `${this.appPrefix}settings-size-symbol-table`;
+            let size = Common.Utils.InternalSettings.get(path);
+            if (size==null || size===undefined) {
                 size = Common.localStorage.getItem(path) || '';
                 Common.Utils.InternalSettings.set(path, size);
             }
@@ -403,7 +403,7 @@ define([
 
             this.template = [
                 '<div class="box">',
-                    '<div id="symbol-table-switcher" style="margin-bottom: 16px;" class="'+ (this.special ? '' : 'hidden') +'">',
+                    `<div id="symbol-table-switcher" style="margin-bottom: 16px;" class="${this.special ? '' : 'hidden'}">`,
                         '<button type="button" class="btn btn-text-default auto" id="symbol-table-symbols">', this.textSymbols,'</button>',
                         '<button type="button" class="btn btn-text-default auto" id="symbol-table-special">', this.textSpecial,'</button>',
                     '</div>',
@@ -411,11 +411,11 @@ define([
                         '<table cols="2" style="width: 100%;max-width: 497px;">',
                             '<tr>',
                                 '<td class="padding-right-5" style="padding-bottom: 8px;width: 50%;">',
-                                    '<label class="input-label">' + this.textFont + '</label>',
+                                    `<label class="input-label">${this.textFont}</label>`,
                                     '<div id="symbol-table-cmb-fonts"></div>',
                                 '</td>',
                                 '<td class="padding-left-5" style="padding-bottom: 8px;">',
-                                    '<label class="input-label">' + this.textRange + '</label>',
+                                    `<label class="input-label">${this.textRange}</label>`,
                                     '<div id="symbol-table-cmb-range"></div>',
                                 '</td>',
                             '</tr>',
@@ -423,7 +423,7 @@ define([
                         '<table cols="1" style="width: 100%;">',
                             '<tr>',
                                 '<td>',
-                                    '<div id="symbol-table-scrollable-div" style="position: relative;height:'+ (this.options.height-304 - 38*(this.special ? 1 : 0)) + 'px;">',
+                                    `<div id="symbol-table-scrollable-div" style="position: relative;height:${this.options.height-304 - 38*(this.special ? 1 : 0)}px;">`,
                                         '<div style="width: 100%;">',
                                             '<div id="id-preview">',
                                                 '<div>',
@@ -438,7 +438,7 @@ define([
                         '<table cols="1" style="width: 100%;">',
                             '<tr>',
                                 '<td style="padding-bottom: 16px;padding-top: 16px;">',
-                                    '<label class="input-label">' + this.textRecent + '</label>',
+                                    `<label class="input-label">${this.textRecent}</label>`,
                                     '<div id="symbol-table-recent" tabindex="0" oo_editor_input="true" style="width: 100%;"></div>',
                                 '</td>',
                             '</tr>',
@@ -446,7 +446,7 @@ define([
                         '<table cols="2" style="width: 100%;max-width: 497px;">',
                             '<tr>',
                                 '<td class="padding-right-5" style="width: 50%;">',
-                                    '<label class="input-label">' + this.textCode + '</label>',
+                                    `<label class="input-label">${this.textCode}</label>`,
                                 '</td>',
                                 '<td class="padding-left-5">',
                                 '</td>',
@@ -465,13 +465,13 @@ define([
                         '<table cols="1" style="width: 100%;">',
                             '<tr>',
                                 '<td>',
-                                    '<label id="symbol-table-lbl-char">' + this.textCharacter + '</label>',
-                                    '<label id="symbol-table-lbl-shortcut" style="width: 112px;" class="float-right">' + this.textShortcut + '</label>',
+                                    `<label id="symbol-table-lbl-char">${this.textCharacter}</label>`,
+                                    `<label id="symbol-table-lbl-shortcut" style="width: 112px;" class="float-right">${this.textShortcut}</label>`,
                                 '</td>',
                             '</tr>',
                             '<tr>',
                                 '<td>',
-                                    '<div id="symbol-table-special-list" class="no-borders" style="width:100%; height: '+ (this.options.height-157) + 'px;"></div>',
+                                    `<div id="symbol-table-special-list" class="no-borders" style="width:100%; height: ${this.options.height-157}px;"></div>`,
                                 '</td>',
                             '</tr>',
                         '</table>',
@@ -481,20 +481,20 @@ define([
 
             this.options.tpl = _.template(this.template)(this.options);
 
-            var init = (aFontSelects.length<1);
+            const init = (aFontSelects.length<1);
             init && this.initFonts();
 
             //fill recents
             this.fillRecentSymbols();
 
-            var lastfont;
+            let lastfont;
             if (options.font) {
                 lastfont = options.font;
             } else if (aRecents.length>0) {
                 lastfont = aRecents[0].font;
             }
             if (lastfont) {
-                for(var i = 0; i < aFontSelects.length; ++i){
+                for(let i = 0; i < aFontSelects.length; ++i){
                     if(aFontSelects[i].displayValue === lastfont){
                         nCurrentFont = i;
                         break;
@@ -512,7 +512,7 @@ define([
                     nCurrentSymbol = -1;
                 }
                 else{
-                    for(var i = 0; i < aRanges.length; ++i){
+                    for(let i = 0; i < aRanges.length; ++i){
                         if(nCurrentSymbol >= aRanges[i].Start && nCurrentSymbol <= aRanges[i].End){
                             break;
                         }
@@ -534,10 +534,9 @@ define([
                 nCurrentSymbol = aRecents[0].symbol;
             }
 
-            if (init && this.options.lang && this.options.lang != 'en') {
-                var me = this;
-                loadTranslation(this.options.lang, function(){
-                    me.updateRangeSelector();
+            if (init && this.options.lang && this.options.lang !== 'en') {
+                loadTranslation(this.options.lang, ()=> {
+                    this.updateRangeSelector();
                 });
             }
 
@@ -550,18 +549,19 @@ define([
         },
 
         initFonts: function() {
-            var fontList = this.api.pluginMethod_GetFontList();
-            fontList.sort(function(a, b){
+            const fontList = this.api.pluginMethod_GetFontList();
+            fontList.sort((a, b)=> {
                 if(a.m_wsFontName < b.m_wsFontName) return -1;
                 if(a.m_wsFontName > b.m_wsFontName) return 1;
                 return 0;
             });
 
-            var oCurFont, oLastFont;
-            var data = [];
-            var oFontsByName = {};
-            var sCurFontNameInMap;
-            for(var i = 0; i < fontList.length; ++i){
+            let oCurFont;
+            let oLastFont;
+            const data = [];
+            const oFontsByName = {};
+            let sCurFontNameInMap;
+            for(let i = 0; i < fontList.length; ++i){
                 oCurFont = fontList[i];
                 sCurFontNameInMap = oCurFont.m_wsFontName;
                 oLastFont = oFontsByName[sCurFontNameInMap];
@@ -580,9 +580,9 @@ define([
                     }
                 }
             }
-            delete oFontsByName['ASCW3'];
-            var i = 0;
-            for(var key in oFontsByName){
+            oFontsByName.ASCW3 = undefined;
+            let i = 0;
+            for(const key in oFontsByName){
                 if(oFontsByName.hasOwnProperty(key)){
                     data.push(oFontsByName[key]);
                     data[data.length-1].displayValue = oFontsByName[key].m_wsFontName;
@@ -591,7 +591,7 @@ define([
 
             //initialize params
             aFontSelects = data;
-            aFontSelects.sort(function(a, b){return (a.displayValue.toLowerCase() > b.displayValue.toLowerCase()) ? 1 : -1;});
+            aFontSelects.sort((a, b)=> (a.displayValue.toLowerCase() > b.displayValue.toLowerCase()) ? 1 : -1);
             for(i = 0; i < aFontSelects.length; ++i){
                 aFontSelects[i].value = i;
             }
@@ -616,9 +616,7 @@ define([
 
         render: function() {
             Common.UI.Window.prototype.render.call(this);
-
-            var me = this,
-                $window = this.getChild();
+            const $window = this.getChild();
 
             this.btnSymbols = new Common.UI.Button({
                 el: $window.find('#symbol-table-symbols'),
@@ -648,12 +646,12 @@ define([
                 editable    : false,
                 search      : true,
                 menuStyle   : 'min-width: 100%; max-height: 209px;'
-            }).on('selected', function(combo, record) {
-                var oCurrentRange = me.getRangeBySymbol(aRanges, nCurrentSymbol);
+            }).on('selected', (combo, record) => {
+                const oCurrentRange = this.getRangeBySymbol(aRanges, nCurrentSymbol);
                 nCurrentFont = record.value;
-                aRanges = me.getArrRangesByFont(nCurrentFont);
+                aRanges = this.getArrRangesByFont(nCurrentFont);
                 if(oCurrentRange){
-                    for(var i = 0; i < aRanges.length; ++i){
+                    for(let i = 0; i < aRanges.length; ++i){
                         if(oCurrentRange.Name === aRanges[i].Name){
                             break;
                         }
@@ -666,9 +664,9 @@ define([
                     nCurrentSymbol = aRanges[0].Start;
                 }
                 bMainFocus = true;
-                me.updateView();
-                setTimeout(function(){
-                    me.previewPanel.focus();
+                this.updateView();
+                setTimeout(()=> {
+                    this.previewPanel.focus();
                 }, 1);
             });
             this.cmbFonts.setValue(nCurrentFont);
@@ -679,37 +677,37 @@ define([
                 editable    : false,
                 search      : true,
                 menuStyle   : 'min-width: 100%; max-height: 209px;'
-            }).on('selected', function(combo, record) {
-                var oCurrentRange = me.getRangeByName(aRanges, parseInt(record.value));
+            }).on('selected', (combo, record) => {
+                const oCurrentRange = this.getRangeByName(aRanges, Number.parseInt(record.value));
                 nCurrentSymbol = oCurrentRange.Start;
                 bMainFocus = true;
-                me.updateView(undefined, undefined, undefined, undefined, false);
-                setTimeout(function(){
-                    me.previewPanel.focus();
+                this.updateView(undefined, undefined, undefined, undefined, false);
+                setTimeout(()=> {
+                    this.previewPanel.focus();
                 }, 1);
             });
             this.updateRangeSelector();
 
-            me.inputCode = new Common.UI.InputField({
+            this.inputCode = new Common.UI.InputField({
                 el          : $window.find('#symbol-table-text-code'),
                 allowBlank  : false,
-                blankError  : me.txtEmpty,
+                blankError  : this.txtEmpty,
                 style       : 'width: 100%;',
                 validateOnBlur: false,
                 validateOnChange: true
-            }).on('changing', function(cmp, newValue, oldValue) {
-                var value = parseInt(newValue, 16);
-                if(!isNaN(value) && value > 0x1F){
-                    var oRange = me.getRangeBySymbol(aRanges, value);
+            }).on('changing', (cmp, newValue, oldValue) => {
+                const value = Number.parseInt(newValue, 16);
+                if(!Number.isNaN(value) && value > 0x1F){
+                    const oRange = this.getRangeBySymbol(aRanges, value);
                     if(oRange){
-                        var bUpdateTable = ($window.find("#c" + value).length === 0);
+                        const bUpdateTable = ($window.find(`#c${value}`).length === 0);
                         nCurrentSymbol = value;
                         bMainFocus = true;
-                        me.updateView(bUpdateTable, undefined, false);
+                        this.updateView(bUpdateTable, undefined, false);
                     }
                 }
-            }).on('change:after', function(cmp, newValue, oldValue) {
-                me.updateInput();
+            }).on('change:after', (cmp, newValue, oldValue) => {
+                this.updateInput();
             });
 
             this.symbolTablePanel = $window.find('#symbol-table-scrollable-div');
@@ -723,20 +721,20 @@ define([
             this.updateView(undefined, undefined, undefined, true);
 
             // special
-            var data = [{symbol: '—',  description: this.textEmDash,       shortcutKey: Common.Utils.String.platformKey(Common.Utils.isMac ? 'Alt Shift -' : 'Alt+Ctrl+Num -', '{0}'), code: '2014'},
+            const data = [{symbol: '—',  description: this.textEmDash,       shortcutKey: Common.Utils.String.platformKey(Common.Utils.isMac ? 'Alt Shift -' : 'Alt+Ctrl+Num -', '{0}'), code: '2014'},
                         {symbol: '–',   description: this.textEnDash,       shortcutKey: Common.Utils.String.platformKey(Common.Utils.isMac ? 'Ctrl Num -' : 'Ctrl+Num -', '{0}'), code: '2013'},
                         {symbol: '‑',   description: this.textNBHyphen,     shortcutKey: Common.Utils.String.platformKey(Common.Utils.isMac ? 'Ctrl Shift _' : 'Ctrl+Shift+_', '{0}'), code: '002D', special: {"NonBreakingHyphen":true}},
                         // {symbol: '',    description: this.textSHyphen,      shortcutKey: 'Alt+-', code: '00AD'},
                         {symbol: '',    description: this.textEmSpace,      shortcutKey: '', code: '2003'},
                         {symbol: '',    description: this.textEnSpace,      shortcutKey: '', code: '2002'},
                         {symbol: '',    description: this.textQEmSpace,     shortcutKey: '', code: '2005'},
-                        {symbol: '°',   description: this.textNBSpace,      shortcutKey: Common.Utils.String.platformKey(Common.Utils.isMac ? 'Alt ' : 'Ctrl+Shift+', '{0}') + 'Space', code: '00A0'},
-                        {symbol: '©',   description: this.textCopyright,    shortcutKey: Common.Utils.String.platformKey(Common.Utils.isMac ? 'Alt Ctrl ' : 'Alt+Ctrl+', '{0}') + 'G', code: '00A9'},
-                        {symbol: '®',   description: this.textRegistered,   shortcutKey: Common.Utils.String.platformKey(Common.Utils.isMac ? 'Alt Ctrl ' : 'Alt+Ctrl+', '{0}') + 'R', code: '00AE'},
-                        {symbol: '™',  description: this.textTradeMark,    shortcutKey: Common.Utils.String.platformKey(Common.Utils.isMac ? 'Alt Ctrl ' : 'Alt+Ctrl+', '{0}') + 'T', code: '2122'},
+                        {symbol: '°',   description: this.textNBSpace,      shortcutKey: `${Common.Utils.String.platformKey(Common.Utils.isMac ? 'Alt ' : 'Ctrl+Shift+', '{0}')}Space`, code: '00A0'},
+                        {symbol: '©',   description: this.textCopyright,    shortcutKey: `${Common.Utils.String.platformKey(Common.Utils.isMac ? 'Alt Ctrl ' : 'Alt+Ctrl+', '{0}')}G`, code: '00A9'},
+                        {symbol: '®',   description: this.textRegistered,   shortcutKey: `${Common.Utils.String.platformKey(Common.Utils.isMac ? 'Alt Ctrl ' : 'Alt+Ctrl+', '{0}')}R`, code: '00AE'},
+                        {symbol: '™',  description: this.textTradeMark,    shortcutKey: `${Common.Utils.String.platformKey(Common.Utils.isMac ? 'Alt Ctrl ' : 'Alt+Ctrl+', '{0}')}T`, code: '2122'},
                         {symbol: '§',   description: this.textSection,      shortcutKey: '', code: '00A7'},
                         {symbol: '¶',   description: this.textPilcrow,      shortcutKey: '', code: '00B6'},
-                        {symbol: '…',  description: this.textEllipsis,     shortcutKey: Common.Utils.String.platformKey(Common.Utils.isMac ? 'Alt Ctrl ' : 'Alt+Ctrl+', '{0}') + '.', code: '2026'},
+                        {symbol: '…',  description: this.textEllipsis,     shortcutKey: `${Common.Utils.String.platformKey(Common.Utils.isMac ? 'Alt Ctrl ' : 'Alt+Ctrl+', '{0}')}.`, code: '2026'},
                         {symbol: '‛',   description: this.textSOQuote,      shortcutKey: '', code: '2018'},
                         {symbol: '’',   description: this.textSCQuote,      shortcutKey: '', code: '2019'},
                         {symbol: '‟',   description: this.textDOQuote,      shortcutKey: '', code: '201C'},
@@ -751,7 +749,7 @@ define([
                     '<div id="<%= id %>" class="list-item" style="width: 100%;display:flex;">',
                         '<div class="padding-right-5" style="width:70px;text-align: center;"><%= symbol %></div>',
                         '<div class="padding-right-5" style="flex-grow:1;"><%= description %></div>',
-                        '<% if (' + this.showShortcutKey + ') { %>',
+                        `<% if (${this.showShortcutKey}) { %>`,
                             '<div style="width:105px;"><%= shortcutKey %></div>',
                         '<% } %>',
                     '</div>'
@@ -770,15 +768,15 @@ define([
         },
 
         calcControlsHeight: function() {
-            var $window = this.$window,
-                tables = this.symbolsPanel.find('> table'),
-                switcher = $window.find('#symbol-table-switcher'),
-                bodyEl = $window.find('.body');
-            this.hfHeight = parseInt($window.find('.header').css('height')) + parseInt($window.find('.footer').css('height')) + parseInt(bodyEl.css('padding-top')) + parseInt(bodyEl.css('padding-bottom')) +
-                            parseInt($window.css('border-bottom-width')) + parseInt($window.css('border-top-width'));
-            this.switcherHeight = this.special ? switcher.height()+parseInt(switcher.css('margin-bottom')) : 0;
-            this.controlsSpecialHeight = this.special && this.btnSpecial.isActive() ? $window.find('#symbol-table-lbl-char').height() + switcher.height()+parseInt(switcher.css('margin-bottom')) : 0;
-            this.controlsSymbolsHeight = this.special && this.btnSpecial.isActive() ? 0 : tables.eq(0).height() + tables.eq(2).height() + tables.eq(3).height() + (this.special ? switcher.height()+parseInt(switcher.css('margin-bottom')) : 0);
+            const $window = this.$window;
+            const tables = this.symbolsPanel.find('> table');
+            const switcher = $window.find('#symbol-table-switcher');
+            const bodyEl = $window.find('.body');
+            this.hfHeight = Number.parseInt($window.find('.header').css('height')) + Number.parseInt($window.find('.footer').css('height')) + Number.parseInt(bodyEl.css('padding-top')) + Number.parseInt(bodyEl.css('padding-bottom')) +
+                            Number.parseInt($window.css('border-bottom-width')) + Number.parseInt($window.css('border-top-width'));
+            this.switcherHeight = this.special ? switcher.height()+Number.parseInt(switcher.css('margin-bottom')) : 0;
+            this.controlsSpecialHeight = this.special && this.btnSpecial.isActive() ? $window.find('#symbol-table-lbl-char').height() + switcher.height()+Number.parseInt(switcher.css('margin-bottom')) : 0;
+            this.controlsSymbolsHeight = this.special && this.btnSpecial.isActive() ? 0 : tables.eq(0).height() + tables.eq(2).height() + tables.eq(3).height() + (this.special ? switcher.height()+Number.parseInt(switcher.css('margin-bottom')) : 0);
         },
 
         show: function() {
@@ -788,32 +786,32 @@ define([
                 this.binding = {};
             this.binding.keydownSymbols = _.bind(this.onKeyDown,this);
             this.binding.keypressSymbols = _.bind(this.onKeyPress,this);
-            $(document).on('keydown.' + this.cid, '#symbol-table-scrollable-div #id-preview-data, #symbol-table-recent', this.binding.keydownSymbols);
-            $(document).on('keypress.' + this.cid, '#symbol-table-scrollable-div #id-preview-data, #symbol-table-recent', this.binding.keypressSymbols);
+            $(document).on(`keydown.${this.cid}`, '#symbol-table-scrollable-div #id-preview-data, #symbol-table-recent', this.binding.keydownSymbols);
+            $(document).on(`keypress.${this.cid}`, '#symbol-table-scrollable-div #id-preview-data, #symbol-table-recent', this.binding.keypressSymbols);
 
-            var special = this.special && !!Common.Utils.InternalSettings.get(this.appPrefix + "symbol-table-special");
+            const special = this.special && !!Common.Utils.InternalSettings.get(`${this.appPrefix}symbol-table-special`);
             special ? this.btnSpecial.toggle(true) : this.btnSymbols.toggle(true);
             this.ShowHideElem(special);
         },
 
         close: function(suppressevent) {
-            $(document).off('keydown.' + this.cid, this.binding.keydownSymbols);
-            $(document).off('keypress.' + this.cid, this.binding.keypressSymbols);
+            $(document).off(`keydown.${this.cid}`, this.binding.keydownSymbols);
+            $(document).off(`keypress.${this.cid}`, this.binding.keypressSymbols);
 
-            this.special && Common.Utils.InternalSettings.set(this.appPrefix + "symbol-table-special", this.btnSpecial.isActive());
+            this.special && Common.Utils.InternalSettings.set(`${this.appPrefix}symbol-table-special`, this.btnSpecial.isActive());
 
             Common.UI.Window.prototype.close.apply(this, arguments);
         },
 
         getPasteSymbol: function(cellId) {
-            var bUpdateRecents = false;
-            var sFont;
+            let bUpdateRecents = false;
+            let sFont;
             if (cellId && cellId.length>0) {
                 bUpdateRecents = (cellId[0] === 'c');
                 if(bUpdateRecents){
                     sFont = aFontSelects[nCurrentFont].displayValue;
                 } else {
-                    var nFontId = parseInt(cellId.split('_')[2]);
+                    const nFontId = Number.parseInt(cellId.split('_')[2]);
                     sFont = aFontSelects[nFontId].displayValue;
                 }
             }
@@ -821,12 +819,12 @@ define([
         },
 
         getSpecialSymbol: function() {
-            var rec = this.specialList.getSelectedRec();
-            return {font: undefined, symbol: this.encodeSurrogateChar(rec.get('code')), code: parseInt(rec.get('code'), 16), special: rec.get('special'), speccharacter: true};
+            const rec = this.specialList.getSelectedRec();
+            return {font: undefined, symbol: this.encodeSurrogateChar(rec.get('code')), code: Number.parseInt(rec.get('code'), 16), special: rec.get('special'), speccharacter: true};
         },
 
         onBtnClick: function(event) {
-            this._handleInput(event.currentTarget.attributes['result'].value, true);
+            this._handleInput(event.currentTarget.attributes.result.value, true);
         },
 
         onPrimary: function(event) {
@@ -835,16 +833,16 @@ define([
         },
 
         _handleInput: function(state, fromButton) {
-            if(!fromButton && document.activeElement && document.activeElement.localName == 'textarea' && /area_id/.test(document.activeElement.id)){
+            if(!fromButton && document.activeElement && document.activeElement.localName === 'textarea' && /area_id/.test(document.activeElement.id)){
                 return;
             }
 
-            var special = this.btnSpecial.isActive();
-            var settings = (state=='ok') ? (special ? this.getSpecialSymbol() : this.getPasteSymbol(this.$window.find('.cell-selected').attr('id'))) : {};
+            const special = this.btnSpecial.isActive();
+            const settings = (state==='ok') ? (special ? this.getSpecialSymbol() : this.getPasteSymbol(this.$window.find('.cell-selected').attr('id'))) : {};
             if (this.options.handler) {
                 this.options.handler.call(this, this, state, settings);
             }
-            if (state=='ok') {
+            if (state==='ok') {
                 !special && this.checkRecent(nCurrentSymbol, settings.font);
                 !special && settings.updateRecents && this.updateRecents();
                 if (this.type)
@@ -853,28 +851,27 @@ define([
             this.close();
         },
 
-        encodeSurrogateChar: function(nUnicode) {
+        encodeSurrogateChar: (nUnicode) => {
             if (nUnicode < 0x10000)
             {
                 return String.fromCharCode(nUnicode);
             }
-            else
-            {
+            
                 nUnicode = nUnicode - 0x10000;
-                var nLeadingChar = 0xD800 | (nUnicode >> 10);
-                var nTrailingChar = 0xDC00 | (nUnicode & 0x3FF);
+                const nLeadingChar = 0xD800 | (nUnicode >> 10);
+                const nTrailingChar = 0xDC00 | (nUnicode & 0x3FF);
                 return String.fromCharCode(nLeadingChar) + String.fromCharCode(nTrailingChar);
-            }
         },
 
-        fixedCharCodeAt: function(str, idx) {
+        fixedCharCodeAt: (str, idx) => {
             idx = idx || 0;
-            var code = str.charCodeAt(idx);
-            var hi, low;
+            const code = str.charCodeAt(idx);
+            let hi;
+            let low;
             if (0xD800 <= code && code <= 0xDBFF) {
                 hi = code;
                 low = str.charCodeAt(idx + 1);
-                if (isNaN(low)) {
+                if (Number.isNaN(low)) {
                     throw 'Старшая часть суррогатной пары без следующей младшей в fixedCharCodeAt()';
                 }
                 return ((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000;
@@ -885,8 +882,8 @@ define([
             return code;
         },
 
-        getArrRangesByFont: function(nFontName){
-            var _ret = getSupportedRangesByFont(aFontSelects[nFontName]);
+        getArrRangesByFont: (nFontName)=> {
+            const _ret = getSupportedRangesByFont(aFontSelects[nFontName]);
             if(_ret.length === 0){
                 _ret.push({Start:0x20, End: 0xFF});
             }
@@ -896,8 +893,8 @@ define([
             return _ret;
         },
 
-        getRangeBySymbol: function(arrRanges, nCode){
-            for(var i = 0; i < arrRanges.length; ++i){
+        getRangeBySymbol: (arrRanges, nCode)=> {
+            for(let i = 0; i < arrRanges.length; ++i){
                 if(arrRanges[i].Start <= nCode && arrRanges[i].End >= nCode){
                     return arrRanges[i];
                 }
@@ -905,8 +902,8 @@ define([
             return null;
         },
 
-        getRangeByName: function(arrRanges, nName){
-            for(var i = 0; i < arrRanges.length; ++i){
+        getRangeByName: (arrRanges, nName)=> {
+            for(let i = 0; i < arrRanges.length; ++i){
                 if(arrRanges[i].Name === nName){
                     return arrRanges[i];
                 }
@@ -914,11 +911,11 @@ define([
             return null;
         },
 
-        getLinearIndexByCode: function(arrRanges, nCode){
-            var nLinearIndex = -1;
-            var nCounter = 0;
-            var oCurRange;
-            for(var i = 0; i < arrRanges.length; ++i){
+        getLinearIndexByCode: (arrRanges, nCode)=> {
+            const nLinearIndex = -1;
+            let nCounter = 0;
+            let oCurRange;
+            for(let i = 0; i < arrRanges.length; ++i){
                 oCurRange = arrRanges[i];
                 if(oCurRange.Start > nCode){
                     return -1;
@@ -931,14 +928,14 @@ define([
             return nLinearIndex;
         },
 
-        getCodeByLinearIndex: function(arrRanges, nIndex){
+        getCodeByLinearIndex: (arrRanges, nIndex)=> {
             if(nIndex < 0){
                 return -1;
             }
-            var nCount = 0;
-            var oCurRange = arrRanges[0];
-            var nDiff;
-            for(var i = 0; i < arrRanges.length; ++i){
+            let nCount = 0;
+            let oCurRange = arrRanges[0];
+            let nDiff;
+            for(let i = 0; i < arrRanges.length; ++i){
                 oCurRange = arrRanges[i];
                 nDiff = oCurRange.End - oCurRange.Start + 1;
                 if(nCount + nDiff > nIndex){
@@ -950,13 +947,13 @@ define([
         },
 
         createTable: function(arrSym, nRowsCount, nColsCount){
-            var nDivCount = nRowsCount*nColsCount;
-            var nCellsCounter = 0;
-            var sInnerHtml = '';
-            var sId;
-            var sStyle = 'style=\'border-bottom: none\'';
-            var sCellStyle;
-            for(var i = 0; i < nDivCount; ++i){
+            const nDivCount = nRowsCount*nColsCount;
+            let nCellsCounter = 0;
+            let sInnerHtml = '';
+            let sId;
+            const sStyle = 'style=\'border-bottom: none\'';
+            let sCellStyle;
+            for(let i = 0; i < nDivCount; ++i){
 
 
                 if(((i / nColsCount) >> 0) === (nRowsCount - 1)){
@@ -966,11 +963,11 @@ define([
                     sCellStyle = '';
                 }
                 if(i < arrSym.length){
-                    sId = 'c' + arrSym[i];
-                    sInnerHtml += '<div dir=\"ltr\" class=\"cell\" '+sCellStyle +' id=\"' + sId + '\">' + '&#' + arrSym[i].toString(10) + '</div>';
+                    sId = `c${arrSym[i]}`;
+                    sInnerHtml += `<div dir=\"ltr\" class=\"cell\" ${sCellStyle} id=\"${sId}\">&#${arrSym[i].toString(10)}</div>`;
                 }
                 else{
-                    sInnerHtml += '<div dir=\"ltr\" class=\"cell\"'+sCellStyle +'></div>';
+                    sInnerHtml += `<div dir=\"ltr\" class=\"cell\"${sCellStyle}></div>`;
                 }
                 ++nCellsCounter;
                 if(nCellsCounter >= nColsCount){
@@ -982,9 +979,9 @@ define([
         },
 
         fillRecentSymbols: function(){
-            var sRecents = Common.localStorage.getItem(this.appPrefix + 'recentSymbols');
-            var aRecentCookies;
-            if(sRecents != ''){
+            const sRecents = Common.localStorage.getItem(`${this.appPrefix}recentSymbols`);
+            let aRecentCookies;
+            if(sRecents !== ''){
                 aRecentCookies = JSON.parse(sRecents);
             }
             if(_.isArray(aRecentCookies)){
@@ -993,8 +990,8 @@ define([
         },
 
         saveRecent: function(){
-            var sJSON = JSON.stringify(aRecents);
-            Common.localStorage.setItem(this.appPrefix + 'recentSymbols', sJSON);
+            const sJSON = JSON.stringify(aRecents);
+            Common.localStorage.setItem(`${this.appPrefix}recentSymbols`, sJSON);
         },
 
         checkRecent: function(sSymbol, sFont){
@@ -1003,7 +1000,7 @@ define([
                 this.saveRecent();
                 return;
             }
-            for(var i = 0; i < aRecents.length; ++i){
+            for(let i = 0; i < aRecents.length; ++i){
                 if(aRecents[i].symbol === sSymbol && aRecents[i].font === sFont){
                     aRecents.splice(i, 1);
                     break;
@@ -1017,50 +1014,50 @@ define([
         },
 
         createCell: function(nSymbolCode, sFontName){
-            var sId = '',
-                symbol = '';
+            let sId = '';
+            let symbol = '';
             if(sFontName){
-                var nFontIndex = 0;
-                for(var i = 0; i < aFontSelects.length; ++i){
+                let nFontIndex = 0;
+                for(let i = 0; i < aFontSelects.length; ++i){
                     if(aFontSelects[i].displayValue === sFontName){
                         nFontIndex = i;
                         break;
                     }
                 }
-                sId = 'r_' + nSymbolCode + '_' + nFontIndex;
-                symbol = '&#' + nSymbolCode.toString();
+                sId = `r_${nSymbolCode}_${nFontIndex}`;
+                symbol = `&#${nSymbolCode.toString()}`;
             } else if (nSymbolCode!==undefined) {
-                sId = 'r' + nSymbolCode;
-                symbol = '&#' + nSymbolCode.toString();
+                sId = `r${nSymbolCode}`;
+                symbol = `&#${nSymbolCode.toString()}`;
             }
-            var _ret = $('<div dir=\"ltr\" id=\"' + sId + '\">' + symbol + '</div>');
+            const _ret = $(`<div dir=\"ltr\" id=\"${sId}\">${symbol}</div>`);
             _ret.addClass('cell');
             _ret.addClass('noselect');
             _ret.mousedown(_.bind(this.cellClickHandler, this));
             if(sFontName){
-                _ret.css('font-family', '\'' + sFontName + '\'');
+                _ret.css('font-family', `\'${sFontName}\'`);
             }
             return _ret;
         },
 
         cellClickHandler: function (e) {
-            var id = $(e.target).attr('id');
+            const id = $(e.target).attr('id');
             if(!id){
                 return;
             }
-            var nTime = (new Date()).getTime();
+            const nTime = (new Date()).getTime();
             if(id === sLastId && (nTime - nLastTime) < 300 ){
                 this.cellDblClickHandler(e)
             }
             else{
                 if(id[0] === 'c'){
-                    nCurrentSymbol = parseInt(id.slice(1, id.length));
+                    nCurrentSymbol = Number.parseInt(id.slice(1, id.length));
                     bMainFocus = true;
                 }
                 else{
-                    var aStrings = id.split('_');
-                    nCurrentSymbol = parseInt(aStrings[1]);
-                    nFontNameRecent = parseInt(aStrings[2]);
+                    const aStrings = id.split('_');
+                    nCurrentSymbol = Number.parseInt(aStrings[1]);
+                    nFontNameRecent = Number.parseInt(aStrings[2]);
                     bMainFocus = false;
                 }
                 this.updateView(false);
@@ -1073,7 +1070,7 @@ define([
             if (!this.type)
                 this._handleInput('ok');
             else {
-                var settings = this.getPasteSymbol($(e.target).attr('id'));
+                const settings = this.getPasteSymbol($(e.target).attr('id'));
                 this.checkRecent(nCurrentSymbol, settings.font);
                 settings.updateRecents && this.updateView(false, undefined, undefined, true);
                 this.fireEvent('symbol:dblclick', this, 'ok', settings);
@@ -1084,19 +1081,19 @@ define([
             if (!this.type)
                 this._handleInput('ok');
             else {
-                var settings = this.getSpecialSymbol();
+                const settings = this.getSpecialSymbol();
                 this.fireEvent('symbol:dblclick', this, 'ok', settings);
             }
         },
 
         updateRecents: function(){
-            var oRecentsDiv = this.recentPanel;
+            const oRecentsDiv = this.recentPanel;
             oRecentsDiv.empty();
-            var nCols = this.getColsCount(),
-                nRecents = aRecents.length;
+            const nCols = this.getColsCount();
+            const nRecents = aRecents.length;
             oRecentsDiv.width(nCols * CELL_WIDTH);
-            for(var i = 0; i < nCols; ++i){
-                var oCell = (i<nRecents) ? this.createCell(aRecents[i].symbol, aRecents[i].font) : this.createCell();
+            for(let i = 0; i < nCols; ++i){
+                const oCell = (i<nRecents) ? this.createCell(aRecents[i].symbol, aRecents[i].font) : this.createCell();
                 oCell.css('border-bottom', 'none');
                 oRecentsDiv.append(oCell);
                 if(i === (nCols - 1)){
@@ -1106,7 +1103,7 @@ define([
         },
 
         getColsCount: function(){
-            var nMaxWidth = this.boxPanel.width()-13;
+            const nMaxWidth = this.boxPanel.width()-13;
             return ((nMaxWidth/CELL_WIDTH) >> 0);
         },
 
@@ -1118,10 +1115,10 @@ define([
             return  Math.max(1, ((this.getMaxHeight()/CELL_HEIGHT) >> 0));
         },
 
-        getAllSymbolsCount: function(arrRanges){
-            var _count = 0;
-            var oRange;
-            for(var i = 0; i < arrRanges.length; ++i){
+        getAllSymbolsCount: (arrRanges)=> {
+            let _count = 0;
+            let oRange;
+            for(let i = 0; i < arrRanges.length; ++i){
                 oRange = arrRanges[i];
                 _count += (oRange.End - oRange.Start + 1);
             }
@@ -1129,24 +1126,24 @@ define([
         },
 
         setTable: function(nStartCode){
-            var nColsCount = this.getColsCount();
-            var nRowsCount = this.getRowsCount();
-            var nIndexSymbol = this.getLinearIndexByCode(aRanges, nStartCode);
-            var nAllSymbolsCount = this.getAllSymbolsCount(aRanges);
-            var nAllRowsCount = Math.ceil(nAllSymbolsCount/nColsCount);
-            var nRowsSkip = Math.max(0, Math.min(nAllRowsCount - nRowsCount, ((nIndexSymbol / nColsCount) >> 0)));
-            var nFirst = nRowsSkip*nColsCount;
-            var nSymbolsCount = nRowsCount*nColsCount;
-            var aSymbols = [];
-            var nCode;
-            for(var i = 0; i < nSymbolsCount; ++i){
+            const nColsCount = this.getColsCount();
+            const nRowsCount = this.getRowsCount();
+            const nIndexSymbol = this.getLinearIndexByCode(aRanges, nStartCode);
+            const nAllSymbolsCount = this.getAllSymbolsCount(aRanges);
+            const nAllRowsCount = Math.ceil(nAllSymbolsCount/nColsCount);
+            const nRowsSkip = Math.max(0, Math.min(nAllRowsCount - nRowsCount, ((nIndexSymbol / nColsCount) >> 0)));
+            const nFirst = nRowsSkip*nColsCount;
+            const nSymbolsCount = nRowsCount*nColsCount;
+            const aSymbols = [];
+            let nCode;
+            for(let i = 0; i < nSymbolsCount; ++i){
                 nCode = this.getCodeByLinearIndex(aRanges, nFirst + i);
                 if(nCode === -1){
                     break;
                 }
                 aSymbols.push(nCode);
             }
-            this.previewPanel.css('font-family',  '\'' + aFontSelects[nCurrentFont].displayValue + '\'');
+            this.previewPanel.css('font-family',  `\'${aFontSelects[nCurrentFont].displayValue}\'`);
             this.createTable(aSymbols, nRowsCount, nColsCount);
             return nRowsSkip;
         },
@@ -1171,17 +1168,17 @@ define([
             }
 
             //main table
-            var nRowsCount = this.getRowsCount();
-            var nHeight = nRowsCount*CELL_HEIGHT;
+            const nRowsCount = this.getRowsCount();
+            const nHeight = nRowsCount*CELL_HEIGHT;
             bScrollMouseUp = false;
             if(bUpdateTable !== false){
                 //fill table
-                var nSymbol = (nTopSymbol !== null && nTopSymbol !== undefined)? nTopSymbol : nCurrentSymbol;
-                var nRowSkip = this.setTable(nSymbol);
+                const nSymbol = (nTopSymbol !== null && nTopSymbol !== undefined)? nTopSymbol : nCurrentSymbol;
+                const nRowSkip = this.setTable(nSymbol);
                 //update scroll
-                var nSymbolsCount = this.getAllSymbolsCount(aRanges);
-                var nAllRowsCount = Math.ceil(nSymbolsCount/this.getColsCount());
-                var nFullHeight = nAllRowsCount*CELL_HEIGHT;
+                const nSymbolsCount = this.getAllSymbolsCount(aRanges);
+                const nAllRowsCount = Math.ceil(nSymbolsCount/this.getColsCount());
+                const nFullHeight = nAllRowsCount*CELL_HEIGHT;
 
                 this.previewInner.height(nFullHeight);
                 this.previewPanel.height(nHeight);
@@ -1215,7 +1212,7 @@ define([
                     this.scrollerY.scrollTop(nRowSkip*CELL_HEIGHT);
                 }
 
-                var aCells = this.previewPanel.find('.cell');
+                const aCells = this.previewPanel.find('.cell');
                 aCells.off('mousedown');
                 aCells.mousedown(_.bind(this.cellClickHandler, this));
             }
@@ -1230,9 +1227,9 @@ define([
 
             //select current cell
             if(bMainFocus){
-                this.$window.find('#c' + nCurrentSymbol).addClass('cell-selected');
+                this.$window.find(`#c${nCurrentSymbol}`).addClass('cell-selected');
             } else {
-                this.$window.find('#r_' + nCurrentSymbol + '_' + nFontNameRecent).addClass('cell-selected');
+                this.$window.find(`#r_${nCurrentSymbol}_${nFontNameRecent}`).addClass('cell-selected');
             }
 
             //update input
@@ -1246,29 +1243,29 @@ define([
                 return;
             }
 
-            var nSymbolsCount = this.getAllSymbolsCount(aRanges);
-            var nColsCount = this.getColsCount();
-            var nRows = this.getRowsCount();
-            var nAllRowsCount = Math.ceil(nSymbolsCount/nColsCount);
-            var nFullHeight = nAllRowsCount*CELL_HEIGHT;
-            var nRowSkip = Math.max(0, Math.min(nAllRowsCount - nRows, (nAllRowsCount*this.scrollerY.getScrollTop()/nFullHeight + 0.5) >> 0));
+            const nSymbolsCount = this.getAllSymbolsCount(aRanges);
+            const nColsCount = this.getColsCount();
+            const nRows = this.getRowsCount();
+            const nAllRowsCount = Math.ceil(nSymbolsCount/nColsCount);
+            const nFullHeight = nAllRowsCount*CELL_HEIGHT;
+            const nRowSkip = Math.max(0, Math.min(nAllRowsCount - nRows, (nAllRowsCount*this.scrollerY.getScrollTop()/nFullHeight + 0.5) >> 0));
             nLastScroll = this.scrollerY.getScrollTop();
             if(!bMainFocus){
                 nCurrentSymbol = this.getCodeByLinearIndex(aRanges, nRowSkip*nColsCount);
                 bMainFocus = true;
             }
             else{
-                var oFirstCell = this.previewPanel.children()[0];
+                const oFirstCell = this.previewPanel.children()[0];
                 if(oFirstCell){
-                    var id = oFirstCell.id;
+                    const id = oFirstCell.id;
                     if(id){
-                        var nOldFirstCode = parseInt(id.slice(1, id.length));
-                        var nOldFirstLinearIndex = this.getLinearIndexByCode(aRanges, nOldFirstCode);
-                        var nOldCurrentLinearIndex = this.getLinearIndexByCode(aRanges, nCurrentSymbol);
-                        var nDiff = nOldCurrentLinearIndex - nOldFirstLinearIndex;
-                        var nNewCurLinearIndex = nRowSkip*nColsCount + nDiff;
+                        const nOldFirstCode = Number.parseInt(id.slice(1, id.length));
+                        const nOldFirstLinearIndex = this.getLinearIndexByCode(aRanges, nOldFirstCode);
+                        const nOldCurrentLinearIndex = this.getLinearIndexByCode(aRanges, nCurrentSymbol);
+                        const nDiff = nOldCurrentLinearIndex - nOldFirstLinearIndex;
+                        let nNewCurLinearIndex = nRowSkip*nColsCount + nDiff;
                         nCurrentSymbol = this.getCodeByLinearIndex(aRanges, nNewCurLinearIndex);
-                        var nFirstIndex = nRowSkip*nColsCount;
+                        const nFirstIndex = nRowSkip*nColsCount;
                         nNewCurLinearIndex -= nColsCount;
                         while(nCurrentSymbol === -1 && nNewCurLinearIndex >= nFirstIndex){
                             nCurrentSymbol = this.getCodeByLinearIndex(aRanges, nNewCurLinearIndex);
@@ -1287,23 +1284,25 @@ define([
         },
 
         updateInput: function(){
-            var sVal = nCurrentSymbol.toString(16).toUpperCase();
-            var sValLen = sVal.length;
-            for(var i = sValLen; i < 5; ++i){
-                sVal = '0' + sVal;
+            let sVal = nCurrentSymbol.toString(16).toUpperCase();
+            const sValLen = sVal.length;
+            for(let i = sValLen; i < 5; ++i){
+                sVal = `0${sVal}`;
             }
             this.inputCode.setValue(sVal);
         },
 
         updateRangeSelector: function() {
-            var oCurrentRange = this.getRangeBySymbol(aRanges, nCurrentSymbol);
+            const oCurrentRange = this.getRangeBySymbol(aRanges, nCurrentSymbol);
             if(!oCurrentRange || !oCurrentRange.Name){
                 this.cmbRange.setDisabled(true);
                 this.cmbRange.setValue('');
             }
             else{
                 this.cmbRange.setDisabled(false);
-                var oOption, i, data = [];
+                let oOption;
+                let i;
+                const data = [];
                 for(i = 0; i < aRanges.length; ++i){
                     data.push({
                         value: aRanges[i].Name,
@@ -1321,10 +1320,10 @@ define([
                     return;
                 }
             }
-            var value = e.which || e.charCode || e.keyCode || 0;
-            var bFill = true;
+            const value = e.which || e.charCode || e.keyCode || 0;
+            let bFill = true;
             if(bMainFocus){
-                var nCode = -1;
+                let nCode = -1;
                 if ( value === Common.UI.Keys.LEFT ){//left
                     nCode = this.getCodeByLinearIndex(aRanges, this.getLinearIndexByCode(aRanges, nCurrentSymbol) - 1);
                 }
@@ -1352,20 +1351,21 @@ define([
                 }
                 if(nCode > -1){
                     nCurrentSymbol = nCode;
-                    var bUpdateTable =  this.$window.find('#c' + nCurrentSymbol).length === 0;
+                    const bUpdateTable =  this.$window.find(`#c${nCurrentSymbol}`).length === 0;
                     this.updateView(bUpdateTable);
                 }
             }
             else{
-                var oSelectedCell, aStrings;
+                let oSelectedCell;
+                let aStrings;
                 if ( value === Common.UI.Keys.LEFT ){//left
                     oSelectedCell = this.$window.find('.cell-selected')[0];
                     if(oSelectedCell && oSelectedCell.id[0] === 'r'){
-                        var oPresCell = this.$window.find(oSelectedCell).prev();
+                        const oPresCell = this.$window.find(oSelectedCell).prev();
                         if(oPresCell.length > 0){
                             aStrings = this.$window.find(oPresCell).attr('id').split('_');
-                            nCurrentSymbol = parseInt(aStrings[1]);
-                            nFontNameRecent = parseInt(aStrings[2]);
+                            nCurrentSymbol = Number.parseInt(aStrings[1]);
+                            nFontNameRecent = Number.parseInt(aStrings[2]);
                             this.updateView(false);
                         }
                     }
@@ -1373,31 +1373,31 @@ define([
                 else if ( value === Common.UI.Keys.RIGHT ){//right
                     oSelectedCell = this.$window.find('.cell-selected')[0];
                     if(oSelectedCell && oSelectedCell.id[0] === 'r'){
-                        var oNextCell = this.$window.find(oSelectedCell).next();
+                        const oNextCell = this.$window.find(oSelectedCell).next();
                         if(oNextCell.length > 0){
                             aStrings = this.$window.find(oNextCell).attr('id').split('_');
-                            nCurrentSymbol = parseInt(aStrings[1]);
-                            nFontNameRecent = parseInt(aStrings[2]);
+                            nCurrentSymbol = Number.parseInt(aStrings[1]);
+                            nFontNameRecent = Number.parseInt(aStrings[2]);
                             this.updateView(false);
                         }
                     }
                 }
                 else if(value === Common.UI.Keys.HOME){//home
-                    var oFirstCell = this.$window.find('#recent-table').children()[0];
+                    const oFirstCell = this.$window.find('#recent-table').children()[0];
                     if(oFirstCell){
                         aStrings = oFirstCell.id.split('_');
-                        nCurrentSymbol = parseInt(aStrings[1]);
-                        nFontNameRecent = parseInt(aStrings[2]);
+                        nCurrentSymbol = Number.parseInt(aStrings[1]);
+                        nFontNameRecent = Number.parseInt(aStrings[2]);
                         this.updateView(false);
                     }
                 }
                 else if(value === Common.UI.Keys.END){//end
-                    var aChildren = this.recentPanel.children();
-                    var oLastCell = aChildren[aChildren.length - 1];
+                    const aChildren = this.recentPanel.children();
+                    const oLastCell = aChildren[aChildren.length - 1];
                     if(oLastCell){
                         aStrings = oLastCell.id.split('_');
-                        nCurrentSymbol = parseInt(aStrings[1]);
-                        nFontNameRecent = parseInt(aStrings[2]);
+                        nCurrentSymbol = Number.parseInt(aStrings[1]);
+                        nFontNameRecent = Number.parseInt(aStrings[2]);
                         this.updateView(false);
                     }
                 }
@@ -1418,27 +1418,27 @@ define([
                     return;
                 }
             }
-            var value = e.which || e.charCode || e.keyCode || 0;
+            const value = e.which || e.charCode || e.keyCode || 0;
             if(lastKeyCode === value){
                 if(Math.abs(lastTime - (new Date()).getTime()) < 1000){
                     return;
                 }
             }
-            if(!isNaN(value) && value > 0x1F){
-                var oRange = this.getRangeBySymbol(aRanges, value);
+            if(!Number.isNaN(value) && value > 0x1F){
+                const oRange = this.getRangeBySymbol(aRanges, value);
                 if(oRange){
-                    var bUpdateTable = (this.$window.find("#c" + value).length === 0);
+                    const bUpdateTable = (this.$window.find(`#c${value}`).length === 0);
                     nCurrentSymbol = value;
                     bMainFocus = true;
                     this.updateView(bUpdateTable, undefined, true);
                 }
             }
-            e.preventDefault && e.preventDefault();
+            e.preventDefault?.();
         },
 
         onWindowResize: function (args) {
-            var size = this.getSize();
-            if (args && args[1]=='start') {
+            const size = this.getSize();
+            if (args && args[1]==='start') {
                 this._preventUpdateScroll = true;
                 this.curSize = {resize: false, width: size[0], height: size[1]};
             } else if (this.curSize.resize) {
@@ -1448,16 +1448,16 @@ define([
                 this.curSize.width = size[0];
                 this.applyInnerSize(size[1]);
                 this.special && (size[1] -= this.switcherHeight);
-                var valJson = JSON.stringify(size);
-                Common.localStorage.setItem(this.appPrefix + 'settings-size-symbol-table', valJson);
-                Common.Utils.InternalSettings.set(this.appPrefix + 'settings-size-symbol-table', valJson);
+                const valJson = JSON.stringify(size);
+                Common.localStorage.setItem(`${this.appPrefix}settings-size-symbol-table`, valJson);
+                Common.Utils.InternalSettings.set(`${this.appPrefix}settings-size-symbol-table`, valJson);
             }
         },
 
         onWindowResizing: function () {
             if (!this.curSize) return;
 
-            var size = this.getSize();
+            const size = this.getSize();
             if (size[0] !== this.curSize.width || size[1] !== this.curSize.height) {
                 if (!this.curSize.resize)
                     this.curSize.resize = true;
@@ -1469,15 +1469,15 @@ define([
         },
 
         applyInnerSize: function(windowHeight) {
-            var height = windowHeight - this.hfHeight;
+            let height = windowHeight - this.hfHeight;
             if (this.controlsSymbolsHeight) {
                 height -= this.controlsSymbolsHeight;
-                this.symbolTablePanel.css({'height': height + 'px'});
+                this.symbolTablePanel.css({'height': `${height}px`});
 
-                var rows = Math.max(1, (((height-2)/CELL_HEIGHT) >> 0));
+                const rows = Math.max(1, (((height-2)/CELL_HEIGHT) >> 0));
                 height = rows*CELL_HEIGHT;
-                this.previewPanel.css({'height': height + 'px'});
-                this.previewScrolled.css({'height': height + 'px'});
+                this.previewPanel.css({'height': `${height}px`});
+                this.previewScrolled.css({'height': `${height}px`});
                 this.updateView(undefined, undefined, undefined, true);
             } else
                 this.specialList.cmpEl.height(height - this.controlsSpecialHeight);
@@ -1492,9 +1492,8 @@ define([
             this.specialPanel.toggleClass('hidden', !special);
             this.calcControlsHeight();
             this.applyInnerSize(this.getSize()[1]);
-            var me = this;
-            _.delay(function(){
-                special ? me.specialList.focus() : me.previewPanel.focus();
+            _.delay(()=> {
+                special ? this.specialList.focus() : this.previewPanel.focus();
             },50);
 
         },

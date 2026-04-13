@@ -27,24 +27,21 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Collections = Common.Collections || {};
 
 define([
     'backbone'
-], function(Backbone){
-    'use strict';
+], (Backbone)=> {
 
     Common.Collections.TextArt = Backbone.Collection.extend({
         model: Backbone.Model.extend({
-            defaults: function() {
-                return {
+            defaults: () => ({
                     id: Common.UI.getId(),
                     imageUrl: null,
                     data: null
-                }
-            }
+                })
         })
     });
 });

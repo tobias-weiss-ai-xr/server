@@ -30,38 +30,37 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-var FONT_TYPE_RECENT = 4;
+const FONT_TYPE_RECENT = 4;
 
 define([
     'common/main/lib/component/ComboBox'
-], function () {
-    'use strict';
+], () => {
 
-    Common.UI.ComboBoxFonts = Common.UI.ComboBox.extend((function() {
-        var iconWidth       = 300,
-            iconHeight      = Asc.FONT_THUMBNAIL_HEIGHT || 28,
-            thumbCanvas     = document.createElement('canvas'),
-            thumbContext    = thumbCanvas.getContext('2d'),
-            postfix = (/^(zh|ja|ko)$/i.test(Common.Locale.getCurrentLanguage())) ? '_ea' : '',
-            thumbs       = [
-                {ratio: 1,      path: '../../../../sdkjs/common/Images/fonts_thumbnail' + postfix + '.png', width: iconWidth, height: iconHeight},
-                {ratio: 1.25,   path: '../../../../sdkjs/common/Images/fonts_thumbnail' + postfix + '@1.25x.png', width: iconWidth * 1.25, height: iconHeight * 1.25},
-                {ratio: 1.5,    path: '../../../../sdkjs/common/Images/fonts_thumbnail' + postfix + '@1.5x.png', width: iconWidth * 1.5, height: iconHeight * 1.5},
-                {ratio: 1.75,   path: '../../../../sdkjs/common/Images/fonts_thumbnail' + postfix + '@1.75x.png', width: iconWidth * 1.75, height: iconHeight * 1.75},
-                {ratio: 2,      path: '../../../../sdkjs/common/Images/fonts_thumbnail' + postfix + '@2x.png', width: iconWidth * 2, height: iconHeight * 2},
+    Common.UI.ComboBoxFonts = Common.UI.ComboBox.extend((() => {
+        const iconWidth       = 300;
+        const iconHeight      = Asc.FONT_THUMBNAIL_HEIGHT || 28;
+        const thumbCanvas     = document.createElement('canvas');
+        const thumbContext    = thumbCanvas.getContext('2d');
+        const postfix = (/^(zh|ja|ko)$/i.test(Common.Locale.getCurrentLanguage())) ? '_ea' : '';
+        const thumbs       = [
+                {ratio: 1,      path: `../../../../sdkjs/common/Images/fonts_thumbnail${postfix}.png`, width: iconWidth, height: iconHeight},
+                {ratio: 1.25,   path: `../../../../sdkjs/common/Images/fonts_thumbnail${postfix}@1.25x.png`, width: iconWidth * 1.25, height: iconHeight * 1.25},
+                {ratio: 1.5,    path: `../../../../sdkjs/common/Images/fonts_thumbnail${postfix}@1.5x.png`, width: iconWidth * 1.5, height: iconHeight * 1.5},
+                {ratio: 1.75,   path: `../../../../sdkjs/common/Images/fonts_thumbnail${postfix}@1.75x.png`, width: iconWidth * 1.75, height: iconHeight * 1.75},
+                {ratio: 2,      path: `../../../../sdkjs/common/Images/fonts_thumbnail${postfix}@2x.png`, width: iconWidth * 2, height: iconHeight * 2},
                 /*{ratio: 2.5,    path: '../../../../sdkjs/common/Images/fonts_thumbnail' + postfix + '@2.5x.png', width: iconWidth * 2.5, height: iconHeight * 2.5},
                 {ratio: 3,      path: '../../../../sdkjs/common/Images/fonts_thumbnail' + postfix + '@3x.png', width: iconWidth * 3, height: iconHeight * 3},
                 {ratio: 3.5,    path: '../../../../sdkjs/common/Images/fonts_thumbnail' + postfix + '@3.5x.png', width: iconWidth * 3.5, height: iconHeight * 3.5},
                 {ratio: 4,      path: '../../../../sdkjs/common/Images/fonts_thumbnail' + postfix + '@4x.png', width: iconWidth * 4, height: iconHeight * 4},
                 {ratio: 4.5,    path: '../../../../sdkjs/common/Images/fonts_thumbnail' + postfix + '@4.5x.png', width: iconWidth * 4.5, height: iconHeight * 4.5},
                 {ratio: 5,      path: '../../../../sdkjs/common/Images/fonts_thumbnail' + postfix + '@5x.png', width: iconWidth * 5, height: iconHeight * 5},*/
-            ],
-            thumbIdx = 0,
-            listItemHeight  = 28,
-            spriteCols     = 1,
-            applicationPixelRatio = Common.Utils.applicationPixelRatio();
+            ];
+        let thumbIdx = 0;
+        const listItemHeight  = 28;
+        let spriteCols     = 1;
+        const applicationPixelRatio = Common.Utils.applicationPixelRatio();
 
         if ( Common.Controllers.Desktop.isActive() ) {
             thumbs[0].path     = Common.Controllers.Desktop.call('getFontsSprite');
@@ -77,9 +76,9 @@ define([
             thumbs[10].path    = Common.Controllers.Desktop.call('getFontsSprite', '@5x');*/
         }
 
-        var bestDistance = Math.abs(applicationPixelRatio-thumbs[0].ratio);
-        var currentDistance = 0;
-        for (var i=1; i<thumbs.length; i++) {
+        let bestDistance = Math.abs(applicationPixelRatio-thumbs[0].ratio);
+        let currentDistance = 0;
+        for (let i=1; i<thumbs.length; i++) {
             currentDistance = Math.abs(applicationPixelRatio-thumbs[i].ratio);
             if (currentDistance < (bestDistance - 0.0001))
             {
@@ -116,9 +115,9 @@ define([
                     this.image.onload = callback;
                     this.image.src = thumbs[thumbIdx].path;
                 } else {
-                    var me = this;
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('GET', url + ".bin", true);
+                    const me = this;
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', `${url}.bin`, true);
                     xhr.responseType = 'arraybuffer';
 
                     if (xhr.overrideMimeType)
@@ -139,33 +138,33 @@ define([
             this.openBinary = function(arrayBuffer) {
                 //var t1 = performance.now();
 
-                var binaryAlpha = this.binaryFormat;
+                const binaryAlpha = this.binaryFormat;
                 this.width      = (binaryAlpha[0] << 24) | (binaryAlpha[1] << 16) | (binaryAlpha[2] << 8) | (binaryAlpha[3] << 0);
                 this.heightOne  = (binaryAlpha[4] << 24) | (binaryAlpha[5] << 16) | (binaryAlpha[6] << 8) | (binaryAlpha[7] << 0);
                 this.count      = (binaryAlpha[8] << 24) | (binaryAlpha[9] << 16) | (binaryAlpha[10] << 8) | (binaryAlpha[11] << 0);
                 this.height     = this.count * this.heightOne;
 
-                var MAX_MEMORY_SIZE = 50000000;
-                var memorySize = 4 * this.width * this.height;
-                var isOffsets = (memorySize > MAX_MEMORY_SIZE) ? true : false;
+                const MAX_MEMORY_SIZE = 50000000;
+                const memorySize = 4 * this.width * this.height;
+                const isOffsets = !!(memorySize > MAX_MEMORY_SIZE);
                     
                 if (!isOffsets)
                     this.data = new Uint8ClampedArray(memorySize);
                 else
                     this.offsets = new Array(this.count);
 
-                var binaryIndex = 12;
-                var binaryLen = binaryAlpha.length;
-                var index = 0;
+                let binaryIndex = 12;
+                const binaryLen = binaryAlpha.length;
+                let index = 0;
 
-                var len0 = 0;
-                var tmpValue = 0;
+                let len0 = 0;
+                let tmpValue = 0;
 
                 if (!isOffsets) {
-                    var imagePixels = this.data;
+                    const imagePixels = this.data;
                     while (binaryIndex < binaryLen) {
                         tmpValue = binaryAlpha[binaryIndex++];
-                        if (0 == tmpValue) {
+                        if (0 === tmpValue) {
                             len0 = binaryAlpha[binaryIndex++];
                             while (len0 > 0) {
                                 len0--;
@@ -180,11 +179,11 @@ define([
                         }
                     }
                 } else {
-                    var module = this.width * this.heightOne;
-                    var moduleCur = module - 1;
+                    const module = this.width * this.heightOne;
+                    let moduleCur = module - 1;
                     while (binaryIndex < binaryLen) {
                         tmpValue = binaryAlpha[binaryIndex++];
-                        if (0 == tmpValue) {
+                        if (0 === tmpValue) {
                             len0 = binaryAlpha[binaryIndex++];
                             while (len0 > 0) {
                                 len0--;
@@ -205,7 +204,7 @@ define([
                 }
 
                 if (!this.offsets)
-                    delete this.binaryFormat;
+                    this.binaryFormat = undefined;
 
                 //var t2 = performance.now();
                 //console.log(t2 - t1);
@@ -224,25 +223,26 @@ define([
                         canvas = document.createElement("canvas");
                         canvas.width = this.width;
                         canvas.height = this.heightOne;
-                        canvas.style.width = iconWidth + "px";
-                        canvas.style.height = iconHeight + "px";
+                        canvas.style.width = `${iconWidth}px`;
+                        canvas.style.height = `${iconHeight}px`;
 
                         ctx = canvas.getContext("2d");
                     }
 
-                    var dataTmp = ctx.createImageData(this.width, this.heightOne);
-                    var sizeImage = 4 * this.width * this.heightOne;
+                    const dataTmp = ctx.createImageData(this.width, this.heightOne);
+                    const sizeImage = 4 * this.width * this.heightOne;
 
                     if (!this.offsets) {
                         dataTmp.data.set(new Uint8ClampedArray(this.data.buffer, index * sizeImage, sizeImage));                        
                     } else {
-                        var binaryAlpha = this.binaryFormat;
-                        var binaryIndex = this.offsets[index].pos;
-                        var alphaChannel = 0;
-                        var pixelsCount = this.width * this.heightOne;
-                        var tmpValue = 0, len0 = 0;
-                        var imagePixels = dataTmp.data;
-                        if (-1 != this.offsets[index].len) {
+                        const binaryAlpha = this.binaryFormat;
+                        let binaryIndex = this.offsets[index].pos;
+                        let alphaChannel = 0;
+                        let pixelsCount = this.width * this.heightOne;
+                        let tmpValue = 0;
+                        let len0 = 0;
+                        const imagePixels = dataTmp.data;
+                        if (-1 !== this.offsets[index].len) {
                             /*
                             // this values is already 0.
                             for (var i = 0; i < this.offsets[index].len; i++) {
@@ -254,7 +254,7 @@ define([
                         }
                         while (pixelsCount > 0) {
                             tmpValue = binaryAlpha[binaryIndex++];
-                            if (0 == tmpValue) {
+                            if (0 === tmpValue) {
                                 len0 = binaryAlpha[binaryIndex++];
                                 if (len0 > pixelsCount)
                                     len0 = pixelsCount;
@@ -280,8 +280,8 @@ define([
                         canvas = document.createElement("canvas");
                         canvas.width = this.width;
                         canvas.height = this.heightOne;
-                        canvas.style.width = iconWidth + "px";
-                        canvas.style.height = iconHeight + "px";
+                        canvas.style.width = `${iconWidth}px`;
+                        canvas.style.height = `${iconHeight}px`;
 
                         ctx = canvas.getContext("2d");
                     }
@@ -326,16 +326,16 @@ define([
 
                 this.recent = _.isNumber(options.recent) ? options.recent : 5;
 
-                var filter = Common.localStorage.getKeysFilter();
-                this.appPrefix = (filter && filter.length) ? filter.split(',')[0] : '';
+                const filter = Common.localStorage.getKeysFilter();
+                this.appPrefix = (filter?.length) ? filter.split(',')[0] : '';
 
                 // Common.NotificationCenter.on('fonts:change',    _.bind(this.onApiChangeFont, this));
                 Common.NotificationCenter.on('fonts:load',      _.bind(this.fillFonts, this));
             },
 
             render : function(parentEl) {
-                var oldRawValue = null;
-                var oldTabindex = '';
+                let oldRawValue = null;
+                let oldTabindex = '';
 
                 if (!_.isUndefined(this._input)) {
                     oldRawValue = this._input.val();
@@ -358,8 +358,7 @@ define([
             },
 
             onAfterKeydownMenu: function(e) {
-                var me = this;
-                if (e.keyCode == Common.UI.Keys.RETURN) {
+                if (e.keyCode === Common.UI.Keys.RETURN) {
                      if ($(e.target).closest('input').length) { // enter in input field
                         if (this.lastValue !== this._input.val())
                             this._input.trigger('change');
@@ -375,17 +374,17 @@ define([
                         }
                     }
                     return false;
-                } else if (e.keyCode == Common.UI.Keys.ESC && this.isMenuOpen()) {
+                }if (e.keyCode === Common.UI.Keys.ESC && this.isMenuOpen()) {
                     this._input.val(this.lastValue);
-                     setTimeout(function() {
-                        me.closeMenu();
-                        me.onAfterHideMenu(e);
+                     setTimeout(() => {
+                        this.closeMenu();
+                        this.onAfterHideMenu(e);
                     }, 10);
                     return false;
-                } else if ((e.keyCode == Common.UI.Keys.HOME && !e.shiftKey || e.keyCode == Common.UI.Keys.END && !e.shiftKey || e.keyCode == Common.UI.Keys.BACKSPACE && !me._input.is(':focus')) && this.isMenuOpen()) {
-                    me._input.focus();
-                    setTimeout(function() {
-                        me._input[0].selectionStart = me._input[0].selectionEnd = (e.keyCode == Common.UI.Keys.HOME) ? 0 : me._input[0].value.length;
+                }if ((e.keyCode === Common.UI.Keys.HOME && !e.shiftKey || e.keyCode === Common.UI.Keys.END && !e.shiftKey || e.keyCode === Common.UI.Keys.BACKSPACE && !this._input.is(':focus')) && this.isMenuOpen()) {
+                    this._input.focus();
+                    setTimeout(() => {
+                        this._input[0].selectionStart = this._input[0].selectionEnd = (e.keyCode === Common.UI.Keys.HOME) ? 0 : this._input[0].value.length;
                     }, 10);
                 }
 
@@ -394,29 +393,28 @@ define([
 
             onInputKeyUp: function(e) {
                 if (!this._isKeyDown) return;
-                if (e.keyCode != Common.UI.Keys.RETURN && e.keyCode !== Common.UI.Keys.SHIFT &&
+                if (e.keyCode !== Common.UI.Keys.RETURN && e.keyCode !== Common.UI.Keys.SHIFT &&
                     e.keyCode !== Common.UI.Keys.CTRL && e.keyCode !== Common.UI.Keys.ALT &&
                     e.keyCode !== Common.UI.Keys.LEFT && e.keyCode !== Common.UI.Keys.RIGHT &&
                     e.keyCode !== Common.UI.Keys.HOME && e.keyCode !== Common.UI.Keys.END &&
                     e.keyCode !== Common.UI.Keys.ESC &&
                     e.keyCode !== Common.UI.Keys.INSERT && e.keyCode !== Common.UI.Keys.TAB){
                     e.stopPropagation();
-                    this.selectCandidate(e.keyCode == Common.UI.Keys.DELETE || e.keyCode == Common.UI.Keys.BACKSPACE);
+                    this.selectCandidate(e.keyCode === Common.UI.Keys.DELETE || e.keyCode === Common.UI.Keys.BACKSPACE);
                     if (this._selectedItem && !this._isComposition) {
-                        var me = this;
-                        if (me._timerSelection===undefined)
-                            me._timerSelection = setInterval(function(){
-                                if ((new Date()) - me._inInputKeyDown<100 || !me._selectedItem) return;
+                        if (this._timerSelection===undefined)
+                            this._timerSelection = setInterval(()=> {
+                                if ((new Date()) - this._inInputKeyDown<100 || !this._selectedItem) return;
 
-                                clearInterval(me._timerSelection);
-                                me._timerSelection = undefined;
-                                var input = me._input[0],
-                                    text = me._selectedItem.get(me.displayField),
-                                    inputVal = input.value;
-                                if (me.rendered)  {
+                                clearInterval(this._timerSelection);
+                                this._timerSelection = undefined;
+                                const input = this._input[0];
+                                const text = this._selectedItem.get(this.displayField);
+                                const inputVal = input.value;
+                                if (this.rendered)  {
                                     if (document.selection) { // IE
                                         document.selection.createRange().text = text;
-                                    } else if (input.selectionStart || input.selectionStart == '0') { //FF and Webkit
+                                    } else if (input.selectionStart || input.selectionStart === '0') { //FF and Webkit
                                         input.value = text;
                                         input.selectionStart = inputVal.length;
                                         input.selectionEnd = text.length;
@@ -431,33 +429,32 @@ define([
             onInputKeyDown: function(e) {
                 this._isKeyDown = true;
                 this._inInputKeyDown = (new Date());
-                var me = this;
 
-                if (e.keyCode == Common.UI.Keys.ESC){
+                if (e.keyCode === Common.UI.Keys.ESC){
                     this._input.val(this.lastValue);
-                    setTimeout(function() {
-                        me.closeMenu();
-                        me.onAfterHideMenu(e);
+                    setTimeout(() => {
+                        this.closeMenu();
+                        this.onAfterHideMenu(e);
                     }, 10);
-                } else if (e.keyCode != Common.UI.Keys.RETURN && e.keyCode != Common.UI.Keys.CTRL && e.keyCode != Common.UI.Keys.SHIFT && e.keyCode != Common.UI.Keys.ALT && e.keyCode != Common.UI.Keys.TAB){
+                } else if (e.keyCode !== Common.UI.Keys.RETURN && e.keyCode !== Common.UI.Keys.CTRL && e.keyCode !== Common.UI.Keys.SHIFT && e.keyCode !== Common.UI.Keys.ALT && e.keyCode !== Common.UI.Keys.TAB){
                     if (!this.isMenuOpen() && !e.ctrlKey) {
                         this.openMenu();
                         (this.recent > 0) && this.flushVisibleFontsTiles();
                     }
 
-                    if (e.keyCode == Common.UI.Keys.UP || e.keyCode == Common.UI.Keys.DOWN) {
-                        _.delay(function() {
-                            var selected = (e.keyCode == Common.UI.Keys.DOWN) ? me.cmpEl.find('ul li.selected').nextAll('li:not(.divider)') : me.cmpEl.find('ul li.selected').prevAll('li:not(.divider)');
-                            selected = (selected.length>0) ? selected.eq(0) : ((e.keyCode == Common.UI.Keys.DOWN) ? me.cmpEl.find('ul li:not(.divider):first') : me.cmpEl.find('ul li:not(.divider):last'));
+                    if (e.keyCode === Common.UI.Keys.UP || e.keyCode === Common.UI.Keys.DOWN) {
+                        _.delay(() => {
+                            let selected = (e.keyCode === Common.UI.Keys.DOWN) ? this.cmpEl.find('ul li.selected').nextAll('li:not(.divider)') : this.cmpEl.find('ul li.selected').prevAll('li:not(.divider)');
+                            selected = (selected.length>0) ? selected.eq(0) : ((e.keyCode === Common.UI.Keys.DOWN) ? this.cmpEl.find('ul li:not(.divider):first') : this.cmpEl.find('ul li:not(.divider):last'));
                             selected = selected.find('a');
 
-                            me._skipInputChange = true;
+                            this._skipInputChange = true;
                             selected.focus();
-                            me.updateVisibleFontsTiles();
+                            this.updateVisibleFontsTiles();
                         }, 10);
                     } else
-                        me._skipInputChange = false;
-                } else if (e.keyCode == Common.UI.Keys.RETURN && this._input.val() === me.lastValue){
+                        this._skipInputChange = false;
+                } else if (e.keyCode === Common.UI.Keys.RETURN && this._input.val() === this.lastValue){
                     this._input.trigger('change', { reapply: true });
                 }
             },
@@ -465,7 +462,7 @@ define([
             onInputChanged: function(e, extra) {
                 // skip processing for internally-generated synthetic event
                 // to avoid double processing
-                if (extra && extra.synthetic)
+                if (extra?.synthetic)
                     return;
 
                 if (this._skipInputChange) {
@@ -476,11 +473,11 @@ define([
                     this._isMouseDownMenu = false; return;
                 }
 
-                var val = $(e.target).val(),
-                    record = {};
+                const val = $(e.target).val();
+                const record = {};
 
-                if (this.lastValue === val && !(extra && extra.reapply)) {
-                    if (extra && extra.onkeydown)
+                if (this.lastValue === val && !(extra?.reapply)) {
+                    if (extra?.onkeydown)
                         this.trigger('combo:blur', this, e);
                     return;
                 }
@@ -501,7 +498,7 @@ define([
                     this.closeMenu();
                 } else {
                     this.setRawValue(record[this.valueField]);
-                    record['isNewFont'] = true;
+                    record.isNewFont = true;
                     this.trigger('selected', this, record, e);
                     this.closeMenu();
                 }
@@ -512,25 +509,19 @@ define([
 
             getImageUri: function(opts) {
                 if (opts.cloneid) {
-                    var img = $(this.el).find('ul > li#'+opts.cloneid + ' img');
+                    const img = $(this.el).find(`ul > li#${opts.cloneid} img`);
                     return img != null ? img[0].src : undefined;
                 }
 
-                var index = Math.floor(opts.imgidx/spriteCols);
+                const index = Math.floor(opts.imgidx/spriteCols);
                 return this.spriteThumbs.getImage(index, thumbCanvas, thumbContext).toDataURL();
             },
 
-            getImageWidth: function() {
-                return iconWidth;
-            },
+            getImageWidth: () => iconWidth,
 
-            getImageHeight: function() {
-                return iconHeight;
-            },
+            getImageHeight: () => iconHeight,
 
-            getListItemHeight: function() {
-                return listItemHeight;
-            },
+            getListItemHeight: () => listItemHeight,
 
             loadSprite: function(callback) {
                 this.spriteThumbs = new CThumbnailLoader();
@@ -538,45 +529,43 @@ define([
             },
 
             fillFonts: function(store, select) {
-                var me = this;
 
-                this.loadSprite(function() {
-                    spriteCols = Math.floor(me.spriteThumbs.width / (thumbs[thumbIdx].width)) || 1;
-                    me.store.set(store.toJSON());
+                this.loadSprite(() => {
+                    spriteCols = Math.floor(this.spriteThumbs.width / (thumbs[thumbIdx].width)) || 1;
+                    this.store.set(store.toJSON());
 
-                    me.rendered = false;
-                    if (!_.isUndefined(me.scroller)) {
-                        me.scroller.destroy();
-                        delete me.scroller;
+                    this.rendered = false;
+                    if (!_.isUndefined(this.scroller)) {
+                        this.scroller.destroy();
+                        this.scroller = undefined;
                     }
-                    me._scrollerIsInited = false;
-                    me.render($(me.el));
+                    this._scrollerIsInited = false;
+                    this.render($(this.el));
 
-                    me._fontsArray = me.store.toJSON();
+                    this._fontsArray = this.store.toJSON();
 
-                    if (me.recent > 0) {
-                        me.store.on('add', me.onInsertItem, me);
-                        me.store.on('remove', me.onRemoveItem, me);
+                    if (this.recent > 0) {
+                        this.store.on('add', this.onInsertItem, this);
+                        this.store.on('remove', this.onRemoveItem, this);
 
-                        Common.Utils.InternalSettings.set(me.appPrefix + "-settings-recent-fonts", Common.localStorage.getItem(me.appPrefix + "-settings-recent-fonts"));
-                        var arr = Common.Utils.InternalSettings.get(me.appPrefix + "-settings-recent-fonts");
+                        Common.Utils.InternalSettings.set(`${this.appPrefix}-settings-recent-fonts`, Common.localStorage.getItem(`${this.appPrefix}-settings-recent-fonts`));
+                        let arr = Common.Utils.InternalSettings.get(`${this.appPrefix}-settings-recent-fonts`);
                         arr = arr ? arr.split(';') : [];
-                        arr.reverse().forEach(function(item) {
-                            item && me.addItemToRecent(me.store.findWhere({name: item}), true);
+                        arr.reverse().forEach((item) => {
+                            item && this.addItemToRecent(this.store.findWhere({name: item}), true);
                         });
                     }
                 });
             },
 
             onApiChangeFont: function(font) {
-                var me = this;
-                var name = (_.isFunction(font.get_Name) ?  font.get_Name() : font.asc_getFontName());
+                const name = (_.isFunction(font.get_Name) ?  font.get_Name() : font.asc_getFontName());
                 if (this.__name !== name) {
                     this.__name = name;
                     if (!this.__nameId) {
-                        this.__nameId = setTimeout(function () {
-                            me.onApiChangeFontInternal(me.__name);
-                            me.__nameId = null;
+                        this.__nameId = setTimeout(() => {
+                            this.onApiChangeFontInternal(this.__name);
+                            this.__nameId = null;
                         }, 100);
                     }
 
@@ -587,18 +576,18 @@ define([
                 if (this.inFormControl) return;
 
                 if (this.getRawValue() !== name) {
-                    var record = this.store.findWhere({
+                    const record = this.store.findWhere({
                         name: name
                     });
 
-                    var $selectedItems = $('.selected', $(this.el));
+                    const $selectedItems = $('.selected', $(this.el));
                     $selectedItems.removeClass('selected');
                     $selectedItems.find('a').attr('aria-checked', false);
 
                     if (record) {
                         this.setRawValue(record.get(this.displayField));
-                        var itemNode = $('#' + record.get('id'), $(this.el)),
-                            menuNode = $('ul.dropdown-menu', this.cmpEl);
+                        const itemNode = $(`#${record.get('id')}`, $(this.el));
+                        const menuNode = $('ul.dropdown-menu', this.cmpEl);
 
                         if (itemNode && menuNode) {
                             itemNode.addClass('selected');
@@ -621,8 +610,8 @@ define([
 
                 Common.UI.ComboBox.prototype.itemClicked.apply(this, arguments);
 
-                var el = $(e.target).closest('li');
-                var record = this.store.findWhere({id: el.attr('id')});
+                const el = $(e.target).closest('li');
+                const record = this.store.findWhere({id: el.attr('id')});
                 this.addItemToRecent(record);
             },
 
@@ -638,7 +627,7 @@ define([
             },
 
             onRemoveItem: function(item, store, opts) {
-                $(this.el).find('ul > li#'+item.id).remove();
+                $(this.el).find(`ul > li#${item.id}`).remove();
             },
 
             onBeforeShowMenu: function(e) {
@@ -649,8 +638,8 @@ define([
                 Common.UI.ComboBox.prototype.onBeforeShowMenu.apply(this, arguments);
 
                 if (!this.getSelectedRecord() && !!this.getRawValue()) {
-                    var record = this.store.where({name: this.getRawValue()});
-                    if (record && record.length) {
+                    const record = this.store.where({name: this.getRawValue()});
+                    if (record?.length) {
                         this.selectRecord(record[record.length - 1]);
                     }
                 }
@@ -685,39 +674,36 @@ define([
             addItemToRecent: function(record, silent) {
                 if (!record || this.recent<1) return;
 
-                var font = this.store.findWhere({name: record.get('name'),type:FONT_TYPE_RECENT});
+                const font = this.store.findWhere({name: record.get('name'),type:FONT_TYPE_RECENT});
                 font && this.store.remove(font);
 
-                var fonts = this.store.where({type:FONT_TYPE_RECENT});
+                const fonts = this.store.where({type:FONT_TYPE_RECENT});
                 if (!(fonts.length < this.recent)) {
                     this.store.remove(fonts[this.recent - 1]);
                 }
 
-                var new_record = record.clone();
+                const new_record = record.clone();
                 new_record.set({'type': FONT_TYPE_RECENT, 'id': Common.UI.getId(), cloneid: record.id});
                 this.store.add(new_record, {at:0});
 
                 if (!silent) {
-                    var arr = [];
-                    this.store.where({type:FONT_TYPE_RECENT}).forEach(function(item){
+                    let arr = [];
+                    this.store.where({type:FONT_TYPE_RECENT}).forEach((item)=> {
                         arr.push(item.get('name'));
                     });
                     arr = arr.join(';');
-                    Common.localStorage.setItem(this.appPrefix + "-settings-recent-fonts", arr);
-                    Common.Utils.InternalSettings.set(this.appPrefix + "-settings-recent-fonts", arr);
+                    Common.localStorage.setItem(`${this.appPrefix}-settings-recent-fonts`, arr);
+                    Common.Utils.InternalSettings.set(`${this.appPrefix}-settings-recent-fonts`, arr);
                 }
             },
 
             selectCandidate: function(full) {
-                var me = this,
-                    inputVal = this._input.val().toLowerCase();
+                const inputVal = this._input.val().toLowerCase();
 
                 if (!this._fontsArray)
                     this._fontsArray = this.store.toJSON();
 
-                var font = _.find(this._fontsArray, function(font) {
-                    return (full) ? (font[me.displayField].toLowerCase() == inputVal) : (font[me.displayField].toLowerCase().indexOf(inputVal) == 0)
-                });
+                const font = _.find(this._fontsArray, (font) => (full) ? (font[this.displayField].toLowerCase() === inputVal) : (font[this.displayField].toLowerCase().indexOf(inputVal) === 0));
 
                 if (font) {
                     this._selectedItem = this.store.findWhere({
@@ -726,66 +712,68 @@ define([
                 } else
                     this._selectedItem = null;
 
-                var $selectedItems = $('.selected', $(this.el));
+                const $selectedItems = $('.selected', $(this.el));
                 $selectedItems.removeClass('selected');
                 $selectedItems.find('a').attr('aria-checked', false);
 
                 if (this._selectedItem) {
-                    var itemNode = $('#' + this._selectedItem.get('id'), $(this.el)),
-                        menuEl   = $('ul[role=menu]', $(this.el));
+                    const itemNode = $(`#${this._selectedItem.get('id')}`, $(this.el));
+                    const menuEl   = $('ul[role=menu]', $(this.el));
 
                     if (itemNode.length > 0 && menuEl.length > 0) {
                         itemNode.addClass('selected');
                         itemNode.find('a').attr('aria-checked', true);
 
-                        var itemTop = Common.Utils.getPosition(itemNode).top,
-                            menuTop = menuEl.scrollTop();
+                        const itemTop = Common.Utils.getPosition(itemNode).top;
+                        const menuTop = menuEl.scrollTop();
 
-                        if (itemTop != 0)
+                        if (itemTop !== 0)
                             menuEl.scrollTop(menuTop + itemTop);
                     }
                 }
             },
 
             updateVisibleFontsTiles: function(e, scrollY) {
-                var me = this, j = 0, storeCount = me.store.length, index = 0;
+                let j = 0;
+                const storeCount = this.store.length;
+                let index = 0;
 
-                if (!me.tiles) me.tiles = [];
-                if (storeCount !== me.tiles.length) {
-                    for (j =  me.tiles.length; j < storeCount; ++j) {
-                        me.tiles.unshift(null);
+                if (!this.tiles) this.tiles = [];
+                if (storeCount !== this.tiles.length) {
+                    for (j =  this.tiles.length; j < storeCount; ++j) {
+                        this.tiles.unshift(null);
                     }
                 }
 
-                if (_.isUndefined(scrollY)) scrollY = parseInt($(me.el).find('.ps-scrollbar-x-rail').css('bottom'));
+                if (_.isUndefined(scrollY)) scrollY = Number.parseInt($(this.el).find('.ps-scrollbar-x-rail').css('bottom'));
 
-                var scrollH = $(me.el).find('.dropdown-menu').height(),
-                    count = Math.max(Math.floor(scrollH / listItemHeight) + 3, 0),
-                    from = Math.max(Math.floor(-(scrollY / listItemHeight)) - 1, 0),
-                    to = from + count;
+                const scrollH = $(this.el).find('.dropdown-menu').height();
+                const count = Math.max(Math.floor(scrollH / listItemHeight) + 3, 0);
+                const from = Math.max(Math.floor(-(scrollY / listItemHeight)) - 1, 0);
+                const to = from + count;
 
-                var listItems = $(me.el).find('a');
+                const listItems = $(this.el).find('a');
 
                 for (j = 0; j < storeCount; ++j) {
                     if (from <= j && j < to) {
-                        if (null === me.tiles[j]) {
-                            index = Math.floor(me.store.at(j).get('imgidx')/spriteCols);
-                            var fontImage = me.spriteThumbs.getImage(index);
+                        if (null === this.tiles[j]) {
+                            index = Math.floor(this.store.at(j).get('imgidx')/spriteCols);
+                            const fontImage = this.spriteThumbs.getImage(index);
 
-                            me.tiles[j] = fontImage;
+                            this.tiles[j] = fontImage;
                             $(listItems[j]).get(0).appendChild(fontImage);
                         }
                     } else {
-                        if (me.tiles[j]) {
-                            me.tiles[j].parentNode.removeChild(me.tiles[j]);
-                            me.tiles[j] = null;
+                        if (this.tiles[j]) {
+                            this.tiles[j].parentNode.removeChild(this.tiles[j]);
+                            this.tiles[j] = null;
                         }
                     }
                 }
             },
 
             flushVisibleFontsTiles: function() {
-                for (var j = this.tiles.length - 1; j >= 0; --j) {
+                for (let j = this.tiles.length - 1; j >= 0; --j) {
                     if (this.tiles[j]) {
                         this.tiles[j].parentNode.removeChild(this.tiles[j]);
                         this.tiles[j] = null;

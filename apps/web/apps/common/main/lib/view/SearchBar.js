@@ -29,223 +29,250 @@
  *
  */
 
-define([
-    'common/main/lib/component/Window',
-    'common/main/lib/component/Button'
-], function () {
-    'use strict';
-
-    Common.UI.SearchBar = Common.UI.Window.extend(_.extend({
+define(["common/main/lib/component/Window", "common/main/lib/component/Button"], () => {
+  Common.UI.SearchBar = Common.UI.Window.extend(
+    _.extend(
+      {
         options: {
-            modal: false,
-            height: 54,
-            header: false,
-            cls: 'search-bar',
-            alias: 'SearchBar',
-            showOpenPanel: true,
-            toolclose: 'hide',
-            automove: false
+          modal: false,
+          height: 54,
+          header: false,
+          cls: "search-bar",
+          alias: "SearchBar",
+          showOpenPanel: true,
+          toolclose: "hide",
+          automove: false,
         },
 
-        initialize : function(options) {
-            _.extend(this.options, options || {});
+        initialize: function (options) {
+          _.extend(this.options, options || {})
 
-            this.template = [
-                '<div class="box" role="search">',
-                    '<div class="search-input-group">',
-                        '<input type="search" id="search-bar-text" class="input-field form-control" maxlength="255" placeholder="'+this.textFind+'" autocomplete="off" aria-label="'+this.textFind+'">',
-                        '<div id="search-bar-results">0/0</div>',
-                    '</div>',
-                    '<div class="tools">',
-                        '<div id="search-bar-back"></div>',
-                        '<div id="search-bar-next"></div>',
-                        this.options.showOpenPanel
-                            ? '<div id="search-bar-open-panel"></div><div id="search-bar-open-panel-redact"></div>'
-                            : '',
-                        '<div id="search-bar-close"></div>',
-                    '</div>',
-                '</div>'
-            ].join('');
+          this.template = [
+            '<div class="box" role="search">',
+            '<div class="search-input-group">',
+            `<input type="search" id="search-bar-text" class="input-field form-control" maxlength="255" placeholder="${this.textFind}" autocomplete="off" aria-label="${this.textFind}">`,
+            '<div id="search-bar-results">0/0</div>',
+            "</div>",
+            '<div class="tools">',
+            '<div id="search-bar-back"></div>',
+            '<div id="search-bar-next"></div>',
+            this.options.showOpenPanel
+              ? '<div id="search-bar-open-panel"></div><div id="search-bar-open-panel-redact"></div>'
+              : "",
+            '<div id="search-bar-close"></div>',
+            "</div>",
+            "</div>",
+          ].join("")
 
-            this.options.tpl = _.template(this.template)(this.options);
-            this.iconType = this.options.iconType;
-            this.mode = options.editMode;
-            Common.UI.Window.prototype.initialize.call(this, this.options);
+          this.options.tpl = _.template(this.template)(this.options)
+          this.iconType = this.options.iconType
+          this.mode = options.editMode
+          Common.UI.Window.prototype.initialize.call(this, this.options)
 
-            Common.NotificationCenter.on('layout:changed', _.bind(this.onLayoutChanged, this));
-            Common.NotificationCenter.on('pdf:mode-changed', _.bind(this.onModeChanged, this));
-            $(window).on('resize', _.bind(this.onLayoutChanged, this));
+          Common.NotificationCenter.on("layout:changed", _.bind(this.onLayoutChanged, this))
+          Common.NotificationCenter.on("pdf:mode-changed", _.bind(this.onModeChanged, this))
+          $(window).on("resize", _.bind(this.onLayoutChanged, this))
         },
 
-        render: function() {
-            Common.UI.Window.prototype.render.call(this);
+        render: function () {
+          Common.UI.Window.prototype.render.call(this)
 
-            this.inputSearch = this.$window.find('#search-bar-text');
-            this.inputSearch.on('input', _.bind(function () {
-                this.disableNavButtons();
-                this.fireEvent('search:input', [this.inputSearch.val()]);
-            }, this)).on('keydown', _.bind(function (e) {
-                this.fireEvent('search:keydown', [this.inputSearch.val(), e]);
-            }, this));
+          this.inputSearch = this.$window.find("#search-bar-text")
+          this.inputSearch
+            .on(
+              "input",
+              _.bind(function () {
+                this.disableNavButtons()
+                this.fireEvent("search:input", [this.inputSearch.val()])
+              }, this),
+            )
+            .on(
+              "keydown",
+              _.bind(function (e) {
+                this.fireEvent("search:keydown", [this.inputSearch.val(), e])
+              }, this),
+            )
 
-            const is_svg_icon = this.iconType === 'svg';
-            this.btnBack = new Common.UI.Button({
-                parentEl: $('#search-bar-back'),
-                cls: 'btn-toolbar',
-                iconCls: is_svg_icon ? 'svg-icon search-arrow-up' : 'toolbar__icon btn-arrow-up',
-                hint: this.tipPreviousResult,
-                scaling: !is_svg_icon,
-            });
-            this.btnBack.on('click', _.bind(this.onBtnNextClick, this, 'back'));
+          const is_svg_icon = this.iconType === "svg"
+          this.btnBack = new Common.UI.Button({
+            parentEl: $("#search-bar-back"),
+            cls: "btn-toolbar",
+            iconCls: is_svg_icon ? "svg-icon search-arrow-up" : "toolbar__icon btn-arrow-up",
+            hint: this.tipPreviousResult,
+            scaling: !is_svg_icon,
+          })
+          this.btnBack.on("click", _.bind(this.onBtnNextClick, this, "back"))
 
-            this.btnNext = new Common.UI.Button({
-                parentEl: $('#search-bar-next'),
-                cls: 'btn-toolbar',
-                iconCls: is_svg_icon ? 'svg-icon search-arrow-down' : 'toolbar__icon btn-arrow-down',
-                hint: this.tipNextResult,
-                scaling: !is_svg_icon,
-            });
-            this.btnNext.on('click', _.bind(this.onBtnNextClick, this, 'next'));
+          this.btnNext = new Common.UI.Button({
+            parentEl: $("#search-bar-next"),
+            cls: "btn-toolbar",
+            iconCls: is_svg_icon ? "svg-icon search-arrow-down" : "toolbar__icon btn-arrow-down",
+            hint: this.tipNextResult,
+            scaling: !is_svg_icon,
+          })
+          this.btnNext.on("click", _.bind(this.onBtnNextClick, this, "next"))
 
-            if (this.options.showOpenPanel) {
-                var me = this;
+          if (this.options.showOpenPanel) {
+            this.btnOpenPanel = new Common.UI.Button({
+              parentEl: $("#search-bar-open-panel"),
+              cls: "btn-toolbar",
+              iconCls: "toolbar__icon btn-more-vertical",
+              hint: this.tipOpenAdvancedSettings,
+            })
+            this.btnOpenPanel.on("click", _.bind(this.onOpenPanel, this))
 
-                this.btnOpenPanel = new Common.UI.Button({
-                    parentEl: $('#search-bar-open-panel'),
-                    cls: 'btn-toolbar',
-                    iconCls: 'toolbar__icon btn-more-vertical',
-                    hint: this.tipOpenAdvancedSettings
-                });
-                this.btnOpenPanel.on('click', _.bind(this.onOpenPanel, this));
+            this.btnOpenPanelRedact = new Common.UI.Button({
+              parentEl: $("#search-bar-open-panel-redact"),
+              cls: "btn-toolbar",
+              menu: true,
+              iconCls: "toolbar__icon btn-more-vertical",
+              hint: this.tipOpenAdvancedSettings,
+            })
+            this.btnOpenPanelRedact.setMenu(
+              new Common.UI.Menu({
+                items: [
+                  { caption: this.capFind, value: "find", hint: this.tipOpenAdvancedSettings },
+                  {
+                    caption: this.capFindRedact,
+                    value: "find-redact",
+                    hint: this.tipOpenAdvancedSettingsRedact,
+                  },
+                ],
+              }).on("item:click", (menu, item, e) => {
+                if (item.value === "find") {
+                  this.hide()
+                  this.fireEvent("search:show", [true, this.inputSearch.val()])
+                } else {
+                  this.hide()
+                  this.fireEvent("search:showredact", [true, this.inputSearch.val()])
+                }
+              }),
+            )
+          }
 
-                this.btnOpenPanelRedact = new Common.UI.Button({
-                    parentEl: $('#search-bar-open-panel-redact'),
-                    cls: 'btn-toolbar',
-                    menu: true,
-                    iconCls: 'toolbar__icon btn-more-vertical',
-                    hint: this.tipOpenAdvancedSettings
-                });
-                this.btnOpenPanelRedact.setMenu(
-                    new Common.UI.Menu({
-                        items: [
-                            {caption: me.capFind, value: 'find', hint: this.tipOpenAdvancedSettings},
-                            {caption: me.capFindRedact, value: 'find-redact', hint: this.tipOpenAdvancedSettingsRedact},
-                        ]
-                    }).on('item:click', function (menu, item, e) {
-                        if (item.value === 'find') {
-                            me.hide();
-                            me.fireEvent('search:show', [true, me.inputSearch.val()]);
-                        } else {
-                            me.hide();
-                            me.fireEvent('search:showredact', [true, me.inputSearch.val()])
-                        }
-                    })
-                );
-            }
+          this.btnClose = new Common.UI.Button({
+            parentEl: $("#search-bar-close"),
+            cls: "btn-toolbar",
+            iconCls: is_svg_icon ? "svg-icon search-close" : "toolbar__icon btn-close",
+            hint: this.tipCloseSearch,
+            scaling: !is_svg_icon,
+          })
+          this.btnClose.on(
+            "click",
+            _.bind(function () {
+              this.hide()
+            }, this),
+          )
 
-            this.btnClose = new Common.UI.Button({
-                parentEl: $('#search-bar-close'),
-                cls: 'btn-toolbar',
-                iconCls: is_svg_icon ? 'svg-icon search-close' : 'toolbar__icon btn-close',
-                hint: this.tipCloseSearch,
-                scaling: !is_svg_icon,
-            });
-            this.btnClose.on('click', _.bind(function () {
-                this.hide();
-            }, this))
+          this.searchResults = $("#search-bar-results")
 
-            this.searchResults = $('#search-bar-results');
+          this.on("animate:before", _.bind(this.focus, this))
 
-            this.on('animate:before', _.bind(this.focus, this));
+          Common.NotificationCenter.on(
+            "search:updateresults",
+            _.bind(function (resultNumber, allResults) {
+              this.disableNavButtons(resultNumber, allResults)
+              this.updateResultsNumber(resultNumber, allResults)
+            }, this),
+          )
 
-            Common.NotificationCenter.on('search:updateresults', _.bind(function (resultNumber, allResults) {
-                this.disableNavButtons(resultNumber, allResults);
-                this.updateResultsNumber(resultNumber, allResults);
-            }, this));
-
-            this.btnOpenPanelRedact && this.btnOpenPanelRedact.setVisible(this.mode === 'edit');
-            this.btnOpenPanel && this.btnOpenPanel.setVisible(this.mode !== 'edit');
-            return this;
+          this.btnOpenPanelRedact?.setVisible(this.mode === "edit")
+          this.btnOpenPanel?.setVisible(this.mode !== "edit")
+          return this
         },
 
-        show: function(text) {
-            Common.UI.Window.prototype.show.call(this);
+        show: function (text) {
+          Common.UI.Window.prototype.show.call(this)
 
-            var top = ($('#app-title').length > 0 ? $('#app-title').height() : 0) + $('#toolbar').height() + 2,
-                left = !Common.UI.isRTL() ? Common.Utils.innerWidth() - ($('#right-menu').is(':visible') ? $('#right-menu').width() : 0) - this.$window.width() - 32 :
-                    ($('#right-menu').is(':visible') ? $('#right-menu').width() : 0) + 32;
-            this.setPosition(left, top);
-            this.disableNavButtons();
-            if (text) {
-                this.inputSearch.val(text);
-                this.fireEvent('search:input', [text]);
-            } else {
-                this.inputSearch.val('');
-                window.SSE && this.fireEvent('search:input', ['', true]);
-            }
+          const top =
+            ($("#app-title").length > 0 ? $("#app-title").height() : 0) + $("#toolbar").height() + 2
+          const left = !Common.UI.isRTL()
+            ? Common.Utils.innerWidth() -
+              ($("#right-menu").is(":visible") ? $("#right-menu").width() : 0) -
+              this.$window.width() -
+              32
+            : ($("#right-menu").is(":visible") ? $("#right-menu").width() : 0) + 32
+          this.setPosition(left, top)
+          this.disableNavButtons()
+          if (text) {
+            this.inputSearch.val(text)
+            this.fireEvent("search:input", [text])
+          } else {
+            this.inputSearch.val("")
+            window.SSE && this.fireEvent("search:input", ["", true])
+          }
 
-            this.focus();
+          this.focus()
         },
 
-        focus: function() {
-            var me  = this;
-            setTimeout(function(){
-                me.inputSearch.focus();
-                me.inputSearch.select();
-            }, 10);
+        focus: function () {
+          setTimeout(() => {
+            this.inputSearch.focus()
+            this.inputSearch.select()
+          }, 10)
         },
 
         setText: function (text) {
-            this.inputSearch.val(text);
-            this.fireEvent('search:input', [text]);
+          this.inputSearch.val(text)
+          this.fireEvent("search:input", [text])
         },
 
-        getSettings: function() {
-            return {
-
-            };
-        },
+        getSettings: () => ({}),
 
         onLayoutChanged: function () {
-            var top = $('#app-title').height() + $('#toolbar').height() + 2,
-                left = !Common.UI.isRTL() ? Common.Utils.innerWidth() - ($('#right-menu').is(':visible') ? $('#right-menu').width() : 0) - this.$window.width() - 32 :
-                    ($('#right-menu').is(':visible') ? $('#right-menu').width() : 0) + 32;
-            this.$window.css({left: left, top: top});
+          const top = $("#app-title").height() + $("#toolbar").height() + 2
+          const left = !Common.UI.isRTL()
+            ? Common.Utils.innerWidth() -
+              ($("#right-menu").is(":visible") ? $("#right-menu").width() : 0) -
+              this.$window.width() -
+              32
+            : ($("#right-menu").is(":visible") ? $("#right-menu").width() : 0) + 32
+          this.$window.css({ left: left, top: top })
         },
 
         onModeChanged: function (config) {
-            if (!config) return;
-            this.mode = config.isPDFEdit ? 'edit' : (config.isPDFAnnotate ? 'comment' : 'view');
-            this.btnOpenPanel.setVisible(this.mode !== 'edit')
-            this.btnOpenPanelRedact.setVisible(this.mode == 'edit')
+          if (!config) return
+          this.mode = config.isPDFEdit ? "edit" : config.isPDFAnnotate ? "comment" : "view"
+          this.btnOpenPanel.setVisible(this.mode !== "edit")
+          this.btnOpenPanelRedact.setVisible(this.mode === "edit")
         },
 
-        onBtnNextClick: function(action) {
-            this.fireEvent('search:'+action, [this.inputSearch.val(), false]);
+        onBtnNextClick: function (action) {
+          this.fireEvent(`search:${action}`, [this.inputSearch.val(), false])
         },
 
         onOpenPanel: function () {
-            this.hide();
-            this.fireEvent('search:show', [true, this.inputSearch.val()]);
+          this.hide()
+          this.fireEvent("search:show", [true, this.inputSearch.val()])
         },
 
         disableNavButtons: function (resultNumber, allResults) {
-            var disable = (this.inputSearch.val() === '' && !window.SSE) || !allResults;
-            this.btnBack.setDisabled(disable);
-            this.btnNext.setDisabled(disable);
+          const disable = (this.inputSearch.val() === "" && !window.SSE) || !allResults
+          this.btnBack.setDisabled(disable)
+          this.btnNext.setDisabled(disable)
         },
 
         updateResultsNumber: function (current, all) {
-            this.searchResults.text(!all || (this.inputSearch.val() === '' && !window.SSE) ? '0/0' :
-                (Common.UI.isRTL() ? all + '/' + (current + 1) : current + 1 + '/' + all));
-            this.inputSearch.css(Common.UI.isRTL() ? 'padding-left' : 'padding-right', this.searchResults.outerWidth() + 'px');
+          this.searchResults.text(
+            !all || (this.inputSearch.val() === "" && !window.SSE)
+              ? "0/0"
+              : Common.UI.isRTL()
+                ? `${all}/${current + 1}`
+                : `${current + 1}/${all}`,
+          )
+          this.inputSearch.css(
+            Common.UI.isRTL() ? "padding-left" : "padding-right",
+            `${this.searchResults.outerWidth()}px`,
+          )
         },
 
-        textFind: 'Find',
-        tipPreviousResult: 'Previous result',
-        tipNextResult: 'Next result',
-        tipOpenAdvancedSettings: 'Open advanced settings',
-        tipCloseSearch: 'Close search'
-
-    }, Common.UI.SearchBar || {}));
-});
+        textFind: "Find",
+        tipPreviousResult: "Previous result",
+        tipNextResult: "Next result",
+        tipOpenAdvancedSettings: "Open advanced settings",
+        tipCloseSearch: "Close search",
+      },
+      Common.UI.SearchBar || {},
+    ),
+  )
+})

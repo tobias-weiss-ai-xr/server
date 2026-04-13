@@ -45,13 +45,12 @@
  * **/
 
    if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'underscore'
-], function (base, _) {
-    'use strict';
+], (base, _) => {
 
     Common.UI.RadioBox = Common.UI.BaseView.extend({
 
@@ -77,8 +76,6 @@ define([
             this.dataHintDirection = options.dataHintDirection;
             this.dataHintOffset = options.dataHintOffset;
 
-            var me = this;
-
             this.name =  this.options.name || Common.UI.getId();
 
             this.render();
@@ -92,7 +89,7 @@ define([
             this.setCaption(this.options.labelText);
 
             if (this.options.ariaLabel || this.options.labelText) {
-                var ariaLabel = this.options.ariaLabel ? this.options.ariaLabel : this.options.labelText;
+                const ariaLabel = this.options.ariaLabel ? this.options.ariaLabel : this.options.labelText;
                 this.$label.attr('aria-label', ariaLabel);
             }
 
@@ -100,7 +97,7 @@ define([
         },
 
         render: function () {
-            var el = this.$el || $(this.el);
+            const el = this.$el || $(this.el);
             el.html(this.template({
                 labelText: this.options.labelText,
                 name: this.name,
@@ -152,9 +149,9 @@ define([
         },
 
         setRawValue: function(value) {
-            var value = (value === true || value === 'true' || value === '1' || value === 1 );
+            const value = (value === true || value === 'true' || value === '1' || value === 1 );
             if (value) {
-                var input = $('input[type=radio][name=' + this.name + ']');
+                const input = $(`input[type=radio][name=${this.name}]`);
                 input.removeClass('checked');
                 input.parent().attr('aria-checked', false);
             }
@@ -166,7 +163,7 @@ define([
 
         setValue: function(value, suspendchange) {
             if (this.rendered) {
-                var lastValue = this.$radio.hasClass('checked');
+                const lastValue = this.$radio.hasClass('checked');
                 this.setRawValue(value);
                 if (suspendchange !== true && lastValue !== value)
                     this.trigger('change', this, this.$radio.is(':checked'));
@@ -193,7 +190,7 @@ define([
         },
 
         focus: function() {
-            this.$label && this.$label.focus();
+            this.$label?.focus();
         },
 
         setTabIndex: function(tabindex) {

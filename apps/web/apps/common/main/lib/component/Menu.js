@@ -75,38 +75,37 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/extend/Bootstrap',
     'common/main/lib/component/BaseView',
     'common/main/lib/component/MenuItem',
     'common/main/lib/component/Scroller'
-], function () {
-    'use strict';
+], () => {
 
-    Common.UI.Menu = (function(){
-        var manager = (function(){
-            var active = [],
-                menus = {};
+    Common.UI.Menu = (()=> {
+        const manager = (()=> {
+            const active = [];
+            const menus = {};
 
             return {
-                register: function(menu) {
+                register: (menu) => {
                     menus[menu.id] = menu;
                     menu
-                    .on('show:after', function(m) {
+                    .on('show:after', (m) => {
                         active.push(m);
                     })
-                    .on('hide:after', function(m) {
-                        var index = active.indexOf(m);
+                    .on('hide:after', (m) => {
+                        const index = active.indexOf(m);
 
                         if (index > -1)
                             active.splice(index, 1);
                     });
                 },
 
-                unregister: function(menu) {
-                    var index = active.indexOf(menu);
+                unregister: (menu) => {
+                    const index = active.indexOf(menu);
 
                     delete menus[menu.id];
 
@@ -116,11 +115,11 @@ define([
                     menu.off('show:after').off('hide:after');
                 },
 
-                hideAll: function() {
+                hideAll: () => {
                     Common.NotificationCenter.trigger('menumanager:hideall');
 
                     if (active && active.length > 0) {
-                        _.each(active, function(menu) {
+                        _.each(active, (menu) => {
                             if (menu) menu.hide();
                         });
                         return true;
@@ -153,8 +152,6 @@ define([
             initialize : function(options) {
                 Common.UI.BaseView.prototype.initialize.call(this, options);
 
-                var me = this;
-
                 this.id             = this.options.id || Common.UI.getId();
                 this.itemTemplate   = this.options.itemTemplate || Common.UI.MenuItem.prototype.template;
                 this.rendered       = false;
@@ -179,7 +176,7 @@ define([
                 }
 
                 if (this.options.restoreHeight) {
-                    this.options.restoreHeight = (typeof (this.options.restoreHeight) == "number") ? this.options.restoreHeight : (this.options.maxHeight ? this.options.maxHeight : 100000);
+                    this.options.restoreHeight = (typeof (this.options.restoreHeight) === "number") ? this.options.restoreHeight : (this.options.maxHeight ? this.options.maxHeight : 100000);
                     !this.options.maxHeight && (this.options.maxHeight = this.options.restoreHeight);
                 }
 
@@ -187,14 +184,14 @@ define([
 
                 if (!this.options.cyclic) this.options.cls += ' no-cyclic';
 
-                _.each(this.options.items, function(item) {
+                _.each(this.options.items, (item) => {
                     if (item instanceof Common.UI.MenuItem) {
-                        me.items.push(item)
+                        this.items.push(item)
                     } else {
-                        me.items.push(
+                        this.items.push(
                             new Common.UI.MenuItem(_.extend({
                                 tagName : 'li',
-                                template: me.itemTemplate
+                                template: this.itemTemplate
                             }, item))
                         );
                     }
@@ -212,7 +209,7 @@ define([
             },
 
             render: function(parentEl) {
-                var me = this;
+                const me = this;
 
                 this.trigger('render:before', this);
 
@@ -237,13 +234,13 @@ define([
                     }
                 }
 
-                var rootEl = this.cmpEl.parent(),
-                    menuRoot = (rootEl.attr('role') === 'menu') ? rootEl : rootEl.find('[role=menu]');
+                const rootEl = this.cmpEl.parent();
+                const menuRoot = (rootEl.attr('role') === 'menu') ? rootEl : rootEl.find('[role=menu]');
                 this.menuRoot = menuRoot;
 
                 if (menuRoot) {
                     if (!me.rendered) {
-                        _.each(me.items || [], function(item) {
+                        _.each(me.items || [], (item) => {
                             menuRoot.append(item.render().el);
 
                             item.on('click',  _.bind(me.onItemClick, me));
@@ -282,8 +279,8 @@ define([
                     this.options.innerMenus && this.on('keydown:before', _.bind(me.onBeforeKeyDown, me));
 
                     menuRoot.hover(
-                        function(e) { me.isOver = true;},
-                        function(e) { me.isOver = false; }
+                        (e) => { me.isOver = true;},
+                        (e) => { me.isOver = false; }
                     );
                 }
 
@@ -314,34 +311,33 @@ define([
             },
 
             insertItem: function(index, item) {
-                var me = this,
-                    el = this.cmpEl;
+                const el = this.cmpEl;
 
                 if (!(item instanceof Common.UI.MenuItem)) {
                     item = new Common.UI.MenuItem(_.extend({
                         tagName : 'li',
-                        template: me.itemTemplate
+                        template: this.itemTemplate
                     }, item));
                 }
 
-                if (index < 0 || index >= me.items.length)
-                    me.items.push(item);
+                if (index < 0 || index >= this.items.length)
+                    this.items.push(item);
                 else
-                    me.items.splice(index, 0, item);
+                    this.items.splice(index, 0, item);
 
                 if (this.rendered) {
-                    var menuRoot = this.menuRoot;
+                    const menuRoot = this.menuRoot;
                     if (menuRoot) {
                         if (index < 0) {
                             menuRoot.append(item.render().el);
                         } else if (index === 0) {
                             menuRoot.prepend(item.render().el);
                         } else {
-                            menuRoot.children('li:nth-child(' + (index) + ')').after(item.render().el);
+                            menuRoot.children(`li:nth-child(${index})`).after(item.render().el);
                         }
 
-                        item.on('click',  _.bind(me.onItemClick, me));
-                        item.on('toggle', _.bind(me.onItemToggle, me));
+                        item.on('click',  _.bind(this.onItemClick, this));
+                        item.on('toggle', _.bind(this.onItemToggle, this));
                     }
                 }
             },
@@ -350,8 +346,8 @@ define([
                 if (!beforeCustom)
                     this.insertItem(-1, item);
                 else {
-                    var customIdx = -1;
-                    for (var i=0; i<this.items.length; i++) {
+                    let customIdx = -1;
+                    for (let i=0; i<this.items.length; i++) {
                         if (this.items[i].isCustomItem) {
                             customIdx = i;
                             break;
@@ -362,11 +358,10 @@ define([
             },
 
             removeItem: function(item) {
-                var me = this,
-                    index = me.items.indexOf(item);
+                const index = this.items.indexOf(item);
 
                 if (index > -1) {
-                    me.items.splice(index, 1);
+                    this.items.splice(index, 1);
 
                     item.off('click').off('toggle');
                     item.remove();
@@ -377,7 +372,7 @@ define([
                 if (from > this.items.length-1) return;
                 if (from+len>this.items.length) len = this.items.length - from;
 
-                for (var i=from; i<from+len; i++) {
+                for (let i=from; i<from+len; i++) {
                     this.items[i].off('click').off('toggle');
                     this.items[i].remove();
                 }
@@ -385,7 +380,7 @@ define([
             },
 
             removeAll: function(keepCustom) { // remove only not-custom items when keepCustom is true
-                for (var i=0; i<this.items.length; i++) {
+                for (let i=0; i<this.items.length; i++) {
                     if (!keepCustom || !this.items[i].isCustomItem) {
                         this.items[i].off('click').off('toggle');
                         this.items[i].remove();
@@ -406,18 +401,18 @@ define([
                 if (this.scroller && e && e.target===e.currentTarget) {
                     this.updateScroller();
 
-                    var menuRoot = this.menuRoot,
-                        $selected = menuRoot.find('> li .checked');
+                    const menuRoot = this.menuRoot;
+                    const $selected = menuRoot.find('> li .checked');
                     if ($selected.length) {
-                        var itemTop = Common.Utils.getPosition($selected).top,
-                            itemHeight = $selected.outerHeight(),
-                            listHeight = menuRoot.outerHeight();
+                        const itemTop = Common.Utils.getPosition($selected).top;
+                        const itemHeight = $selected.outerHeight();
+                        const listHeight = menuRoot.outerHeight();
                         if (!!this.options.scrollToCheckedItem && (itemTop < 0 || itemTop + itemHeight > listHeight)) {
-                            var height = menuRoot.scrollTop() + itemTop + (itemHeight - listHeight)/2;
+                            let height = menuRoot.scrollTop() + itemTop + (itemHeight - listHeight)/2;
                             height = (Math.floor(height/itemHeight) * itemHeight);
                             menuRoot.scrollTop(height);
                         }
-                        !!this.options.focusToCheckedItem && setTimeout(function(){$selected.focus();}, 1);
+                        !!this.options.focusToCheckedItem && setTimeout(()=> {$selected.focus();}, 1);
                     }
                 }
                 this._search = {};
@@ -425,10 +420,10 @@ define([
 
             updateScroller: function() {
                 if (this.scroller && this.menuRoot) {
-                    var menuRoot = this.menuRoot;
+                    const menuRoot = this.menuRoot;
                     if (this.wheelSpeed===undefined || this.wheelSpeed===0) {
-                        var item = menuRoot.find('> li:first'),
-                            itemHeight = (item.length) ? item.outerHeight() : 1;
+                        const item = menuRoot.find('> li:first');
+                        const itemHeight = (item.length) ? item.outerHeight() : 1;
                         this.wheelSpeed = Math.min((Math.floor(menuRoot.height()/itemHeight) * itemHeight)/10, 20);
                     }
                     this.scroller.update({alwaysVisibleY: this.scrollAlwaysVisible, wheelSpeed: this.wheelSpeed});
@@ -452,8 +447,8 @@ define([
                 if (e.isDefaultPrevented())
                     return;
 
-                if (e.keyCode == Common.UI.Keys.RETURN) {
-                    var li = $(e.target).closest('li');
+                if (e.keyCode === Common.UI.Keys.RETURN) {
+                    let li = $(e.target).closest('li');
                     if (li.length<=0) li = $(e.target).parent().find('li .dataview');
                     if (li.length>0) li.click();
                     if (!li.hasClass('dropdown-submenu'))
@@ -462,22 +457,21 @@ define([
                         e.stopPropagation();
                         return false;
                     }
-                } else if (e.keyCode == Common.UI.Keys.UP || e.keyCode == Common.UI.Keys.DOWN)  {
+                } else if (e.keyCode === Common.UI.Keys.UP || e.keyCode === Common.UI.Keys.DOWN)  {
                     this.fromKeyDown = true;
-                } else if (e.keyCode == Common.UI.Keys.ESC)  {
+                } else if (e.keyCode === Common.UI.Keys.ESC)  {
 //                    Common.NotificationCenter.trigger('menu:afterkeydown', e);
 //                    return false;
                 } else if (this.search && e.keyCode > 64 && e.keyCode < 91 && e.key){
-                    var me = this;
                     clearTimeout(this._search.timer);
-                    this._search.timer = setTimeout(function () { me._search = {}; }, 1000);
+                    this._search.timer = setTimeout(() => { this._search = {}; }, 1000);
 
                     (!this._search.text) && (this._search.text = '');
                     (!this._search.char) && (this._search.char = e.key);
                     (this._search.char !== e.key) && (this._search.full = true);
                     this._search.text += e.key;
                     if (this._search.index===undefined) {
-                        var $items = this.menuRoot.find('> li').find('> a');
+                        const $items = this.menuRoot.find('> li').find('> a');
                         this._search.index = $items.index($items.filter(':focus'));
                     }
                     this.selectCandidate();
@@ -485,13 +479,13 @@ define([
             },
 
             onBeforeKeydownMenu: function(e) {
-                if (e.isDefaultPrevented() || !(this.outerMenu && this.outerMenu.menu))
+                if (e.isDefaultPrevented() || !(this.outerMenu?.menu))
                     return;
 
-                if (e.keyCode == Common.UI.Keys.UP || e.keyCode == Common.UI.Keys.DOWN)  {
-                    var $items = this.menuRoot.find('> li').find('> a'),
-                        index = $items.index($items.filter(':focus'));
-                    if (e.keyCode==Common.UI.Keys.UP && index==0 || e.keyCode == Common.UI.Keys.DOWN && index==$items.length-1) {
+                if (e.keyCode === Common.UI.Keys.UP || e.keyCode === Common.UI.Keys.DOWN)  {
+                    const $items = this.menuRoot.find('> li').find('> a');
+                    const index = $items.index($items.filter(':focus'));
+                    if (e.keyCode===Common.UI.Keys.UP && index===0 || e.keyCode === Common.UI.Keys.DOWN && index===$items.length-1) {
                         this.outerMenu.menu.focusOuter(e, this.outerMenu.index);
                         e.preventDefault();
                         e.stopPropagation();
@@ -500,13 +494,14 @@ define([
             },
 
             selectCandidate: function() {
-                var index = (this._search.index && this._search.index != -1) ? this._search.index : 0,
-                    re = new RegExp('^' + ((this._search.full) ? this._search.text : this._search.char), 'i'),
-                    isFirstCharsEqual = re.test(this.items[index].caption),
-                    itemCandidate, idxCandidate;
+                const index = (this._search.index && this._search.index !== -1) ? this._search.index : 0;
+                const re = new RegExp(`^${(this._search.full) ? this._search.text : this._search.char}`, 'i');
+                const isFirstCharsEqual = re.test(this.items[index].caption);
+                let itemCandidate;
+                let idxCandidate;
 
-                for (var i=0; i<this.items.length; i++) {
-                    var item = this.items[i];
+                for (let i=0; i<this.items.length; i++) {
+                    const item = this.items[i];
                     if (re.test(item.caption)) {
                         if (!itemCandidate) {
                             itemCandidate = item;
@@ -514,7 +509,7 @@ define([
                             if(!isFirstCharsEqual) 
                                 break;  
                         }
-                        if (this._search.full && i==index || i>index) {
+                        if (this._search.full && i===index || i>index) {
                             itemCandidate = item;
                             idxCandidate = i;
                             break;
@@ -524,14 +519,14 @@ define([
 
                 if (itemCandidate) {
                     this._search.index = idxCandidate;
-                    var item = itemCandidate.cmpEl.find('a');
+                    const item = itemCandidate.cmpEl.find('a');
                     if (this.scroller) {
                         this.scroller.update({alwaysVisibleY: this.scrollAlwaysVisible, wheelSpeed: this.wheelSpeed});
-                        var itemTop = Common.Utils.getPosition(item).top,
-                            itemHeight = item.outerHeight(),
-                            listHeight = this.menuRoot.outerHeight();
+                        const itemTop = Common.Utils.getPosition(item).top;
+                        const itemHeight = item.outerHeight();
+                        const listHeight = this.menuRoot.outerHeight();
                         if (itemTop < 0 || itemTop + itemHeight > listHeight) {
-                            var height = this.menuRoot.scrollTop() + itemTop;
+                            let height = this.menuRoot.scrollTop() + itemTop;
                             height = (Math.floor(height/itemHeight) * itemHeight);
                             this.menuRoot.scrollTop(height);
                         }
@@ -541,22 +536,22 @@ define([
             },
 
             onBeforeKeyDown: function(menu, e) {
-                if (e.keyCode == Common.UI.Keys.RETURN) {
-                    var li = $(e.target).closest('li');
+                if (e.keyCode === Common.UI.Keys.RETURN) {
+                    const li = $(e.target).closest('li');
                     if (li.length>0) {
                         e.preventDefault();
                         e.stopPropagation();
                         li.click();
                     }
                     Common.UI.Menu.Manager.hideAll();
-                } else if (e.namespace!=="after.bs.dropdown" && (e.keyCode == Common.UI.Keys.DOWN || e.keyCode == Common.UI.Keys.UP)) {
+                } else if (e.namespace!=="after.bs.dropdown" && (e.keyCode === Common.UI.Keys.DOWN || e.keyCode === Common.UI.Keys.UP)) {
                     if ( this.menuRoot.length<1 || $(e.target).closest('ul[role=menu]').get(0) !== this.menuRoot.get(0)) return;
 
-                    var innerMenu = this.findInnerMenu(e.keyCode);
-                    if (innerMenu && innerMenu.focusInner) {
+                    const innerMenu = this.findInnerMenu(e.keyCode);
+                    if (innerMenu?.focusInner) {
                         e.preventDefault();
                         e.stopPropagation();
-                        _.delay(function() {
+                        _.delay(() => {
                             innerMenu.focusInner(e);
                         }, 10);
                     }
@@ -573,21 +568,21 @@ define([
             findInnerMenu: function(direction, index, findOuter) {
                 if (!this.options.innerMenus) return;
 
-                var $allItems = $('> li', this.menuRoot),
-                    $liItems = $('> li:not(.divider):not(.disabled):visible', this.menuRoot),
-                    length = $liItems.length;
+                const $allItems = $('> li', this.menuRoot);
+                const $liItems = $('> li:not(.divider):not(.disabled):visible', this.menuRoot);
+                const length = $liItems.length;
                 if (!length) return;
 
-                var step = 0;
+                let step = 0;
                 while (step<length) {
-                    var focusedIndex = (index!==undefined) ? $liItems.index($allItems.eq(index)) : $liItems.index($liItems.find('> a').filter(':focus').parent());
-                    var checkedIndex = (direction == Common.UI.Keys.DOWN) ? (focusedIndex<length-1 ? focusedIndex+1 : 0) : (focusedIndex>0 ? focusedIndex-1 : length-1),
-                        checkedItem = $liItems.eq(checkedIndex);
+                    const focusedIndex = (index!==undefined) ? $liItems.index($allItems.eq(index)) : $liItems.index($liItems.find('> a').filter(':focus').parent());
+                    const checkedIndex = (direction === Common.UI.Keys.DOWN) ? (focusedIndex<length-1 ? focusedIndex+1 : 0) : (focusedIndex>0 ? focusedIndex-1 : length-1);
+                    const checkedItem = $liItems.eq(checkedIndex);
                     index = $allItems.index(checkedItem);
 
-                    for (var i=0; i<this.options.innerMenus.length; i++) {
-                        var item = this.options.innerMenus[i];
-                        if (item && item.menu && item.index==index) {
+                    for (let i=0; i<this.options.innerMenus.length; i++) {
+                        const item = this.options.innerMenus[i];
+                        if (item?.menu && item.index===index) {
                             return item.menu;
                         }
                     }
@@ -598,24 +593,24 @@ define([
             },
 
             focusInner: function(e) {
-                if (e.keyCode == Common.UI.Keys.UP)
+                if (e.keyCode === Common.UI.Keys.UP)
                     this.items[this.items.length-1].cmpEl.find('> a').focus();
                 else
                     this.items[0].cmpEl.find('> a').focus();
             },
 
             focusOuter: function(e, index) {
-                var innerMenu = this.findInnerMenu(e.keyCode, index, true);
-                if (innerMenu && innerMenu.focusInner) {
-                    _.delay(function() {
+                const innerMenu = this.findInnerMenu(e.keyCode, index, true);
+                if (innerMenu?.focusInner) {
+                    _.delay(() => {
                         innerMenu.focusInner(e);
                     }, 10);
                 } else if (innerMenu) {
                     innerMenu.find('> a').focus();
                 } else {
-                    var $items = $('> li:not(.divider):not(.disabled):visible', this.menuRoot).find('> a'),
-                        length = $items.length;
-                    length && $items.eq(e.keyCode == Common.UI.Keys.UP ? (index<0 ? length-1 : index) : (index>=length-1 ? 0 : index+1)).focus();
+                    const $items = $('> li:not(.divider):not(.disabled):visible', this.menuRoot).find('> a');
+                    const length = $items.length;
+                    length && $items.eq(e.keyCode === Common.UI.Keys.UP ? (index<0 ? length-1 : index) : (index>=length-1 ? 0 : index+1)).focus();
                 }
             },
 
@@ -623,12 +618,11 @@ define([
                 if (!item.menu) this.isOver = false;
                 if (item.options.stopPropagation) {
                     e.stopPropagation();
-                    var me = this;
-                    const _callback = function (records, observer) {
-                        if (records[0].oldValue && records[0].oldValue.indexOf('over') && !me.$el.hasClass('over')) {
+                    const _callback = (records, observer) => {
+                        if (records[0].oldValue?.indexOf('over') && !this.$el.hasClass('over')) {
                             observer.disconnect();
-                            _.delay(function(){
-                                me.$el.parent().parent().find('[data-toggle=dropdown]').focus();
+                            _.delay(()=> {
+                                this.$el.parent().parent().find('[data-toggle=dropdown]').focus();
                             }, 10);
                         }
                     };
@@ -639,8 +633,8 @@ define([
                             attributeOldValue: true
                         });
                     } else { // click from button menu, set focus to button
-                        _.delay(function(){
-                            me.$el.parent().find('[data-toggle=dropdown]').focus();
+                        _.delay(()=> {
+                            this.$el.parent().find('[data-toggle=dropdown]').focus();
                         }, 10);
                     }
                     return;
@@ -663,31 +657,31 @@ define([
             },
 
             alignPosition: function(fixedAlign, fixedOffset) {
-                var menuRoot = this.menuRoot,
-                    menuParent  = this.menuAlignEl || menuRoot.parent(),
-                    m           = this.menuAlign.match(/^([a-z]+)-([a-z]+)/),
-                    offset      = Common.Utils.getOffset(menuParent),
-                    docW        = Common.Utils.innerWidth() - 10,
-                    docH        = Common.Utils.innerHeight() - 10, // Yep, it's magic number
-                    menuW       = menuRoot.outerWidth(),
-                    menuH       = menuRoot.outerHeight(),
-                    parentW     = menuParent.outerWidth(),
-                    parentH     = menuParent.outerHeight();
+                const menuRoot = this.menuRoot;
+                const menuParent  = this.menuAlignEl || menuRoot.parent();
+                let m           = this.menuAlign.match(/^([a-z]+)-([a-z]+)/);
+                const offset      = Common.Utils.getOffset(menuParent);
+                const docW        = Common.Utils.innerWidth() - 10;
+                let docH        = Common.Utils.innerHeight() - 10; // Yep, it's magic number
+                const menuW       = menuRoot.outerWidth();
+                let menuH       = menuRoot.outerHeight();
+                const parentW     = menuParent.outerWidth();
+                const parentH     = menuParent.outerHeight();
 
-                var posMenu = {
+                const posMenu = {
                     'tl': [0, 0],
                     'bl': [0, menuH],
                     'tr': [menuW, 0],
                     'br': [menuW, menuH]
                 };
-                var posParent = {
+                const posParent = {
                     'tl': [0, 0],
                     'tr': [parentW, 0],
                     'bl': [0, parentH],
                     'br': [parentW, parentH]
                 };
-                var left = offset.left - posMenu[m[1]][0] + posParent[m[2]][0] + this.offset[0];
-                var top  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1];
+                let left = offset.left - posMenu[m[1]][0] + posParent[m[2]][0] + this.offset[0];
+                let top  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1];
 
                 if (left + menuW > docW) {
                     if (menuParent.is('li.dropdown-submenu')) {
@@ -706,7 +700,7 @@ define([
                     left = 0;
 
                 if (this.options.restoreHeightAndTop) { // can change top position, if top<0 - then change menu height
-                    var cg = Common.Utils.croppedGeometry();
+                    const cg = Common.Utils.croppedGeometry();
                     docH = cg.height - 10;
                     menuRoot.css('max-height', 'none');
                     menuH = menuRoot.outerHeight();
@@ -716,7 +710,7 @@ define([
                     if (top < cg.top)
                         top = cg.top;
                     if (top + menuH > docH + cg.top) {
-                        menuRoot.css('max-height', (docH - top + cg.top) + 'px');
+                        menuRoot.css('max-height', `${docH - top + cg.top}px`);
                         (!this.scroller) && (this.scroller = new Common.UI.Scroller({
                             el: this.$el.find('> .dropdown-menu '),
                             minScrollbarLength: 30,
@@ -725,11 +719,11 @@ define([
                         }));
                         this.wheelSpeed = undefined;
                     }
-                    this.scroller && this.scroller.update({alwaysVisibleY: this.scrollAlwaysVisible});
+                    this.scroller?.update({alwaysVisibleY: this.scrollAlwaysVisible});
                 } else if (this.options.restoreHeight) {
-                    if (typeof (this.options.restoreHeight) == "number") {
+                    if (typeof (this.options.restoreHeight) === "number") {
                         if (top + menuH > docH) {
-                            menuRoot.css('max-height', (docH - top) + 'px');
+                            menuRoot.css('max-height', `${docH - top}px`);
                             (!this.scroller) && (this.scroller = new Common.UI.Scroller({
                                 el: this.$el.find('.dropdown-menu '),
                                 minScrollbarLength: 30,
@@ -738,15 +732,15 @@ define([
                             }));
                             this.wheelSpeed = undefined;
                         } else if ( top + menuH < docH && menuRoot.height() < this.options.restoreHeight) {
-                            menuRoot.css('max-height', (Math.min(docH - top, this.options.restoreHeight)) + 'px');
+                            menuRoot.css('max-height', `${Math.min(docH - top, this.options.restoreHeight)}px`);
                             this.wheelSpeed = undefined;
                         }
                     }
                 } else {
-                    var cg = Common.Utils.croppedGeometry();
+                    const cg = Common.Utils.croppedGeometry();
                     docH = cg.height - 10;
                     if (top + menuH > docH + cg.top) {
-                        if (fixedAlign && typeof fixedAlign == 'string') { // how to align if menu height > window height
+                        if (fixedAlign && typeof fixedAlign === 'string') { // how to align if menu height > window height
                             m = fixedAlign.match(/^([a-z]+)-([a-z]+)/);
                             top  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1] + (fixedOffset || 0);
                         } else
@@ -760,7 +754,7 @@ define([
                 if (this.options.additionalAlign)
                     this.options.additionalAlign.call(this, menuRoot, left, top);
                 else {
-                    var _css = {left: left, top: top};
+                    const _css = {left: left, top: top};
                     if (!(menuH < docH)) _css['margin-top'] = 0;
 
                     menuRoot.css(_css);
@@ -768,15 +762,15 @@ define([
             },
 
             getChecked: function(exceptCustom) { // check only not-custom items if exceptCustom is true
-                for (var i=0; i<this.items.length; i++) {
-                    var item = this.items[i];
-                    if (item.isChecked && item.isChecked() && (!exceptCustom || !item.isCustomItem))
+                for (let i=0; i<this.items.length; i++) {
+                    const item = this.items[i];
+                    if (item.isChecked?.() && (!exceptCustom || !item.isCustomItem))
                         return item;
                 }
             },
 
             clearAll: function(keepCustom) { // clear only not-custom items when keepCustom is true
-                _.each(this.items, function(item){
+                _.each(this.items, (item)=> {
                     if (item.setChecked && (!keepCustom || !item.isCustomItem))
                         item.setChecked(false, true);
                 });
@@ -785,23 +779,17 @@ define([
             getItems: function(exceptCustom) { // return only not-custom items when exceptCustom is true
                 if (!exceptCustom) return this.items;
 
-                return _.reject(this.items, function (item) {
-                    return !!item.isCustomItem;
-                });
+                return _.reject(this.items, (item) => !!item.isCustomItem);
             },
 
             getItemsLength: function(exceptCustom) { // return count of not-custom items when exceptCustom is true
                 if (!exceptCustom) return this.items.length;
 
-                return _.reject(this.items, function (item) {
-                    return !!item.isCustomItem;
-                }).length;
+                return _.reject(this.items, (item) => !!item.isCustomItem).length;
             }
 
         }), {
-            Manager: (function() {
-                return manager;
-            })()
+            Manager: (() => manager)()
         })
     })();
 
@@ -834,8 +822,6 @@ define([
 
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
-
-            var me = this;
 
             this.id             = this.options.id || Common.UI.getId();
             this.itemTemplate   = this.options.itemTemplate || _.template([
@@ -872,7 +858,7 @@ define([
             }
 
             if (this.options.restoreHeight) {
-                this.options.restoreHeight = (typeof (this.options.restoreHeight) == "number") ? this.options.restoreHeight : (this.options.maxHeight ? this.options.maxHeight : 100000);
+                this.options.restoreHeight = (typeof (this.options.restoreHeight) === "number") ? this.options.restoreHeight : (this.options.maxHeight ? this.options.maxHeight : 100000);
                 !this.options.maxHeight && (this.options.maxHeight = this.options.restoreHeight);
             }
 
@@ -890,38 +876,37 @@ define([
         },
 
         render: function(parentEl) {
-            var me = this;
 
             this.trigger('render:before', this);
 
-            this.cmpEl = me.$el || $(this.el);
+            this.cmpEl = this.$el || $(this.el);
 
             parentEl && this.setElement(parentEl, false);
 
-            if (!me.rendered) {
+            if (!this.rendered) {
                 this.cmpEl = $(this.template({
-                    items: me.items,
-                    itemTemplate: me.itemTemplate,
-                    options : me.options
+                    items: this.items,
+                    itemTemplate: this.itemTemplate,
+                    options : this.options
                 }));
 
                 parentEl ? parentEl.append(this.cmpEl) : this.$el.append(this.cmpEl);
             }
 
-            var rootEl = this.cmpEl.parent(),
-                menuRoot = (rootEl.attr('role') === 'menu') ? rootEl : rootEl.find('[role=menu]');
+            const rootEl = this.cmpEl.parent();
+            const menuRoot = (rootEl.attr('role') === 'menu') ? rootEl : rootEl.find('[role=menu]');
             this.menuRoot = menuRoot;
 
             if (menuRoot) {
-                if (!me.rendered) {
-                    menuRoot.on( "click", "li",       _.bind(me.onItemClick, me));
-                    menuRoot.on( "mousedown", "li",   _.bind(me.onItemMouseDown, me));
+                if (!this.rendered) {
+                    menuRoot.on( "click", "li",       _.bind(this.onItemClick, this));
+                    menuRoot.on( "mousedown", "li",   _.bind(this.onItemMouseDown, this));
                 }
 
                 if (this.options.maxHeight) {
-                    menuRoot.css({'max-height': me.options.maxHeight});
+                    menuRoot.css({'max-height': this.options.maxHeight});
                     this.scroller = new Common.UI.Scroller({
-                        el: me.$el.find('.dropdown-menu '),
+                        el: this.$el.find('.dropdown-menu '),
                         minScrollbarLength: 30,
                         suppressScrollX: true,
                         alwaysVisibleY: this.scrollAlwaysVisible
@@ -937,15 +922,15 @@ define([
 
                 this.parentEl = menuRoot.parent();
 
-                this.parentEl.on('show.bs.dropdown',    _.bind(me.onBeforeShowMenu, me));
-                this.parentEl.on('shown.bs.dropdown',   _.bind(me.onAfterShowMenu, me));
-                this.parentEl.on('hide.bs.dropdown',    _.bind(me.onBeforeHideMenu, me));
-                this.parentEl.on('hidden.bs.dropdown',  _.bind(me.onAfterHideMenu, me));
-                this.parentEl.on('keydown.after.bs.dropdown', _.bind(me.onAfterKeydownMenu, me));
+                this.parentEl.on('show.bs.dropdown',    _.bind(this.onBeforeShowMenu, this));
+                this.parentEl.on('shown.bs.dropdown',   _.bind(this.onAfterShowMenu, this));
+                this.parentEl.on('hide.bs.dropdown',    _.bind(this.onBeforeHideMenu, this));
+                this.parentEl.on('hidden.bs.dropdown',  _.bind(this.onAfterHideMenu, this));
+                this.parentEl.on('keydown.after.bs.dropdown', _.bind(this.onAfterKeydownMenu, this));
 
                 menuRoot.hover(
-                    function(e) { me.isOver = true;},
-                    function(e) { me.isOver = false; }
+                    (e) => { this.isOver = true;},
+                    (e) => { this.isOver = false; }
                 );
             }
 
@@ -962,14 +947,14 @@ define([
         resetItems: function(items) {
             this.items = items || [];
             this.$items = null;
-            var template = _.template([
+            const template = _.template([
                                 '<% _.each(items, function(item) { %>',
                                     '<% if (!item.id) item.id = Common.UI.getId(); %>',
                                     '<% item.checked = item.checked || false;  %>',
                                     '<li><%= itemTemplate(item) %></li>',
                                 '<% }) %>'
                             ].join(''));
-            this.cmpEl && this.cmpEl.html(template({
+            this.cmpEl?.html(template({
                 items: this.items,
                 itemTemplate: this.itemTemplate,
                 options : this.options
@@ -998,11 +983,11 @@ define([
         },
 
         onItemClick: function(e) {
-            if (e.which != 1 && e.which !== undefined)
+            if (e.which !== 1 && e.which !== undefined)
                 return false;
 
-            var index = $(e.currentTarget).closest('li').index(),
-                item = (index>=0) ? this.items[index] : null;
+            const index = $(e.currentTarget).closest('li').index();
+            const item = (index>=0) ? this.items[index] : null;
             if (!item) return;
 
             if (item.disabled)
@@ -1014,9 +999,8 @@ define([
             this.isOver = false;
             if (item.stopPropagation) {
                 e.stopPropagation();
-                var me = this;
-                _.delay(function(){
-                    me.$el.parent().parent().find('[data-toggle=dropdown]').focus();
+                _.delay(()=> {
+                    this.$el.parent().parent().find('[data-toggle=dropdown]').focus();
                 }, 10);
                 return;
             }
@@ -1024,8 +1008,8 @@ define([
             this.trigger('item:click', this, item, e);
         },
 
-        onItemMouseDown: function(e) {
-            if (e.which != 1) {
+        onItemMouseDown: (e) => {
+            if (e.which !== 1) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -1039,16 +1023,16 @@ define([
         },
 
         toggle: function(index, toggle, suppressEvent) {
-            var state = !!toggle;
-            var item = this.items[index];
+            const state = !!toggle;
+            const item = this.items[index];
 
             this.clearAll();
 
-            if (item && item.checkable) {
+            if (item?.checkable) {
                 item.checked = state;
 
                 if (this.rendered) {
-                    var itemEl = item.el || this.cmpEl.find('#'+item.id);
+                    const itemEl = item.el || this.cmpEl.find(`#${item.id}`);
                     if (itemEl) {
                         itemEl.toggleClass('checked', item.checked);
                         if (!_.isEmpty(item.iconCls)) {
@@ -1084,30 +1068,29 @@ define([
             this.trigger('show:after', this, e);
             if (this.scroller && e && e.target===e.currentTarget) {
                 this.scroller.update({alwaysVisibleY: this.scrollAlwaysVisible});
-                var menuRoot = this.menuRoot;
+                const menuRoot = this.menuRoot;
                 if (this.recent && this.recentArr && this.recentArr.length) {
                     menuRoot.scrollTop(0);
                 } else {
-                    var $selected = menuRoot.find('> li .checked');
+                    const $selected = menuRoot.find('> li .checked');
                     if ($selected.length) {
-                        var itemTop = Common.Utils.getPosition($selected).top,
-                            itemHeight = $selected.outerHeight(),
-                            listHeight = menuRoot.outerHeight();
+                        const itemTop = Common.Utils.getPosition($selected).top;
+                        const itemHeight = $selected.outerHeight();
+                        const listHeight = menuRoot.outerHeight();
                         if (!!this.options.scrollToCheckedItem && (itemTop < 0 || itemTop + itemHeight > listHeight)) {
-                            var height = menuRoot.scrollTop() + itemTop + (itemHeight - listHeight)/2;
+                            let height = menuRoot.scrollTop() + itemTop + (itemHeight - listHeight)/2;
                             height = (Math.floor(height/itemHeight) * itemHeight);
                             menuRoot.scrollTop(height);
                         }
-                        !!this.options.focusToCheckedItem && setTimeout(function(){$selected.focus();}, 1);
+                        !!this.options.focusToCheckedItem && setTimeout(()=> {$selected.focus();}, 1);
                     }
                 }
             }
             this._search = {};
             if (this.search && !this.$items) {
-                var me = this;
                 this.$items = this.menuRoot.find('> li').find('> a');
-                _.each(this.$items, function(item, index) {
-                    me.items[index].el = $(item);
+                _.each(this.$items, (item, index) => {
+                    this.items[index].el = $(item);
                 });
             }
         },
@@ -1125,8 +1108,8 @@ define([
         },
 
         onAfterKeydownMenu: function(e) {
-            if (e.keyCode == Common.UI.Keys.RETURN) {
-                var li = $(e.target).closest('li');
+            if (e.keyCode === Common.UI.Keys.RETURN) {
+                let li = $(e.target).closest('li');
                 if (li.length<=0) li = $(e.target).parent().find('li .dataview');
                 if (li.length>0) li.click();
                 if (!li.hasClass('dropdown-submenu'))
@@ -1135,15 +1118,14 @@ define([
                     e.stopPropagation();
                     return false;
                 }
-            } else if (e.keyCode == Common.UI.Keys.UP || e.keyCode == Common.UI.Keys.DOWN)  {
+            } else if (e.keyCode === Common.UI.Keys.UP || e.keyCode === Common.UI.Keys.DOWN)  {
                 this.fromKeyDown = true;
-            } else if (e.keyCode == Common.UI.Keys.ESC)  {
+            } else if (e.keyCode === Common.UI.Keys.ESC)  {
 //                    Common.NotificationCenter.trigger('menu:afterkeydown', e);
 //                    return false;
             } else if (this.search && e.keyCode > 64 && e.keyCode < 91 && e.key){
-                var me = this;
                 clearTimeout(this._search.timer);
-                this._search.timer = setTimeout(function () { me._search = {}; }, 1000);
+                this._search.timer = setTimeout(() => { this._search = {}; }, 1000);
 
                 (!this._search.text) && (this._search.text = '');
                 (!this._search.char) && (this._search.char = e.key);
@@ -1157,18 +1139,16 @@ define([
         },
 
         selectCandidate: function() {
-            var me = this,
-                index = (this._search.index && this._search.index != -1) ? this._search.index : 0,
-                re = new RegExp('^' + ((this._search.full) ? this._search.text : this._search.char), 'i'),
-                isFirstCharsEqual = this.options.searchFields.some(function(field) {
-                    return re.test(me.items[index][field]);
-                }),
-                itemCandidate, idxCandidate;
+            const index = (this._search.index && this._search.index !== -1) ? this._search.index : 0;
+            const re = new RegExp(`^${(this._search.full) ? this._search.text : this._search.char}`, 'i');
+            const isFirstCharsEqual = this.options.searchFields.some((field) => re.test(this.items[index][field]));
+            let itemCandidate;
+            let idxCandidate;
 
-            for (var i=0; i<this.items.length; i++) {
-                var item = this.items[i],
-                    isBreak = false;
-                this.options.searchFields.forEach(function(fieldName) {
+            for (let i=0; i<this.items.length; i++) {
+                const item = this.items[i];
+                let isBreak = false;
+                this.options.searchFields.forEach((fieldName) => {
                     if (item[fieldName] && re.test(item[fieldName])) {
                         if (!itemCandidate) {
                             itemCandidate = item;
@@ -1178,7 +1158,7 @@ define([
                                 return;
                             }
                         }
-                        if (me._search.full && i==index || i>index) {
+                        if (this._search.full && i===index || i>index) {
                             itemCandidate = item;
                             idxCandidate = i;
                             isBreak = true;
@@ -1191,14 +1171,14 @@ define([
 
             if (itemCandidate) {
                 this._search.index = idxCandidate;
-                var item = itemCandidate.el;
+                const item = itemCandidate.el;
                 if (this.scroller) {
                     this.scroller.update({alwaysVisibleY: this.scrollAlwaysVisible});
-                    var itemTop = Common.Utils.getPosition(item).top,
-                        itemHeight = item.outerHeight(),
-                        listHeight = this.menuRoot.outerHeight();
+                    const itemTop = Common.Utils.getPosition(item).top;
+                    const itemHeight = item.outerHeight();
+                    const listHeight = this.menuRoot.outerHeight();
                     if (itemTop < 0 || itemTop + itemHeight > listHeight) {
-                        var height = this.menuRoot.scrollTop() + itemTop;
+                        let height = this.menuRoot.scrollTop() + itemTop;
                         height = (Math.floor(height/itemHeight) * itemHeight);
                         this.menuRoot.scrollTop(height);
                     }
@@ -1218,31 +1198,31 @@ define([
         },
 
         alignPosition: function(fixedAlign, fixedOffset) {
-            var menuRoot = this.menuRoot,
-                menuParent  = this.menuAlignEl || menuRoot.parent(),
-                m           = this.menuAlign.match(/^([a-z]+)-([a-z]+)/),
-                offset      = Common.Utils.getOffset(menuParent),
-                docW        = Common.Utils.innerWidth(),
-                docH        = Common.Utils.innerHeight() - 10, // Yep, it's magic number
-                menuW       = menuRoot.outerWidth(),
-                menuH       = menuRoot.outerHeight(),
-                parentW     = menuParent.outerWidth(),
-                parentH     = menuParent.outerHeight();
+            const menuRoot = this.menuRoot;
+            const menuParent  = this.menuAlignEl || menuRoot.parent();
+            let m           = this.menuAlign.match(/^([a-z]+)-([a-z]+)/);
+            const offset      = Common.Utils.getOffset(menuParent);
+            const docW        = Common.Utils.innerWidth();
+            const docH        = Common.Utils.innerHeight() - 10; // Yep, it's magic number
+            const menuW       = menuRoot.outerWidth();
+            const menuH       = menuRoot.outerHeight();
+            const parentW     = menuParent.outerWidth();
+            const parentH     = menuParent.outerHeight();
 
-            var posMenu = {
+            const posMenu = {
                 'tl': [0, 0],
                 'bl': [0, menuH],
                 'tr': [menuW, 0],
                 'br': [menuW, menuH]
             };
-            var posParent = {
+            const posParent = {
                 'tl': [0, 0],
                 'tr': [parentW, 0],
                 'bl': [0, parentH],
                 'br': [parentW, parentH]
             };
-            var left = offset.left - posMenu[m[1]][0] + posParent[m[2]][0] + this.offset[0];
-            var top  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1];
+            let left = offset.left - posMenu[m[1]][0] + posParent[m[2]][0] + this.offset[0];
+            let top  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1];
 
             if (left + menuW > docW) {
                 if (menuParent.is('li.dropdown-submenu')) {
@@ -1261,9 +1241,9 @@ define([
                 left = 0;
 
             if (this.options.restoreHeight) {
-                if (typeof (this.options.restoreHeight) == "number") {
+                if (typeof (this.options.restoreHeight) === "number") {
                     if (top + menuH > docH) {
-                        menuRoot.css('max-height', (docH - top) + 'px');
+                        menuRoot.css('max-height', `${docH - top}px`);
                         (!this.scroller) && (this.scroller = new Common.UI.Scroller({
                             el: this.$el.find('.dropdown-menu '),
                             minScrollbarLength: 30,
@@ -1271,12 +1251,12 @@ define([
                             alwaysVisibleY: this.scrollAlwaysVisible
                         }));
                     } else if ( top + menuH < docH && menuRoot.height() < this.options.restoreHeight) {
-                        menuRoot.css('max-height', (Math.min(docH - top, this.options.restoreHeight)) + 'px');
+                        menuRoot.css('max-height', `${Math.min(docH - top, this.options.restoreHeight)}px`);
                     }
                 }
             } else {
                 if (top + menuH > docH) {
-                    if (fixedAlign && typeof fixedAlign == 'string') { // how to align if menu height > window height
+                    if (fixedAlign && typeof fixedAlign === 'string') { // how to align if menu height > window height
                         m = fixedAlign.match(/^([a-z]+)-([a-z]+)/);
                         top  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1] + (fixedOffset || 0);
                     } else
@@ -1294,17 +1274,17 @@ define([
         },
 
         clearAll: function() {
-            this.cmpEl && this.cmpEl.find('li > a.checked').removeClass('checked');
-            _.each(this.items, function(item){
+            this.cmpEl?.find('li > a.checked').removeClass('checked');
+            _.each(this.items, (item)=> {
                 item.checked = false;
             });
         },
 
         setRecent: function(recent) {
-            var filter = Common.localStorage.getKeysFilter();
+            const filter = Common.localStorage.getKeysFilter();
             this.recent = !recent ? false : {
                 count: recent.count || 5,
-                key: recent.key || (filter && filter.length ? filter.split(',')[0] : '') + this.id,
+                key: recent.key || (filter?.length ? filter.split(',')[0] : '') + this.id,
                 offset: recent.offset || 0,
                 valueField: recent.valueField || 'caption'
             };
@@ -1315,26 +1295,22 @@ define([
                 if (!this.recentArr) {
                     this.recentArr = [];
                 }
-                var checkedItem = _.findWhere(this.items, {checked: true});
+                const checkedItem = _.findWhere(this.items, {checked: true});
 
                 this.clearRecent();
-
-                var me = this,
-                    arr = Common.localStorage.getItem(this.recent.key);
+                let arr = Common.localStorage.getItem(this.recent.key);
                 arr = arr ? arr.split(';') : [];
-                arr.reverse().forEach(function(recent) {
-                    let mnu = _.find(me.items, function(item) {
-                        return item[me.recent.valueField] === recent;
-                    });
+                arr.reverse().forEach((recent) => {
+                    const mnu = _.find(this.items, (item) => item[this.recent.valueField] === recent);
 
-                    mnu && me.addItemToRecent(mnu, true, 0);
+                    mnu && this.addItemToRecent(mnu, true, 0);
                 });
                 this.recentArr = arr;
 
                 if (checkedItem) {
-                    let obj,
-                        index = _.findIndex(me.items, (obj={}, obj[me.recent.valueField]=checkedItem[me.recent.valueField], obj));
-                    (index>-1) && me.setChecked(index, true, true);
+                    let obj;
+                    const index = _.findIndex(this.items, (obj={}, obj[this.recent.valueField]=checkedItem[this.recent.valueField], obj));
+                    (index>-1) && this.setChecked(index, true, true);
                 }
             }
         },
@@ -1373,7 +1349,7 @@ define([
                 this.items.splice(this.recent.count - 1, 1);
             }
 
-            var new_record = Object.assign({}, mnu);
+            const new_record = Object.assign({}, mnu);
             new_record.isRecent = true;
             new_record.id = Common.UI.getId();
             new_record.checked = false;
@@ -1381,7 +1357,7 @@ define([
             this.onInsertRecentItem(new_record, index!==undefined ? index : this.recent.offset);
 
             if (!silent) {
-                var arr = [];
+                const arr = [];
                 for (let i=0; i<this.items.length; i++) {
                     if (!this.items[i].isRecent) break;
                     arr.push(this.items[i][this.recent.valueField]);
@@ -1394,7 +1370,7 @@ define([
 
         onInsertRecentItem: function(item, index) {
             if (!this.cmpEl) return;
-            var el = $(_.template('<li><%= itemTemplate(item) %></li>')({
+            const el = $(_.template('<li><%= itemTemplate(item) %></li>')({
                 itemTemplate: this.itemTemplate,
                 item: item
             }));
@@ -1403,7 +1379,7 @@ define([
         },
 
         onRemoveRecentItem: function(item) {
-            this.cmpEl && this.cmpEl.find('> li a#'+item.id).closest('li').remove();
+            this.cmpEl?.find(`> li a#${item.id}`).closest('li').remove();
         }
     });
 

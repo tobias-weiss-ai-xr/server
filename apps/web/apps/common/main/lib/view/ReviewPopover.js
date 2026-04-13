@@ -32,7 +32,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Views = Common.Views || {};
 
@@ -45,13 +45,12 @@ define([
     'common/main/lib/component/DataView',
     'common/main/lib/component/Layout',
     'common/main/lib/component/Window'
-], function (commentsTemplate, reviewTemplate) {
-    'use strict';
+], (commentsTemplate, reviewTemplate) => {
 
     function replaceWords(template, words) {
-        var word,
-            value,
-            tpl = template;
+        let word;
+        let value;
+        let tpl = template;
 
         for (word in words) {
             if (undefined !== word) {
@@ -68,7 +67,7 @@ define([
         // Window
 
         initialize: function (options) {
-            var _options = {};
+            const _options = {};
 
             _.extend(_options, {
                 closable: false,
@@ -115,8 +114,8 @@ define([
         render: function (comments, review) {
             Common.UI.Window.prototype.render.call(this);
 
-            var me = this,
-                window = this.$window;
+            const me = this;
+            const window = this.$window;
 
             window.css({
                 height: '',
@@ -126,14 +125,14 @@ define([
                 zIndex: '990'
             });
 
-            var body = window.find('.body');
+            const body = window.find('.body');
             if (body) {
                 body.css('position', 'relative');
             }
 
-            var CommentsPopoverDataView = Common.UI.DataView.extend((function () {
+            const CommentsPopoverDataView = Common.UI.DataView.extend((() => {
 
-                var parentView = me;
+                const parentView = me;
 
                 return {
 
@@ -144,16 +143,16 @@ define([
                     },
 
                     getTextBox: function () {
-                        var text = $(this.el).find('textarea');
-                        return (text && text.length) ? text : undefined;
+                        const text = $(this.el).find('textarea');
+                        return (text?.length) ? text : undefined;
                     },
                     setFocusToTextBox: function (blur) {
-                        var text = $(this.el).find('textarea');
+                        const text = $(this.el).find('textarea');
                         if (blur) {
                             text.blur();
                         } else {
-                            if (text && text.length) {
-                                var val = text.val();
+                            if (text?.length) {
+                                const val = text.val();
                                 text.focus();
                                 text.val('');
                                 text.val(val);
@@ -161,11 +160,11 @@ define([
                         }
                     },
                     getActiveTextBoxVal: function () {
-                        var text = $(this.el).find('textarea');
-                        return (text && text.length) ? text.val().trim() : '';
+                        const text = $(this.el).find('textarea');
+                        return (text?.length) ? text.val().trim() : '';
                     },
-                    disableTextBoxButton: function(textboxEl) {
-                        var button = $(textboxEl.siblings('#id-comments-change-popover')[0]);
+                    disableTextBoxButton: (textboxEl) => {
+                        const button = $(textboxEl.siblings('#id-comments-change-popover')[0]);
 
                         if(textboxEl.val().trim().length > 0) {
                             button.removeAttr('disabled');
@@ -176,32 +175,32 @@ define([
                         }
                     },
                     autoHeightTextBox: function () {
-                        var view = this,
-                            textBox = this.$el.find('textarea'),
-                            domTextBox = null,
-                            minHeight = 55,
-                            lineHeight = 0,
-                            scrollPos = 0,
-                            oldHeight = 0,
-                            newHeight = 0;
+                        const view = this;
+                        const textBox = this.$el.find('textarea');
+                        let domTextBox = null;
+                        const minHeight = 55;
+                        let lineHeight = 0;
+                        let scrollPos = 0;
+                        let oldHeight = 0;
+                        let newHeight = 0;
 
 
                         function updateTextBoxHeight() {
                             scrollPos = parentView.scroller.getScrollTop();
                             if (domTextBox.scrollHeight > domTextBox.clientHeight) {
-                                if (domTextBox.clientHeight + 2 < parseInt($(domTextBox).css('max-height'))) { // 2 = border of textarea
-                                    textBox.css({height: (domTextBox.scrollHeight + lineHeight) + 'px'});
+                                if (domTextBox.clientHeight + 2 < Number.parseInt($(domTextBox).css('max-height'))) { // 2 = border of textarea
+                                    textBox.css({height: `${domTextBox.scrollHeight + lineHeight}px`});
 
                                     parentView.calculateSizeOfContent();
                                 }
                             } else {
                                 oldHeight = domTextBox.clientHeight;
                                 if (oldHeight >= minHeight) {
-                                    textBox.css({height: minHeight + 'px'});
+                                    textBox.css({height: `${minHeight}px`});
 
                                     if (domTextBox.scrollHeight > domTextBox.clientHeight) {
                                         newHeight = Math.max(domTextBox.scrollHeight + lineHeight, minHeight);
-                                        textBox.css({height: newHeight + 'px'});
+                                        textBox.css({height: `${newHeight}px`});
                                     }
 
                                     parentView.calculateSizeOfContent();
@@ -220,12 +219,12 @@ define([
                         }
 
 
-                        if (textBox && textBox.length && parentView.scroller) {
+                        if (textBox?.length && parentView.scroller) {
                             domTextBox = textBox.get(0);
 
                             view.disableTextBoxButton(textBox);
                             if (domTextBox) {
-                                lineHeight = parseInt(textBox.css('lineHeight'), 10) * 0.25;
+                                lineHeight = Number.parseInt(textBox.css('lineHeight'), 10) * 0.25;
                                 updateTextBoxHeight();
                                 textBox.bind('input propertychange', onTextareaInput)
                             }
@@ -263,48 +262,48 @@ define([
                         )
                     });
 
-                    var addtooltip = function (dataview, view, record) {
+                    const addtooltip = function (dataview, view, record) {
                         if (view.tipsArray) {
-                            view.tipsArray.forEach(function (item) {
+                            view.tipsArray.forEach((item) => {
                                 item.remove();
                             });
                         }
 
-                        var arr = [],
-                            btns = $(view.el).find('.btn-resolve:not(.comment-resolved)');
+                        const arr = [];
+                        let btns = $(view.el).find('.btn-resolve:not(.comment-resolved)');
                         btns.tooltip({title: me.textResolve, placement: 'cursor'});
-                        btns.each(function (idx, item) {
+                        btns.each((idx, item) => {
                             arr.push($(item).data('bs.tooltip').tip());
                         });
                         btns = $(view.el).find('.comment-resolved');
                         btns.tooltip({title: me.textOpenAgain, placement: 'cursor'});
-                        btns.each(function (idx, item) {
+                        btns.each((idx, item) => {
                             arr.push($(item).data('bs.tooltip').tip());
                         });
                         btns = $(view.el).find('.i-comment-resolved');
                         btns.tooltip({title: me.textViewResolved, placement: 'cursor'});
-                        btns.each(function (idx, item) {
+                        btns.each((idx, item) => {
                             arr.push($(item).data('bs.tooltip').tip());
                         });
                         btns = $(view.el).find('.btn-edit-common');
                         btns.tooltip({title: me.txtEditTip, placement: 'cursor'});
-                        btns.each(function (idx, item) {
+                        btns.each((idx, item) => {
                             arr.push($(item).data('bs.tooltip').tip());
                         });
                         btns = $(view.el).find('.btn-delete');
                         btns.tooltip({title: me.txtDeleteTip, placement: 'cursor'});
-                        btns.each(function (idx, item) {
+                        btns.each((idx, item) => {
                             arr.push($(item).data('bs.tooltip').tip());
                         });
                         view.tipsArray = arr;
                         this.autoHeightTextBox();
                     };
 
-                    var onCommentsViewMouseOver = function () {
+                    const onCommentsViewMouseOver = () => {
                         me._isMouseOver = true;
                     };
 
-                    var onCommentsViewMouseOut = function () {
+                    const onCommentsViewMouseOut = () => {
                         me._isMouseOver = false;
                     };
 
@@ -317,7 +316,12 @@ define([
                     this.commentsView.onResetItems();
 
                     this.commentsView.on('item:click', function (picker, item, record, e) {
-                        var btn, showEditBox, showReplyBox, commentId, replyId, hideAddReply;
+                        let btn;
+                        let showEditBox;
+                        let showReplyBox;
+                        let commentId;
+                        let replyId;
+                        let hideAddReply;
 
                         function readdresolves() {
                             me.update();
@@ -339,7 +343,7 @@ define([
                             }
 
                             if (btn.hasClass('btn-edit-common')) {
-                                var tip = btn.data('bs.tooltip');
+                                const tip = btn.data('bs.tooltip');
                                 if (tip) tip.dontShow = true;
 
                                 if (!_.isUndefined(replyId)) {
@@ -382,7 +386,7 @@ define([
                                     }
                                 }
                             } else if (btn.hasClass('btn-delete')) {
-                                var tip = btn.data('bs.tooltip');
+                                const tip = btn.data('bs.tooltip');
                                 if (tip) tip.dontShow = true;
 
                                 if (!_.isUndefined(replyId)) {
@@ -435,14 +439,14 @@ define([
                             } else if (btn.hasClass('btn-inner-edit', false)) {
 
                                 if (record.get('dummy')) {
-                                    var commentVal = this.getActiveTextBoxVal();
+                                    const commentVal = this.getActiveTextBoxVal();
                                     me.clearDummyText();
                                     if (commentVal.length > 0)
                                         me.fireEvent('comment:addDummyComment', [commentVal]);
                                     else {
-                                        var text = me.$window.find('textarea:not(.user-message)');
-                                        if (text && text.length)
-                                            setTimeout(function () {
+                                        const text = me.$window.find('textarea:not(.user-message)');
+                                        if (text?.length)
+                                            setTimeout(() => {
                                                 text.focus();
                                             }, 10);
                                     }
@@ -491,7 +495,7 @@ define([
                                 readdresolves();
 
                             } else if (btn.hasClass('btn-resolve')) {
-                                var tip = btn.data('bs.tooltip');
+                                const tip = btn.data('bs.tooltip');
                                 if (tip) tip.dontShow = true;
 
                                 me.fireEvent('comment:resolve', [commentId]);
@@ -516,22 +520,22 @@ define([
                     }).on('show:after', function () {
                         this.scroller.update({alwaysVisibleY: true});
                         me.$window.css({zIndex: '1001'});
-                    }).on('hide:after', function () {
+                    }).on('hide:after', () => {
                         me.$window.css({zIndex: '990'});
                     });
 
                     me.on({
-                        'show': function () {
+                        'show': () => {
                             me.commentsView.autoHeightTextBox();
-                            me.$window.find('textarea').keydown(function (event) {
-                                if (event.keyCode == Common.UI.Keys.ESC) {
+                            me.$window.find('textarea').keydown((event) => {
+                                if (event.keyCode === Common.UI.Keys.ESC) {
                                     me.hide(true); // clear text in dummy comment
                                 }
                             });
                         },
-                        'animate:before': function () {
-                            var text = me.$window.find('textarea');
-                            if (text && text.length){
+                        'animate:before': () => {
+                            const text = me.$window.find('textarea');
+                            if (text?.length){
                                 text.focus();
                                 me.commentsView.disableTextBoxButton(text);
                             }
@@ -540,9 +544,7 @@ define([
                 }
             }
 
-            var ReviewPopoverDataView = Common.UI.DataView.extend((function() {
-
-                return {
+            const ReviewPopoverDataView = Common.UI.DataView.extend((() => ({
                     options : {
                         handleSelect: false,
                         scrollable: true,
@@ -550,8 +552,7 @@ define([
                             '</div>'
                         )
                     }
-                }
-            })());
+                }))());
             if (ReviewPopoverDataView) {
                 if (this.reviewChangesView) {
                     this.reviewChangesView.render($('#id-review-popover'));
@@ -562,27 +563,27 @@ define([
                         itemTemplate: _.template(reviewTemplate)
                     });
 
-                    var addtooltip = function (dataview, view, record) {
+                    const addtooltip = (dataview, view, record) => {
                         if (view.tipsArray) {
-                            view.tipsArray.forEach(function (item) {
+                            view.tipsArray.forEach((item) => {
                                 item.remove();
                             });
                         }
 
-                        var arr = [],
-                            btns = $(view.el).find('.btn-goto');
+                        const arr = [];
+                        let btns = $(view.el).find('.btn-goto');
                         btns.tooltip({title: me.textFollowMove, placement: 'cursor'});
-                        btns.each(function (idx, item) {
+                        btns.each((idx, item) => {
                             arr.push($(item).data('bs.tooltip').tip());
                         });
                         btns = $(view.el).find('.btn-accept');
                         btns.tooltip({title: me.txtAccept, placement: 'cursor'});
-                        btns.each(function (idx, item) {
+                        btns.each((idx, item) => {
                             arr.push($(item).data('bs.tooltip').tip());
                         });
                         btns = $(view.el).find('.btn-reject');
                         btns.tooltip({title: me.txtReject, placement: 'cursor'});
-                        btns.each(function (idx, item) {
+                        btns.each((idx, item) => {
                             arr.push($(item).data('bs.tooltip').tip());
                         });
                         view.tipsArray = arr;
@@ -592,23 +593,23 @@ define([
                     this.reviewChangesView.on('item:remove', addtooltip);
                     this.reviewChangesView.on('item:change', addtooltip);
 
-                    this.reviewChangesView.on('item:click', function (picker, item, record, e) {
-                        var btn = $(e.target);
+                    this.reviewChangesView.on('item:click', (picker, item, record, e) => {
+                        const btn = $(e.target);
                         if (btn) {
                             if (btn.hasClass('btn-accept')) {
-                                var tip = btn.data('bs.tooltip');
+                                const tip = btn.data('bs.tooltip');
                                 if (tip) tip.dontShow = true;
 
                                 me.fireEvent('reviewchange:accept', [record.get('changedata')]);
                             } else if (btn.hasClass('btn-reject')) {
-                                var tip = btn.data('bs.tooltip');
+                                const tip = btn.data('bs.tooltip');
                                 if (tip) tip.dontShow = true;
 
                                 me.fireEvent('reviewchange:reject', [record.get('changedata')]);
                             } else if (btn.hasClass('btn-delete')) {
                                 me.fireEvent('reviewchange:delete', [record.get('changedata')]);
                             } else if (btn.hasClass('btn-goto')) {
-                                var tip = btn.data('bs.tooltip');
+                                const tip = btn.data('bs.tooltip');
                                 if (tip) tip.dontShow = true;
 
                                 me.fireEvent('reviewchange:goto', [record.get('changedata')]);
@@ -633,15 +634,14 @@ define([
 
         showComments: function (animate, loadText, focus, showText) {
             this.options.animate = animate;
-
-            var me = this, textBox = this.commentsView.getTextBox();
+            const textBox = this.commentsView.getTextBox();
 
             if (loadText && this.textVal) {
-                textBox && textBox.val(this.textVal);
+                textBox?.val(this.textVal);
             }
 
-            if (showText && showText.length) {
-                textBox && textBox.val(showText);
+            if (showText?.length) {
+                textBox?.val(showText);
             }
 
             this.show(animate);
@@ -702,7 +702,7 @@ define([
 
             Common.UI.Window.prototype.hide.call(this);
 
-            if (!_.isUndefined(this.e) && this.e.keyCode == Common.UI.Keys.ESC) {
+            if (!_.isUndefined(this.e) && this.e.keyCode === Common.UI.Keys.ESC) {
                 this.e.preventDefault();
                 this.e.stopImmediatePropagation();
                 this.e = undefined;
@@ -720,7 +720,7 @@ define([
         },
 
         isVisible: function () {
-            return (this.$window && this.$window.is(':visible'));
+            return (this.$window?.is(':visible'));
         },
         setLeftTop: function (posX, posY, leftX, loadInnerValues, retainContent) {
             if (!this.$window)
@@ -739,33 +739,33 @@ define([
             this.arrowPosY = posY;
             this.leftX = leftX;
 
-            var commentsView = $('#id-popover'),
-                arrowView = $('#id-comments-arrow'),
-                editorView = $('#editor_sdk'),
-                editorBounds = null,
-                sdkBoundsHeight = 0,
-                sdkBoundsTop = 0,
-                sdkBoundsLeft = 0,
-                sdkPanelRight = '',
-                sdkPanelRightWidth = 0,
-                sdkPanelLeft = '',
-                sdkPanelLeftWidth = 0,
-                sdkPanelThumbs = '', // for PE
-                sdkPanelThumbsWidth = 0, // for PE
-                sdkPanelTop = '',
-                sdkPanelHeight = 0,
-                leftPos = 0,
-                windowWidth = 0,
-                outerHeight = 0,
-                topPos = 0,
-                sdkBoundsTopPos = 0;
+            const commentsView = $('#id-popover');
+            const arrowView = $('#id-comments-arrow');
+            const editorView = $('#editor_sdk');
+            let editorBounds = null;
+            let sdkBoundsHeight = 0;
+            const sdkBoundsTop = 0;
+            const sdkBoundsLeft = 0;
+            let sdkPanelRight = '';
+            let sdkPanelRightWidth = 0;
+            let sdkPanelLeft = '';
+            let sdkPanelLeftWidth = 0;
+            let sdkPanelThumbs = ''; // for PE
+            let sdkPanelThumbsWidth = 0; // for PE
+            let sdkPanelTop = '';
+            let sdkPanelHeight = 0;
+            let leftPos = 0;
+            let windowWidth = 0;
+            let outerHeight = 0;
+            let topPos = 0;
+            let sdkBoundsTopPos = 0;
 
             if (commentsView && arrowView && editorView && editorView.get(0)) {
                 editorBounds = Common.Utils.getBoundingClientRect(editorView.get(0));
                 if (editorBounds) {
                     sdkBoundsHeight = editorBounds.height - this.sdkBounds.padding * 2;
 
-                    this.$window.css({maxHeight: (Math.min(editorBounds.height, Math.max(300, editorBounds.height * 0.75)) - this.sdkBounds.padding * 2) + 'px'});
+                    this.$window.css({maxHeight: `${Math.min(editorBounds.height, Math.max(300, editorBounds.height * 0.75)) - this.sdkBounds.padding * 2}px`});
 
                     this.sdkBounds.width = this.sdkBounds.outerWidth = editorBounds.width;
                     this.sdkBounds.height = this.sdkBounds.outerHeight = editorBounds.height;
@@ -773,10 +773,10 @@ define([
                     // LEFT CORNER
 
                     if (!_.isUndefined(posX)) {
-                        let isOnSheet = !_.isUndefined(leftX),
-                            isRtl = isOnSheet ? posX < leftX : Common.UI.isRTL();
+                        const isOnSheet = !_.isUndefined(leftX);
+                        const isRtl = isOnSheet ? posX < leftX : Common.UI.isRTL();
                         if (isOnSheet && isRtl) {
-                            let tmp = posX;
+                            const tmp = posX;
                             posX = leftX;
                             leftX = tmp;
                         }
@@ -831,7 +831,7 @@ define([
                             }
                         }
 
-                        this.$window.css('left', leftPos + 'px');
+                        this.$window.css('left', `${leftPos}px`);
                     }
 
                     // TOP CORNER
@@ -856,15 +856,15 @@ define([
                         topPos = Math.min(sdkBoundsTop + sdkBoundsHeight - outerHeight, this.arrowPosY + sdkBoundsTop - this.arrow.height);
                         topPos = Math.max(topPos, sdkBoundsTopPos);
 
-                        var arrowPosY = 0;
+                        let arrowPosY = 0;
                         if (Math.ceil(sdkBoundsHeight) <= Math.ceil(outerHeight))
                             arrowPosY = Math.min(arrowPosY, sdkBoundsHeight - (sdkPanelHeight + this.arrow.margin + this.arrow.height));
                         else {
                             arrowPosY = Math.max(this.arrow.margin, this.arrowPosY - (sdkBoundsHeight - outerHeight) - this.arrow.height);
                             arrowPosY = Math.min(arrowPosY, outerHeight - this.arrow.margin - this.arrow.height);
                         }
-                        arrowView.css({top: arrowPosY + 'px'});
-                        this.$window.css('top', topPos + 'px');
+                        arrowView.css({top: `${arrowPosY}px`});
+                        this.$window.css('top', `${topPos}px`);
                     }
                 }
             }
@@ -877,38 +877,38 @@ define([
 
             this.$window.css({overflow: 'hidden'});
 
-            var arrowView = $('#id-comments-arrow'),
-                commentsView = $('#id-popover'),
-                contentBounds = null,
-                editorView = null,
-                editorBounds = null,
-                sdkBoundsHeight = 0,
-                sdkBoundsTop = 0,
-                sdkBoundsLeft = 0,
-                sdkPanelTop = '',
-                sdkPanelHeight = 0,
-                arrowPosY = 0,
-                arrowPosX = 0,
-                windowHeight = 0,
-                outerHeight = 0,
-                topPos = 0,
-                sdkBoundsTopPos = 0;
+            const arrowView = $('#id-comments-arrow');
+            const commentsView = $('#id-popover');
+            let contentBounds = null;
+            let editorView = null;
+            let editorBounds = null;
+            let sdkBoundsHeight = 0;
+            const sdkBoundsTop = 0;
+            const sdkBoundsLeft = 0;
+            let sdkPanelTop = '';
+            let sdkPanelHeight = 0;
+            let arrowPosY = 0;
+            let arrowPosX = 0;
+            let windowHeight = 0;
+            let outerHeight = 0;
+            let topPos = 0;
+            let sdkBoundsTopPos = 0;
 
             if (commentsView && arrowView && commentsView.get(0)) {
-                var scrollPos = this.scroller.getScrollTop();
+                const scrollPos = this.scroller.getScrollTop();
 
                 commentsView.css({height: '100%'});
 
                 contentBounds = Common.Utils.getBoundingClientRect(commentsView.get(0));
                 if (contentBounds) {
                     editorView = $('#editor_sdk');
-                    if (editorView && editorView.get(0)) {
+                    if (editorView?.get(0)) {
                         editorBounds = Common.Utils.getBoundingClientRect(editorView.get(0));
                         if (editorBounds) {
                             sdkBoundsHeight = editorBounds.height - this.sdkBounds.padding * 2;
                             sdkBoundsTopPos = sdkBoundsTop;
                             windowHeight = this.$window.outerHeight();
-                            var maxWindowHeight = Math.min(editorBounds.height, Math.max(300, editorBounds.height * 0.75)) - this.sdkBounds.padding * 2;
+                            const maxWindowHeight = Math.min(editorBounds.height, Math.max(300, editorBounds.height * 0.75)) - this.sdkBounds.padding * 2;
 
                             // TOP CORNER
 
@@ -925,58 +925,58 @@ define([
 
                             outerHeight = Math.max(commentsView.outerHeight(), windowHeight);
 
-                            var movePos = this.isOverCursor();
+                            const movePos = this.isOverCursor();
                             if (movePos) {
                                 if (Math.ceil(maxWindowHeight) <= Math.ceil(outerHeight)) {
                                     this.$window.css({
-                                        maxHeight: maxWindowHeight + 'px'
+                                        maxHeight: `${maxWindowHeight}px`
                                     });
-                                    commentsView.css({height: maxWindowHeight - 3 + 'px'});
+                                    commentsView.css({height: `${maxWindowHeight - 3}px`});
                                     outerHeight = maxWindowHeight;
                                 }
-                                var leftPos = parseInt(this.$window.css('left')) - this.arrow.width,
-                                    newTopDown = movePos[1][1] + sdkPanelHeight + this.arrow.width,// try move down
-                                    newTopUp = movePos[0][1] + sdkPanelHeight - this.arrow.width, // try move up
-                                    isMoveDown = false;
+                                let leftPos = Number.parseInt(this.$window.css('left')) - this.arrow.width;
+                                const newTopDown = movePos[1][1] + sdkPanelHeight + this.arrow.width;// try move down
+                                const newTopUp = movePos[0][1] + sdkPanelHeight - this.arrow.width; // try move up
+                                let isMoveDown = false;
                                 if (newTopDown + outerHeight>sdkBoundsTop + sdkBoundsHeight) {
-                                    var diffDown = sdkBoundsTop + sdkBoundsHeight - newTopDown;
+                                    const diffDown = sdkBoundsTop + sdkBoundsHeight - newTopDown;
                                     if (newTopUp - outerHeight<sdkBoundsTop) {
-                                        var diffUp = newTopUp - sdkBoundsTop;
+                                        const diffUp = newTopUp - sdkBoundsTop;
                                         if (diffDown < diffUp * 0.9) {// magic)
                                             this.$window.css({
-                                                maxHeight: diffUp + 'px',
-                                                top: sdkBoundsTop + 'px'
+                                                maxHeight: `${diffUp}px`,
+                                                top: `${sdkBoundsTop}px`
                                             });
-                                            commentsView.css({height: diffUp - 3 + 'px'});
+                                            commentsView.css({height: `${diffUp - 3}px`});
                                         } else {
                                             this.$window.css({
-                                                maxHeight: diffDown + 'px',
-                                                top: newTopDown + 'px'
+                                                maxHeight: `${diffDown}px`,
+                                                top: `${newTopDown}px`
                                             });
                                             isMoveDown = true;
-                                            commentsView.css({height: diffDown - 3 + 'px'});
+                                            commentsView.css({height: `${diffDown - 3}px`});
                                         }
                                     } else
-                                        this.$window.css('top', newTopUp - outerHeight + 'px'); // move up
+                                        this.$window.css('top', `${newTopUp - outerHeight}px`); // move up
                                 } else {
                                     isMoveDown = true;
-                                    this.$window.css('top', newTopDown + 'px'); // move down
+                                    this.$window.css('top', `${newTopDown}px`); // move down
                                 }
                                 leftPos -= this.arrow.height;
-                                this.$window.css('left', leftPos + 'px');
+                                this.$window.css('left', `${leftPos}px`);
                                 arrowPosX = movePos[isMoveDown ? 1 : 0][0];
                                 arrowPosX = Math.max(0, arrowPosX - leftPos - this.arrow.height/2);
                                 arrowPosX = Math.min(arrowPosX, this.$window.outerWidth() - this.arrow.height);
-                                arrowView.css({top: '', left: arrowPosX + 'px'});
+                                arrowView.css({top: '', left: `${arrowPosX}px`});
                                 arrowView.toggleClass('top', isMoveDown);
                                 arrowView.toggleClass('bottom', !isMoveDown);
                                 arrowView.removeClass('left right');
                             } else {
                                 if (Math.ceil(maxWindowHeight) <= Math.ceil(outerHeight)) {
                                     this.$window.css({
-                                        maxHeight: maxWindowHeight + 'px'
+                                        maxHeight: `${maxWindowHeight}px`
                                     });
-                                    commentsView.css({height: maxWindowHeight - 3 + 'px'});
+                                    commentsView.css({height: `${maxWindowHeight - 3}px`});
                                     outerHeight = maxWindowHeight;
 
                                 } else
@@ -985,13 +985,13 @@ define([
                                     if (contentBounds.top + outerHeight > sdkBoundsHeight + sdkBoundsTop || contentBounds.height === 0) {
                                         topPos = Math.min(sdkBoundsTop + sdkBoundsHeight - outerHeight, this.arrowPosY + sdkBoundsTop - this.arrow.height);
                                         topPos = Math.max(topPos, sdkBoundsTopPos);
-                                        this.$window.css({top: topPos + 'px'});
+                                        this.$window.css({top: `${topPos}px`});
                                     }
                                 }
                                 arrowPosY = Math.max(this.arrow.margin, this.arrowPosY - (sdkBoundsHeight - outerHeight) - this.arrow.height);
                                 arrowPosY = Math.min(arrowPosY, outerHeight - this.arrow.margin - this.arrow.height);
 
-                                arrowView.css({top: arrowPosY + 'px', left: ''});
+                                arrowView.css({top: `${arrowPosY}px`, left: ''});
                                 arrowView.removeClass('top bottom right left');
                                 arrowView.addClass(this._state.arrowCls);
                                 this.scroller.scrollTop(scrollPos);
@@ -1010,22 +1010,24 @@ define([
         isOverCursor: function() {
             if (!this.api.asc_GetSelectionBounds) return;
             
-            var p = this.api.asc_GetSelectionBounds(),
-                isCursor = Math.abs(p[0][0] - p[1][0])<0.1 && Math.abs(p[0][1] - p[1][1])<0.1 && Math.abs(p[2][0] - p[3][0])<0.1 && Math.abs(p[2][1] - p[3][1])<0.1,
-                sdkPanelLeft = $('#id_panel_left'),
-                sdkPanelLeftWidth = 0;
+            const p = this.api.asc_GetSelectionBounds();
+            const isCursor = Math.abs(p[0][0] - p[1][0])<0.1 && Math.abs(p[0][1] - p[1][1])<0.1 && Math.abs(p[2][0] - p[3][0])<0.1 && Math.abs(p[2][1] - p[3][1])<0.1;
+            const sdkPanelLeft = $('#id_panel_left');
+            let sdkPanelLeftWidth = 0;
             if (sdkPanelLeft.length)
                 sdkPanelLeftWidth = (sdkPanelLeft.css('display') !== 'none') ? sdkPanelLeft.width() : 0;
-            var x0 = p[0][0] + sdkPanelLeftWidth, y0 = p[0][1],
-                x1 = p[isCursor ? 2 : 1][0] + sdkPanelLeftWidth, y1 = p[isCursor ? 2 : 1][1];
-            var leftPos = parseInt(this.$window.css('left')) - this.arrow.width,
-                windowWidth = this.$window.outerWidth() + this.arrow.width,
-                topPos = parseInt(this.$window.css('top')),
-                windowHeight = this.$window.outerHeight();
+            const x0 = p[0][0] + sdkPanelLeftWidth;
+            const y0 = p[0][1];
+            const x1 = p[isCursor ? 2 : 1][0] + sdkPanelLeftWidth;
+            const y1 = p[isCursor ? 2 : 1][1];
+            const leftPos = Number.parseInt(this.$window.css('left')) - this.arrow.width;
+            const windowWidth = this.$window.outerWidth() + this.arrow.width;
+            const topPos = Number.parseInt(this.$window.css('top'));
+            const windowHeight = this.$window.outerHeight();
             if (x0>leftPos && x0<leftPos+windowWidth && y0>topPos && y0<topPos+windowHeight ||
                 x1>leftPos && x1<leftPos+windowWidth && y1>topPos && y1<topPos+windowHeight) {
-                var newDown = (y0>y1) ? [x0, y0] : [x1, y1],// try move down
-                    newUp = (y0<y1) ? [x0, y0] : [x1, y1]; // try move up
+                const newDown = (y0>y1) ? [x0, y0] : [x1, y1];// try move down
+                const newUp = (y0<y1) ? [x0, y0] : [x1, y1]; // try move up
                 return [newUp, newDown];
             }
         },
@@ -1042,8 +1044,8 @@ define([
         },
         loadText: function () {
             if (this.textVal && this.commentsView) {
-                var textBox = this.commentsView.getTextBox();
-                textBox && textBox.val(this.textVal);
+                const textBox = this.commentsView.getTextBox();
+                textBox?.val(this.textVal);
             }
         },
         getEditText: function () {
@@ -1061,8 +1063,8 @@ define([
         clearDummyText: function () {
             if (this.commentsView && this.commentsView.cmpEl.find('.lock-area').length < 1) {
                 this.textDummyVal = undefined;
-                var textBox = this.commentsView.getTextBox();
-                textBox && textBox.val('');
+                const textBox = this.commentsView.getTextBox();
+                textBox?.val('');
                 this.commentsView.clearTextBoxBind();
             }
         },
@@ -1071,22 +1073,25 @@ define([
         },
 
         hookTextBox: function () {
-            var me = this, textBox = this.commentsView.getTextBox();
+            const me = this;
+            const textBox = this.commentsView.getTextBox();
 
-            textBox && textBox.keydown(function (event) {
+            textBox?.keydown(function (event) {
                 if ((event.ctrlKey || event.metaKey) && !event.altKey && event.keyCode === Common.UI.Keys.RETURN) {
-                    var buttonChangeComment = $('#id-comments-change-popover');
-                    if (buttonChangeComment && buttonChangeComment.length) {
+                    const buttonChangeComment = $('#id-comments-change-popover');
+                    if (buttonChangeComment?.length) {
                         buttonChangeComment.click();
                     }
 
                     event.stopImmediatePropagation();
                 } else if (event.keyCode === Common.UI.Keys.TAB) {
-                    var $this, end, start;
+                    let $this;
+                    let end;
+                    let start;
                     start = this.selectionStart;
                     end = this.selectionEnd;
                     $this = $(this);
-                    $this.val($this.val().substring(0, start) + '\t' + $this.val().substring(end));
+                    $this.val(`${$this.val().substring(0, start)}\t${$this.val().substring(end)}`);
                     this.selectionStart = this.selectionEnd = start + 1;
 
                     // event.stopImmediatePropagation();
@@ -1097,16 +1102,16 @@ define([
             });
 
             if (this.canRequestUsers) {
-                textBox && textBox.keydown(function (event) {
-                    if ( event.keyCode == Common.UI.Keys.SPACE || event.keyCode === Common.UI.Keys.TAB ||
-                        event.keyCode == Common.UI.Keys.HOME || event.keyCode == Common.UI.Keys.END || event.keyCode == Common.UI.Keys.RIGHT ||
-                        event.keyCode == Common.UI.Keys.LEFT || event.keyCode == Common.UI.Keys.UP) {
+                textBox?.keydown((event) => {
+                    if ( event.keyCode === Common.UI.Keys.SPACE || event.keyCode === Common.UI.Keys.TAB ||
+                        event.keyCode === Common.UI.Keys.HOME || event.keyCode === Common.UI.Keys.END || event.keyCode === Common.UI.Keys.RIGHT ||
+                        event.keyCode === Common.UI.Keys.LEFT || event.keyCode === Common.UI.Keys.UP) {
                         // hide email menu
                         me.onEmailListMenu();
-                    } else if (event.keyCode == Common.UI.Keys.DOWN) {
-                        if (me.emailMenu && me.emailMenu.rendered && me.emailMenu.isVisible()) {
-                            _.delay(function () {
-                                var selected = me.emailMenu.cmpEl.find('li:not(.divider):first');
+                    } else if (event.keyCode === Common.UI.Keys.DOWN) {
+                        if (me.emailMenu?.rendered && me.emailMenu.isVisible()) {
+                            _.delay(() => {
+                                let selected = me.emailMenu.cmpEl.find('li:not(.divider):first');
                                 selected = selected.find('a');
                                 selected.focus();
                             }, 10);
@@ -1115,28 +1120,29 @@ define([
                     }
                     me.e = event;
                 });
-                textBox && textBox.on('input', function (event) {
+                textBox?.on('input', function (event) {
                     clearTimeout(me._state.timerEmailList);
 
-                    var $this = $(this),
-                        start = this.selectionStart,
-                        val = $this.val(),
-                        left = 0, right = val.length-1;
-                    for (var i=start-1; i>=0; i--) {
-                        if (val.charCodeAt(i) == 32 /*space*/ || val.charCodeAt(i) == 13 /*enter*/ || val.charCodeAt(i) == 10 /*new line*/ || val.charCodeAt(i) == 9 /*tab*/) {
+                    const $this = $(this);
+                    const start = this.selectionStart;
+                    const val = $this.val();
+                    let left = 0;
+                    let right = val.length-1;
+                    for (let i=start-1; i>=0; i--) {
+                        if (val.charCodeAt(i) === 32 /*space*/ || val.charCodeAt(i) === 13 /*enter*/ || val.charCodeAt(i) === 10 /*new line*/ || val.charCodeAt(i) === 9 /*tab*/) {
                             left = i+1; break;
                         }
                     }
-                    for (var i=start; i<=right; i++) {
-                        if (val.charCodeAt(i) == 32 || val.charCodeAt(i) == 13 || val.charCodeAt(i) == 10 || val.charCodeAt(i) == 9) {
+                    for (let i=start; i<=right; i++) {
+                        if (val.charCodeAt(i) === 32 || val.charCodeAt(i) === 13 || val.charCodeAt(i) === 10 || val.charCodeAt(i) === 9) {
                             right = i-1; break;
                         }
                     }
-                    var str = val.substring(left, right+1),
-                        res = str.match(/^(?:[@]|[+](?!1))(\S*)/);
+                    let str = val.substring(left, right+1);
+                    const res = str.match(/^(?:[@]|[+](?!1))(\S*)/);
                     if (res && res.length>1) {
                         str = res[1]; // send to show email menu
-                        me._state.timerEmailList = setTimeout(function () {
+                        me._state.timerEmailList = setTimeout(() => {
                             me.onEmailListMenu(str, left, right);
                         }, 300);
                     } else
@@ -1147,17 +1153,17 @@ define([
 
         hideTips: function () {
             if (this.commentsView)
-                _.each(this.commentsView.dataViewItems, function (item) {
+                _.each(this.commentsView.dataViewItems, (item) => {
                     if (item.tipsArray) {
-                        item.tipsArray.forEach(function (item) {
+                        item.tipsArray.forEach((item) => {
                             item.hide();
                         });
                     }
                 }, this);
             if (this.reviewChangesView)
-                _.each(this.reviewChangesView.dataViewItems, function (item) {
+                _.each(this.reviewChangesView.dataViewItems, (item) => {
                     if (item.tipsArray) {
-                        item.tipsArray.forEach(function (item) {
+                        item.tipsArray.forEach((item) => {
                             item.hide();
                         });
                     }
@@ -1165,17 +1171,17 @@ define([
         },
 
         hideMentions: function () {
-            if (this.emailMenu && this.emailMenu.rendered)
+            if (this.emailMenu?.rendered)
                 this.emailMenu.cmpEl.css('display', 'none');
         },
 
         moveMentions: function () {
-            var menu = this.emailMenu;
-            if (menu && menu.rendered && menu.isVisible() && this.commentsView) {
-                var menuContainer = this.$window.find(Common.Utils.String.format('#menu-container-{0}', menu.id)),
-                    textbox = this.commentsView.getTextBox(),
-                    textboxDom = textbox ? textbox[0] : null,
-                    showPoint = textboxDom ? [textboxDom.offsetLeft, textboxDom.offsetTop + textboxDom.clientHeight + 3] : [0, 0];
+            const menu = this.emailMenu;
+            if (menu?.rendered && menu.isVisible() && this.commentsView) {
+                const menuContainer = this.$window.find(Common.Utils.String.format('#menu-container-{0}', menu.id));
+                const textbox = this.commentsView.getTextBox();
+                const textboxDom = textbox ? textbox[0] : null;
+                const showPoint = textboxDom ? [textboxDom.offsetLeft, textboxDom.offsetTop + textboxDom.clientHeight + 3] : [0, 0];
 
                 menuContainer.css({left: showPoint[0], top : showPoint[1]});
                 menu.menuAlignEl = textbox;
@@ -1208,11 +1214,11 @@ define([
         },
 
         autoScrollToEditButtons: function () {
-            var button = $('#id-comments-change-popover'),  // TODO: add to cache
-                btnBounds = null,
-                contentBounds = Common.Utils.getBoundingClientRect(this.$window[0]),
-                moveY = 0,
-                padding = 7;
+            const button = $('#id-comments-change-popover');  // TODO: add to cache
+            let btnBounds = null;
+            const contentBounds = Common.Utils.getBoundingClientRect(this.$window[0]);
+            let moveY = 0;
+            const padding = 7;
 
             if (button.length) {
                 btnBounds = Common.Utils.getBoundingClientRect(button.get(0));
@@ -1227,7 +1233,7 @@ define([
 
         onEmailListMenu: function(str, left, right) {
             clearTimeout(this._state.timerEmailList);
-            if (typeof str == 'string') {
+            if (typeof str === 'string') {
                 this._state.emailSearch = {
                     str: str,
                     left: left,
@@ -1237,7 +1243,7 @@ define([
                     isPaginated: undefined,
                     requestNext: undefined
                 };
-                var data = this._state.emailSearch;
+                const data = this._state.emailSearch;
                 Common.UI.ExternalUsers.get('mention', undefined, data.from, data.count, data.str);
             } else {
                 this._state.emailSearch = null;
@@ -1246,7 +1252,7 @@ define([
         },
 
         onEmailListMenuNext: function() {
-            var data = this._state.emailSearch;
+            const data = this._state.emailSearch;
             if (data && data.isPaginated!==undefined) {
                 data.from += data.count;
                 Common.UI.ExternalUsers.get('mention', undefined, data.from, data.count, data.str);
@@ -1255,49 +1261,47 @@ define([
 
         onEmailListMenuCallback: function(type, users, isPaginated) {
             if (!this._state.emailSearch || type && type!=='mention') return;
-
-            var me   = this,
-                menu = me.emailMenu,
-                str = this._state.emailSearch.str,
-                left = this._state.emailSearch.left,
-                right = this._state.emailSearch.right,
-                from = this._state.emailSearch.from,
-                isClientSearch = isPaginated===undefined;
+            const menu = this.emailMenu;
+            let str = this._state.emailSearch.str;
+            const left = this._state.emailSearch.left;
+            const right = this._state.emailSearch.right;
+            const from = this._state.emailSearch.from;
+            const isClientSearch = isPaginated===undefined;
 
             this._state.emailSearch.isPaginated = isPaginated;
             isClientSearch && (this._state.emailSearch = null);
 
-            var menuContainer = me.$window.find(Common.Utils.String.format('#menu-container-{0}', menu.id)),
-                textbox = this.commentsView.getTextBox(),
-                textboxDom = textbox ? textbox[0] : null,
-                showPoint = textboxDom ? [textboxDom.offsetLeft, textboxDom.offsetTop + textboxDom.clientHeight + 3] : [0, 0];
+            let menuContainer = this.$window.find(Common.Utils.String.format('#menu-container-{0}', menu.id));
+            const textbox = this.commentsView.getTextBox();
+            const textboxDom = textbox ? textbox[0] : null;
+            const showPoint = textboxDom ? [textboxDom.offsetLeft, textboxDom.offsetTop + textboxDom.clientHeight + 3] : [0, 0];
 
             if (!menu.rendered) {
                 // Prepare menu container
                 if (menuContainer.length < 1) {
                     menuContainer = $(Common.Utils.String.format('<div id="menu-container-{0}" style="position: absolute; z-index: 10000;"><div class="dropdown-toggle" data-toggle="dropdown"></div></div>', menu.id));
-                    me.$window.append(menuContainer);
+                    this.$window.append(menuContainer);
                 }
 
                 menu.render(menuContainer);
                 menu.cmpEl.css('min-width', textboxDom ? textboxDom.clientWidth : 220);
                 menu.cmpEl.attr({tabindex: "-1"});
-                menu.on('hide:after', function(){
-                    setTimeout(function(){
-                        var tb = me.commentsView.getTextBox();
-                        tb && tb.focus();
+                menu.on('hide:after', ()=> {
+                    setTimeout(()=> {
+                        const tb = this.commentsView.getTextBox();
+                        tb?.focus();
                     }, 10);
                 });
-                !isClientSearch && menu.scroller.cmpEl.on('scroll', function (event) {
-                    if (me._state.emailSearch && me._state.emailSearch.requestNext>0 && me._state.emailSearch.requestNext < $(event.target).scrollTop()) {
-                        me._state.emailSearch.requestNext = -1; // wait for response
-                        me.onEmailListMenuNext();
+                !isClientSearch && menu.scroller.cmpEl.on('scroll', (event) => {
+                    if (this._state.emailSearch && this._state.emailSearch.requestNext>0 && this._state.emailSearch.requestNext < $(event.target).scrollTop()) {
+                        this._state.emailSearch.requestNext = -1; // wait for response
+                        this.onEmailListMenuNext();
                     }
                 });
             }
 
             if (isClientSearch || from===0) {
-                for (var i = 0; i < menu.items.length; i++) {
+                for (let i = 0; i < menu.items.length; i++) {
                     menu.removeItem(menu.items[i]);
                     i--;
                 }
@@ -1307,11 +1311,11 @@ define([
                 if (isClientSearch) {
                     str = str.toLowerCase();
                     if (str.length>0) {
-                        users = _.filter(users, function(item) {
+                        users = _.filter(users, (item) => {
                             if (item.email && 0 === item.email.toLowerCase().indexOf(str)) return true;
 
-                            let arr = item.name ? item.name.toLowerCase().split(' ') : [],
-                                inName = false;
+                            const arr = item.name ? item.name.toLowerCase().split(' ') : [];
+                            let inName = false;
                             for (let i=0; i<arr.length; i++) {
                                 if (0 === arr[i].indexOf(str)) {
                                     inName = true;
@@ -1322,24 +1326,24 @@ define([
                         });
                     }
                 }
-                var tpl = _.template('<a id="<%= id %>" tabindex="-1" type="menuitem">' +
+                const tpl = _.template('<a id="<%= id %>" tabindex="-1" type="menuitem">' +
                                         '<div style="overflow: hidden; text-overflow: ellipsis; max-width: 195px;"><%= Common.Utils.String.htmlEncode(caption) %></div>' +
                                         '<div style="overflow: hidden; text-overflow: ellipsis; max-width: 195px; color: #909090;"><%= Common.Utils.String.htmlEncode(options.value) %></div>' +
-                                    '</a>'),
-                    divider = false;
-                _.each(users, function(menuItem, index) {
+                                    '</a>');
+                let divider = false;
+                _.each(users, (menuItem, index) => {
                     if (divider && !menuItem.hasAccess) {
                         divider = false;
                         menu.addItem(new Common.UI.MenuItem({caption: '--'}));
                     }
 
                     if (menuItem.email && menuItem.name) {
-                        var mnu = new Common.UI.MenuItem({
+                        const mnu = new Common.UI.MenuItem({
                             caption     : menuItem.name,
                             value       : menuItem.email,
                             template    : tpl
-                        }).on('click', function(item, e) {
-                            me.insertEmailToTextbox(item.options.value, left, right);
+                        }).on('click', (item, e) => {
+                            this.insertEmailToTextbox(item.options.value, left, right);
                         });
                         menu.addItem(mnu);
                         if (menuItem.hasAccess)
@@ -1357,7 +1361,7 @@ define([
                 menu.scroller.update({alwaysVisibleY: true});
                 if (!isClientSearch) {
                     (from===0) && menu.scroller.scrollTop(0);
-                    me._state.emailSearch.requestNext = users && users.length>0 ? (1 - 10/menu.items.length) * menu.cmpEl.get(0).scrollHeight : -1;
+                    this._state.emailSearch.requestNext = users && users.length>0 ? (1 - 10/menu.items.length) * menu.cmpEl.get(0).scrollHeight : -1;
                 }
             } else {
                 menu.rendered && menu.cmpEl.css('display', 'none');
@@ -1365,12 +1369,12 @@ define([
         },
 
         insertEmailToTextbox: function(str, left, right) {
-            var textBox = this.commentsView.getTextBox();
+            const textBox = this.commentsView.getTextBox();
             if (!textBox) return;
 
-            var val = textBox.val();
-            textBox.val(val.substring(0, left) + '+' + str + ' ' + val.substring(right+1, val.length));
-            setTimeout(function(){
+            const val = textBox.val();
+            textBox.val(`${val.substring(0, left)}+${str} ${val.substring(right+1, val.length)}`);
+            setTimeout(()=> {
                 textBox[0].selectionStart = textBox[0].selectionEnd = left + str.length + 2;
             }, 10);
         },

@@ -30,14 +30,14 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Controllers = Common.Controllers || {};
 
 define([
     'core',
     // 'common/main/lib/view/ExternalLinksDlg'
-], function () { 'use strict';
+], () => { 
     Common.Controllers.ExternalLinks = Backbone.Controller.extend(_.extend({
         models: [],
         collections: [],
@@ -59,7 +59,7 @@ define([
             this._state = {};
         },
 
-        onLaunch: function() {
+        onLaunch: () => {
             //
         },
 
@@ -88,7 +88,6 @@ define([
         },
 
         onExternalLinks: function() {
-            var me = this;
             this.externalLinksDlg = (new Common.Views.ExternalLinksDlg({
                 api: this.api,
                 isUpdating: this.externalData.isUpdating,
@@ -96,15 +95,15 @@ define([
                 canRequestOpen: this.toolbar.mode.canRequestOpen || this.toolbar.mode.isOffline,
                 canRequestReferenceSource: this.toolbar.mode.canRequestReferenceSource || this.toolbar.mode.isOffline,
                 isOffline: this.toolbar.mode.isOffline,
-                handler: function(result) {
+                handler: (result) => {
                     Common.NotificationCenter.trigger('edit:complete');
                 }
             }));
-            this.externalLinksDlg.on('close', function(win){
-                me.externalLinksDlg = null;
+            this.externalLinksDlg.on('close', (win)=> {
+                this.externalLinksDlg = null;
             });
-            this.externalLinksDlg.on('change:source', function(win, externalRef){
-                me.externalSource = {
+            this.externalLinksDlg.on('change:source', (win, externalRef)=> {
+                this.externalSource = {
                     externalRef: externalRef
                 };
                 Common.Gateway.requestReferenceSource();
@@ -114,16 +113,15 @@ define([
 
         onUpdateExternalReference: function(arr, callback) {
             if (this.toolbar.mode.isEdit && this.toolbar.editMode) {
-                var me = this;
-                me.externalData = {
+                this.externalData = {
                     stackRequests: [],
                     stackResponse: [],
                     callback: undefined,
                     isUpdating: false,
                     linkStatus: {}
                 };
-                arr && arr.length>0 && arr.forEach(function(item) {
-                    var data;
+                arr && arr.length>0 && arr.forEach((item) => {
+                    let data;
                     switch (item.asc_getType()) {
                         case Asc.c_oAscExternalReferenceType.link:
                             data = {link: item.asc_getData()};
@@ -139,16 +137,16 @@ define([
                             };
                             break;
                     }
-                    data && me.externalData.stackRequests.push({data: data, id: item.asc_getId(), isExternal: item.asc_isExternalLink(), source: item.asc_getSource() || ''});
+                    data && this.externalData.stackRequests.push({data: data, id: item.asc_getId(), isExternal: item.asc_isExternalLink(), source: item.asc_getSource() || ''});
                 });
-                me.externalData.callback = callback;
-                me.requestReferenceData();
+                this.externalData.callback = callback;
+                this.requestReferenceData();
             }
         },
 
         requestReferenceData: function() {
             if (this.externalData.stackRequests.length>0) {
-                var item = this.externalData.stackRequests.shift();
+                const item = this.externalData.stackRequests.shift();
                 this.externalData.linkStatus.id = item.id;
                 this.externalData.linkStatus.source = item.source;
                 this.externalData.linkStatus.isExternal = item.isExternal;
@@ -164,7 +162,7 @@ define([
                     if (this.externalLinksDlg) {
                         this.externalLinksDlg.setLinkStatus(this.externalData.linkStatus.id, this.externalData.linkStatus.result);
                     } else if (this.externalData.linkStatus.result && !this._state.isFromDlg)
-                        Common.NotificationCenter.trigger('showmessage', {msg: this.externalData.linkStatus.result + (this.externalData.linkStatus.source ? ' (' + this.externalData.linkStatus.source + ')' : '') });
+                        Common.NotificationCenter.trigger('showmessage', {msg: this.externalData.linkStatus.result + (this.externalData.linkStatus.source ? ` (${this.externalData.linkStatus.source})` : '') });
                 }
                 if (this.externalData.stackRequests.length>0)
                     this.requestReferenceData();
@@ -182,15 +180,15 @@ define([
         },
 
         onNeedUpdateExternalReferenceOnOpen: function() {
-            var value = this.api.asc_getUpdateLinks();
+            const value = this.api.asc_getUpdateLinks();
             Common.UI.warning({
-                msg: value ? (!!window.SSE ? this.warnUpdateExternalAutoupdate : !!window.PE ? this.warnUpdateExternalAutoupdatePE : this.warnUpdateExternalAutoupdateDE) :
-                             (!!window.SSE ? this.warnUpdateExternalData : !!window.PE ? this.warnUpdateExternalDataPE : this.warnUpdateExternalDataDE),
+                msg: value ? (window.SSE ? this.warnUpdateExternalAutoupdate : window.PE ? this.warnUpdateExternalAutoupdatePE : this.warnUpdateExternalAutoupdateDE) :
+                             (window.SSE ? this.warnUpdateExternalData : window.PE ? this.warnUpdateExternalDataPE : this.warnUpdateExternalDataDE),
                 buttons: [{value: 'ok', caption: value ? this.textContinue : this.textUpdate, primary: true}, {value: 'cancel', caption: value ? this.textTurnOff : this.textDontUpdate}],
                 maxwidth: 500,
                 callback: _.bind(function(btn) {
                     if (btn==='ok') {
-                        var links = this.api.asc_getExternalReferences();
+                        const links = this.api.asc_getExternalReferences();
                         links && (links.length>0) && this.updateReferences(links);
                     }
                     value && this.api.asc_setUpdateLinks(btn==='ok', true);
@@ -216,7 +214,7 @@ define([
 
         openLink: function(externalRef) {
             if (!externalRef) return;
-            var data = this.api.asc_openExternalReference(externalRef);
+            let data = this.api.asc_openExternalReference(externalRef);
             if (data) {
                 switch (data.asc_getType()) {
                     case Asc.c_oAscExternalReferenceType.link:
@@ -232,7 +230,7 @@ define([
                         };
                         break;
                 }
-                data.windowName = 'wname-' + Date.now();
+                data.windowName = `wname-${Date.now()}`;
                 window.open("", data.windowName);
                 Common.Gateway.requestOpen(data);
             }
@@ -240,7 +238,7 @@ define([
 
         updateReferences: function(data, fromDlg) {
             this._state.isFromDlg = !!fromDlg;
-            this.api && this.api.asc_updateExternalReferences(data);
+            this.api?.asc_updateExternalReferences(data);
         },
 
         txtErrorExternalLink: 'Error: updating is failed',

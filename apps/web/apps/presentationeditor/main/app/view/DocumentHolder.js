@@ -23,310 +23,315 @@
  *
  */
 define([
-    'jquery',
-    'underscore',
-    'backbone',
-    'gateway',
-    'common/main/lib/util/utils',
-    'common/main/lib/component/Menu',
-//    'common/main/lib/view/InsertTableDialog',
-], function ($, _, Backbone, gateway) { 'use strict';
-
-    PE.Views.DocumentHolder =  Backbone.View.extend(_.extend({
-        el: '#editor_sdk',
+  "jquery",
+  "underscore",
+  "backbone",
+  "gateway",
+  "common/main/lib/util/utils",
+  "common/main/lib/component/Menu",
+  //    'common/main/lib/view/InsertTableDialog',
+], ($, _, Backbone, gateway) => {
+  PE.Views.DocumentHolder = Backbone.View.extend(
+    _.extend(
+      {
+        el: "#editor_sdk",
 
         // Compile our stats template
         template: null,
 
         // Delegated events for creating new items, and clearing completed ones.
-        events: {
-        },
+        events: {},
 
         initialize: function () {
-            var me = this;
+          this.slidesCount = 0
+          this._currentMathObj = undefined
+          this._currentParaObjDisabled = false
+          this._currentSpellObj = undefined
+          this._currentTranslateObj = this
+          this._currLang = {}
+          this._state = { unitsChanged: true }
+          this._isDisabled = false
+          this._preventCustomClick = null
+          this._hasCustomItems = false
+          this._langs = null
 
-            me.slidesCount = 0;
-            me._currentMathObj = undefined;
-            me._currentParaObjDisabled = false;
-            me._currentSpellObj = undefined;
-            me._currentTranslateObj = this;
-            me._currLang        = {};
-            me._state = {unitsChanged: true};
-            me._isDisabled = false;
-            me._preventCustomClick = null;
-            me._hasCustomItems = false;
-            me._langs = null;
-
-            Common.NotificationCenter.on('settings:unitschanged', _.bind(this.unitsChanged, this));
+          Common.NotificationCenter.on("settings:unitschanged", _.bind(this.unitsChanged, this))
         },
 
         render: function () {
-            this.fireEvent('render:before', this);
+          this.fireEvent("render:before", this)
 
-            this.cmpEl = $(this.el);
+          this.cmpEl = $(this.el)
 
-            this.fireEvent('render:after', this);
-            return this;
+          this.fireEvent("render:after", this)
+          return this
         },
 
-        setApi: function(o) {
-            this.api = o;
-            return this;
+        setApi: function (o) {
+          this.api = o
+          return this
         },
 
-        setMode: function(m) {
-            this.mode = m;
-            return this;
+        setMode: function (m) {
+          this.mode = m
+          return this
         },
 
-        focus: function() {
-            var me = this;
-            _.defer(function(){  me.cmpEl.focus(); }, 50);
+        focus: function () {
+          _.defer(() => {
+            this.cmpEl.focus()
+          }, 50)
         },
 
-        changeLanguageMenu: function(menu) {
-            var me = this;
-            if (me._currLang.id===null || me._currLang.id===undefined) {
-                menu.clearAll();
-            } else {
-                var index = _.findIndex(menu.items, {langid: me._currLang.id});
-                (index>-1) && !menu.items[index].checked && menu.setChecked(index, true);
-            }
+        changeLanguageMenu: function (menu) {
+          if (this._currLang.id === null || this._currLang.id === undefined) {
+            menu.clearAll()
+          } else {
+            const index = _.findIndex(menu.items, { langid: this._currLang.id })
+            index > -1 && !menu.items[index].checked && menu.setChecked(index, true)
+          }
         },
 
-        addWordVariants: function(isParagraph) {
-            var me = this;
-            if (!me.textMenu || !me.textMenu.isVisible() && !me.tableMenu.isVisible()) return;
+        addWordVariants: function (isParagraph) {
+          if (!this.textMenu || (!this.textMenu.isVisible() && !this.tableMenu.isVisible())) return
 
-            if (_.isUndefined(isParagraph)) {
-                isParagraph = me.textMenu.isVisible();
-            }
+          if (_.isUndefined(isParagraph)) {
+            isParagraph = this.textMenu.isVisible()
+          }
 
-            me.clearWordVariants(isParagraph);
+          this.clearWordVariants(isParagraph)
 
-            var moreMenu  = (isParagraph) ? me.menuSpellMorePara : me.menuSpellMoreTable;
-            var spellMenu = (isParagraph) ? me.menuSpellPara : me.menuSpellTable;
-            var arr = [],
-                arrMore = [];
-            var variants = me._currentSpellObj.get_Variants();
+          const moreMenu = isParagraph ? this.menuSpellMorePara : this.menuSpellMoreTable
+          const spellMenu = isParagraph ? this.menuSpellPara : this.menuSpellTable
+          const arr = []
+          const arrMore = []
+          const variants = this._currentSpellObj.get_Variants()
 
-            if (variants.length > 0) {
-                moreMenu.setVisible(variants.length > 3);
-                moreMenu.setDisabled(me._currentParaObjDisabled);
+          if (variants.length > 0) {
+            moreMenu.setVisible(variants.length > 3)
+            moreMenu.setDisabled(this._currentParaObjDisabled)
 
-                _.each(variants, function(variant, index) {
-                    var mnu = new Common.UI.MenuItem({
-                        caption     : variant,
-                        spellword   : true,
-                        disabled    : me._currentParaObjDisabled
-                    }).on('click', function(item, e) {
-                        if (me.api) {
-                            me.api.asc_replaceMisspelledWord(item.caption, me._currentSpellObj);
-                            me.fireEvent('editcomplete', me);
-                        }
-                    });
-
-                    (index < 3) ? arr.push(mnu) : arrMore.push(mnu);
-                });
-
-                if (arr.length > 0) {
-                    if (isParagraph) {
-                        _.each(arr, function(variant, index){
-                            me.textMenu.insertItem(index, variant);
-                        })
-                    } else {
-                        _.each(arr, function(variant, index){
-                            me.menuSpellCheckTable.menu.insertItem(index, variant);
-                        })
-                    }
+            _.each(variants, (variant, index) => {
+              const mnu = new Common.UI.MenuItem({
+                caption: variant,
+                spellword: true,
+                disabled: this._currentParaObjDisabled,
+              }).on("click", (item, e) => {
+                if (this.api) {
+                  this.api.asc_replaceMisspelledWord(item.caption, this._currentSpellObj)
+                  this.fireEvent("editcomplete", this)
                 }
+              })
 
-                if (arrMore.length > 0) {
-                    _.each(arrMore, function(variant, index){
-                        moreMenu.menu.addItem(variant);
-                    });
-                }
+              index < 3 ? arr.push(mnu) : arrMore.push(mnu)
+            })
 
-                spellMenu.setVisible(false);
-            } else {
-                moreMenu.setVisible(false);
-                spellMenu.setVisible(true);
-                spellMenu.setCaption(me.noSpellVariantsText);
+            if (arr.length > 0) {
+              if (isParagraph) {
+                _.each(arr, (variant, index) => {
+                  this.textMenu.insertItem(index, variant)
+                })
+              } else {
+                _.each(arr, (variant, index) => {
+                  this.menuSpellCheckTable.menu.insertItem(index, variant)
+                })
+              }
             }
-        },
 
-        clearWordVariants: function(isParagraph) {
-            var me = this;
-            var spellMenu = (isParagraph) ? me.textMenu : me.menuSpellCheckTable.menu;
-
-            for (var i = 0; i < spellMenu.items.length; i++) {
-                if (spellMenu.items[i].options.spellword) {
-                    if (spellMenu.checkeditem == spellMenu.items[i]) {
-                        spellMenu.checkeditem = undefined;
-                        spellMenu.activeItem  = undefined;
-                    }
-
-                    spellMenu.removeItem(spellMenu.items[i]);
-                    i--;
-                }
+            if (arrMore.length > 0) {
+              _.each(arrMore, (variant, index) => {
+                moreMenu.menu.addItem(variant)
+              })
             }
-            (isParagraph) ? me.menuSpellMorePara.menu.removeAll() : me.menuSpellMoreTable.menu.removeAll();
 
-            me.menuSpellMorePara.menu.checkeditem   = undefined;
-            me.menuSpellMorePara.menu.activeItem    = undefined;
-            me.menuSpellMoreTable.menu.checkeditem  = undefined;
-            me.menuSpellMoreTable.menu.activeItem   = undefined;
+            spellMenu.setVisible(false)
+          } else {
+            moreMenu.setVisible(false)
+            spellMenu.setVisible(true)
+            spellMenu.setCaption(this.noSpellVariantsText)
+          }
         },
 
-        onSlidePickerShowAfter: function(picker) {
-            if (!picker._needRecalcSlideLayout) return;
+        clearWordVariants: function (isParagraph) {
+          const spellMenu = isParagraph ? this.textMenu : this.menuSpellCheckTable.menu
 
-            if (picker.cmpEl && picker.dataViewItems.length>0) {
-                var dataViewItems = picker.dataViewItems,
-                    el = $(dataViewItems[0].el),
-                    itemW = el.outerWidth() + parseInt(el.css('margin-left')) + parseInt(el.css('margin-right')),
-                    columnCount = Math.floor(picker.options.restoreWidth / itemW + 0.5) || 1, // try to use restore width
-                    col = 0, maxHeight = 0;
+          for (let i = 0; i < spellMenu.items.length; i++) {
+            if (spellMenu.items[i].options.spellword) {
+              if (spellMenu.checkeditem === spellMenu.items[i]) {
+                spellMenu.checkeditem = undefined
+                spellMenu.activeItem = undefined
+              }
 
-                picker.cmpEl.width(itemW * columnCount + 11);
-
-                for (var i=0; i<dataViewItems.length; i++) {
-                    var div = $(dataViewItems[i].el).find('.title'),
-                        height = div.height();
-
-                    if (height>maxHeight)
-                        maxHeight = height;
-                    else
-                       div.css({'height' : maxHeight });
-
-                    col++;
-                    if (col>columnCount-1) { col = 0; maxHeight = 0;}
-                }
-                picker._needRecalcSlideLayout = false;
+              spellMenu.removeItem(spellMenu.items[i])
+              i--
             }
+          }
+          isParagraph
+            ? this.menuSpellMorePara.menu.removeAll()
+            : this.menuSpellMoreTable.menu.removeAll()
+
+          this.menuSpellMorePara.menu.checkeditem = undefined
+          this.menuSpellMorePara.menu.activeItem = undefined
+          this.menuSpellMoreTable.menu.checkeditem = undefined
+          this.menuSpellMoreTable.menu.activeItem = undefined
         },
 
-        createDelayedElementsViewer: function() {},
+        onSlidePickerShowAfter: (picker) => {
+          if (!picker._needRecalcSlideLayout) return
 
-        createDelayedElements: function() {},
+          if (picker.cmpEl && picker.dataViewItems.length > 0) {
+            const dataViewItems = picker.dataViewItems
+            const el = $(dataViewItems[0].el)
+            const itemW =
+              el.outerWidth() +
+              Number.parseInt(el.css("margin-left")) +
+              Number.parseInt(el.css("margin-right"))
+            const columnCount = Math.floor(picker.options.restoreWidth / itemW + 0.5) || 1 // try to use restore width
+            let col = 0
+            let maxHeight = 0
 
-        setLanguages: function(langs){
-            var me = this;
-            if (!langs) langs = me._langs;
-            if (langs && langs.length > 0) {
-                if (!me.langParaMenu || !me.langTableMenu) {
-                    me._langs = langs;
-                    return;
-                }
-                me._langs = null;
-                var arrPara = [], arrTable = [];
-                _.each(langs, function(lang) {
-                    var item = {
-                        caption     : lang.displayValue,
-                        captionEn   : lang.displayValueEn,
-                        value       : lang.value,
-                        checkable   : true,
-                        langid      : lang.code,
-                        spellcheck   : lang.spellcheck
-                    };
-                    arrPara.push(item);
-                    arrTable.push(_.clone(item));
-                });
-                var lckey = 'app-settings-recent-langs';
-                me.langParaMenu.menu.setRecent({
-                    count: Common.Utils.InternalSettings.get(lckey + "-count") || 5,
-                    offset: Common.Utils.InternalSettings.get(lckey + "-offset") || 0,
-                    key: lckey,
-                    valueField: 'value'
-                });
-                me.langTableMenu.menu.setRecent({
-                    count: Common.Utils.InternalSettings.get(lckey + "-count") || 5,
-                    offset: Common.Utils.InternalSettings.get(lckey + "-offset") || 0,
-                    key: lckey,
-                    valueField: 'value'
-                });
-                me.langParaMenu.menu.resetItems(arrPara);
-                me.langTableMenu.menu.resetItems(arrTable);
+            picker.cmpEl.width(itemW * columnCount + 11)
+
+            for (let i = 0; i < dataViewItems.length; i++) {
+              const div = $(dataViewItems[i].el).find(".title")
+              const height = div.height()
+
+              if (height > maxHeight) maxHeight = height
+              else div.css({ height: maxHeight })
+
+              col++
+              if (col > columnCount - 1) {
+                col = 0
+                maxHeight = 0
+              }
             }
+            picker._needRecalcSlideLayout = false
+          }
         },
 
-        createEquationMenu: function(toggleGroup, menuAlign) {
-            return new Common.UI.Menu({
-                cls: 'ppm-toolbar shifted-right',
-                menuAlign: menuAlign,
-                items   : [
-                    new Common.UI.MenuItem({
-                        caption     : this.currProfText,
-                        iconCls     : 'menu__icon btn-professional-equation',
-                        type        : 'view',
-                        value       : {all: false, linear: false}
-                    }),
-                    new Common.UI.MenuItem({
-                        caption     : this.currLinearText,
-                        iconCls     : 'menu__icon btn-linear-equation',
-                        type        : 'view',
-                        value       : {all: false, linear: true}
-                    }),
-                    new Common.UI.MenuItem({
-                        caption     : this.allProfText,
-                        iconCls     : 'menu__icon btn-professional-equation',
-                        type        : 'view',
-                        value       : {all: true, linear: false}
-                    }),
-                    new Common.UI.MenuItem({
-                        caption     : this.allLinearText,
-                        iconCls     : 'menu__icon btn-linear-equation',
-                        type        : 'view',
-                        value       : {all: true, linear: true}
-                    }),
-                    { caption     : '--' },
-                    new Common.UI.MenuItem({
-                        caption     : this.unicodeText,
-                        checkable   : true,
-                        checked     : false,
-                        toggleGroup : toggleGroup,
-                        type        : 'input',
-                        value       : Asc.c_oAscMathInputType.Unicode
-                    }),
-                    new Common.UI.MenuItem({
-                        caption     : this.latexText,
-                        checkable   : true,
-                        checked     : false,
-                        toggleGroup : toggleGroup,
-                        type        : 'input',
-                        value       : Asc.c_oAscMathInputType.LaTeX
-                    }),
-                    { caption     : '--' },
-                    new Common.UI.MenuItem({
-                        caption     : this.hideEqToolbar,
-                        isToolbarHide: false,
-                        type        : 'hide',
-                    })
-                ]
-            });
+        createDelayedElementsViewer: () => {},
+
+        createDelayedElements: () => {},
+
+        setLanguages: function (langs) {
+          if (!langs) langs = this._langs
+          if (langs && langs.length > 0) {
+            if (!this.langParaMenu || !this.langTableMenu) {
+              this._langs = langs
+              return
+            }
+            this._langs = null
+            const arrPara = []
+            const arrTable = []
+            _.each(langs, (lang) => {
+              const item = {
+                caption: lang.displayValue,
+                captionEn: lang.displayValueEn,
+                value: lang.value,
+                checkable: true,
+                langid: lang.code,
+                spellcheck: lang.spellcheck,
+              }
+              arrPara.push(item)
+              arrTable.push(_.clone(item))
+            })
+            const lckey = "app-settings-recent-langs"
+            this.langParaMenu.menu.setRecent({
+              count: Common.Utils.InternalSettings.get(`${lckey}-count`) || 5,
+              offset: Common.Utils.InternalSettings.get(`${lckey}-offset`) || 0,
+              key: lckey,
+              valueField: "value",
+            })
+            this.langTableMenu.menu.setRecent({
+              count: Common.Utils.InternalSettings.get(`${lckey}-count`) || 5,
+              offset: Common.Utils.InternalSettings.get(`${lckey}-offset`) || 0,
+              key: lckey,
+              valueField: "value",
+            })
+            this.langParaMenu.menu.resetItems(arrPara)
+            this.langTableMenu.menu.resetItems(arrTable)
+          }
         },
 
-        unitsChanged: function(m) {
-            this._state.unitsChanged = true;
+        createEquationMenu: function (toggleGroup, menuAlign) {
+          return new Common.UI.Menu({
+            cls: "ppm-toolbar shifted-right",
+            menuAlign: menuAlign,
+            items: [
+              new Common.UI.MenuItem({
+                caption: this.currProfText,
+                iconCls: "menu__icon btn-professional-equation",
+                type: "view",
+                value: { all: false, linear: false },
+              }),
+              new Common.UI.MenuItem({
+                caption: this.currLinearText,
+                iconCls: "menu__icon btn-linear-equation",
+                type: "view",
+                value: { all: false, linear: true },
+              }),
+              new Common.UI.MenuItem({
+                caption: this.allProfText,
+                iconCls: "menu__icon btn-professional-equation",
+                type: "view",
+                value: { all: true, linear: false },
+              }),
+              new Common.UI.MenuItem({
+                caption: this.allLinearText,
+                iconCls: "menu__icon btn-linear-equation",
+                type: "view",
+                value: { all: true, linear: true },
+              }),
+              { caption: "--" },
+              new Common.UI.MenuItem({
+                caption: this.unicodeText,
+                checkable: true,
+                checked: false,
+                toggleGroup: toggleGroup,
+                type: "input",
+                value: Asc.c_oAscMathInputType.Unicode,
+              }),
+              new Common.UI.MenuItem({
+                caption: this.latexText,
+                checkable: true,
+                checked: false,
+                toggleGroup: toggleGroup,
+                type: "input",
+                value: Asc.c_oAscMathInputType.LaTeX,
+              }),
+              { caption: "--" },
+              new Common.UI.MenuItem({
+                caption: this.hideEqToolbar,
+                isToolbarHide: false,
+                type: "hide",
+              }),
+            ],
+          })
         },
 
-        SetDisabled: function(state) {
-            this._isDisabled = state;
+        unitsChanged: function (m) {
+          this._state.unitsChanged = true
         },
 
-        addEquationMenu: function() {},
+        SetDisabled: function (state) {
+          this._isDisabled = state
+        },
 
-        clearEquationMenu: function() {},
+        addEquationMenu: () => {},
 
-        equationCallback: function() {},
+        clearEquationMenu: () => {},
 
-        initEquationMenu: function() {},
+        equationCallback: () => {},
 
-        updateCustomItems: function() {},
+        initEquationMenu: () => {},
 
-        clearCustomItems: function() {},
+        updateCustomItems: () => {},
 
-        parseIcons: function() {}
+        clearCustomItems: () => {},
 
-    }, PE.Views.DocumentHolder || {}));
-});
+        parseIcons: () => {},
+      },
+      PE.Views.DocumentHolder || {},
+    ),
+  )
+})

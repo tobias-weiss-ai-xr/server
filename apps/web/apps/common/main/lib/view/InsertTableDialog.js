@@ -30,9 +30,9 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () { 'use strict';
+define([], () => { 
 
     Common.Views.InsertTableDialog = Common.UI.Window.extend(_.extend({
         options: {
@@ -52,10 +52,10 @@ define([], function () { 'use strict';
             this.template = [
                 '<div class="box">',
                     '<div class="input-row">',
-                        '<label class="text columns-text" style="width: 130px;">' + this.txtColumns + '</label><div class="columns-val float-right"></div>',
+                        `<label class="text columns-text" style="width: 130px;">${this.txtColumns}</label><div class="columns-val float-right"></div>`,
                     '</div>',
                     '<div class="input-row" style="margin-top: 10px;">',
-                        '<label class="text rows-text" style="width: 130px;">' + this.txtRows + '</label><div class="rows-val float-right"></div>',
+                        `<label class="text rows-text" style="width: 130px;">${this.txtRows}</label><div class="rows-val float-right"></div>`,
                     '</div>',
                 '</div>'
             ].join('');
@@ -68,7 +68,7 @@ define([], function () { 'use strict';
         render: function() {
             Common.UI.Window.prototype.render.call(this);
 
-            var $window = this.getChild();
+            const $window = this.getChild();
             $window.find('.dlg-btn').on('click', _.bind(this.onBtnClick, this));
 
             this.udColumns = new Common.UI.MetricSpinner({
@@ -106,7 +106,7 @@ define([], function () { 'use strict';
 
         onBtnClick: function(event) {
             if (this.options.handler) {
-                this.options.handler.call(this, event.currentTarget.attributes['result'].value, {
+                this.options.handler.call(this, event.currentTarget.attributes.result.value, {
                     columns : this.udColumns.getNumberValue(),
                     rows    : this.udRows.getNumberValue()
                 });

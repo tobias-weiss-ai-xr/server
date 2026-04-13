@@ -31,7 +31,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Views = Common.Views || {};
 
@@ -40,11 +40,10 @@ define([
     'common/main/lib/component/BaseView',
     'common/main/lib/component/Layout',
     'common/main/lib/component/Window'
-], function (template) {
-    'use strict';
+], (template) => {
 
-    Common.Views.Protection = Common.UI.BaseView.extend(_.extend((function(){
-        var template =
+    Common.Views.Protection = Common.UI.BaseView.extend(_.extend(((()=> {
+        const template =
             '<section id="protection-panel" class="panel" data-tab="protect" role="tabpanel" aria-labelledby="protect">' +
             '<div class="group">' +
                 '<span id="slot-btn-add-password" class="btn-slot text x-huge"></span>' +
@@ -58,49 +57,48 @@ define([
             '</section>';
 
         function setEvents() {
-            var me = this;
 
-            if (me.appConfig.isPasswordSupport) {
-                this.btnsAddPwd.concat(this.btnsChangePwd).forEach(function(button) {
-                    button.on('click', function (b, e) {
-                        me.fireEvent('protect:password', [b, 'add']);
+            if (this.appConfig.isPasswordSupport) {
+                this.btnsAddPwd.concat(this.btnsChangePwd).forEach((button) => {
+                    button.on('click', (b, e) => {
+                        this.fireEvent('protect:password', [b, 'add']);
                     });
                 });
 
-                this.btnsDelPwd.forEach(function(button) {
-                    button.on('click', function (b, e) {
-                        me.fireEvent('protect:password', [b, 'delete']);
+                this.btnsDelPwd.forEach((button) => {
+                    button.on('click', (b, e) => {
+                        this.fireEvent('protect:password', [b, 'delete']);
                     });
                 });
 
-                this.btnPwd.on('click', function (b, e) {
-                    !b.pressed && me.fireEvent('protect:password', [b, 'delete']);
+                this.btnPwd.on('click', (b, e) => {
+                    !b.pressed && this.fireEvent('protect:password', [b, 'delete']);
                 });
-                this.btnPwd.menu.on('item:click', function (menu, item, e) {
-                    me.fireEvent('protect:password', [menu, item.value]);
+                this.btnPwd.menu.on('item:click', (menu, item, e) => {
+                    this.fireEvent('protect:password', [menu, item.value]);
                 });
             }
 
-            if (me.appConfig.isSignatureSupport) {
+            if (this.appConfig.isSignatureSupport) {
                 if (this.btnSignature.menu) {
-                    this.btnSignature.menu.on('item:click', function (menu, item, e) {
-                        me.fireEvent('protect:signature', [item.value, false]);
+                    this.btnSignature.menu.on('item:click', (menu, item, e) => {
+                        this.fireEvent('protect:signature', [item.value, false]);
                     });
-                    this.btnSignature.menu.on('show:after', function (menu, e) {
-                        if (me._state) {
-                            var isProtected = me._state.docProtection ? me._state.docProtection.isReadOnly || me._state.docProtection.isFormsOnly || me._state.docProtection.isCommentsOnly : false;
-                            menu.items && menu.items[1].setDisabled(isProtected || me._state.disabled);
+                    this.btnSignature.menu.on('show:after', (menu, e) => {
+                        if (this._state) {
+                            const isProtected = this._state.docProtection ? this._state.docProtection.isReadOnly || this._state.docProtection.isFormsOnly || this._state.docProtection.isCommentsOnly : false;
+                            menu.items?.[1].setDisabled(isProtected || this._state.disabled);
                         }
                     });
                 }
 
-                this.btnsInvisibleSignature.forEach(function(button) {
-                    button.on('click', function (b, e) {
-                        me.fireEvent('protect:signature', ['invisible']);
+                this.btnsInvisibleSignature.forEach((button) => {
+                    button.on('click', (b, e) => {
+                        this.fireEvent('protect:signature', ['invisible']);
                     });
                 });
             }
-            me._isSetEvents = true;
+            this._isSetEvents = true;
         }
 
         return {
@@ -118,10 +116,8 @@ define([
                 this.btnsChangePwd = [];
 
                 this._state = {disabled: false, hasPassword: false, disabledPassword: false, invisibleSignDisabled: false};
-
-                const me = this;
-                var filter = Common.localStorage.getKeysFilter();
-                this.appPrefix = (filter && filter.length) ? filter.split(',')[0] : '';
+                const filter = Common.localStorage.getKeysFilter();
+                this.appPrefix = (filter?.length) ? filter.split(',')[0] : '';
 
                 if ( this.appConfig.isPasswordSupport ) {
                     this.btnAddPwd = new Common.UI.Button({
@@ -171,8 +167,8 @@ define([
                         dataHintDirection: 'bottom',
                         dataHintOffset: 'small'
                     });
-                    this.btnProtectForm.on('toggle', function (btn, state) {
-                        me.fireEvent('protect:protectForm', [state]);
+                    this.btnProtectForm.on('toggle', (btn, state) => {
+                        this.fireEvent('protect:protectForm', [state]);
                     });
                 }
 
@@ -187,43 +183,42 @@ define([
             },
 
             onAppReady: function (config) {
-                var me = this;
-                (new Promise(function (accept, reject) {
+                (new Promise((accept, reject) => {
                     accept();
-                })).then(function(){
+                })).then(()=> {
                     if ( config.canProtect) {
                         if ( config.isPasswordSupport) {
-                            me.btnAddPwd.updateHint(me.hintAddPwd);
-                            me.btnPwd.updateHint([me.hintDelPwd, me.hintPwd]);
+                            this.btnAddPwd.updateHint(this.hintAddPwd);
+                            this.btnPwd.updateHint([this.hintDelPwd, this.hintPwd]);
 
-                            me.btnPwd.setMenu(
+                            this.btnPwd.setMenu(
                                 new Common.UI.Menu({
                                     items: [
                                         {
-                                            caption: me.txtChangePwd,
+                                            caption: this.txtChangePwd,
                                             value: 'add'
                                         },
                                         {
-                                            caption: me.txtDeletePwd,
+                                            caption: this.txtDeletePwd,
                                             value: 'delete'
                                         }
                                     ]
                                 })
                             );
                         }
-                        if (me.btnSignature) {
-                            me.btnSignature.updateHint((me.btnSignature.menu) ? me.hintSignature : me.txtInvisibleSignature);
-                            me.btnSignature.menu && me.btnSignature.setMenu(
+                        if (this.btnSignature) {
+                            this.btnSignature.updateHint((this.btnSignature.menu) ? this.hintSignature : this.txtInvisibleSignature);
+                            this.btnSignature.menu && this.btnSignature.setMenu(
                                 new Common.UI.Menu({
                                     items: [
                                         {
-                                            caption: me.txtInvisibleSignature,
+                                            caption: this.txtInvisibleSignature,
                                             value: 'invisible'
                                         },
                                         {
-                                            caption: me.txtSignatureLine,
+                                            caption: this.txtSignatureLine,
                                             value: 'visible',
-                                            disabled: me._state.disabled
+                                            disabled: this._state.disabled
                                         }
                                     ]
                                 })
@@ -231,9 +226,9 @@ define([
                         }
                         Common.NotificationCenter.trigger('tab:visible', 'protect', Common.UI.LayoutManager.isElementVisible('toolbar-protect'));
                     }
-                    !me.btnProtectForm && (me.$el || $(me.el)).find('.separator.protect-form').hide();
+                    !this.btnProtectForm && (this.$el || $(this.el)).find('.separator.protect-form').hide();
 
-                    setEvents.call(me);
+                    setEvents.call(this);
                 });
             },
 
@@ -241,10 +236,10 @@ define([
                 this.$el = $(_.template(template)( {} ));
 
                 if ( this.appConfig.canProtect ) {
-                    this.btnAddPwd && this.btnAddPwd.render(this.$el.find('#slot-btn-add-password'));
-                    this.btnPwd && this.btnPwd.render(this.$el.find('#slot-btn-change-password'));
-                    this.btnSignature && this.btnSignature.render(this.$el.find('#slot-btn-signature'));
-                    this.btnProtectForm && this.btnProtectForm.render(this.$el.find('#slot-btn-protect-form'));
+                    this.btnAddPwd?.render(this.$el.find('#slot-btn-add-password'));
+                    this.btnPwd?.render(this.$el.find('#slot-btn-change-password'));
+                    this.btnSignature?.render(this.$el.find('#slot-btn-signature'));
+                    this.btnProtectForm?.render(this.$el.find('#slot-btn-protect-form'));
                 }
                 return this.$el;
             },
@@ -255,9 +250,8 @@ define([
             },
 
             getButton: function(type, parent) {
-                var me = this;
-                if ( type == 'signature' ) {
-                    var button = new Common.UI.Button({
+                if ( type === 'signature' ) {
+                    const button = new Common.UI.Button({
                         cls: 'btn-text-default auto',
                         caption: this.txtInvisibleSignature,
                         disabled: this._state.invisibleSignDisabled,
@@ -267,13 +261,13 @@ define([
                     });
                     this.btnsInvisibleSignature.push(button);
                     if (this._isSetEvents) {
-                        button.on('click', function (b, e) {
-                            me.fireEvent('protect:signature', ['invisible']);
+                        button.on('click', (b, e) => {
+                            this.fireEvent('protect:signature', ['invisible']);
                         });
                     }
                     return button;
-                } else if ( type == 'add-password' ) {
-                    var button = new Common.UI.Button({
+                }if ( type === 'add-password' ) {
+                    const button = new Common.UI.Button({
                         cls: 'btn-text-default auto',
                         caption: this.txtAddPwd,
                         disabled: this._state.disabled || this._state.disabledPassword,
@@ -284,13 +278,13 @@ define([
                     });
                     this.btnsAddPwd.push(button);
                     if (this._isSetEvents) {
-                        button.on('click', function (b, e) {
-                            me.fireEvent('protect:password', [b, 'add']);
+                        button.on('click', (b, e) => {
+                            this.fireEvent('protect:password', [b, 'add']);
                         });
                     }
                     return button;
-                } else if ( type == 'del-password' ) {
-                    var button = new Common.UI.Button({
+                }if ( type === 'del-password' ) {
+                    const button = new Common.UI.Button({
                         cls: 'btn-text-default auto',
                         caption: this.txtDeletePwd,
                         disabled: this._state.disabled || this._state.disabledPassword,
@@ -301,13 +295,13 @@ define([
                     });
                     this.btnsDelPwd.push(button);
                     if (this._isSetEvents) {
-                        button.on('click', function (b, e) {
-                            me.fireEvent('protect:password', [b, 'delete']);
+                        button.on('click', (b, e) => {
+                            this.fireEvent('protect:password', [b, 'delete']);
                         });
                     }
                     return button;
-                } else if ( type == 'change-password' ) {
-                    var button = new Common.UI.Button({
+                }if ( type === 'change-password' ) {
+                    const button = new Common.UI.Button({
                         cls: 'btn-text-default auto',
                         caption: this.txtChangePwd,
                         disabled: this._state.disabled || this._state.disabledPassword,
@@ -318,8 +312,8 @@ define([
                     });
                     this.btnsChangePwd.push(button);
                     if (this._isSetEvents) {
-                        button.on('click', function (b, e) {
-                            me.fireEvent('protect:password', [b, 'add']);
+                        button.on('click', (b, e) => {
+                            this.fireEvent('protect:password', [b, 'add']);
                         });
                     }
                     return button;
@@ -329,14 +323,14 @@ define([
             SetDisabled: function (state, canProtect) {
                 this._state.disabled = state;
                 this._state.invisibleSignDisabled = state && !canProtect;
-                var isProtected = this._state.docProtection ? this._state.docProtection.isReadOnly || this._state.docProtection.isFormsOnly || this._state.docProtection.isCommentsOnly : false;
-                this.btnsInvisibleSignature && this.btnsInvisibleSignature.forEach(function(button) {
+                const isProtected = this._state.docProtection ? this._state.docProtection.isReadOnly || this._state.docProtection.isFormsOnly || this._state.docProtection.isCommentsOnly : false;
+                this.btnsInvisibleSignature?.forEach((button) => {
                     if ( button ) {
                         button.setDisabled(state && !canProtect);
                     }
                 }, this);
-                if (this.btnSignature && this.btnSignature.menu) {
-                    this.btnSignature.menu.items && this.btnSignature.menu.items[1].setDisabled(state || isProtected); // disable adding signature line
+                if (this.btnSignature?.menu) {
+                    this.btnSignature.menu.items?.[1].setDisabled(state || isProtected); // disable adding signature line
                     this.btnSignature.setDisabled(state && !canProtect); // disable adding any signature
                 }
                 this.btnsAddPwd.concat(this.btnsDelPwd, this.btnsChangePwd).forEach(function(button) {
@@ -349,14 +343,14 @@ define([
             onDocumentPassword: function (hasPassword, disabledPassword) {
                 this._state.hasPassword = hasPassword;
                 this._state.disabledPassword = !!disabledPassword;
-                var disabled = this._state.disabledPassword || this._state.disabled;
-                this.btnsAddPwd && this.btnsAddPwd.forEach(function(button) {
+                const disabled = this._state.disabledPassword || this._state.disabled;
+                this.btnsAddPwd?.forEach((button) => {
                     if ( button ) {
                         button.setVisible(!hasPassword);
                         button.setDisabled(disabled);
                     }
                 }, this);
-                this.btnsDelPwd.concat(this.btnsChangePwd).forEach(function(button) {
+                this.btnsDelPwd.concat(this.btnsChangePwd).forEach((button) => {
                     if ( button ) {
                         button.setVisible(hasPassword);
                         button.setDisabled(disabled);
@@ -379,5 +373,5 @@ define([
             txtSignatureLine: 'Add Signature line',
             hintDelPwd: 'Delete password'
         }
-    }()), Common.Views.Protection || {}));
+    })()), Common.Views.Protection || {}));
 });

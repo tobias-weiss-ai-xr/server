@@ -33,26 +33,36 @@
  *
  */
 
-define([
-    '../../../../../../../web-apps — копия/apps/common/main/lib/util/utils.js'
-],function() {
-    describe('Common.Utils.String', function(){
-        it('Test format', function(){
-            assert.equal('successively: first, second', Common.Utils.String.format('successively: {0}, {1}', 'first', 'second'));
-            assert.equal('revers: second, first',       Common.Utils.String.format('revers: {1}, {0}', 'first', 'second'));
-        });
+define(["../../../../../../../web-apps — копия/apps/common/main/lib/util/utils.js"], () => {
+  describe("Common.Utils.String", () => {
+    it("Test format", () => {
+      assert.equal(
+        "successively: first, second",
+        Common.Utils.String.format("successively: {0}, {1}", "first", "second"),
+      )
+      assert.equal(
+        "revers: second, first",
+        Common.Utils.String.format("revers: {1}, {0}", "first", "second"),
+      )
+    })
 
-        it('Test htmlEncode', function(){
-            assert.equal('Curly, Larry &amp; Moe', Common.Utils.String.htmlEncode('Curly, Larry & Moe'));
-        });
+    it("Test htmlEncode", () => {
+      assert.equal("Curly, Larry &amp; Moe", Common.Utils.String.htmlEncode("Curly, Larry & Moe"))
+    })
 
-        it('Test htmlDecode', function(){
-            assert.equal('Curly, Larry & Moe', Common.Utils.String.htmlDecode('Curly, Larry &amp; Moe'));
-        });
+    it("Test htmlDecode", () => {
+      assert.equal("Curly, Larry & Moe", Common.Utils.String.htmlDecode("Curly, Larry &amp; Moe"))
+    })
 
-        it('Test ellipsis', function(){
-            assert.equal('Truncate a s...', Common.Utils.String.ellipsis('Truncate a string and add an ellipsis', 15));
-            assert.equal('Truncate a string and add...', Common.Utils.String.ellipsis('Truncate a string and add an ellipsis', 30, true));
-        });
-    });
-});
+    it("Test ellipsis", () => {
+      assert.equal(
+        "Truncate a s...",
+        Common.Utils.String.ellipsis("Truncate a string and add an ellipsis", 15),
+      )
+      assert.equal(
+        "Truncate a string and add...",
+        Common.Utils.String.ellipsis("Truncate a string and add an ellipsis", 30, true),
+      )
+    })
+  })
+})

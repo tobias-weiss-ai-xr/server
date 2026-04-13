@@ -57,13 +57,12 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'underscore'
-], function (base, _) {
-    'use strict';
+], (base, _) => {
 
     Common.UI.SingleSlider = Common.UI.BaseView.extend({
 
@@ -92,26 +91,23 @@ define([
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
 
-            var me = this;
+            this.width = this.options.width;
+            this.minValue = this.options.minValue;
+            this.maxValue = this.options.maxValue;
+            this.delta = 100/(this.maxValue - this.minValue);
+            this.step = this.options.step;
+            this.direction = this.options.direction;
 
-            me.width = me.options.width;
-            me.minValue = me.options.minValue;
-            me.maxValue = me.options.maxValue;
-            me.delta = 100/(me.maxValue - me.minValue);
-            me.step = me.options.step;
-            me.direction = me.options.direction;
-
-            if (me.options.el) {
-                me.render();
+            if (this.options.el) {
+                this.render();
             }
 
-            this.setValue(me.options.value);
+            this.setValue(this.options.value);
         },
 
         render : function(parentEl) {
-            var me = this;
 
-            if (!me.rendered) {
+            if (!this.rendered) {
                 this.cmpEl = $(this.template({
                 }));
 
@@ -119,10 +115,10 @@ define([
                     this.setElement(parentEl, false);
                     parentEl.html(this.cmpEl);
                 } else {
-                    me.$el.html(this.cmpEl);
+                    this.$el.html(this.cmpEl);
                 }
             } else {
-                this.cmpEl = me.$el;
+                this.cmpEl = this.$el;
             }
 
             this.track = this.cmpEl.find('.track');
@@ -131,133 +127,133 @@ define([
             const halfThumbSize = this.thumb.outerWidth() / 2;
             this.width = this.options.width - halfThumbSize;
 
-            this.cmpEl.find('.track-center').width(me.options.width - 14);
-            this.cmpEl[me.direction === 'vertical' ? 'height' : 'width'](this.width);
+            this.cmpEl.find('.track-center').width(this.options.width - 14);
+            this.cmpEl[this.direction === 'vertical' ? 'height' : 'width'](this.width);
 
-            var onMouseUp = function (e) {
+            const onMouseUp = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
 
-                var pos = Math.max(0, Math.min(100, (Math.round((
-                    me.direction === 'vertical' ? (e.pageY*Common.Utils.zoom() - Common.Utils.getOffset(me.cmpEl).top) : (e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(me.cmpEl).left) - me._dragstart
-                ) / me.width * 100))));
-                me.setThumbPosition(pos);
+                const pos = Math.max(0, Math.min(100, (Math.round((
+                    this.direction === 'vertical' ? (e.pageY*Common.Utils.zoom() - Common.Utils.getOffset(this.cmpEl).top) : (e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(this.cmpEl).left) - this._dragstart
+                ) / this.width * 100))));
+                this.setThumbPosition(pos);
 
-                me.lastValue = me.value;
-                me.value = pos/me.delta + me.minValue;
+                this.lastValue = this.value;
+                this.value = pos/this.delta + this.minValue;
 
-                me.thumb.removeClass('active');
+                this.thumb.removeClass('active');
                 $(document).off('mouseup',   onMouseUp);
                 $(document).off('mousemove', onMouseMove);
 
-                me._dragstart = undefined;
-                me.trigger('changecomplete', me, Common.UI.isRTL() ? me.maxValue - me.value : me.value, me.lastValue);
+                this._dragstart = undefined;
+                this.trigger('changecomplete', this, Common.UI.isRTL() ? this.maxValue - this.value : this.value, this.lastValue);
             };
 
-            var onMouseMove = function (e) {
-                if ( me.disabled ) return;
-                if ( me._dragstart===undefined ) return;
+            const onMouseMove = (e) => {
+                if ( this.disabled ) return;
+                if ( this._dragstart===undefined ) return;
 
                 e.preventDefault();
                 e.stopPropagation();
 
-                var pos = Math.max(0, Math.min(100, (Math.round((
-                    me.direction === 'vertical' ? (e.pageY*Common.Utils.zoom() - Common.Utils.getOffset(me.cmpEl).top) : (e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(me.cmpEl).left) - me._dragstart
-                ) / me.width * 100))));
-                me.setThumbPosition(pos);
+                const pos = Math.max(0, Math.min(100, (Math.round((
+                    this.direction === 'vertical' ? (e.pageY*Common.Utils.zoom() - Common.Utils.getOffset(this.cmpEl).top) : (e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(this.cmpEl).left) - this._dragstart
+                ) / this.width * 100))));
+                this.setThumbPosition(pos);
 
-                me.lastValue = me.value;
-                me.value = pos/me.delta + me.minValue;
+                this.lastValue = this.value;
+                this.value = pos/this.delta + this.minValue;
 
-                if (Math.abs(me.value-me.lastValue)>0.001)
-                    me.trigger('change', me, Common.UI.isRTL() ? me.maxValue - me.value : me.value, me.lastValue);
+                if (Math.abs(this.value-this.lastValue)>0.001)
+                    this.trigger('change', this, Common.UI.isRTL() ? this.maxValue - this.value : this.value, this.lastValue);
             };
 
-            var onMouseDown = function (e) {
-                if ( me.disabled ) return;
-                me._dragstart = me.direction === 'vertical' ? (e.pageY*Common.Utils.zoom() - Common.Utils.getOffset(me.thumb).top) : (e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(me.thumb).left) - halfThumbSize;
+            const onMouseDown = (e) => {
+                if ( this.disabled ) return;
+                this._dragstart = this.direction === 'vertical' ? (e.pageY*Common.Utils.zoom() - Common.Utils.getOffset(this.thumb).top) : (e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(this.thumb).left) - halfThumbSize;
 
-                me.thumb.addClass('active');
+                this.thumb.addClass('active');
                 $(document).on('mouseup',   onMouseUp);
                 $(document).on('mousemove', onMouseMove);
 
-                if (me.options.enableKeyEvents)
-                    setTimeout(function() {me.input.focus();}, 10);
+                if (this.options.enableKeyEvents)
+                    setTimeout(() => {this.input.focus();}, 10);
             };
 
-            var onTrackMouseDown = function (e) {
-                if ( me.disabled ) return;
+            const onTrackMouseDown = (e) => {
+                if ( this.disabled ) return;
 
-                var pos = Math.max(0, Math.min(100, (Math.round((
-                    me.direction === 'vertical' ? (e.pageY*Common.Utils.zoom() - Common.Utils.getOffset(me.cmpEl).top) : (e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(me.cmpEl).left)
-                ) / me.width * 100))));
-                me.setThumbPosition(pos);
+                const pos = Math.max(0, Math.min(100, (Math.round((
+                    this.direction === 'vertical' ? (e.pageY*Common.Utils.zoom() - Common.Utils.getOffset(this.cmpEl).top) : (e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(this.cmpEl).left)
+                ) / this.width * 100))));
+                this.setThumbPosition(pos);
 
-                me.lastValue = me.value;
-                me.value = pos/me.delta + me.minValue;
+                this.lastValue = this.value;
+                this.value = pos/this.delta + this.minValue;
 
-                me.trigger('change', me, Common.UI.isRTL() ? me.maxValue - me.value : me.value, me.lastValue);
-                me.trigger('changecomplete', me, Common.UI.isRTL() ? me.maxValue - me.value : me.value, me.lastValue);
+                this.trigger('change', this, Common.UI.isRTL() ? this.maxValue - this.value : this.value, this.lastValue);
+                this.trigger('changecomplete', this, Common.UI.isRTL() ? this.maxValue - this.value : this.value, this.lastValue);
             };
 
-            var updateslider;
+            let updateslider;
 
-            var moveThumb = function(increase) {
-                me.lastValue = me.value;
-                me.value = Math.max(me.minValue, Math.min(me.maxValue, me.value + ((increase) ? me.step : -me.step)));
-                me.setThumbPosition(Math.round((me.value-me.minValue)*me.delta));
-                me.trigger('change', me, Common.UI.isRTL() ? me.maxValue - me.value : me.value, me.lastValue);
+            const moveThumb = (increase) => {
+                this.lastValue = this.value;
+                this.value = Math.max(this.minValue, Math.min(this.maxValue, this.value + ((increase) ? this.step : -this.step)));
+                this.setThumbPosition(Math.round((this.value-this.minValue)*this.delta));
+                this.trigger('change', this, Common.UI.isRTL() ? this.maxValue - this.value : this.value, this.lastValue);
             };
 
-            var onKeyDown = function (e) {
-                if ( me.disabled ) return;
+            const onKeyDown = (e) => {
+                if ( this.disabled ) return;
 
-                if (e.keyCode==Common.UI.Keys.UP || e.keyCode==Common.UI.Keys.DOWN || e.keyCode==Common.UI.Keys.LEFT || e.keyCode==Common.UI.Keys.RIGHT) {
+                if (e.keyCode===Common.UI.Keys.UP || e.keyCode===Common.UI.Keys.DOWN || e.keyCode===Common.UI.Keys.LEFT || e.keyCode===Common.UI.Keys.RIGHT) {
                     e.preventDefault();
                     e.stopPropagation();
                     el.off('keydown', 'input', onKeyDown);
-                    updateslider = setInterval(_.bind(moveThumb, me, e.keyCode==Common.UI.Keys.UP || e.keyCode==Common.UI.Keys.RIGHT), 100);
+                    updateslider = setInterval(_.bind(moveThumb, this, e.keyCode===Common.UI.Keys.UP || e.keyCode===Common.UI.Keys.RIGHT), 100);
                 }
             };
 
-            var onKeyUp = function (e) {
-                if ( me.disabled ) return;
+            const onKeyUp = (e) => {
+                if ( this.disabled ) return;
 
-                if (e.keyCode==Common.UI.Keys.UP || e.keyCode==Common.UI.Keys.DOWN || Common.UI.Keys.LEFT || Common.UI.Keys.RIGHT) {
+                if (e.keyCode===Common.UI.Keys.UP || e.keyCode===Common.UI.Keys.DOWN || Common.UI.Keys.LEFT || Common.UI.Keys.RIGHT) {
                     e.stopPropagation();
                     e.preventDefault();
                     clearInterval(updateslider);
-                    moveThumb(e.keyCode==Common.UI.Keys.UP || e.keyCode==Common.UI.Keys.RIGHT);
+                    moveThumb(e.keyCode===Common.UI.Keys.UP || e.keyCode===Common.UI.Keys.RIGHT);
                     el.on('keydown', 'input', onKeyDown);
-                    me.trigger('changecomplete', me, Common.UI.isRTL() ? me.maxValue - me.value : me.value, me.lastValue);
+                    this.trigger('changecomplete', this, Common.UI.isRTL() ? this.maxValue - this.value : this.value, this.lastValue);
                 }
             };
 
-            if (!me.rendered) {
-                var el = me.cmpEl;
+            if (!this.rendered) {
+                const el = this.cmpEl;
                 el.on('mousedown', '.thumb', onMouseDown);
                 el.on('mousedown', '.track', onTrackMouseDown);
                 if (this.options.enableKeyEvents) {
-                    me.input = el.find('input');
+                    this.input = el.find('input');
                     el.on('keydown', 'input', onKeyDown);
                     el.on('keyup',   'input', onKeyUp);
                 }
             }
 
-            this.setThumbPosition(me.options.value);
+            this.setThumbPosition(this.options.value);
 
-            me.rendered = true;
+            this.rendered = true;
 
             return this;
         },
 
         setThumbPosition: function (pos) {
-            if (typeof pos !== 'number' || isNaN(pos)) {
+            if (typeof pos !== 'number' || Number.isNaN(pos)) {
                 pos = 0;
             }
 
-            this.track.css('--slider-unfill-percent', 100 - pos + '%');
-            this.thumb.css(this.direction === 'vertical' ? 'top' : 'left', pos + '%');
+            this.track.css('--slider-unfill-percent', `${100 - pos}%`);
+            this.thumb.css(this.direction === 'vertical' ? 'top' : 'left', `${pos}%`);
         },
 
         setValue: function(value) {
@@ -308,24 +304,21 @@ define([
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
 
-            var me = this;
-
-            me.width = me.options.width;
-            me.minValue = me.options.minValue;
-            me.maxValue = me.options.maxValue;
-            me.delta = 100/(me.maxValue - me.minValue);
-            me.includeSnap = me.options.includeSnap;
-            me.intervalSnap = me.options.intervalSnap;
-            me.thumbs = [];
-            if (me.options.el) {
-                me.render();
+            this.width = this.options.width;
+            this.minValue = this.options.minValue;
+            this.maxValue = this.options.maxValue;
+            this.delta = 100/(this.maxValue - this.minValue);
+            this.includeSnap = this.options.includeSnap;
+            this.intervalSnap = this.options.intervalSnap;
+            this.thumbs = [];
+            if (this.options.el) {
+                this.render();
             }
         },
 
         render : function(parentEl) {
-            var me = this;
 
-            if (!me.rendered) {
+            if (!this.rendered) {
                 this.cmpEl = $(this.template({
                     items: this.options.values,
                     thumbTemplate: this.options.thumbTemplate
@@ -341,140 +334,138 @@ define([
                 this.cmpEl = this.$el;
             }
 
-            var el = this.cmpEl;
-            el.find('.track-center').width(me.options.width - 14);
-            el.width(me.options.width);
+            const el = this.cmpEl;
+            el.find('.track-center').width(this.options.width - 14);
+            el.width(this.options.width);
 
-            var setCenters = function (index) {
-                if(!me.includeSnap) return;
-                var n = me.minValue;
+            const setCenters = (index) => {
+                if(!this.includeSnap) return;
+                let n = this.minValue;
 
-                var getX = function (position) {
-                    return (0.01 * me.width * position + Common.Utils.getOffset(me.cmpEl).left + me._dragstart)/Common.Utils.zoom();
-                };
+                const getX = (position) => (0.01 * this.width * position + Common.Utils.getOffset(this.cmpEl).left + this._dragstart)/Common.Utils.zoom();
 
-                me.centers = [];
-                _.each(me.thumbs, function (thumb, indexT) {
-                    if ((indexT != index) && (n != thumb.position)) {
-                        me.centers.push(getX((thumb.position - n) / 2 + n));
+                this.centers = [];
+                _.each(this.thumbs, (thumb, indexT) => {
+                    if ((indexT !== index) && (n !== thumb.position)) {
+                        this.centers.push(getX((thumb.position - n) / 2 + n));
                         n = thumb.position;
                     }
                 });
-                if(n != me.maxValue) me.centers.push(getX((me.maxValue - n) / 2 + n));
+                if(n !== this.maxValue) this.centers.push(getX((this.maxValue - n) / 2 + n));
             };
 
-            var resetPageX =  function (e) {
-                if(!me.includeSnap) return;
-                _.each(me.centers, function (x) {
-                    if((e.pageX <= x + me.intervalSnap) && (e.pageX >= x - me.intervalSnap)) {
+            const resetPageX =  (e) => {
+                if(!this.includeSnap) return;
+                _.each(this.centers, (x) => {
+                    if((e.pageX <= x + this.intervalSnap) && (e.pageX >= x - this.intervalSnap)) {
                         e.pageX = x;
                         return;
                     }
                 });
             };
 
-            var onMouseUp = function (e) {
+            const onMouseUp = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 resetPageX(e);
 
-                var index = e.data.index,
-                    lastValue = me.thumbs[index].value,
-                    minValue = (index-1<0) ? 0 : me.thumbs[index-1].position,
-                    maxValue = (index+1<me.thumbs.length) ? me.thumbs[index+1].position : 100,
-                    position = Math.round((e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(me.cmpEl).left - me._dragstart) / me.width * 100),
-                    need_sort = position < minValue || position > maxValue,
-                    pos = Math.max(0, Math.min(100, position)),
-                    value = pos/me.delta + me.minValue;
+                const index = e.data.index;
+                const lastValue = this.thumbs[index].value;
+                const minValue = (index-1<0) ? 0 : this.thumbs[index-1].position;
+                const maxValue = (index+1<this.thumbs.length) ? this.thumbs[index+1].position : 100;
+                const position = Math.round((e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(this.cmpEl).left - this._dragstart) / this.width * 100);
+                const need_sort = position < minValue || position > maxValue;
+                const pos = Math.max(0, Math.min(100, position));
+                const value = pos/this.delta + this.minValue;
                 
-                if (me.thumbs.length < 3)
-                    me.isRemoveThumb = false;
+                if (this.thumbs.length < 3)
+                    this.isRemoveThumb = false;
 
-                if (me.isRemoveThumb) {
-                    me.trigger('removethumb', me, _.findIndex(me.thumbs, {index: index}));
-                    me.trigger('change', me, value, lastValue);
-                    me.trigger('changecomplete', me, value, lastValue);
+                if (this.isRemoveThumb) {
+                    this.trigger('removethumb', this, _.findIndex(this.thumbs, {index: index}));
+                    this.trigger('change', this, value, lastValue);
+                    this.trigger('changecomplete', this, value, lastValue);
                 } else {
-                    me.setThumbPosition(index, pos);
-                    me.thumbs[index].value = value;
+                    this.setThumbPosition(index, pos);
+                    this.thumbs[index].value = value;
 
                     if (need_sort)
-                        me.sortThumbs();
+                        this.sortThumbs();
                 }
 
-                $(document).off('mouseup', me.binding.onMouseUp);
-                $(document).off('mousemove', me.binding.onMouseMove);
-                me._dragstart = undefined;
-                !me.isRemoveThumb && me.trigger('changecomplete', me, value, lastValue);
-                me.isRemoveThumb = undefined;
+                $(document).off('mouseup', this.binding.onMouseUp);
+                $(document).off('mousemove', this.binding.onMouseMove);
+                this._dragstart = undefined;
+                !this.isRemoveThumb && this.trigger('changecomplete', this, value, lastValue);
+                this.isRemoveThumb = undefined;
             };
 
-            var onMouseMove = function (e) {
-                if ( me.disabled ) return;
-                if ( me._dragstart===undefined ) return;
+            const onMouseMove = (e) => {
+                if ( this.disabled ) return;
+                if ( this._dragstart===undefined ) return;
 
                 e.preventDefault();
                 e.stopPropagation();
                 resetPageX(e);
 
-                var index = e.data.index,
-                    lastValue = me.thumbs[index].value,
-                    minValue = (index-1<0) ? 0 : me.thumbs[index-1].position,
-                    maxValue = (index+1<me.thumbs.length) ? me.thumbs[index+1].position : 100,
-                    position = Math.round((e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(me.cmpEl).left - me._dragstart) / me.width * 100),
-                    need_sort = position < minValue || position > maxValue,
-                    pos = Math.max(0, Math.min(100, position)),
-                    value = pos/me.delta + me.minValue;
+                const index = e.data.index;
+                const lastValue = this.thumbs[index].value;
+                const minValue = (index-1<0) ? 0 : this.thumbs[index-1].position;
+                const maxValue = (index+1<this.thumbs.length) ? this.thumbs[index+1].position : 100;
+                const position = Math.round((e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(this.cmpEl).left - this._dragstart) / this.width * 100);
+                const need_sort = position < minValue || position > maxValue;
+                const pos = Math.max(0, Math.min(100, position));
+                const value = pos/this.delta + this.minValue;
 
-                me.setThumbPosition(index, pos);
-                me.thumbs[index].value = value;
+                this.setThumbPosition(index, pos);
+                this.thumbs[index].value = value;
 
                 if (need_sort)
-                    me.sortThumbs();
+                    this.sortThumbs();
 
-                var positionY = e.pageY*Common.Utils.zoom() - Common.Utils.getOffset(me.cmpEl).top;
-                me.isRemoveThumb = positionY > me.cmpEl.height() || positionY < 0;
-                me.setRemoveThumb(index, me.isRemoveThumb);
+                const positionY = e.pageY*Common.Utils.zoom() - Common.Utils.getOffset(this.cmpEl).top;
+                this.isRemoveThumb = positionY > this.cmpEl.height() || positionY < 0;
+                this.setRemoveThumb(index, this.isRemoveThumb);
 
                 if (Math.abs(value-lastValue)>0.001)
-                    me.trigger('change', me, value, lastValue);
+                    this.trigger('change', this, value, lastValue);
             };
 
-            var onMouseDown = function (e) {
-                if ( me.disabled ) return;
+            const onMouseDown = (e) => {
+                if ( this.disabled ) return;
 
-                var index = e.data.index,
-                    thumb = me.thumbs[index].thumb;
+                const index = e.data.index;
+                const thumb = this.thumbs[index].thumb;
 
-                me._dragstart = e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(thumb).left - 6.5;
+                this._dragstart = e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(thumb).left - 6.5;
                 setCenters(index);
-                me.setActiveThumb(index);
+                this.setActiveThumb(index);
 
-                _.each(me.thumbs, function (item, idx) {
-                    (index == idx) ? item.thumb.css('z-index', 500) : item.thumb.css('z-index', '');
+                _.each(this.thumbs, (item, idx) => {
+                    (index === idx) ? item.thumb.css('z-index', 500) : item.thumb.css('z-index', '');
                 });
 
-                $(document).on('mouseup', null, e.data, me.binding.onMouseUp);
-                $(document).on('mousemove', null, e.data, me.binding.onMouseMove);
+                $(document).on('mouseup', null, e.data, this.binding.onMouseUp);
+                $(document).on('mousemove', null, e.data, this.binding.onMouseMove);
             };
 
 
-            var onTrackMouseUp = function (e) {
-                if ( me.disabled || !_.isUndefined(me._dragstart) || me.thumbs.length > 9) return;
+            const onTrackMouseUp = (e) => {
+                if ( this.disabled || !_.isUndefined(this._dragstart) || this.thumbs.length > 9) return;
 
-                var pos = Math.max(0, Math.min(100, (Math.round((e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(me.cmpEl).left) / me.width * 100)))),
-                    nearIndex = findThumb(pos),
-                    thumbColor = me.thumbs[nearIndex].colorValue,
-                    thumbValue = me.thumbs[nearIndex].value,
-                    value = pos/me.delta + me.minValue;
-                me.addThumb();
-                var index = me.thumbs.length - 1;
-                me.setThumbPosition(index, pos);
-                me.thumbs[index].value = value;
-                me.trigger('addthumb', me, index, pos);
+                const pos = Math.max(0, Math.min(100, (Math.round((e.pageX*Common.Utils.zoom() - Common.Utils.getOffset(this.cmpEl).left) / this.width * 100))));
+                const nearIndex = findThumb(pos);
+                const thumbColor = this.thumbs[nearIndex].colorValue;
+                const thumbValue = this.thumbs[nearIndex].value;
+                const value = pos/this.delta + this.minValue;
+                this.addThumb();
+                const index = this.thumbs.length - 1;
+                this.setThumbPosition(index, pos);
+                this.thumbs[index].value = value;
+                this.trigger('addthumb', this, index, pos);
 
-                me.trigger('change', me);
-                me.trigger('changecomplete', me);
+                this.trigger('change', this);
+                this.trigger('changecomplete', this);
             };
 
             /*var onTrackMouseDown = function (e) {
@@ -492,17 +483,17 @@ define([
                 me.trigger('changecomplete', me, value, lastValue);
             };*/
 
-            var findThumb = function(pos) {
-                var nearest = 100,
-                    index = 0,
-                    len = me.thumbs.length,
-                    dist;
+            const findThumb = (pos) => {
+                let nearest = 100;
+                let index = 0;
+                const len = this.thumbs.length;
+                let dist;
 
-                for (var i=0; i<len; i++) {
-                    dist = Math.abs(me.thumbs[i].position - pos);
+                for (let i=0; i<len; i++) {
+                    dist = Math.abs(this.thumbs[i].position - pos);
                     if (Math.abs(dist <= nearest)) {
-                        var above = me.thumbs[i + 1];
-                        var below = me.thumbs[i - 1];
+                        const above = this.thumbs[i + 1];
+                        const below = this.thumbs[i - 1];
 
                         if (below !== undefined && pos < below.position) {
                             continue;
@@ -524,23 +515,23 @@ define([
             };
 
             this.$thumbs = el.find('.thumb');
-            _.each(this.$thumbs, function(item, index) {
-                var thumb = $(item);
-                me.thumbs.push({
+            _.each(this.$thumbs, (item, index) => {
+                const thumb = $(item);
+                this.thumbs.push({
                     thumb: thumb,
                     index: index
                 });
-                me.setValue(index, me.options.values[index]);
-                thumb.on('mousedown', null, me.thumbs[index], me.binding.onMouseDown);
+                this.setValue(index, this.options.values[index]);
+                thumb.on('mousedown', null, this.thumbs[index], this.binding.onMouseDown);
             });
-            me.setActiveThumb(0, true);
+            this.setActiveThumb(0, true);
 
-            if (!me.rendered) {
+            if (!this.rendered) {
                 /*el.on('mousedown', '.track', onTrackMouseDown);*/
                 el.on('mouseup', '.track', onTrackMouseUp);
             }
 
-            me.rendered = true;
+            this.rendered = true;
 
             return this;
         },
@@ -554,7 +545,7 @@ define([
         },
 
         setRemoveThumb: function(index, remove) {
-            var ind = _.findIndex(this.thumbs, {index: index});
+            const ind = _.findIndex(this.thumbs, {index: index});
             if (ind !== -1) {
                 if (remove && this.thumbs.length > 2) {
                     this.$el.find('.active').addClass('remove');
@@ -566,7 +557,7 @@ define([
 
         setThumbPosition: function(index, x) {
             this.thumbs[index].position = x;
-            this.thumbs[index].thumb.css({left: x + '%'});
+            this.thumbs[index].thumb.css({left: `${x}%`});
         },
 
         setValue: function(index, value) {
@@ -579,8 +570,8 @@ define([
         },
 
         getValues: function() {
-            var values = [];
-            _.each (this.thumbs, function(thumb) {
+            const values = [];
+            _.each (this.thumbs, (thumb) => {
                 values.push(thumb.value);
             });
 
@@ -595,11 +586,9 @@ define([
         },
 
         sortThumbs: function() {
-            this.thumbs.sort(function(a, b) {
-                return (a.position - b.position);
-            });
-            var recalc_indexes = [];
-            _.each (this.thumbs, function(thumb, index) {
+            this.thumbs.sort((a, b) => (a.position - b.position));
+            const recalc_indexes = [];
+            _.each (this.thumbs, (thumb, index) => {
                 recalc_indexes.push(thumb.index);
                 thumb.index = index;
             });
@@ -607,17 +596,17 @@ define([
         },
 
         setThumbs: function(count) {
-            var length = this.thumbs.length;
-            if (length==count) return;
+            const length = this.thumbs.length;
+            if (length===count) return;
 
-            for (var i=0; i<Math.abs(count-length); i++)
+            for (let i=0; i<Math.abs(count-length); i++)
                 (length<count) ? this.addThumb() : this.removeThumb();
         },
 
         addThumb: function() {
-            var el = this.cmpEl,
-                thumb = $(this.options.thumbTemplate),
-                index = this.thumbs.length;
+            const el = this.cmpEl;
+            const thumb = $(this.options.thumbTemplate);
+            const index = this.thumbs.length;
             el.append(thumb);
             this.thumbs.push({
                 thumb: thumb,

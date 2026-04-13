@@ -22,40 +22,39 @@
  * terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
-!window.common && (window.common = {});
-!common.controller && (common.controller = {});
+!window.common && (window.common = {})
+!common.controller && (common.controller = {})
 if (SSE === undefined) {
-    var SSE = {};
+  const SSE = {}
 }
-SSE.Keys={RETURN:   13};
+SSE.Keys = { RETURN: 13 }
 
-SSE.CellEditorController = new(function(){
-    var  me,
-        api,
-        editor,
-        created=false;
+SSE.CellEditorController = new (function () {
+  let me
+  let api
+  let editor
+  let created = false
 
-    function  onLaunch(){
-        SSE.CellEditorView.create();
-        editor = SSE.CellEditorView;
-    }
+  function onLaunch() {
+    SSE.CellEditorView.create()
+    editor = SSE.CellEditorView
+  }
 
-    function createController() {
-        me = this;
-        if (created) return me;
+  function createController() {
+    me = this
+    if (created) return me
 
-        created = true;
-        onLaunch();
-        return me;
-    }
+    created = true
+    onLaunch()
+    return me
+  }
 
-    function setApi(apiF){
-        api=apiF;
-    }
+  function setApi(apiF) {
+    api = apiF
+  }
 
-    return {
-        create: createController,
-        setApi: setApi
-    }
-
-})();
+  return {
+    create: createController,
+    setApi: setApi,
+  }
+})()

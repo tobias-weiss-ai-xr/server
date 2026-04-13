@@ -23,18 +23,14 @@
  *
  */
 
-define([
-    'backbone'
-], function(Backbone){
-    'use strict';
+define(["backbone"], (Backbone) => {
+  PE.Models = PE.Models || {}
 
-    PE.Models = PE.Models||{};
-
-    PE.Models.Pages = Backbone.Model.extend({
-        defaults: {
-            current: 0,
-            count: 0,
-            start: 1
-        }
-    });
-});
+  PE.Models.Pages = Backbone.Model.extend({
+    defaults: {
+      current: 0,
+      count: 0,
+      start: 1,
+    },
+  })
+})

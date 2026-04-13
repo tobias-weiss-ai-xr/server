@@ -22,9 +22,9 @@
  * terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
-(function ($) {
-    Common.Locale.apply(function() {
-        PE.ApplicationView.create();
-        PE.ApplicationController.create();
-    });
-})(window.jQuery);
+;(($) => {
+  Common.Locale.apply(() => {
+    PE.ApplicationView.create()
+    PE.ApplicationController.create()
+  })
+})(window.jQuery)

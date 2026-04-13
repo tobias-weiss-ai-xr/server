@@ -6,35 +6,33 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
-
-+function ($) {
-  'use strict';
-
+;+(($) => {
   // MODAL CLASS DEFINITION
   // ======================
 
-  var Modal = function (element, options) {
+  const Modal = function (element, options) {
     this.options = options
     this.$body = $(document.body)
     this.$element = $(element)
-    this.$dialog = this.$element.find('.modal-dialog')
+    this.$dialog = this.$element.find(".modal-dialog")
     this.$backdrop = null
     this.isShown = null
     this.originalBodyPad = null
     this.scrollbarWidth = 0
     this.ignoreBackdropClick = false
-    this.fixedContent = '.navbar-fixed-top, .navbar-fixed-bottom'
+    this.fixedContent = ".navbar-fixed-top, .navbar-fixed-bottom"
 
     if (this.options.remote) {
-      this.$element
-        .find('.modal-content')
-        .load(this.options.remote, $.proxy(function () {
-          this.$element.trigger('loaded.bs.modal')
-        }, this))
+      this.$element.find(".modal-content").load(
+        this.options.remote,
+        $.proxy(function () {
+          this.$element.trigger("loaded.bs.modal")
+        }, this),
+      )
     }
   }
 
-  Modal.VERSION = '3.4.1'
+  Modal.VERSION = "3.4.1"
 
   Modal.TRANSITION_DURATION = 300
   Modal.BACKDROP_TRANSITION_DURATION = 150
@@ -42,7 +40,7 @@
   Modal.DEFAULTS = {
     backdrop: true,
     keyboard: true,
-    show: true
+    show: true,
   }
 
   Modal.prototype.toggle = function (_relatedTarget) {
@@ -50,8 +48,7 @@
   }
 
   Modal.prototype.show = function (_relatedTarget) {
-    var that = this
-    var e = $.Event('show.bs.modal', { relatedTarget: _relatedTarget })
+    const e = $.Event("show.bs.modal", { relatedTarget: _relatedTarget })
 
     this.$element.trigger(e)
 
@@ -61,56 +58,54 @@
 
     this.checkScrollbar()
     this.setScrollbar()
-    this.$body.addClass('modal-open')
+    this.$body.addClass("modal-open")
 
     this.escape()
     this.resize()
 
-    this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
+    this.$element.on("click.dismiss.bs.modal", '[data-dismiss="modal"]', $.proxy(this.hide, this))
 
-    this.$dialog.on('mousedown.dismiss.bs.modal', function () {
-      that.$element.one('mouseup.dismiss.bs.modal', function (e) {
-        if ($(e.target).is(that.$element)) that.ignoreBackdropClick = true
+    this.$dialog.on("mousedown.dismiss.bs.modal", () => {
+      this.$element.one("mouseup.dismiss.bs.modal", (e) => {
+        if ($(e.target).is(this.$element)) this.ignoreBackdropClick = true
       })
     })
 
-    this.backdrop(function () {
-      var transition = $.support.transition && that.$element.hasClass('fade')
+    this.backdrop(() => {
+      const transition = $.support.transition && this.$element.hasClass("fade")
 
-      if (!that.$element.parent().length) {
-        that.$element.appendTo(that.$body) // don't move modals dom position
+      if (!this.$element.parent().length) {
+        this.$element.appendTo(this.$body) // don't move modals dom position
       }
 
-      that.$element
-        .show()
-        .scrollTop(0)
+      this.$element.show().scrollTop(0)
 
-      that.adjustDialog()
+      this.adjustDialog()
 
       if (transition) {
-        that.$element[0].offsetWidth // force reflow
+        this.$element[0].offsetWidth // force reflow
       }
 
-      that.$element.addClass('in')
+      this.$element.addClass("in")
 
-      that.enforceFocus()
+      this.enforceFocus()
 
-      var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
+      const e = $.Event("shown.bs.modal", { relatedTarget: _relatedTarget })
 
-      transition ?
-        that.$dialog // wait for modal to slide in
-          .one('bsTransitionEnd', function () {
-            that.$element.trigger('focus').trigger(e)
-          })
-          .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
-        that.$element.trigger('focus').trigger(e)
+      transition
+        ? this.$dialog // wait for modal to slide in
+            .one("bsTransitionEnd", () => {
+              this.$element.trigger("focus").trigger(e)
+            })
+            .emulateTransitionEnd(Modal.TRANSITION_DURATION)
+        : this.$element.trigger("focus").trigger(e)
     })
   }
 
   Modal.prototype.hide = function (e) {
     if (e) e.preventDefault()
 
-    e = $.Event('hide.bs.modal')
+    e = $.Event("hide.bs.modal")
 
     this.$element.trigger(e)
 
@@ -121,115 +116,117 @@
     this.escape()
     this.resize()
 
-    $(document).off('focusin.bs.modal')
+    $(document).off("focusin.bs.modal")
 
-    this.$element
-      .removeClass('in')
-      .off('click.dismiss.bs.modal')
-      .off('mouseup.dismiss.bs.modal')
+    this.$element.removeClass("in").off("click.dismiss.bs.modal").off("mouseup.dismiss.bs.modal")
 
-    this.$dialog.off('mousedown.dismiss.bs.modal')
+    this.$dialog.off("mousedown.dismiss.bs.modal")
 
-    $.support.transition && this.$element.hasClass('fade') ?
-      this.$element
-        .one('bsTransitionEnd', $.proxy(this.hideModal, this))
-        .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
-      this.hideModal()
+    $.support.transition && this.$element.hasClass("fade")
+      ? this.$element
+          .one("bsTransitionEnd", $.proxy(this.hideModal, this))
+          .emulateTransitionEnd(Modal.TRANSITION_DURATION)
+      : this.hideModal()
   }
 
   Modal.prototype.enforceFocus = function () {
     $(document)
-      .off('focusin.bs.modal') // guard against infinite focus loop
-      .on('focusin.bs.modal', $.proxy(function (e) {
-        if (document !== e.target &&
-          this.$element[0] !== e.target &&
-          !this.$element.has(e.target).length) {
-          this.$element.trigger('focus')
-        }
-      }, this))
+      .off("focusin.bs.modal") // guard against infinite focus loop
+      .on(
+        "focusin.bs.modal",
+        $.proxy(function (e) {
+          if (
+            document !== e.target &&
+            this.$element[0] !== e.target &&
+            !this.$element.has(e.target).length
+          ) {
+            this.$element.trigger("focus")
+          }
+        }, this),
+      )
   }
 
   Modal.prototype.escape = function () {
     if (this.isShown && this.options.keyboard) {
-      this.$element.on('keydown.dismiss.bs.modal', $.proxy(function (e) {
-        e.which == 27 && this.hide()
-      }, this))
+      this.$element.on(
+        "keydown.dismiss.bs.modal",
+        $.proxy(function (e) {
+          e.which === 27 && this.hide()
+        }, this),
+      )
     } else if (!this.isShown) {
-      this.$element.off('keydown.dismiss.bs.modal')
+      this.$element.off("keydown.dismiss.bs.modal")
     }
   }
 
   Modal.prototype.resize = function () {
     if (this.isShown) {
-      $(window).on('resize.bs.modal', $.proxy(this.handleUpdate, this))
+      $(window).on("resize.bs.modal", $.proxy(this.handleUpdate, this))
     } else {
-      $(window).off('resize.bs.modal')
+      $(window).off("resize.bs.modal")
     }
   }
 
   Modal.prototype.hideModal = function () {
-    var that = this
     this.$element.hide()
-    this.backdrop(function () {
-      that.$body.removeClass('modal-open')
-      that.resetAdjustments()
-      that.resetScrollbar()
-      that.$element.trigger('hidden.bs.modal')
+    this.backdrop(() => {
+      this.$body.removeClass("modal-open")
+      this.resetAdjustments()
+      this.resetScrollbar()
+      this.$element.trigger("hidden.bs.modal")
     })
   }
 
   Modal.prototype.removeBackdrop = function () {
-    this.$backdrop && this.$backdrop.remove()
+    this.$backdrop?.remove()
     this.$backdrop = null
   }
 
   Modal.prototype.backdrop = function (callback) {
-    var that = this
-    var animate = this.$element.hasClass('fade') ? 'fade' : ''
+    const animate = this.$element.hasClass("fade") ? "fade" : ""
 
     if (this.isShown && this.options.backdrop) {
-      var doAnimate = $.support.transition && animate
+      const doAnimate = $.support.transition && animate
 
-      this.$backdrop = $(document.createElement('div'))
-        .addClass('modal-backdrop ' + animate)
+      this.$backdrop = $(document.createElement("div"))
+        .addClass(`modal-backdrop ${animate}`)
         .appendTo(this.$body)
 
-      this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
-        if (this.ignoreBackdropClick) {
-          this.ignoreBackdropClick = false
-          return
-        }
-        if (e.target !== e.currentTarget) return
-        this.options.backdrop == 'static'
-          ? this.$element[0].focus()
-          : this.hide()
-      }, this))
+      this.$element.on(
+        "click.dismiss.bs.modal",
+        $.proxy(function (e) {
+          if (this.ignoreBackdropClick) {
+            this.ignoreBackdropClick = false
+            return
+          }
+          if (e.target !== e.currentTarget) return
+          this.options.backdrop === "static" ? this.$element[0].focus() : this.hide()
+        }, this),
+      )
 
       if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
 
-      this.$backdrop.addClass('in')
+      this.$backdrop.addClass("in")
 
       if (!callback) return
 
-      doAnimate ?
-        this.$backdrop
-          .one('bsTransitionEnd', callback)
-          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
-        callback()
-
+      doAnimate
+        ? this.$backdrop
+            .one("bsTransitionEnd", callback)
+            .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION)
+        : callback()
     } else if (!this.isShown && this.$backdrop) {
-      this.$backdrop.removeClass('in')
+      this.$backdrop.removeClass("in")
 
-      var callbackRemove = function () {
-        that.removeBackdrop()
-        callback && callback()
+      const callbackRemove = () => {
+        this.removeBackdrop()
+        callback?.()
       }
-      $.support.transition && this.$element.hasClass('fade') ?
-        this.$backdrop
-          .one('bsTransitionEnd', callbackRemove)
-          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
-        callbackRemove()
-
+      $.support.transition && this.$element.hasClass("fade")
+        ? this.$backdrop
+            .one("bsTransitionEnd", callbackRemove)
+            .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION)
+        : callbackRemove()
     } else if (callback) {
       callback()
     }
@@ -242,25 +239,26 @@
   }
 
   Modal.prototype.adjustDialog = function () {
-    var modalIsOverflowing = this.$element[0].scrollHeight > document.documentElement.clientHeight
+    const modalIsOverflowing = this.$element[0].scrollHeight > document.documentElement.clientHeight
 
     this.$element.css({
-      paddingLeft: !this.bodyIsOverflowing && modalIsOverflowing ? this.scrollbarWidth : '',
-      paddingRight: this.bodyIsOverflowing && !modalIsOverflowing ? this.scrollbarWidth : ''
+      paddingLeft: !this.bodyIsOverflowing && modalIsOverflowing ? this.scrollbarWidth : "",
+      paddingRight: this.bodyIsOverflowing && !modalIsOverflowing ? this.scrollbarWidth : "",
     })
   }
 
   Modal.prototype.resetAdjustments = function () {
     this.$element.css({
-      paddingLeft: '',
-      paddingRight: ''
+      paddingLeft: "",
+      paddingRight: "",
     })
   }
 
   Modal.prototype.checkScrollbar = function () {
-    var fullWindowWidth = window.innerWidth
-    if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
-      var documentElementRect = document.documentElement.getBoundingClientRect()
+    let fullWindowWidth = window.innerWidth
+    if (!fullWindowWidth) {
+      // workaround for missing window.innerWidth in IE8
+      const documentElementRect = document.documentElement.getBoundingClientRect()
       fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left)
     }
     this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth
@@ -268,60 +266,64 @@
   }
 
   Modal.prototype.setScrollbar = function () {
-    var bodyPad = parseInt((this.$body.css('padding-right') || 0), 10)
-    this.originalBodyPad = document.body.style.paddingRight || ''
-    var scrollbarWidth = this.scrollbarWidth
+    const bodyPad = Number.parseInt(this.$body.css("padding-right") || 0, 10)
+    this.originalBodyPad = document.body.style.paddingRight || ""
+    const scrollbarWidth = this.scrollbarWidth
     if (this.bodyIsOverflowing) {
-      this.$body.css('padding-right', bodyPad + scrollbarWidth)
-      $(this.fixedContent).each(function (index, element) {
-        var actualPadding = element.style.paddingRight
-        var calculatedPadding = $(element).css('padding-right')
+      this.$body.css("padding-right", bodyPad + scrollbarWidth)
+      $(this.fixedContent).each((index, element) => {
+        const actualPadding = element.style.paddingRight
+        const calculatedPadding = $(element).css("padding-right")
         $(element)
-          .data('padding-right', actualPadding)
-          .css('padding-right', parseFloat(calculatedPadding) + scrollbarWidth + 'px')
+          .data("padding-right", actualPadding)
+          .css("padding-right", `${Number.parseFloat(calculatedPadding) + scrollbarWidth}px`)
       })
     }
   }
 
   Modal.prototype.resetScrollbar = function () {
-    this.$body.css('padding-right', this.originalBodyPad)
-    $(this.fixedContent).each(function (index, element) {
-      var padding = $(element).data('padding-right')
-      $(element).removeData('padding-right')
-      element.style.paddingRight = padding ? padding : ''
+    this.$body.css("padding-right", this.originalBodyPad)
+    $(this.fixedContent).each((index, element) => {
+      const padding = $(element).data("padding-right")
+      $(element).removeData("padding-right")
+      element.style.paddingRight = padding ? padding : ""
     })
   }
 
-  Modal.prototype.measureScrollbar = function () { // thx walsh
-    var scrollDiv = document.createElement('div')
-    scrollDiv.className = 'modal-scrollbar-measure'
+  Modal.prototype.measureScrollbar = function () {
+    // thx walsh
+    const scrollDiv = document.createElement("div")
+    scrollDiv.className = "modal-scrollbar-measure"
     this.$body.append(scrollDiv)
-    var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth
+    const scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth
     this.$body[0].removeChild(scrollDiv)
     return scrollbarWidth
   }
-
 
   // MODAL PLUGIN DEFINITION
   // =======================
 
   function Plugin(option, _relatedTarget) {
     return this.each(function () {
-      var $this = $(this)
-      var data = $this.data('bs.modal')
-      var options = $.extend({}, Modal.DEFAULTS, $this.data(), typeof option == 'object' && option)
+      const $this = $(this)
+      let data = $this.data("bs.modal")
+      const options = $.extend(
+        {},
+        Modal.DEFAULTS,
+        $this.data(),
+        typeof option === "object" && option,
+      )
 
-      if (!data) $this.data('bs.modal', (data = new Modal(this, options)))
-      if (typeof option == 'string') data[option](_relatedTarget)
+      if (!data) $this.data("bs.modal", (data = new Modal(this, options)))
+      if (typeof option === "string") data[option](_relatedTarget)
       else if (options.show) data.show(_relatedTarget)
     })
   }
 
-  var old = $.fn.modal
+  const old = $.fn.modal
 
   $.fn.modal = Plugin
   $.fn.modal.Constructor = Modal
-
 
   // MODAL NO CONFLICT
   // =================
@@ -331,28 +333,27 @@
     return this
   }
 
-
   // MODAL DATA-API
   // ==============
 
-  $(document).on('click.bs.modal.data-api', '[data-toggle="modal"]', function (e) {
-    var $this = $(this)
-    var href = $this.attr('href')
-    var target = $this.attr('data-target') ||
-      (href && href.replace(/.*(?=#[^\s]+$)/, '')) // strip for ie7
+  $(document).on("click.bs.modal.data-api", '[data-toggle="modal"]', function (e) {
+    const $this = $(this)
+    const href = $this.attr("href")
+    const target = $this.attr("data-target") || href?.replace(/.*(?=#[^\s]+$)/, "") // strip for ie7
 
-    var $target = $(document).find(target)
-    var option = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
+    const $target = $(document).find(target)
+    const option = $target.data("bs.modal")
+      ? "toggle"
+      : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
 
-    if ($this.is('a')) e.preventDefault()
+    if ($this.is("a")) e.preventDefault()
 
-    $target.one('show.bs.modal', function (showEvent) {
+    $target.one("show.bs.modal", (showEvent) => {
       if (showEvent.isDefaultPrevented()) return // only register focus restorer if modal will actually get shown
-      $target.one('hidden.bs.modal', function () {
-        $this.is(':visible') && $this.trigger('focus')
+      $target.one("hidden.bs.modal", () => {
+        $this.is(":visible") && $this.trigger("focus")
       })
     })
     Plugin.call($target, option, this)
   })
-
-}(jQuery);
+})(jQuery)

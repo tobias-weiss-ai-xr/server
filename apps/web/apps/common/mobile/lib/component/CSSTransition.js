@@ -1,5 +1,5 @@
-import React from 'react';
-import { useTransitionState } from 'react-transition-state';
+import React from "react"
+import { useTransitionState } from "react-transition-state"
 
 export const CSSTransition = ({
   in: inProp = false,
@@ -14,40 +14,40 @@ export const CSSTransition = ({
     mountOnEnter,
     unmountOnExit,
     preEnter: true,
-    initialEntered: inProp
-  });
+    initialEntered: inProp,
+  })
 
   React.useEffect(() => {
-    toggle(inProp);
-  }, [inProp, toggle]);
+    toggle(inProp)
+  }, [inProp, toggle])
 
   const classNameMap = {
-    'preEnter': 'fade-enter',
-    'entering': 'fade-enter fade-enter-active',
-    'entered': 'fade-enter-done',
-    'exiting': 'fade-exit fade-exit-active',
-    'exited': 'fade-exit-done',
-  };
+    preEnter: "fade-enter",
+    entering: "fade-enter fade-enter-active",
+    entered: "fade-enter-done",
+    exiting: "fade-exit fade-exit-active",
+    exited: "fade-exit-done",
+  }
 
   const getClassNames = (status) => {
-    return classNameMap[status] || '';
-  };
+    return classNameMap[status] || ""
+  }
 
   React.useEffect(() => {
     switch (status) {
-      case 'entered':
-        onEntered?.();
-        break;
+      case "entered":
+        onEntered?.()
+        break
       default:
-        break;
+        break
     }
-  }, [status, onEntered]);
+  }, [status, onEntered])
 
   if (!isMounted) {
-    return null;
+    return null
   }
 
   return React.cloneElement(children, {
-    className: `${children.props.className || ''} ${getClassNames(status)}`.trim()
-  });
-};
+    className: `${children.props.className || ""} ${getClassNames(status)}`.trim(),
+  })
+}

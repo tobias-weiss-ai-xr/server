@@ -1,38 +1,38 @@
-import {action, observable, makeObservable} from 'mobx';
+import { action, makeObservable, observable } from "mobx"
 
 export class storeToolbarSettings {
-    constructor() {
-        makeObservable(this, {
-            countPages: observable,
-            setCountPages: action,
-            disabledControls: observable,
-            setDisabledControls: action,
-            disabledSettings: observable,
-            setDisabledSettings: action
-        })
-    }
+  constructor() {
+    makeObservable(this, {
+      countPages: observable,
+      setCountPages: action,
+      disabledControls: observable,
+      setDisabledControls: action,
+      disabledSettings: observable,
+      setDisabledSettings: action,
+    })
+  }
 
-    disabledControls = true;
+  disabledControls = true
 
-    setDisabledControls(value) {
-        this.disabledControls = value;
-    }
+  setDisabledControls(value) {
+    this.disabledControls = value
+  }
 
-    disabledSettings = false;
+  disabledSettings = false
 
-    setDisabledSettings(value) {
-        this.disabledSettings = value;
-    }
+  setDisabledSettings(value) {
+    this.disabledSettings = value
+  }
 
-    countPages = 0;
+  countPages = 0
 
-    setCountPages(count) {
-        this.countPages = count;
-    }
+  setCountPages(count) {
+    this.countPages = count
+  }
 
-    isShowBack = false;
+  isShowBack = false
 
-    setShowBack = (value) => {
-        this.isShowBack = !!value;
-    };
+  setShowBack = (value) => {
+    this.isShowBack = !!value
+  }
 }

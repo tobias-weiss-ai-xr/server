@@ -30,12 +30,11 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'backbone'
-], function (Backbone) {
-    'use strict';
+], (Backbone) => {
 
     Common.UI = _.extend(Common.UI || {}, {
         Keys : {
@@ -104,8 +103,6 @@ define([
             }
         }),
 
-        getId: function(prefix) {
-            return _.uniqueId(prefix || "asc-gen");
-        }
+        getId: (prefix) => _.uniqueId(prefix || "asc-gen")
     });
 });

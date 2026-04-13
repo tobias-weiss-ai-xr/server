@@ -30,335 +30,422 @@
  *
  */
 
-define([
-    'core',
-    'spreadsheeteditor/main/app/view/ViewTab'
-], function () {
-    'use strict';
+define(["core", "spreadsheeteditor/main/app/view/ViewTab"], () => {
+  SSE.Controllers.ViewTab = Backbone.Controller.extend(
+    _.extend(
+      {
+        models: [],
+        collections: [],
+        views: ["ViewTab"],
+        sdkViewName: "#id_main",
 
-    SSE.Controllers.ViewTab = Backbone.Controller.extend(_.extend({
-        models : [],
-        collections : [
-        ],
-        views : [
-            'ViewTab'
-        ],
-        sdkViewName : '#id_main',
-
-        initialize: function () {
-        },
+        initialize: () => {},
         onLaunch: function () {
-            this._state = {};
-            Common.NotificationCenter.on('uitheme:changed', this.onThemeChanged.bind(this));
-            Common.NotificationCenter.on('tabstyle:changed', this.onTabStyleChange.bind(this));
+          this._state = {}
+          Common.NotificationCenter.on("uitheme:changed", this.onThemeChanged.bind(this))
+          Common.NotificationCenter.on("tabstyle:changed", this.onTabStyleChange.bind(this))
         },
 
         setApi: function (api) {
-            if (api) {
-                this.api = api;
-                this.api.asc_registerCallback('asc_onZoomChanged',              this.onApiZoomChange.bind(this));
-                this.api.asc_registerCallback('asc_onChangeActiveNamedSheetView',     _.bind(this.onChangeActiveNamedSheetView, this));
-                this.api.asc_registerCallback('asc_onWorksheetLocked',      _.bind(this.onWorksheetLocked, this));
-                this.api.asc_registerCallback('asc_onSheetsChanged',            this.onApiSheetChanged.bind(this));
-                this.api.asc_registerCallback('asc_onUpdateSheetViewSettings',  this.onApiSheetChanged.bind(this));
-                this.api.asc_registerCallback('asc_updateSheetViewType',    this.onApiUpdateSheetViewType.bind(this));
-                this.api.asc_registerCallback('asc_onMacroRecordingStart', _.bind(this.updateMacroState, this, true, false));
-                this.api.asc_registerCallback('asc_onMacroRecordingStop', _.bind(this.updateMacroState, this, false));
-                this.api.asc_registerCallback('asc_onMacroRecordingPause', _.bind(this.updateMacroState, this, true, true));
-                this.api.asc_registerCallback('asc_onMacroRecordingResume', _.bind(this.updateMacroState, this, true, false));
-                this.api.asc_registerCallback('asc_onCoAuthoringDisconnect',_.bind(this.onCoAuthoringDisconnect, this));
-                Common.NotificationCenter.on('api:disconnect', _.bind(this.onCoAuthoringDisconnect, this));
-            }
-            return this;
+          if (api) {
+            this.api = api
+            this.api.asc_registerCallback("asc_onZoomChanged", this.onApiZoomChange.bind(this))
+            this.api.asc_registerCallback(
+              "asc_onChangeActiveNamedSheetView",
+              _.bind(this.onChangeActiveNamedSheetView, this),
+            )
+            this.api.asc_registerCallback(
+              "asc_onWorksheetLocked",
+              _.bind(this.onWorksheetLocked, this),
+            )
+            this.api.asc_registerCallback("asc_onSheetsChanged", this.onApiSheetChanged.bind(this))
+            this.api.asc_registerCallback(
+              "asc_onUpdateSheetViewSettings",
+              this.onApiSheetChanged.bind(this),
+            )
+            this.api.asc_registerCallback(
+              "asc_updateSheetViewType",
+              this.onApiUpdateSheetViewType.bind(this),
+            )
+            this.api.asc_registerCallback(
+              "asc_onMacroRecordingStart",
+              _.bind(this.updateMacroState, this, true, false),
+            )
+            this.api.asc_registerCallback(
+              "asc_onMacroRecordingStop",
+              _.bind(this.updateMacroState, this, false),
+            )
+            this.api.asc_registerCallback(
+              "asc_onMacroRecordingPause",
+              _.bind(this.updateMacroState, this, true, true),
+            )
+            this.api.asc_registerCallback(
+              "asc_onMacroRecordingResume",
+              _.bind(this.updateMacroState, this, true, false),
+            )
+            this.api.asc_registerCallback(
+              "asc_onCoAuthoringDisconnect",
+              _.bind(this.onCoAuthoringDisconnect, this),
+            )
+            Common.NotificationCenter.on(
+              "api:disconnect",
+              _.bind(this.onCoAuthoringDisconnect, this),
+            )
+          }
+          return this
         },
 
-        setConfig: function(config) {
-            this.toolbar = config.toolbar;
-            var mode = config.mode;
-            this.view = this.createView('ViewTab', {
-                toolbar: this.toolbar.toolbar,
-                mode: mode,
-                compactToolbar: this.toolbar.toolbar.isCompactView
-            });
-            this.addListeners({
-                'ViewTab': {
-                    'zoom:selected': _.bind(this.onSelectedZoomValue, this),
-                    'zoom:changedbefore': _.bind(this.onZoomChanged, this),
-                    'zoom:changedafter': _.bind(this.onZoomChanged, this),
-                    'viewtab:freeze': this.onFreeze,
-                    'viewtab:freezeshadow': this.onFreezeShadow,
-                    'viewtab:formula': this.onViewSettings,
-                    'viewtab:headings': this.onViewSettings,
-                    'viewtab:gridlines': this.onViewSettings,
-                    'viewtab:zeros': this.onViewSettings,
-                    'viewtab:zoom': this.onZoom,
-                    'viewtab:showview': this.onShowView,
-                    'viewtab:openview': this.onOpenView,
-                    'viewtab:createview': this.onCreateView,
-                    'viewtab:manager': this.onOpenManager,
-                    'viewtab:viewmode': this.onPreviewMode,
-                    'macros:click':  this.onClickMacros,
-                    'macros:record':  _.bind(this.onClickMacrosRec, this),
-                    'macros:pause':  _.bind(this.onClickMacrosPause, this)
-                },
-                'Statusbar': {
-                    'sheet:changed': this.onApiSheetChanged.bind(this),
-                    'view:compact': _.bind(function (statusbar, state) {
-                        this.view.chStatusbar.setValue(state, true);
-                    }, this)
-                },
-                'Toolbar': {
-                    'view:compact': _.bind(function (toolbar, state) {
-                        this.view.chToolbar.setValue(!state, true);
-                    }, this)
-                },
-                'LeftMenu': {
-                    'view:hide': _.bind(function (leftmenu, state) {
-                        this.view.chLeftMenu.setValue(!state, true);
-                    }, this)
-                },
-                'RightMenu': {
-                    'view:hide': _.bind(function (leftmenu, state) {
-                        this.view.chRightMenu.setValue(!state, true);
-                    }, this)
-                }
-            });
-            Common.NotificationCenter.on('layout:changed', _.bind(this.onLayoutChanged, this));
+        setConfig: function (config) {
+          this.toolbar = config.toolbar
+          const mode = config.mode
+          this.view = this.createView("ViewTab", {
+            toolbar: this.toolbar.toolbar,
+            mode: mode,
+            compactToolbar: this.toolbar.toolbar.isCompactView,
+          })
+          this.addListeners({
+            ViewTab: {
+              "zoom:selected": _.bind(this.onSelectedZoomValue, this),
+              "zoom:changedbefore": _.bind(this.onZoomChanged, this),
+              "zoom:changedafter": _.bind(this.onZoomChanged, this),
+              "viewtab:freeze": this.onFreeze,
+              "viewtab:freezeshadow": this.onFreezeShadow,
+              "viewtab:formula": this.onViewSettings,
+              "viewtab:headings": this.onViewSettings,
+              "viewtab:gridlines": this.onViewSettings,
+              "viewtab:zeros": this.onViewSettings,
+              "viewtab:zoom": this.onZoom,
+              "viewtab:showview": this.onShowView,
+              "viewtab:openview": this.onOpenView,
+              "viewtab:createview": this.onCreateView,
+              "viewtab:manager": this.onOpenManager,
+              "viewtab:viewmode": this.onPreviewMode,
+              "macros:click": this.onClickMacros,
+              "macros:record": _.bind(this.onClickMacrosRec, this),
+              "macros:pause": _.bind(this.onClickMacrosPause, this),
+            },
+            Statusbar: {
+              "sheet:changed": this.onApiSheetChanged.bind(this),
+              "view:compact": _.bind(function (statusbar, state) {
+                this.view.chStatusbar.setValue(state, true)
+              }, this),
+            },
+            Toolbar: {
+              "view:compact": _.bind(function (toolbar, state) {
+                this.view.chToolbar.setValue(!state, true)
+              }, this),
+            },
+            LeftMenu: {
+              "view:hide": _.bind(function (leftmenu, state) {
+                this.view.chLeftMenu.setValue(!state, true)
+              }, this),
+            },
+            RightMenu: {
+              "view:hide": _.bind(function (leftmenu, state) {
+                this.view.chRightMenu.setValue(!state, true)
+              }, this),
+            },
+          })
+          Common.NotificationCenter.on("layout:changed", _.bind(this.onLayoutChanged, this))
         },
 
-        SetDisabled: function(state) {
-            this.view && this.view.SetDisabled(state);
+        SetDisabled: function (state) {
+          this.view?.SetDisabled(state)
         },
 
-        createToolbarPanel: function() {
-            return this.view.getPanel();
+        createToolbarPanel: function () {
+          return this.view.getPanel()
         },
 
-        getView: function(name) {
-            return !name && this.view ?
-                this.view : Backbone.Controller.prototype.getView.call(this, name);
+        getView: function (name) {
+          return !name && this.view
+            ? this.view
+            : Backbone.Controller.prototype.getView.call(this, name)
         },
 
-        onCoAuthoringDisconnect: function() {
-            this.SetDisabled(true);
+        onCoAuthoringDisconnect: function () {
+          this.SetDisabled(true)
         },
 
-        onChangeActiveNamedSheetView: function() {
-            if (!this.toolbar.editMode || !this.view) return;
+        onChangeActiveNamedSheetView: function () {
+          if (!this.toolbar.editMode || !this.view) return
 
-            Common.Utils.lockControls(Common.enumLock.sheetView, this.api.asc_getActiveNamedSheetView && !this.api.asc_getActiveNamedSheetView(this.api.asc_getActiveWorksheetIndex()),
-                                      {array: [this.view.btnCloseView]});
+          Common.Utils.lockControls(
+            Common.enumLock.sheetView,
+            this.api.asc_getActiveNamedSheetView &&
+              !this.api.asc_getActiveNamedSheetView(this.api.asc_getActiveWorksheetIndex()),
+            { array: [this.view.btnCloseView] },
+          )
         },
 
-        onFreeze: function(type) {
-            if (this.api) {
-                this.api.asc_freezePane(type);
-            }
-            Common.NotificationCenter.trigger('edit:complete', this.view);
+        onFreeze: function (type) {
+          if (this.api) {
+            this.api.asc_freezePane(type)
+          }
+          Common.NotificationCenter.trigger("edit:complete", this.view)
         },
 
         onFreezeShadow: function (checked) {
-            this.api.asc_setFrozenPaneBorderType(checked ? Asc.c_oAscFrozenPaneBorderType.shadow : Asc.c_oAscFrozenPaneBorderType.line);
-            Common.localStorage.setBool('sse-freeze-shadow', checked);
-            Common.NotificationCenter.trigger('edit:complete', this.view);
+          this.api.asc_setFrozenPaneBorderType(
+            checked ? Asc.c_oAscFrozenPaneBorderType.shadow : Asc.c_oAscFrozenPaneBorderType.line,
+          )
+          Common.localStorage.setBool("sse-freeze-shadow", checked)
+          Common.NotificationCenter.trigger("edit:complete", this.view)
         },
 
         applyZoom: function (value) {
-            var val = Math.max(10, Math.min(500, value));
-            if (this._state.zoomValue === val)
-                this.view.cmbZoom.setValue(this._state.zoomValue, this._state.zoomValue + '%');
-            this.api.asc_setZoom(val/100);
-            Common.NotificationCenter.trigger('edit:complete', this.view);
+          const val = Math.max(10, Math.min(500, value))
+          if (this._state.zoomValue === val)
+            this.view.cmbZoom.setValue(this._state.zoomValue, `${this._state.zoomValue}%`)
+          this.api.asc_setZoom(val / 100)
+          Common.NotificationCenter.trigger("edit:complete", this.view)
         },
 
         onSelectedZoomValue: function (combo, record) {
-            this.applyZoom(record.value);
+          this.applyZoom(record.value)
         },
 
         onZoomChanged: function (before, combo, record, e) {
-            var value = parseFloat(record.value);
-            if (this._state.zoomValue === undefined) {
-                this._state.zoomValue = 100;
+          const value = Number.parseFloat(record.value)
+          if (this._state.zoomValue === undefined) {
+            this._state.zoomValue = 100
+          }
+          if (before) {
+            const expr = /^\s*(\d*(\.|,)?\d+)\s*(%)?\s*$/
+            if (!expr.exec(record.value)) {
+              this.view.cmbZoom.setValue(this._state.zoomValue, `${this._state.zoomValue}%`)
+              Common.NotificationCenter.trigger("edit:complete", this.view)
             }
-            if (before) {
-                var expr = new RegExp('^\\s*(\\d*(\\.|,)?\\d+)\\s*(%)?\\s*$');
-                if (!expr.exec(record.value)) {
-                    this.view.cmbZoom.setValue(this._state.zoomValue, this._state.zoomValue + '%');
-                    Common.NotificationCenter.trigger('edit:complete', this.view);
+          } else {
+            if (this._state.zoomValue !== value && !Number.isNaN(value)) {
+              this.applyZoom(value)
+            } else if (record.value !== `${this._state.zoomValue}%`) {
+              this.view.cmbZoom.setValue(this._state.zoomValue, `${this._state.zoomValue}%`)
+            }
+          }
+        },
+
+        onViewSettings: function (type, value) {
+          if (this.api) {
+            switch (type) {
+              case 1:
+                this.api.asc_setDisplayHeadings(value)
+                break
+              case 2:
+                this.api.asc_setDisplayGridlines(value)
+                break
+              case 3:
+                this.api.asc_setShowZeros(value)
+                break
+            }
+          }
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        onShowView: function () {
+          const views = this.api.asc_getNamedSheetViews()
+          const menu = this.view.btnSheetView.menu._innerMenu
+          let active = false
+
+          menu.removeItems(1, menu.items.length - 1)
+          _.each(views, (item, index) => {
+            menu.addItem(
+              new Common.UI.MenuItem({
+                caption: item.asc_getName(),
+                checkable: true,
+                allowDepress: false,
+                checked: item.asc_getIsActive(),
+                template: _.template(
+                  [
+                    '<a id="<%= id %>" style="<%= style %>" tabindex="-1" type="menuitem">',
+                    "<%= Common.Utils.String.htmlEncode(caption) %>",
+                    "</a>",
+                  ].join(""),
+                ),
+              }),
+            )
+            if (item.asc_getIsActive()) active = true
+          })
+          menu.items[0].setChecked(!active, true)
+        },
+
+        onOpenView: function (item) {
+          this.api?.asc_setActiveNamedSheetView(item.value === "default" ? null : item.name)
+        },
+
+        onCreateView: function (item) {
+          this.api?.asc_addNamedSheetView(null, true)
+        },
+
+        onOpenManager: function (item) {
+          new SSE.Views.ViewManagerDlg({
+            api: this.api,
+            handler: (result, value) => {
+              if (result === "ok" && value) {
+                if (this.api) {
+                  this.api.asc_setActiveNamedSheetView(value)
                 }
-            } else {
-                if (this._state.zoomValue !== value && !isNaN(value)) {
-                    this.applyZoom(value);
-                } else if (record.value !== this._state.zoomValue + '%') {
-                    this.view.cmbZoom.setValue(this._state.zoomValue, this._state.zoomValue + '%');
-                }
-            }
+              }
+              Common.NotificationCenter.trigger("edit:complete", this.view)
+            },
+            views: this.api.asc_getNamedSheetViews(),
+          })
+            .on("close", (win) => {})
+            .show()
         },
 
-        onViewSettings: function(type, value){
-            if (this.api) {
-                switch (type) {
-                    case 1: this.api.asc_setDisplayHeadings(value); break;
-                    case 2: this.api.asc_setDisplayGridlines(value); break;
-                    case 3: this.api.asc_setShowZeros(value); break;
-                }
-            }
-            Common.NotificationCenter.trigger('edit:complete', this.view);
+        onWorksheetLocked: function (index, locked) {
+          if (index === this.api.asc_getActiveWorksheetIndex()) {
+            Common.Utils.lockControls(Common.enumLock.sheetLock, locked, {
+              array: [
+                this.view.chHeadings,
+                this.view.chGridlines,
+                this.view.btnFreezePanes,
+                this.view.chZeros,
+                this.view.btnViewNormal,
+                this.view.btnViewPageBreak,
+              ],
+            })
+          }
         },
 
-        onShowView: function() {
-            var views = this.api.asc_getNamedSheetViews(),
-                menu = this.view.btnSheetView.menu._innerMenu,
-                active = false;
+        onApiSheetChanged: function () {
+          if (
+            !this.toolbar.mode ||
+            !this.toolbar.mode.isEdit ||
+            this.toolbar.mode.isEditDiagram ||
+            this.toolbar.mode.isEditMailMerge ||
+            this.toolbar.mode.isEditOle
+          )
+            return
 
-            menu.removeItems(1, menu.items.length-1);
-            _.each(views, function(item, index) {
-                menu.addItem(new Common.UI.MenuItem({
-                    caption : item.asc_getName(),
-                    checkable: true,
-                    allowDepress: false,
-                    checked : item.asc_getIsActive(),
-                    template    : _.template([
-                        '<a id="<%= id %>" style="<%= style %>" tabindex="-1" type="menuitem">',
-                        '<%= Common.Utils.String.htmlEncode(caption) %>',
-                        '</a>'
-                    ].join(''))
-                }));
-                if (item.asc_getIsActive())
-                    active = true;
-            });
-            menu.items[0].setChecked(!active, true);
+          const params = this.api.asc_getSheetViewSettings()
+          this.view.chHeadings.setValue(!!params.asc_getShowRowColHeaders(), true)
+          this.view.chGridlines.setValue(!!params.asc_getShowGridLines(), true)
+          this.view.btnFreezePanes.menu &&
+            typeof this.view.btnFreezePanes.menu === "object" &&
+            this.view.btnFreezePanes.menu.items &&
+            this.view.btnFreezePanes.menu.items[0].setCaption(
+              params.asc_getIsFreezePane() ? this.view.textUnFreeze : this.view.capBtnFreeze,
+            )
+          this.view.chZeros.setValue(!!params.asc_getShowZeros(), true)
+
+          const currentSheet = this.api.asc_getActiveWorksheetIndex()
+          this.onWorksheetLocked(
+            currentSheet,
+            this.api.asc_isWorksheetLockedOrDeleted(currentSheet),
+          )
+          this.onApiUpdateSheetViewType(currentSheet)
         },
 
-        onOpenView: function(item) {
-            this.api && this.api.asc_setActiveNamedSheetView((item.value == 'default') ? null : item.name);
+        onLayoutChanged: function (area) {
+          if (area === "celleditor" && arguments[1]) {
+            this.view.chFormula.setValue(arguments[1] === "showed", true)
+          }
         },
 
-        onCreateView: function(item) {
-            this.api && this.api.asc_addNamedSheetView(null, true);
-        },
-
-        onOpenManager: function(item) {
-            var me = this;
-            (new SSE.Views.ViewManagerDlg({
-                api: this.api,
-                handler: function(result, value) {
-                    if (result == 'ok' && value) {
-                        if (me.api) {
-                            me.api.asc_setActiveNamedSheetView(value);
-                        }
-                    }
-                    Common.NotificationCenter.trigger('edit:complete', me.view);
-                },
-                views: this.api.asc_getNamedSheetViews()
-            })).on('close', function(win){
-            }).show();
-        },
-
-        onWorksheetLocked: function(index,locked) {
-            if (index == this.api.asc_getActiveWorksheetIndex()) {
-                Common.Utils.lockControls(Common.enumLock.sheetLock, locked, {array: [this.view.chHeadings, this.view.chGridlines, this.view.btnFreezePanes, this.view.chZeros,
-                                                                                            this.view.btnViewNormal, this.view.btnViewPageBreak]});
-            }
-        },
-
-        onApiSheetChanged: function() {
-            if (!this.toolbar.mode || !this.toolbar.mode.isEdit || this.toolbar.mode.isEditDiagram || this.toolbar.mode.isEditMailMerge || this.toolbar.mode.isEditOle) return;
-
-            var params  = this.api.asc_getSheetViewSettings();
-            this.view.chHeadings.setValue(!!params.asc_getShowRowColHeaders(), true);
-            this.view.chGridlines.setValue(!!params.asc_getShowGridLines(), true);
-            this.view.btnFreezePanes.menu && (typeof this.view.btnFreezePanes.menu === 'object') && this.view.btnFreezePanes.menu.items && this.view.btnFreezePanes.menu.items[0].setCaption(!!params.asc_getIsFreezePane() ? this.view.textUnFreeze : this.view.capBtnFreeze);
-            this.view.chZeros.setValue(!!params.asc_getShowZeros(), true);
-
-            var currentSheet = this.api.asc_getActiveWorksheetIndex();
-            this.onWorksheetLocked(currentSheet, this.api.asc_isWorksheetLockedOrDeleted(currentSheet));
-            this.onApiUpdateSheetViewType(currentSheet);
-        },
-
-        onLayoutChanged: function(area) {
-            if (area=='celleditor' && arguments[1]) {
-                this.view.chFormula.setValue(arguments[1]=='showed', true);
-            }
-        },
-
-        onApiZoomChange: function(zf, type){
-            var value = Math.floor((zf + .005) * 100);
-            this.view.cmbZoom.setValue(value, value + '%');
-            this._state.zoomValue = value;
+        onApiZoomChange: function (zf, type) {
+          const value = Math.floor((zf + 0.005) * 100)
+          this.view.cmbZoom.setValue(value, `${value}%`)
+          this._state.zoomValue = value
         },
 
         onThemeChanged: function () {
-            if (this.view && Common.UI.Themes.available() && this.view.btnInterfaceTheme.menu && (typeof (this.view.btnInterfaceTheme.menu) === 'object')) {
-                var current_theme = Common.UI.Themes.currentThemeId() || Common.UI.Themes.defaultThemeId(),
-                    menu_item = _.findWhere(this.view.btnInterfaceTheme.menu.getItems(true), {value: current_theme});
-                if ( !!menu_item ) {
-                    this.view.btnInterfaceTheme.menu.clearAll(true);
-                    menu_item.setChecked(true, true);
-                }
+          if (
+            this.view &&
+            Common.UI.Themes.available() &&
+            this.view.btnInterfaceTheme.menu &&
+            typeof this.view.btnInterfaceTheme.menu === "object"
+          ) {
+            const current_theme =
+              Common.UI.Themes.currentThemeId() || Common.UI.Themes.defaultThemeId()
+            const menu_item = _.findWhere(this.view.btnInterfaceTheme.menu.getItems(true), {
+              value: current_theme,
+            })
+            if (menu_item) {
+              this.view.btnInterfaceTheme.menu.clearAll(true)
+              menu_item.setChecked(true, true)
             }
+          }
         },
 
         onTabStyleChange: function () {
-            if (this.view && this.view.menuTabStyle) {
-                _.each(this.view.menuTabStyle.items, function(item){
-                    item.setChecked(Common.Utils.InternalSettings.get("settings-tab-style")===item.value, true);
-                });
+          if (this.view?.menuTabStyle) {
+            _.each(this.view.menuTabStyle.items, (item) => {
+              item.setChecked(
+                Common.Utils.InternalSettings.get("settings-tab-style") === item.value,
+                true,
+              )
+            })
+          }
+        },
+
+        onPreviewMode: function (value) {
+          this.api?.asc_SetSheetViewType(value)
+        },
+
+        onClickMacros: function () {
+          const macrosWindow = new Common.Views.MacrosDialog({
+            api: this.api,
+          })
+          macrosWindow.show()
+        },
+
+        onClickMacrosRec: function () {
+          const recorder = this.api.getMacroRecorder()
+          recorder.isInProgress() ? recorder.stop() : recorder.start()
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        onClickMacrosPause: function () {
+          const recorder = this.api.getMacroRecorder()
+          if (recorder.isInProgress()) {
+            recorder.isPaused() ? recorder.resume() : recorder.pause()
+          }
+          Common.NotificationCenter.trigger("edit:complete", this.view)
+        },
+
+        updateMacroState: function (inProgress, paused) {
+          if (this.view) {
+            this.view.btnRecMacro.changeIcon({
+              next: inProgress ? "btn-macros-stop" : "btn-macros-record",
+              curr: inProgress ? "btn-macros-record" : "btn-macros-stop",
+            })
+            this.view.btnRecMacro.setCaption(
+              inProgress ? this.view.textStopMacro : this.view.textRecMacro,
+            )
+            this.view.btnRecMacro.updateHint(
+              inProgress ? this.view.tipStopMacro : this.view.tipRecMacro,
+            )
+            Common.Utils.lockControls(Common.enumLock.macrosStopped, !inProgress, {
+              array: [this.view.btnPauseMacro],
+            })
+            if (!inProgress) {
+              this.view.btnPauseMacro.setCaption(this.view.textPauseMacro)
+              this.view.btnPauseMacro.updateHint(this.view.tipPauseMacro)
+            } else {
+              this.view.btnPauseMacro.setCaption(
+                paused ? this.view.textResumeMacro : this.view.textPauseMacro,
+              )
+              this.view.btnPauseMacro.updateHint(
+                paused ? this.view.tipResumeMacro : this.view.tipPauseMacro,
+              )
             }
+          }
         },
 
-        onPreviewMode: function(value) {
-            this.api && this.api.asc_SetSheetViewType(value);
+        onApiUpdateSheetViewType: function (index) {
+          if (this.view && this.api && index === this.api.asc_getActiveWorksheetIndex()) {
+            const value = this.api.asc_GetSheetViewType(index)
+            this.view.btnViewPageBreak?.toggle(
+              value === Asc.c_oAscESheetViewType.pageBreakPreview,
+              true,
+            )
+            this.view.btnViewNormal?.toggle(value === Asc.c_oAscESheetViewType.normal, true)
+          }
         },
-
-        onClickMacros: function() {
-            var macrosWindow = new Common.Views.MacrosDialog({
-                api: this.api,
-            });
-            macrosWindow.show();
-        },
-
-        onClickMacrosRec: function() {
-            var recorder = this.api.getMacroRecorder();
-            recorder.isInProgress() ? recorder.stop() : recorder.start();
-            Common.NotificationCenter.trigger('edit:complete', this.view);
-        },
-
-        onClickMacrosPause: function() {
-            var recorder = this.api.getMacroRecorder();
-            if (recorder.isInProgress()) {
-                recorder.isPaused() ? recorder.resume() : recorder.pause();
-            }
-            Common.NotificationCenter.trigger('edit:complete', this.view);
-        },
-
-        updateMacroState: function(inProgress, paused) {
-            if (this.view) {
-                this.view.btnRecMacro.changeIcon({
-                    next: inProgress ? 'btn-macros-stop' : 'btn-macros-record',
-                    curr: inProgress ? 'btn-macros-record' : 'btn-macros-stop'
-                });
-                this.view.btnRecMacro.setCaption(inProgress ? this.view.textStopMacro : this.view.textRecMacro);
-                this.view.btnRecMacro.updateHint(inProgress ? this.view.tipStopMacro : this.view.tipRecMacro);
-                Common.Utils.lockControls(Common.enumLock.macrosStopped, !inProgress, {array: [this.view.btnPauseMacro]});
-                if (!inProgress) {
-                    this.view.btnPauseMacro.setCaption(this.view.textPauseMacro);
-                    this.view.btnPauseMacro.updateHint(this.view.tipPauseMacro);
-                } else {
-                    this.view.btnPauseMacro.setCaption(paused ? this.view.textResumeMacro : this.view.textPauseMacro);
-                    this.view.btnPauseMacro.updateHint(paused ? this.view.tipResumeMacro : this.view.tipPauseMacro);
-                }
-            }
-        },
-
-        onApiUpdateSheetViewType: function(index) {
-            if (this.view && this.api && index === this.api.asc_getActiveWorksheetIndex()) {
-                var value = this.api.asc_GetSheetViewType(index);
-                this.view.btnViewPageBreak && this.view.btnViewPageBreak.toggle(value===Asc.c_oAscESheetViewType.pageBreakPreview, true);
-                this.view.btnViewNormal && this.view.btnViewNormal.toggle(value===Asc.c_oAscESheetViewType.normal, true);
-            }
-        }
-
-
-    }, SSE.Controllers.ViewTab || {}));
-});
+      },
+      SSE.Controllers.ViewTab || {},
+    ),
+  )
+})

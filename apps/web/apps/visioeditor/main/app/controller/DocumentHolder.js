@@ -31,523 +31,540 @@
  *
  */
 
-define([
-    'core',
-    'visioeditor/main/app/view/DocumentHolder'
-], function () {
-    'use strict';
+define(["core", "visioeditor/main/app/view/DocumentHolder"], () => {
+  VE.Controllers.DocumentHolder = Backbone.Controller.extend({
+    models: [],
+    collections: [],
+    views: ["DocumentHolder"],
 
-    VE.Controllers.DocumentHolder = Backbone.Controller.extend({
-        models: [],
-        collections: [],
-        views: [
-            'DocumentHolder'
-        ],
-
-        initialize: function() {
-            //
-            this.addListeners({
-                'DocumentHolder': {
-                    'createdelayedelements': this.createDelayedElements
-                }
-            });
-
-            var me = this;
-
-            me._TtHeight        = 20;
-            me._isDisabled = false;
-            me._state = {};
-            me.mode = {};
-            me.mouseMoveData = null;
-            me.isTooltipHiding = false;
-
-            me.screenTip = {
-                toolTip: new Common.UI.Tooltip({
-                    owner: this,
-                    html: true,
-                    title: '<br><b>Press Ctrl and click link</b>',
-                    cls: 'link-tooltip'
-//                    style: 'word-wrap: break-word;'
-                }),
-                strTip: '',
-                isHidden: true,
-                isVisible: false
-            };
+    initialize: function () {
+      //
+      this.addListeners({
+        DocumentHolder: {
+          createdelayedelements: this.createDelayedElements,
         },
+      })
 
-        onLaunch: function() {
-            this.documentHolder = this.createView('DocumentHolder').render();
-            this.documentHolder.el.tabIndex = -1;
-            this.onAfterRender();
+      this._TtHeight = 20
+      this._isDisabled = false
+      this._state = {}
+      this.mode = {}
+      this.mouseMoveData = null
+      this.isTooltipHiding = false
 
-            var me = this;
-            Common.NotificationCenter.on({
-                'window:show': function(e){
-                    me.screenTip.toolTip.hide();
-                    me.screenTip.isVisible = false;
-                    me.mode && me.mode.isDesktopApp && me.api && me.api.asc_onShowPopupWindow();
+      this.screenTip = {
+        toolTip: new Common.UI.Tooltip({
+          owner: this,
+          html: true,
+          title: "<br><b>Press Ctrl and click link</b>",
+          cls: "link-tooltip",
+          //                    style: 'word-wrap: break-word;'
+        }),
+        strTip: "",
+        isHidden: true,
+        isVisible: false,
+      }
+    },
 
-                },
-                'modal:show': function(e){
-                },
-                'layout:changed': function(e){
-                    me.screenTip.toolTip.hide();
-                    me.screenTip.isVisible = false;
-                    me.onDocumentHolderResize();
-                }
-            });
-            Common.NotificationCenter.on('script:loaded', _.bind(me.createPostLoadElements, me));
+    onLaunch: function () {
+      this.documentHolder = this.createView("DocumentHolder").render()
+      this.documentHolder.el.tabIndex = -1
+      this.onAfterRender()
+      Common.NotificationCenter.on({
+        "window:show": (e) => {
+          this.screenTip.toolTip.hide()
+          this.screenTip.isVisible = false
+          this.mode?.isDesktopApp && this.api && this.api.asc_onShowPopupWindow()
         },
-
-        setApi: function(o) {
-            this.api = o;
-
-            if (this.api) {
-                this.api.asc_registerCallback('asc_onContextMenu',                  _.bind(this.onContextMenu, this));
-                this.api.asc_registerCallback('asc_onMouseMoveStart',               _.bind(this.onMouseMoveStart, this));
-                this.api.asc_registerCallback('asc_onMouseMoveEnd',                 _.bind(this.onMouseMoveEnd, this));
-
-                //hyperlink
-                this.api.asc_registerCallback('asc_onHyperlinkClick',               _.bind(this.onHyperlinkClick, this));
-                this.api.asc_registerCallback('asc_onMouseMove',                    _.bind(this.onMouseMove, this));
-
-                if (this.mode.isEdit === true) {
-                }
-                this.api.asc_registerCallback('asc_onCoAuthoringDisconnect',        _.bind(this.onCoAuthoringDisconnect, this));
-                Common.NotificationCenter.on('api:disconnect',                      _.bind(this.onCoAuthoringDisconnect, this));
-
-                this.api.asc_registerCallback('asc_onFocusObject',                  _.bind(this.onFocusObject, this));
-                this.api.asc_registerCallback('onPluginContextMenu',                _.bind(this.onPluginContextMenu, this));
-
-                this.documentHolder.setApi(this.api);
-            }
-
-            return this;
+        "modal:show": (e) => {},
+        "layout:changed": (e) => {
+          this.screenTip.toolTip.hide()
+          this.screenTip.isVisible = false
+          this.onDocumentHolderResize()
         },
+      })
+      Common.NotificationCenter.on("script:loaded", _.bind(this.createPostLoadElements, this))
+    },
 
-        setMode: function(m) {
-            this.mode = m;
-            this.documentHolder.setMode(m);
-        },
+    setApi: function (o) {
+      this.api = o
 
-        createPostLoadElements: function() {
-        },
+      if (this.api) {
+        this.api.asc_registerCallback("asc_onContextMenu", _.bind(this.onContextMenu, this))
+        this.api.asc_registerCallback("asc_onMouseMoveStart", _.bind(this.onMouseMoveStart, this))
+        this.api.asc_registerCallback("asc_onMouseMoveEnd", _.bind(this.onMouseMoveEnd, this))
 
-        createDelayedElements: function(view, type) {
-            var me = this,
-                view = me.documentHolder;
+        //hyperlink
+        this.api.asc_registerCallback("asc_onHyperlinkClick", _.bind(this.onHyperlinkClick, this))
+        this.api.asc_registerCallback("asc_onMouseMove", _.bind(this.onMouseMove, this))
 
-            if (type==='view') {
-                view.menuViewCopy.on('click', _.bind(me.onCutCopyPaste, me));
-            } else if (type==='edit') {
-                view.menuEditCopy.on('click', _.bind(me.onCutCopyPaste, me));
-            }
-        },
-
-        getView: function (name) {
-            return !name ?
-                this.documentHolder : Backbone.Controller.prototype.getView.call()
-        },
-
-        showPopupMenu: function(menu, value, event, docElement, eOpts){
-            var me = this;
-            if (!_.isUndefined(menu)  && menu !== null){
-                Common.UI.Menu.Manager.hideAll();
-
-                var showPoint = [event.get_X(), event.get_Y()],
-                    menuContainer = $(me.documentHolder.el).find(Common.Utils.String.format('#menu-container-{0}', menu.id));
-
-                if (!menu.rendered) {
-                    // Prepare menu container
-                    if (menuContainer.length < 1) {
-                        menuContainer = $(Common.Utils.String.format('<div id="menu-container-{0}" style="position: absolute; z-index: 10000;"><div class="dropdown-toggle" data-toggle="dropdown"></div></div>', menu.id));
-                        $(me.documentHolder.el).append(menuContainer);
-                    }
-
-                    menu.render(menuContainer);
-                    menu.cmpEl.attr({tabindex: "-1"});
-                }
-
-                menuContainer.css({
-                    left: showPoint[0],
-                    top : showPoint[1]
-                });
-
-                menu.show();
-
-                if (_.isFunction(menu.options.initMenu)) {
-                    menu.options.initMenu(value);
-                    menu.alignPosition();
-                }
-                _.delay(function() {
-                    menu.cmpEl.focus();
-                }, 10);
-
-                me.documentHolder.currentMenu = menu;
-                me.api.onPluginContextMenuShow && me.api.onPluginContextMenuShow(event);
-            }
-        },
-
-        fillViewMenuProps: function(selectedElements) {
-            var documentHolder = this.documentHolder;
-            if (!documentHolder.viewModeMenu)
-                documentHolder.createDelayedElementsViewer();
-
-            var menu_props = {};
-            return {menu_to_show: documentHolder.viewModeMenu, menu_props: menu_props};
-        },
-
-        fillEditMenuProps: function(selectedElements) {
-            var documentHolder = this.documentHolder;
-            if (!documentHolder.editModeMenu)
-                documentHolder.createDelayedElementsEditor();
-
-            if (!selectedElements || !_.isArray(selectedElements) || selectedElements.length<1)
-                return {menu_to_show: documentHolder.editModeMenu, menu_props: {}};
-
-            var me = this,
-                menu_props = {},
-                menu_to_show = null;
-            return {menu_to_show: menu_to_show, menu_props: menu_props};
-        },
-
-        applyEditorMode: function() {
-            if (this.mode && this.mode.isEdit && !this.documentHolder.editModeMenu) {
-                this.documentHolder.createDelayedElementsEditor();
-            }
-        },
-
-        showObjectMenu: function(event, docElement, eOpts){
-            return; // no getSelectedElements
-
-            var me = this;
-            if (me.api){
-                var obj = me.mode && me.mode.isEdit ? me.fillEditMenuProps(me.api.getSelectedElements()) : me.fillViewMenuProps(me.api.getSelectedElements());
-                if (obj) me.showPopupMenu(obj.menu_to_show, obj.menu_props, event, docElement, eOpts);
-            }
-        },
-
-        onContextMenu: function(event){
-            if (Common.UI.HintManager.isHintVisible())
-                Common.UI.HintManager.clearHints();
-            if (!event) {
-                Common.UI.Menu.Manager.hideAll();
-                return;
-            }
-            var me = this;
-            _.delay(function(){
-                if (event.get_Type() == Asc.c_oAscContextMenuTypes.Thumbnails) {
-                } else {
-                    me.showObjectMenu.call(me, event);
-                }
-            },10);
-        },
-
-        onFocusObject: function(selectedElements) {
-            var me = this,
-                currentMenu = me.documentHolder.currentMenu;
-            if (currentMenu && currentMenu.isVisible()){
-                var obj = me.mode && me.mode.isEdit ? me.fillEditMenuProps(selectedElements) : me.fillViewMenuProps(selectedElements);
-                if (obj) {
-                    if (obj.menu_to_show===currentMenu) {
-                        currentMenu.options.initMenu(obj.menu_props);
-                        currentMenu.alignPosition();
-                    }
-                }
-            }
-            if (this.mode && this.mode.isEdit) {
-            }
-        },
-
-        handleDocumentWheel: function(event) {
-            var me = this;
-            if (!me.api) return;
-
-            if (!me._isScrolling) {
-                me._isScrolling = true;
-                me._ctrlPressedAtScrollStart = event.ctrlKey;
-            }
-
-            clearTimeout(me._scrollEndTimeout);
-            me._scrollEndTimeout = setTimeout(function () {
-                me._isScrolling = false;
-            }, 100);
-
-            var delta = (_.isUndefined(event.originalEvent)) ? event.wheelDelta : event.originalEvent.wheelDelta;
-            if (_.isUndefined(delta)) {
-                delta = event.deltaY;
-            }
-
-            if (me._ctrlPressedAtScrollStart && !event.altKey) {
-                if (delta < 0) {
-                    me.api.zoomOut();
-                } else if (delta > 0) {
-                    me.api.zoomIn();
-                }
-
-                event.preventDefault();
-                event.stopPropagation();
-            }
-        },
-
-        handleDocumentKeyDown: function(event){
-            var me = this;
-            if (me.api){
-                var key = event.keyCode;
-                if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey){
-                    if (key === Common.UI.Keys.NUM_PLUS || key === Common.UI.Keys.EQUALITY || (Common.Utils.isGecko && key === Common.UI.Keys.EQUALITY_FF) || (Common.Utils.isOpera && key == 43)){
-                        me.api.zoomIn();
-                        event.preventDefault();
-                        event.stopPropagation();
-                        return false;
-                    }
-                    else if (key === Common.UI.Keys.NUM_MINUS || key === Common.UI.Keys.MINUS || (Common.Utils.isGecko && key === Common.UI.Keys.MINUS_FF) || (Common.Utils.isOpera && key == 45)){
-                        me.api.zoomOut();
-                        event.preventDefault();
-                        event.stopPropagation();
-                        return false;
-                    } else if (key === Common.UI.Keys.ZERO || key === Common.UI.Keys.NUM_ZERO) {// 0
-                        me.api.zoomFitToPage();
-                        event.preventDefault();
-                        event.stopPropagation();
-                        return false;
-                    }
-                }
-                if (me.documentHolder.currentMenu && me.documentHolder.currentMenu.isVisible()) {
-                    if (key == Common.UI.Keys.UP ||
-                        key == Common.UI.Keys.DOWN) {
-                        $('ul.dropdown-menu', me.documentHolder.currentMenu.el).focus();
-                    }
-                }
-
-                if (key == Common.UI.Keys.ESC) {
-                    Common.UI.Menu.Manager.hideAll();
-                }
-            }
-        },
-
-        onDocumentHolderResize: function(e){
-            var me = this;
-            me._XY          = undefined;
-            me._Height = me.documentHolder.cmpEl.height();
-            me._Width = me.documentHolder.cmpEl.width();
-            me._BodyWidth = $('body').width();
-        },
-
-        onAfterRender: function(ct){
-            var me = this;
-            var meEl = me.documentHolder.cmpEl;
-            if (meEl) {
-                meEl.on('contextmenu', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                });
-                meEl.on('click', function(e){
-                    if (e.target.localName == 'canvas') {
-                        if (me._preventClick)
-                            me._preventClick = false;
-                        else {
-                            if (e.target.getAttribute && e.target.getAttribute("oo_no_focused"))
-                                return;
-                            meEl.focus();
-                        }
-                    }
-                });
-                meEl.on('mousedown', function(e){
-                    if (e.target.localName == 'canvas')
-                        Common.UI.Menu.Manager.hideAll();
-                });
-                meEl.on('touchstart', function(e){
-                    if (e.target.localName == 'canvas')
-                        Common.UI.Menu.Manager.hideAll();
-                });
-
-                //NOTE: set mouse wheel handler
-
-                var addEvent = function( elem, type, fn ) {
-                    elem.addEventListener ? elem.addEventListener( type, fn, false ) : elem.attachEvent( "on" + type, fn );
-                };
-
-                var eventname=(/Firefox/i.test(navigator.userAgent))? 'DOMMouseScroll' : 'mousewheel';
-                addEvent(me.documentHolder.el, eventname, _.bind(me.handleDocumentWheel, me));
-            }
-
-            !Common.Utils.isChrome ? $(document).on('mousewheel', _.bind(me.handleDocumentWheel, me)) :
-                document.addEventListener('mousewheel', _.bind(me.handleDocumentWheel, me), {passive: false});
-            $(document).on('keydown', _.bind(me.handleDocumentKeyDown, me));
-
-            $(window).on('resize', _.bind(me.onDocumentHolderResize, me));
-            var viewport = me.getApplication().getController('Viewport').getView('Viewport');
-            viewport.hlayout.on('layout:resizedrag', _.bind(me.onDocumentHolderResize, me));
-        },
-
-        onHyperlinkClick: function(url) {
-            if (url) {
-                var type = this.api.asc_getUrlType(url);
-                if (type===AscCommon.c_oAscUrlType.Http || type===AscCommon.c_oAscUrlType.Email)
-                    window.open(url);
-                else {
-                    var me = this;
-                    setTimeout(function() {
-                        Common.UI.warning({
-                            maxwidth: 500,
-                            msg: Common.Utils.String.format(this.txtWarnUrl, url),
-                            buttons: ['no', 'yes'],
-                            primary: 'no',
-                            callback: function(btn) {
-                                try {
-                                    (btn == 'yes') && window.open(url);
-                                } catch (err) {
-                                    err && console.log(err.stack);
-                                }
-                            }
-                        });
-                    }, 1);
-                }
-            }
-        },
-
-        onMouseMoveStart: function() {
-            this.screenTip.isHidden = true;
-        },
-
-        onMouseMoveEnd: function() {
-            var me = this;
-            if (me.screenTip.isHidden && me.screenTip.isVisible) {
-                me.screenTip.isVisible = false;
-                me.isTooltipHiding = true;
-                me.screenTip.toolTip.hide(function(){
-                    me.isTooltipHiding = false;
-                    if (me.mouseMoveData) me.onMouseMove(me.mouseMoveData);
-                    me.mouseMoveData = null;
-                });
-            }
-        },
-
-        onMouseMove: function(moveData) {
-            var me = this,
-                cmpEl = me.documentHolder.cmpEl,
-                screenTip = me.screenTip;
-            if (_.isUndefined(me._XY)) {
-                me._XY = [
-                    Common.Utils.getOffset(cmpEl).left - $(window).scrollLeft(),
-                    Common.Utils.getOffset(cmpEl).top - $(window).scrollTop()
-                ];
-                me._Width       = cmpEl.width();
-                me._Height      = cmpEl.height();
-                me._BodyWidth   = $('body').width();
-            }
-
-            if (moveData) {
-                var showPoint, ToolTip,
-                    type = moveData.get_Type();
-
-                if (type==Asc.c_oAscMouseMoveDataTypes.Hyperlink) {
-                    if (me.isTooltipHiding) {
-                        me.mouseMoveData = moveData;
-                        return;
-                    }
-
-                    var hyperProps = moveData.get_Hyperlink();
-                    if (!hyperProps) return;
-                    ToolTip = (_.isEmpty(hyperProps.get_ToolTip())) ? hyperProps.get_Value() : hyperProps.get_ToolTip();
-                    if (ToolTip.length>256)
-                        ToolTip = ToolTip.substr(0, 256) + '...';
-
-                    var recalc = false;
-                    screenTip.isHidden = false;
-
-                    ToolTip = Common.Utils.String.htmlEncode(ToolTip);
-
-                    if (screenTip.tipType !== type || screenTip.tipLength !== ToolTip.length || screenTip.strTip.indexOf(ToolTip)<0 ) {
-                        screenTip.toolTip.setTitle((type==Asc.c_oAscMouseMoveDataTypes.Hyperlink) ? (ToolTip + '<br><b>' + Common.Utils.String.platformKey('Ctrl', me.documentHolder.txtPressLink) + '</b>') : ToolTip);
-                        screenTip.tipLength = ToolTip.length;
-                        screenTip.strTip = ToolTip;
-                        screenTip.tipType = type;
-                        recalc = true;
-                    }
-
-                    showPoint = [moveData.get_X(), moveData.get_Y()];
-                    showPoint[1] += (me._XY[1]-15);
-                    showPoint[0] += (me._XY[0]+5);
-
-                    if (!screenTip.isVisible || recalc) {
-                        screenTip.isVisible = true;
-                        screenTip.toolTip.show([-10000, -10000]);
-                    }
-
-                    if ( recalc ) {
-                        screenTip.tipHeight = screenTip.toolTip.getBSTip().$tip.height();
-                        screenTip.tipWidth = screenTip.toolTip.getBSTip().$tip.width();
-                    }
-
-                    recalc = false;
-                    if (showPoint[0] + screenTip.tipWidth > me._BodyWidth ) {
-                        showPoint[0] = me._BodyWidth - screenTip.tipWidth;
-                        recalc = true;
-                    }
-                    showPoint[1] -= screenTip.tipHeight;
-                    if (showPoint[1]<0)
-                        showPoint[1] = 0;
-                    if (showPoint[0] + screenTip.tipWidth > me._BodyWidth )
-                        showPoint[0] = me._BodyWidth - screenTip.tipWidth;
-                    screenTip.toolTip.getBSTip().$tip.css({top: showPoint[1] + 'px', left: showPoint[0] + 'px'});
-                }
-            }
-        },
-
-        onCoAuthoringDisconnect: function() {
-            this.mode.isEdit = false;
-        },
-
-        SetDisabled: function(state) {
-            this._isDisabled = state;
-            this.documentHolder.SetDisabled(state);
-        },
-
-        changePosition: function() {
-            var me = this,
-                cmpEl = me.documentHolder.cmpEl;
-            me._XY = [
-                Common.Utils.getOffset(cmpEl).left - $(window).scrollLeft(),
-                Common.Utils.getOffset(cmpEl).top  - $(window).scrollTop()
-            ];
-            me._Height = cmpEl.height();
-            me._Width = cmpEl.width();
-            me._BodyWidth = $('body').width();
-            me.onMouseMoveStart();
-        },
-
-        onCutCopyPaste: function(item, e) {
-            var me = this;
-            if (me.api) {
-                var res =  (item.value == 'cut') ? me.api.Cut() : ((item.value == 'copy') ? me.api.Copy() : me.api.Paste());
-                if (!res) {
-                    if (!Common.localStorage.getBool("ve-hide-copywarning") && (item.value === 'paste' || me.mode.canCopy)) {
-                        (new Common.Views.CopyWarningDialog({
-                            handler: function(dontshow) {
-                                if (dontshow) Common.localStorage.setItem("ve-hide-copywarning", 1);
-                                me.editComplete();
-                            }
-                        })).show();
-                    }
-                }
-            }
-            me.editComplete();
-        },
-
-        onPluginContextMenu: function(data) {
-            if (data && data.length>0 && this.documentHolder && this.documentHolder.currentMenu && this.documentHolder.currentMenu.isVisible()){
-                this.documentHolder.updateCustomItems(this.documentHolder.currentMenu, data);
-            }
-        },
-
-        editComplete: function() {
-            this.documentHolder && this.documentHolder.fireEvent('editcomplete', this.documentHolder);
-        },
-
-        clearSelection: function() {
+        if (this.mode.isEdit === true) {
         }
-    });
-});
+        this.api.asc_registerCallback(
+          "asc_onCoAuthoringDisconnect",
+          _.bind(this.onCoAuthoringDisconnect, this),
+        )
+        Common.NotificationCenter.on("api:disconnect", _.bind(this.onCoAuthoringDisconnect, this))
+
+        this.api.asc_registerCallback("asc_onFocusObject", _.bind(this.onFocusObject, this))
+        this.api.asc_registerCallback("onPluginContextMenu", _.bind(this.onPluginContextMenu, this))
+
+        this.documentHolder.setApi(this.api)
+      }
+
+      return this
+    },
+
+    setMode: function (m) {
+      this.mode = m
+      this.documentHolder.setMode(m)
+    },
+
+    createPostLoadElements: () => {},
+
+    createDelayedElements: function (view, type) {
+      const view = this.documentHolder
+
+      if (type === "view") {
+        view.menuViewCopy.on("click", _.bind(this.onCutCopyPaste, this))
+      } else if (type === "edit") {
+        view.menuEditCopy.on("click", _.bind(this.onCutCopyPaste, this))
+      }
+    },
+
+    getView: function (name) {
+      return !name ? this.documentHolder : Backbone.Controller.prototype.getView.call()
+    },
+
+    showPopupMenu: function (menu, value, event, docElement, eOpts) {
+      if (!_.isUndefined(menu) && menu !== null) {
+        Common.UI.Menu.Manager.hideAll()
+
+        const showPoint = [event.get_X(), event.get_Y()]
+        let menuContainer = $(this.documentHolder.el).find(
+          Common.Utils.String.format("#menu-container-{0}", menu.id),
+        )
+
+        if (!menu.rendered) {
+          // Prepare menu container
+          if (menuContainer.length < 1) {
+            menuContainer = $(
+              Common.Utils.String.format(
+                '<div id="menu-container-{0}" style="position: absolute; z-index: 10000;"><div class="dropdown-toggle" data-toggle="dropdown"></div></div>',
+                menu.id,
+              ),
+            )
+            $(this.documentHolder.el).append(menuContainer)
+          }
+
+          menu.render(menuContainer)
+          menu.cmpEl.attr({ tabindex: "-1" })
+        }
+
+        menuContainer.css({
+          left: showPoint[0],
+          top: showPoint[1],
+        })
+
+        menu.show()
+
+        if (_.isFunction(menu.options.initMenu)) {
+          menu.options.initMenu(value)
+          menu.alignPosition()
+        }
+        _.delay(() => {
+          menu.cmpEl.focus()
+        }, 10)
+
+        this.documentHolder.currentMenu = menu
+        this.api.onPluginContextMenuShow?.(event)
+      }
+    },
+
+    fillViewMenuProps: function (selectedElements) {
+      const documentHolder = this.documentHolder
+      if (!documentHolder.viewModeMenu) documentHolder.createDelayedElementsViewer()
+
+      const menu_props = {}
+      return { menu_to_show: documentHolder.viewModeMenu, menu_props: menu_props }
+    },
+
+    fillEditMenuProps: function (selectedElements) {
+      const documentHolder = this.documentHolder
+      if (!documentHolder.editModeMenu) documentHolder.createDelayedElementsEditor()
+
+      if (!selectedElements || !_.isArray(selectedElements) || selectedElements.length < 1)
+        return { menu_to_show: documentHolder.editModeMenu, menu_props: {} }
+      const menu_props = {}
+      const menu_to_show = null
+      return { menu_to_show: menu_to_show, menu_props: menu_props }
+    },
+
+    applyEditorMode: function () {
+      if (this.mode?.isEdit && !this.documentHolder.editModeMenu) {
+        this.documentHolder.createDelayedElementsEditor()
+      }
+    },
+
+    showObjectMenu: function (event, docElement, eOpts) {
+      return // no getSelectedElements
+      if (this.api) {
+        const obj = this.mode?.isEdit
+          ? this.fillEditMenuProps(this.api.getSelectedElements())
+          : this.fillViewMenuProps(this.api.getSelectedElements())
+        if (obj) this.showPopupMenu(obj.menu_to_show, obj.menu_props, event, docElement, eOpts)
+      }
+    },
+
+    onContextMenu: function (event) {
+      if (Common.UI.HintManager.isHintVisible()) Common.UI.HintManager.clearHints()
+      if (!event) {
+        Common.UI.Menu.Manager.hideAll()
+        return
+      }
+      _.delay(() => {
+        if (event.get_Type() === Asc.c_oAscContextMenuTypes.Thumbnails) {
+        } else {
+          this.showObjectMenu.call(this, event)
+        }
+      }, 10)
+    },
+
+    onFocusObject: function (selectedElements) {
+      const currentMenu = this.documentHolder.currentMenu
+      if (currentMenu?.isVisible()) {
+        const obj = this.mode?.isEdit
+          ? this.fillEditMenuProps(selectedElements)
+          : this.fillViewMenuProps(selectedElements)
+        if (obj) {
+          if (obj.menu_to_show === currentMenu) {
+            currentMenu.options.initMenu(obj.menu_props)
+            currentMenu.alignPosition()
+          }
+        }
+      }
+      if (this.mode?.isEdit) {
+      }
+    },
+
+    handleDocumentWheel: function (event) {
+      if (!this.api) return
+
+      if (!this._isScrolling) {
+        this._isScrolling = true
+        this._ctrlPressedAtScrollStart = event.ctrlKey
+      }
+
+      clearTimeout(this._scrollEndTimeout)
+      this._scrollEndTimeout = setTimeout(() => {
+        this._isScrolling = false
+      }, 100)
+
+      let delta = _.isUndefined(event.originalEvent)
+        ? event.wheelDelta
+        : event.originalEvent.wheelDelta
+      if (_.isUndefined(delta)) {
+        delta = event.deltaY
+      }
+
+      if (this._ctrlPressedAtScrollStart && !event.altKey) {
+        if (delta < 0) {
+          this.api.zoomOut()
+        } else if (delta > 0) {
+          this.api.zoomIn()
+        }
+
+        event.preventDefault()
+        event.stopPropagation()
+      }
+    },
+
+    handleDocumentKeyDown: function (event) {
+      if (this.api) {
+        const key = event.keyCode
+        if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey) {
+          if (
+            key === Common.UI.Keys.NUM_PLUS ||
+            key === Common.UI.Keys.EQUALITY ||
+            (Common.Utils.isGecko && key === Common.UI.Keys.EQUALITY_FF) ||
+            (Common.Utils.isOpera && key === 43)
+          ) {
+            this.api.zoomIn()
+            event.preventDefault()
+            event.stopPropagation()
+            return false
+          }
+          if (
+            key === Common.UI.Keys.NUM_MINUS ||
+            key === Common.UI.Keys.MINUS ||
+            (Common.Utils.isGecko && key === Common.UI.Keys.MINUS_FF) ||
+            (Common.Utils.isOpera && key === 45)
+          ) {
+            this.api.zoomOut()
+            event.preventDefault()
+            event.stopPropagation()
+            return false
+          }
+          if (key === Common.UI.Keys.ZERO || key === Common.UI.Keys.NUM_ZERO) {
+            // 0
+            this.api.zoomFitToPage()
+            event.preventDefault()
+            event.stopPropagation()
+            return false
+          }
+        }
+        if (this.documentHolder.currentMenu?.isVisible()) {
+          if (key === Common.UI.Keys.UP || key === Common.UI.Keys.DOWN) {
+            $("ul.dropdown-menu", this.documentHolder.currentMenu.el).focus()
+          }
+        }
+
+        if (key === Common.UI.Keys.ESC) {
+          Common.UI.Menu.Manager.hideAll()
+        }
+      }
+    },
+
+    onDocumentHolderResize: function (e) {
+      this._XY = undefined
+      this._Height = this.documentHolder.cmpEl.height()
+      this._Width = this.documentHolder.cmpEl.width()
+      this._BodyWidth = $("body").width()
+    },
+
+    onAfterRender: function (ct) {
+      const meEl = this.documentHolder.cmpEl
+      if (meEl) {
+        meEl.on("contextmenu", (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          return false
+        })
+        meEl.on("click", (e) => {
+          if (e.target.localName === "canvas") {
+            if (this._preventClick) this._preventClick = false
+            else {
+              if (e.target.getAttribute?.("oo_no_focused")) return
+              meEl.focus()
+            }
+          }
+        })
+        meEl.on("mousedown", (e) => {
+          if (e.target.localName === "canvas") Common.UI.Menu.Manager.hideAll()
+        })
+        meEl.on("touchstart", (e) => {
+          if (e.target.localName === "canvas") Common.UI.Menu.Manager.hideAll()
+        })
+
+        //NOTE: set mouse wheel handler
+
+        const addEvent = (elem, type, fn) => {
+          elem.addEventListener
+            ? elem.addEventListener(type, fn, false)
+            : elem.attachEvent(`on${type}`, fn)
+        }
+
+        const eventname = /Firefox/i.test(navigator.userAgent) ? "DOMMouseScroll" : "mousewheel"
+        addEvent(this.documentHolder.el, eventname, _.bind(this.handleDocumentWheel, this))
+      }
+
+      !Common.Utils.isChrome
+        ? $(document).on("mousewheel", _.bind(this.handleDocumentWheel, this))
+        : document.addEventListener("mousewheel", _.bind(this.handleDocumentWheel, this), {
+            passive: false,
+          })
+      $(document).on("keydown", _.bind(this.handleDocumentKeyDown, this))
+
+      $(window).on("resize", _.bind(this.onDocumentHolderResize, this))
+      const viewport = this.getApplication().getController("Viewport").getView("Viewport")
+      viewport.hlayout.on("layout:resizedrag", _.bind(this.onDocumentHolderResize, this))
+    },
+
+    onHyperlinkClick: function (url) {
+      if (url) {
+        const type = this.api.asc_getUrlType(url)
+        if (type === AscCommon.c_oAscUrlType.Http || type === AscCommon.c_oAscUrlType.Email)
+          window.open(url)
+        else {
+          setTimeout(function () {
+            Common.UI.warning({
+              maxwidth: 500,
+              msg: Common.Utils.String.format(this.txtWarnUrl, url),
+              buttons: ["no", "yes"],
+              primary: "no",
+              callback: (btn) => {
+                try {
+                  btn === "yes" && window.open(url)
+                } catch (err) {
+                  err && console.log(err.stack)
+                }
+              },
+            })
+          }, 1)
+        }
+      }
+    },
+
+    onMouseMoveStart: function () {
+      this.screenTip.isHidden = true
+    },
+
+    onMouseMoveEnd: function () {
+      if (this.screenTip.isHidden && this.screenTip.isVisible) {
+        this.screenTip.isVisible = false
+        this.isTooltipHiding = true
+        this.screenTip.toolTip.hide(() => {
+          this.isTooltipHiding = false
+          if (this.mouseMoveData) this.onMouseMove(this.mouseMoveData)
+          this.mouseMoveData = null
+        })
+      }
+    },
+
+    onMouseMove: function (moveData) {
+      const cmpEl = this.documentHolder.cmpEl
+      const screenTip = this.screenTip
+      if (_.isUndefined(this._XY)) {
+        this._XY = [
+          Common.Utils.getOffset(cmpEl).left - $(window).scrollLeft(),
+          Common.Utils.getOffset(cmpEl).top - $(window).scrollTop(),
+        ]
+        this._Width = cmpEl.width()
+        this._Height = cmpEl.height()
+        this._BodyWidth = $("body").width()
+      }
+
+      if (moveData) {
+        let showPoint
+        let ToolTip
+        const type = moveData.get_Type()
+
+        if (type === Asc.c_oAscMouseMoveDataTypes.Hyperlink) {
+          if (this.isTooltipHiding) {
+            this.mouseMoveData = moveData
+            return
+          }
+
+          const hyperProps = moveData.get_Hyperlink()
+          if (!hyperProps) return
+          ToolTip = _.isEmpty(hyperProps.get_ToolTip())
+            ? hyperProps.get_Value()
+            : hyperProps.get_ToolTip()
+          if (ToolTip.length > 256) ToolTip = `${ToolTip.substr(0, 256)}...`
+
+          let recalc = false
+          screenTip.isHidden = false
+
+          ToolTip = Common.Utils.String.htmlEncode(ToolTip)
+
+          if (
+            screenTip.tipType !== type ||
+            screenTip.tipLength !== ToolTip.length ||
+            screenTip.strTip.indexOf(ToolTip) < 0
+          ) {
+            screenTip.toolTip.setTitle(
+              type === Asc.c_oAscMouseMoveDataTypes.Hyperlink
+                ? `${ToolTip}<br><b>${Common.Utils.String.platformKey("Ctrl", this.documentHolder.txtPressLink)}</b>`
+                : ToolTip,
+            )
+            screenTip.tipLength = ToolTip.length
+            screenTip.strTip = ToolTip
+            screenTip.tipType = type
+            recalc = true
+          }
+
+          showPoint = [moveData.get_X(), moveData.get_Y()]
+          showPoint[1] += this._XY[1] - 15
+          showPoint[0] += this._XY[0] + 5
+
+          if (!screenTip.isVisible || recalc) {
+            screenTip.isVisible = true
+            screenTip.toolTip.show([-10000, -10000])
+          }
+
+          if (recalc) {
+            screenTip.tipHeight = screenTip.toolTip.getBSTip().$tip.height()
+            screenTip.tipWidth = screenTip.toolTip.getBSTip().$tip.width()
+          }
+
+          recalc = false
+          if (showPoint[0] + screenTip.tipWidth > this._BodyWidth) {
+            showPoint[0] = this._BodyWidth - screenTip.tipWidth
+            recalc = true
+          }
+          showPoint[1] -= screenTip.tipHeight
+          if (showPoint[1] < 0) showPoint[1] = 0
+          if (showPoint[0] + screenTip.tipWidth > this._BodyWidth)
+            showPoint[0] = this._BodyWidth - screenTip.tipWidth
+          screenTip.toolTip
+            .getBSTip()
+            .$tip.css({ top: `${showPoint[1]}px`, left: `${showPoint[0]}px` })
+        }
+      }
+    },
+
+    onCoAuthoringDisconnect: function () {
+      this.mode.isEdit = false
+    },
+
+    SetDisabled: function (state) {
+      this._isDisabled = state
+      this.documentHolder.SetDisabled(state)
+    },
+
+    changePosition: function () {
+      const cmpEl = this.documentHolder.cmpEl
+      this._XY = [
+        Common.Utils.getOffset(cmpEl).left - $(window).scrollLeft(),
+        Common.Utils.getOffset(cmpEl).top - $(window).scrollTop(),
+      ]
+      this._Height = cmpEl.height()
+      this._Width = cmpEl.width()
+      this._BodyWidth = $("body").width()
+      this.onMouseMoveStart()
+    },
+
+    onCutCopyPaste: function (item, e) {
+      if (this.api) {
+        const res =
+          item.value === "cut"
+            ? this.api.Cut()
+            : item.value === "copy"
+              ? this.api.Copy()
+              : this.api.Paste()
+        if (!res) {
+          if (
+            !Common.localStorage.getBool("ve-hide-copywarning") &&
+            (item.value === "paste" || this.mode.canCopy)
+          ) {
+            new Common.Views.CopyWarningDialog({
+              handler: (dontshow) => {
+                if (dontshow) Common.localStorage.setItem("ve-hide-copywarning", 1)
+                this.editComplete()
+              },
+            }).show()
+          }
+        }
+      }
+      this.editComplete()
+    },
+
+    onPluginContextMenu: function (data) {
+      if (
+        data &&
+        data.length > 0 &&
+        this.documentHolder &&
+        this.documentHolder.currentMenu &&
+        this.documentHolder.currentMenu.isVisible()
+      ) {
+        this.documentHolder.updateCustomItems(this.documentHolder.currentMenu, data)
+      }
+    },
+
+    editComplete: function () {
+      this.documentHolder?.fireEvent("editcomplete", this.documentHolder)
+    },
+
+    clearSelection: () => {},
+  })
+})

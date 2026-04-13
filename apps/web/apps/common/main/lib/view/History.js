@@ -27,7 +27,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Views = Common.Views || {};
 
@@ -35,8 +35,7 @@ define([
     'common/main/lib/util/utils',
     'common/main/lib/component/BaseView',
     'common/main/lib/component/Layout'
-], function (template) {
-    'use strict';
+], (template) => {
 
     Common.Views.History = Common.UI.BaseView.extend(_.extend({
         el: '#left-panel-history',
@@ -58,13 +57,13 @@ define([
             _.extend(this, options);
             Common.UI.BaseView.prototype.initialize.call(this, arguments);
 
-            var filter = Common.localStorage.getKeysFilter();
-            this.appPrefix = (filter && filter.length) ? filter.split(',')[0] : '';
+            const filter = Common.localStorage.getKeysFilter();
+            this.appPrefix = (filter?.length) ? filter.split(',')[0] : '';
         },
 
         render: function(el) {
             el = el || this.el;
-            $(el).html(this.template({scope: this})).width( (parseInt(Common.localStorage.getItem(this.appPrefix + 'mainmenu-width')) || MENU_SCALE_PART) - SCALE_MIN);
+            $(el).html(this.template({scope: this})).width( (Number.parseInt(Common.localStorage.getItem(`${this.appPrefix}mainmenu-width`)) || MENU_SCALE_PART) - SCALE_MIN);
 
             this.viewHistoryList = new Common.UI.TreeView({
                 el: $('#history-list'),
@@ -75,7 +74,7 @@ define([
                     '<div ', 
                         'id="<%= id %>"',
                         'class="tree-item ' + '<% if (!isVisible) { %>' + 'hidden' + '<% } %>' + '" ',
-                        'style="<% if (hasParent) { %>' + (Common.UI.isRTL() ? 'padding-right: 40px;' : 'padding-left: 40px;') + '<% } %>"',
+                        `style="<% if (hasParent) { %>${Common.UI.isRTL() ? 'padding-right: 40px;' : 'padding-left: 40px;'}<% } %>"`,
                     '>',
                         
                         '<% if (!hasParent) { %>',
@@ -101,7 +100,7 @@ define([
                                     '<div class="item-title">',
                                         '<div class="user-date"><%= created %></div>',
                                         '<% if (markedAsVersion) { %>',
-                                            '<div class="user-version">' + this.textVer + '<%=version%></div>',
+                                            `<div class="user-version">${this.textVer}<%=version%></div>`,
                                         '<% } %>',
                                     '</div>',
                                     '<div class="user-name">',
@@ -110,16 +109,14 @@ define([
                                 '</div>',
                             '</div>',
                             '<% if (canRestore && selected) { %>',
-                                '<label class="revision-restore" role="presentation" tabindex="-1">' + this.textRestore + '</label>',
+                                `<label class="revision-restore" role="presentation" tabindex="-1">${this.textRestore}</label>`,
                             '<% } %>',
                         '</div>',
                     '</div>'
                 ].join(''))
             });
-
-            var me = this;
-            this.viewHistoryList.on('item:expand', function (record, newVal, oldVal) {
-                me.btnExpand.setCaption(me.storeHistory.hasCollapsed() ? me.textShowAll : me.textHideAll);
+            this.viewHistoryList.on('item:expand', (record, newVal, oldVal) => {
+                this.btnExpand.setCaption(this.storeHistory.hasCollapsed() ? this.textShowAll : this.textHideAll);
             });
    
             this.btnBackToDocument = new Common.UI.Button({
@@ -129,13 +126,13 @@ define([
                 hint: this.textCloseHistory
             });
 
-            var buttonMenuItems = [
+            const buttonMenuItems = [
                 this.btnExpand = new Common.UI.MenuItem({
                     caption: this.textHideAll,
                     checkable: false
                 })
             ];
-            if(!!window.DE) {
+            if(window.DE) {
                 buttonMenuItems.push(
                     this.chHighlightDeleted = new Common.UI.MenuItem({
                         caption: this.textHighlightDeleted,

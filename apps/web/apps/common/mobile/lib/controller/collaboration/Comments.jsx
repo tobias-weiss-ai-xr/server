@@ -1,12 +1,12 @@
-import React, {Component, Fragment} from 'react';
-import { inject, observer } from "mobx-react";
 import { f7 } from 'framework7-react';
-import {Device} from '../../../../../common/mobile/utils/device';
+import { inject, observer } from "mobx-react";
+import React, {Component, Fragment} from 'react';
 import { withTranslation} from 'react-i18next';
+import {Device} from '../../../../../common/mobile/utils/device';
 import { LocalStorage } from '../../../utils/LocalStorage.mjs';
 
-import {AddComment, EditComment, AddReply, EditReply, ViewComments, ViewCurrentComments} from '../../view/collaboration/Comments';
 import { getUserColor } from '../../../utils/getUserColor';
+import {AddComment, AddReply, EditComment, EditReply, ViewComments, ViewCurrentComments} from '../../view/collaboration/Comments';
 
 // utils
 const timeZoneOffsetInMs = (new Date()).getTimezoneOffset() * 60000;
@@ -22,24 +22,24 @@ const ooDateToString = (date) => {
 };
 const stringOOToLocalDate = (date) => {
     if (typeof date === 'string')
-        return parseInt(date);
+        return Number.parseInt(date);
     return 0;
 };
 const stringUtcToLocalDate = (date) => {
     if (typeof date === 'string')
-        return parseInt(date) + timeZoneOffsetInMs;
+        return Number.parseInt(date) + timeZoneOffsetInMs;
     return 0;
 };
 const dateToLocaleTimeString = (date, lang) => {
     const format = (date) => {
         let hours = date.getHours();
         let minutes = date.getMinutes();
-        let ampm = hours >= 12 ? 'pm' : 'am';
+        const ampm = hours >= 12 ? 'pm' : 'am';
 
         hours = hours % 12;
         hours = hours ? hours : 12; // the hour '0' should be '12'
-        minutes = minutes < 10 ? '0' + minutes : minutes;
-        return hours + ':' + minutes + ' ' + ampm;
+        minutes = minutes < 10 ? `0${minutes}` : minutes;
+        return `${hours}:${minutes} ${ampm}`;
     };
     lang = (lang || 'en').replace('_', '-').toLowerCase();
     try {
@@ -50,7 +50,7 @@ const dateToLocaleTimeString = (date, lang) => {
     }
 
     // MM/dd/yyyy hh:mm AM
-    return (date.getMonth() + 1) + '/' + (date.getDate()) + '/' + date.getFullYear() + ' ' + format(date);
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${format(date)}`;
 };
 const parseUserName = name => {
     return AscCommon.UserInfoParser.getParsedName(name);
@@ -97,7 +97,7 @@ class CommentsController extends Component {
         });
     }
     onApiActiveSheetChanged (index) {
-        this.onFilterChange(['doc', 'sheet' + Common.EditorApi.get().asc_getWorksheetId(index)]);
+        this.onFilterChange(['doc', `sheet${Common.EditorApi.get().asc_getWorksheetId(index)}`]);
     }
     addComment (id, data) {
         const comment = this.readSDKComment(id, data);
@@ -208,7 +208,7 @@ class CommentsController extends Component {
             quote               : data.asc_getQuoteText(),
             comment             : data.asc_getText(),
             resolved            : data.asc_getSolved(),
-            unattached          : !!data.asc_getDocumentFlag ? data.asc_getDocumentFlag() : false,
+            unattached          : data.asc_getDocumentFlag ? data.asc_getDocumentFlag() : false,
             time                : date.getTime(),
             replies             : [],
             groupName           : (groupName && groupName.length>1) ? groupName[1] : null,
@@ -349,7 +349,7 @@ class EditCommentController extends Component {
             ascComment.asc_putSolved(comment.resolved);
             ascComment.asc_putGuid(comment.guid);
 
-            if (!!ascComment.asc_putDocumentFlag) {
+            if (ascComment.asc_putDocumentFlag) {
                 ascComment.asc_putDocumentFlag(comment.unattached);
             }
 
@@ -395,13 +395,13 @@ class EditCommentController extends Component {
             ascComment.asc_putSolved(comment.resolved);
             ascComment.asc_putGuid(comment.guid);
 
-            if (!!ascComment.asc_putDocumentFlag) {
+            if (ascComment.asc_putDocumentFlag) {
                 ascComment.asc_putDocumentFlag(comment.unattached);
             }
 
             reply = comment.replies;
-            if (reply && reply.length) {
-                reply.forEach(function (reply) {
+            if (reply?.length) {
+                reply.forEach((reply) => {
 
                     addReply = (typeof Asc.asc_CCommentDataWord !== 'undefined' ? new Asc.asc_CCommentDataWord(null) : new Asc.asc_CCommentData(null));
                     if (addReply) {
@@ -483,9 +483,9 @@ class ViewCommentsController extends Component {
         this.setState({isOpenViewCurComments: false});
     }
     onResolveComment (comment) {
-        let reply = null,
-            addReply = null,
-            ascComment = (typeof Asc.asc_CCommentDataWord !== 'undefined' ? new Asc.asc_CCommentDataWord(null) : new Asc.asc_CCommentData(null));
+        let reply = null;
+        let addReply = null;
+        const ascComment = (typeof Asc.asc_CCommentDataWord !== 'undefined' ? new Asc.asc_CCommentDataWord(null) : new Asc.asc_CCommentData(null));
 
         if (ascComment && comment) {
             ascComment.asc_putText(comment.comment);
@@ -497,7 +497,7 @@ class ViewCommentsController extends Component {
             ascComment.asc_putSolved(!comment.resolved);
             ascComment.asc_putGuid(comment.guid);
 
-            if (!!ascComment.asc_putDocumentFlag) {
+            if (ascComment.asc_putDocumentFlag) {
                 ascComment.asc_putDocumentFlag(comment.unattached);
             }
 
@@ -530,9 +530,9 @@ class ViewCommentsController extends Component {
         comment && api.asc_removeComment(comment.uid);
     }
     deleteReply (comment, reply) {
-        let replies = null,
-            addReply = null,
-            ascComment = (!!Asc.asc_CCommentDataWord ? new Asc.asc_CCommentDataWord(null) : new Asc.asc_CCommentData(null));
+        let replies = null;
+        let addReply = null;
+        const ascComment = (Asc.asc_CCommentDataWord ? new Asc.asc_CCommentDataWord(null) : new Asc.asc_CCommentData(null));
 
         const indReply = reply.ind;
 
@@ -546,15 +546,15 @@ class ViewCommentsController extends Component {
             ascComment.asc_putSolved(comment.resolved);
             ascComment.asc_putGuid(comment.guid);
 
-            if (!!ascComment.asc_putDocumentFlag) {
+            if (ascComment.asc_putDocumentFlag) {
                 ascComment.asc_putDocumentFlag(comment.unattached);
             }
 
             replies = comment.replies;
-            if (replies && replies.length) {
+            if (replies?.length) {
                 replies.forEach((reply) => {
                     if (reply.ind !== indReply) {
-                        addReply = (!!Asc.asc_CCommentDataWord ? new Asc.asc_CCommentDataWord(null) : new Asc.asc_CCommentData(null));
+                        addReply = (Asc.asc_CCommentDataWord ? new Asc.asc_CCommentDataWord(null) : new Asc.asc_CCommentData(null));
                         if (addReply) {
                             addReply.asc_putText(reply.reply);
                             addReply.asc_putTime(utcDateToString(new Date(reply.time)));
@@ -644,9 +644,6 @@ class ViewCommentsController extends Component {
 }
 
 class ViewCommentsSheetsController extends ViewCommentsController {
-    constructor(props) {
-        super(props);
-    }
 }
 
 const _CommentsController = inject('storeAppOptions', 'storeComments', 'users', "storeApplicationSettings")(observer(CommentsController));

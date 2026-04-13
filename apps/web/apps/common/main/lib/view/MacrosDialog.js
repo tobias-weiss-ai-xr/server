@@ -31,15 +31,14 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () {
-    'use strict';
+define([], () => {
     Common.Views.MacrosDialog = Common.UI.Window.extend(_.extend({
         initialize : function(options) {
-            var _options = {},
-                innerHeight = Math.max(Common.Utils.innerHeight() - Common.Utils.InternalSettings.get('window-inactive-area-top'), 350),
-                innerWidth = Math.max(Common.Utils.innerWidth(), 600);
+            const _options = {};
+            const innerHeight = Math.max(Common.Utils.innerHeight() - Common.Utils.InternalSettings.get('window-inactive-area-top'), 350);
+            const innerWidth = Math.max(Common.Utils.innerWidth(), 600);
 
             _.extend(_options, {
                 id: 'macros-dialog',
@@ -74,44 +73,7 @@ define([], function () {
             };
 
             this.template = [
-                '<div id="macros-dialog-content">' +
-                    '<div id="macros-dialog-left" class="noselect">' +
-                        '<div id="macros-menu" <% if(!isFunctionsSupport){%> style="height: 100%;" <% } %>>' +
-                            '<div class="menu-header">' +
-                                '<label>' + this.textMacros + '</label>' +
-                                '<div id="btn-ai-macros-add"></div>' +
-                                '<div id="btn-macros-add"></div>' +
-                            '</div>' +
-                            '<div class="separator horizontal" style="position: relative"></div>' +
-                            '<div id="macros-list"></div>' +
-                        '</div>' +
-                        '<div class="separator horizontal" <% if(!isFunctionsSupport){%> style="display: none;" <% } %> ></div>' +
-                        '<div id="functions-menu" <% if(!isFunctionsSupport){%> style="display: none;" <% } %> >' +
-                            '<div class="menu-header">' +
-                                '<label id="macros-dialog-functions-label">' + this.textCustomFunctions + '</label>' +
-                                '<div id="btn-function-add"></div>' +
-                            '</div>' +
-                            '<div class="separator horizontal" style="position: relative"></div>' +
-                            '<div id="functions-list"></div>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="separator vertical" style="position: relative"></div>' +
-                    '<div id="macros-dialog-right">' + 
-                        '<div class="menu-header">' +
-                            '<div id="btn-macros-undo"></div>' +
-                            '<div id="btn-macros-redo"></div>' +
-                            '<div id="btn-macros-run" class="lock-for-function"></div>' +
-                            '<div id="btn-macros-debug" class="lock-for-function"></div>' +
-                            '<div id="btn-macros-copy"></div>' +
-                            '<div id="btn-macros-rename"></div>' +
-                            '<div id="btn-macros-delete"></div>' +
-                            '<div id="ch-macros-autostart" class="lock-for-function"></div>' +
-                        '</div>' +
-                        '<div class="separator horizontal" style="position: relative"></div>' +
-                        '<div id="macros-code-editor" class="invisible"></div>' +
-                    '</div>' +
-                '</div>'+
-                '<div class="separator horizontal" style="position: relative"></div>',
+                `<div id="macros-dialog-content"><div id="macros-dialog-left" class="noselect"><div id="macros-menu" <% if(!isFunctionsSupport){%> style="height: 100%;" <% } %>><div class="menu-header"><label>${this.textMacros}</label><div id="btn-ai-macros-add"></div><div id="btn-macros-add"></div></div><div class="separator horizontal" style="position: relative"></div><div id="macros-list"></div></div><div class="separator horizontal" <% if(!isFunctionsSupport){%> style="display: none;" <% } %> ></div><div id="functions-menu" <% if(!isFunctionsSupport){%> style="display: none;" <% } %> ><div class="menu-header"><label id="macros-dialog-functions-label">${this.textCustomFunctions}</label><div id="btn-function-add"></div></div><div class="separator horizontal" style="position: relative"></div><div id="functions-list"></div></div></div><div class="separator vertical" style="position: relative"></div><div id="macros-dialog-right"><div class="menu-header"><div id="btn-macros-undo"></div><div id="btn-macros-redo"></div><div id="btn-macros-run" class="lock-for-function"></div><div id="btn-macros-debug" class="lock-for-function"></div><div id="btn-macros-copy"></div><div id="btn-macros-rename"></div><div id="btn-macros-delete"></div><div id="ch-macros-autostart" class="lock-for-function"></div></div><div class="separator horizontal" style="position: relative"></div><div id="macros-code-editor" class="invisible"></div></div></div><div class="separator horizontal" style="position: relative"></div>`,
             ].join('');
 
             _options.tpl = _.template(this.template)({
@@ -120,11 +82,11 @@ define([], function () {
 
             this.on({
                 'help': this.onHelp,
-                'drag': function(args){
-                    args[0].codeEditor && args[0].codeEditor.enablePointerEvents(args[1]!=='start');
+                'drag': (args)=> {
+                    args[0].codeEditor?.enablePointerEvents(args[1]!=='start');
                 },
-                'resize': function(args){
-                    args[0].codeEditor && args[0].codeEditor.enablePointerEvents(args[1]!=='start');
+                'resize': (args)=> {
+                    args[0].codeEditor?.enablePointerEvents(args[1]!=='start');
                 }
             });
 
@@ -133,26 +95,24 @@ define([], function () {
 
         render: function() {
             Common.UI.Window.prototype.render.call(this);
-
-            var me = this,
-                $window = this.getChild();
+            const $window = this.getChild();
             $window.find('.dlg-btn').on('click', _.bind(this.onBtnClick, this));
 
-            me.aceContainer = $window.find('#macros-code-editor');
+            this.aceContainer = $window.find('#macros-code-editor');
 
             // this.loadMask = new Common.UI.LoadMask({owner: this.$window.find('.body')[0]});
             // this.loadMask.setTitle(this.textLoading);
             // this.loadMask.show();
 
-            me.createCodeEditor();
-            me.renderAfterAceLoaded();
-            me.calcHeaderBreakpoints();
-            me.collapseHeaderItems();
-            me.updateCustomFunctionLabel();
+            this.createCodeEditor();
+            this.renderAfterAceLoaded();
+            this.calcHeaderBreakpoints();
+            this.collapseHeaderItems();
+            this.updateCustomFunctionLabel();
 
-            var throttleResizing = _.throttle(_.bind(this.collapseHeaderItems, this), 100);
+            const throttleResizing = _.throttle(_.bind(this.collapseHeaderItems, this), 100);
 
-            this.on('resizing', function(){
+            this.on('resizing', ()=> {
                 throttleResizing();
             });
         },
@@ -217,7 +177,7 @@ define([], function () {
                 labelText: this.textAutostart
             }).on('change', _.bind(this.onChangeAutostart, this));
 
-            var isPresentAI = this.api.checkAI();
+            const isPresentAI = this.api.checkAI();
             this.btnAiMacrosAdd = new Common.UI.Button({
                 parentEl    : $('#btn-ai-macros-add'),
                 cls         : 'btn-toolbar',
@@ -284,33 +244,30 @@ define([], function () {
         },
 
         createCodeEditor: function() {
-            var me = this;
 
             this.codeEditor = new Common.UI.MonacoEditor({parentEl: '#macros-code-editor'});
-            this.codeEditor.on('ready', function() {
-                me.codeEditor.updateTheme();
-                me.codeEditor.setValue(me._state.currentValue, me._state.currentPos);
-                setTimeout(function() {
-                    me.aceContainer.removeClass('invisible');
+            this.codeEditor.on('ready', () => {
+                this.codeEditor.updateTheme();
+                this.codeEditor.setValue(this._state.currentValue, this._state.currentPos);
+                setTimeout(() => {
+                    this.aceContainer.removeClass('invisible');
                 }, 10);
                 // me.loadMask.hide();
             });
-            this.codeEditor.on('change', function(value, pos) {
-                if(me._state.selectedItem.record) {
-                    me._state.currentValue = value;
-                    me._state.currentPos = pos;
-                    me._state.selectedItem.record.set('value', value);
-                    me._state.selectedItem.record.set('currentPos', pos);
+            this.codeEditor.on('change', (value, pos) => {
+                if(this._state.selectedItem.record) {
+                    this._state.currentValue = value;
+                    this._state.currentPos = pos;
+                    this._state.selectedItem.record.set('value', value);
+                    this._state.selectedItem.record.set('currentPos', pos);
                 }
             });
         },
 
         calcHeaderBreakpoints: function() {
             this.breakpoints = [];
-
-            var me = this;
-            var maxHeaderWidth = 10;    //10px - gap between chAutostart and btnDelete
-            var headerItems = [
+            let maxHeaderWidth = 10;    //10px - gap between chAutostart and btnDelete
+            const headerItems = [
                 { btn: this.btnUndo, collapsible: false },
                 { btn: this.btnRedo, collapsible: false },
                 { btn: this.btnRun, collapsible: true },
@@ -320,11 +277,11 @@ define([], function () {
                 { btn: this.btnDelete, collapsible: true },
                 { btn: this.chAutostart, collapsible: false, withoutMargin: true }
             ];
-            this.collapsibleHeaderItems = headerItems.filter(function(item) { return item.collapsible });
+            this.collapsibleHeaderItems = headerItems.filter((item) => item.collapsible);
 
-            headerItems.forEach(function(item) {
-                var $caption = item.btn.$el.find('.caption');
-                var hasCaptionHidden = $caption.hasClass('hide');
+            headerItems.forEach((item) => {
+                const $caption = item.btn.$el.find('.caption');
+                const hasCaptionHidden = $caption.hasClass('hide');
                 $caption.removeClass('hide');
 
                 item.expandedWidth = item.btn.$el.outerWidth(!item.withoutMargin);
@@ -334,17 +291,17 @@ define([], function () {
                 hasCaptionHidden && $caption.addClass('hide');
             });
 
-            this.collapsibleHeaderItems.forEach(function(item, index) {
-                if(index == 0) {
-                    me.breakpoints.push({
+            this.collapsibleHeaderItems.forEach((item, index) => {
+                if(index === 0) {
+                    this.breakpoints.push({
                         width: maxHeaderWidth,
                         collapseItems: [item]
                     });
                 } else {
-                    var prevBreakpoint = me.breakpoints[index - 1];
-                    var prevItem = me.collapsibleHeaderItems[index - 1];
+                    const prevBreakpoint = this.breakpoints[index - 1];
+                    const prevItem = this.collapsibleHeaderItems[index - 1];
 
-                    me.breakpoints.push({
+                    this.breakpoints.push({
                         width: prevBreakpoint.width - (prevItem.expandedWidth - prevItem.collapsedWidth),
                         collapseItems: [item].concat(prevBreakpoint.collapseItems)
                     });
@@ -353,8 +310,8 @@ define([], function () {
         },
 
         collapseHeaderItems: function() {
-            var width = this.getChild().find('#macros-dialog-right .menu-header').width();
-            var currentBreakpoint = null;
+            const width = this.getChild().find('#macros-dialog-right .menu-header').width();
+            let currentBreakpoint = null;
             
             for (let i = this.breakpoints.length - 1; i >= 0; i--) {
                 if(width < this.breakpoints[i].width) {
@@ -363,25 +320,25 @@ define([], function () {
                 }
             }
 
-            this.collapsibleHeaderItems.forEach(function(item) {
-                var shouldCollapse = currentBreakpoint && currentBreakpoint.collapseItems.indexOf(item) !== -1;
+            this.collapsibleHeaderItems.forEach((item) => {
+                const shouldCollapse = currentBreakpoint && currentBreakpoint.collapseItems.indexOf(item) !== -1;
                 item.btn.$el.find('.caption').toggleClass('hide', !!shouldCollapse);
             });
         },
 
         updateCustomFunctionLabel: function() {
-            var $window = this.getChild();
+            const $window = this.getChild();
 
-            var $macrosDialogLeft = $window.find('#macros-dialog-left');
-            var $menuHeader = $window.find('#functions-menu .menu-header');
-            var $btnFunctionAdd = $window.find('#btn-function-add');
-            var $functionLabel = $window.find('#macros-dialog-functions-label');
+            const $macrosDialogLeft = $window.find('#macros-dialog-left');
+            const $menuHeader = $window.find('#functions-menu .menu-header');
+            const $btnFunctionAdd = $window.find('#btn-function-add');
+            const $functionLabel = $window.find('#macros-dialog-functions-label');
 
-            var minWidth = parseFloat($macrosDialogLeft.css('min-width')) || 0;
-            var menuHeaderPadding = (parseFloat($menuHeader.css('padding-left')) || 0) + (parseFloat($menuHeader.css('padding-right')) || 0);
-            var btnWidth = $btnFunctionAdd.outerWidth(true) || 0;
+            const minWidth = Number.parseFloat($macrosDialogLeft.css('min-width')) || 0;
+            const menuHeaderPadding = (Number.parseFloat($menuHeader.css('padding-left')) || 0) + (Number.parseFloat($menuHeader.css('padding-right')) || 0);
+            const btnWidth = $btnFunctionAdd.outerWidth(true) || 0;
            
-            var allowedWidth = minWidth - menuHeaderPadding - btnWidth;
+            const allowedWidth = minWidth - menuHeaderPadding - btnWidth;
 
             if ($functionLabel.width() > allowedWidth) {
                 $functionLabel.text(this.textFunctions);
@@ -389,23 +346,22 @@ define([], function () {
         },
 
         setListMacros: function() {
-            var me = this;
-            var data = this.parseDataFromApi(this.api.pluginMethod_GetMacros());
-            var macrosList = data.macrosArray;
+            const data = this.parseDataFromApi(this.api.pluginMethod_GetMacros());
+            const macrosList = data.macrosArray;
 
-            var dataVBA = this.api.pluginMethod_GetVBAMacros();
+            const dataVBA = this.api.pluginMethod_GetVBAMacros();
             if (dataVBA && typeof dataVBA === 'string' && dataVBA.includes('<Module')) {
-                var arr = dataVBA.split('<Module ').filter(function(el){return el.includes('Type="Procedural"') || el.includes('Type="Class"')});
-                arr.forEach(function(el) {
-                    var start = el.indexOf('<SourceCode>') + 12;
-                    var end = el.indexOf('</SourceCode>', start);
-                    var macros = el.slice(start, end);
+                const arr = dataVBA.split('<Module ').filter((el)=> el.includes('Type="Procedural"') || el.includes('Type="Class"'));
+                arr.forEach((el) => {
+                    let start = el.indexOf('<SourceCode>') + 12;
+                    let end = el.indexOf('</SourceCode>', start);
+                    let macros = el.slice(start, end);
 
                     start = el.indexOf('Name="') + 6;
                     end = el.indexOf('"', start);
-                    var name = el.slice(start, end);
-                    var index = macrosList.findIndex(function(macr){return macr.name == name});
-                    if (index == -1) {
+                    const name = el.slice(start, end);
+                    const index = macrosList.findIndex((macr)=> macr.name === name);
+                    if (index === -1) {
                         macros = macros.replace(/&amp;/g,'&');
                         macros = macros.replace(/&lt;/g,'<');
                         macros = macros.replace(/&gt;/g,'>');
@@ -413,47 +369,47 @@ define([], function () {
                         macros = macros.replace(/&quot;/g,'"');
                         macros = macros.replace(/Attribute [^\r\n]*\r\n/g, "");
                         macrosList.push({
-                            guid: me.createGuid(),
+                            guid: this.createGuid(),
                             name: name,
                             autostart: false,
-                            value: '(function()\n{\n\t/* Enter your code here. */\n})();\n\n/*\nExecution of VBA commands does not support.\n' + macros + '*/'
+                            value: `(function()\n{\n\t/* Enter your code here. */\n})();\n\n/*\nExecution of VBA commands does not support.\n${macros}*/`
                         });
                     }
                 });
             }
 
             if(macrosList && macrosList.length > 0) {
-                macrosList.forEach(function (macros) {
+                macrosList.forEach((macros) => {
                     macros.autostart = !!macros.autostart;
                     macros.currentPos = {row: 3, column: 0};
                 });
                 this.listMacros.store.reset(macrosList);
-                var selectItem = this.listMacros.store.at(data.current);
+                const selectItem = this.listMacros.store.at(data.current);
                 selectItem && this.listMacros.selectRecord(selectItem);
             } else {
                 this.onCreateMacros();
             }
         },
         setListFunctions: function() {
-            var data = this.parseDataFromApi(this.api.pluginMethod_GetCustomFunctions());
-            var macrosList = data.macrosArray;
+            const data = this.parseDataFromApi(this.api.pluginMethod_GetCustomFunctions());
+            const macrosList = data.macrosArray;
             this.listFunctions.store.reset(macrosList);
         },
 
         makeDragable: function() {
-            var me = this;
-            var currentElement;
-            var currentIndex = 0;
-            var insertIndex;
-            var macrosList = document.getElementById("macros-list");
-            var functionList = document.getElementById("functions-list");
+            const me = this;
+            let currentElement;
+            let currentIndex = 0;
+            let insertIndex;
+            const macrosList = document.getElementById("macros-list");
+            const functionList = document.getElementById("functions-list");
 
             function getInsertIndex(cursorPosition, currentElement, elements) {
                 // cursorPosition = cursorPosition * ((1 + (1 - zoom)).toFixed(1));
-                var currentIndex = elements.index(currentElement);
-                var nextIndex = currentIndex;
-                var currentElementCoord = Common.Utils.getBoundingClientRect(currentElement);
-                var currentElementCenter = currentElementCoord.y + currentElementCoord.height * 0.45;
+                const currentIndex = elements.index(currentElement);
+                let nextIndex = currentIndex;
+                const currentElementCoord = Common.Utils.getBoundingClientRect(currentElement);
+                const currentElementCenter = currentElementCoord.y + currentElementCoord.height * 0.45;
                 if(cursorPosition > currentElementCenter) {
                     nextIndex += 1;
                 }
@@ -463,7 +419,7 @@ define([], function () {
             function handleDragstart(list, e) {
                 me.codeEditor.disableDrop(true);
 
-                var id = $(e.target).children('.list-item').attr('id');
+                const id = $(e.target).children('.list-item').attr('id');
                 e.dataTransfer.setData("text/plain", id);
                 e.dataTransfer.effectAllowed = "move";
                 e.target.classList.add('dragged');
@@ -482,8 +438,8 @@ define([], function () {
                 if (insertIndex === -1) insertIndex = list.store.length;
                 if (currentIndex < insertIndex) insertIndex--;
 
-                var newStoreArr = list.store.models.slice();
-                let tmp = newStoreArr.splice(currentIndex, 1)[0];
+                const newStoreArr = list.store.models.slice();
+                const tmp = newStoreArr.splice(currentIndex, 1)[0];
                 newStoreArr.splice(insertIndex, 0, tmp);
 
                 list.store.reset(newStoreArr);
@@ -493,7 +449,7 @@ define([], function () {
             function handleDragover(list, type, e) {
                 e.preventDefault();
                 currentElement = e.target;
-                let bDragAllowed = me._state.selectedItem.type === type;
+                const bDragAllowed = me._state.selectedItem.type === type;
                 e.dataTransfer.dropEffect = bDragAllowed ? "move" : "none";
                 const isMoveable = currentElement.classList.contains('draggable');
                 if (!isMoveable || !bDragAllowed)
@@ -511,8 +467,8 @@ define([], function () {
 
             function handleDragleave(e) {
                 if(e.fromElement) {
-                    if($(e.fromElement).attr('role') == 'list'
-                        || $(e.fromElement).attr('role') == 'listitem'
+                    if($(e.fromElement).attr('role') === 'list'
+                        || $(e.fromElement).attr('role') === 'listitem'
                         || !!$(e.fromElement).parents('[role="listitem"]').length
                     ) return;
 
@@ -522,31 +478,31 @@ define([], function () {
             }
 
 
-            macrosList.addEventListener('dragstart', function(e) {
+            macrosList.addEventListener('dragstart', (e) => {
                 handleDragstart(me.listMacros, e);
             });
-            functionList.addEventListener('dragstart', function(e) {
+            functionList.addEventListener('dragstart', (e) => {
                 handleDragstart(me.listFunctions, e);
             });
 
-            macrosList.addEventListener('dragend', function(e) {
+            macrosList.addEventListener('dragend', (e) => {
                 handleDragend(me.listMacros, e);
             });
-            functionList.addEventListener('dragend', function(e) {
+            functionList.addEventListener('dragend', (e) => {
                 handleDragend(me.listFunctions, e);
             });
 
-            macrosList.addEventListener('dragover', function(e) {
+            macrosList.addEventListener('dragover', (e) => {
                 handleDragover(macrosList, me.ItemTypes.Macros, e)
             });
-            functionList.addEventListener('dragover', function(e) {
+            functionList.addEventListener('dragover', (e) => {
                 handleDragover(functionList, me.ItemTypes.CustomFunction, e)
             });
 
-            macrosList.addEventListener('dragleave', function(e) {
+            macrosList.addEventListener('dragleave', (e) => {
                 handleDragleave(e);
             });
-            functionList.addEventListener('dragleave', function(e) {
+            functionList.addEventListener('dragleave', (e) => {
                 handleDragleave(e);
             });
         },
@@ -560,12 +516,12 @@ define([], function () {
             this._state.currentPos = record.get('currentPos');
             
             this.chAutostart.setValue(record.get('autostart'));
-            this.getChild().find('.lock-for-function').toggleClass('hidden', type == this.ItemTypes.CustomFunction);
+            this.getChild().find('.lock-for-function').toggleClass('hidden', type === this.ItemTypes.CustomFunction);
 
-            if(type == this.ItemTypes.Macros && this.listFunctions) {
+            if(type === this.ItemTypes.Macros && this.listFunctions) {
                 this.listFunctions.deselectAll();
             } 
-            if(type == this.ItemTypes.CustomFunction && this.listMacros) {
+            if(type === this.ItemTypes.CustomFunction && this.listMacros) {
                 this.listMacros.deselectAll();
             }
             this.updateHintButtons();
@@ -573,10 +529,10 @@ define([], function () {
         },
 
         updateHintButtons: function() {
-            var typeString = (this._state.selectedItem.type == this.ItemTypes.Macros ? 'Macros' : 'Function');
-            this.btnCopy.updateHint(this['tip' + typeString + 'Copy']);
-            this.btnRename.updateHint(this['tip' + typeString + 'Rename']);
-            this.btnDelete.updateHint(this['tip' + typeString + 'Delete']);
+            const typeString = (this._state.selectedItem.type === this.ItemTypes.Macros ? 'Macros' : 'Function');
+            this.btnCopy.updateHint(this[`tip${typeString}Copy`]);
+            this.btnRename.updateHint(this[`tip${typeString}Rename`]);
+            this.btnDelete.updateHint(this[`tip${typeString}Delete`]);
         },
 
         setDisableButtons: function(value) {
@@ -590,8 +546,8 @@ define([], function () {
             this.chAutostart.setDisabled(value);
         },
 
-        parseDataFromApi: function(data) {
-            var result = {
+        parseDataFromApi: (data) => {
+            let result = {
                 macrosArray : [],
                 current : -1
             };
@@ -607,7 +563,7 @@ define([], function () {
             }
             return result;
         },
-        createGuid: function(a,b){
+        createGuid: (a,b)=> {
             for(b=a='';a++<36;b+=a*51&52?(a^15?8^Math.random()*(a^20?16:4):4).toString(16):'');
             return b
         },
@@ -616,7 +572,7 @@ define([], function () {
             return [].concat(this.getFooterButtons());
         },
 
-        getDefaultFocusableComponent: function () {
+        getDefaultFocusableComponent: () => {
 
         },
 
@@ -631,25 +587,21 @@ define([], function () {
 
             if(state === 'ok') {
                 this.api.pluginMethod_SetMacros(JSON.stringify({
-                    macrosArray: this.listMacros.store.models.map(function(item) {
-                        return {
+                    macrosArray: this.listMacros.store.models.map((item) => ({
                             guid: item.get('guid'),
                             name: item.get('name'),
                             autostart: item.get('autostart'),
                             value: item.get('value')
-                        }
-                    }),
+                        })),
                     current: this.listMacros.store.indexOf(this.listMacros.getSelectedRec())
                 }));
                 if(this._state.isFunctionsSupport) {
                     this.api.SetCustomFunctions(JSON.stringify({
-                        macrosArray: this.listFunctions.store.models.map(function(item) {
-                            return {
+                        macrosArray: this.listFunctions.store.models.map((item) => ({
                                 guid: item.get('guid'),
                                 name: item.get('name'),
                                 value: item.get('value')
-                            }
-                        })
+                            }))
                     }));
                 }
             }
@@ -657,21 +609,21 @@ define([], function () {
             this.close();
         },
 
-        onAddListItem: function(listView, itemView) {
+        onAddListItem: (listView, itemView) => {
             itemView.$el.attr('draggable', true);
             itemView.$el.addClass('draggable');
         },
 
         onCopyItem: function() {
             if(!this._state.selectedItem.record) return;
-            let list = (this._state.selectedItem.type == this.ItemTypes.Macros 
+            const list = (this._state.selectedItem.type === this.ItemTypes.Macros 
                 ? this.listMacros 
                 : this.listFunctions);
-            let item = this._state.selectedItem.record;
+            const item = this._state.selectedItem.record;
 
             list.store.add({
                 guid: this.createGuid(),
-                name: item.get('name') + '_copy',
+                name: `${item.get('name')}_copy`,
                 value: item.get('value'),
                 autostart: item.get('autostart')
             });
@@ -680,27 +632,23 @@ define([], function () {
 
         onRenameItem: function() {
             if(!this._state.selectedItem.record) return;
-
-            var me = this;
-            var windowSize = {
+            const windowSize = {
                 width: 300,
                 height: 90
             };
-            var macrosWindowRect = Common.Utils.getBoundingClientRect(this.$window[0]);
+            const macrosWindowRect = Common.Utils.getBoundingClientRect(this.$window[0]);
 
             (new Common.Views.TextInputDialog({
-                value: me._state.selectedItem.record.get('name'),
+                value: this._state.selectedItem.record.get('name'),
                 width: windowSize.width,
                 height: windowSize.height,
                 inputConfig: {
                     allowBlank  : false,
-                    validation: function(value) {
-                        return value.trim().length > 0 ? true : '';
-                    }
+                    validation: (value) => value.trim().length > 0 ? true : ''
                 },
-                handler: function(result, value) {
-                    if (result == 'ok') {
-                        me._state.selectedItem.record.set('name', value.trim());
+                handler: (result, value) => {
+                    if (result === 'ok') {
+                        this._state.selectedItem.record.set('name', value.trim());
                     }
                 }
             })).show(
@@ -710,28 +658,28 @@ define([], function () {
         },
 
         onCreateMacros: function(value) {
-            var indexMax = 0;
-            var macrosTextEn = 'Macro';
-            var macrosTextTranslate = this.textMacro;
-            this.listMacros.store.each(function(macros, index) {
-                var macrosName = macros.get('name');
-                if (0 == macrosName.indexOf(macrosTextEn))
+            let indexMax = 0;
+            const macrosTextEn = 'Macro';
+            const macrosTextTranslate = this.textMacro;
+            this.listMacros.store.each((macros, index) => {
+                const macrosName = macros.get('name');
+                if (0 === macrosName.indexOf(macrosTextEn))
                 {
-                    var index = parseInt(macrosName.substr(macrosTextEn.length));
-                    if (!isNaN(index) && (indexMax < index))
+                    const index = Number.parseInt(macrosName.substr(macrosTextEn.length));
+                    if (!Number.isNaN(index) && (indexMax < index))
                         indexMax = index;
                 }
-                else if (0 == macrosName.indexOf(macrosTextTranslate))
+                else if (0 === macrosName.indexOf(macrosTextTranslate))
                 {
-                    var index = parseInt(macrosName.substr(macrosTextTranslate.length));
-                    if (!isNaN(index) && (indexMax < index))
+                    const index = Number.parseInt(macrosName.substr(macrosTextTranslate.length));
+                    if (!Number.isNaN(index) && (indexMax < index))
                         indexMax = index;
                 }
             });
             indexMax++;
             this.listMacros.store.add({
                 guid: this.createGuid(),
-                name : (macrosTextTranslate + " " + indexMax),
+                name : (`${macrosTextTranslate} ${indexMax}`),
                 value : value || "(function()\n{\n    \n})();",
                 autostart: false,
                 currentPos: {row: 3, column: 5}
@@ -752,50 +700,37 @@ define([], function () {
         },
 
         onAiMenu: function(menu, item) {
-            var me = this;
-            var title = '';
-            var instruction = '';
-            var instructionOutput = 'Generate JavaScript code as an Immediately Invoked Function Expression (IIFE), in the format (function(){ ... })();, that [describe what the code should do]. The code should be self-contained and execute immediately. ';
-            var langCode = Common.Locale.getCurrentLanguage()
-            var langName = Common.util.LanguageInfo.getLocalLanguageName(Common.util.LanguageInfo.getLocalLanguageCode(langCode));
-            if(langName && typeof langName[1] == "string") {
+            let title = '';
+            let instruction = '';
+            const instructionOutput = 'Generate JavaScript code as an Immediately Invoked Function Expression (IIFE), in the format (function(){ ... })();, that [describe what the code should do]. The code should be self-contained and execute immediately. ';
+            const langCode = Common.Locale.getCurrentLanguage()
+            let langName = Common.util.LanguageInfo.getLocalLanguageName(Common.util.LanguageInfo.getLocalLanguageCode(langCode));
+            if(langName && typeof langName[1] === "string") {
                 langName = langName[1];
             } else {
                 langName = null;
             }
 
-            var editorName = 'Document Editor';
+            let editorName = 'Document Editor';
             if(window.PE) editorName = 'Presentation Editor';
             if(window.SSE) editorName = 'Spreadsheet Editor';
             
-            if(item.value == 'create') {
+            if(item.value === 'create') {
                 title = this.textCreateMacrosFromDesc;
-                instruction = '' + 
-                    'Create a macro for Word Office. ' + 
-                    'The macro should be written specifically for the Word Office ' + editorName + '. ' +
-                    'Return only code with comments, as plain text without markdown. ' + 
-                    'The format of the code is JavaScript. ' + 
-                    'Write comments in the same language as the user prompt. ' + 
-                    'The description of what the macro should do is also described in the user message. ' + instructionOutput;
-            } else if(item.value == 'convert') {
+                instruction = `Create a macro for Word Office. The macro should be written specifically for the Word Office ${editorName}. Return only code with comments, as plain text without markdown. The format of the code is JavaScript. Write comments in the same language as the user prompt. The description of what the macro should do is also described in the user message. ${instructionOutput}`;
+            } else if(item.value === 'convert') {
                 title = this.textConvertMacrosFromVBA;
-                instruction = '' + 
-                    'Convert macro for Word Office from VBA. ' +
-                    'The macro should be written specifically for the Word Office ' + editorName + '. ' +
-                    'Return only code with comments, as plain text without markdown. ' +
-                    'The code format is JavaScript. ' +
-                    'Write comments in ' + langCode + (langName ? '(' + langName + ')' : '') + ' language. ' + 
-                    'The code of the macro in VBA should be presented in the user message. ' + instructionOutput;
+                instruction = `Convert macro for Word Office from VBA. The macro should be written specifically for the Word Office ${editorName}. Return only code with comments, as plain text without markdown. The code format is JavaScript. Write comments in ${langCode}${langName ? `(${langName})` : ''} language. The code of the macro in VBA should be presented in the user message. ${instructionOutput}`;
             }
-            if(item.value == 'create' || item.value == 'convert') {
-                var macrosWindow = new Common.Views.MacrosAiDialog({
+            if(item.value === 'create' || item.value === 'convert') {
+                const macrosWindow = new Common.Views.MacrosAiDialog({
                     title: title,
                     api: this.api,
                     instruction: instruction,
-                    inputType: item.value == 'create' ? 'textarea' : 'codeEditor',
-                    handler: function(btnValue, value) {
-                        if(btnValue == 'ok') {
-                            me.onCreateMacros(value);
+                    inputType: item.value === 'create' ? 'textarea' : 'codeEditor',
+                    handler: (btnValue, value) => {
+                        if(btnValue === 'ok') {
+                            this.onCreateMacros(value);
                         }
                     }
                 });
@@ -804,26 +739,26 @@ define([], function () {
         },
 
         onRunMacros: function(isDebug) {
-            this.api.callCommand(isDebug ? "debugger;\n" + this._state.currentValue : this._state.currentValue);
+            this.api.callCommand(isDebug ? `debugger;\n${this._state.currentValue}` : this._state.currentValue);
         },
 
         onChangeAutostart: function(field, newValue) {
             if(!this._state.selectedItem.record) return;
 
-            this._state.selectedItem.record.set('autostart', newValue == 'checked');
+            this._state.selectedItem.record.set('autostart', newValue === 'checked');
         },
 
         onDeleteItem: function() {
             if(!this._state.selectedItem.record) return;
-            let list = (this._state.selectedItem.type == this.ItemTypes.Macros 
+            const list = (this._state.selectedItem.type === this.ItemTypes.Macros 
                 ? this.listMacros 
                 : this.listFunctions);
-            let item = this._state.selectedItem.record;
+            const item = this._state.selectedItem.record;
 
-            var deletedIndex = list.store.indexOf(item);
+            const deletedIndex = list.store.indexOf(item);
             list.store.remove(item);
             if(list.store.length > 0) {
-                var selectedIndex = deletedIndex < list.store.length
+                const selectedIndex = deletedIndex < list.store.length
                     ? deletedIndex
                     : list.store.length - 1;
                 list.selectByIndex(selectedIndex);
@@ -834,28 +769,28 @@ define([], function () {
         },
 
         onCreateFunction: function() {
-            var indexMax = 0;
-            var macrosTextEn = 'Custom function';
-            var macrosTextTranslate = this.textCustomFunction;
-            this.listFunctions.store.each(function(macros, index) {
-                var macrosName = macros.get('name');
-                if (0 == macrosName.indexOf("Custom function"))
+            let indexMax = 0;
+            const macrosTextEn = 'Custom function';
+            const macrosTextTranslate = this.textCustomFunction;
+            this.listFunctions.store.each((macros, index) => {
+                const macrosName = macros.get('name');
+                if (0 === macrosName.indexOf("Custom function"))
                 {
-                    var index = parseInt(macrosName.substr(macrosTextEn.length));
-                    if (!isNaN(index) && (indexMax < index))
+                    const index = Number.parseInt(macrosName.substr(macrosTextEn.length));
+                    if (!Number.isNaN(index) && (indexMax < index))
                         indexMax = index;
                 }
-                else if (0 == macrosName.indexOf(macrosTextTranslate))
+                else if (0 === macrosName.indexOf(macrosTextTranslate))
                 {
-                    var index = parseInt(macrosName.substr(macrosTextTranslate.length));
-                    if (!isNaN(index) && (indexMax < index))
+                    const index = Number.parseInt(macrosName.substr(macrosTextTranslate.length));
+                    if (!Number.isNaN(index) && (indexMax < index))
                         indexMax = index;
                 }
             });
             indexMax++;
             this.listFunctions.store.add({
                 guid: this.createGuid(),
-                name : (macrosTextTranslate + " " + indexMax),
+                name : (`${macrosTextTranslate} ${indexMax}`),
                 value : "(function()\n{\n\t/**\n\t * Function that returns the argument\n\t * @customfunction\n\t * @param {any} arg Any data.\n     * @returns {any} The argumet of the function.\n\t*/\n\tfunction myFunction(arg) {\n\t\t\n\t    return arg;\n\t}\n\tApi.AddCustomFunction(myFunction);\n})();",
                 currentPos: {row: 10, column: 3}
             });
@@ -872,11 +807,11 @@ define([], function () {
             Common.UI.Window.prototype.onThemeChanged.call(this);
         },
         
-        onHelp: function() {
+        onHelp: () => {
             window.open('https://api.Word Office.com/docs/plugin-and-macros/macros/getting-started/', '_blank')
         },
         onBtnClick: function(event) {
-            this._handleInput(event.currentTarget.attributes['result'].value);
+            this._handleInput(event.currentTarget.attributes.result.value);
         },
         // onPrimary: function() {
         //     this.close();

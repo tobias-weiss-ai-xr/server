@@ -41,30 +41,26 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'common/main/lib/component/Scroller'
-], function () {
-    'use strict';
+], () => {
 
     Common.UI.ComboBoxModel = Backbone.Model.extend({
-        defaults: function() {
-            return {
+        defaults: () => ({
                 id: Common.UI.getId(),
                 value: null,
                 displayValue: null
-            }
-        }
+            })
     });
 
     Common.UI.ComboBoxStore = Backbone.Collection.extend({
         model: Common.UI.ComboBoxModel
     });
 
-    Common.UI.ComboBox = Common.UI.BaseView.extend((function() {
-        return {
+    Common.UI.ComboBox = Common.UI.BaseView.extend((() => ({
             options : {
                 id          : null,
                 cls         : '',
@@ -105,45 +101,42 @@ define([
             initialize : function(options) {
                 Common.UI.BaseView.prototype.initialize.call(this, options);
 
-                var me = this;
+                this.id             = this.options.id || Common.UI.getId();
+                this.cls            = this.options.cls;
+                this.style          = this.options.style;
+                this.menuCls        = this.options.menuCls;
+                this.menuStyle      = this.options.menuStyle;
+                this.template       = this.options.template || this.template;
+                this.itemsTemplate  = this.options.itemsTemplate;
+                this.itemTemplate   = this.options.itemTemplate;
+                this.hint           = this.options.hint;
+                this.editable       = this.options.editable;
+                this.disabled       = this.options.disabled;
+                this.store          = this.options.store || new Common.UI.ComboBoxStore();
+                this.displayField   = this.options.displayField;
+                this.valueField     = this.options.valueField;
+                this.placeHolder    = this.options.placeHolder;
+                this.search         = this.options.search;
+                this.searchFields   = this.options.searchFields;
+                this.scrollAlwaysVisible = this.options.scrollAlwaysVisible;
+                this.focusWhenNoSelection = (this.options.focusWhenNoSelection!==false);
+                this.restoreMenuHeight = this.options.restoreMenuHeight;
 
-                this.id             = me.options.id || Common.UI.getId();
-                this.cls            = me.options.cls;
-                this.style          = me.options.style;
-                this.menuCls        = me.options.menuCls;
-                this.menuStyle      = me.options.menuStyle;
-                this.template       = me.options.template || me.template;
-                this.itemsTemplate  = me.options.itemsTemplate;
-                this.itemTemplate   = me.options.itemTemplate;
-                this.hint           = me.options.hint;
-                this.editable       = me.options.editable;
-                this.disabled       = me.options.disabled;
-                this.store          = me.options.store || new Common.UI.ComboBoxStore();
-                this.displayField   = me.options.displayField;
-                this.valueField     = me.options.valueField;
-                this.placeHolder    = me.options.placeHolder;
-                this.search         = me.options.search;
-                this.searchFields   = me.options.searchFields;
-                this.scrollAlwaysVisible = me.options.scrollAlwaysVisible;
-                this.focusWhenNoSelection = (me.options.focusWhenNoSelection!==false);
-                this.restoreMenuHeight = me.options.restoreMenuHeight;
-
-                me.rendered         = me.options.rendered || false;
+                this.rendered         = this.options.rendered || false;
 
                 this.lastValue = null;
 
-                me.store.add(me.options.data);
+                this.store.add(this.options.data);
 
-                if (me.options.el) {
-                    me.render();
+                if (this.options.el) {
+                    this.render();
                 }
             },
 
             render : function(parentEl) {
-                var me = this;
 
-                if (!me.rendered) {
-                    var items = this.store.toJSON();
+                if (!this.rendered) {
+                    const items = this.store.toJSON();
                     this.cmpEl = $(this.template({
                         id          : this.id,
                         cls         : this.cls,
@@ -151,7 +144,7 @@ define([
                         menuCls     : this.menuCls,
                         menuStyle   : this.menuStyle,
                         items       : items,
-                        scope       : me,
+                        scope       : this,
                         placeHolder : this.placeHolder,
                         dataHint    : this.options.dataHint,
                         dataHintDirection: this.options.dataHintDirection,
@@ -162,7 +155,7 @@ define([
                         this.cmpEl.find('ul').html(
                             $(this.itemsTemplate({
                                 items       : items,
-                                scope       : me
+                                scope       : this
                             })));
                     else if (this.itemTemplate) {
                         this.cmpEl.find('ul').html($(_.template([
@@ -183,11 +176,11 @@ define([
                         this.$el.html(this.cmpEl);
                     }
                 } else {
-                    this.cmpEl = me.$el || $(this.el);
+                    this.cmpEl = this.$el || $(this.el);
                 }
 
-                if (!me.rendered) {
-                    var el = this.cmpEl;
+                if (!this.rendered) {
+                    const el = this.cmpEl;
 
                     this._input  = el.find('input');
                     this._button = el.find('.btn');
@@ -205,22 +198,22 @@ define([
                         el.on('click', '.form-control', _.bind(this.onInputClick, this));
                         this._input.attr('readonly', 'readonly');
                         this._input.attr('data-can-copy', false);
-                        this._input.on('mousedown',function (e){e.preventDefault();})
+                        this._input.on('mousedown',(e)=> {e.preventDefault();})
                     }
 
-                    if (me.options.hint) {
+                    if (this.options.hint) {
                         el.attr('data-toggle', 'tooltip');
                         el.tooltip({
-                            title       : me.options.hint,
-                            placement   : me.options.hintAnchor||'cursor'
+                            title       : this.options.hint,
+                            placement   : this.options.hintAnchor||'cursor'
                         });
 
-                        var modalParents = el.closest('.asc-window');
+                        const modalParents = el.closest('.asc-window');
                         if (modalParents.length > 0) {
-                            el.data('bs.tooltip').tip().css('z-index', parseInt(modalParents.css('z-index')) + 10);
-                            var onModalClose = function(dlg) {
+                            el.data('bs.tooltip').tip().css('z-index', Number.parseInt(modalParents.css('z-index')) + 10);
+                            const onModalClose = (dlg) => {
                                 if (modalParents[0] !== dlg.$window[0]) return;
-                                var tip = el.data('bs.tooltip');
+                                const tip = el.data('bs.tooltip');
                                 if (tip) {
                                     if (tip.dontShow===undefined)
                                         tip.dontShow = true;
@@ -232,8 +225,8 @@ define([
                             Common.NotificationCenter.on({'modal:close': onModalClose});
                         }
 
-                        el.find('.dropdown-menu').on('mouseenter', function(){ // hide tooltip when mouse is over menu
-                            var tip = el.data('bs.tooltip');
+                        el.find('.dropdown-menu').on('mouseenter', ()=> { // hide tooltip when mouse is over menu
+                            const tip = el.data('bs.tooltip');
                             if (tip) {
                                 if (tip.dontShow===undefined)
                                     tip.dontShow = true;
@@ -242,31 +235,31 @@ define([
                         });
                     }
 
-                    var $list = el.find('.dropdown-menu');
+                    const $list = el.find('.dropdown-menu');
                     if ($list.hasClass('menu-absolute')) {
                         $list.css('min-width', el.outerWidth());
                     }
 
-                    el.on('show.bs.dropdown',             _.bind(me.onBeforeShowMenu, me));
-                    el.on('shown.bs.dropdown',            _.bind(me.onAfterShowMenu, me));
-                    el.on('hide.bs.dropdown',             _.bind(me.onBeforeHideMenu, me));
-                    el.on('hidden.bs.dropdown',           _.bind(me.onAfterHideMenu, me));
-                    el.on('keydown.after.bs.dropdown',    _.bind(me.onAfterKeydownMenu, me));
+                    el.on('show.bs.dropdown',             _.bind(this.onBeforeShowMenu, this));
+                    el.on('shown.bs.dropdown',            _.bind(this.onAfterShowMenu, this));
+                    el.on('hide.bs.dropdown',             _.bind(this.onBeforeHideMenu, this));
+                    el.on('hidden.bs.dropdown',           _.bind(this.onAfterHideMenu, this));
+                    el.on('keydown.after.bs.dropdown',    _.bind(this.onAfterKeydownMenu, this));
 
-                    Common.NotificationCenter.on('menumanager:hideall', _.bind(me.closeMenu, me));
+                    Common.NotificationCenter.on('menumanager:hideall', _.bind(this.closeMenu, this));
 
                     // set default selection
                     this.setDefaultSelection();
 
                     this.listenTo(this.store, 'reset',  this.onResetItems);
 
-                    var ariaLabel = this.options.ariaLabel ? this.options.ariaLabel : this.options.hint;
+                    const ariaLabel = this.options.ariaLabel ? this.options.ariaLabel : this.options.hint;
                     if (ariaLabel)
                         this.cmpEl.find('.form-control').attr('aria-label', ariaLabel);
                 }
 
-                me.rendered = true;
-                if (me.disabled) me.setDisabled(me.disabled);
+                this.rendered = true;
+                if (this.disabled) this.setDisabled(this.disabled);
 
                 return this;
             },
@@ -282,8 +275,6 @@ define([
             openMenu: function(delay, callback) {
                 if (this.store.length<1) return;
 
-                var me = this;
-
                 if ( !this.scroller ) {
                     this.scroller = new Common.UI.Scroller(_.extend({
                         el: $('.dropdown-menu', this.cmpEl),
@@ -294,9 +285,9 @@ define([
                     }, this.options.scroller));
                 }
 
-                _.delay(function(){
-                    me.cmpEl.addClass('open');
-                    callback && callback();
+                _.delay(()=> {
+                    this.cmpEl.addClass('open');
+                    callback?.();
                 }, delay || 0);
             },
 
@@ -323,7 +314,7 @@ define([
                 Common.NotificationCenter.trigger('menu:show');
                 this.trigger('show:before', this, e);
                 if (this.options.hint) {
-                    var tip = this.cmpEl.data('bs.tooltip');
+                    const tip = this.cmpEl.data('bs.tooltip');
                     if (tip) {
                         if (tip.dontShow===undefined)
                             tip.dontShow = true;
@@ -331,20 +322,20 @@ define([
                     }
                 }
 
-                var $list = this.cmpEl.find('ul'),
-                    isMenuAbsolute = $list.hasClass('menu-absolute');
+                const $list = this.cmpEl.find('ul');
+                const isMenuAbsolute = $list.hasClass('menu-absolute');
                 if (this.options.restoreMenuHeightAndTop || isMenuAbsolute) {
-                    var offset = Common.Utils.getOffset(this.cmpEl),
-                        parentTop = this.options.menuAlignEl ? Common.Utils.getOffset(this.options.menuAlignEl).top : 0,
-                        marginTop = parseInt($list.css('margin-top')),
-                        menuTop = offset.top - parentTop + this.cmpEl.outerHeight() + marginTop,
-                        menuLeft = offset.left;
+                    const offset = Common.Utils.getOffset(this.cmpEl);
+                    const parentTop = this.options.menuAlignEl ? Common.Utils.getOffset(this.options.menuAlignEl).top : 0;
+                    const marginTop = Number.parseInt($list.css('margin-top'));
+                    let menuTop = offset.top - parentTop + this.cmpEl.outerHeight() + marginTop;
+                    let menuLeft = offset.left;
 
                     if (this.options.restoreMenuHeightAndTop) { // show menu at top
-                        var parentHeight = this.options.menuAlignEl ? this.options.menuAlignEl.outerHeight() : Common.Utils.innerHeight() - 10,
-                            diff = typeof this.options.restoreMenuHeightAndTop === "number" ? this.options.restoreMenuHeightAndTop : 100000;
+                        const parentHeight = this.options.menuAlignEl ? this.options.menuAlignEl.outerHeight() : Common.Utils.innerHeight() - 10;
+                        const diff = typeof this.options.restoreMenuHeightAndTop === "number" ? this.options.restoreMenuHeightAndTop : 100000;
 
-                        var showAtTop = (menuTop + $list.outerHeight() > parentHeight) && (menuTop + diff > parentHeight) && ((offset.top - parentTop)*0.9 > parentHeight - menuTop);
+                        const showAtTop = (menuTop + $list.outerHeight() > parentHeight) && (menuTop + diff > parentHeight) && ((offset.top - parentTop)*0.9 > parentHeight - menuTop);
                         // if menu height less than restoreMenuHeightAndTop - show menu at top, if greater - try to change menu height + compare available space at top and bottom of combobox
                         if (!isMenuAbsolute)
                             $list.toggleClass('show-top', showAtTop);
@@ -361,23 +352,22 @@ define([
 
             onAfterShowMenu: function(e) {
                 this.alignMenuPosition();
-                var $list = $(this.el).find('ul'),
-                    $selected = $list.find('> li.selected');
+                const $list = $(this.el).find('ul');
+                const $selected = $list.find('> li.selected');
 
                 if ($selected.length) {
-                    var itemTop = Common.Utils.getPosition($selected).top,
-                        itemHeight = $selected.outerHeight(),
-                        listHeight = $list.outerHeight();
+                    const itemTop = Common.Utils.getPosition($selected).top;
+                    const itemHeight = $selected.outerHeight();
+                    const listHeight = $list.outerHeight();
 
                     if (itemTop < 0 || itemTop + itemHeight > listHeight) {
-                        var height = $list.scrollTop() + itemTop + (itemHeight - listHeight)/2;
+                        let height = $list.scrollTop() + itemTop + (itemHeight - listHeight)/2;
                         height = (Math.floor(height/itemHeight) * itemHeight);
                         $list.scrollTop(height);
                     }
-                    setTimeout(function(){$selected.find('a').focus();}, 1);
+                    setTimeout(()=> {$selected.find('a').focus();}, 1);
                 } else if (this.focusWhenNoSelection) {
-                    var me = this;
-                    setTimeout(function(){me.cmpEl.find('ul li:first a').focus();}, 1);
+                    setTimeout(()=> {this.cmpEl.find('ul li:first a').focus();}, 1);
                 }
 
                 if (this.scroller)
@@ -391,26 +381,26 @@ define([
 
             alignMenuPosition: function () {
                 if (this.restoreMenuHeight) {
-                    var $list = $(this.el).find('ul');
+                    const $list = $(this.el).find('ul');
                     if (typeof this.restoreMenuHeight !== "number") {
-                        var maxHeight = parseFloat($list.css('max-height'));
+                        const maxHeight = Number.parseFloat($list.css('max-height'));
                         if ($list.hasClass('scrollable-menu') || maxHeight) {
                             this.restoreMenuHeight = maxHeight ? maxHeight : 100000;
                         } else {
                             this.restoreMenuHeight = 100000;
                         }
                     }
-                    var cg = Common.Utils.croppedGeometry(),
-                        parentTop = this.options.menuAlignEl ? Common.Utils.getOffset(this.options.menuAlignEl).top : cg.top,
-                        parentHeight = this.options.menuAlignEl ? this.options.menuAlignEl.outerHeight() : cg.height - 10,
-                        menuH = $list.outerHeight(),
-                        menuTop = Common.Utils.getBoundingClientRect($list.get(0)).top,
-                        newH = menuH;
+                    const cg = Common.Utils.croppedGeometry();
+                    const parentTop = this.options.menuAlignEl ? Common.Utils.getOffset(this.options.menuAlignEl).top : cg.top;
+                    const parentHeight = this.options.menuAlignEl ? this.options.menuAlignEl.outerHeight() : cg.height - 10;
+                    const menuH = $list.outerHeight();
+                    const menuTop = Common.Utils.getBoundingClientRect($list.get(0)).top;
+                    let newH = menuH;
 
                     if (menuH < this.restoreMenuHeight)
                         newH = this.restoreMenuHeight;
 
-                    var offset = Common.Utils.getOffset(this.cmpEl);
+                    const offset = Common.Utils.getOffset(this.cmpEl);
                     if (menuTop<offset.top) { // menu is shown at top
                         if (offset.top - parentTop < newH)
                             newH = offset.top - parentTop;
@@ -420,7 +410,7 @@ define([
                     }
 
                     if (newH !== menuH) {
-                        $list.css('max-height', newH + 'px');
+                        $list.css('max-height', `${newH}px`);
                         $list.hasClass('menu-absolute') && (menuTop<offset.top) && $list.css({top: offset.top - $list.outerHeight()});
                     }
                 }
@@ -439,29 +429,27 @@ define([
                 this.trigger('hide:after', this, e, isFromInputControl);
                 Common.NotificationCenter.trigger('menu:hide', this, isFromInputControl);
                 if (this.options.takeFocusOnClose) {
-                    var me = this;
-                    (me._input && me._input.length>0 && !me.editable) && (me._input[0].selectionStart===me._input[0].selectionEnd) && setTimeout(function() {
-                        me._input[0].selectionStart = me._input[0].selectionEnd = 0;
+                    (this._input && this._input.length>0 && !this.editable) && (this._input[0].selectionStart===this._input[0].selectionEnd) && setTimeout(() => {
+                        this._input[0].selectionStart = this._input[0].selectionEnd = 0;
                     },1);
-                    setTimeout(function(){me.focus();}, 1);
+                    setTimeout(()=> {this.focus();}, 1);
                 }
             },
 
             onAfterKeydownMenu: function(e) {
-                var me = this;
-                if (e.keyCode == Common.UI.Keys.DOWN && !this.editable && !this.isMenuOpen()) {
+                if (e.keyCode === Common.UI.Keys.DOWN && !this.editable && !this.isMenuOpen()) {
                     this.onBeforeShowMenu();
-                    this.openMenu(0, function() {
-                        me.onAfterShowMenu();
+                    this.openMenu(0, () => {
+                        this.onAfterShowMenu();
                     });
                     return false;
-                } else if (!this.focusWhenNoSelection && (e.keyCode == Common.UI.Keys.DOWN || e.keyCode == Common.UI.Keys.UP)) {
-                    var $items = this.cmpEl.find('ul > li a');
+                }if (!this.focusWhenNoSelection && (e.keyCode === Common.UI.Keys.DOWN || e.keyCode === Common.UI.Keys.UP)) {
+                    const $items = this.cmpEl.find('ul > li a');
                     if ($items.filter(':focus').length===0 && $items.length>0) {
-                        setTimeout(function(){$items[e.keyCode == Common.UI.Keys.DOWN ? 0 : $items.length-1].focus();}, 1);
+                        setTimeout(()=> {$items[e.keyCode === Common.UI.Keys.DOWN ? 0 : $items.length-1].focus();}, 1);
                     }
-                } else if (e.keyCode == Common.UI.Keys.RETURN && (this.editable || this.isMenuOpen())) {
-                    var isopen = this.isMenuOpen();
+                } else if (e.keyCode === Common.UI.Keys.RETURN && (this.editable || this.isMenuOpen())) {
+                    const isopen = this.isMenuOpen();
                     $(e.target).click();
                     if (this.rendered) {
                         if (Common.Utils.isIE)
@@ -471,7 +459,7 @@ define([
                     }
                     return !isopen;
                 }
-                else if (e.keyCode == Common.UI.Keys.ESC && this.isMenuOpen()) {
+                else if (e.keyCode === Common.UI.Keys.ESC && this.isMenuOpen()) {
                     this._input.val(this.lastValue);
                     this.closeMenu();
                     this.onAfterHideMenu(e);
@@ -480,14 +468,14 @@ define([
                     if (typeof this._search !== 'object') return;
 
                     clearTimeout(this._search.timer);
-                    this._search.timer = setTimeout(function () { me._search = {}; }, 1000);
+                    this._search.timer = setTimeout(() => { this._search = {}; }, 1000);
 
                     (!this._search.text) && (this._search.text = '');
                     (!this._search.char) && (this._search.char = e.key);
                     (this._search.char !== e.key) && (this._search.full = true);
                     this._search.text += e.key;
                     if (this._search.index===undefined) {
-                        var $items = this.cmpEl.find('ul > li').find('> a');
+                        const $items = this.cmpEl.find('ul > li').find('> a');
                         this._search.index = $items.index($items.filter(':focus'));
                     }
                     this.selectCandidate();
@@ -495,18 +483,16 @@ define([
             },
 
             selectCandidate: function() {
-                var me = this,
-                    index = (this._search.index && this._search.index != -1) ? this._search.index : 0,
-                    re = new RegExp('^' + ((this._search.full) ? this._search.text : this._search.char), 'i'),
-                    isFirstCharsEqual = this.searchFields.some(function(field) {
-                        return re.test(me.store.at(index).get(field));
-                    }),
-                    itemCandidate, idxCandidate;
+                const index = (this._search.index && this._search.index !== -1) ? this._search.index : 0;
+                const re = new RegExp(`^${(this._search.full) ? this._search.text : this._search.char}`, 'i');
+                const isFirstCharsEqual = this.searchFields.some((field) => re.test(this.store.at(index).get(field)));
+                let itemCandidate;
+                let idxCandidate;
 
-                for (var i=0; i<this.store.length; i++) {
-                    var item = this.store.at(i),
-                        isBreak = false;
-                    this.searchFields.forEach(function(fieldName) {
+                for (let i=0; i<this.store.length; i++) {
+                    const item = this.store.at(i);
+                    let isBreak = false;
+                    this.searchFields.forEach((fieldName) => {
                         if (item.get(fieldName) && re.test(item.get(fieldName))) {
                             if (!itemCandidate) {
                                 itemCandidate = item;
@@ -516,7 +502,7 @@ define([
                                     return;
                                 }
                             }
-                            if (me._search.full && i==index || i>index) {
+                            if (this._search.full && i===index || i>index) {
                                 itemCandidate = item;
                                 idxCandidate = i;
                                 isBreak = true;
@@ -529,15 +515,15 @@ define([
 
                 if (itemCandidate) {
                     this._search.index = idxCandidate;
-                    var item = $('#' + itemCandidate.get('id') + ' a', $(this.el));
+                    const item = $(`#${itemCandidate.get('id')} a`, $(this.el));
                     if (this.scroller) {
                         this.scroller.update({alwaysVisibleY: this.scrollAlwaysVisible});
-                        var $list = $(this.el).find('ul');
-                        var itemTop = Common.Utils.getPosition(item).top,
-                            itemHeight = item.outerHeight(),
-                            listHeight = $list.outerHeight();
+                        const $list = $(this.el).find('ul');
+                        const itemTop = Common.Utils.getPosition(item).top;
+                        const itemHeight = item.outerHeight();
+                        const listHeight = $list.outerHeight();
                         if (itemTop < 0 || itemTop + itemHeight > listHeight) {
-                            var height = $list.scrollTop() + itemTop;
+                            let height = $list.scrollTop() + itemTop;
                             height = (Math.floor(height/itemHeight) * itemHeight);
                             $list.scrollTop(height);
                         }
@@ -547,27 +533,26 @@ define([
             },
 
             onInputKeyDown: function(e) {
-                var me = this;
 
-                if (e.keyCode == Common.UI.Keys.ESC){
+                if (e.keyCode === Common.UI.Keys.ESC){
                     this._input.val(this.lastValue);
                     this.closeMenu();
                     this.onAfterHideMenu(e);
-                } else if (e.keyCode == Common.UI.Keys.UP || e.keyCode == Common.UI.Keys.DOWN) {
+                } else if (e.keyCode === Common.UI.Keys.UP || e.keyCode === Common.UI.Keys.DOWN) {
                     if (!this.isMenuOpen()) {
-                        this.openMenu(0, function() {
-                            me.onAfterShowMenu();
+                        this.openMenu(0, () => {
+                            this.onAfterShowMenu();
                         });
                     }
 
-                    _.delay(function() {
-                        me._skipInputChange = true;
-                        me.cmpEl.find('ul li:first a').focus();
+                    _.delay(() => {
+                        this._skipInputChange = true;
+                        this.cmpEl.find('ul li:first a').focus();
                     }, 10);
-                } else if (e.keyCode == Common.UI.Keys.RETURN && $(e.target).val() === me.lastValue){
+                } else if (e.keyCode === Common.UI.Keys.RETURN && $(e.target).val() === this.lastValue){
                     this._input.trigger('change', { reapply: true });
                 } else
-                    me._skipInputChange = false;
+                    this._skipInputChange = false;
             },
 
             onInputFocusIn: function(e) {
@@ -577,18 +562,18 @@ define([
             onInputChanged: function(e, extra) {
                 // skip processing for internally-generated synthetic event
                 // to avoid double processing
-                if (extra && extra.synthetic)
+                if (extra?.synthetic)
                     return;
 
                 if (this._skipInputChange) {
                     this._skipInputChange = false; return;
                 }
 
-                var val = $(e.target).val(),
-                    record = {};
+                const val = $(e.target).val();
+                let record = {};
 
-                if (this.lastValue === val && !(extra && extra.reapply)) {
-                    if (extra && extra.onkeydown)
+                if (this.lastValue === val && !(extra?.reapply)) {
+                    if (extra?.onkeydown)
                         this.trigger('combo:blur', this, e);
                     return;
                 }
@@ -600,15 +585,15 @@ define([
                 if (e.isDefaultPrevented())
                     return;
 
-                var obj;
+                let obj;
                 this._selectedItem = this.store.findWhere((obj={}, obj[this.displayField]=val, obj));
 
                 if (this._selectedItem) {
                     record = this._selectedItem.toJSON();
-                    var $selectedItems = $('.selected', $(this.el));
+                    const $selectedItems = $('.selected', $(this.el));
                     $selectedItems.removeClass('selected');
                     $selectedItems.find('a').attr('aria-checked', false);
-                    var $newSelectedItem = $('#' + this._selectedItem.get('id'), $(this.el));
+                    const $newSelectedItem = $(`#${this._selectedItem.get('id')}`, $(this.el));
                     $newSelectedItem.addClass('selected');
                     $newSelectedItem.find('a').attr('aria-checked', true);
                 }
@@ -618,7 +603,7 @@ define([
             },
 
             onInputChanging: function(e, extra) {
-                var newValue = $(e.target).val();
+                const newValue = $(e.target).val();
 
                 if (e.isDefaultPrevented())
                     return;
@@ -637,14 +622,14 @@ define([
 
             onEditableInputClick: function(e) {
                 if (this.options.hint) {
-                    var tip = this.cmpEl.data('bs.tooltip');
+                    const tip = this.cmpEl.data('bs.tooltip');
                     if (tip) {
                         if (tip.dontShow===undefined)
                             tip.dontShow = true;
                         tip.hide();
                     }
                 }
-                if (this.isMenuOpen() && e.which == 1)
+                if (this.isMenuOpen() && e.which === 1)
                     e.stopPropagation();
             },
 
@@ -652,15 +637,15 @@ define([
                 if (!this.rendered)
                     return;
 
-                var val = this._input.val(),
-                    obj;
+                const val = this._input.val();
+                let obj;
 
                 if (val) {
                     this._selectedItem = this.store.findWhere((obj={}, obj[this.displayField]=val, obj));
 
                     if (this._selectedItem) {
-                        var $selectedItems = $('.selected', $(this.el)),
-                            $newSelectedItem = $('#' + this._selectedItem.get('id'), $(this.el));
+                        const $selectedItems = $('.selected', $(this.el));
+                        const $newSelectedItem = $(`#${this._selectedItem.get('id')}`, $(this.el));
                         $selectedItems.removeClass('selected');
                         $selectedItems.find('a').attr('aria-checked', false);
                         $newSelectedItem.addClass('selected');
@@ -703,16 +688,16 @@ define([
                 if (!this.rendered)
                     return;
 
-                var obj;
+                let obj;
                 this._selectedItem = this.store.findWhere((obj={}, obj[this.valueField]=value, obj));
 
-                var $selectedItems = $('.selected', $(this.el));
+                const $selectedItems = $('.selected', $(this.el));
                 $selectedItems.removeClass('selected');
                 $selectedItems.find('a').attr('aria-checked', false);
 
                 if (this._selectedItem) {
                     this.setRawValue(this._selectedItem.get(this.displayField));
-                    var $newSelectedItem = $('#' + this._selectedItem.get('id'), $(this.el));
+                    const $newSelectedItem = $(`#${this._selectedItem.get('id')}`, $(this.el));
                     $newSelectedItem.addClass('selected');
                     $newSelectedItem.find('a').attr('aria-checked', true);
                 } else {
@@ -752,24 +737,24 @@ define([
 
                 this._selectedItem = record;
 
-                var $selectedItems = $('.selected', $(this.el));
+                const $selectedItems = $('.selected', $(this.el));
                 $selectedItems.removeClass('selected');
                 $selectedItems.find('a').attr('aria-checked', false);
                 this.setRawValue(this._selectedItem.get(this.displayField));
-                var $newSelectedItem = $('#' + this._selectedItem.get('id'), $(this.el));
+                const $newSelectedItem = $(`#${this._selectedItem.get('id')}`, $(this.el));
                 $newSelectedItem.addClass('selected');
                 $newSelectedItem.find('a').attr('aria-checked', true);
             },
 
             clearSelection: function (){
-                var $selectedItems = $('.selected', $(this.el));
+                const $selectedItems = $('.selected', $(this.el));
                 $selectedItems.removeClass('selected');
                 $selectedItems.find('a').attr('aria-checked', false);
                 this._selectedItem = null;
             },
 
             itemClicked: function (e) {
-                var el = $(e.target).closest('li');
+                const el = $(e.target).closest('li');
 
                 this._selectedItem = this.store.findWhere({
                     id: el.attr('id')
@@ -780,7 +765,7 @@ define([
                     this.lastValue = this._selectedItem.get(this.displayField);
                     this._input.val(this.lastValue).trigger('change', { synthetic: true });
 
-                    var $selectedItems = $('.selected', $(this.el));
+                    const $selectedItems = $('.selected', $(this.el));
                     $selectedItems.removeClass('selected');
                     $selectedItems.find('a').attr('aria-checked', false);
                     el.addClass('selected');
@@ -795,7 +780,7 @@ define([
             },
 
             itemMouseDown: function(e) {
-                if (e.which != 1) {
+                if (e.which !== 1) {
                     e.preventDefault();
                     e.stopPropagation();
 
@@ -833,7 +818,7 @@ define([
 
                 if (!_.isUndefined(this.scroller)) {
                     this.scroller.destroy();
-                    delete this.scroller;
+                    this.scroller = undefined;
                 }
                 this.scroller = new Common.UI.Scroller(_.extend({
                     el: $('.dropdown-menu', this.cmpEl),
@@ -845,10 +830,9 @@ define([
             },
 
             focus: function() {
-                this._input && this._input.focus();
+                this._input?.focus();
             }
-        }
-    })());
+        }))());
 
     Common.UI.ComboBoxCustom = Common.UI.ComboBox.extend(_.extend({
         itemClicked: function (e) {
@@ -870,11 +854,11 @@ define([
         },
 
         setWidth: function(width) {
-            this.cmpEl && this.cmpEl.width(width);
+            this.cmpEl?.width(width);
         },
 
         focus: function() {
-            this.cmpEl && this.cmpEl.find('.form-control').focus();
+            this.cmpEl?.find('.form-control').focus();
         }
     }, Common.UI.ComboBoxCustom || {}));
 
@@ -925,17 +909,17 @@ define([
             Common.UI.ComboBox.prototype.onBeforeShowMenu.apply(this, arguments);
 
             if (this._selectedItem) {// reselect item as the recent can be changed
-                let obj,
-                    record = this.store.findWhere((obj={}, obj[this.valueField]=this._selectedItem.get(this.valueField), obj));
+                let obj;
+                const record = this.store.findWhere((obj={}, obj[this.valueField]=this._selectedItem.get(this.valueField), obj));
                 record && this.selectRecord(record);
             }
         },
 
         setRecent: function(recent) {
-            var filter = Common.localStorage.getKeysFilter();
+            const filter = Common.localStorage.getKeysFilter();
             this.recent = !recent ? false : {
                 count: recent.count || 5,
-                key: recent.key || (filter && filter.length ? filter.split(',')[0] : '') + this.id,
+                key: recent.key || (filter?.length ? filter.split(',')[0] : '') + this.id,
                 offset: recent.offset || 0,
                 valueField: recent.valueField || 'value'
             };
@@ -950,13 +934,11 @@ define([
                 }
 
                 this.store.remove(this.store.where({isRecent: true}));
-
-                var me = this,
-                    arr = Common.localStorage.getItem(this.recent.key);
+                let arr = Common.localStorage.getItem(this.recent.key);
                 arr = arr ? arr.split(';') : [];
-                arr.reverse().forEach(function(item) {
+                arr.reverse().forEach((item) => {
                     let obj;
-                    item && me.addItemToRecent(me.store.findWhere((obj={}, obj[me.recent.valueField]=item, obj)), true, 0);
+                    item && this.addItemToRecent(this.store.findWhere((obj={}, obj[this.recent.valueField]=item, obj)), true, 0);
                 });
                 this.recentArr = arr;
             }
@@ -965,26 +947,25 @@ define([
         addItemToRecent: function(record, silent, index) {
             if (!record || !this.recent) return;
 
-            let obj,
-                me = this,
-                item = this.store.findWhere((obj={isRecent: true}, obj[this.recent.valueField]=record.get(this.recent.valueField), obj));
+            let obj;
+            const item = this.store.findWhere((obj={isRecent: true}, obj[this.recent.valueField]=record.get(this.recent.valueField), obj));
             if (item && this.store.indexOf(item)<this.recent.offset) return;
 
             item && this.store.remove(item);
 
-            var recents = this.store.where({isRecent: true});
+            const recents = this.store.where({isRecent: true});
             if (!(recents.length < this.recent.count)) {
                 this.store.remove(recents[this.recent.count - 1]);
             }
 
-            var new_record = record.clone();
+            const new_record = record.clone();
             new_record.set({'isRecent': true, 'id': Common.UI.getId(), cloneid: record.id});
             this.store.add(new_record, {at: index!==undefined ? index : this.recent.offset});
 
             if (!silent) {
-                var arr = [];
-                this.store.where({isRecent: true}).forEach(function(item){
-                    arr.push(item.get(me.recent.valueField));
+                const arr = [];
+                this.store.where({isRecent: true}).forEach((item)=> {
+                    arr.push(item.get(this.recent.valueField));
                 });
                 this.recentArr = arr;
                 Common.localStorage.setItem(this.recent.key, arr.join(';'));
@@ -992,7 +973,7 @@ define([
         },
 
         onInsertRecentItem: function(item, store, options) {
-            var el = $(this.el).find('ul > li').eq(options ? options.at || 0 : 0);
+            const el = $(this.el).find('ul > li').eq(options ? options.at || 0 : 0);
             if (this.itemTemplate) {
                 el.before( $(this.itemTemplate(item.attributes)));
             } else {
@@ -1006,7 +987,7 @@ define([
         },
 
         onRemoveRecentItem: function(item, store, opts) {
-            $(this.el).find('ul > li#'+item.id).remove();
+            $(this.el).find(`ul > li#${item.id}`).remove();
         }
 
     }, Common.UI.ComboBoxRecent || {}));

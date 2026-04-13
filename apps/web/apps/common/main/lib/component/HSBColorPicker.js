@@ -23,10 +23,9 @@
  *
  */
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () {
-    'use strict';
+define([], () => {
 
     Common.UI.HSBColorPicker = Common.UI.BaseView.extend({
 
@@ -68,69 +67,71 @@ define([], function () {
 
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
-
-            var me = this,
-                el = me.$el || $(this.el),
-                arrowSatBrightness, arrowHue,
-                areaSatBrightness, areaHue,
-                previewColor, previewTransparentColor, previewColorText,
-                btnNoColor,
-                hueVal          = 0,
-                saturationVal   = 100,
-                brightnessVal   = 100;
-
-
-            me.allowEmptyColor = me.options.allowEmptyColor;
-            me.changeSaturation = me.options.changeSaturation;
-            me.showCurrentColor = me.options.showCurrentColor;
+            const el = this.$el || $(this.el);
+            let arrowSatBrightness;
+            let arrowHue;
+            let areaSatBrightness;
+            let areaHue;
+            let previewColor;
+            let previewTransparentColor;
+            let previewColorText;
+            let btnNoColor;
+            let hueVal          = 0;
+            let saturationVal   = 100;
+            let brightnessVal   = 100;
 
 
-            var onUpdateColor = function(hsb, transparent){
-                var rgbColor = new Common.Utils.RGBColor('hsb(' + hsb.h + ',' + hsb.s + ',' + hsb.b + ')'),
-                    hexColor = rgbColor.toHex();
+            this.allowEmptyColor = this.options.allowEmptyColor;
+            this.changeSaturation = this.options.changeSaturation;
+            this.showCurrentColor = this.options.showCurrentColor;
 
-                me.color = transparent ? 'transparent' : hexColor;
+
+            const onUpdateColor = (hsb, transparent)=> {
+                const rgbColor = new Common.Utils.RGBColor(`hsb(${hsb.h},${hsb.s},${hsb.b})`);
+                const hexColor = rgbColor.toHex();
+
+                this.color = transparent ? 'transparent' : hexColor;
 
                 refreshUI();
 
-                me.trigger('changecolor', me, me.color);
+                this.trigger('changecolor', this, this.color);
 
             };
 
-            var refreshUI = function(){
+            const refreshUI = ()=> {
                 if (previewColor.length>0  && previewTransparentColor.length>0){
-                    if (me.color == 'transparent'){
+                    if (this.color === 'transparent'){
                         previewTransparentColor.show();
                     } else {
-                        previewColor.css("background-color", me.color);
+                        previewColor.css("background-color", this.color);
                         previewTransparentColor.hide();
                     }
                 }
 
                 if (areaSatBrightness.length>0) {
-                    var fillColor = new Common.Utils.RGBColor('hsb(' + hueVal + ', 100, 100)');
-                    var background = 'linear-gradient(rgba(255,255,255,0), #000), linear-gradient(-90deg,' + fillColor.toRGB() + ','+ fillColor.toRGBA(0) +'), #fff';
+                    const fillColor = new Common.Utils.RGBColor(`hsb(${hueVal}, 100, 100)`);
+                    const background = `linear-gradient(rgba(255,255,255,0), #000), linear-gradient(-90deg,${fillColor.toRGB()},${fillColor.toRGBA(0)}), #fff`;
                     areaSatBrightness.css('background', background);
                 }
 
                 if (previewColorText.length>0)
-                    previewColorText[0].innerHTML = (me.color == 'transparent') ? me.textNoColor : me.color.toUpperCase();
+                    previewColorText[0].innerHTML = (this.color === 'transparent') ? this.textNoColor : this.color.toUpperCase();
 
                 if (arrowSatBrightness.length>0 && arrowHue.length>0) {
-                    arrowSatBrightness.css({'left': saturationVal + '%', 'top': 100 - brightnessVal + '%', 'background-color' : me.color});
-                    arrowHue.css('top', parseInt(hueVal * 100 / 360.0) + '%');
+                    arrowSatBrightness.css({'left': `${saturationVal}%`, 'top': `${100 - brightnessVal}%`, 'background-color' : this.color});
+                    arrowHue.css('top', `${Number.parseInt(hueVal * 100 / 360.0)}%`);
                 }
             };
 
-            var onSBAreaMouseMove = function(event, element, eOpts){
+            const onSBAreaMouseMove = (event, element, eOpts)=> {
                 if (arrowSatBrightness.length>0 && areaSatBrightness.length>0) {
-                    var pos = [
-                        Math.max(0, Math.min(100, (parseInt((event.pageX*Common.Utils.zoom() - Common.Utils.getOffset(areaSatBrightness).left) / areaSatBrightness.width() * 100)))),
-                        Math.max(0, Math.min(100, (parseInt((event.pageY*Common.Utils.zoom() - Common.Utils.getOffset(areaSatBrightness).top) / areaSatBrightness.height() * 100))))
+                    const pos = [
+                        Math.max(0, Math.min(100, (Number.parseInt((event.pageX*Common.Utils.zoom() - Common.Utils.getOffset(areaSatBrightness).left) / areaSatBrightness.width() * 100)))),
+                        Math.max(0, Math.min(100, (Number.parseInt((event.pageY*Common.Utils.zoom() - Common.Utils.getOffset(areaSatBrightness).top) / areaSatBrightness.height() * 100))))
                     ];
 
-                    arrowSatBrightness.css('left', pos[0] + '%');
-                    arrowSatBrightness.css('top', pos[1] + '%');
+                    arrowSatBrightness.css('left', `${pos[0]}%`);
+                    arrowSatBrightness.css('top', `${pos[1]}%`);
 
                     saturationVal = pos[0];
                     brightnessVal = 100 - pos[1];
@@ -143,12 +144,12 @@ define([], function () {
                 }
             };
 
-            var onHueAreaMouseMove = function(event, element, eOpts){
+            const onHueAreaMouseMove = (event, element, eOpts)=> {
                 if (arrowHue&& areaHue) {
-                    var pos = Math.max(0, Math.min(100, (parseInt((event.pageY*Common.Utils.zoom() - Common.Utils.getOffset(areaHue).top) / areaHue.height() * 100))));
-                    arrowHue.css('top', pos + '%');
+                    const pos = Math.max(0, Math.min(100, (Number.parseInt((event.pageY*Common.Utils.zoom() - Common.Utils.getOffset(areaHue).top) / areaHue.height() * 100))));
+                    arrowHue.css('top', `${pos}%`);
 
-                    hueVal = parseInt(360 * pos / 100.0);
+                    hueVal = Number.parseInt(360 * pos / 100.0);
 
                     onUpdateColor({
                         h: hueVal,
@@ -158,37 +159,37 @@ define([], function () {
                 }
             };
 
-            var onSBAreaMouseDown = function(event, element, eOpts){
+            const onSBAreaMouseDown = (event, element, eOpts)=> {
                 $(document).on('mouseup', onSBAreaMouseUp);
                 $(document).on('mousemove', onSBAreaMouseMove);
             };
 
-            var onSBAreaMouseUp = function(event, element, eOpts){
+            const onSBAreaMouseUp = (event, element, eOpts)=> {
                 $(document).off('mouseup', onSBAreaMouseUp);
                 $(document).off('mousemove', onSBAreaMouseMove);
                 onSBAreaMouseMove(event, element, eOpts);
             };
 
-            var onHueAreaMouseDown = function(event, element, eOpts){
+            const onHueAreaMouseDown = (event, element, eOpts)=> {
                 $(document).on('mouseup', onHueAreaMouseUp);
                 $(document).on('mousemove', onHueAreaMouseMove);
                 onHueAreaMouseMove(event, element, eOpts);
             };
 
-            var onHueAreaMouseUp = function(event, element, eOpts){
+            const onHueAreaMouseUp = (event, element, eOpts)=> {
                 $(document).off('mouseup', onHueAreaMouseUp);
                 $(document).off('mousemove', onHueAreaMouseMove);
             };
 
-            var onNoColorClick = function(cnt){
-                var hsbColor = new Common.util.RGBColor(me.color).toHSB();
+            const onNoColorClick = (cnt)=> {
+                const hsbColor = new Common.util.RGBColor(this.color).toHSB();
 
                 onUpdateColor(hsbColor, true);
             };
 
-            var onAfterRender = function(ct){
-                var rootEl = $(me.el),
-                    hsbColor;
+            const onAfterRender = (ct)=> {
+                const rootEl = $(this.el);
+                let hsbColor;
 
                 if (rootEl){
                     arrowSatBrightness  = rootEl.find('.cnt-hb-arrow');
@@ -218,30 +219,30 @@ define([], function () {
                         btnNoColor.on('click', onNoColorClick);
                     }
 
-                    if (me.color == 'transparent')
+                    if (this.color === 'transparent')
                         hsbColor = {h: 0, s: 100, b: 100};
                     else
-                        hsbColor = new Common.Utils.RGBColor(me.color).toHSB();
+                        hsbColor = new Common.Utils.RGBColor(this.color).toHSB();
 
                     hueVal          = hsbColor.h;
                     saturationVal   = hsbColor.s;
                     brightnessVal   = hsbColor.b;
 
-                    if (hueVal == saturationVal &&
-                        hueVal == brightnessVal &&
-                        hueVal == 0)
+                    if (hueVal === saturationVal &&
+                        hueVal === brightnessVal &&
+                        hueVal === 0)
                         saturationVal = 100;
 
                     refreshUI();
                 }
             };
 
-            me.setColor = function(value){
-                if (me.color == value)
+            this.setColor = (value)=> {
+                if (this.color === value)
                     return;
 
-                var hsbColor;
-                if (value == 'transparent')
+                let hsbColor;
+                if (value === 'transparent')
                     hsbColor = {h: 0, s: 100, b: 100};
                 else
                     hsbColor = new Common.Utils.RGBColor(value).toHSB();
@@ -250,22 +251,20 @@ define([], function () {
                 saturationVal   = hsbColor.s;
                 brightnessVal   = hsbColor.b;
 
-                if (hueVal == saturationVal &&
-                    hueVal == brightnessVal &&
-                    hueVal == 0)
+                if (hueVal === saturationVal &&
+                    hueVal === brightnessVal &&
+                    hueVal === 0)
                     saturationVal = 100;
 
-                me.color = value;
+                this.color = value;
 
                 refreshUI();
             };
 
-            me.getColor = function(){
-                return me.color;
-            };
+            this.getColor = ()=> this.color;
 
-            me.on('render:after', onAfterRender);
-            me.render();
+            this.on('render:after', onAfterRender);
+            this.render();
         },
 
         render: function () {

@@ -102,20 +102,19 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'common/main/lib/component/ToggleManager'
-], function () {
-    'use strict';
+], () => {
 
-    window.createButtonSet = function() {
+    window.createButtonSet = () => {
         function ButtonsArray(args) {};
         ButtonsArray.prototype = new Array;
         ButtonsArray.prototype.constructor = ButtonsArray;
 
-        var _disabled = false;
+        let _disabled = false;
 
         ButtonsArray.prototype.add = function(button) {
             button.setDisabled(_disabled);
@@ -123,40 +122,33 @@ define([
         };
 
         ButtonsArray.prototype.setDisabled = function(disable) {
-            // if ( _disabled != disable ) //bug when disable buttons outside the group
-            {
                 _disabled = disable;
 
-                this.forEach( function(button) {
+                this.forEach( (button) => {
                     button.setDisabled(disable);
                 });
-            }
         };
 
         ButtonsArray.prototype.toggle = function(state, suppress) {
-            this.forEach(function(button) {
+            this.forEach((button) => {
                 button.toggle(state, suppress);
             });
         };
 
         ButtonsArray.prototype.pressed = function() {
-            return this.some(function(button) {
-                return button.pressed;
-            });
+            return this.some((button) => button.pressed);
         };
 
         ButtonsArray.prototype.contains = function(id) {
-            return this.some(function(button) {
-                return button.id == id;
-            });
+            return this.some((button) => button.id === id);
         };
 
         ButtonsArray.prototype.concat = function () {
-            var args = Array.prototype.slice.call(arguments);
-            var result = Array.prototype.slice.call(this);
+            const args = Array.prototype.slice.call(arguments);
+            const result = Array.prototype.slice.call(this);
 
-            args.forEach(function(sub){
-                if (sub instanceof Array )
+            args.forEach((sub)=> {
+                if (Array.isArray(sub) )
                     Array.prototype.push.apply(result, sub);
                 else if (sub)
                     result.push(sub);
@@ -165,8 +157,8 @@ define([
             return result;
         };
 
-        var _out_array = Object.create(ButtonsArray.prototype);
-        for ( var i in arguments ) {
+        const _out_array = Object.create(ButtonsArray.prototype);
+        for ( const i in arguments ) {
             _out_array.add(arguments[i]);
         }
 
@@ -175,7 +167,7 @@ define([
 
     // SVG sprite approach - uses <svg><use href="#id"> for dark mode support
     // Sprite is injected into DOM via svg-injector, so we use fragment-only references
-    var templateBtnIcon =
+    const templateBtnIcon =
             '<% if ( iconImg ) { %>' +
                 '<img src="<%= iconImg %>">' +
             '<% } else { %>' +
@@ -186,68 +178,39 @@ define([
                     'print(\'<i class=\"icon \' + iconCls + \'\">&nbsp;</i>\'); %>' +
             '<% } %>';
 
-    var templateBtnCaption =
+    const templateBtnCaption =
         '<%= caption %>' +
         '<i class="caret"></i>';
 
-    var templateHugeCaption =
-            '<button type="button" class="btn <%= cls %>" id="<%= id %>" style="<%= style %>" data-hint="<%= dataHint %>" data-hint-direction="<%= dataHintDirection %>" data-hint-offset="<%= dataHintOffset %>" <% if (dataHintTitle) { %> data-hint-title="<%= dataHintTitle %>" <% } %>> ' +
-                '<div class="inner-box-icon">' +
-                    templateBtnIcon +
-                '</div>' +
-                '<div class="inner-box-caption">' +
-                    '<span class="caption"><%= caption %></span>' +
-                '</div>' +
-            '</button>';
+    const templateHugeCaption =
+            `<button type="button" class="btn <%= cls %>" id="<%= id %>" style="<%= style %>" data-hint="<%= dataHint %>" data-hint-direction="<%= dataHintDirection %>" data-hint-offset="<%= dataHintOffset %>" <% if (dataHintTitle) { %> data-hint-title="<%= dataHintTitle %>" <% } %>> <div class="inner-box-icon">${templateBtnIcon}</div><div class="inner-box-caption"><span class="caption"><%= caption %></span></div></button>`;
 
-    var templateHugeMenuCaption =
-        '<div class="btn-group icon-top" id="<%= id %>" style="<%= style %>">' +
-            '<button type="button" class="btn dropdown-toggle <%= cls %>" data-toggle="dropdown" data-hint="<%= dataHint %>" data-hint-direction="<%= dataHintDirection %>" data-hint-offset="<%= dataHintOffset %>" <% if (dataHintTitle) { %> data-hint-title="<%= dataHintTitle %>" <% } %>>' +
-                '<div class="inner-box-icon">' +
-                    templateBtnIcon +
-                '</div>' +
-                '<div class="inner-box-caption">' +
-                    '<span class="caption">' + templateBtnCaption + '</span>' +
-                    '<i class="caret compact-caret"></i>' +
-                '</div>' +
-            '</button>' +
-        '</div>';
+    const templateHugeMenuCaption =
+        `<div class="btn-group icon-top" id="<%= id %>" style="<%= style %>"><button type="button" class="btn dropdown-toggle <%= cls %>" data-toggle="dropdown" data-hint="<%= dataHint %>" data-hint-direction="<%= dataHintDirection %>" data-hint-offset="<%= dataHintOffset %>" <% if (dataHintTitle) { %> data-hint-title="<%= dataHintTitle %>" <% } %>><div class="inner-box-icon">${templateBtnIcon}</div><div class="inner-box-caption"><span class="caption">${templateBtnCaption}</span><i class="caret compact-caret"></i></div></button></div>`;
 
-    var templateHugeSplitCaption =
-        '<div class="btn-group x-huge split icon-top" id="<%= id %>" style="<%= style %>">' +
-            '<button type="button" class="btn <%= cls %> inner-box-icon">' +
-                '<span class="btn-fixflex-hcenter">' +
-                    templateBtnIcon +
-                '</span>' +
-            '</button>' +
-            '<button type="button" class="btn <%= cls %> inner-box-caption dropdown-toggle" data-toggle="dropdown" data-hint="<%= dataHint %>" data-hint-direction="<%= dataHintDirection %>" data-hint-offset="<%= dataHintOffset %>" <% if (dataHintTitle) { %> data-hint-title="<%= dataHintTitle %>" <% } %>>' +
-                '<span class="btn-fixflex-vcenter">' +
-                    '<span class="caption">' + templateBtnCaption + '</span>' +
-                    '<i class="caret compact-caret"></i>' +
-                '</span>' +
-            '</button>' +
-        '</div>';
+    const templateHugeSplitCaption =
+        `<div class="btn-group x-huge split icon-top" id="<%= id %>" style="<%= style %>"><button type="button" class="btn <%= cls %> inner-box-icon"><span class="btn-fixflex-hcenter">${templateBtnIcon}</span></button><button type="button" class="btn <%= cls %> inner-box-caption dropdown-toggle" data-toggle="dropdown" data-hint="<%= dataHint %>" data-hint-direction="<%= dataHintDirection %>" data-hint-offset="<%= dataHintOffset %>" <% if (dataHintTitle) { %> data-hint-title="<%= dataHintTitle %>" <% } %>><span class="btn-fixflex-vcenter"><span class="caption">${templateBtnCaption}</span><i class="caret compact-caret"></i></span></button></div>`;
 
-    var getWidthOfCaption = function (txt) {
-        var props = Common.UI.Themes.getThemeProps('font');
-        var el = document.createElement('span');
-        el.style.fontSize = props && props.size ? props.size : '11px';
-        el.style.fontFamily = props && props.name ? props.name : 'Arial, Helvetica, "Helvetica Neue", sans-serif';
+    const getWidthOfCaption = (txt) => {
+        const props = Common.UI.Themes.getThemeProps('font');
+        const el = document.createElement('span');
+        el.style.fontSize = props?.size ? props.size : '11px';
+        el.style.fontFamily = props?.name ? props.name : 'Arial, Helvetica, "Helvetica Neue", sans-serif';
         el.style.position = "absolute";
         el.style.top = '-1000px';
         el.style.left = '-1000px';
         el.innerHTML = txt;
         document.body.appendChild(el);
-        var result = el.offsetWidth;
+        const result = el.offsetWidth;
         document.body.removeChild(el);
         return result;
     };
 
-    var getShortText = function (txt, max) {
-        var lastIndex = txt.length - 1,
-            word = txt;
+    const getShortText = (txt, max) => {
+        let lastIndex = txt.length - 1;
+        let word = txt;
         while (getWidthOfCaption(word) > max) {
-            word = txt.slice(0, lastIndex).trim() + '...';
+            word = `${txt.slice(0, lastIndex).trim()}...`;
             lastIndex--;
         }
         return word;
@@ -332,48 +295,46 @@ define([
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
 
-            var me = this;
-
-            me.id           = me.options.id || Common.UI.getId();
-            me.hint         = me.options.hint;
-            me.enableToggle = me.options.enableToggle;
-            me.allowDepress = me.options.allowDepress;
-            me.cls          = me.options.cls;
-            me.iconCls      = me.options.iconCls;
-            me.menu         = me.options.menu;
-            me.split        = me.options.split;
-            me.toggleGroup  = me.options.toggleGroup;
-            me.disabled     = me.options.disabled;
-            me.visible      = me.options.visible;
-            me.pressed      = me.options.pressed;
-            me.caption      = me.options.caption;
-            me.template     = me.options.template || me.template;
-            me.style        = me.options.style;
-            me.rendered     = false;
-            me.stopPropagation = me.options.stopPropagation;
-            me.delayRenderHint = me.options.delayRenderHint;
-            me.action = me.options.action || '';
+            this.id           = this.options.id || Common.UI.getId();
+            this.hint         = this.options.hint;
+            this.enableToggle = this.options.enableToggle;
+            this.allowDepress = this.options.allowDepress;
+            this.cls          = this.options.cls;
+            this.iconCls      = this.options.iconCls;
+            this.menu         = this.options.menu;
+            this.split        = this.options.split;
+            this.toggleGroup  = this.options.toggleGroup;
+            this.disabled     = this.options.disabled;
+            this.visible      = this.options.visible;
+            this.pressed      = this.options.pressed;
+            this.caption      = this.options.caption;
+            this.template     = this.options.template || this.template;
+            this.style        = this.options.style;
+            this.rendered     = false;
+            this.stopPropagation = this.options.stopPropagation;
+            this.delayRenderHint = this.options.delayRenderHint;
+            this.action = this.options.action || '';
 
             // if ( /(?<!-)svg-icon(?!-)/.test(me.options.iconCls) )
             //     me.options.scaling = false;
 
-            if ( me.options.scaling === false && me.options.iconCls) {
-                me.iconCls = me.options.iconCls + ' scaling-off';
+            if ( this.options.scaling === false && this.options.iconCls) {
+                this.iconCls = `${this.options.iconCls} scaling-off`;
             }
 
-            me.options.takeFocusOnClose && (me.options.canFocused = true);
+            this.options.takeFocusOnClose && (this.options.canFocused = true);
 
-            if (me.options.el) {
-                me.render();
-            } else if (me.options.parentEl)
-                me.render(me.options.parentEl);
+            if (this.options.el) {
+                this.render();
+            } else if (this.options.parentEl)
+                this.render(this.options.parentEl);
         },
 
         getCaptionWithBreaks: function (caption) {
-            var words = caption.split(' '),
-                newCaption = null,
-                maxWidth = 160 - 4, //85 - 4
-                containAnd = words.indexOf('&');
+            const words = caption.split(' ');
+            let newCaption = null;
+            let maxWidth = 160 - 4; //85 - 4
+            const containAnd = words.indexOf('&');
             if (containAnd > -1) { // add & to previous word
                 words[containAnd - 1] += ' &';
                 words.splice(containAnd, 1);
@@ -381,32 +342,32 @@ define([
             if (words.length > 1) {
                 maxWidth = !!this.menu || this.split === true ? maxWidth - 10 : maxWidth;
                 if (words.length < 3) {
-                    words[0] = getShortText(words[0], !!this.menu ? maxWidth + 10 : maxWidth);
+                    words[0] = getShortText(words[0], this.menu ? maxWidth + 10 : maxWidth);
                     words[1] = getShortText(words[1], maxWidth);
-                    newCaption = words[0] + '<br>' + words[1];
+                    newCaption = `${words[0]}<br>${words[1]}`;
                 } else {
-                    var otherWords = '';
-                    if (getWidthOfCaption(words[0] + ' ' + words[1]) < maxWidth) { // first and second words in first line
-                        for (var i = 2; i < words.length; i++) {
-                            otherWords += words[i] + ' ';
+                    let otherWords = '';
+                    if (getWidthOfCaption(`${words[0]} ${words[1]}`) < maxWidth) { // first and second words in first line
+                        for (let i = 2; i < words.length; i++) {
+                            otherWords += `${words[i]} `;
                         }
-                        if (getWidthOfCaption(otherWords + (!!this.menu ? 10 : 0))*2 < getWidthOfCaption(words[0] + ' ' + words[1])) {
-                            otherWords = getShortText((words[1] + ' ' + otherWords).trim(), maxWidth);
-                            newCaption = words[0] + '<br>' + otherWords;
+                        if (getWidthOfCaption(otherWords + (this.menu ? 10 : 0))*2 < getWidthOfCaption(`${words[0]} ${words[1]}`)) {
+                            otherWords = getShortText((`${words[1]} ${otherWords}`).trim(), maxWidth);
+                            newCaption = `${words[0]}<br>${otherWords}`;
                         } else {
                             otherWords = getShortText(otherWords.trim(), maxWidth);
-                            newCaption = words[0] + ' ' + words[1] + '<br>' + otherWords;
+                            newCaption = `${words[0]} ${words[1]}<br>${otherWords}`;
                         }
                     } else { // only first word is in first line
-                        for (var j = 1; j < words.length; j++) {
-                            otherWords += words[j] + ' ';
+                        for (let j = 1; j < words.length; j++) {
+                            otherWords += `${words[j]} `;
                         }
                         otherWords = getShortText(otherWords.trim(), maxWidth);
-                        newCaption = words[0] + '<br>' + otherWords;
+                        newCaption = `${words[0]}<br>${otherWords}`;
                     }
                 }
             } else {
-                var width = getWidthOfCaption(caption);
+                const width = getWidthOfCaption(caption);
                 newCaption = width < maxWidth ? caption : getShortText(caption, maxWidth);
                 if (!!this.menu || this.split === true) {
                     newCaption += '<br>';
@@ -416,75 +377,74 @@ define([
         },
 
         render: function(parentEl) {
-            var me = this;
 
-            me.trigger('render:before', me);
+            this.trigger('render:before', this);
 
-            me.cmpEl = me.$el || $(me.el);
+            this.cmpEl = this.$el || $(this.el);
 
             if (parentEl) {
-                me.setElement(parentEl, false);
+                this.setElement(parentEl, false);
 
-                if (!me.rendered) {
-                    if ( /icon-top/.test(me.cls) && !!me.caption && /huge/.test(me.cls) ) {
-                        if ( me.split === true ) {
-                            !!me.cls && (me.cls = me.cls.replace(/\s?(?:x-huge|icon-top)/g, ''));
+                if (!this.rendered) {
+                    if ( /icon-top/.test(this.cls) && !!this.caption && /huge/.test(this.cls) ) {
+                        if ( this.split === true ) {
+                            !!this.cls && (this.cls = this.cls.replace(/\s?(?:x-huge|icon-top)/g, ''));
                             this.template = _.template(templateHugeSplitCaption);
                         } else
-                        if ( !!me.menu ) {
+                        if ( this.menu ) {
                             this.template = _.template(templateHugeMenuCaption);
                         } else {
                             this.template = _.template(templateHugeCaption);
                         }
-                        var newCaption = this.getCaptionWithBreaks(this.caption);
+                        const newCaption = this.getCaptionWithBreaks(this.caption);
                         if (newCaption) {
-                            me.caption = newCaption;
+                            this.caption = newCaption;
                         }
                     }
 
-                    me.cmpEl = $(this.template({
-                        id           : me.id,
-                        cls          : me.cls,
-                        groupCls     : me.split && /btn-toolbar/.test(me.cls) ? 'no-borders' : '',
-                        iconCls      : me.iconCls,
-                        iconImg      : me.options.iconImg,
-                        menu         : me.menu,
-                        split        : me.split,
-                        onlyIcon     : me.options.onlyIcon,
-                        disabled     : me.disabled,
-                        pressed      : me.pressed,
-                        caption      : me.caption,
-                        style        : me.style,
-                        dataHint     : me.options.dataHint,
-                        dataHintDirection: me.options.dataHintDirection,
-                        dataHintOffset: me.options.dataHintOffset,
-                        dataHintTitle: me.options.dataHintTitle
+                    this.cmpEl = $(this.template({
+                        id           : this.id,
+                        cls          : this.cls,
+                        groupCls     : this.split && /btn-toolbar/.test(this.cls) ? 'no-borders' : '',
+                        iconCls      : this.iconCls,
+                        iconImg      : this.options.iconImg,
+                        menu         : this.menu,
+                        split        : this.split,
+                        onlyIcon     : this.options.onlyIcon,
+                        disabled     : this.disabled,
+                        pressed      : this.pressed,
+                        caption      : this.caption,
+                        style        : this.style,
+                        dataHint     : this.options.dataHint,
+                        dataHintDirection: this.options.dataHintDirection,
+                        dataHintOffset: this.options.dataHintOffset,
+                        dataHintTitle: this.options.dataHintTitle
                     }));
 
-                    if (me.menu && _.isObject(me.menu) && _.isFunction(me.menu.render)) {
-                        me.menu.render(me.cmpEl);
-                        me.options.canFocused && me.attachKeyEvents();
+                    if (this.menu && _.isObject(this.menu) && _.isFunction(this.menu.render)) {
+                        this.menu.render(this.cmpEl);
+                        this.options.canFocused && this.attachKeyEvents();
                     }
 
-                    parentEl.html(me.cmpEl);
-                    me.$icon = me.$el.find('.icon');
+                    parentEl.html(this.cmpEl);
+                    this.$icon = this.$el.find('.icon');
                 }
             }
 
-            if (!me.rendered) {
-                var el = me.cmpEl,
-                    isGroup = el.hasClass('btn-group'),
-                    isSplit = el.hasClass('split');
+            if (!this.rendered) {
+                const el = this.cmpEl;
+                const isGroup = el.hasClass('btn-group');
+                const isSplit = el.hasClass('split');
 
-                if (_.isString(me.toggleGroup)) {
-                    me.enableToggle = true;
+                if (_.isString(this.toggleGroup)) {
+                    this.enableToggle = true;
                 }
 
-                var buttonHandler = function(e) {
-                    if (!me.disabled && (e.which === 1 || e.which===undefined)) {
-                        me.doToggle();
-                        if (me.options.hint) {
-                            var tip = me.btnEl.data('bs.tooltip');
+                const buttonHandler = (e) => {
+                    if (!this.disabled && (e.which === 1 || e.which===undefined)) {
+                        this.doToggle();
+                        if (this.options.hint) {
+                            const tip = this.btnEl.data('bs.tooltip');
                             if (tip) {
                                 if (tip.dontShow===undefined)
                                     tip.dontShow = true;
@@ -492,17 +452,17 @@ define([
                                 tip.hide();
                             }
                         }
-                        me.split && me.options.takeFocusOnClose && me.focus();
-                        me.trigger('click', me, e);
+                        this.split && this.options.takeFocusOnClose && this.focus();
+                        this.trigger('click', this, e);
                     }
                 };
 
-                var doSplitSelect = function(select, element, e) {
+                const doSplitSelect = (select, element, e) => {
                     if (!select) {
                         // Is mouse under button
-                        var isUnderMouse = false;
+                        let isUnderMouse = false;
 
-                        $('button', el).each(function(index, button){
+                        $('button', el).each((index, button)=> {
                             if ($(button).is(':hover')) {
                                 isUnderMouse = true;
                                 return false;
@@ -515,10 +475,10 @@ define([
                         }
                     }
 
-                    if ( element == 'button') {
-                        if (!select && (me.enableToggle && me.allowDepress && me.pressed))
+                    if ( element === 'button') {
+                        if (!select && (this.enableToggle && this.allowDepress && this.pressed))
                             return;
-                        if (select && !isSplit && (me.enableToggle && me.allowDepress && !me.pressed)) { // to depress button with menu
+                        if (select && !isSplit && (this.enableToggle && this.allowDepress && !this.pressed)) { // to depress button with menu
                             e.preventDefault();
                             return;
                         }
@@ -528,14 +488,14 @@ define([
                         $('[data-toggle^=dropdown]:first', el).toggleClass('active', select);
 
                     el.toggleClass('active', select);
-                    me.stopPropagation && e.stopPropagation();
+                    this.stopPropagation && e.stopPropagation();
                 };
 
-                var menuHandler = function(e) {
-                    if (!me.disabled && e.which == 1) {
+                const menuHandler = (e) => {
+                    if (!this.disabled && e.which === 1) {
                         if (isSplit) {
-                            if (me.options.hint) {
-                                var tip = (me.btnMenuEl ? me.btnMenuEl : me.btnEl).data('bs.tooltip');
+                            if (this.options.hint) {
+                                const tip = (this.btnMenuEl ? this.btnMenuEl : this.btnEl).data('bs.tooltip');
                                 if (tip) {
                                     if (tip.dontShow===undefined)
                                         tip.dontShow = true;
@@ -543,137 +503,136 @@ define([
                                     tip.hide();
                                 }
                             }
-                            doSplitSelect(!me.isMenuOpen(), 'arrow', e);
+                            doSplitSelect(!this.isMenuOpen(), 'arrow', e);
                         }
                     }
                 };
 
-                var doSetActiveState = function(e, state) {
+                const doSetActiveState = (e, state) => {
                     if (isSplit) {
                         doSplitSelect(state, 'button', e);
                     } else {
                         el.toggleClass('active', state);
                         $('button', el).toggleClass('active', state);
                     }
-                    me.stopPropagation && e.stopPropagation();
+                    this.stopPropagation && e.stopPropagation();
                 };
 
-                var splitElement;
-                var onMouseDown = function (e) {
+                let splitElement;
+                const onMouseDown = (e) => {
                     splitElement = e.currentTarget.className.match(/dropdown/) ? 'arrow' : 'button';
                     doSplitSelect(true, splitElement, e);
                     $(document).on('mouseup',   onMouseUp);
                 };
 
-                var onMouseUp = function (e) {
+                const onMouseUp = (e) => {
                     doSplitSelect(false, splitElement, e);
                     $(document).off('mouseup',   onMouseUp);
                 };
 
-                var onAfterHideMenu = function(e, isFromInputControl) {
-                    me.cmpEl.find('.dropdown-toggle').blur();
-                    if (me.cmpEl.hasClass('active') !== me.pressed) 
-                        me.cmpEl.trigger('button.internal.active', [me.pressed]);
+                const onAfterHideMenu = (e, isFromInputControl) => {
+                    this.cmpEl.find('.dropdown-toggle').blur();
+                    if (this.cmpEl.hasClass('active') !== this.pressed) 
+                        this.cmpEl.trigger('button.internal.active', [this.pressed]);
                 };
 
                 if (isGroup) {
                     if (isSplit) {
                         $('[data-toggle^=dropdown]', el).on('mousedown', _.bind(menuHandler, this));
                         $('button', el).on('mousedown', _.bind(onMouseDown, this));
-                        (me.options.width>0) && $('button:first', el).css('width', me.options.width - $('[data-toggle^=dropdown]', el).outerWidth());
+                        (this.options.width>0) && $('button:first', el).css('width', this.options.width - $('[data-toggle^=dropdown]', el).outerWidth());
                     }
 
-                    el.on('hide.bs.dropdown', _.bind(doSplitSelect, me, false, 'arrow'));
-                    el.on('show.bs.dropdown', _.bind(doSplitSelect, me, true, 'arrow'));
-                    el.on('hidden.bs.dropdown', _.bind(onAfterHideMenu, me));
+                    el.on('hide.bs.dropdown', _.bind(doSplitSelect, this, false, 'arrow'));
+                    el.on('show.bs.dropdown', _.bind(doSplitSelect, this, true, 'arrow'));
+                    el.on('hidden.bs.dropdown', _.bind(onAfterHideMenu, this));
 
                     $('button:first', el).on('click', buttonHandler);
                 } else {
                     el.on('click', buttonHandler);
                 }
 
-                el.on('button.internal.active', _.bind(doSetActiveState, me));
+                el.on('button.internal.active', _.bind(doSetActiveState, this));
 
-                el.on('mouseover', function(e) {
-                    if (!me.disabled) {
-                        me.cmpEl.addClass('over');
-                        me.trigger('mouseover', me, e);
+                el.on('mouseover', (e) => {
+                    if (!this.disabled) {
+                        this.cmpEl.addClass('over');
+                        this.trigger('mouseover', this, e);
                     }
                 });
 
-                el.on('mouseout', function(e) {
-                    me.cmpEl.removeClass('over');
-                    if (!me.disabled) {
-                        me.trigger('mouseout', me, e);
+                el.on('mouseout', (e) => {
+                    this.cmpEl.removeClass('over');
+                    if (!this.disabled) {
+                        this.trigger('mouseout', this, e);
                     }
                 });
 
                 // Register the button in the toggle manager
-                Common.UI.ToggleManager.register(me);
+                Common.UI.ToggleManager.register(this);
 
-                if ( me.options.scaling !== false ) {
+                if ( this.options.scaling !== false ) {
                     el.attr('ratio', 'ratio');
-                    me.applyScaling(Common.UI.Scaling.currentRatio());
+                    this.applyScaling(Common.UI.Scaling.currentRatio());
 
-                    el.on('app:scaling', function (e, info) {
-                        if ( me.options.scaling != info.ratio ) {
-                            me.applyScaling(info.ratio);
+                    el.on('app:scaling', (e, info) => {
+                        if ( this.options.scaling !== info.ratio ) {
+                            this.applyScaling(info.ratio);
                         }
                     });
                 }
 
-                var $btn = $('button', el).length>0 ? $('button', el) : me.cmpEl;
+                const $btn = $('button', el).length>0 ? $('button', el) : this.cmpEl;
 
-                if (!me.menu)
+                if (!this.menu)
                     $btn.addClass('canfocused');
 
-                if (me.enableToggle && !me.menu) {
-                    $btn.attr('aria-pressed', !!me.pressed)
+                if (this.enableToggle && !this.menu) {
+                    $btn.attr('aria-pressed', !!this.pressed)
                 }
 
-                if (me.menu) {
+                if (this.menu) {
                     $('[data-toggle^=dropdown]', el).attr('aria-haspopup', 'menu');
                     $('[data-toggle^=dropdown]', el).attr('aria-expanded', false);
                 }
 
-                if ((!me.caption && me.options.hint) || me.options.ariaLabel) {
-                    var ariaLabel = me.options.ariaLabel ? me.options.ariaLabel : ((typeof me.options.hint == 'string') ? me.options.hint : me.options.hint[0]);
+                if ((!this.caption && this.options.hint) || this.options.ariaLabel) {
+                    const ariaLabel = this.options.ariaLabel ? this.options.ariaLabel : ((typeof this.options.hint === 'string') ? this.options.hint : this.options.hint[0]);
                     $btn.attr('aria-label', ariaLabel);
                 }
 
                 Common.NotificationCenter.on('uitheme:changed', this.onThemeChanged.bind(this));
             }
 
-            me.rendered = true;
+            this.rendered = true;
 
-            me.options.hint && me.createHint(me.options.hint);
+            this.options.hint && this.createHint(this.options.hint);
 
-            if (me.pressed) {
-                me.toggle(me.pressed, true);
+            if (this.pressed) {
+                this.toggle(this.pressed, true);
             }
 
-            if (me.disabled) {
-                me.setDisabled(!(me.disabled=false));
+            if (this.disabled) {
+                this.setDisabled(!(this.disabled=false));
             }
 
-            if (!me.visible) {
-                me.setVisible(me.visible);
+            if (!this.visible) {
+                this.setVisible(this.visible);
             }
 
-            me.trigger('render:after', me);
+            this.trigger('render:after', this);
 
             return this;
         },
 
         doToggle: function(){
-            var me = this;
-            if (me.enableToggle && (me.allowDepress !== false || !me.pressed)) {
-                me.toggle();
+            if (this.enableToggle && (this.allowDepress !== false || !this.pressed)) {
+                this.toggle();
             }
         },
 
         toggle: function(toggle, suppressEvent) {
-            var state = toggle === undefined ? !this.pressed : !!toggle;
+            const state = toggle === undefined ? !this.pressed : !!toggle;
 
             this.pressed = state;
 
@@ -701,17 +660,16 @@ define([
         },
 
         setDisabled: function(disabled) {
-            if (this.rendered && this.disabled != disabled) {
-                var el = this.cmpEl,
-                    isGroup = el.hasClass('btn-group'),
-                    me = this;
+            if (this.rendered && this.disabled !== disabled) {
+                const el = this.cmpEl;
+                const isGroup = el.hasClass('btn-group');
 
                 disabled = (disabled===true);
 
                 if (disabled !== el.hasClass('disabled')) {
-                    var decorateBtn = function(button) {
+                    const decorateBtn = (button) => {
                         button.toggleClass('disabled', disabled);
-                        if (!me.options.allowMouseEventsOnDisabled)
+                        if (!this.options.allowMouseEventsOnDisabled)
                             (disabled) ? button.attr({disabled: disabled}) : button.removeAttr('disabled');
                     };
 
@@ -720,7 +678,7 @@ define([
                 }
 
                 if ((disabled || !Common.Utils.isGecko) && this.options.hint) {
-                    var tip = this.btnEl.data('bs.tooltip');
+                    let tip = this.btnEl.data('bs.tooltip');
                     if (tip) {
                         disabled && tip.hide();
                         !Common.Utils.isGecko && (tip.enabled = !disabled);
@@ -735,19 +693,19 @@ define([
                 }
 
                 if (disabled && this.menu && _.isObject(this.menu) && this.menu.rendered && this.menu.isVisible())
-                    setTimeout(function(){ me.menu.hide()}, 1);
+                    setTimeout(()=> { this.menu.hide()}, 1);
 
-                if ( !!me.options.signals ) {
-                    var opts = me.options.signals;
+                if ( this.options.signals ) {
+                    const opts = this.options.signals;
                     if ( !(opts.indexOf('disabled') < 0) ) {
-                        me.trigger('disabled', me, disabled);
+                        this.trigger('disabled', this, disabled);
                     }
                 }
 
-                if (me.tabindex!==undefined) {
-                    var el = this.split ? this.cmpEl : this.$el && this.$el.find('button').addBack().filter('button');
+                if (this.tabindex!==undefined) {
+                    const el = this.split ? this.cmpEl : this.$el?.find('button').addBack().filter('button');
                     disabled && (this.tabindex = el.attr('tabindex'));
-                    el.attr('tabindex', disabled ? "-1" : me.tabindex);
+                    el.attr('tabindex', disabled ? "-1" : this.tabindex);
                 }
             }
 
@@ -759,18 +717,18 @@ define([
         },
 
         setIconCls: function(cls) {
-            var btnIconEl = $(this.el).find('i.icon'),
-                oldCls = this.iconCls,
-                svgIcon = $(this.el).find('.icon use.zoom-int');
+            const btnIconEl = $(this.el).find('i.icon');
+            const oldCls = this.iconCls;
+            const svgIcon = $(this.el).find('.icon use.zoom-int');
 
             this.iconCls = cls;
             if (/svgicon/.test(this.iconCls)) {
-                var icon = /svgicon\s(\S+)/.exec(this.iconCls);
-                svgIcon.attr('href', icon && icon.length > 1 ? '#' + icon[1] : '');
+                const icon = /svgicon\s(\S+)/.exec(this.iconCls);
+                svgIcon.attr('href', icon && icon.length > 1 ? `#${icon[1]}` : '');
             } else {
                 if (svgIcon.length) {
-                    var icon = /btn-[^\s]+/.exec(this.iconCls);
-                    svgIcon.attr('href', icon ? '#' + icon[0]: '');
+                    const icon = /btn-[^\s]+/.exec(this.iconCls);
+                    svgIcon.attr('href', icon ? `#${icon[0]}`: '');
                 }
                 btnIconEl.removeClass(oldCls);
                 btnIconEl.addClass(cls || '');
@@ -781,24 +739,23 @@ define([
         },
 
         changeIcon: function(opts) {
-            var me = this,
-                btnIconEl = $(this.el).find('i.icon');
+            let btnIconEl = $(this.el).find('i.icon');
             if (btnIconEl.length > 1) btnIconEl = $(btnIconEl[0]);
             if (opts && (opts.curr || opts.next) && btnIconEl) {
-                var svgIcon = $(this.el).find('.icon use.zoom-int');
+                const svgIcon = $(this.el).find('.icon use.zoom-int');
                 if (opts.curr) {
                     btnIconEl.removeClass(opts.curr);
-                    me.iconCls = me.iconCls.replace(opts.curr, '').trim();
+                    this.iconCls = this.iconCls.replace(opts.curr, '').trim();
                 }
                 if (opts.next) {
                     !btnIconEl.hasClass(opts.next) && (btnIconEl.addClass(opts.next));
-                    (me.iconCls.indexOf(opts.next)<0) && (me.iconCls += ' ' + opts.next);
+                    (this.iconCls.indexOf(opts.next)<0) && (this.iconCls += ` ${opts.next}`);
                 }
-                svgIcon.length && !!opts.next && svgIcon.attr('href', '#' + opts.next);
+                svgIcon.length && !!opts.next && svgIcon.attr('href', `#${opts.next}`);
 
-                if ( !!me.options.signals ) {
-                    if ( !(me.options.signals.indexOf('icon:changed') < 0) ) {
-                        me.trigger('icon:changed', me, opts);
+                if ( this.options.signals ) {
+                    if ( !(this.options.signals.indexOf('icon:changed') < 0) ) {
+                        this.trigger('icon:changed', this, opts);
                     }
                 }
             }
@@ -812,7 +769,7 @@ define([
             if (this.cmpEl) this.cmpEl.toggleClass('hidden', !visible);
             this.visible = visible;
 
-            if ( !!this.options.signals ) {
+            if ( this.options.signals ) {
                 if ( !(this.options.signals.indexOf('visible') < 0) ) {
                     this.trigger('visible', this, visible);
                 }
@@ -826,15 +783,13 @@ define([
         createHint: function(hint, isHtml) {
             this.options.hint = hint;
             if (!this.rendered) return;
-
-            var me = this,
-                cmpEl = this.cmpEl,
-                modalParents = cmpEl.closest('.asc-window'),
-                tipZIndex = modalParents.length > 0 ? parseInt(modalParents.css('z-index')) + 10 : undefined;
+            const cmpEl = this.cmpEl;
+            const modalParents = cmpEl.closest('.asc-window');
+            const tipZIndex = modalParents.length > 0 ? Number.parseInt(modalParents.css('z-index')) + 10 : undefined;
 
             if (!this.btnEl) {
-                if (typeof this.options.hint == 'object' && this.options.hint.length>1 && $('button', cmpEl).length>0) {
-                    var btnEl = $('button', cmpEl);
+                if (typeof this.options.hint === 'object' && this.options.hint.length>1 && $('button', cmpEl).length>0) {
+                    const btnEl = $('button', cmpEl);
                     this.btnEl = $(btnEl[0]);
                     this.btnMenuEl = $(btnEl[1]);
                 } else {
@@ -842,45 +797,45 @@ define([
                 }
             }
 
-            var tip = this.btnEl.data('bs.tooltip');
-            tip && tip.updateTitle(typeof hint === 'string' ? hint : hint[0]);
+            let tip = this.btnEl.data('bs.tooltip');
+            tip?.updateTitle(typeof hint === 'string' ? hint : hint[0]);
             if (this.btnMenuEl) {
                 tip = this.btnMenuEl.data('bs.tooltip');
-                tip && tip.updateTitle(hint[1]);
+                tip?.updateTitle(hint[1]);
             }
             if (!this._isTooltipInited) {
                 if (this.delayRenderHint) {
-                    this.btnEl.one('mouseenter', function(){ // hide tooltip when mouse is over menu
-                        me.btnEl.tooltip({
+                    this.btnEl.one('mouseenter', ()=> { // hide tooltip when mouse is over menu
+                        this.btnEl.tooltip({
                             html: !!isHtml,
-                            title       : (typeof me.options.hint == 'string') ? me.options.hint : me.options.hint[0],
-                            placement   : me.options.hintAnchor||'cursor',
+                            title       : (typeof this.options.hint === 'string') ? this.options.hint : this.options.hint[0],
+                            placement   : this.options.hintAnchor||'cursor',
                             zIndex : tipZIndex,
-                            container   : me.options.hintContainer
+                            container   : this.options.hintContainer
                         });
-                        !Common.Utils.isGecko && (me.btnEl.data('bs.tooltip').enabled = !me.disabled);
-                        me.btnEl.mouseenter();
+                        !Common.Utils.isGecko && (this.btnEl.data('bs.tooltip').enabled = !this.disabled);
+                        this.btnEl.mouseenter();
                     });
-                    this.btnMenuEl && this.btnMenuEl.one('mouseenter', function(){ // hide tooltip when mouse is over menu
-                        me.btnMenuEl.tooltip({
+                    this.btnMenuEl?.one('mouseenter', ()=> { // hide tooltip when mouse is over menu
+                        this.btnMenuEl.tooltip({
                             html: !!isHtml,
-                            title       : me.options.hint[1],
-                            placement   : me.options.hintAnchor||'cursor',
+                            title       : this.options.hint[1],
+                            placement   : this.options.hintAnchor||'cursor',
                             zIndex : tipZIndex,
-                            container   : me.options.hintContainer
+                            container   : this.options.hintContainer
                         });
-                        !Common.Utils.isGecko && (me.btnMenuEl.data('bs.tooltip').enabled = !me.disabled);
-                        me.btnMenuEl.mouseenter();
+                        !Common.Utils.isGecko && (this.btnMenuEl.data('bs.tooltip').enabled = !this.disabled);
+                        this.btnMenuEl.mouseenter();
                     });
                 } else {
                     this.btnEl.tooltip({
                         html: !!isHtml,
-                        title       : (typeof this.options.hint == 'string') ? this.options.hint : this.options.hint[0],
+                        title       : (typeof this.options.hint === 'string') ? this.options.hint : this.options.hint[0],
                         placement   : this.options.hintAnchor||'cursor',
                         zIndex      : tipZIndex,
                         container   : this.options.hintContainer
                     });
-                    this.btnMenuEl && this.btnMenuEl.tooltip({
+                    this.btnMenuEl?.tooltip({
                         html: !!isHtml,
                         title       : this.options.hint[1],
                         placement   : this.options.hintAnchor||'cursor',
@@ -889,16 +844,16 @@ define([
                     });
                 }
                 if (modalParents.length > 0) {
-                    var onModalClose = function(dlg) {
+                    const onModalClose = (dlg) => {
                         if (modalParents[0] !== dlg.$window[0]) return;
-                        var tip = me.btnEl.data('bs.tooltip');
+                        let tip = this.btnEl.data('bs.tooltip');
                         if (tip) {
                             if (tip.dontShow===undefined)
                                 tip.dontShow = true;
                             tip.hide();
                         }
-                        if (me.btnMenuEl) {
-                            tip = me.btnMenuEl.data('bs.tooltip');
+                        if (this.btnMenuEl) {
+                            tip = this.btnMenuEl.data('bs.tooltip');
                             if (tip) {
                                 if (tip.dontShow===undefined)
                                     tip.dontShow = true;
@@ -921,7 +876,7 @@ define([
             this.createHint(hint, isHtml);
 
             if (this.disabled || !Common.Utils.isGecko) {
-                var tip = this.btnEl.data('bs.tooltip');
+                let tip = this.btnEl.data('bs.tooltip');
                 if (tip) {
                     this.disabled && tip.hide();
                     !Common.Utils.isGecko && (tip.enabled = !this.disabled);
@@ -936,24 +891,24 @@ define([
             }
 
             if (!this.caption) {
-                var cmpEl = this.cmpEl,
-                    $btn = $('button', cmpEl).length>0 ? $('button', cmpEl) : cmpEl;
-                $btn.attr('aria-label', (typeof hint == 'string') ? hint : hint[0]);
+                const cmpEl = this.cmpEl;
+                const $btn = $('button', cmpEl).length>0 ? $('button', cmpEl) : cmpEl;
+                $btn.attr('aria-label', (typeof hint === 'string') ? hint : hint[0]);
             }
         },
 
         setCaption: function(caption) {
-            if (this.caption != caption) {
-                var isHuge = false;
+            if (this.caption !== caption) {
+                let isHuge = false;
                 if ( /icon-top/.test(this.options.cls) && !!this.caption && /huge/.test(this.options.cls) ) {
-                    var newCaption = this.getCaptionWithBreaks(caption);
+                    const newCaption = this.getCaptionWithBreaks(caption);
                     this.caption = newCaption || caption;
                     isHuge = true;
                 } else
                     this.caption = caption;
 
                 if (this.rendered) {
-                    var captionNode = this.cmpEl.find('.caption');
+                    const captionNode = this.cmpEl.find('.caption');
 
                     if (captionNode.length > 0) {
                         captionNode.html(isHuge && (this.split || this.menu) ? _.template(templateBtnCaption)({caption: this.caption}) : this.caption);
@@ -976,34 +931,32 @@ define([
         },
 
         attachKeyEvents: function() {
-            var me = this;
-            if (me.menu && me.menu.rendered && me.cmpEl) {
-                var btnEl = $('button', me.cmpEl);
-                !me.split && btnEl.addClass('move-focus');
-                me.menu.on('keydown:before', function(menu, e) {
-                    if ((e.keyCode === Common.UI.Keys.DOWN || e.keyCode === Common.UI.Keys.SPACE) && !me.isMenuOpen()) {
-                        $(btnEl[me.split ? 1 : 0]).click();
+            if (this.menu?.rendered && this.cmpEl) {
+                const btnEl = $('button', this.cmpEl);
+                !this.split && btnEl.addClass('move-focus');
+                this.menu.on('keydown:before', (menu, e) => {
+                    if ((e.keyCode === Common.UI.Keys.DOWN || e.keyCode === Common.UI.Keys.SPACE) && !this.isMenuOpen()) {
+                        $(btnEl[this.split ? 1 : 0]).click();
                         e.preventDefault();
                         e.stopPropagation();
                         return false;
                     }
                 });
-                me.options.takeFocusOnClose && me.menu.on('hide:after', function() {
-                    setTimeout(function(){me.focus();}, 1);
+                this.options.takeFocusOnClose && this.menu.on('hide:after', () => {
+                    setTimeout(()=> {this.focus();}, 1);
                 });
             }
         },
 
         applyScaling: function (ratio) {
-            const me = this;
-            if ( me.options.scaling != ratio ) {
+            if ( this.options.scaling !== ratio ) {
                 // me.cmpEl.attr('ratio', ratio);
-                me.options.scaling = ratio;
+                this.options.scaling = ratio;
 
                 if (ratio > 2) {
-                    const $el = me.$el.is('button') ? me.$el : me.$el.find('button:first');
+                    const $el = this.$el.is('button') ? this.$el : this.$el.find('button:first');
                     if (!$el.find('svg.icon').length) {
-                        const iconCls = me.iconCls || $el.find('i.icon').attr('class');
+                        const iconCls = this.iconCls || $el.find('i.icon').attr('class');
                         const re_icon_name = /btn-[^\s]+/.exec(iconCls);
                         const icon_name = re_icon_name ? re_icon_name[0] : "null";
                         const rtlCls = (iconCls ? iconCls.indexOf('icon-rtl') : -1) > -1 ? 'icon-rtl' : '';
@@ -1011,20 +964,20 @@ define([
                         $el.find('i.icon').after(svg_icon);
                     }
                 } else {
-                    if (!me.$el.find('i.icon')) {
-                        const png_icon = '<i class="icon %cls" dummy-attr>&nbsp;</i>'.replace('%cls', me.iconCls);
-                        me.$el.find('svg.icon').after(png_icon);
+                    if (!this.$el.find('i.icon')) {
+                        const png_icon = '<i class="icon %cls" dummy-attr>&nbsp;</i>'.replace('%cls', this.iconCls);
+                        this.$el.find('svg.icon').after(png_icon);
                     }
                 }
             }
         },
 
         isMenuOpen: function() {
-            return this.cmpEl && this.cmpEl.hasClass('open');
+            return this.cmpEl?.hasClass('open');
         },
 
         focus: function() {
-            this.split ? this.cmpEl.focus() : this.$el && this.$el.find('button').addBack().filter('button').focus();
+            this.split ? this.cmpEl.focus() : this.$el?.find('button').addBack().filter('button').focus();
         },
 
         setTabIndex: function(tabindex) {
@@ -1033,18 +986,18 @@ define([
 
             this.tabindex = tabindex.toString();
             if (!this.disabled) {
-                this.split ? this.cmpEl.attr('tabindex', this.tabindex) : this.$el && this.$el.find('button').addBack().filter('button').attr('tabindex', this.tabindex);
+                this.split ? this.cmpEl.attr('tabindex', this.tabindex) : this.$el?.find('button').addBack().filter('button').attr('tabindex', this.tabindex);
             }
         },
 
         onThemeChanged: function() {
             if (!this.rendered) return;
 
-            var el = this.cmpEl;
+            const el = this.cmpEl;
             if (this.options.width>0) {
-                el && el.hasClass('btn-group') && el.hasClass('split') && $('button:first', el).css('width', this.options.width - $('[data-toggle^=dropdown]', el).outerWidth());
+                el?.hasClass('btn-group') && el.hasClass('split') && $('button:first', el).css('width', this.options.width - $('[data-toggle^=dropdown]', el).outerWidth());
             } else if (el && this.caption && /icon-top/.test(this.options.cls) && /huge/.test(this.options.cls)) { // recalc captions of huge button
-                var captionNode = el.find('.caption');
+                const captionNode = el.find('.caption');
                 if (captionNode.length > 0) {
                     captionNode.html((this.split || this.menu) ? _.template(templateBtnCaption)({caption: this.caption}) : this.caption);
                 }
@@ -1054,26 +1007,25 @@ define([
 
     Common.UI.ButtonCustom = Common.UI.Button.extend(_.extend({
         initialize : function(options) {
-            options.iconCls = 'icon-custom ' + (options.iconCls || '');
+            options.iconCls = `icon-custom ${options.iconCls || ''}`;
             Common.UI.Button.prototype.initialize.call(this, options);
 
             this.baseUrl = options.baseUrl || '';
             this.iconsSet = Common.UI.iconsStr2IconsObj(options.iconsSet || ['']);
-            var icons = Common.UI.getSuitableIcons(this.iconsSet);
-            this.iconNormalImg = this.baseUrl + icons['normal'];
-            this.iconActiveImg = this.baseUrl + icons['active'];
+            const icons = Common.UI.getSuitableIcons(this.iconsSet);
+            this.iconNormalImg = this.baseUrl + icons.normal;
+            this.iconActiveImg = this.baseUrl + icons.active;
         },
 
         render: function (parentEl) {
             Common.UI.Button.prototype.render.call(this, parentEl);
 
-            var _current_active = false,
-                me = this;
+            let _current_active = false;
             this.cmpButtonFirst = $('button:first', this.$el || $(this.el));
-            const _callback = function (records, observer) {
-                var _hasactive = me.cmpButtonFirst.hasClass('active') || me.cmpButtonFirst.is(':active');
+            const _callback = (records, observer) => {
+                const _hasactive = this.cmpButtonFirst.hasClass('active') || this.cmpButtonFirst.is(':active');
                 if ( _hasactive !== _current_active ) {
-                    me.updateIcon();
+                    this.updateIcon();
                     _current_active = _hasactive;
                 }
             };
@@ -1083,11 +1035,11 @@ define([
                     attributeFilter : ['class'],
                 });
 
-                var onMouseDown = function (e) {
+                const onMouseDown = (e) => {
                     _callback();
                     $(document).on('mouseup',   onMouseUp);
                 };
-                var onMouseUp = function (e) {
+                const onMouseUp = (e) => {
                     _callback();
                     $(document).off('mouseup',   onMouseUp);
                 };
@@ -1097,7 +1049,7 @@ define([
             Common.NotificationCenter.on('uitheme:changed', this.updateIcons.bind(this));
 
             if (this.cmpEl && this.options.customAttributes) {
-                for (var key in this.options.customAttributes) {
+                for (const key in this.options.customAttributes) {
                     if (Object.prototype.hasOwnProperty.call(this.options.customAttributes, key)) {
                         this.cmpEl.attr(Common.Utils.String.htmlEncode(key), Common.Utils.String.htmlEncode(this.options.customAttributes[key]));
                     }
@@ -1106,14 +1058,14 @@ define([
         },
 
         updateIcons: function() {
-            var icons = Common.UI.getSuitableIcons(this.iconsSet);
-            this.iconNormalImg = this.baseUrl + icons['normal'];
-            this.iconActiveImg = this.baseUrl + icons['active'];
+            const icons = Common.UI.getSuitableIcons(this.iconsSet);
+            this.iconNormalImg = this.baseUrl + icons.normal;
+            this.iconActiveImg = this.baseUrl + icons.active;
             this.updateIcon();
         },
 
         updateIcon: function() {
-            this.$icon && this.$icon.css({'background-image': 'url('+ (this.cmpButtonFirst && (this.cmpButtonFirst.hasClass('active') || this.cmpButtonFirst.is(':active')) ? this.iconActiveImg : this.iconNormalImg) +')'});
+            this.$icon?.css({'background-image': `url(${this.cmpButtonFirst && (this.cmpButtonFirst.hasClass('active') || this.cmpButtonFirst.is(':active')) ? this.iconActiveImg : this.iconNormalImg})`});
         },
 
         applyScaling: function (ratio) {
@@ -1124,9 +1076,9 @@ define([
         }
     }, Common.UI.ButtonCustom || {}));
 
-    Common.UI.GroupedButtons = function (buttons, opts) {
-        let _buttons = buttons,
-            _parent = buttons && buttons.length>0 && buttons[0].cmpEl ? buttons[0].cmpEl.parent() : null;
+    Common.UI.GroupedButtons = (buttons, opts) => {
+        const _buttons = buttons;
+        const _parent = buttons && buttons.length>0 && buttons[0].cmpEl ? buttons[0].cmpEl.parent() : null;
 
         _parent.addClass('grouped-buttons');
 
@@ -1135,9 +1087,10 @@ define([
             opts.flat && _parent.addClass('flat');
         }
 
-        let _update = function() {
-            let first, last;
-            _buttons && _buttons.forEach(function(item) {
+        const _update = () => {
+            let first;
+            let last;
+            _buttons?.forEach((item) => {
                 if (!first && item.isVisible()) {
                     first = true;
                     item.cmpEl.addClass('first');
@@ -1146,11 +1099,11 @@ define([
                 item.cmpEl.removeClass('last');
                 item.isVisible() && (last = item);
             });
-            last && last.cmpEl.addClass('last');
+            last?.cmpEl.addClass('last');
         };
 
-        let _init = function() {
-            _buttons && _buttons.forEach(function(item) {
+        const _init = () => {
+            _buttons?.forEach((item) => {
                 item.options.signals = item.options.signals || [];
                 item.options.signals.push('visible');
                 item.on('visible', _update);

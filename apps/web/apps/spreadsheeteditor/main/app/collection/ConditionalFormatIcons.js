@@ -29,31 +29,24 @@
  *
  */
 
-define([
-    'backbone'
-], function(Backbone){ 'use strict';
+define(["backbone"], (Backbone) => {
+  SSE.Collections.ConditionalFormatIcons = Backbone.Collection.extend({
+    model: Backbone.Model.extend({
+      defaults: () => ({
+        id: Common.UI.getId(),
+        index: 0,
+        icon: null,
+      }),
+    }),
+  })
 
-    SSE.Collections.ConditionalFormatIcons = Backbone.Collection.extend({
-        model: Backbone.Model.extend({
-            defaults: function() {
-                return {
-                    id: Common.UI.getId(),
-                    index: 0,
-                    icon: null
-                }
-            }
-        })
-    });
-
-    SSE.Collections.ConditionalFormatIconsPresets = Backbone.Collection.extend({
-        model: Backbone.Model.extend({
-            defaults: function() {
-                return {
-                    id: Common.UI.getId(),
-                    data: 0,
-                    icons: null
-                }
-            }
-        })
-    });
-});
+  SSE.Collections.ConditionalFormatIconsPresets = Backbone.Collection.extend({
+    model: Backbone.Model.extend({
+      defaults: () => ({
+        id: Common.UI.getId(),
+        data: 0,
+        icons: null,
+      }),
+    }),
+  })
+})

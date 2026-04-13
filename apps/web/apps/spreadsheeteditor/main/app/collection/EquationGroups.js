@@ -32,9 +32,9 @@
 define([
     'backbone',
     'spreadsheeteditor/main/app/model/EquationGroup'
-], function(Backbone){ 'use strict';
+], (Backbone)=> { 
     if (Common === undefined)
-        var Common = {};
+        const Common = {};
 
     Common.Collections = Common.Collections || {};
 

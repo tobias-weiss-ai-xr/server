@@ -23,129 +23,137 @@
  *
  */
 function checkExtendedPDF(directUrl, key, url, token, callback) {
-    //110 is not enough for the new PDF form    
-    var limit = 300;
-    if (directUrl) {
-        downloadPartialy(directUrl, limit, null, function(text) {
-            callback(isExtendedPDFFile(text))
-        });
-    } else {
-        let postData = JSON.stringify({
-            'url': url,
-            "token": token
-        });
-        var handlerUrl = "../../../../downloadfile/"+encodeURIComponent(key);
-        downloadPartialy(handlerUrl, limit, postData, function(text) {
-            callback(isExtendedPDFFile(text))
-        });
-    }
+  //110 is not enough for the new PDF form
+  const limit = 300
+  if (directUrl) {
+    downloadPartialy(directUrl, limit, null, (text) => {
+      callback(isExtendedPDFFile(text))
+    })
+  } else {
+    const postData = JSON.stringify({
+      url: url,
+      token: token,
+    })
+    const handlerUrl = `../../../../downloadfile/${encodeURIComponent(key)}`
+    downloadPartialy(handlerUrl, limit, postData, (text) => {
+      callback(isExtendedPDFFile(text))
+    })
+  }
 }
 function isExtendedPDFFile(text) {
-    if (!text) {
-        return false;
-    }
-    const indexFirst = text.indexOf('%\xCD\xCA\xD2\xA9\x0D');
-    if (indexFirst === -1) {
-        return false;
-    }
+  if (!text) {
+    return false
+  }
+  const indexFirst = text.indexOf("%\xCD\xCA\xD2\xA9\x0D")
+  if (indexFirst === -1) {
+    return false
+  }
 
-    let pFirst = text.substring(indexFirst + 6);
+  let pFirst = text.substring(indexFirst + 6)
 
-    if (!(pFirst.lastIndexOf('1 0 obj\x0A<<\x0A', 0) === 0)) {
-        return false;
-    }
+  if (!(pFirst.lastIndexOf("1 0 obj\x0A<<\x0A", 0) === 0)) {
+    return false
+  }
 
-    pFirst = pFirst.substring(11);
+  pFirst = pFirst.substring(11)
 
-    let signature = 'Word OfficeFORM';
-    const indexStream = pFirst.indexOf('stream\x0D\x0A');
-    const indexMeta = pFirst.indexOf(signature);
+  const signature = "Word OfficeFORM"
+  const indexStream = pFirst.indexOf("stream\x0D\x0A")
+  const indexMeta = pFirst.indexOf(signature)
 
-    if (indexStream === -1 || indexMeta === -1 || indexStream < indexMeta) {
-        return false;
-    }
+  if (indexStream === -1 || indexMeta === -1 || indexStream < indexMeta) {
+    return false
+  }
 
-    let pMeta = pFirst.substring(indexMeta);
-    pMeta = pMeta.substring(signature.length + 3);
+  let pMeta = pFirst.substring(indexMeta)
+  pMeta = pMeta.substring(signature.length + 3)
 
-    let indexMetaLast = pMeta.indexOf(' ');
-    if (indexMetaLast === -1) {
-        return false;
-    }
+  let indexMetaLast = pMeta.indexOf(" ")
+  if (indexMetaLast === -1) {
+    return false
+  }
 
-    pMeta = pMeta.substring(indexMetaLast + 1);
+  pMeta = pMeta.substring(indexMetaLast + 1)
 
-    indexMetaLast = pMeta.indexOf(' ');
-    if (indexMetaLast === -1) {
-        return false;
-    }
+  indexMetaLast = pMeta.indexOf(" ")
+  if (indexMetaLast === -1) {
+    return false
+  }
 
-    return true;
+  return true
 }
 function downloadPartialy(url, limit, postData, callback) {
-    var callbackCalled = false;
-    var xhr = new XMLHttpRequest();
-    //value of responseText always has the current content received from the server, even if it's incomplete
-    // xhr.responseType = "json"; it raises an IE error. bug 66160
-    xhr.overrideMimeType('text/plain; charset=iso-8859-1');
-    xhr.onreadystatechange = function () {
-        if (callbackCalled) {
-            return;
-        }
-        if (xhr.readyState === 4) {
-            callbackCalled = true;
-            callback(xhr.responseText);
-        } else if (xhr.readyState === 3 && xhr.responseText.length >= limit) {
-            callbackCalled = true;
-            var res = xhr.responseText;
-            xhr.abort();
-            callback(res);
-        }
-    };
-    let method = postData ? 'POST' : 'GET';
-    xhr.open(method, url, true);
-    xhr.setRequestHeader('Range', 'bytes=0-' + limit); // the bytes (incl.) you request
-    xhr.send(postData);
+  let callbackCalled = false
+  const xhr = new XMLHttpRequest()
+  //value of responseText always has the current content received from the server, even if it's incomplete
+  // xhr.responseType = "json"; it raises an IE error. bug 66160
+  xhr.overrideMimeType("text/plain; charset=iso-8859-1")
+  xhr.onreadystatechange = () => {
+    if (callbackCalled) {
+      return
+    }
+    if (xhr.readyState === 4) {
+      callbackCalled = true
+      callback(xhr.responseText)
+    } else if (xhr.readyState === 3 && xhr.responseText.length >= limit) {
+      callbackCalled = true
+      const res = xhr.responseText
+      xhr.abort()
+      callback(res)
+    }
+  }
+  const method = postData ? "POST" : "GET"
+  xhr.open(method, url, true)
+  xhr.setRequestHeader("Range", `bytes=0-${limit}`) // the bytes (incl.) you request
+  xhr.send(postData)
 }
 
-var startCallback;
-var eventFn = function(msg) {
-    if (msg.origin !== window.parentOrigin && msg.origin !== window.location.origin && !(msg.origin==="null" && (window.parentOrigin==="file://" || window.location.origin==="file://"))) return;
+let startCallback
+const eventFn = (msg) => {
+  if (
+    msg.origin !== window.parentOrigin &&
+    msg.origin !== window.location.origin &&
+    !(
+      msg.origin === "null" &&
+      (window.parentOrigin === "file://" || window.location.origin === "file://")
+    )
+  )
+    return
 
-    var data = msg.data;
-    if (Object.prototype.toString.apply(data) !== '[object String]' || !window.JSON) {
-        return;
-    }
-    try {
-        data = window.JSON.parse(data)
-    } catch(e) {
-        data = '';
-    }
+  let data = msg.data
+  if (Object.prototype.toString.apply(data) !== "[object String]" || !window.JSON) {
+    return
+  }
+  try {
+    data = window.JSON.parse(data)
+  } catch (e) {
+    data = ""
+  }
 
-    if (data && data.command==="checkParams") {
-        data = data.data || {};
-        checkExtendedPDF(data.directUrl, data.key, data.url, data.token, startCallback);
-        _unbindWindowEvents();
-    }
-};
+  if (data && data.command === "checkParams") {
+    data = data.data || {}
+    checkExtendedPDF(data.directUrl, data.key, data.url, data.token, startCallback)
+    _unbindWindowEvents()
+  }
+}
 
-var _bindWindowEvents = function() {
-    if (window.addEventListener) {
-        window.addEventListener("message", eventFn, false)
-    } else if (window.attachEvent) {
-        window.attachEvent("onmessage", eventFn);
-    }
-};
+const _bindWindowEvents = () => {
+  if (window.addEventListener) {
+    window.addEventListener("message", eventFn, false)
+  } else if (window.attachEvent) {
+    window.attachEvent("onmessage", eventFn)
+  }
+}
 
-var _unbindWindowEvents = function() {
-    if (window.removeEventListener) {
-        window.removeEventListener("message", eventFn)
-    } else if (window.detachEvent) {
-        window.detachEvent("onmessage", eventFn);
-    }
-};
+const _unbindWindowEvents = () => {
+  if (window.removeEventListener) {
+    window.removeEventListener("message", eventFn)
+  } else if (window.detachEvent) {
+    window.detachEvent("onmessage", eventFn)
+  }
+}
 
 function listenApiMsg(callback) {
-    startCallback = callback;
-    _bindWindowEvents();
+  startCallback = callback
+  _bindWindowEvents()
 }

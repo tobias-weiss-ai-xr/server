@@ -32,7 +32,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Views = Common.Views || {};
 
@@ -41,8 +41,7 @@ define([
     'common/main/lib/util/utils',
     'common/main/lib/component/BaseView',
     'common/main/lib/component/Layout'
-], function (template) {
-    'use strict';
+], (template) => {
 
     Common.Views.Chat = Common.UI.BaseView.extend(_.extend({
         el: '#left-panel-chat',
@@ -150,9 +149,8 @@ define([
         },
 
         focus: function() {
-            var me  = this;
-            _.defer(function(){
-                me.txtMessage.focus();
+            _.defer(()=> {
+                this.txtMessage.focus();
             }, 100);
 
             this.updateLayout(true);
@@ -164,7 +162,7 @@ define([
         },
 
         _onKeyDown: function(event) {
-            if (event.keyCode == Common.UI.Keys.RETURN) {
+            if (event.keyCode === Common.UI.Keys.RETURN) {
                 if ((event.ctrlKey || event.metaKey) && !event.altKey) {
                     this._onBtnAddMessage(event);
                 }
@@ -173,7 +171,7 @@ define([
 
         _onResetUsers: function(c, opts) {
             if (this.panelUsers) {
-                this.panelUsers.html(this.templateUserList({users: this.storeUsers.chain().filter(function(item){return item.get('online');}).groupBy(function(item) { return item.get('idOriginal'); }).value(),
+                this.panelUsers.html(this.templateUserList({users: this.storeUsers.chain().filter((item)=> item.get('online')).groupBy((item) => item.get('idOriginal')).value(),
                                                             usertpl: this.tplUser, scope: this}));
                 this.panelUsers.scroller.update({minScrollbarLength  : 25, alwaysVisibleY: true});
             }
@@ -181,8 +179,8 @@ define([
 
         _onAddMessage: function(m, c, opts) {
             if (this.panelMessages) {
-                var content = this.panelMessages.find('ul');
-                if (content && content.length) {
+                const content = this.panelMessages.find('ul');
+                if (content?.length) {
                     this._prepareMessage(m);
                     content.append(_.template(this.tplMsg)({msg: m, scope: this}));
 
@@ -196,7 +194,8 @@ define([
 
         _onResetMessages: function(c, opts) {
             if (this.panelMessages) {
-                var user, color;
+                let user;
+                let color;
                 c.each(function(msg){
                     this._prepareMessage(msg);
                 }, this);
@@ -222,8 +221,8 @@ define([
         },
 
         _prepareMessage: function(m) {
-            var user    = this.storeUsers.findOriginalUser(m.get('userid')),
-                avatar = Common.UI.ExternalUsers.getImage(m.get('userid'));
+            const user    = this.storeUsers.findOriginalUser(m.get('userid'));
+            const avatar = Common.UI.ExternalUsers.getImage(m.get('userid'));
             m.set({
                 usercolor   : user ? user.get('color') : Common.UI.ExternalUsers.getColor(m.get('userid')),
                 avatar      : avatar,
@@ -233,52 +232,50 @@ define([
             (avatar===undefined) && Common.UI.ExternalUsers.get('info', [m.get('userid')]);
         },
 
-        _pickLink: function(message) {
-            var arr = [], offset, len;
+        _pickLink: (message) => {
+            let arr = [];
+            let offset;
+            let len;
 
-            message.replace(Common.Utils.ipStrongRe, function(subStr) {
-                var result = /[\.,\?\+;:=!\(\)]+$/.exec(subStr);
+            message.replace(Common.Utils.ipStrongRe, (subStr) => {
+                const result = /[\.,\?\+;:=!\(\)]+$/.exec(subStr);
                 if (result)
                     subStr = subStr.substring(0, result.index);
                 offset = arguments[arguments.length-2];
-                arr.push({start: offset, end: subStr.length+offset, str: '<a href="' + subStr + '" target="_blank" data-can-copy="true">' + subStr + '</a>'});
+                arr.push({start: offset, end: subStr.length+offset, str: `<a href="${subStr}" target="_blank" data-can-copy="true">${subStr}</a>`});
                 return '';
             });
 
             if (message.length<1000 || message.search(/\S{255,}/)<0)
-                message.replace(Common.Utils.hostnameStrongRe, function(subStr) {
-                    var result = /[\.,\?\+;:=!\(\)]+$/.exec(subStr);
+                message.replace(Common.Utils.hostnameStrongRe, (subStr) => {
+                    const result = /[\.,\?\+;:=!\(\)]+$/.exec(subStr);
                     if (result)
                         subStr = subStr.substring(0, result.index);
-                    var ref = (! /(((^https?)|(^ftp)):\/\/)/i.test(subStr) ) ? ('http://' + subStr) : subStr;
+                    const ref = (! /(((^https?)|(^ftp)):\/\/)/i.test(subStr) ) ? (`http://${subStr}`) : subStr;
                     offset = arguments[arguments.length-2];
                     len = subStr.length;
-                    var elem = _.find(arr, function(item){
-                        return ( (offset>=item.start) && (offset<item.end) ||
-                            (offset<=item.start) && (offset+len>item.start));
-                    });
+                    const elem = _.find(arr, (item)=> ( (offset>=item.start) && (offset<item.end) ||
+                            (offset<=item.start) && (offset+len>item.start)));
                     if (!elem)
-                        arr.push({start: offset, end: len+offset, str: '<a href="' + ref + '" target="_blank" data-can-copy="true">' + subStr + '</a>'});
+                        arr.push({start: offset, end: len+offset, str: `<a href="${ref}" target="_blank" data-can-copy="true">${subStr}</a>`});
                     return '';
                 });
 
-            message.replace(Common.Utils.emailStrongRe, function(subStr) {
-                var ref = (! /((^mailto:)\/\/)/i.test(subStr) ) ? ('mailto:' + subStr) : subStr;
+            message.replace(Common.Utils.emailStrongRe, (subStr) => {
+                const ref = (! /((^mailto:)\/\/)/i.test(subStr) ) ? (`mailto:${subStr}`) : subStr;
                 offset = arguments[arguments.length-2];
                 len = subStr.length;
-                var elem = _.find(arr, function(item){
-                    return ( (offset>=item.start) && (offset<item.end) ||
-                        (offset<=item.start) && (offset+len>item.start));
-                });
+                const elem = _.find(arr, (item)=> ( (offset>=item.start) && (offset<item.end) ||
+                        (offset<=item.start) && (offset+len>item.start)));
                 if (!elem)
-                    arr.push({start: offset, end: len+offset, str: '<a href="' + ref + '">' + subStr + '</a>'});
+                    arr.push({start: offset, end: len+offset, str: `<a href="${ref}">${subStr}</a>`});
                 return '';
             });
 
-            arr = _.sortBy(arr, function(item){ return item.start; });
+            arr = _.sortBy(arr, (item)=> item.start);
 
-            var str_res = (arr.length>0) ? ( Common.Utils.String.htmlEncode(message.substring(0, arr[0].start)) + arr[0].str) : Common.Utils.String.htmlEncode(message);
-            for (var i=1; i<arr.length; i++) {
+            let str_res = (arr.length>0) ? ( Common.Utils.String.htmlEncode(message.substring(0, arr[0].start)) + arr[0].str) : Common.Utils.String.htmlEncode(message);
+            for (let i=1; i<arr.length; i++) {
                 str_res += (Common.Utils.String.htmlEncode(message.substring(arr[i-1].end, arr[i].start)) + arr[i].str);
             }
             if (arr.length>0) {
@@ -294,48 +291,41 @@ define([
         },
 
         setupLayout: function () {
-            var me = this, parent = $(me.el), items = this.panelBox.find(' > .layout-item');
+            const parent = $(this.el);
+            const items = this.panelBox.find(' > .layout-item');
 
-            me.layout = new Common.UI.VBoxLayout({
+            this.layout = new Common.UI.VBoxLayout({
                 box: this.panelBox,
                 items: [
                     {el: items[0], rely: true, behaviour: 'splitter',
                         resize: {
                             hidden: false,
                             autohide: false,
-                            fmin: (function () {
-                                return me.usersBoxHeight;
-                            }),
-                            fmax: (function () {
-                                return Math.max(me.usersBoxHeight-20,me.panelBox.height() * 0.5 - me.messageBoxHeight);
-                            })
+                            fmin: (() => this.usersBoxHeight),
+                            fmax: (() => Math.max(this.usersBoxHeight-20,this.panelBox.height() * 0.5 - this.messageBoxHeight))
                         }},
                     {el: items[1], rely: true, behaviour: 'splitter',
                         resize: {
                             hidden: false,
                             autohide: false,
-                            fmin: (function () {
-                                return Math.max(me.messageBoxHeight + me.usersBoxHeight, me.panelBox.height() * 0.5);
-                            }),
-                            fmax: (function () {
-                                return me.panelBox.height() - me.addMessageBoxHeight;
-                            })
+                            fmin: (() => Math.max(this.messageBoxHeight + this.usersBoxHeight, this.panelBox.height() * 0.5)),
+                            fmax: (() => this.panelBox.height() - this.addMessageBoxHeight)
                         }},
                     {el: items[2], stretch: true}
                 ]
             });
 
-            me.layout.on('layout:resizedrag', function(resizer) {
-                me.updateScrolls();
-                me.usersCachedHeigt = me.panelUsers.height() + 8 + 1; // resizeHeight * 2 + 1
+            this.layout.on('layout:resizedrag', (resizer) => {
+                this.updateScrolls();
+                this.usersCachedHeigt = this.panelUsers.height() + 8 + 1; // resizeHeight * 2 + 1
                 if (!resizer.index) {
-                    me.textBoxAutoSizeLocked = true;
+                    this.textBoxAutoSizeLocked = true;
                 }
             }, this);
 
-            $(window).on('resize', function() {
+            $(window).on('resize', () => {
                 if (parent.css('display') !== 'none') {
-                    me.updateLayout();
+                    this.updateLayout();
                 }
             });
 
@@ -343,12 +333,12 @@ define([
 
             // default sizes
 
-            var height = this.panelBox.height();
+            const height = this.panelBox.height();
 
             this.layout.setResizeValue(0, this.usersBoxHeight);
             this.layout.setResizeValue(1,
                 Math.max (this.addMessageBoxHeight,
-                    Math.max (height * 0.5, height - me.panelOptions.height() - 4)));
+                    Math.max (height * 0.5, height - this.panelOptions.height() - 4)));
 
             // text box setup autosize input text
 
@@ -360,8 +350,8 @@ define([
             this.updateHeightTextBox(event);
             this.disableTextBoxButton($(event.target));
         },
-        disableTextBoxButton: function(textboxEl) {
-            var button = $(textboxEl.siblings('#chat-msg-btn-add')[0]);
+        disableTextBoxButton: (textboxEl) => {
+            const button = $(textboxEl.siblings('#chat-msg-btn-add')[0]);
 
             if(textboxEl.val().trim().length > 0) {
                 button.removeAttr('disabled');
@@ -372,46 +362,47 @@ define([
             }
         },
         updateLayout: function (applyUsersAutoSizig) {
-            var me = this;
-            var height = this.panelBox.height();
+            const height = this.panelBox.height();
 
-            me.layout.setResizeValue(1,
-                Math.max (me.addMessageBoxHeight,
-                    Math.max (height * 0.5, height - me.panelOptions.height() - 4)));
+            this.layout.setResizeValue(1,
+                Math.max (this.addMessageBoxHeight,
+                    Math.max (height * 0.5, height - this.panelOptions.height() - 4)));
 
             if (applyUsersAutoSizig) {
 
-                var oldHeight = this.panelUsers.css('height');
+                const oldHeight = this.panelUsers.css('height');
                 this.panelUsers.css('height', '1px');
-                var content = this.panelUsers.get(0).scrollHeight;
+                const content = this.panelUsers.get(0).scrollHeight;
 
-                me.layout.setResizeValue(0, Math.max(me.usersBoxHeight,
-                    Math.min(content+2, Math.floor(height * 0.5) - me.messageBoxHeight)));
+                this.layout.setResizeValue(0, Math.max(this.usersBoxHeight,
+                    Math.min(content+2, Math.floor(height * 0.5) - this.messageBoxHeight)));
             } else {
-                me.layout.setResizeValue(0, Math.max(me.usersBoxHeight,
-                    Math.min(me.usersCachedHeigt + 2, Math.floor(height * 0.5) - me.messageBoxHeight)));
+                this.layout.setResizeValue(0, Math.max(this.usersBoxHeight,
+                    Math.min(this.usersCachedHeigt + 2, Math.floor(height * 0.5) - this.messageBoxHeight)));
             }
 
-            me.updateScrolls();
-            me.updateHeightTextBox(null);
+            this.updateScrolls();
+            this.updateHeightTextBox(null);
         },
 
         setupAutoSizingTextBox: function () {
             this.lineHeight = 0;
             this.minHeight = 44;
-            this.lineHeight = parseInt(this.txtMessage.css('lineHeight'), 10) * 1.25;  // TODO: need fix
+            this.lineHeight = Number.parseInt(this.txtMessage.css('lineHeight'), 10) * 1.25;  // TODO: need fix
 
             this.updateHeightTextBox(true);
         },
 
         updateHeightTextBox: function (event) {
-            var textBox = this.txtMessage,
-                controlHeight, contentHeight, height,
-                textBoxMinHeightIndent = 36 + 4;    // 4px - autosize line height + big around border
+            const textBox = this.txtMessage;
+            let controlHeight;
+            let contentHeight;
+            let height;
+            const textBoxMinHeightIndent = 36 + 4;    // 4px - autosize line height + big around border
 
             height = this.panelBox.height();
 
-            if (event && 0 == textBox.val().length) {
+            if (event && 0 === textBox.val().length) {
                 this.layout.setResizeValue(1, Math.max(this.addMessageBoxHeight, height - this.addMessageBoxHeight));
                 this.textBoxAutoSizeLocked = undefined;
                 this.updateScrolls();
@@ -426,7 +417,7 @@ define([
 
             // calculate text content height
 
-            textBox.css({height: this.minHeight + 'px'});
+            textBox.css({height: `${this.minHeight}px`});
 
             controlHeight = textBox.height();
             contentHeight = Math.max(textBox.get(0).scrollHeight + this.lineHeight, 1);
@@ -440,13 +431,13 @@ define([
         },
 
         updateScrolls: function () {
-            if (this.panelUsers && this.panelUsers.scroller && this.panelMessages && this.panelMessages.scroller) {
+            if (this.panelUsers?.scroller && this.panelMessages && this.panelMessages.scroller) {
                 this.panelUsers.scroller.update({minScrollbarLength: 25, alwaysVisibleY: true});
                 this.panelMessages.scroller.update({minScrollbarLength: 40, alwaysVisibleY: true});
             }
         },
 
-        onClickClosePanel: function() {
+        onClickClosePanel: () => {
             Common.NotificationCenter.trigger('leftmenu:change', 'hide');
         },
 

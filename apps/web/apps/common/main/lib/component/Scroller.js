@@ -30,16 +30,16 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'jmousewheel',
     'perfectscrollbar',
     'common/main/lib/component/BaseView'
-], function () { 'use strict';
+], () => { 
 
-    Common.UI.Scroller = (function(){
-        var mouseCapture;
+    Common.UI.Scroller = (()=> {
+        let mouseCapture;
 
         return _.extend(Common.UI.BaseView.extend({
             options: {
@@ -68,16 +68,15 @@ define([
             },
 
             render: function() {
-                var me = this;
 
-                me.cmpEl = me.$el || $(this.el);
+                this.cmpEl = this.$el || $(this.el);
 
-                if (!me.rendered) {
-                    me.cmpEl.perfectScrollbar(_.extend({}, me.options));
-                    me.rendered = true;
+                if (!this.rendered) {
+                    this.cmpEl.perfectScrollbar(_.extend({}, this.options));
+                    this.rendered = true;
 
-                    this.setAlwaysVisibleX(me.options.alwaysVisibleX);
-                    this.setAlwaysVisibleY(me.options.alwaysVisibleY);
+                    this.setAlwaysVisibleX(this.options.alwaysVisibleX);
+                    this.setAlwaysVisibleY(this.options.alwaysVisibleY);
 
                     (this.options.scrollYStyle) && (this.setOptionStyleY(this.options.scrollYStyle));
                 }
@@ -91,7 +90,7 @@ define([
             },
 
             update: function(config) {
-                var options = this.options;
+                let options = this.options;
                 if (config) {
                     this.destroy();
                     options = _.extend(this.options, config);
@@ -106,12 +105,12 @@ define([
                 (options.scrollYStyle) && (this.setOptionStyleY(options.scrollYStyle));
 
                 // Emulate capture scroller
-                var mouseDownHandler = function(e) {
+                const mouseDownHandler = (e) => {
                     mouseCapture = true;
 
-                    var upHandler = function(e) {
+                    const upHandler = (e) => {
                         $(document).unbind('mouseup', upHandler);
-                        _.delay(function() {
+                        _.delay(() => {
                             mouseCapture = false;
                         }, 10);
                     };
@@ -173,9 +172,7 @@ define([
             }
 
         }), {
-            isMouseCapture: function() {
-                return mouseCapture
-            }
+            isMouseCapture: () => mouseCapture
         })
     })();
 });

@@ -30,294 +30,329 @@
  *
  */
 
-define([
-    'core',
-    'pdfeditor/main/app/view/RedactTab',
-], function () {
-    'use strict';
-
-    PDFE.Controllers.RedactTab = Backbone.Controller.extend(_.extend({
-        models : [],
-        collections : [
-        ],
-        views : [
-            'RedactTab'
-        ],
-        sdkViewName : '#id_main',
+define(["core", "pdfeditor/main/app/view/RedactTab"], () => {
+  PDFE.Controllers.RedactTab = Backbone.Controller.extend(
+    _.extend(
+      {
+        models: [],
+        collections: [],
+        views: ["RedactTab"],
+        sdkViewName: "#id_main",
 
         initialize: function () {
-             this.addListeners({
-                'Common.Views.SearchPanel': {
-                    'search:showredact': _.bind(this.onToggleFindRedact, this, 'show')
-                },
-                'SearchBar': {
-                    'search:showredact': _.bind(this.onToggleFindRedact, this, 'show')
-                }
-            });
+          this.addListeners({
+            "Common.Views.SearchPanel": {
+              "search:showredact": _.bind(this.onToggleFindRedact, this, "show"),
+            },
+            SearchBar: {
+              "search:showredact": _.bind(this.onToggleFindRedact, this, "show"),
+            },
+          })
         },
 
         onLaunch: function () {
-            this._state = {};
+          this._state = {}
 
-            this.redactionsWarning = null;
-            this.isFileMenuTab = null;
-            Common.NotificationCenter.on('app:ready', this.onAppReady.bind(this));
-            Common.NotificationCenter.on('document:ready', _.bind(this.onDocumentReady, this));
-            Common.NotificationCenter.on('leftmenu:change', _.bind(this.onToggleFindRedact, this));
+          this.redactionsWarning = null
+          this.isFileMenuTab = null
+          Common.NotificationCenter.on("app:ready", this.onAppReady.bind(this))
+          Common.NotificationCenter.on("document:ready", _.bind(this.onDocumentReady, this))
+          Common.NotificationCenter.on("leftmenu:change", _.bind(this.onToggleFindRedact, this))
 
-            this.binding = {
-
-            };
+          this.binding = {}
         },
 
         onToggleFindRedact: function (action) {
-            if (action === 'hide') {
-                this.view && this.view.btnFindRedact && this.view.btnFindRedact.toggle(false);
-            } else {
-                this.view && this.view.btnFindRedact && this.view.btnFindRedact.toggle(true);
-            }
+          if (action === "hide") {
+            this.view?.btnFindRedact?.toggle(false)
+          } else {
+            this.view?.btnFindRedact?.toggle(true)
+          }
         },
 
         setApi: function (api) {
-            if (api) {
-                this.api = api;
-                this.api.asc_registerCallback('asc_onCoAuthoringDisconnect', _.bind(this.onCoAuthoringDisconnect, this));
-                Common.NotificationCenter.on('api:disconnect', _.bind(this.onCoAuthoringDisconnect, this));
-                this.api.asc_registerCallback('asc_onFocusObject',          _.bind(this.onApiFocusObject, this));
-                this.api.asc_registerCallback('asc_onRedactState',          _.bind(this.onRedactionStateToggle, this));
-            }
-            return this;
+          if (api) {
+            this.api = api
+            this.api.asc_registerCallback(
+              "asc_onCoAuthoringDisconnect",
+              _.bind(this.onCoAuthoringDisconnect, this),
+            )
+            Common.NotificationCenter.on(
+              "api:disconnect",
+              _.bind(this.onCoAuthoringDisconnect, this),
+            )
+            this.api.asc_registerCallback("asc_onFocusObject", _.bind(this.onApiFocusObject, this))
+            this.api.asc_registerCallback(
+              "asc_onRedactState",
+              _.bind(this.onRedactionStateToggle, this),
+            )
+          }
+          return this
         },
 
-        setConfig: function(config) {
-            this.mode = config.mode;
-            this.toolbar = config.toolbar;
-            this.view = this.createView('RedactTab', {
-                toolbar: this.toolbar.toolbar,
-                mode: this.mode,
-                compactToolbar: this.toolbar.toolbar.isCompactView
-            });
-            this.addListeners({
-                'RedactTab': {
-                    'redact:start'   : this.onStartRedact.bind(this),
-                    'redact:apply'   : this.onApplyRedact.bind(this),
-                    'redact:page'    : this.onRedactCurrentPage.bind(this),
-                    'redact:pages'   : this.onRedactPages.bind(this),
-                },
-                'Toolbar': {
-                    'tab:active': this.onActiveTab
+        setConfig: function (config) {
+          this.mode = config.mode
+          this.toolbar = config.toolbar
+          this.view = this.createView("RedactTab", {
+            toolbar: this.toolbar.toolbar,
+            mode: this.mode,
+            compactToolbar: this.toolbar.toolbar.isCompactView,
+          })
+          this.addListeners({
+            RedactTab: {
+              "redact:start": this.onStartRedact.bind(this),
+              "redact:apply": this.onApplyRedact.bind(this),
+              "redact:page": this.onRedactCurrentPage.bind(this),
+              "redact:pages": this.onRedactPages.bind(this),
+            },
+            Toolbar: {
+              "tab:active": this.onActiveTab,
+            },
+          })
+        },
+
+        onApplyRedact: function () {
+          Common.UI.TooltipManager.closeTip("apply-redaction")
+          Common.UI.warning({
+            width: 500,
+            msg: this.textApplyRedact,
+            buttons: ["yes", "no"],
+            primary: "yes",
+            callback: _.bind(function (btn) {
+              if (btn === "yes") {
+                this.api.ApplyRedact()
+              }
+            }, this),
+          })
+        },
+
+        onStartRedact: function (isMarkMode) {
+          Common.UI.TooltipManager.closeTip("mark-for-redaction")
+          if (isMarkMode && this.toolbar) {
+            this.toolbar.turnOnSelectTool()
+            this.api.SetMarkerFormat(undefined, false)
+            this.api.asc_StopInkDrawer()
+            this.toolbar.onClearHighlight()
+          }
+          this.api.SetRedactTool(isMarkMode)
+        },
+
+        onRedactCurrentPage: function () {
+          this.api.RedactPages([this.api.getCurrentPage()])
+        },
+
+        onRedactPages: function () {
+          const countPages = this.api.getCountPages()
+
+          new Common.Views.TextInputDialog({
+            title: this.textRedactPages,
+            label: this.textEnterPageRange,
+            value: `1-${countPages}`,
+            description: this.textEnterRangeDescription,
+            inputConfig: {
+              maxLength: 50,
+              allowBlank: false,
+              validation: (value) => {
+                const singlePage = /^\d+$/
+                const range = /^(\d+)-(\d+)$/
+
+                const parts = value
+                  .split(",")
+                  .map((v) => v.trim())
+                  .filter(Boolean)
+                if (parts.length === 0) return this.txtInvalidFormat
+
+                for (const part of parts) {
+                  if (singlePage.test(part)) {
+                    const page = Number.parseInt(part, 10)
+                    if (page < 1 || page > countPages) {
+                      return Common.Utils.String.format(this.txtInvalidRange, countPages)
+                    }
+                  } else {
+                    const match = part.match(range)
+                    if (match) {
+                      const start = Number.parseInt(match[1], 10)
+                      const end = Number.parseInt(match[2], 10)
+                      if (start < 1 || end < 1 || start > countPages || end > countPages) {
+                        return Common.Utils.String.format(this.txtInvalidRange, countPages)
+                      }
+                      if (start > end) return this.txtReversedRange
+                    } else {
+                      return this.txtInvalidFormat
+                    }
+                  }
                 }
-            });
+                return true
+              },
+            },
+            handler: (result, value) => {
+              if (result === "ok") {
+                let pages = []
+                const parts = value
+                  .split(",")
+                  .map((v) => v.trim())
+                  .filter(Boolean)
+
+                for (const part of parts) {
+                  if (part.includes("-")) {
+                    const [start, end] = part.split("-").map((p) => Number.parseInt(p, 10))
+                    for (let i = start; i <= end; i++) {
+                      pages.push(i - 1)
+                    }
+                  } else {
+                    pages.push(Number.parseInt(part, 10) - 1)
+                  }
+                }
+
+                pages = Array.from(new Set(pages)).sort((a, b) => a - b)
+
+                this.api.RedactPages(pages)
+              }
+            },
+          }).show()
         },
 
-        onApplyRedact: function() {
-            Common.UI.TooltipManager.closeTip('apply-redaction');
-            Common.UI.warning({
+        onActiveTab: function (tab) {
+          if (tab === "red") {
+            if (!this.toolbar.toolbar.isCompact()) {
+              Common.UI.TooltipManager.showTip("mark-for-redaction")
+              Common.UI.TooltipManager.showTip("apply-redaction")
+            }
+          } else {
+            Common.UI.TooltipManager.closeTip("mark-for-redaction")
+            Common.UI.TooltipManager.closeTip("apply-redaction")
+            const isMarked = this.api.HasRedact()
+            if (isMarked && (!this.redactionsWarning || !this.redactionsWarning.isVisible())) {
+              this.redactionsWarning = Common.UI.warning({
                 width: 500,
-                msg: this.textApplyRedact,
-                buttons: ['yes', 'no'],
-                primary: 'yes',
-                callback: _.bind(function(btn) {
-                    if (btn == 'yes') {
-                        this.api.ApplyRedact();
+                msg: this.textUnappliedRedactions,
+                buttons: [
+                  {
+                    value: "apply",
+                    caption: this.applyButtonText,
+                  },
+                  {
+                    value: "doNotApply",
+                    caption: this.doNotApplyButtonText,
+                  },
+                  "cancel",
+                ],
+                primary: "apply",
+                callback: _.bind(function (btn) {
+                  if (btn === "apply") {
+                    this.api.ApplyRedact()
+                    this.api.SetRedactTool(false)
+                    this.view.btnMarkForRedact.toggle(false)
+                  } else if (btn === "doNotApply") {
+                    this.api.RemoveAllRedact()
+                    this.api.SetRedactTool(false)
+                    this.view.btnMarkForRedact.toggle(false)
+                  } else {
+                    if (this.isFileMenuTab) {
+                      this.view.fireEvent("menu:hide", [this])
                     }
-                }, this)
-            });
-        },
-
-        onStartRedact: function(isMarkMode) {
-            Common.UI.TooltipManager.closeTip('mark-for-redaction');
-            if (isMarkMode && this.toolbar) {
-                this.toolbar.turnOnSelectTool();
-                this.api.SetMarkerFormat(undefined, false);
-                this.api.asc_StopInkDrawer();
-                this.toolbar.onClearHighlight();
-            }
-            this.api.SetRedactTool(isMarkMode);
-        },
-
-        onRedactCurrentPage: function() {
-            this.api.RedactPages([this.api.getCurrentPage()]);
-        },
-
-        onRedactPages: function() {
-            const me = this;
-            const countPages = this.api.getCountPages();
-
-            (new Common.Views.TextInputDialog({
-                title: this.textRedactPages,
-                label: this.textEnterPageRange,
-                value: `1-${countPages}`,
-                description: this.textEnterRangeDescription,
-                inputConfig: {
-                    maxLength: 50,
-                    allowBlank: false,
-                    validation: function(value) {
-                        const singlePage = /^\d+$/;
-                        const range = /^(\d+)-(\d+)$/;
-
-                        const parts = value.split(',').map(v => v.trim()).filter(Boolean);
-                        if (parts.length === 0) return me.txtInvalidFormat;
-
-                        for (const part of parts) {
-                            if (singlePage.test(part)) {
-                                const page = parseInt(part, 10);
-                                if (page < 1 || page > countPages) {
-                                    return Common.Utils.String.format(me.txtInvalidRange, countPages);
-                                }
-                            } else {
-                                const match = part.match(range);
-                                if (match) {
-                                    const start = parseInt(match[1], 10);
-                                    const end = parseInt(match[2], 10);
-                                    if (start < 1 || end < 1 || start > countPages || end > countPages) {
-                                        return Common.Utils.String.format(me.txtInvalidRange, countPages);
-                                    }
-                                    if (start > end) return me.txtReversedRange;
-                                } else {
-                                    return me.txtInvalidFormat;
-                                }
-                            }
-                        }
-                        return true;
+                    if (this.mode.isPDFEdit) {
+                      this.toolbar.toolbar.setTab("red")
+                    } else {
+                      Common.NotificationCenter.trigger("pdf:mode-apply", "edit", "red")
                     }
-                },
-                handler: function(result, value) {
-                    if (result === 'ok') {
-                        let pages = [];
-                        const parts = value.split(',').map(v => v.trim()).filter(Boolean);
-
-                        for (const part of parts) {
-                            if (part.includes('-')) {
-                                const [start, end] = part.split('-').map(p => parseInt(p, 10));
-                                for (let i = start; i <= end; i++) {
-                                    pages.push(i - 1);
-                                }
-                            } else {
-                                pages.push(parseInt(part, 10) - 1);
-                            }
-                        }
-
-                        pages = Array.from(new Set(pages)).sort((a, b) => a - b);
-
-                        me.api.RedactPages(pages);
-                    }
-                }
-            })).show();
-        },
-
-        onActiveTab: function(tab) {
-            if (tab == 'red') {
-                if (!this.toolbar.toolbar.isCompact()) {
-                    Common.UI.TooltipManager.showTip('mark-for-redaction');
-                    Common.UI.TooltipManager.showTip('apply-redaction');
-                }
+                  }
+                }, this),
+              })
             } else {
-                Common.UI.TooltipManager.closeTip('mark-for-redaction');
-                Common.UI.TooltipManager.closeTip('apply-redaction');
-                const isMarked = this.api.HasRedact();
-                if (
-                    isMarked &&
-                    (!this.redactionsWarning || !this.redactionsWarning.isVisible())
-                ) {
-                    this.redactionsWarning = Common.UI.warning({
-                        width: 500,
-                        msg: this.textUnappliedRedactions,
-                        buttons: [{
-                            value: 'apply',
-                            caption: this.applyButtonText
-                        }, {
-                            value: 'doNotApply',
-                            caption: this.doNotApplyButtonText
-                        }, 'cancel'],
-                        primary: 'apply',
-                        callback: _.bind(function(btn) {
-                            if (btn == 'apply') {
-                                this.api.ApplyRedact();
-                                this.api.SetRedactTool(false);
-                                this.view.btnMarkForRedact.toggle(false);
-                            } else if (btn == 'doNotApply') {
-                                this.api.RemoveAllRedact();
-                                this.api.SetRedactTool(false);
-                                this.view.btnMarkForRedact.toggle(false);
-                            } else {
-                                if (this.isFileMenuTab) {
-                                    this.view.fireEvent('menu:hide', [this]);
-                                }
-                                if (this.mode.isPDFEdit) {
-                                    this.toolbar.toolbar.setTab('red')
-                                } else {
-                                    Common.NotificationCenter.trigger('pdf:mode-apply', 'edit', 'red');
-                                }
-                            }
-                        }, this)
-                    });
-                } else {
-                    this.view.btnMarkForRedact.toggle(false);
-                    this.api.SetRedactTool(false);
-                }
+              this.view.btnMarkForRedact.toggle(false)
+              this.api.SetRedactTool(false)
             }
-            this.isFileMenuTab = tab === 'file';
+          }
+          this.isFileMenuTab = tab === "file"
         },
 
-        onRedactionStateToggle: function(isRedaction) {
-            this.view.btnMarkForRedact.toggle(isRedaction);
-            if (this.toolbar)
-                isRedaction ? this.toolbar.clearSelectTools() : this.toolbar.updateSelectTools();
+        onRedactionStateToggle: function (isRedaction) {
+          this.view.btnMarkForRedact.toggle(isRedaction)
+          if (this.toolbar)
+            isRedaction ? this.toolbar.clearSelectTools() : this.toolbar.updateSelectTools()
         },
 
-        SetDisabled: function(state) {
-            this.view && this.view.SetDisabled(state);
+        SetDisabled: function (state) {
+          this.view?.SetDisabled(state)
         },
 
-        createToolbarPanel: function() {
-            return this.view.getPanel();
+        createToolbarPanel: function () {
+          return this.view.getPanel()
         },
 
-        getView: function(name) {
-            return !name && this.view ?
-                this.view : Backbone.Controller.prototype.getView.call(this, name);
+        getView: function (name) {
+          return !name && this.view
+            ? this.view
+            : Backbone.Controller.prototype.getView.call(this, name)
         },
 
-        onCoAuthoringDisconnect: function() {
-            Common.Utils.lockControls(Common.enumLock.lostConnect, true, {array: this.view.lockedControls});
+        onCoAuthoringDisconnect: function () {
+          Common.Utils.lockControls(Common.enumLock.lostConnect, true, {
+            array: this.view.lockedControls,
+          })
         },
 
         onAppReady: function (config) {
-            var me = this;
-            if (me.view && config.isPDFEdit) {
-                (new Promise(function (accept, reject) {
-                    accept();
-                })).then(function(){
-                    me.view.onAppReady(config);
-                    me.view.setEvents();
+          if (this.view && config.isPDFEdit) {
+            new Promise((accept, reject) => {
+              accept()
+            }).then(() => {
+              this.view.onAppReady(config)
+              this.view.setEvents()
 
-                    if (me.view.btnFindRedact) {
-                        me.getApplication().getController('LeftMenu').leftMenu.btnSearchBar.on('toggle', function (btn, state) {
-                            !state && me.view.turnFindRedact(state);
-                        });
-                    }
-                });
-            }
-            Common.UI.TooltipManager.addTips({
-                'mark-for-redaction' : {name: 'help-tip-mark-for-redaction', placement: 'bottom-right', text: this.tipMarkForRedaction, header: this.tipMarkForRedactionHeader, target: '#slot-btn-markredact',
-                    automove: true, next: 'apply-redaction', maxwidth: 270, closable: false, isNewFeature: false, noHighlight: true},
-                'apply-redaction' : {name: 'help-tip-apply-redaction', placement: 'bottom-left', text: this.tipApplyRedaction, header: this.tipApplyRedactionHeader, target: '#slot-btn-apply-redactions',
-                    automove: true, prev: 'mark-for-redaction', maxwidth: 270, closable: false, isNewFeature: false, noHighlight: true},
-            });
+              if (this.view.btnFindRedact) {
+                this.getApplication()
+                  .getController("LeftMenu")
+                  .leftMenu.btnSearchBar.on("toggle", (btn, state) => {
+                    !state && this.view.turnFindRedact(state)
+                  })
+              }
+            })
+          }
+          Common.UI.TooltipManager.addTips({
+            "mark-for-redaction": {
+              name: "help-tip-mark-for-redaction",
+              placement: "bottom-right",
+              text: this.tipMarkForRedaction,
+              header: this.tipMarkForRedactionHeader,
+              target: "#slot-btn-markredact",
+              automove: true,
+              next: "apply-redaction",
+              maxwidth: 270,
+              closable: false,
+              isNewFeature: false,
+              noHighlight: true,
+            },
+            "apply-redaction": {
+              name: "help-tip-apply-redaction",
+              placement: "bottom-left",
+              text: this.tipApplyRedaction,
+              header: this.tipApplyRedactionHeader,
+              target: "#slot-btn-apply-redactions",
+              automove: true,
+              prev: "mark-for-redaction",
+              maxwidth: 270,
+              closable: false,
+              isNewFeature: false,
+              noHighlight: true,
+            },
+          })
         },
 
-        onDocumentReady: function() {
-            if (this.mode && this.mode.isPDFEdit) {
-                Common.Utils.lockControls(Common.enumLock.disableOnStart, false, {array: this.view.lockedControls});
-            }
+        onDocumentReady: function () {
+          if (this.mode?.isPDFEdit) {
+            Common.Utils.lockControls(Common.enumLock.disableOnStart, false, {
+              array: this.view.lockedControls,
+            })
+          }
         },
 
-        initNames: function() {
-        },
+        initNames: () => {},
 
-        onApiFocusObject: function(selectedObjects) {
-        },
-
-    }, PDFE.Controllers.RedactTab || {}));
-});
+        onApiFocusObject: (selectedObjects) => {},
+      },
+      PDFE.Controllers.RedactTab || {},
+    ),
+  )
+})

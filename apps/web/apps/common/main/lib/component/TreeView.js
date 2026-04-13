@@ -30,16 +30,14 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/DataView'
-], function () {
-    'use strict';
+], () => {
 
     Common.UI.TreeViewModel = Common.UI.DataViewModel.extend({
-        defaults: function() {
-            return {
+        defaults: () => ({
                 id: Common.UI.getId(),
                 name: '',
                 isNotHeader: false,
@@ -54,19 +52,17 @@ define([
                 getTipFromName: true,
                 level: 0,
                 index: 0
-            }
-        }
+            })
     });
 
     Common.UI.TreeViewStore = Backbone.Collection.extend({
         model: Common.UI.TreeViewModel,
 
         expandSubItems: function(record) {
-            var me = this;
-            var _expand_sub_items = function(idx, expanded, level) {
-                for (var i=idx+1; i<me.length; i++) {
-                    var item = me.at(i);
-                    var item_level = item.get('level');
+            const _expand_sub_items = (idx, expanded, level) => {
+                for (let i=idx+1; i<this.length; i++) {
+                    const item = this.at(i);
+                    const item_level = item.get('level');
                     if (item_level>level) {
                         if (expanded)
                             item.set('isVisible', true);
@@ -83,11 +79,11 @@ define([
         },
 
         collapseSubItems: function(record) {
-            var start_level = record.get('level'),
-                index = record.get('index');
-            for (var i=index+1; i<this.length; i++) {
-                var item = this.at(i);
-                var item_level = item.get('level');
+            const start_level = record.get('level');
+            const index = record.get('index');
+            for (let i=index+1; i<this.length; i++) {
+                const item = this.at(i);
+                const item_level = item.get('level');
                 if (item_level>start_level) {
                     item.set('isVisible', false);
                 } else {
@@ -98,15 +94,15 @@ define([
         },
 
         expandAll: function() {
-            this.each(function(item) {
+            this.each((item) => {
                 item.set('isExpanded', true);
                 item.set('isVisible', true);
             });
         },
 
         collapseAll: function() {
-            for (var i=0; i<this.length; i++) {
-                var item = this.at(i);
+            for (let i=0; i<this.length; i++) {
+                const item = this.at(i);
                 if (!item.get('isNotHeader')) {
                     item.set('isExpanded', false);
                     i = this.collapseSubItems(item);
@@ -115,13 +111,12 @@ define([
         },
 
         expandToLevel: function(expandLevel) {
-            var me = this;
-            var _expand_sub_items = function(idx, level) {
-                var parent = me.at(idx);
+            const _expand_sub_items = (idx, level) => {
+                const parent = this.at(idx);
                 parent.set('isExpanded', false);
-                for (var i=idx+1; i<me.length; i++) {
-                    var item = me.at(i);
-                    var item_level = item.get('level');
+                for (let i=idx+1; i<this.length; i++) {
+                    const item = this.at(i);
+                    const item_level = item.get('level');
                     if (item_level>level) {
                         if (item_level<=expandLevel)
                             parent.set('isExpanded', true);
@@ -134,8 +129,8 @@ define([
                 }
             };
 
-            for (var j=0; j<this.length; j++) {
-                var item = this.at(j);
+            for (let j=0; j<this.length; j++) {
+                const item = this.at(j);
                 if (item.get('level')<=expandLevel || !item.get('hasParent')) {
                     item.set('isVisible', true);
                     if (!item.get('isNotHeader'))
@@ -145,8 +140,7 @@ define([
         }
     });
 
-    Common.UI.TreeView = Common.UI.DataView.extend((function() {
-        return {
+    Common.UI.TreeView = Common.UI.DataView.extend((() => ({
             options: {
                 handleSelect: true,
                 showLast: true,
@@ -173,7 +167,7 @@ define([
                     '<% if (isNotHeader) { %>',
                         '<div class="name not-header"><%= Common.Utils.String.htmlEncode(name) %></div>',
                     '<% } else if (isEmptyItem) { %>',
-                        '<div class="name empty">' + options.emptyItemText + '</div>',
+                        `<div class="name empty">${options.emptyItemText}</div>`,
                     '<% } else { %>',
                         '<div class="name"><%= Common.Utils.String.htmlEncode(name) %></div>',
                     '<% } %>',
@@ -186,7 +180,7 @@ define([
                     '<% if (isNotHeader) { %>',
                         '<div class="name not-header"><%= Common.Utils.String.htmlEncode(name) %></div>',
                     '<% } else if (isEmptyItem) { %>',
-                        '<div class="name empty">' + options.emptyItemText + '</div>',
+                        `<div class="name empty">${options.emptyItemText}</div>`,
                     '<% } else { %>',
                         '<div class="name"><%= Common.Utils.String.htmlEncode(name) %></div>',
                     '<% } %>',
@@ -196,7 +190,7 @@ define([
             },
 
             onAddItem: function(record, store, opts) {
-                var view = new Common.UI.DataViewItem({
+                const view = new Common.UI.DataViewItem({
                     template: this.itemTemplate,
                     model: record,
                     role: this.options.roleItem,
@@ -204,13 +198,13 @@ define([
                 });
 
                 if (view) {
-                    var innerEl = (this.$el || $(this.el)).find('.inner').addBack().filter('.inner');
+                    const innerEl = (this.$el || $(this.el)).find('.inner').addBack().filter('.inner');
                     if (innerEl) {
                         (this.dataViewItems.length<1) && innerEl.find('.empty-text').remove();
 
                         if (opts && (typeof opts.at==='number')) {
-                            var idx = opts.at;
-                            var innerDivs = innerEl.find('> div');
+                            const idx = opts.at;
+                            const innerDivs = innerEl.find('> div');
                             if (idx > 0)
                                 $(innerDivs.get(idx - 1)).after(view.render().el);
                             else {
@@ -249,12 +243,12 @@ define([
             onClickItem: function(view, record, e) {
                 if ( this.disabled ) return;
 
-                var btn = $(e.target);
+                const btn = $(e.target);
                 if (btn && (btn.hasClass('tree-caret') || btn.hasClass('btn-tree-caret'))) {
-                    var tip = view.$el.data('bs.tooltip');
+                    const tip = view.$el.data('bs.tooltip');
                     if (tip) (tip.tip()).remove();
 
-                    var isExpanded = !record.get('isExpanded');
+                    const isExpanded = !record.get('isExpanded');
                     record.set('isExpanded', isExpanded);
                     this.store[(isExpanded) ? 'expandSubItems' : 'collapseSubItems'](record);
                     this.scroller.update({minScrollbarLength: this.minScrollbarLength, alwaysVisibleY: this.scrollAlwaysVisible});
@@ -280,7 +274,7 @@ define([
 
             expandRecord: function(record) {
                 if (record) {
-                    var oldExpand = record.get('isExpanded');
+                    const oldExpand = record.get('isExpanded');
                     record.set('isExpanded', true);
                     this.store.expandSubItems(record);
                     this.scroller.update({minScrollbarLength: this.minScrollbarLength, alwaysVisibleY: this.scrollAlwaysVisible});
@@ -290,7 +284,7 @@ define([
 
             collapseRecord: function(record) {
                 if (record) {
-                    var oldExpand = record.get('isExpanded');
+                    const oldExpand = record.get('isExpanded');
                     record.set('isExpanded', false);
                     this.store.collapseSubItems(record);
                     this.scroller.update({minScrollbarLength: this.minScrollbarLength, alwaysVisibleY: this.scrollAlwaysVisible});
@@ -301,13 +295,13 @@ define([
             onKeyDown: function (e, data) {
                 if ( this.disabled ) return;
                 if (data===undefined) data = e;
-                if (_.indexOf(this.moveKeys, data.keyCode)>-1 || data.keyCode==Common.UI.Keys.RETURN) {
+                if (_.indexOf(this.moveKeys, data.keyCode)>-1 || data.keyCode===Common.UI.Keys.RETURN) {
                     data.preventDefault();
                     data.stopPropagation();
-                    var rec = this.getSelectedRec();
+                    let rec = this.getSelectedRec();
                     if (this.lastSelectedRec===null)
                         this.lastSelectedRec = rec;
-                    if (data.keyCode==Common.UI.Keys.RETURN) {
+                    if (data.keyCode===Common.UI.Keys.RETURN) {
                         this.lastSelectedRec = null;
                         if (this.selectedBeforeHideRec) // only for ComboDataView menuPicker
                             rec = this.selectedBeforeHideRec;
@@ -317,10 +311,10 @@ define([
                         if (this.parentMenu)
                             this.parentMenu.hide();
                     } else {
-                        var idx = _.indexOf(this.store.models, rec);
+                        let idx = _.indexOf(this.store.models, rec);
                         if (idx<0) {
-                            if (data.keyCode==Common.UI.Keys.LEFT) {
-                                var target = $(e.target).closest('.dropdown-submenu.over');
+                            if (data.keyCode===Common.UI.Keys.LEFT) {
+                                const target = $(e.target).closest('.dropdown-submenu.over');
                                 if (target.length>0) {
                                     target.removeClass('over');
                                     target.find('> a').focus();
@@ -328,26 +322,26 @@ define([
                                     idx = 0;
                             } else
                                 idx = 0;
-                        } else if (this.options.keyMoveDirection == 'both') {
-                            var hasSubItems = rec.get('hasSubItems');
-                            var hasParent = rec.get('hasParent');
-                            var isExpanded = rec.get('isExpanded');
-                            if (data.keyCode==Common.UI.Keys.LEFT) {
+                        } else if (this.options.keyMoveDirection === 'both') {
+                            const hasSubItems = rec.get('hasSubItems');
+                            const hasParent = rec.get('hasParent');
+                            const isExpanded = rec.get('isExpanded');
+                            if (data.keyCode===Common.UI.Keys.LEFT) {
                                 if (hasSubItems && isExpanded)
                                     this.collapseRecord(rec);
-                            } else if (data.keyCode==Common.UI.Keys.RIGHT) {
+                            } else if (data.keyCode===Common.UI.Keys.RIGHT) {
                                 if (hasSubItems && !isExpanded)
                                     this.expandRecord(rec);
                             } else {
-                                if (data.keyCode==Common.UI.Keys.DOWN) {
-                                    for (var i=idx+1; i<this.store.length; i++) {
+                                if (data.keyCode===Common.UI.Keys.DOWN) {
+                                    for (let i=idx+1; i<this.store.length; i++) {
                                         if (this.store.at(i).get('isVisible')) {
                                             idx=i;
                                             break;
                                         }
                                     }
-                                } else if (data.keyCode==Common.UI.Keys.UP) {
-                                    for (var i=idx-1; i>=0; i--) {
+                                } else if (data.keyCode===Common.UI.Keys.UP) {
+                                    for (let i=idx-1; i>=0; i--) {
                                         if (this.store.at(i).get('isVisible')) {
                                             idx=i;
                                             break;
@@ -356,7 +350,7 @@ define([
                                 }
                             }
                         } else {
-                            idx = (data.keyCode==Common.UI.Keys.UP || data.keyCode==Common.UI.Keys.LEFT)
+                            idx = (data.keyCode===Common.UI.Keys.UP || data.keyCode===Common.UI.Keys.LEFT)
                                 ? Math.max(0, idx-1)
                                 : Math.min(this.store.length - 1, idx + 1) ;
                         }
@@ -367,7 +361,7 @@ define([
                             this.selectRecord(rec);
                             this._fromKeyDown = false;
                             this.scrollToRecord(rec);
-                            $('#' + rec.get('id')).parent().focus();
+                            $(`#${rec.get('id')}`).parent().focus();
                         }
                     }
                 } else {
@@ -376,28 +370,27 @@ define([
             },
 
             focus: function() {
-                this.cmpEl && this.cmpEl.find('.treeview').focus();
+                this.cmpEl?.find('.treeview').focus();
             },
 
             updateTip: function(item) {
-                var record = item.model,
-                    name = record.get('name'),
-                    me = this;
+                const record = item.model;
+                const name = record.get('name');
 
                 record.get('getTipFromName') && record.set('tip', name.length > 37 - record.get('level')*2 ? name : '');
 
-                var el = item.$el || $(item.el),
-                    tip = el.data('bs.tooltip');
+                const el = item.$el || $(item.el);
+                const tip = el.data('bs.tooltip');
                 if (tip)
                     tip.updateTitle(record.get('tip'));
                 else if (record.get('tip') && el.attr('data-toggle')!=='tooltip') { // init tooltip
                     el.attr('data-toggle', 'tooltip');
                     if (this.delayRenderTips)
-                        el.one('mouseenter', function(){
+                        el.one('mouseenter', ()=> {
                             el.tooltip({
                                 title       : record.get('tip'),
                                 placement   : 'cursor',
-                                zIndex : me.tipZIndex
+                                zIndex : this.tipZIndex
                             });
                             el.mouseenter();
                         });
@@ -405,11 +398,10 @@ define([
                         el.tooltip({
                             title       : record.get('tip'),
                             placement   : 'cursor',
-                            zIndex : me.tipZIndex
+                            zIndex : this.tipZIndex
                         });
                     }
                 }
             }
-        }
-    })());
+        }))());
 });

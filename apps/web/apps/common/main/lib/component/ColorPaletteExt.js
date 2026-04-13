@@ -30,9 +30,9 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () { 'use strict';
+define([], () => { 
 
     Common.UI.ColorPaletteExt = Common.UI.BaseView.extend({
         options: {
@@ -83,9 +83,8 @@ define([], function () { 'use strict';
         },
 
         render: function (parentEl) {
-            var me = this;
 
-            if (!me.rendered) {
+            if (!this.rendered) {
                 this.cmpEl = $(this.template({
                     id          : this.id,
                     cls         : this.cls,
@@ -100,84 +99,78 @@ define([], function () { 'use strict';
                     this.$el.html(this.cmpEl);
                 }
 
-                this.cmpEl.on('click', me.handleClick.bind(me));
+                this.cmpEl.on('click', this.handleClick.bind(this));
             } else {
-                this.cmpEl = me.$el || $(this.el);
+                this.cmpEl = this.$el || $(this.el);
             }
 
-            me.rendered = true;
+            this.rendered = true;
             return this;
         },
 
-        isColor: function(v) {
-            return typeof(v) == 'string' && (/[0-9A-F]{6}/).test(v);
-        },
+        isColor: (v) => typeof(v) === 'string' && (/[0-9A-F]{6}/).test(v),
 
-        isTransparent: function(v) {
-            return typeof(v) == 'string' && (v=='transparent');
-        },
+        isTransparent: (v) => typeof(v) === 'string' && (v==='transparent'),
 
-        isEffect: function(v) {
-            return (typeof(v) == 'object' && v.effectId !== undefined);
-        },
+        isEffect: (v) => (typeof(v) === 'object' && v.effectId !== undefined),
 
         getColor: function() {
             return this.value;
         },
 
         handleClick: function(e) {
-            var me = this;
-            var target = $(e.target).closest('div.palette-color-item');
-            var color, cmp;
+            const target = $(e.target).closest('div.palette-color-item');
+            let color;
+            let cmp;
 
-            if (target.length==0) return;
+            if (target.length===0) return;
 
             if (target.hasClass('color-transparent') ) {
-                $(me.el).find('div.' + me.selectedCls).removeClass(me.selectedCls);
-                target.addClass(me.selectedCls);
-                me.value = 'transparent';
-                me.trigger('select', me, 'transparent');
+                $(this.el).find(`div.${this.selectedCls}`).removeClass(this.selectedCls);
+                target.addClass(this.selectedCls);
+                this.value = 'transparent';
+                this.trigger('select', this, 'transparent');
             } else {
-                if (!/^[a-fA-F0-9]{6}$/.test(me.value) || _.indexOf(me.colors, me.value)<0 )
-                    me.value = false;
+                if (!/^[a-fA-F0-9]{6}$/.test(this.value) || _.indexOf(this.colors, this.value)<0 )
+                    this.value = false;
 
-                $(me.el).find('div.' + me.selectedCls).removeClass(me.selectedCls);
-                target.addClass(me.selectedCls);
+                $(this.el).find(`div.${this.selectedCls}`).removeClass(this.selectedCls);
+                target.addClass(this.selectedCls);
 
-                color = target[0].className.match(me.colorRe)[1];
+                color = target[0].className.match(this.colorRe)[1];
                 if ( target.hasClass('palette-color-effect') ) {
-                    var effectId = parseInt(target.attr('effectid'));
+                    const effectId = Number.parseInt(target.attr('effectid'));
                     if (color)  {
-                        me.value = color.toUpperCase();
-                        me.trigger('select', me, {color: color, effectId: effectId});
+                        this.value = color.toUpperCase();
+                        this.trigger('select', this, {color: color, effectId: effectId});
                     }
                 } else {
                     if (/#?[a-fA-F0-9]{6}/.test(color)) {
                         color = /#?([a-fA-F0-9]{6})/.exec(color)[1].toUpperCase();
-                        me.value = color;
-                        me.trigger('select', me, color);
+                        this.value = color;
+                        this.trigger('select', this, color);
                     }
                 }
             }
         },
 
         select: function(color, suppressEvent) {
-            var el = $(this.el);
-            el.find('div.' + this.selectedCls).removeClass(this.selectedCls);
+            const el = $(this.el);
+            el.find(`div.${this.selectedCls}`).removeClass(this.selectedCls);
 
             if (!color) return;
             
-            if (typeof(color) == 'object' ) {
-                var effectEl;
+            if (typeof(color) === 'object' ) {
+                let effectEl;
                 if (color.effectId !== undefined) {
-                    effectEl = el.find('div[effectid="'+color.effectId+'"]').first();
+                    effectEl = el.find(`div[effectid="${color.effectId}"]`).first();
                     if (effectEl.length>0) {
                         effectEl.addClass(this.selectedCls);
                         this.value = effectEl[0].className.match(this.colorRe)[1].toUpperCase();
                     } else
                         this.value = false;
                 } else if (color.effectValue !== undefined) {
-                    effectEl = el.find('div[effectvalue="'+color.effectValue+'"].color-' + color.color.toUpperCase()).first();
+                    effectEl = el.find(`div[effectvalue="${color.effectValue}"].color-${color.color.toUpperCase()}`).first();
                     if (effectEl.length>0) {
                         effectEl.addClass(this.selectedCls);
                         this.value = effectEl[0].className.match(this.colorRe)[1].toUpperCase();
@@ -193,17 +186,17 @@ define([], function () { 'use strict';
                 if (/^[a-fA-F0-9]{6}|transparent$/.test(color) && _.indexOf(this.colors, color)>=0 ) {
                     if (_.indexOf(this.colors, this.value)<0) this.value = false;
 
-                    if (color != this.value || this.options.allowReselect) {
-                        (color == 'transparent') ? el.find('div.color-transparent').addClass(this.selectedCls) : el.find('div.palette-color.color-' + color).first().addClass(this.selectedCls);
+                    if (color !== this.value || this.options.allowReselect) {
+                        (color === 'transparent') ? el.find('div.color-transparent').addClass(this.selectedCls) : el.find(`div.palette-color.color-${color}`).first().addClass(this.selectedCls);
                         this.value = color;
                         if (suppressEvent !== true) {
                             this.fireEvent('select', this, color);
                         }
                     }
                 } else {
-                    var co = el.find('#'+color).first();
-                    if (co.length==0)
-                        co = el.find('div[color="'+color+'"]').first();
+                    let co = el.find(`#${color}`).first();
+                    if (co.length===0)
+                        co = el.find(`div[color="${color}"]`).first();
                     if (co.length>0) {
                         co.addClass(this.selectedCls);
                         this.value = color.toUpperCase();
@@ -227,7 +220,7 @@ define([], function () { 'use strict';
         },
 
         clearSelection: function(suppressEvent) {
-            $(this.el).find('div.' + this.selectedCls).removeClass(this.selectedCls);
+            $(this.el).find(`div.${this.selectedCls}`).removeClass(this.selectedCls);
             this.value = undefined;
         }
     });

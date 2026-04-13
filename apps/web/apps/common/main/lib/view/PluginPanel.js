@@ -27,12 +27,11 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Views = Common.Views || {};
 
-define([], function () {
-    'use strict';
+define([], () => {
 
     Common.Views.PluginPanel = Common.UI.BaseView.extend(_.extend({
         template: _.template([
@@ -75,11 +74,11 @@ define([], function () {
                 hint: this.textClosePanel
             });
 
-            var xpadding = 1;
+            let xpadding = 1;
             if (this.sideMenuButton) {
                 this.pluginHide = new Common.UI.Button({
                     parentEl: this.$el.find('.plugin-hide'),
-                    cls: 'btn-toolbar' + (this.menu==='right' ^ Common.UI.isRTL() ? ' icon-mirrored' : ''),
+                    cls: `btn-toolbar${this.menu==='right' ^ Common.UI.isRTL() ? ' icon-mirrored' : ''}`,
                     iconCls: 'toolbar__icon btn-panel-left-collapse',
                     hint: this.textHidePanel
                 });
@@ -90,21 +89,21 @@ define([], function () {
                 this.showDockedButton();
                 xpadding++;
             }
-            this.pluginName.css(Common.UI.isRTL() ? 'padding-left' : 'padding-right', (parseInt(Common.UI.Themes.getThemeProps('small-btn-size')) * xpadding + 5) + 'px');
+            this.pluginName.css(Common.UI.isRTL() ? 'padding-left' : 'padding-right', `${Number.parseInt(Common.UI.Themes.getThemeProps('small-btn-size')) * xpadding + 5}px`);
 
             this.trigger('render:after', this);
             return this;
         },
 
         showDockedButton: function() {
-            var header = this.$el.find('.current-plugin-header .tools'),
-                btnCls = 'plugin-undock',
-                btn = header.find('.' + btnCls);
+            const header = this.$el.find('.current-plugin-header .tools');
+            const btnCls = 'plugin-undock';
+            let btn = header.find(`.${btnCls}`);
             if (btn.length < 1) {
-                btn = $('<div class="' + btnCls + '"></div>');
+                btn = $(`<div class="${btnCls}"></div>`);
                 this.$el.find('.plugin-close').after(btn);
-                var btnUndock = new Common.UI.Button({
-                    parentEl: this.$el.find('.' + btnCls),
+                const btnUndock = new Common.UI.Button({
+                    parentEl: this.$el.find(`.${btnCls}`),
                     cls: 'btn-toolbar',
                     iconCls: 'toolbar__icon btn-unpin',
                     hint: this.textUndock

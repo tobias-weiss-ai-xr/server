@@ -30,372 +30,405 @@
  */
 
 define([
-    'text!presentationeditor/main/app/template/SignatureSettings.template',
-    'jquery',
-    'underscore',
-    'backbone',
-    'common/main/lib/component/Button'
-], function (menuTemplate, $, _, Backbone) {
-    'use strict';
-
-    PE.Views.SignatureSettings = Backbone.View.extend(_.extend({
-        el: '#id-signature-settings',
+  "text!presentationeditor/main/app/template/SignatureSettings.template",
+  "jquery",
+  "underscore",
+  "backbone",
+  "common/main/lib/component/Button",
+], (menuTemplate, $, _, Backbone) => {
+  PE.Views.SignatureSettings = Backbone.View.extend(
+    _.extend(
+      {
+        el: "#id-signature-settings",
 
         // Compile our stats template
         template: _.template(menuTemplate),
 
         // Delegated events for creating new items, and clearing completed ones.
-        events: {
-        },
+        events: {},
 
         options: {
-            alias: 'SignatureSettings'
+          alias: "SignatureSettings",
         },
 
         initialize: function () {
-            this._state = {
-                DisabledEditing: false,
-                ready: false,
-                hasValid: false,
-                hasInvalid: false,
-                tip: undefined
-            };
-            this._locked = false;
-            this._themeChanged = false;
+          this._state = {
+            DisabledEditing: false,
+            ready: false,
+            hasValid: false,
+            hasInvalid: false,
+            tip: undefined,
+          }
+          this._locked = false
+          this._themeChanged = false
 
-            this.render();
+          this.render()
         },
 
         render: function () {
-            this.$el.html(this.template({
-                scope: this
-            }));
+          this.$el.html(
+            this.template({
+              scope: this,
+            }),
+          )
 
-            var protection = PE.getController('Common.Controllers.Protection').getView();
-            this.btnAddInvisibleSign = protection.getButton('signature');
-            this.btnAddInvisibleSign.render(this.$el.find('#signature-invisible-sign'));
+          const protection = PE.getController("Common.Controllers.Protection").getView()
+          this.btnAddInvisibleSign = protection.getButton("signature")
+          this.btnAddInvisibleSign.render(this.$el.find("#signature-invisible-sign"))
 
-            this.viewValidList = new Common.UI.DataView({
-                el: $('#signature-valid-sign'),
-                enableKeyEvents: false,
-                itemTemplate: _.template([
-                    '<div id="<%= id %>" class="signature-item">',
-                        '<div class="caret-button <% if (name == "" || date == "") { %>' + 'nomargin' + '<% } %>"><div class="caret"></div></div>',
-                        '<div class="name"><%= Common.Utils.String.htmlEncode(name) %></div>',
-                        '<div class="date"><%= Common.Utils.String.htmlEncode(date) %></div>',
-                    '</div>'
-                ].join(''))
-            });
+          this.viewValidList = new Common.UI.DataView({
+            el: $("#signature-valid-sign"),
+            enableKeyEvents: false,
+            itemTemplate: _.template(
+              [
+                '<div id="<%= id %>" class="signature-item">',
+                '<div class="caret-button <% if (name == "" || date == "") { %>' +
+                  "nomargin" +
+                  '<% } %>"><div class="caret"></div></div>',
+                '<div class="name"><%= Common.Utils.String.htmlEncode(name) %></div>',
+                '<div class="date"><%= Common.Utils.String.htmlEncode(date) %></div>',
+                "</div>",
+              ].join(""),
+            ),
+          })
 
-            this.viewInvalidList = new Common.UI.DataView({
-                el: $('#signature-invalid-sign'),
-                enableKeyEvents: false,
-                itemTemplate: _.template([
-                    '<div id="<%= id %>" class="signature-item">',
-                        '<div class="caret-button <% if (name == "" || date == "") { %>' + 'nomargin' + '<% } %>"><div class="caret"></div></div>',
-                        '<div class="name"><%= Common.Utils.String.htmlEncode(name) %></div>',
-                        '<div class="date"><%= Common.Utils.String.htmlEncode(date) %></div>',
-                    '</div>'
-                ].join(''))
-            });
+          this.viewInvalidList = new Common.UI.DataView({
+            el: $("#signature-invalid-sign"),
+            enableKeyEvents: false,
+            itemTemplate: _.template(
+              [
+                '<div id="<%= id %>" class="signature-item">',
+                '<div class="caret-button <% if (name == "" || date == "") { %>' +
+                  "nomargin" +
+                  '<% } %>"><div class="caret"></div></div>',
+                '<div class="name"><%= Common.Utils.String.htmlEncode(name) %></div>',
+                '<div class="date"><%= Common.Utils.String.htmlEncode(date) %></div>',
+                "</div>",
+              ].join(""),
+            ),
+          })
 
-            this.viewValidList.on('item:click', _.bind(this.onSelectSignature, this));
-            this.viewInvalidList.on('item:click', _.bind(this.onSelectSignature, this));
-            this.viewValidList.on('item:contextmenu', _.bind(this.onItemContextMenu, this));
-            this.viewInvalidList.on('item:contextmenu', _.bind(this.onItemContextMenu, this));
+          this.viewValidList.on("item:click", _.bind(this.onSelectSignature, this))
+          this.viewInvalidList.on("item:click", _.bind(this.onSelectSignature, this))
+          this.viewValidList.on("item:contextmenu", _.bind(this.onItemContextMenu, this))
+          this.viewInvalidList.on("item:contextmenu", _.bind(this.onItemContextMenu, this))
 
-            this.parentPanel = this.viewValidList.cmpEl.closest('.content-box');
-            this.onThemeChanged();
+          this.parentPanel = this.viewValidList.cmpEl.closest(".content-box")
+          this.onThemeChanged()
 
-            this.signatureMenu = new Common.UI.Menu({
-                menuAlign   : 'tr-br',
-                items: [
-                    { caption: this.strDetails,value: 1 },
-                    { caption: this.strDelete, value: 3 }
-                ]
-            });
-            this.signatureMenu.on('item:click', _.bind(this.onMenuSignatureClick, this));
+          this.signatureMenu = new Common.UI.Menu({
+            menuAlign: "tr-br",
+            items: [
+              { caption: this.strDetails, value: 1 },
+              { caption: this.strDelete, value: 3 },
+            ],
+          })
+          this.signatureMenu.on("item:click", _.bind(this.onMenuSignatureClick, this))
         },
 
-        setApi: function(api) {
-            this.api = api;
-            if (this.api) {
-                this.api.asc_registerCallback('asc_onUpdateSignatures',    _.bind(this.onApiUpdateSignatures, this));
-            }
-            Common.NotificationCenter.on('document:ready', _.bind(this.onDocumentReady, this));
-            Common.NotificationCenter.on('uitheme:changed', _.bind(this.onThemeChanged, this));
-            return this;
+        setApi: function (api) {
+          this.api = api
+          if (this.api) {
+            this.api.asc_registerCallback(
+              "asc_onUpdateSignatures",
+              _.bind(this.onApiUpdateSignatures, this),
+            )
+          }
+          Common.NotificationCenter.on("document:ready", _.bind(this.onDocumentReady, this))
+          Common.NotificationCenter.on("uitheme:changed", _.bind(this.onThemeChanged, this))
+          return this
         },
 
-        ChangeSettings: function(props) {
-            if (this._themeChanged)
-                this.onThemeChanged();
-            if (!this._state.hasValid && !this._state.hasInvalid)
-                this.updateSignatures(this.api.asc_getSignatures());
+        ChangeSettings: function (props) {
+          if (this._themeChanged) this.onThemeChanged()
+          if (!this._state.hasValid && !this._state.hasInvalid)
+            this.updateSignatures(this.api.asc_getSignatures())
         },
 
         setLocked: function (locked) {
-            this._locked = locked;
+          this._locked = locked
         },
 
-        setMode: function(mode) {
-            this.mode = mode;
+        setMode: function (mode) {
+          this.mode = mode
         },
 
-        onApiUpdateSignatures: function(valid){
-            if (!this._state.ready) return;
+        onApiUpdateSignatures: function (valid) {
+          if (!this._state.ready) return
 
-            this.updateSignatures(valid);
-            this.showSignatureTooltip(this._state.hasValid, this._state.hasInvalid);
+          this.updateSignatures(valid)
+          this.showSignatureTooltip(this._state.hasValid, this._state.hasInvalid)
         },
 
-        updateSignatures: function(valid){
-            var me = this,
-                validSignatures = [],
-                invalidSignatures = [];
+        updateSignatures: function (valid) {
+          const validSignatures = []
+          const invalidSignatures = []
 
-            _.each(valid, function(item, index){
-                var item_date = item.asc_getDate();
-                var sign = {name: item.asc_getSigner1(), certificateId: item.asc_getId(), guid: item.asc_getGuid(), date: (!_.isEmpty(item_date)) ? new Date(item_date).toLocaleString() : '', invisible: !item.asc_getVisible()};
-                (item.asc_getValid()==0) ? validSignatures.push(sign) : invalidSignatures.push(sign);
-            });
+          _.each(valid, (item, index) => {
+            const item_date = item.asc_getDate()
+            const sign = {
+              name: item.asc_getSigner1(),
+              certificateId: item.asc_getId(),
+              guid: item.asc_getGuid(),
+              date: !_.isEmpty(item_date) ? new Date(item_date).toLocaleString() : "",
+              invisible: !item.asc_getVisible(),
+            }
+            item.asc_getValid() === 0 ? validSignatures.push(sign) : invalidSignatures.push(sign)
+          })
 
-            // validSignatures = [{name: 'Hammish Mitchell', guid: '123', date: '18/05/2017', invisible: true}, {name: 'Someone Somewhere', guid: '345', date: '18/05/2017'}];
-            // invalidSignatures = [{name: 'Mary White', guid: '111', date: '18/05/2017'}, {name: 'John Black', guid: '456', date: '18/05/2017'}];
+          // validSignatures = [{name: 'Hammish Mitchell', guid: '123', date: '18/05/2017', invisible: true}, {name: 'Someone Somewhere', guid: '345', date: '18/05/2017'}];
+          // invalidSignatures = [{name: 'Mary White', guid: '111', date: '18/05/2017'}, {name: 'John Black', guid: '456', date: '18/05/2017'}];
 
-            me._state.hasValid = validSignatures.length>0;
-            me._state.hasInvalid = invalidSignatures.length>0;
+          this._state.hasValid = validSignatures.length > 0
+          this._state.hasInvalid = invalidSignatures.length > 0
 
-            this.viewValidList.store.reset(validSignatures);
-            this.viewInvalidList.store.reset(invalidSignatures);
+          this.viewValidList.store.reset(validSignatures)
+          this.viewInvalidList.store.reset(invalidSignatures)
 
-            this.$el.find('.valid').toggleClass('hidden', !me._state.hasValid);
-            this.$el.find('.invalid').toggleClass('hidden', !me._state.hasInvalid);
+          this.$el.find(".valid").toggleClass("hidden", !this._state.hasValid)
+          this.$el.find(".invalid").toggleClass("hidden", !this._state.hasInvalid)
 
-            me.disableEditing(me._state.hasValid || me._state.hasInvalid);
+          this.disableEditing(this._state.hasValid || this._state.hasInvalid)
         },
 
-        onItemContextMenu: function(picker, item, record, e){
-            var menu = this.signatureMenu;
+        onItemContextMenu: function (picker, item, record, e) {
+          const menu = this.signatureMenu
+          if (menu.isVisible()) {
+            menu.hide()
+          }
+
+          const offsetParent = Common.Utils.getOffset($(this.el))
+          const showPoint = [
+            e.clientX * Common.Utils.zoom() - offsetParent.left + 5,
+            e.clientY * Common.Utils.zoom() - offsetParent.top + 5,
+          ]
+
+          this.showSignatureMenu(record, showPoint)
+
+          menu.menuAlign = Common.UI.isRTL() ? "tr-br" : "tl-bl"
+          menu.menuAlignEl = null
+          menu.setOffset(15, 5)
+          menu.show()
+          _.delay(() => {
+            menu.cmpEl.focus()
+          }, 10)
+        },
+
+        onSelectSignature: function (picker, item, record, e) {
+          if (!record) return
+
+          if ($(e.target).closest(".caret-button").length) {
+            const menu = this.signatureMenu
             if (menu.isVisible()) {
-                menu.hide();
+              menu.hide()
+              return
             }
 
-            var offsetParent = Common.Utils.getOffset($(this.el)),
-                showPoint = [e.clientX*Common.Utils.zoom() - offsetParent.left + 5, e.clientY*Common.Utils.zoom() - offsetParent.top + 5];
+            const currentTarget = $(e.currentTarget)
+            const offset = Common.Utils.getOffset(currentTarget)
+            const offsetParent = Common.Utils.getOffset($(this.el))
+            const showPoint = [
+              offset.left - offsetParent.left + currentTarget.width(),
+              offset.top - offsetParent.top + currentTarget.height() / 2,
+            ]
 
-            this.showSignatureMenu(record, showPoint);
+            this.showSignatureMenu(record, showPoint)
 
-            menu.menuAlign = Common.UI.isRTL() ? 'tr-br' : 'tl-bl';
-            menu.menuAlignEl = null;
-            menu.setOffset(15, 5);
-            menu.show();
-            _.delay(function() {
-                menu.cmpEl.focus();
-            }, 10);
+            menu.menuAlign = Common.UI.isRTL() ? "tl-bl" : "tr-br"
+            menu.menuAlignEl = currentTarget
+            menu.setOffset(-20, -currentTarget.height() / 2 + 3)
+            menu.show()
+            _.delay(() => {
+              menu.cmpEl.focus()
+            }, 10)
+            e.stopPropagation()
+            e.preventDefault()
+          }
         },
 
-        onSelectSignature: function(picker, item, record, e){
-            if (!record) return;
+        showSignatureMenu: function (record, showPoint) {
+          this.api.asc_gotoSignature(record.get("guid"))
 
-            if ($(e.target).closest('.caret-button').length) {
-                var menu = this.signatureMenu;
-                if (menu.isVisible()) {
-                    menu.hide();
-                    return;
-                }
-
-                var currentTarget = $(e.currentTarget),
-                    offset = Common.Utils.getOffset(currentTarget),
-                    offsetParent = Common.Utils.getOffset($(this.el)),
-                    showPoint = [offset.left - offsetParent.left + currentTarget.width(), offset.top - offsetParent.top + currentTarget.height()/2];
-
-                this.showSignatureMenu(record, showPoint);
-
-                menu.menuAlign = Common.UI.isRTL() ? 'tl-bl' : 'tr-br';
-                menu.menuAlignEl = currentTarget;
-                menu.setOffset(-20, -currentTarget.height()/2 + 3);
-                menu.show();
-                _.delay(function() {
-                    menu.cmpEl.focus();
-                }, 10);
-                e.stopPropagation();
-                e.preventDefault();
+          const menu = this.signatureMenu
+          const parent = $(this.el)
+          let menuContainer = parent.find("#menu-signature-container")
+          if (!menu.rendered) {
+            if (menuContainer.length < 1) {
+              menuContainer = $(
+                '<div id="menu-signature-container" style="position: absolute; z-index: 10000;"><div class="dropdown-toggle" data-toggle="dropdown"></div></div>',
+                menu.id,
+              )
+              parent.append(menuContainer)
             }
+            menu.render(menuContainer)
+            menu.cmpEl.attr({ tabindex: "-1" })
+
+            menu.on({
+              "show:after": (cmp) => {
+                if (cmp?.menuAlignEl) cmp.menuAlignEl.toggleClass("over", true)
+              },
+              "hide:after": (cmp) => {
+                if (cmp?.menuAlignEl) cmp.menuAlignEl.toggleClass("over", false)
+              },
+            })
+          }
+          menu.items[1].setDisabled(this._locked)
+          menu.items[0].cmpEl.attr("data-value", record.get("certificateId")) // view certificate
+          menu.cmpEl.attr("data-value", record.get("guid"))
+
+          menuContainer.css({ left: showPoint[0], top: showPoint[1] })
         },
 
-        showSignatureMenu: function(record, showPoint) {
-            this.api.asc_gotoSignature(record.get('guid'));
-            
-            var menu = this.signatureMenu,
-                parent = $(this.el),
-                menuContainer = parent.find('#menu-signature-container');
-            if (!menu.rendered) {
-                if (menuContainer.length < 1) {
-                    menuContainer = $('<div id="menu-signature-container" style="position: absolute; z-index: 10000;"><div class="dropdown-toggle" data-toggle="dropdown"></div></div>', menu.id);
-                    parent.append(menuContainer);
-                }
-                menu.render(menuContainer);
-                menu.cmpEl.attr({tabindex: "-1"});
+        onMenuSignatureClick: function (menu, item) {
+          const guid = menu.cmpEl.attr("data-value")
+          switch (item.value) {
+            case 1:
+              this.api.asc_ViewCertificate(item.cmpEl.attr("data-value"))
+              break
+            case 3: {
+              Common.UI.warning({
+                title: this.notcriticalErrorTitle,
+                msg: this.txtRemoveWarning,
+                buttons: ["ok", "cancel"],
+                primary: "ok",
+                callback: (btn) => {
+                  if (btn === "ok") {
+                    this.api.asc_RemoveSignature(guid)
+                  }
+                },
+              })
+              break
+            }
+          }
+        },
 
-                menu.on({
-                    'show:after': function(cmp) {
-                        if (cmp && cmp.menuAlignEl)
-                            cmp.menuAlignEl.toggleClass('over', true);
-                    },
-                    'hide:after': function(cmp) {
-                        if (cmp && cmp.menuAlignEl)
-                            cmp.menuAlignEl.toggleClass('over', false);
+        onDocumentReady: function () {
+          this._state.ready = true
+
+          this.updateSignatures(this.api.asc_getSignatures(), this.api.asc_getRequestSignatures())
+          this.showSignatureTooltip(this._state.hasValid, this._state.hasInvalid)
+        },
+
+        showSignatureTooltip: function (hasValid, hasInvalid) {
+          let tip = this._state.tip
+
+          if (!hasValid && !hasInvalid) {
+            if (tip?.isVisible()) {
+              tip.close()
+              this._state.tip = undefined
+            }
+            return
+          }
+
+          const showLink = hasValid || hasInvalid
+          const tipText = hasInvalid ? this.txtSignedInvalid : hasValid ? this.txtSigned : ""
+
+          if (tip?.isVisible() && (tipText !== tip.text || showLink !== tip.showLink)) {
+            tip.close()
+            this._state.tip = undefined
+          }
+
+          if (!this._state.tip) {
+            tip = new Common.UI.SynchronizeTip({
+              target: PE.getController("RightMenu").getView("RightMenu").btnSignature.btnEl,
+              text: tipText,
+              showLink: showLink,
+              textLink: this.txtContinueEditing,
+              placement: Common.UI.isRTL() ? "right-bottom" : "left-bottom",
+            })
+            tip.on({
+              dontshowclick: () => {
+                Common.UI.warning({
+                  title: this.notcriticalErrorTitle,
+                  msg: this.txtEditWarning,
+                  buttons: ["ok", "cancel"],
+                  primary: "ok",
+                  callback: (btn) => {
+                    if (btn === "ok") {
+                      tip.close()
+                      this._state.tip = undefined
+                      this.api.asc_RemoveAllSignatures()
                     }
-                });
-            }
-            menu.items[1].setDisabled(this._locked);
-            menu.items[0].cmpEl.attr('data-value', record.get('certificateId')); // view certificate
-            menu.cmpEl.attr('data-value', record.get('guid'));
-
-            menuContainer.css({left: showPoint[0], top: showPoint[1]});
+                  },
+                })
+              },
+              closeclick: () => {
+                tip.close()
+                this._state.tip = undefined
+              },
+            })
+            this._state.tip = tip
+            tip.show()
+          }
         },
 
-        onMenuSignatureClick:  function(menu, item) {
-            var guid = menu.cmpEl.attr('data-value');
-            switch (item.value) {
-                case 1:
-                    this.api.asc_ViewCertificate(item.cmpEl.attr('data-value'));
-                    break;
-                case 3:
-                    var me = this;
-                    Common.UI.warning({
-                        title: this.notcriticalErrorTitle,
-                        msg: this.txtRemoveWarning,
-                        buttons: ['ok', 'cancel'],
-                        primary: 'ok',
-                        callback: function(btn) {
-                            if (btn == 'ok') {
-                                me.api.asc_RemoveSignature(guid);
-                            }
-                        }
-                    });
-                    break;
-            }
+        hideSignatureTooltip: function () {
+          const tip = this._state.tip
+          if (tip?.isVisible()) {
+            tip.close()
+            this._state.tip = undefined
+          }
         },
 
-        onDocumentReady: function() {
-            this._state.ready = true;
+        disableEditing: function (disable) {
+          if (this._state.DisabledEditing !== disable) {
+            this._state.DisabledEditing = disable
 
-            this.updateSignatures(this.api.asc_getSignatures(), this.api.asc_getRequestSignatures());
-            this.showSignatureTooltip(this._state.hasValid, this._state.hasInvalid);
+            Common.NotificationCenter.trigger(
+              "editing:disable",
+              disable,
+              {
+                viewMode: disable,
+                allowSignature: true,
+                rightMenu: { clear: false, disable: true },
+                statusBar: true,
+                leftMenu: { disable: false, previewMode: true },
+                fileMenu: false,
+                comments: { disable: false, previewMode: true },
+                chat: false,
+                review: true,
+                viewport: false,
+                documentHolder: { clear: true, disable: true },
+                toolbar: true,
+                header: { search: false },
+                shortcuts: false,
+                documentPreview: { draw: true },
+              },
+              "signature",
+            )
+          }
         },
 
-        showSignatureTooltip: function(hasValid, hasInvalid) {
-            var me = this,
-                tip = me._state.tip;
-
-            if (!hasValid && !hasInvalid) {
-                if (tip && tip.isVisible()) {
-                    tip.close();
-                    me._state.tip = undefined;
-                }
-                return;
-            }
-
-            var showLink = hasValid || hasInvalid,
-                tipText = (hasInvalid) ? me.txtSignedInvalid : (hasValid ? me.txtSigned : "");
-
-            if (tip && tip.isVisible() && (tipText !== tip.text || showLink !== tip.showLink)) {
-                tip.close();
-                me._state.tip = undefined;
-            }
-
-            if (!me._state.tip) {
-                tip = new Common.UI.SynchronizeTip({
-                    target  : PE.getController('RightMenu').getView('RightMenu').btnSignature.btnEl,
-                    text    : tipText,
-                    showLink: showLink,
-                    textLink: this.txtContinueEditing,
-                    placement: Common.UI.isRTL() ? 'right-bottom' : 'left-bottom'
-                });
-                tip.on({
-                    'dontshowclick': function() {
-                        Common.UI.warning({
-                            title: me.notcriticalErrorTitle,
-                            msg: me.txtEditWarning,
-                            buttons: ['ok', 'cancel'],
-                            primary: 'ok',
-                            callback: function(btn) {
-                                if (btn == 'ok') {
-                                    tip.close();
-                                    me._state.tip = undefined;
-                                    me.api.asc_RemoveAllSignatures();
-                                }
-                            }
-                        });
-                    },
-                    'closeclick': function() {
-                        tip.close();
-                        me._state.tip = undefined;
-                    }
-                });
-                me._state.tip = tip;
-                tip.show();
-            }
+        onThemeChanged: function () {
+          const el = this.$el || $(this.el)
+          this._themeChanged = !el.is(":visible")
+          if (!this._themeChanged) {
+            const marginLeft = `-${this.parentPanel.css("padding-left")}`
+            const marginRight = `-${this.parentPanel.css("padding-right")}`
+            this.viewValidList.cmpEl.css("margin-left", marginLeft)
+            this.viewValidList.cmpEl.css("margin-right", marginRight)
+            this.viewInvalidList.cmpEl.css("margin-left", marginLeft)
+            this.viewInvalidList.cmpEl.css("margin-right", marginRight)
+          }
         },
 
-        hideSignatureTooltip: function() {
-            var tip = this._state.tip;
-            if (tip && tip.isVisible()) {
-                tip.close();
-                this._state.tip = undefined;
-            }
-        },
-
-        disableEditing: function(disable) {
-            if (this._state.DisabledEditing != disable) {
-                this._state.DisabledEditing = disable;
-
-                Common.NotificationCenter.trigger('editing:disable', disable, {
-                    viewMode: disable,
-                    allowSignature: true,
-                    rightMenu: {clear: false, disable: true},
-                    statusBar: true,
-                    leftMenu: {disable: false, previewMode: true},
-                    fileMenu: false,
-                    comments: {disable: false, previewMode: true},
-                    chat: false,
-                    review: true,
-                    viewport: false,
-                    documentHolder: {clear: true, disable: true},
-                    toolbar: true,
-                    header: {search: false},
-                    shortcuts: false,
-                    documentPreview: {draw: true}
-                }, 'signature');
-            }
-        },
-
-        onThemeChanged: function() {
-            var el = this.$el || $(this.el);
-            this._themeChanged = !el.is(':visible');
-            if (!this._themeChanged) {
-                var marginLeft = '-' + this.parentPanel.css('padding-left'),
-                    marginRight = '-' + this.parentPanel.css('padding-right');
-                this.viewValidList.cmpEl.css('margin-left', marginLeft);
-                this.viewValidList.cmpEl.css('margin-right', marginRight);
-                this.viewInvalidList.cmpEl.css('margin-left', marginLeft);
-                this.viewInvalidList.cmpEl.css('margin-right', marginRight);
-            }
-        },
-
-        strSignature: 'Signature',
-        strValid: 'Valid signatures',
-        strInvalid: 'Invalid signatures',
-        strDetails: 'Signature Details',
-        txtSigned: 'Valid signatures has been added to the presentation. The presentation is protected from editing.',
-        txtSignedInvalid: 'Some of the digital signatures in presentation are invalid or could not be verified. The presentation is protected from editing.',
-        txtContinueEditing: 'Edit anyway',
-        notcriticalErrorTitle: 'Warning',
-        txtEditWarning: 'Editing will remove the signatures from the presentation.<br>Are you sure you want to continue?',
-        strDelete: 'Remove Signature',
-        txtRemoveWarning: 'Are you sure you want to remove this signature?<br>This action cannot be undone.'
-
-    }, PE.Views.SignatureSettings || {}));
-});
+        strSignature: "Signature",
+        strValid: "Valid signatures",
+        strInvalid: "Invalid signatures",
+        strDetails: "Signature Details",
+        txtSigned:
+          "Valid signatures has been added to the presentation. The presentation is protected from editing.",
+        txtSignedInvalid:
+          "Some of the digital signatures in presentation are invalid or could not be verified. The presentation is protected from editing.",
+        txtContinueEditing: "Edit anyway",
+        notcriticalErrorTitle: "Warning",
+        txtEditWarning:
+          "Editing will remove the signatures from the presentation.<br>Are you sure you want to continue?",
+        strDelete: "Remove Signature",
+        txtRemoveWarning:
+          "Are you sure you want to remove this signature?<br>This action cannot be undone.",
+      },
+      PE.Views.SignatureSettings || {},
+    ),
+  )
+})

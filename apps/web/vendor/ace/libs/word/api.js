@@ -4,9 +4,8 @@
  * @class
  * @name ApiInterface
  */
-var ApiInterface = function() {};
-var Api = new ApiInterface();
-
+const ApiInterface = () => {}
+const Api = new ApiInterface()
 
 /**
  * Returns the first Run in the array specified.
@@ -14,42 +13,46 @@ var Api = new ApiInterface();
  * @param {Array} arrRuns - Array of Runs.
  * @returns {ApiRun | null} - returns null if arrRuns is invalid.
  */
-function private_GetFirstRunInArray(arrRuns){ return null; }
+function private_GetFirstRunInArray(arrRuns) {
+  return null
+}
 
 /**
  * Returns the last Run in the array specified.
  * @memberof ApiInterface
  * @typeofeditors ["CDE"]
  * @param {Array} arrRuns - Array of Runs.
- * @returns {ApiRun | null} - returns null if arrRuns is invalid. 
+ * @returns {ApiRun | null} - returns null if arrRuns is invalid.
  */
-function private_GetLastRunInArray(arrRuns){ return null; }
+function private_GetLastRunInArray(arrRuns) {
+  return null
+}
 
 /**
  * Class representing a container for paragraphs and tables.
  * @param Document
  * @constructor
  */
-function ApiDocumentContent(Document){}
+function ApiDocumentContent(Document) {}
 
 /**
  * Class representing the Markdown conversion processing.
  * Each Range object is determined by the position of the start and end characters.
  * @constructor
  */
-function CMarkdownConverter(oConfig){}
-CMarkdownConverter.prototype.constructor = CMarkdownConverter;
+function CMarkdownConverter(oConfig) {}
+CMarkdownConverter.prototype.constructor = CMarkdownConverter
 
 /**
- * Class representing a continuous region in a document. 
+ * Class representing a continuous region in a document.
  * Each Range object is determined by the position of the start and end characters.
  * @param oElement - The document element that may be Document, Table, Paragraph, Run or Hyperlink.
  * @param {Number} Start - The start element of Range in the current Element.
  * @param {Number} End - The end element of Range in the current Element.
  * @constructor
  */
-function ApiRange(oElement, Start, End){}
-ApiRange.prototype.constructor = ApiRange;
+function ApiRange(oElement, Start, End) {}
+ApiRange.prototype.constructor = ApiRange
 
 /**
  * Returns a type of the ApiRange class.
@@ -57,14 +60,14 @@ ApiRange.prototype.constructor = ApiRange;
  * @typeofeditors ["CDE"]
  * @returns {"range"}
  */
-ApiRange.prototype.GetClassType = function(){ return ""; };
+ApiRange.prototype.GetClassType = () => ""
 
 /**
  * Returns a paragraph from all the paragraphs that are in the range.
  * @param {Number} nPos - The paragraph position in the range.
  * @returns {ApiParagraph | null} - returns null if position is invalid.
  */
-ApiRange.prototype.GetParagraph = function(nPos){ return new ApiParagraph(); };
+ApiRange.prototype.GetParagraph = (nPos) => new ApiParagraph()
 
 /**
  * Adds a text to the specified position.
@@ -74,7 +77,7 @@ ApiRange.prototype.GetParagraph = function(nPos){ return new ApiParagraph(); };
  * @param {string} [sPosition = "after"] - The position where the text will be added ("before" or "after" the range specified).
  * @returns {boolean} - returns false if range is empty or sText isn't string value.
  */
-ApiRange.prototype.AddText = function(sText, sPosition){ return true; };
+ApiRange.prototype.AddText = (sText, sPosition) => true
 
 /**
  * Adds a bookmark to the specified range.
@@ -83,17 +86,17 @@ ApiRange.prototype.AddText = function(sText, sPosition){ return true; };
  * @param {String} sName - The bookmark name.
  * @returns {boolean} - returns false if range is empty.
  */
-ApiRange.prototype.AddBookmark = function(sName){ return true; };
+ApiRange.prototype.AddBookmark = (sName) => true
 
 /**
- * Adds a hyperlink to the specified range. 
+ * Adds a hyperlink to the specified range.
  * @memberof ApiRange
  * @typeofeditors ["CDE"]
  * @param {string} sLink - The link address.
  * @param {string} sScreenTipText - The screen tip text.
- * @returns {ApiHyperlink | null}  - returns null if range contains more than one paragraph or sLink is invalid. 
+ * @returns {ApiHyperlink | null}  - returns null if range contains more than one paragraph or sLink is invalid.
  */
-ApiRange.prototype.AddHyperlink = function(sLink, sScreenTipText){ return new ApiHyperlink(); };
+ApiRange.prototype.AddHyperlink = (sLink, sScreenTipText) => new ApiHyperlink()
 
 /**
  * Returns a text from the specified range.
@@ -110,7 +113,7 @@ ApiRange.prototype.AddHyperlink = function(sLink, sScreenTipText){ return new Ap
  * @typeofeditors ["CDE"]
  * @returns {String} - returns "" if range is empty.
  */
-ApiRange.prototype.GetText = function(oPr){ return ""; };
+ApiRange.prototype.GetText = (oPr) => ""
 
 /**
  * Returns a collection of paragraphs that represents all the paragraphs in the specified range.
@@ -118,23 +121,23 @@ ApiRange.prototype.GetText = function(oPr){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {ApiParagraph[]}
  */
-ApiRange.prototype.GetAllParagraphs = function(){ return [new ApiParagraph()]; };
+ApiRange.prototype.GetAllParagraphs = () => [new ApiParagraph()]
 
 /**
  * Sets the selection to the specified range.
  * @memberof ApiRange
  * @typeofeditors ["CDE"]
  */
-ApiRange.prototype.Select = function(bUpdate){};
+ApiRange.prototype.Select = (bUpdate) => {}
 
 /**
  * Returns a new range that goes beyond the specified range in any direction and spans a different range. The current range has not changed. Throws an error if two ranges do not have a union.
  * @memberof ApiRange
  * @typeofeditors ["CDE"]
  * @param {ApiRange} oRange - The range that will be expanded.
- * @returns {ApiRange | null} - returns null if the specified range can't be expanded. 
+ * @returns {ApiRange | null} - returns null if the specified range can't be expanded.
  */
-ApiRange.prototype.ExpandTo = function(oRange){ return new ApiRange(); };
+ApiRange.prototype.ExpandTo = (oRange) => new ApiRange()
 
 /**
  * Returns a new range as the intersection of the current range with another range. The current range has not changed. Throws an error if two ranges do not overlap or are not adjacent.
@@ -143,7 +146,7 @@ ApiRange.prototype.ExpandTo = function(oRange){ return new ApiRange(); };
  * @param {ApiRange} oRange - The range that will be intersected with the current range.
  * @returns {ApiRange | null} - returns null if can't intersect.
  */
-ApiRange.prototype.IntersectWith = function(oRange){ return new ApiRange(); };
+ApiRange.prototype.IntersectWith = (oRange) => new ApiRange()
 
 /**
  * Sets the bold property to the text character.
@@ -152,7 +155,7 @@ ApiRange.prototype.IntersectWith = function(oRange){ return new ApiRange(); };
  * @param {boolean} isBold - Specifies if the Range contents are displayed bold or not.
  * @returns {ApiRange | null} - returns null if can't apply bold.
  */
-ApiRange.prototype.SetBold = function(isBold){ return new ApiRange(); };
+ApiRange.prototype.SetBold = (isBold) => new ApiRange()
 
 /**
  * Specifies that any lowercase characters in the current text Range are formatted for display only as their capital letter character equivalents.
@@ -161,7 +164,7 @@ ApiRange.prototype.SetBold = function(isBold){ return new ApiRange(); };
  * @param {boolean} isCaps - Specifies if the Range contents are displayed capitalized or not.
  * @returns {ApiRange | null} - returns null if can't apply caps.
  */
-ApiRange.prototype.SetCaps = function(isCaps){ return new ApiRange(); };
+ApiRange.prototype.SetCaps = (isCaps) => new ApiRange()
 
 /**
  * Sets the text color to the current text Range in the RGB format.
@@ -173,7 +176,7 @@ ApiRange.prototype.SetCaps = function(isCaps){ return new ApiRange(); };
  * @param {boolean} [isAuto=false] - If this parameter is set to "true", then r,g,b parameters will be ignored.
  * @returns {ApiRange | null} - returns null if can't apply color.
  */
-ApiRange.prototype.SetColor = function(r, g, b, isAuto){ return new ApiRange(); };
+ApiRange.prototype.SetColor = (r, g, b, isAuto) => new ApiRange()
 
 /**
  * Specifies that the contents of the current Range are displayed with two horizontal lines through each character displayed on the line.
@@ -182,7 +185,7 @@ ApiRange.prototype.SetColor = function(r, g, b, isAuto){ return new ApiRange(); 
  * @param {boolean} isDoubleStrikeout - Specifies if the contents of the current Range are displayed double struck through or not.
  * @returns {ApiRange | null} - returns null if can't apply double strikeout.
  */
-ApiRange.prototype.SetDoubleStrikeout = function(isDoubleStrikeout){ return new ApiRange(); };
+ApiRange.prototype.SetDoubleStrikeout = (isDoubleStrikeout) => new ApiRange()
 
 /**
  * Specifies a highlighting color which is applied as a background to the contents of the current Range.
@@ -191,7 +194,7 @@ ApiRange.prototype.SetDoubleStrikeout = function(isDoubleStrikeout){ return new 
  * @param {highlightColor} sColor - Available highlight color.
  * @returns {ApiRange | null} - returns null if can't apply highlight.
  */
-ApiRange.prototype.SetHighlight = function(sColor){ return new ApiRange(); };
+ApiRange.prototype.SetHighlight = (sColor) => new ApiRange()
 
 /**
  * Specifies the shading applied to the contents of the current text Range.
@@ -203,7 +206,7 @@ ApiRange.prototype.SetHighlight = function(sColor){ return new ApiRange(); };
  * @param {byte} b - Blue color component value.
  * @returns {ApiRange | null} - returns null if can't apply shadow.
  */
-ApiRange.prototype.SetShd = function(sType, r, g, b){ return new ApiRange(); };
+ApiRange.prototype.SetShd = (sType, r, g, b) => new ApiRange()
 
 /**
  * Sets the italic property to the text character.
@@ -212,7 +215,7 @@ ApiRange.prototype.SetShd = function(sType, r, g, b){ return new ApiRange(); };
  * @param {boolean} isItalic - Specifies if the contents of the current Range are displayed italicized or not.
  * @returns {ApiRange | null} - returns null if can't apply italic.
  */
-ApiRange.prototype.SetItalic = function(isItalic){ return new ApiRange(); };
+ApiRange.prototype.SetItalic = (isItalic) => new ApiRange()
 
 /**
  * Specifies that the contents of the current Range are displayed with a single horizontal line through the range center.
@@ -221,7 +224,7 @@ ApiRange.prototype.SetItalic = function(isItalic){ return new ApiRange(); };
  * @param {boolean} isStrikeout - Specifies if the contents of the current Range are displayed struck through or not.
  * @returns {ApiRange | null} - returns null if can't apply strikeout.
  */
-ApiRange.prototype.SetStrikeout = function(isStrikeout){ return new ApiRange(); };
+ApiRange.prototype.SetStrikeout = (isStrikeout) => new ApiRange()
 
 /**
  * Specifies that all the lowercase letter characters in the current text Range are formatted for display only as their capital
@@ -231,7 +234,7 @@ ApiRange.prototype.SetStrikeout = function(isStrikeout){ return new ApiRange(); 
  * @param {boolean} isSmallCaps - Specifies if the contents of the current Range are displayed capitalized two points smaller or not.
  * @returns {ApiRange | null} - returns null if can't apply small caps.
  */
-ApiRange.prototype.SetSmallCaps = function(isSmallCaps){ return new ApiRange(); };
+ApiRange.prototype.SetSmallCaps = (isSmallCaps) => new ApiRange()
 
 /**
  * Sets the text spacing measured in twentieths of a point.
@@ -240,7 +243,7 @@ ApiRange.prototype.SetSmallCaps = function(isSmallCaps){ return new ApiRange(); 
  * @param {twips} nSpacing - The value of the text spacing measured in twentieths of a point (1/1440 of an inch).
  * @returns {ApiRange | null} - returns null if can't apply spacing.
  */
-ApiRange.prototype.SetSpacing = function(nSpacing){ return new ApiRange(); };
+ApiRange.prototype.SetSpacing = (nSpacing) => new ApiRange()
 
 /**
  * Specifies that the contents of the current Range are displayed along with a line appearing directly below the character
@@ -250,7 +253,7 @@ ApiRange.prototype.SetSpacing = function(nSpacing){ return new ApiRange(); };
  * @param {boolean} isUnderline - Specifies if the contents of the current Range are displayed underlined or not.
  * @returns {ApiRange | null} - returns null if can't apply underline.
  */
-ApiRange.prototype.SetUnderline = function(isUnderline){ return new ApiRange(); };
+ApiRange.prototype.SetUnderline = (isUnderline) => new ApiRange()
 
 /**
  * Specifies the alignment which will be applied to the Range contents in relation to the default appearance of the Range text:
@@ -262,7 +265,7 @@ ApiRange.prototype.SetUnderline = function(isUnderline){ return new ApiRange(); 
  * @param {("baseline" | "subscript" | "superscript")} sType - The vertical alignment type applied to the text contents.
  * @returns {ApiRange | null} - returns null if can't apply align.
  */
-ApiRange.prototype.SetVertAlign = function(sType){ return new ApiRange(); };
+ApiRange.prototype.SetVertAlign = (sType) => new ApiRange()
 
 /**
  * Specifies the amount by which text is raised or lowered for the current Range in relation to the default
@@ -273,7 +276,7 @@ ApiRange.prototype.SetVertAlign = function(sType){ return new ApiRange(); };
  * measurement in half-points (1/144 of an inch).
  * @returns {ApiRange | null} - returns null if can't set position.
  */
-ApiRange.prototype.SetPosition = function(nPosition){ return new ApiRange(); };
+ApiRange.prototype.SetPosition = (nPosition) => new ApiRange()
 
 /**
  * Sets the font size to the characters of the current text Range.
@@ -282,7 +285,7 @@ ApiRange.prototype.SetPosition = function(nPosition){ return new ApiRange(); };
  * @param {hps} FontSize - The text size value measured in half-points (1/144 of an inch).
  * @returns {ApiRange | null} - returns null if can't set font size.
  */
-ApiRange.prototype.SetFontSize = function(FontSize){ return new ApiRange(); };
+ApiRange.prototype.SetFontSize = (FontSize) => new ApiRange()
 
 /**
  * Sets all 4 font slots with the specified font family.
@@ -291,7 +294,7 @@ ApiRange.prototype.SetFontSize = function(FontSize){ return new ApiRange(); };
  * @param {string} sFontFamily - The font family or families used for the current text Range.
  * @returns {ApiRange | null} - returns null if can't set font family.
  */
-ApiRange.prototype.SetFontFamily = function(sFontFamily){ return new ApiRange(); };
+ApiRange.prototype.SetFontFamily = (sFontFamily) => new ApiRange()
 
 /**
  * Sets the style to the current Range.
@@ -300,7 +303,7 @@ ApiRange.prototype.SetFontFamily = function(sFontFamily){ return new ApiRange();
  * @param {ApiStyle} oStyle - The style which must be applied to the text character.
  * @returns {ApiRange | null} - returns null if can't set style.
  */
-ApiRange.prototype.SetStyle = function(oStyle){ return new ApiRange(); };
+ApiRange.prototype.SetStyle = (oStyle) => new ApiRange()
 
 /**
  * Sets the text properties to the current Range.
@@ -309,7 +312,7 @@ ApiRange.prototype.SetStyle = function(oStyle){ return new ApiRange(); };
  * @param {ApiTextPr} oTextPr - The text properties that will be applied to the current range.
  * @returns {ApiRange | null} - returns null if can't set text properties.
  */
-ApiRange.prototype.SetTextPr = function(oTextPr){ return new ApiRange(); };
+ApiRange.prototype.SetTextPr = (oTextPr) => new ApiRange()
 
 /**
  * Deletes all the contents from the current range.
@@ -317,7 +320,7 @@ ApiRange.prototype.SetTextPr = function(oTextPr){ return new ApiRange(); };
  * @typeofeditors ["CDE"]
  * @returns {boolean} - returns false if range is empty.
  */
-ApiRange.prototype.Delete = function(){ return true; };
+ApiRange.prototype.Delete = () => true
 
 /**
  * Converts the ApiRange object into the JSON object.
@@ -327,7 +330,7 @@ ApiRange.prototype.Delete = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiRange.prototype.ToJSON = function(bWriteNumberings, bWriteStyles){ return new JSON(); };
+ApiRange.prototype.ToJSON = (bWriteNumberings, bWriteStyles) => new JSON()
 
 /**
  * Adds a comment to the current range.
@@ -338,7 +341,7 @@ ApiRange.prototype.ToJSON = function(bWriteNumberings, bWriteStyles){ return new
  * @param {string} sUserId - The user ID of the comment author (optional).
  * @returns {ApiComment} - Returns null if the comment was not added.
  */
-ApiRange.prototype.AddComment = function(sText, sAuthor, sUserId){ return new ApiComment(); };
+ApiRange.prototype.AddComment = (sText, sAuthor, sUserId) => new ApiComment()
 
 /**
  * Returns a Range object that represents the document part contained in the specified range.
@@ -347,86 +350,86 @@ ApiRange.prototype.AddComment = function(sText, sAuthor, sUserId){ return new Ap
  * @param {Number} [End=-1] - End character index in the current range (if <= 0, then the range is taken to the end).
  * @returns {ApiRange}
  * */
-ApiRange.prototype.GetRange = function(nStart, nEnd){ return new ApiRange(); };
+ApiRange.prototype.GetRange = (nStart, nEnd) => new ApiRange()
 
 /**
  * Class representing a document.
  * @constructor
  * @extends {ApiDocumentContent}
  */
-function ApiDocument(Document){}
-ApiDocument.prototype = Object.create(ApiDocumentContent.prototype);
-ApiDocument.prototype.constructor = ApiDocument;
+function ApiDocument(Document) {}
+ApiDocument.prototype = Object.create(ApiDocumentContent.prototype)
+ApiDocument.prototype.constructor = ApiDocument
 
 /**
  * Class representing the paragraph properties.
  * @constructor
  */
-function ApiParaPr(Parent, ParaPr){}
+function ApiParaPr(Parent, ParaPr) {}
 
 /**
  * Class representing a paragraph bullet.
  * @constructor
  */
-function ApiBullet(Bullet){}
+function ApiBullet(Bullet) {}
 
 /**
  * Class representing a paragraph.
  * @constructor
  * @extends {ApiParaPr}
  */
-function ApiParagraph(Paragraph){}
-ApiParagraph.prototype = Object.create(ApiParaPr.prototype);
-ApiParagraph.prototype.constructor = ApiParagraph;
+function ApiParagraph(Paragraph) {}
+ApiParagraph.prototype = Object.create(ApiParaPr.prototype)
+ApiParagraph.prototype.constructor = ApiParagraph
 
 /**
  * Class representing the table properties.
  * @constructor
  */
-function ApiTablePr(Parent, TablePr){}
+function ApiTablePr(Parent, TablePr) {}
 
 /**
  * Class representing a table.
  * @constructor
  * @extends {ApiTablePr}
  */
-function ApiTable(Table){}
-ApiTable.prototype = Object.create(ApiTablePr.prototype);
-ApiTable.prototype.constructor = ApiTable;
+function ApiTable(Table) {}
+ApiTable.prototype = Object.create(ApiTablePr.prototype)
+ApiTable.prototype.constructor = ApiTable
 
 /**
  * Class representing the text properties.
  * @constructor
  */
-function ApiTextPr(Parent, TextPr){}
+function ApiTextPr(Parent, TextPr) {}
 
 /**
  * Class representing a small text block called 'run'.
  * @constructor
  * @extends {ApiTextPr}
  */
-function ApiRun(Run){}
-ApiRun.prototype = Object.create(ApiTextPr.prototype);
-ApiRun.prototype.constructor = ApiRun;
+function ApiRun(Run) {}
+ApiRun.prototype = Object.create(ApiTextPr.prototype)
+ApiRun.prototype.constructor = ApiRun
 
 /**
  * Class representing a comment.
  * @constructor
  */
-function ApiComment(oComment){}
+function ApiComment(oComment) {}
 
 /**
  * Class representing a comment reply.
  * @constructor
  */
-function ApiCommentReply(oParentComm, oCommentReply){}
+function ApiCommentReply(oParentComm, oCommentReply) {}
 
 /**
  * Class representing a Paragraph hyperlink.
  * @constructor
  */
-function ApiHyperlink(ParaHyperlink){}
-ApiHyperlink.prototype.constructor = ApiHyperlink;
+function ApiHyperlink(ParaHyperlink) {}
+ApiHyperlink.prototype.constructor = ApiHyperlink
 
 /**
  * Returns a type of the ApiHyperlink class.
@@ -434,14 +437,14 @@ ApiHyperlink.prototype.constructor = ApiHyperlink;
  * @typeofeditors ["CDE"]
  * @returns {"hyperlink"}
  */
-ApiHyperlink.prototype.GetClassType = function(){ return ""; };
+ApiHyperlink.prototype.GetClassType = () => ""
 
 /**
  * Class representing a document form base.
  * @constructor
  * @typeofeditors ["CDE", "CFE"]
  */
-function ApiFormBase(oSdt){}
+function ApiFormBase(oSdt) {}
 
 /**
  * Class representing a document text field.
@@ -449,9 +452,9 @@ function ApiFormBase(oSdt){}
  * @typeofeditors ["CDE", "CFE"]
  * @extends {ApiFormBase}
  */
-function ApiTextForm(oSdt){}
-ApiTextForm.prototype = Object.create(ApiFormBase.prototype);
-ApiTextForm.prototype.constructor = ApiTextForm;
+function ApiTextForm(oSdt) {}
+ApiTextForm.prototype = Object.create(ApiFormBase.prototype)
+ApiTextForm.prototype.constructor = ApiTextForm
 
 /**
  * Class representing a document combo box / dropdown list.
@@ -459,9 +462,9 @@ ApiTextForm.prototype.constructor = ApiTextForm;
  * @typeofeditors ["CDE", "CFE"]
  * @extends {ApiFormBase}
  */
-function ApiComboBoxForm(oSdt){}
-ApiComboBoxForm.prototype = Object.create(ApiFormBase.prototype);
-ApiComboBoxForm.prototype.constructor = ApiComboBoxForm;
+function ApiComboBoxForm(oSdt) {}
+ApiComboBoxForm.prototype = Object.create(ApiFormBase.prototype)
+ApiComboBoxForm.prototype.constructor = ApiComboBoxForm
 
 /**
  * Class representing a document checkbox / radio button.
@@ -469,9 +472,9 @@ ApiComboBoxForm.prototype.constructor = ApiComboBoxForm;
  * @typeofeditors ["CDE", "CFE"]
  * @extends {ApiFormBase}
  */
-function ApiCheckBoxForm(oSdt){}
-ApiCheckBoxForm.prototype = Object.create(ApiFormBase.prototype);
-ApiCheckBoxForm.prototype.constructor = ApiCheckBoxForm;
+function ApiCheckBoxForm(oSdt) {}
+ApiCheckBoxForm.prototype = Object.create(ApiFormBase.prototype)
+ApiCheckBoxForm.prototype.constructor = ApiCheckBoxForm
 
 /**
  * Class representing a document picture form.
@@ -479,9 +482,9 @@ ApiCheckBoxForm.prototype.constructor = ApiCheckBoxForm;
  * @typeofeditors ["CDE", "CFE"]
  * @extends {ApiFormBase}
  */
-function ApiPictureForm(oSdt){}
-ApiPictureForm.prototype = Object.create(ApiFormBase.prototype);
-ApiPictureForm.prototype.constructor = ApiPictureForm;
+function ApiPictureForm(oSdt) {}
+ApiPictureForm.prototype = Object.create(ApiFormBase.prototype)
+ApiPictureForm.prototype.constructor = ApiPictureForm
 
 /**
  * Class representing a document date field.
@@ -489,9 +492,9 @@ ApiPictureForm.prototype.constructor = ApiPictureForm;
  * @typeofeditors ["CDE", "CFE"]
  * @extends {ApiFormBase}
  */
-function ApiDateForm(oSdt){}
-ApiDateForm.prototype = Object.create(ApiFormBase.prototype);
-ApiDateForm.prototype.constructor = ApiDateForm;
+function ApiDateForm(oSdt) {}
+ApiDateForm.prototype = Object.create(ApiFormBase.prototype)
+ApiDateForm.prototype.constructor = ApiDateForm
 
 /**
  * Class representing a complex field.
@@ -500,9 +503,9 @@ ApiDateForm.prototype.constructor = ApiDateForm;
  * @typeofeditors ["CDE", "CFE"]
  * @extends {ApiFormBase}
  */
-function ApiComplexForm(oSdt){}
-ApiComplexForm.prototype = Object.create(ApiFormBase.prototype);
-ApiComplexForm.prototype.constructor = ApiComplexForm;
+function ApiComplexForm(oSdt) {}
+ApiComplexForm.prototype = Object.create(ApiFormBase.prototype)
+ApiComplexForm.prototype.constructor = ApiComplexForm
 
 /**
  * Sets the hyperlink address.
@@ -510,7 +513,7 @@ ApiComplexForm.prototype.constructor = ApiComplexForm;
  * @param {string} sLink - The hyperlink address.
  * @returns {boolean}
  * */
-ApiHyperlink.prototype.SetLink = function(sLink){ return true; };
+ApiHyperlink.prototype.SetLink = (sLink) => true
 
 /**
  * Sets the hyperlink display text.
@@ -518,7 +521,7 @@ ApiHyperlink.prototype.SetLink = function(sLink){ return true; };
  * @param {string} sDisplay - The text to display the hyperlink.
  * @returns {boolean}
  * */
-ApiHyperlink.prototype.SetDisplayedText = function(sDisplay){ return true; };
+ApiHyperlink.prototype.SetDisplayedText = (sDisplay) => true
 
 /**
  * Sets the screen tip text of the hyperlink.
@@ -526,28 +529,28 @@ ApiHyperlink.prototype.SetDisplayedText = function(sDisplay){ return true; };
  * @param {string} sScreenTipText - The screen tip text of the hyperlink.
  * @returns {boolean}
  * */
-ApiHyperlink.prototype.SetScreenTipText = function(sScreenTipText){ return true; };
+ApiHyperlink.prototype.SetScreenTipText = (sScreenTipText) => true
 
 /**
  * Returns the hyperlink address.
  * @typeofeditors ["CDE"]
- * @returns {string} 
+ * @returns {string}
  * */
-ApiHyperlink.prototype.GetLinkedText = function(){ return ""; };
+ApiHyperlink.prototype.GetLinkedText = () => ""
 
 /**
  * Returns the hyperlink display text.
  * @typeofeditors ["CDE"]
- * @returns {string} 
+ * @returns {string}
  * */
-ApiHyperlink.prototype.GetDisplayedText = function(){ return ""; };
+ApiHyperlink.prototype.GetDisplayedText = () => ""
 
 /**
  * Returns the screen tip text of the hyperlink.
  * @typeofeditors ["CDE"]
- * @returns {string} 
+ * @returns {string}
  * */
-ApiHyperlink.prototype.GetScreenTipText = function(){ return ""; };
+ApiHyperlink.prototype.GetScreenTipText = () => ""
 
 /**
  * Returns the hyperlink element using the position specified.
@@ -555,30 +558,30 @@ ApiHyperlink.prototype.GetScreenTipText = function(){ return ""; };
  * @param {number} nPos - The position where the element which content we want to get must be located.
  * @returns {ParagraphContent}
  */
-ApiHyperlink.prototype.GetElement = function(nPos){ return new ParagraphContent(); };
+ApiHyperlink.prototype.GetElement = (nPos) => new ParagraphContent()
 
 /**
  * Returns a number of elements in the current hyperlink.
  * @typeofeditors ["CDE"]
  * @returns {number}
  */
-ApiHyperlink.prototype.GetElementsCount = function(){ return 0; };
+ApiHyperlink.prototype.GetElementsCount = () => 0
 
 /**
  * Sets the default hyperlink style.
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  * */
-ApiHyperlink.prototype.SetDefaultStyle = function(){ return true; };
+ApiHyperlink.prototype.SetDefaultStyle = () => true
 
 /**
  * Returns a Range object that represents the document part contained in the specified hyperlink.
  * @typeofeditors ["CDE"]
  * @param {Number} Start - Start character index in the current element.
  * @param {Number} End - End character index in the current element.
- * @returns {ApiRange} 
+ * @returns {ApiRange}
  * */
-ApiHyperlink.prototype.GetRange = function(Start, End){ return new ApiRange(); };
+ApiHyperlink.prototype.GetRange = (Start, End) => new ApiRange()
 
 /**
  * Converts the ApiHyperlink object into the JSON object.
@@ -587,191 +590,191 @@ ApiHyperlink.prototype.GetRange = function(Start, End){ return new ApiRange(); }
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiHyperlink.prototype.ToJSON = function(bWriteStyles){ return new JSON(); };
+ApiHyperlink.prototype.ToJSON = (bWriteStyles) => new JSON()
 
 /**
  * Class representing a style.
  * @constructor
  */
-function ApiStyle(Style){}
+function ApiStyle(Style) {}
 
 /**
  * Class representing a document section.
  * @constructor
  */
-function ApiSection(Section){}
+function ApiSection(Section) {}
 
 /**
  * Class representing the table row properties.
  * @constructor
  */
-function ApiTableRowPr(Parent, RowPr){}
+function ApiTableRowPr(Parent, RowPr) {}
 
 /**
  * Class representing a table row.
  * @constructor
  * @extends {ApiTableRowPr}
  */
-function ApiTableRow(Row){}
-ApiTableRow.prototype = Object.create(ApiTableRowPr.prototype);
-ApiTableRow.prototype.constructor = ApiTableRow;
+function ApiTableRow(Row) {}
+ApiTableRow.prototype = Object.create(ApiTableRowPr.prototype)
+ApiTableRow.prototype.constructor = ApiTableRow
 
 /**
  * Class representing the table cell properties.
  * @constructor
  */
-function ApiTableCellPr(Parent, CellPr){}
+function ApiTableCellPr(Parent, CellPr) {}
 
 /**
  * Class representing a table cell.
  * @constructor
  * @extends {ApiTableCellPr}
  */
-function ApiTableCell(Cell){}
-ApiTableCell.prototype = Object.create(ApiTableCellPr.prototype);
-ApiTableCell.prototype.constructor = ApiTableCell;
+function ApiTableCell(Cell) {}
+ApiTableCell.prototype = Object.create(ApiTableCellPr.prototype)
+ApiTableCell.prototype.constructor = ApiTableCell
 
 /**
  * Class representing the numbering properties.
  * @constructor
  */
-function ApiNumbering(Num){}
+function ApiNumbering(Num) {}
 
 /**
  * Class representing a reference to a specified level of the numbering.
  * @constructor
  */
-function ApiNumberingLevel(Num, Lvl){}
+function ApiNumberingLevel(Num, Lvl) {}
 
 /**
  * Class representing a set of formatting properties which shall be conditionally applied to the parts of a table
  * which match the requirement specified on the <code>Type</code>.
  * @constructor
  */
-function ApiTableStylePr(Type, Parent, TableStylePr){}
+function ApiTableStylePr(Type, Parent, TableStylePr) {}
 
 /**
  * Class representing an unsupported element.
  * @constructor
  */
-function ApiUnsupported(){}
+function ApiUnsupported() {}
 
 /**
  * Class representing a graphical object.
  * @constructor
  */
-function ApiDrawing(Drawing){}
+function ApiDrawing(Drawing) {}
 
 /**
  * Class representing an image.
  * @constructor
  */
-function ApiImage(Image){}
-ApiImage.prototype = Object.create(ApiDrawing.prototype);
-ApiImage.prototype.constructor = ApiImage;
+function ApiImage(Image) {}
+ApiImage.prototype = Object.create(ApiDrawing.prototype)
+ApiImage.prototype.constructor = ApiImage
 
 /**
  * Class representing an Ole object.
  * @constructor
  */
-function ApiOleObject(OleObject){}
-ApiOleObject.prototype = Object.create(ApiDrawing.prototype);
-ApiOleObject.prototype.constructor = ApiOleObject;
+function ApiOleObject(OleObject) {}
+ApiOleObject.prototype = Object.create(ApiDrawing.prototype)
+ApiOleObject.prototype.constructor = ApiOleObject
 
 /**
  * Class representing a shape.
  * @constructor
  * */
-function ApiShape(Shape){}
-ApiShape.prototype = Object.create(ApiDrawing.prototype);
-ApiShape.prototype.constructor = ApiShape;
+function ApiShape(Shape) {}
+ApiShape.prototype = Object.create(ApiDrawing.prototype)
+ApiShape.prototype.constructor = ApiShape
 
 /**
  * Class representing a chart.
  * @constructor
  *
  */
-function ApiChart(Chart){}
-ApiChart.prototype = Object.create(ApiDrawing.prototype);
-ApiChart.prototype.constructor = ApiChart;
+function ApiChart(Chart) {}
+ApiChart.prototype = Object.create(ApiDrawing.prototype)
+ApiChart.prototype.constructor = ApiChart
 
 /**
  * Class representing a base class for color types.
  * @constructor
  */
-function ApiUniColor(Unicolor){}
+function ApiUniColor(Unicolor) {}
 
 /**
  * Class representing an RGB Color.
  * @constructor
  */
-function ApiRGBColor(r, g, b){}
-ApiRGBColor.prototype = Object.create(ApiUniColor.prototype);
-ApiRGBColor.prototype.constructor = ApiRGBColor;
+function ApiRGBColor(r, g, b) {}
+ApiRGBColor.prototype = Object.create(ApiUniColor.prototype)
+ApiRGBColor.prototype.constructor = ApiRGBColor
 
 /**
  * Class representing a Scheme Color.
  * @constructor
  */
-function ApiSchemeColor(sColorId){}
-ApiSchemeColor.prototype = Object.create(ApiUniColor.prototype);
-ApiSchemeColor.prototype.constructor = ApiSchemeColor;
+function ApiSchemeColor(sColorId) {}
+ApiSchemeColor.prototype = Object.create(ApiUniColor.prototype)
+ApiSchemeColor.prototype.constructor = ApiSchemeColor
 
 /**
  * Class representing a Preset Color.
  * @constructor
  * */
-function ApiPresetColor(sPresetColor){}
-ApiPresetColor.prototype = Object.create(ApiUniColor.prototype);
-ApiPresetColor.prototype.constructor = ApiPresetColor;
+function ApiPresetColor(sPresetColor) {}
+ApiPresetColor.prototype = Object.create(ApiUniColor.prototype)
+ApiPresetColor.prototype.constructor = ApiPresetColor
 
 /**
  * Class representing a base class for fill.
  * @constructor
  * */
-function ApiFill(UniFill){}
+function ApiFill(UniFill) {}
 
 /**
  * Class representing a stroke.
  * @constructor
  */
-function ApiStroke(oLn){}
+function ApiStroke(oLn) {}
 
 /**
  * Class representing gradient stop.
  * @constructor
  * */
-function ApiGradientStop(oApiUniColor, pos){}
+function ApiGradientStop(oApiUniColor, pos) {}
 
 /**
  * Class representing a container for the paragraph elements.
  * @constructor
  */
-function ApiInlineLvlSdt(Sdt){}
+function ApiInlineLvlSdt(Sdt) {}
 
 /**
  * Class representing a list of values of the combo box / dropdown list content control.
  * @constructor
  */
-function ApiContentControlList(Parent){}
+function ApiContentControlList(Parent) {}
 
 /**
  * Class representing an entry of the combo box / dropdown list content control.
  * @constructor
  */
-function ApiContentControlListEntry(Sdt, Parent, Text, Value){}
+function ApiContentControlListEntry(Sdt, Parent, Text, Value) {}
 
 /**
  * Class representing a container for the document content.
  * @constructor
  */
-function ApiBlockLvlSdt(Sdt){}
+function ApiBlockLvlSdt(Sdt) {}
 
 /**
  * Class representing the settings which are used to create a watermark.
  * @constructor
  */
-function ApiWatermarkSettings(oSettings){}
+function ApiWatermarkSettings(oSettings) {}
 
 /**
  * Twentieths of a point (equivalent to 1/1440th of an inch).
@@ -1082,7 +1085,7 @@ function ApiWatermarkSettings(oSettings){}
  * Standard numeric format.
  * @typedef {("General" | "0" | "0.00" | "#,##0" | "#,##0.00" | "0%" | "0.00%" |
  * "0.00E+00" | "# ?/?" | "# ??/??" | "m/d/yyyy" | "d-mmm-yy" | "d-mmm" | "mmm-yy" | "h:mm AM/PM" |
- * "h:mm:ss AM/PM" | "h:mm" | "h:mm:ss" | "m/d/yyyy h:mm" | "#,##0_);(#,##0)" | "#,##0_);[Red](#,##0)" | 
+ * "h:mm:ss AM/PM" | "h:mm" | "h:mm:ss" | "m/d/yyyy h:mm" | "#,##0_);(#,##0)" | "#,##0_);[Red](#,##0)" |
  * "#,##0.00_);(#,##0.00)" | "#,##0.00_);[Red](#,##0.00)" | "mm:ss" | "[h]:mm:ss" | "mm:ss.0" | "##0.0E+0" | "@")} NumFormat
  */
 
@@ -1198,7 +1201,7 @@ function ApiWatermarkSettings(oSettings){}
  * @typeofeditors ["CDE"]
  * @returns {ApiDocument}
  */
-ApiInterface.prototype.GetDocument = function(){ return new ApiDocument(); };
+ApiInterface.prototype.GetDocument = () => new ApiDocument()
 
 /**
  * Creates a new paragraph.
@@ -1206,7 +1209,7 @@ ApiInterface.prototype.GetDocument = function(){ return new ApiDocument(); };
  * @typeofeditors ["CDE", "CSE"]
  * @returns {ApiParagraph}
  */
-ApiInterface.prototype.CreateParagraph = function(){ return new ApiParagraph(); };
+ApiInterface.prototype.CreateParagraph = () => new ApiParagraph()
 
 /**
  * Creates an element range.
@@ -1218,7 +1221,7 @@ ApiInterface.prototype.CreateParagraph = function(){ return new ApiParagraph(); 
  * @param nEnd - End range position.
  * @returns {ApiRange | null} - returns null if oElement isn't supported.
  */
-ApiInterface.prototype.CreateRange = function(oElement, nStart, nEnd){ return new ApiRange(); };
+ApiInterface.prototype.CreateRange = (oElement, nStart, nEnd) => new ApiRange()
 
 /**
  * Creates a new table with a specified number of rows and columns.
@@ -1228,7 +1231,7 @@ ApiInterface.prototype.CreateRange = function(oElement, nStart, nEnd){ return ne
  * @param {number} nRows - Number of rows.
  * @returns {ApiTable}
  */
-ApiInterface.prototype.CreateTable = function(nCols, nRows){ return new ApiTable(); };
+ApiInterface.prototype.CreateTable = (nCols, nRows) => new ApiTable()
 
 /**
  * Creates a new smaller text block to be inserted to the current paragraph or table.
@@ -1236,18 +1239,18 @@ ApiInterface.prototype.CreateTable = function(nCols, nRows){ return new ApiTable
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiRun}
  */
-ApiInterface.prototype.CreateRun = function(){ return new ApiRun(); };
+ApiInterface.prototype.CreateRun = () => new ApiRun()
 
 /**
  * Creates a new hyperlink text block to be inserted to the current paragraph or table.
  * @memberof ApiInterface
  * @typeofeditors ["CDE"]
- * @param {string} sLink - The hyperlink address. 
+ * @param {string} sLink - The hyperlink address.
  * @param {string} sDisplay - The text to display the hyperlink.
  * @param {string} sScreenTipText - The screen tip text.
  * @returns {ApiHyperlink}
  */
-ApiInterface.prototype.CreateHyperlink = function(sLink, sDisplay, sScreenTipText){ return new ApiHyperlink(); };
+ApiInterface.prototype.CreateHyperlink = (sLink, sDisplay, sScreenTipText) => new ApiHyperlink()
 
 /**
  * Creates an image with the parameters specified.
@@ -1258,7 +1261,7 @@ ApiInterface.prototype.CreateHyperlink = function(sLink, sDisplay, sScreenTipTex
  * @param {EMU} nHeight - The image height in English measure units.
  * @returns {ApiImage}
  */
-ApiInterface.prototype.CreateImage = function(sImageSrc, nWidth, nHeight){ return new ApiImage(); };
+ApiInterface.prototype.CreateImage = (sImageSrc, nWidth, nHeight) => new ApiImage()
 
 /**
  * Creates a shape with the parameters specified.
@@ -1271,7 +1274,7 @@ ApiInterface.prototype.CreateImage = function(sImageSrc, nWidth, nHeight){ retur
  * @param {ApiStroke} [oStroke = Api.CreateStroke(0, Api.CreateNoFill())] - The stroke used to create the element shadow.
  * @returns {ApiShape}
  * */
-ApiInterface.prototype.CreateShape = function(sType, nWidth, nHeight, oFill, oStroke){ return new ApiShape(); };
+ApiInterface.prototype.CreateShape = (sType, nWidth, nHeight, oFill, oStroke) => new ApiShape()
 
 /**
  * Creates a chart with the parameters specified.
@@ -1288,7 +1291,16 @@ ApiInterface.prototype.CreateShape = function(sType, nWidth, nHeight, oFill, oSt
  * The default numeric format is "General".
  * @returns {ApiChart}
  * */
-ApiInterface.prototype.CreateChart = function(sType, aSeries, aSeriesNames, aCatNames, nWidth, nHeight, nStyleIndex, aNumFormats){ return new ApiChart(); };
+ApiInterface.prototype.CreateChart = (
+  sType,
+  aSeries,
+  aSeriesNames,
+  aCatNames,
+  nWidth,
+  nHeight,
+  nStyleIndex,
+  aNumFormats,
+) => new ApiChart()
 
 /**
  * Creates an OLE object with the parameters specified.
@@ -1301,7 +1313,8 @@ ApiInterface.prototype.CreateChart = function(sType, aSeries, aSeriesNames, aCat
  * @param {string} sAppId - The application ID associated with the current OLE object.
  * @returns {ApiOleObject}
  */
-ApiInterface.prototype.CreateOleObject = function(sImageSrc, nWidth, nHeight, sData, sAppId){ return new ApiOleObject(); };
+ApiInterface.prototype.CreateOleObject = (sImageSrc, nWidth, nHeight, sData, sAppId) =>
+  new ApiOleObject()
 
 /**
  * Creates an RGB color setting the appropriate values for the red, green and blue color components.
@@ -1312,7 +1325,7 @@ ApiInterface.prototype.CreateOleObject = function(sImageSrc, nWidth, nHeight, sD
  * @param {byte} b - Blue color component value.
  * @returns {ApiRGBColor}
  */
-ApiInterface.prototype.CreateRGBColor = function(r, g, b){ return new ApiRGBColor(); };
+ApiInterface.prototype.CreateRGBColor = (r, g, b) => new ApiRGBColor()
 
 /**
  * Creates a complex color scheme selecting from one of the available schemes.
@@ -1321,7 +1334,7 @@ ApiInterface.prototype.CreateRGBColor = function(r, g, b){ return new ApiRGBColo
  * @param {SchemeColorId} sSchemeColorId - The color scheme identifier.
  * @returns {ApiSchemeColor}
  */
-ApiInterface.prototype.CreateSchemeColor = function(sSchemeColorId){ return new ApiSchemeColor(); };
+ApiInterface.prototype.CreateSchemeColor = (sSchemeColorId) => new ApiSchemeColor()
 
 /**
  * Creates a color selecting it from one of the available color presets.
@@ -1330,7 +1343,7 @@ ApiInterface.prototype.CreateSchemeColor = function(sSchemeColorId){ return new 
  * @param {PresetColor} sPresetColor - A preset selected from the list of the available color preset names.
  * @returns {ApiPresetColor};
  * */
-ApiInterface.prototype.CreatePresetColor = function(sPresetColor){ return new ApiPresetColor(); };
+ApiInterface.prototype.CreatePresetColor = (sPresetColor) => new ApiPresetColor()
 
 /**
  * Creates a solid fill to apply to the object using a selected solid color as the object background.
@@ -1339,7 +1352,7 @@ ApiInterface.prototype.CreatePresetColor = function(sPresetColor){ return new Ap
  * @param {ApiUniColor} oUniColor - The color used for the element fill.
  * @returns {ApiFill}
  * */
-ApiInterface.prototype.CreateSolidFill = function(oUniColor){ return new ApiFill(); };
+ApiInterface.prototype.CreateSolidFill = (oUniColor) => new ApiFill()
 
 /**
  * Creates a linear gradient fill to apply to the object using the selected linear gradient as the object background.
@@ -1349,7 +1362,7 @@ ApiInterface.prototype.CreateSolidFill = function(oUniColor){ return new ApiFill
  * @param {PositiveFixedAngle} Angle - The angle measured in 60000th of a degree that will define the gradient direction.
  * @returns {ApiFill}
  */
-ApiInterface.prototype.CreateLinearGradientFill = function(aGradientStop, Angle){ return new ApiFill(); };
+ApiInterface.prototype.CreateLinearGradientFill = (aGradientStop, Angle) => new ApiFill()
 
 /**
  * Creates a radial gradient fill to apply to the object using the selected radial gradient as the object background.
@@ -1358,7 +1371,7 @@ ApiInterface.prototype.CreateLinearGradientFill = function(aGradientStop, Angle)
  * @param {Array} aGradientStop - The array of gradient color stops measured in 1000th of percent.
  * @returns {ApiFill}
  */
-ApiInterface.prototype.CreateRadialGradientFill = function(aGradientStop){ return new ApiFill(); };
+ApiInterface.prototype.CreateRadialGradientFill = (aGradientStop) => new ApiFill()
 
 /**
  * Creates a pattern fill to apply to the object using the selected pattern as the object background.
@@ -1369,7 +1382,7 @@ ApiInterface.prototype.CreateRadialGradientFill = function(aGradientStop){ retur
  * @param {ApiUniColor} FgColor - The foreground color used for the pattern creation.
  * @returns {ApiFill}
  */
-ApiInterface.prototype.CreatePatternFill = function(sPatternType, BgColor, FgColor){ return new ApiFill(); };
+ApiInterface.prototype.CreatePatternFill = (sPatternType, BgColor, FgColor) => new ApiFill()
 
 /**
  * Creates a blip fill to apply to the object using the selected image as the object background.
@@ -1379,7 +1392,7 @@ ApiInterface.prototype.CreatePatternFill = function(sPatternType, BgColor, FgCol
  * @param {BlipFillType} sBlipFillType - The type of the fill used for the blip fill (tile or stretch).
  * @returns {ApiFill}
  * */
-ApiInterface.prototype.CreateBlipFill = function(sImageUrl, sBlipFillType){ return new ApiFill(); };
+ApiInterface.prototype.CreateBlipFill = (sImageUrl, sBlipFillType) => new ApiFill()
 
 /**
  * Creates no fill and removes the fill from the element.
@@ -1387,7 +1400,7 @@ ApiInterface.prototype.CreateBlipFill = function(sImageUrl, sBlipFillType){ retu
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiFill}
  * */
-ApiInterface.prototype.CreateNoFill = function(){ return new ApiFill(); };
+ApiInterface.prototype.CreateNoFill = () => new ApiFill()
 
 /**
  * Creates a stroke adding shadows to the element.
@@ -1397,7 +1410,7 @@ ApiInterface.prototype.CreateNoFill = function(){ return new ApiFill(); };
  * @param {ApiFill} oFill - The fill type used to create the shadow.
  * @returns {ApiStroke}
  * */
-ApiInterface.prototype.CreateStroke = function(nWidth, oFill){ return new ApiStroke(); };
+ApiInterface.prototype.CreateStroke = (nWidth, oFill) => new ApiStroke()
 
 /**
  * Creates a gradient stop used for different types of gradients.
@@ -1407,7 +1420,7 @@ ApiInterface.prototype.CreateStroke = function(nWidth, oFill){ return new ApiStr
  * @param {PositivePercentage} nPos - The position of the gradient stop measured in 1000th of percent.
  * @returns {ApiGradientStop}
  * */
-ApiInterface.prototype.CreateGradientStop = function(oUniColor, nPos){ return new ApiGradientStop(); };
+ApiInterface.prototype.CreateGradientStop = (oUniColor, nPos) => new ApiGradientStop()
 
 /**
  * Creates a new inline container.
@@ -1415,7 +1428,7 @@ ApiInterface.prototype.CreateGradientStop = function(oUniColor, nPos){ return ne
  * @typeofeditors ["CDE"]
  * @returns {ApiInlineLvlSdt}
  */
-ApiInterface.prototype.CreateInlineLvlSdt = function(){ return new ApiInlineLvlSdt(); };
+ApiInterface.prototype.CreateInlineLvlSdt = () => new ApiInlineLvlSdt()
 
 /**
  * Creates a new block level container.
@@ -1423,17 +1436,17 @@ ApiInterface.prototype.CreateInlineLvlSdt = function(){ return new ApiInlineLvlS
  * @typeofeditors ["CDE"]
  * @returns {ApiBlockLvlSdt}
  */
-ApiInterface.prototype.CreateBlockLvlSdt = function(){ return new ApiBlockLvlSdt(); };
+ApiInterface.prototype.CreateBlockLvlSdt = () => new ApiBlockLvlSdt()
 
 /**
  * Saves changes to the specified document.
  * @typeofeditors ["CDE"]
  * @memberof ApiInterface
  */
-ApiInterface.prototype.Save = function () {};
+ApiInterface.prototype.Save = () => {}
 
 /**
- * Loads data for the mail merge. 
+ * Loads data for the mail merge.
  * @memberof ApiInterface
  * @typeofeditors ["CDE"]
  * @param {String[][]} aList - Mail merge data. The first element of the array is the array with names of the merge fields.
@@ -1441,23 +1454,23 @@ ApiInterface.prototype.Save = function () {};
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiInterface.prototype.LoadMailMergeData = function(aList){ return true; };
+ApiInterface.prototype.LoadMailMergeData = (aList) => true
 
 /**
  * Returns the mail merge template document.
  * @memberof ApiInterface
  * @typeofeditors ["CDE"]
- * @returns {ApiDocumentContent}  
+ * @returns {ApiDocumentContent}
  */
-ApiInterface.prototype.GetMailMergeTemplateDocContent = function(){ return new ApiDocumentContent(); };
+ApiInterface.prototype.GetMailMergeTemplateDocContent = () => new ApiDocumentContent()
 
 /**
  * Returns the mail merge receptions count.
  * @memberof ApiInterface
  * @typeofeditors ["CDE"]
- * @returns {number}  
+ * @returns {number}
  */
-ApiInterface.prototype.GetMailMergeReceptionsCount = function(){ return 0; };
+ApiInterface.prototype.GetMailMergeReceptionsCount = () => 0
 
 /**
  * Replaces the main document content with another document content.
@@ -1465,7 +1478,7 @@ ApiInterface.prototype.GetMailMergeReceptionsCount = function(){ return 0; };
  * @typeofeditors ["CDE"]
  * @param {ApiDocumentContent} oApiDocumentContent - The document content which the main document content will be replaced with.
  */
-ApiInterface.prototype.ReplaceDocumentContent = function(oApiDocumentContent){};
+ApiInterface.prototype.ReplaceDocumentContent = (oApiDocumentContent) => {}
 
 /**
  * Starts the mail merge process.
@@ -1475,7 +1488,7 @@ ApiInterface.prototype.ReplaceDocumentContent = function(oApiDocumentContent){};
  * @param {number} [nEndIndex=Api.GetMailMergeReceptionsCount() - 1] - The end index of the document for mail merge process.
  * @returns {boolean}
  */
-ApiInterface.prototype.MailMerge = function(nStartIndex, nEndIndex){ return true; };
+ApiInterface.prototype.MailMerge = (nStartIndex, nEndIndex) => true
 
 /**
  * Converts the specified JSON object into the Document Builder object of the corresponding type.
@@ -1483,14 +1496,14 @@ ApiInterface.prototype.MailMerge = function(nStartIndex, nEndIndex){ return true
  * @param {JSON} sMessage - The JSON object to convert.
  * @typeofeditors ["CDE"]
  */
-ApiInterface.prototype.FromJSON = function(sMessage){};
+ApiInterface.prototype.FromJSON = (sMessage) => {}
 
 /**
  * Returns a type of the ApiUnsupported class.
  * @typeofeditors ["CDE"]
  * @returns {"unsupported"}
  */
-ApiUnsupported.prototype.GetClassType = function(){ return ""; };
+ApiUnsupported.prototype.GetClassType = () => ""
 
 /**
  * Adds a comment to the specifed document element or array of Runs.
@@ -1502,7 +1515,7 @@ ApiUnsupported.prototype.GetClassType = function(){ return ""; };
  * @param {string} sUserId - The user ID of the comment author (optional).
  * @returns {ApiComment} - Returns null if the comment was not added.
  */
-ApiInterface.prototype.AddComment = function(oElement, sText, sAuthor, sUserId){ return new ApiComment(); };
+ApiInterface.prototype.AddComment = (oElement, sText, sAuthor, sUserId) => new ApiComment()
 
 /**
  * Subscribes to the specified event and calls the callback function when the event fires.
@@ -1512,7 +1525,9 @@ ApiInterface.prototype.AddComment = function(oElement, sText, sAuthor, sUserId){
  * @param {string} eventName - The event name.
  * @param {function} callback - Function to be called when the event fires.
  */
-ApiInterface.prototype["attachEvent"] = ApiInterface.prototype.attachEvent;{};
+ApiInterface.prototype.attachEvent = ApiInterface.prototype.attachEvent
+{
+}
 
 /**
  * Unsubscribes from the specified event.
@@ -1521,15 +1536,17 @@ ApiInterface.prototype["attachEvent"] = ApiInterface.prototype.attachEvent;{};
  * @typeofeditors ["CDE"]
  * @param {string} eventName - The event name.
  */
-ApiInterface.prototype["detachEvent"] = ApiInterface.prototype.detachEvent;{};
+ApiInterface.prototype.detachEvent = ApiInterface.prototype.detachEvent
+{
+}
 
 /**
- * Returns a type of the ApiDocumentContent class. 
+ * Returns a type of the ApiDocumentContent class.
  * @memberof ApiDocumentContent
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"documentContent"}
  */
-ApiDocumentContent.prototype.GetClassType = function(){ return ""; };
+ApiDocumentContent.prototype.GetClassType = () => ""
 
 /**
  * Returns a number of elements in the current document.
@@ -1537,7 +1554,7 @@ ApiDocumentContent.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {number}
  */
-ApiDocumentContent.prototype.GetElementsCount = function(){ return 0; };
+ApiDocumentContent.prototype.GetElementsCount = () => 0
 
 /**
  * Returns an element by its position in the document.
@@ -1546,7 +1563,7 @@ ApiDocumentContent.prototype.GetElementsCount = function(){ return 0; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {DocumentElement}
  */
-ApiDocumentContent.prototype.GetElement = function(nPos){ return new DocumentElement(); };
+ApiDocumentContent.prototype.GetElement = (nPos) => new DocumentElement()
 
 /**
  * Adds a paragraph or a table or a blockLvl content control using its position in the document content.
@@ -1555,7 +1572,7 @@ ApiDocumentContent.prototype.GetElement = function(nPos){ return new DocumentEle
  * @param {number} nPos - The position where the current element will be added.
  * @param {DocumentElement} oElement - The document element which will be added at the current position.
  */
-ApiDocumentContent.prototype.AddElement = function(nPos, oElement){};
+ApiDocumentContent.prototype.AddElement = (nPos, oElement) => {}
 
 /**
  * Pushes a paragraph or a table to actually add it to the document.
@@ -1564,7 +1581,7 @@ ApiDocumentContent.prototype.AddElement = function(nPos, oElement){};
  * @param {DocumentElement} oElement - The element type which will be pushed to the document.
  * @returns {boolean} - returns false if oElement is unsupported.
  */
-ApiDocumentContent.prototype.Push = function(oElement){ return true; };
+ApiDocumentContent.prototype.Push = (oElement) => true
 
 /**
  * Removes all the elements from the current document or from the current document element.
@@ -1573,7 +1590,7 @@ ApiDocumentContent.prototype.Push = function(oElement){ return true; };
  * @memberof ApiDocumentContent
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiDocumentContent.prototype.RemoveAllElements = function(){};
+ApiDocumentContent.prototype.RemoveAllElements = () => {}
 
 /**
  * Removes an element using the position specified.
@@ -1581,7 +1598,7 @@ ApiDocumentContent.prototype.RemoveAllElements = function(){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {number} nPos - The element number (position) in the document or inside other element.
  */
-ApiDocumentContent.prototype.RemoveElement = function(nPos){};
+ApiDocumentContent.prototype.RemoveElement = (nPos) => {}
 
 /**
  * Returns a Range object that represents the part of the document contained in the document content.
@@ -1589,9 +1606,9 @@ ApiDocumentContent.prototype.RemoveElement = function(nPos){};
  * @typeofeditors ["CDE"]
  * @param {Number} Start - Start character in the current element.
  * @param {Number} End - End character in the current element.
- * @returns {ApiRange} 
+ * @returns {ApiRange}
  * */
-ApiDocumentContent.prototype.GetRange = function(Start, End){ return new ApiRange(); };
+ApiDocumentContent.prototype.GetRange = (Start, End) => new ApiRange()
 
 /**
  * Converts the ApiDocumentContent object into the JSON object.
@@ -1601,7 +1618,7 @@ ApiDocumentContent.prototype.GetRange = function(Start, End){ return new ApiRang
  * @param {boolean} bWriteStyles - Specifies if the used styles will be written to the JSON object or not.
  * @returns {JSON}
  */
-ApiDocumentContent.prototype.ToJSON = function(bWriteNumberings, bWriteStyles){ return new JSON(); };
+ApiDocumentContent.prototype.ToJSON = (bWriteNumberings, bWriteStyles) => new JSON()
 
 /**
  * Returns an array of document elements from the current ApiDocumentContent object.
@@ -1610,47 +1627,47 @@ ApiDocumentContent.prototype.ToJSON = function(bWriteNumberings, bWriteStyles){ 
  * @param {boolean} bGetCopies - Specifies if the copies of the document elements will be returned or not.
  * @returns {Array}
  */
-ApiDocumentContent.prototype.GetContent = function(bGetCopies){ return []; };
+ApiDocumentContent.prototype.GetContent = (bGetCopies) => []
 
 /**
  * Returns a collection of drawing objects from the document content.
  * @memberof ApiDocumentContent
  * @typeofeditors ["CDE"]
- * @returns {ApiDrawing[]}  
+ * @returns {ApiDrawing[]}
  */
-ApiDocumentContent.prototype.GetAllDrawingObjects = function(){ return [new ApiDrawing()]; };
+ApiDocumentContent.prototype.GetAllDrawingObjects = () => [new ApiDrawing()]
 
 /**
  * Returns a collection of shape objects from the document content.
  * @memberof ApiDocumentContent
  * @typeofeditors ["CDE"]
- * @returns {ApiShape[]}  
+ * @returns {ApiShape[]}
  */
-ApiDocumentContent.prototype.GetAllShapes = function(){ return [new ApiShape()]; };
+ApiDocumentContent.prototype.GetAllShapes = () => [new ApiShape()]
 
 /**
  * Returns a collection of image objects from the document content.
  * @memberof ApiDocumentContent
  * @typeofeditors ["CDE"]
- * @returns {ApiImage[]}  
+ * @returns {ApiImage[]}
  */
-ApiDocumentContent.prototype.GetAllImages = function(){ return [new ApiImage()]; };
+ApiDocumentContent.prototype.GetAllImages = () => [new ApiImage()]
 
 /**
  * Returns a collection of chart objects from the document content.
  * @memberof ApiDocumentContent
  * @typeofeditors ["CDE"]
- * @returns {ApiChart[]}  
+ * @returns {ApiChart[]}
  */
-ApiDocumentContent.prototype.GetAllCharts = function(){ return [new ApiChart()]; };
+ApiDocumentContent.prototype.GetAllCharts = () => [new ApiChart()]
 
 /**
  * Returns a collection of OLE objects from the document content.
  * @memberof ApiDocumentContent
  * @typeofeditors ["CDE"]
- * @returns {ApiOleObject[]}  
+ * @returns {ApiOleObject[]}
  */
-ApiDocumentContent.prototype.GetAllOleObjects = function(){ return [new ApiOleObject()]; };
+ApiDocumentContent.prototype.GetAllOleObjects = () => [new ApiOleObject()]
 
 /**
  * Returns an array of all paragraphs from the current document content.
@@ -1658,7 +1675,7 @@ ApiDocumentContent.prototype.GetAllOleObjects = function(){ return [new ApiOleOb
  * @typeofeditors ["CDE"]
  * @returns {ApiParagraph[]}
  */
-ApiDocumentContent.prototype.GetAllParagraphs = function(){ return [new ApiParagraph()]; };
+ApiDocumentContent.prototype.GetAllParagraphs = () => [new ApiParagraph()]
 
 /**
  * Returns an array of all tables from the current document content.
@@ -1666,7 +1683,7 @@ ApiDocumentContent.prototype.GetAllParagraphs = function(){ return [new ApiParag
  * @typeofeditors ["CDE"]
  * @returns {ApiParagraph[]}
  */
-ApiDocumentContent.prototype.GetAllTables = function(){ return [new ApiParagraph()]; };
+ApiDocumentContent.prototype.GetAllTables = () => [new ApiParagraph()]
 
 /**
  * Returns a type of the ApiDocument class.
@@ -1674,13 +1691,13 @@ ApiDocumentContent.prototype.GetAllTables = function(){ return [new ApiParagraph
  * @typeofeditors ["CDE"]
  * @returns {"document"}
  */
-ApiDocument.prototype.GetClassType = function(){ return ""; };
+ApiDocument.prototype.GetClassType = () => ""
 
 /**
  * Creates a new history point.
  * @memberof ApiDocument
  */
-ApiDocument.prototype.CreateNewHistoryPoint = function(){};
+ApiDocument.prototype.CreateNewHistoryPoint = () => {}
 
 /**
  * Returns a style by its name.
@@ -1689,7 +1706,7 @@ ApiDocument.prototype.CreateNewHistoryPoint = function(){};
  * @param {string} sStyleName - The style name.
  * @returns {ApiStyle}
  */
-ApiDocument.prototype.GetStyle = function(sStyleName){ return new ApiStyle(); };
+ApiDocument.prototype.GetStyle = (sStyleName) => new ApiStyle()
 
 /**
  * Creates a new style with the specified type and name. If there is a style with the same name it will be replaced with a new one.
@@ -1699,7 +1716,7 @@ ApiDocument.prototype.GetStyle = function(sStyleName){ return new ApiStyle(); };
  * @param {StyleType} [sType="paragraph"] - The document element which the style will be applied to.
  * @returns {ApiStyle}
  */
-ApiDocument.prototype.CreateStyle = function(sStyleName, sType){ return new ApiStyle(); };
+ApiDocument.prototype.CreateStyle = (sStyleName, sType) => new ApiStyle()
 
 /**
  * Returns the default style parameters for the specified document element.
@@ -1708,7 +1725,7 @@ ApiDocument.prototype.CreateStyle = function(sStyleName, sType){ return new ApiS
  * @param {StyleType} sStyleType - The document element which we want to get the style for.
  * @returns {ApiStyle}
  */
-ApiDocument.prototype.GetDefaultStyle = function(sStyleType){ return new ApiStyle(); };
+ApiDocument.prototype.GetDefaultStyle = (sStyleType) => new ApiStyle()
 
 /**
  * Returns a set of default properties for the text run in the current document.
@@ -1716,7 +1733,7 @@ ApiDocument.prototype.GetDefaultStyle = function(sStyleType){ return new ApiStyl
  * @typeofeditors ["CDE"]
  * @returns {ApiTextPr}
  */
-ApiDocument.prototype.GetDefaultTextPr = function(){ return new ApiTextPr(); };
+ApiDocument.prototype.GetDefaultTextPr = () => new ApiTextPr()
 
 /**
  * Returns a set of default paragraph properties in the current document.
@@ -1724,7 +1741,7 @@ ApiDocument.prototype.GetDefaultTextPr = function(){ return new ApiTextPr(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiParaPr}
  */
-ApiDocument.prototype.GetDefaultParaPr = function(){ return new ApiParaPr(); };
+ApiDocument.prototype.GetDefaultParaPr = () => new ApiParaPr()
 
 /**
  * Returns the document final section.
@@ -1732,7 +1749,7 @@ ApiDocument.prototype.GetDefaultParaPr = function(){ return new ApiParaPr(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiSection}
  */
-ApiDocument.prototype.GetFinalSection = function(){ return new ApiSection(); };
+ApiDocument.prototype.GetFinalSection = () => new ApiSection()
 
 /**
  * Creates a new document section which ends at the specified paragraph. Allows to set local parameters to the current
@@ -1743,7 +1760,7 @@ ApiDocument.prototype.GetFinalSection = function(){ return new ApiSection(); };
  * Paragraph must be in a document.
  * @returns {ApiSection | null} Returns null if parametr is invalid.
  */
-ApiDocument.prototype.CreateSection = function(oParagraph){ return new ApiSection(); };
+ApiDocument.prototype.CreateSection = (oParagraph) => new ApiSection()
 
 /**
  * Specifies whether sections in this document will have different headers and footers for even and
@@ -1752,7 +1769,7 @@ ApiDocument.prototype.CreateSection = function(oParagraph){ return new ApiSectio
  * @typeofeditors ["CDE"]
  * @param {boolean} isEvenAndOdd - If true the header/footer will be different for odd and even pages, if false they will be the same.
  */
-ApiDocument.prototype.SetEvenAndOddHdrFtr = function(isEvenAndOdd){};
+ApiDocument.prototype.SetEvenAndOddHdrFtr = (isEvenAndOdd) => {}
 
 /**
  * Creates an abstract multilevel numbering with a specified type.
@@ -1761,7 +1778,7 @@ ApiDocument.prototype.SetEvenAndOddHdrFtr = function(isEvenAndOdd){};
  * @param {("bullet" | "numbered")} [sType="bullet"] - The type of the numbering which will be created.
  * @returns {ApiNumbering}
  */
-ApiDocument.prototype.CreateNumbering = function(sType){ return new ApiNumbering(); };
+ApiDocument.prototype.CreateNumbering = (sType) => new ApiNumbering()
 
 /**
  * Inserts an array of elements into the current position of the document.
@@ -1769,11 +1786,11 @@ ApiDocument.prototype.CreateNumbering = function(sType){ return new ApiNumbering
  * @typeofeditors ["CDE"]
  * @param {DocumentElement[]} arrContent - An array of elements to insert.
  * @param {boolean} [isInline=false] - Inline insert or not (works only for the last and the first element and only if it's a paragraph).
- * @param {object} [oPr=undefined] - Specifies that text and paragraph document properties are preserved for the inserted elements. 
- * The object should look like this: {"KeepTextOnly": true}. 
+ * @param {object} [oPr=undefined] - Specifies that text and paragraph document properties are preserved for the inserted elements.
+ * The object should look like this: {"KeepTextOnly": true}.
  * @returns {boolean} Success?
  */
-ApiDocument.prototype.InsertContent = function(arrContent, isInline, oPr){ return true; };
+ApiDocument.prototype.InsertContent = (arrContent, isInline, oPr) => true
 
 /**
  * Record of one comment.
@@ -1805,7 +1822,7 @@ ApiDocument.prototype.InsertContent = function(arrContent, isInline, oPr){ retur
  * @typeofeditors ["CDE"]
  * @returns {CommentReport}
  */
-ApiDocument.prototype.GetCommentsReport = function(){ return new CommentReport(); };
+ApiDocument.prototype.GetCommentsReport = () => new CommentReport()
 
 /**
  * Review record type.
@@ -1839,7 +1856,7 @@ ApiDocument.prototype.GetCommentsReport = function(){ return new CommentReport()
  * @typeofeditors ["CDE"]
  * @returns {ReviewReport}
  */
-ApiDocument.prototype.GetReviewReport = function(){ return new ReviewReport(); };
+ApiDocument.prototype.GetReviewReport = () => new ReviewReport()
 
 /**
  * Finds and replaces the text.
@@ -1851,7 +1868,7 @@ ApiDocument.prototype.GetReviewReport = function(){ return new ReviewReport(); }
  * @param {string} [oProperties.matchCase=true] - Case sensitive or not.
  *
  */
-ApiDocument.prototype.SearchAndReplace = function(oProperties){};
+ApiDocument.prototype.SearchAndReplace = (oProperties) => {}
 
 /**
  * Returns a list of all the content controls from the document.
@@ -1859,7 +1876,7 @@ ApiDocument.prototype.SearchAndReplace = function(oProperties){};
  * @typeofeditors ["CDE"]
  * @returns {ApiBlockLvlSdt[] | ApiInlineLvlSdt[]}
  */
-ApiDocument.prototype.GetAllContentControls = function(){ return [new ApiBlockLvlSdt()]; };
+ApiDocument.prototype.GetAllContentControls = () => [new ApiBlockLvlSdt()]
 
 /**
  * Returns a list of all tags that are used for all content controls in the document.
@@ -1867,7 +1884,7 @@ ApiDocument.prototype.GetAllContentControls = function(){ return [new ApiBlockLv
  * @typeofeditors ["CDE"]
  * @returns {String[]}
  */
-ApiDocument.prototype.GetTagsOfAllContentControls = function(){ return [""]; };
+ApiDocument.prototype.GetTagsOfAllContentControls = () => [""]
 
 /**
  * Returns a list of all tags that are used for all forms in the document.
@@ -1875,7 +1892,7 @@ ApiDocument.prototype.GetTagsOfAllContentControls = function(){ return [""]; };
  * @typeofeditors ["CDE"]
  * @returns {String[]}
  */
-ApiDocument.prototype.GetTagsOfAllForms = function(){ return [""]; };
+ApiDocument.prototype.GetTagsOfAllForms = () => [""]
 
 /**
  * Returns a list of all content controls in the document with the specified tag name.
@@ -1884,7 +1901,7 @@ ApiDocument.prototype.GetTagsOfAllForms = function(){ return [""]; };
  * @param sTag {string} - Content control tag.
  * @returns {ApiBlockLvlSdt[] | ApiInlineLvlSdt[]}
  */
-ApiDocument.prototype.GetContentControlsByTag = function(sTag){ return [new ApiBlockLvlSdt()]; };
+ApiDocument.prototype.GetContentControlsByTag = (sTag) => [new ApiBlockLvlSdt()]
 
 /**
  * Returns a list of all forms in the document with the specified tag name.
@@ -1893,7 +1910,7 @@ ApiDocument.prototype.GetContentControlsByTag = function(sTag){ return [new ApiB
  * @param sTag {string} - Form tag.
  * @returns {ApiBlockLvlSdt[] | ApiInlineLvlSdt[]}
  */
-ApiDocument.prototype.GetFormsByTag = function(sTag){ return [new ApiBlockLvlSdt()]; };
+ApiDocument.prototype.GetFormsByTag = (sTag) => [new ApiBlockLvlSdt()]
 
 /**
  * The specific form type.
@@ -1924,7 +1941,7 @@ ApiDocument.prototype.GetFormsByTag = function(sTag){ return [new ApiBlockLvlSdt
  * @returns {Array.<FormData>}
  * @since 8.0.0
  */
-ApiDocument.prototype.GetFormsData = function(){ return []; };
+ApiDocument.prototype.GetFormsData = () => []
 
 /**
  * Sets the data to the specified forms.
@@ -1933,7 +1950,7 @@ ApiDocument.prototype.GetFormsData = function(){ return []; };
  * @param {Array.<FormData>} arrData - An array of form data to set to the specified forms.
  * @since 8.0.0
  */
-ApiDocument.prototype.SetFormsData = function(arrData){};
+ApiDocument.prototype.SetFormsData = (arrData) => {}
 
 /**
  * Sets the change tracking mode.
@@ -1941,7 +1958,7 @@ ApiDocument.prototype.SetFormsData = function(arrData){};
  * @typeofeditors ["CDE"]
  * @param isTrack {boolean} - Specifies if the change tracking mode is set or not.
  */
-ApiDocument.prototype.SetTrackRevisions = function(isTrack){};
+ApiDocument.prototype.SetTrackRevisions = (isTrack) => {}
 
 /**
  * Checks if change tracking mode is enabled or not.
@@ -1949,7 +1966,7 @@ ApiDocument.prototype.SetTrackRevisions = function(isTrack){};
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiDocument.prototype.IsTrackRevisions = function(){ return true; };
+ApiDocument.prototype.IsTrackRevisions = () => true
 
 /**
  * Returns a Range object that represents the part of the document contained in the specified document.
@@ -1957,9 +1974,9 @@ ApiDocument.prototype.IsTrackRevisions = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @param {Number} Start - Start character in the current element.
  * @param {Number} End - End character in the current element.
- * @returns {ApiRange} 
+ * @returns {ApiRange}
  * */
-ApiDocument.prototype.GetRange = function(Start, End){ return new ApiRange(); };
+ApiDocument.prototype.GetRange = (Start, End) => new ApiRange()
 
 /**
  * Returns a range object by the current selection.
@@ -1967,15 +1984,15 @@ ApiDocument.prototype.GetRange = function(Start, End){ return new ApiRange(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiRange | null} - returns null if selection doesn't exist.
  * */
-ApiDocument.prototype.GetRangeBySelect = function(){ return new ApiRange(); };
+ApiDocument.prototype.GetRangeBySelect = () => new ApiRange()
 
 /**
- * Returns the last document element. 
+ * Returns the last document element.
  * @memberof ApiDocument
  * @typeofeditors ["CDE"]
  * @returns {DocumentElement}
  */
-ApiDocument.prototype.Last = function(){ return new DocumentElement(); };
+ApiDocument.prototype.Last = () => new DocumentElement()
 
 /**
  * Removes a bookmark from the document, if one exists.
@@ -1984,7 +2001,7 @@ ApiDocument.prototype.Last = function(){ return new DocumentElement(); };
  * @param {string} sName - The bookmark name.
  * @returns {boolean} - returns false if param is invalid.
  */
-ApiDocument.prototype.DeleteBookmark = function(sName){ return true; };
+ApiDocument.prototype.DeleteBookmark = (sName) => true
 
 /**
  * Adds a comment to the document.
@@ -1995,7 +2012,7 @@ ApiDocument.prototype.DeleteBookmark = function(sName){ return true; };
  * @param {string} sUserId - The user ID of the comment author (optional).
  * @returns {ApiComment} - Returns null if the comment was not added.
  */
-ApiDocument.prototype.AddComment = function(sText, sAuthor, sUserId){ return new ApiComment(); };
+ApiDocument.prototype.AddComment = (sText, sAuthor, sUserId) => new ApiComment()
 
 /**
  * Returns a bookmark range.
@@ -2004,15 +2021,15 @@ ApiDocument.prototype.AddComment = function(sText, sAuthor, sUserId){ return new
  * @param {string} sName - The bookmark name.
  * @returns {ApiRange | null} - returns null if sName is invalid.
  */
-ApiDocument.prototype.GetBookmarkRange = function(sName){ return new ApiRange(); };
+ApiDocument.prototype.GetBookmarkRange = (sName) => new ApiRange()
 
 /**
  * Returns a collection of section objects in the document.
  * @memberof ApiDocument
  * @typeofeditors ["CDE"]
- * @returns {ApiSection[]}  
+ * @returns {ApiSection[]}
  */
-ApiDocument.prototype.GetSections = function(){ return [new ApiSection()]; };
+ApiDocument.prototype.GetSections = () => [new ApiSection()]
 
 /**
  * Returns a collection of tables on a given absolute page.
@@ -2023,7 +2040,7 @@ ApiDocument.prototype.GetSections = function(){ return [new ApiSection()]; };
  * @param {number} nPage - The page number.
  * @returns {ApiTable[]}
  */
-ApiDocument.prototype.GetAllTablesOnPage = function(nPage){ return [new ApiTable()]; };
+ApiDocument.prototype.GetAllTablesOnPage = (nPage) => [new ApiTable()]
 
 /**
  * Adds a shape to the specified page.
@@ -2037,14 +2054,14 @@ ApiDocument.prototype.GetAllTablesOnPage = function(nPage){ return [new ApiTable
  * @param y {EMU} - The Y coordinate in English measure units.
  * @returns {boolean}
  */
-ApiDocument.prototype.AddDrawingToPage = function(oDrawing, nPage, x, y){ return true; };
+ApiDocument.prototype.AddDrawingToPage = (oDrawing, nPage, x, y) => true
 
 /**
  * Removes the current selection.
  * @memberof ApiDocument
  * @typeofeditors ["CDE"]
  */
-ApiDocument.prototype.RemoveSelection = function(){};
+ApiDocument.prototype.RemoveSelection = () => {}
 
 /**
  * Searches for a scope of a document object. The search results are a collection of ApiRange objects.
@@ -2052,9 +2069,9 @@ ApiDocument.prototype.RemoveSelection = function(){};
  * @typeofeditors ["CDE"]
  * @param {string} sText - Search string.
  * @param {boolean} isMatchCase - Case sensitive or not.
- * @returns {ApiRange[]}  
+ * @returns {ApiRange[]}
  */
-ApiDocument.prototype.Search = function(sText, isMatchCase){ return [new ApiRange()]; };
+ApiDocument.prototype.Search = (sText, isMatchCase) => [new ApiRange()]
 
 /**
  * Converts a document to Markdown.
@@ -2067,7 +2084,8 @@ ApiDocument.prototype.Search = function(sText, isMatchCase){ return [new ApiRang
  * in the following way: \<tag&gt;text\</tag&gt;. By default, the opening angle brackets will be replaced with the special characters.
  * @returns {string}
  */
-ApiDocument.prototype.ToMarkdown = function(bHtmlHeadings, bBase64img, bDemoteHeadings, bRenderHTMLTags){ return ""; };
+ApiDocument.prototype.ToMarkdown = (bHtmlHeadings, bBase64img, bDemoteHeadings, bRenderHTMLTags) =>
+  ""
 
 /**
  * Converts a document to HTML.
@@ -2080,7 +2098,7 @@ ApiDocument.prototype.ToMarkdown = function(bHtmlHeadings, bBase64img, bDemoteHe
  * in the following way: \<tag&gt;text\</tag&gt;. By default, the opening angle brackets will be replaced with the special characters.
  * @returns {string}
  */
-ApiDocument.prototype.ToHtml = function(bHtmlHeadings, bBase64img, bDemoteHeadings, bRenderHTMLTags){ return ""; };
+ApiDocument.prototype.ToHtml = (bHtmlHeadings, bBase64img, bDemoteHeadings, bRenderHTMLTags) => ""
 
 /**
  * Inserts a watermark on each document page.
@@ -2090,7 +2108,7 @@ ApiDocument.prototype.ToHtml = function(bHtmlHeadings, bBase64img, bDemoteHeadin
  * @param {?boolean} [bIsDiagonal=false] - Specifies if the watermark is placed diagonally (true) or horizontally (false).
  * @returns {ApiDrawing} - The object which represents the inserted watermark. Returns null if the watermark type is "none".
  */
-ApiDocument.prototype.InsertWatermark = function(sText, bIsDiagonal){ return new ApiDrawing(); };
+ApiDocument.prototype.InsertWatermark = (sText, bIsDiagonal) => new ApiDrawing()
 
 /**
  * Returns the watermark settings in the current document.
@@ -2098,7 +2116,7 @@ ApiDocument.prototype.InsertWatermark = function(sText, bIsDiagonal){ return new
  * @typeofeditors ["CDE"]
  * @returns {ApiWatermarkSettings} - The object which represents the watermark settings.
  */
-ApiDocument.prototype.GetWatermarkSettings = function(){ return new ApiWatermarkSettings(); };
+ApiDocument.prototype.GetWatermarkSettings = () => new ApiWatermarkSettings()
 
 /**
  * Sets the watermark settings in the current document.
@@ -2107,14 +2125,14 @@ ApiDocument.prototype.GetWatermarkSettings = function(){ return new ApiWatermark
  * @param {ApiWatermarkSettings} Settings - The object which represents the watermark settings.
  * @returns {ApiDrawing} - The object which represents the watermark drawing if the watermark type in Settings is not "none".
  */
-ApiDocument.prototype.SetWatermarkSettings = function(Settings){ return new ApiDrawing(); };
+ApiDocument.prototype.SetWatermarkSettings = (Settings) => new ApiDrawing()
 
 /**
  * Removes a watermark from the current document.
  * @memberof ApiDocument
  * @typeofeditors ["CDE"]
  */
-ApiDocument.prototype.RemoveWatermark = function(){};
+ApiDocument.prototype.RemoveWatermark = () => {}
 
 /**
  * Updates all tables of contents in the current document.
@@ -2122,7 +2140,7 @@ ApiDocument.prototype.RemoveWatermark = function(){};
  * @typeofeditors ["CDE"]
  * @param {boolean} [bOnlyPageNumbers=false] - Specifies that only page numbers will be updated.
  */
-ApiDocument.prototype.UpdateAllTOC = function(bOnlyPageNumbers){};
+ApiDocument.prototype.UpdateAllTOC = (bOnlyPageNumbers) => {}
 
 /**
  * Updates all tables of figures in the current document.
@@ -2130,7 +2148,7 @@ ApiDocument.prototype.UpdateAllTOC = function(bOnlyPageNumbers){};
  * @typeofeditors ["CDE"]
  * @param {boolean} [bOnlyPageNumbers=false] - Specifies that only page numbers will be updated.
  */
-ApiDocument.prototype.UpdateAllTOF = function(bOnlyPageNumbers){};
+ApiDocument.prototype.UpdateAllTOF = (bOnlyPageNumbers) => {}
 
 /**
  * Converts the ApiDocument object into the JSON object.
@@ -2144,7 +2162,14 @@ ApiDocument.prototype.UpdateAllTOF = function(bOnlyPageNumbers){};
  * @param {boolean} bWriteStyles - Specifies if the document styles will be written to the JSON object or not.
  * @returns {JSON}
  */
-ApiDocument.prototype.ToJSON = function(bWriteDefaultTextPr, bWriteDefaultParaPr, bWriteTheme, bWriteSectionPr, bWriteNumberings, bWriteStyles){ return new JSON(); };
+ApiDocument.prototype.ToJSON = (
+  bWriteDefaultTextPr,
+  bWriteDefaultParaPr,
+  bWriteTheme,
+  bWriteSectionPr,
+  bWriteNumberings,
+  bWriteStyles,
+) => new JSON()
 
 /**
  * Returns all existing forms in the document.
@@ -2152,14 +2177,14 @@ ApiDocument.prototype.ToJSON = function(bWriteDefaultTextPr, bWriteDefaultParaPr
  * @typeofeditors ["CDE"]
  * @returns {ApiForm[]}
  */
-ApiDocument.prototype.GetAllForms = function(){ return [new ApiForm()]; };
+ApiDocument.prototype.GetAllForms = () => [new ApiForm()]
 
 /**
  * Clears all forms in the document.
  * @memberof ApiDocument
  * @typeofeditors ["CDE"]
  */
-ApiDocument.prototype.ClearAllFields = function(){};
+ApiDocument.prototype.ClearAllFields = () => {}
 
 /**
  * Sets the highlight to the forms in the document.
@@ -2170,7 +2195,7 @@ ApiDocument.prototype.ClearAllFields = function(){};
  * @param {boolean} [bNone=false] - Defines that highlight will not be set.
  * @typeofeditors ["CDE"]
  */
-ApiDocument.prototype.SetFormsHighlight = function(r, g, b, bNone){};
+ApiDocument.prototype.SetFormsHighlight = (r, g, b, bNone) => {}
 
 /**
  * Returns all comments from the current document.
@@ -2178,7 +2203,7 @@ ApiDocument.prototype.SetFormsHighlight = function(r, g, b, bNone){};
  * @typeofeditors ["CDE"]
  * @returns {ApiComment[]}
  */
-ApiDocument.prototype.GetAllComments = function(){ return [new ApiComment()]; };
+ApiDocument.prototype.GetAllComments = () => [new ApiComment()]
 
 /**
  * Returns a comment from the current document by its ID.
@@ -2187,7 +2212,7 @@ ApiDocument.prototype.GetAllComments = function(){ return [new ApiComment()]; };
  * @param {string} sId - The comment ID.
  * @returns {ApiComment}
  */
-ApiDocument.prototype.GetCommentById = function(sId){ return new ApiComment(); };
+ApiDocument.prototype.GetCommentById = (sId) => new ApiComment()
 
 /**
  * Returns all numbered paragraphs from the current document.
@@ -2195,7 +2220,7 @@ ApiDocument.prototype.GetCommentById = function(sId){ return new ApiComment(); }
  * @typeofeditors ["CDE"]
  * @returns {ApiParagraph[]}
  */
-ApiDocument.prototype.GetAllNumberedParagraphs = function(){ return [new ApiParagraph()]; };
+ApiDocument.prototype.GetAllNumberedParagraphs = () => [new ApiParagraph()]
 
 /**
  * Returns all heading paragraphs from the current document.
@@ -2203,7 +2228,7 @@ ApiDocument.prototype.GetAllNumberedParagraphs = function(){ return [new ApiPara
  * @typeofeditors ["CDE"]
  * @returns {ApiParagraph[]}
  */
-ApiDocument.prototype.GetAllHeadingParagraphs = function(){ return [new ApiParagraph()]; };
+ApiDocument.prototype.GetAllHeadingParagraphs = () => [new ApiParagraph()]
 
 /**
  * Returns the first paragraphs from all footnotes in the current document.
@@ -2211,7 +2236,7 @@ ApiDocument.prototype.GetAllHeadingParagraphs = function(){ return [new ApiParag
  * @typeofeditors ["CDE"]
  * @returns {ApiParagraph[]}
  */
-ApiDocument.prototype.GetFootnotesFirstParagraphs = function(){ return [new ApiParagraph()]; };
+ApiDocument.prototype.GetFootnotesFirstParagraphs = () => [new ApiParagraph()]
 
 /**
  * Returns the first paragraphs from all endnotes in the current document.
@@ -2219,7 +2244,7 @@ ApiDocument.prototype.GetFootnotesFirstParagraphs = function(){ return [new ApiP
  * @typeofeditors ["CDE"]
  * @returns {ApiParagraph[]}
  */
-ApiDocument.prototype.GetEndNotesFirstParagraphs = function(){ return [new ApiParagraph()]; };
+ApiDocument.prototype.GetEndNotesFirstParagraphs = () => [new ApiParagraph()]
 
 /**
  * Returns all caption paragraphs of the specified type from the current document.
@@ -2228,21 +2253,21 @@ ApiDocument.prototype.GetEndNotesFirstParagraphs = function(){ return [new ApiPa
  * @param {CaptionLabel | string} sCaption - The caption label ("Equation", "Figure", "Table", or another caption label).
  * @returns {ApiParagraph[]}
  */
-ApiDocument.prototype.GetAllCaptionParagraphs = function(sCaption){ return [new ApiParagraph()]; };
+ApiDocument.prototype.GetAllCaptionParagraphs = (sCaption) => [new ApiParagraph()]
 
 /**
  * Accepts all changes made in review mode.
  * @memberof ApiDocument
  * @typeofeditors ["CDE"]
  */
-ApiDocument.prototype.AcceptAllRevisionChanges = function(){};
+ApiDocument.prototype.AcceptAllRevisionChanges = () => {}
 
 /**
  * Rejects all changes made in review mode.
  * @memberof ApiDocument
  * @typeofeditors ["CDE"]
  */
-ApiDocument.prototype.RejectAllRevisionChanges = function(){};
+ApiDocument.prototype.RejectAllRevisionChanges = () => {}
 
 /**
  * Returns an array with names of all bookmarks in the current document.
@@ -2250,7 +2275,7 @@ ApiDocument.prototype.RejectAllRevisionChanges = function(){};
  * @typeofeditors ["CDE"]
  * @returns {string[]}
  */
-ApiDocument.prototype.GetAllBookmarksNames = function(){ return [""]; };
+ApiDocument.prototype.GetAllBookmarksNames = () => [""]
 
 /**
  * Returns all the selected drawings in the current document.
@@ -2258,7 +2283,7 @@ ApiDocument.prototype.GetAllBookmarksNames = function(){ return [""]; };
  * @typeofeditors ["CDE"]
  * @returns {ApiShape[] | ApiImage[] | ApiChart[] | ApiDrawing[]}
  */
-ApiDocument.prototype.GetSelectedDrawings = function(){ return [new ApiShape()]; };
+ApiDocument.prototype.GetSelectedDrawings = () => [new ApiShape()]
 
 /**
  * Replaces the current image with an image specified.
@@ -2268,7 +2293,7 @@ ApiDocument.prototype.GetSelectedDrawings = function(){ return [new ApiShape()];
  * @param {EMU} Width - The image width in English measure units.
  * @param {EMU} Height - The image height in English measure units.
  */
-ApiDocument.prototype.ReplaceCurrentImage = function(sImageUrl, Width, Height){};
+ApiDocument.prototype.ReplaceCurrentImage = (sImageUrl, Width, Height) => {}
 
 /**
  * Replaces a drawing with a new drawing.
@@ -2279,7 +2304,7 @@ ApiDocument.prototype.ReplaceCurrentImage = function(sImageUrl, Width, Height){}
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiDocument.prototype.ReplaceDrawing = function(oOldDrawing, oNewDrawing, bSaveOldDrawingPr){ return true; };
+ApiDocument.prototype.ReplaceDrawing = (oOldDrawing, oNewDrawing, bSaveOldDrawingPr) => true
 
 /**
  * Adds a footnote for the selected text (or the current position if the selection doesn't exist).
@@ -2287,7 +2312,7 @@ ApiDocument.prototype.ReplaceDrawing = function(oOldDrawing, oNewDrawing, bSaveO
  * @typeofeditors ["CDE"]
  * @returns {ApiDocumentContent}
  */
-ApiDocument.prototype.AddFootnote = function(){ return new ApiDocumentContent(); };
+ApiDocument.prototype.AddFootnote = () => new ApiDocumentContent()
 
 /**
  * Adds an endnote for the selected text (or the current position if the selection doesn't exist).
@@ -2295,7 +2320,7 @@ ApiDocument.prototype.AddFootnote = function(){ return new ApiDocumentContent();
  * @typeofeditors ["CDE"]
  * @returns {ApiDocumentContent}
  */
-ApiDocument.prototype.AddEndnote = function(){ return new ApiDocumentContent(); };
+ApiDocument.prototype.AddEndnote = () => new ApiDocumentContent()
 
 /**
  * Sets the highlight to the content controls from the current document.
@@ -2306,7 +2331,7 @@ ApiDocument.prototype.AddEndnote = function(){ return new ApiDocumentContent(); 
  * @param {boolean} [bNone=false] - Defines that highlight will not be set.
  * @typeofeditors ["CDE"]
  */
-ApiDocument.prototype.SetControlsHighlight = function(r, g, b, bNone){};
+ApiDocument.prototype.SetControlsHighlight = (r, g, b, bNone) => {}
 
 /**
  * Adds a table of content to the current document.
@@ -2315,7 +2340,7 @@ ApiDocument.prototype.SetControlsHighlight = function(r, g, b, bNone){};
  * @typeofeditors ["CDE"]
  * @param {TocPr} [oTocPr={}] - Table of contents properties.
  */
-ApiDocument.prototype.AddTableOfContents = function(oTocPr){};
+ApiDocument.prototype.AddTableOfContents = (oTocPr) => {}
 
 /**
  * Adds a table of figures to the current document.
@@ -2326,7 +2351,7 @@ ApiDocument.prototype.AddTableOfContents = function(oTocPr){};
  * @param {boolean} [bReplace=true] - Specifies whether to replace the selected table of figures instead of adding a new one.
  * @returns {boolean}
  */
-ApiDocument.prototype.AddTableOfFigures = function(oTofPr, bReplace){ return true; };
+ApiDocument.prototype.AddTableOfFigures = (oTofPr, bReplace) => true
 
 /**
  * Returns the document statistics represented as an object with the following parameters:
@@ -2339,7 +2364,7 @@ ApiDocument.prototype.AddTableOfFigures = function(oTofPr, bReplace){ return tru
  * @typeofeditors ["CDE"]
  * @returns {object}
  */
-ApiDocument.prototype.GetStatistics = function(){ return new object(); };
+ApiDocument.prototype.GetStatistics = () => new object()
 
 /**
  * Returns a number of pages in the current document.
@@ -2349,7 +2374,7 @@ ApiDocument.prototype.GetStatistics = function(){ return new object(); };
  * @typeofeditors ["CDE"]
  * @returns {number}
  */
-ApiDocument.prototype.GetPageCount = function(){ return 0; };
+ApiDocument.prototype.GetPageCount = () => 0
 
 /**
  * Returns all styles of the current document.
@@ -2357,7 +2382,7 @@ ApiDocument.prototype.GetPageCount = function(){ return 0; };
  * @typeofeditors ["CDE"]
  * @returns {ApiStyle[]}
  */
-ApiDocument.prototype.GetAllStyles = function(){ return [new ApiStyle()]; };
+ApiDocument.prototype.GetAllStyles = () => [new ApiStyle()]
 
 /**
  * Returns a type of the ApiParagraph class.
@@ -2365,7 +2390,7 @@ ApiDocument.prototype.GetAllStyles = function(){ return [new ApiStyle()]; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"paragraph"}
  */
-ApiParagraph.prototype.GetClassType = function(){ return ""; };
+ApiParagraph.prototype.GetClassType = () => ""
 
 /**
  * Adds some text to the current paragraph.
@@ -2374,7 +2399,7 @@ ApiParagraph.prototype.GetClassType = function(){ return ""; };
  * @param {string} [sText=""] - The text that we want to insert into the current document element.
  * @returns {ApiRun}
  */
-ApiParagraph.prototype.AddText = function(sText){ return new ApiRun(); };
+ApiParagraph.prototype.AddText = (sText) => new ApiRun()
 
 /**
  * Adds a page break and starts the next element from the next page.
@@ -2382,7 +2407,7 @@ ApiParagraph.prototype.AddText = function(sText){ return new ApiRun(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiRun}
  */
-ApiParagraph.prototype.AddPageBreak = function(){ return new ApiRun(); };
+ApiParagraph.prototype.AddPageBreak = () => new ApiRun()
 
 /**
  * Adds a line break to the current position and starts the next element from a new line.
@@ -2390,7 +2415,7 @@ ApiParagraph.prototype.AddPageBreak = function(){ return new ApiRun(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiRun}
  */
-ApiParagraph.prototype.AddLineBreak = function(){ return new ApiRun(); };
+ApiParagraph.prototype.AddLineBreak = () => new ApiRun()
 
 /**
  * Adds a column break to the current position and starts the next element from a new column.
@@ -2398,7 +2423,7 @@ ApiParagraph.prototype.AddLineBreak = function(){ return new ApiRun(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiRun}
  */
-ApiParagraph.prototype.AddColumnBreak = function(){ return new ApiRun(); };
+ApiParagraph.prototype.AddColumnBreak = () => new ApiRun()
 
 /**
  * Inserts a number of the current document page into the paragraph.
@@ -2406,7 +2431,7 @@ ApiParagraph.prototype.AddColumnBreak = function(){ return new ApiRun(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiRun}
  */
-ApiParagraph.prototype.AddPageNumber = function(){ return new ApiRun(); };
+ApiParagraph.prototype.AddPageNumber = () => new ApiRun()
 
 /**
  * Inserts a number of pages in the current document into the paragraph.
@@ -2414,7 +2439,7 @@ ApiParagraph.prototype.AddPageNumber = function(){ return new ApiRun(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiRun}
  */
-ApiParagraph.prototype.AddPagesCount = function(){ return new ApiRun(); };
+ApiParagraph.prototype.AddPagesCount = () => new ApiRun()
 
 /**
  * Returns the text properties of the paragraph mark which is used to mark the paragraph end. The mark can also acquire
@@ -2423,7 +2448,7 @@ ApiParagraph.prototype.AddPagesCount = function(){ return new ApiRun(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiTextPr}
  */
-ApiParagraph.prototype.GetParagraphMarkTextPr = function(){ return new ApiTextPr(); };
+ApiParagraph.prototype.GetParagraphMarkTextPr = () => new ApiTextPr()
 
 /**
  * Returns the paragraph properties.
@@ -2431,7 +2456,7 @@ ApiParagraph.prototype.GetParagraphMarkTextPr = function(){ return new ApiTextPr
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiParaPr}
  */
-ApiParagraph.prototype.GetParaPr = function(){ return new ApiParaPr(); };
+ApiParagraph.prototype.GetParaPr = () => new ApiParaPr()
 
 /**
  * Returns the numbering definition and numbering level for the numbered list.
@@ -2439,7 +2464,7 @@ ApiParagraph.prototype.GetParaPr = function(){ return new ApiParaPr(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiNumberingLevel}
  */
-ApiParagraph.prototype.GetNumbering = function(){ return new ApiNumberingLevel(); };
+ApiParagraph.prototype.GetNumbering = () => new ApiNumberingLevel()
 
 /**
  * Specifies that the current paragraph references the numbering definition instance in the current document.
@@ -2448,7 +2473,7 @@ ApiParagraph.prototype.GetNumbering = function(){ return new ApiNumberingLevel()
  * @see Same as {@link ApiParagraph#SetNumPr}
  * @param {ApiNumberingLevel} oNumberingLevel - The numbering level which will be used for assigning the numbers to the paragraph.
  */
-ApiParagraph.prototype.SetNumbering = function(oNumberingLevel){};
+ApiParagraph.prototype.SetNumbering = (oNumberingLevel) => {}
 
 /**
  * Returns a number of elements in the current paragraph.
@@ -2456,7 +2481,7 @@ ApiParagraph.prototype.SetNumbering = function(oNumberingLevel){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {number}
  */
-ApiParagraph.prototype.GetElementsCount = function(){ return 0; };
+ApiParagraph.prototype.GetElementsCount = () => 0
 
 /**
  * Returns a paragraph element using the position specified.
@@ -2465,7 +2490,7 @@ ApiParagraph.prototype.GetElementsCount = function(){ return 0; };
  * @param {number} nPos - The position where the element which content we want to get must be located.
  * @returns {ParagraphContent}
  */
-ApiParagraph.prototype.GetElement = function(nPos){ return new ParagraphContent(); };
+ApiParagraph.prototype.GetElement = (nPos) => new ParagraphContent()
 
 /**
  * Removes an element using the position specified.
@@ -2476,7 +2501,7 @@ ApiParagraph.prototype.GetElement = function(nPos){ return new ParagraphContent(
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {number} nPos - The element position which we want to remove from the paragraph.
  */
-ApiParagraph.prototype.RemoveElement = function(nPos){};
+ApiParagraph.prototype.RemoveElement = (nPos) => {}
 
 /**
  * Removes all the elements from the current paragraph.
@@ -2485,7 +2510,7 @@ ApiParagraph.prototype.RemoveElement = function(nPos){};
  * @memberof ApiParagraph
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiParagraph.prototype.RemoveAllElements = function(){};
+ApiParagraph.prototype.RemoveAllElements = () => {}
 
 /**
  * Deletes the current paragraph.
@@ -2493,7 +2518,7 @@ ApiParagraph.prototype.RemoveAllElements = function(){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {boolean} - returns false if paragraph haven't parent.
  */
-ApiParagraph.prototype.Delete = function(){ return true; };
+ApiParagraph.prototype.Delete = () => true
 
 /**
  * Returns the next paragraph.
@@ -2501,7 +2526,7 @@ ApiParagraph.prototype.Delete = function(){ return true; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiParagraph | null} - returns null if paragraph is last.
  */
-ApiParagraph.prototype.GetNext = function(){ return new ApiParagraph(); };
+ApiParagraph.prototype.GetNext = () => new ApiParagraph()
 
 /**
  * Returns the previous paragraph.
@@ -2509,7 +2534,7 @@ ApiParagraph.prototype.GetNext = function(){ return new ApiParagraph(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiParagraph} - returns null if paragraph is first.
  */
-ApiParagraph.prototype.GetPrevious = function(){ return new ApiParagraph(); };
+ApiParagraph.prototype.GetPrevious = () => new ApiParagraph()
 
 /**
  * Creates a paragraph copy. Ingnore comments, footnote references, complex fields.
@@ -2517,7 +2542,7 @@ ApiParagraph.prototype.GetPrevious = function(){ return new ApiParagraph(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiParagraph}
  */
-ApiParagraph.prototype.Copy = function(){ return new ApiParagraph(); };
+ApiParagraph.prototype.Copy = () => new ApiParagraph()
 
 /**
  * Adds an element to the current paragraph.
@@ -2530,7 +2555,7 @@ ApiParagraph.prototype.Copy = function(){ return new ApiParagraph(); };
  * @returns {boolean} Returns <code>false</code> if the type of <code>oElement</code> is not supported by paragraph
  * content.
  */
-ApiParagraph.prototype.AddElement = function(oElement, nPos){ return true; };
+ApiParagraph.prototype.AddElement = (oElement, nPos) => true
 
 /**
  * Adds a tab stop to the current paragraph.
@@ -2538,7 +2563,7 @@ ApiParagraph.prototype.AddElement = function(oElement, nPos){ return true; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiRun}
  */
-ApiParagraph.prototype.AddTabStop = function(){ return new ApiRun(); };
+ApiParagraph.prototype.AddTabStop = () => new ApiRun()
 
 /**
  * Adds a drawing object (image, shape or chart) to the current paragraph.
@@ -2547,7 +2572,7 @@ ApiParagraph.prototype.AddTabStop = function(){ return new ApiRun(); };
  * @param {ApiDrawing} oDrawing - The object which will be added to the current paragraph.
  * @returns {ApiRun}
  */
-ApiParagraph.prototype.AddDrawing = function(oDrawing){ return new ApiRun(); };
+ApiParagraph.prototype.AddDrawing = (oDrawing) => new ApiRun()
 
 /**
  * Adds an inline container.
@@ -2556,7 +2581,7 @@ ApiParagraph.prototype.AddDrawing = function(oDrawing){ return new ApiRun(); };
  * @param {ApiInlineLvlSdt} oSdt - An inline container. If undefined or null, then new class ApiInlineLvlSdt will be created and added to the paragraph.
  * @returns {ApiInlineLvlSdt}
  */
-ApiParagraph.prototype.AddInlineLvlSdt = function(oSdt){ return new ApiInlineLvlSdt(); };
+ApiParagraph.prototype.AddInlineLvlSdt = (oSdt) => new ApiInlineLvlSdt()
 
 /**
  * Adds a comment to the current paragraph.
@@ -2568,17 +2593,17 @@ ApiParagraph.prototype.AddInlineLvlSdt = function(oSdt){ return new ApiInlineLvl
  * @param {string} sUserId - The user ID of the comment author (optional).
  * @returns {ApiComment} - Returns null if the comment was not added.
  */
-ApiParagraph.prototype.AddComment = function(sText, sAuthor, sUserId){ return new ApiComment(); };
+ApiParagraph.prototype.AddComment = (sText, sAuthor, sUserId) => new ApiComment()
 
 /**
- * Adds a hyperlink to a paragraph. 
+ * Adds a hyperlink to a paragraph.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
  * @param {string} sLink - The link address.
  * @param {string} sScreenTipText - The screen tip text.
  * @returns {ApiHyperlink | null} - returns null if params are invalid.
  */
-ApiParagraph.prototype.AddHyperlink = function(sLink, sScreenTipText){ return new ApiHyperlink(); };
+ApiParagraph.prototype.AddHyperlink = (sLink, sScreenTipText) => new ApiHyperlink()
 
 /**
  * Returns a Range object that represents the part of the document contained in the specified paragraph.
@@ -2586,9 +2611,9 @@ ApiParagraph.prototype.AddHyperlink = function(sLink, sScreenTipText){ return ne
  * @typeofeditors ["CDE"]
  * @param {Number} Start - Start character in the current element.
  * @param {Number} End - End character in the current element.
- * @returns {ApiRange} 
+ * @returns {ApiRange}
  * */
-ApiParagraph.prototype.GetRange = function(Start, End){ return new ApiRange(); };
+ApiParagraph.prototype.GetRange = (Start, End) => new ApiRange()
 
 /**
  * Adds an element to the current paragraph.
@@ -2599,7 +2624,7 @@ ApiParagraph.prototype.GetRange = function(Start, End){ return new ApiRange(); }
  * @returns {boolean} Returns <code>false</code> if the type of <code>oElement</code> is not supported by paragraph
  * content.
  */
-ApiParagraph.prototype.Push = function(oElement){ return true; };
+ApiParagraph.prototype.Push = (oElement) => true
 
 /**
  * Returns the last Run with text in the current paragraph.
@@ -2607,7 +2632,7 @@ ApiParagraph.prototype.Push = function(oElement){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {ApiRun} Returns <code>false</code> if the paragraph doesn't containt the required run.
  */
-ApiParagraph.prototype.GetLastRunWithText = function(){ return new ApiRun(); };
+ApiParagraph.prototype.GetLastRunWithText = () => new ApiRun()
 
 /**
  * Sets the bold property to the text character.
@@ -2616,7 +2641,7 @@ ApiParagraph.prototype.GetLastRunWithText = function(){ return new ApiRun(); };
  * @param {boolean} isBold - Specifies that the contents of this paragraph are displayed bold.
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetBold = function(isBold){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetBold = (isBold) => new ApiParagraph()
 
 /**
  * Specifies that any lowercase characters in this paragraph are formatted for display only as their capital letter character equivalents.
@@ -2625,7 +2650,7 @@ ApiParagraph.prototype.SetBold = function(isBold){ return new ApiParagraph(); };
  * @param {boolean} isCaps - Specifies that the contents of the current paragraph are displayed capitalized.
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetCaps = function(isCaps){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetCaps = (isCaps) => new ApiParagraph()
 
 /**
  * Sets the text color to the current paragraph in the RGB format.
@@ -2637,7 +2662,7 @@ ApiParagraph.prototype.SetCaps = function(isCaps){ return new ApiParagraph(); };
  * @param {boolean} [isAuto=false] - If this parameter is set to "true", then r,g,b parameters will be ignored.
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetColor = function(r, g, b, isAuto){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetColor = (r, g, b, isAuto) => new ApiParagraph()
 
 /**
  * Specifies that the contents of this paragraph are displayed with two horizontal lines through each character displayed on the line.
@@ -2646,7 +2671,7 @@ ApiParagraph.prototype.SetColor = function(r, g, b, isAuto){ return new ApiParag
  * @param {boolean} isDoubleStrikeout - Specifies that the contents of the current paragraph are displayed double struck through.
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetDoubleStrikeout = function(isDoubleStrikeout){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetDoubleStrikeout = (isDoubleStrikeout) => new ApiParagraph()
 
 /**
  * Sets all 4 font slots with the specified font family.
@@ -2655,7 +2680,7 @@ ApiParagraph.prototype.SetDoubleStrikeout = function(isDoubleStrikeout){ return 
  * @param {string} sFontFamily - The font family or families used for the current paragraph.
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetFontFamily = function(sFontFamily){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetFontFamily = (sFontFamily) => new ApiParagraph()
 
 /**
  * Returns all font names from all elements inside the current paragraph.
@@ -2663,7 +2688,7 @@ ApiParagraph.prototype.SetFontFamily = function(sFontFamily){ return new ApiPara
  * @typeofeditors ["CDE"]
  * @returns {string[]} - The font names used for the current paragraph.
  */
-ApiParagraph.prototype.GetFontNames = function(){ return [""]; };
+ApiParagraph.prototype.GetFontNames = () => [""]
 
 /**
  * Sets the font size to the characters of the current paragraph.
@@ -2672,7 +2697,7 @@ ApiParagraph.prototype.GetFontNames = function(){ return [""]; };
  * @param {hps} nSize - The text size value measured in half-points (1/144 of an inch).
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetFontSize = function(nSize){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetFontSize = (nSize) => new ApiParagraph()
 
 /**
  * Specifies a highlighting color which is applied as a background to the contents of the current paragraph.
@@ -2681,7 +2706,7 @@ ApiParagraph.prototype.SetFontSize = function(nSize){ return new ApiParagraph();
  * @param {highlightColor} sColor - Available highlight color.
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetHighlight = function(sColor){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetHighlight = (sColor) => new ApiParagraph()
 
 /**
  * Sets the italic property to the text character.
@@ -2690,7 +2715,7 @@ ApiParagraph.prototype.SetHighlight = function(sColor){ return new ApiParagraph(
  * @param {boolean} isItalic - Specifies that the contents of the current paragraph are displayed italicized.
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetItalic = function(isItalic){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetItalic = (isItalic) => new ApiParagraph()
 
 /**
  * Specifies an amount by which text is raised or lowered for this paragraph in relation to the default
@@ -2701,7 +2726,7 @@ ApiParagraph.prototype.SetItalic = function(isItalic){ return new ApiParagraph()
  * measurement in half-points (1/144 of an inch).
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetPosition = function(nPosition){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetPosition = (nPosition) => new ApiParagraph()
 
 /**
  * Specifies that all the small letter characters in this paragraph are formatted for display only as their capital
@@ -2711,7 +2736,7 @@ ApiParagraph.prototype.SetPosition = function(nPosition){ return new ApiParagrap
  * @param {boolean} isSmallCaps - Specifies if the contents of the current paragraph are displayed capitalized two points smaller or not.
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetSmallCaps = function(isSmallCaps){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetSmallCaps = (isSmallCaps) => new ApiParagraph()
 
 /**
  * Sets the text spacing measured in twentieths of a point.
@@ -2720,7 +2745,7 @@ ApiParagraph.prototype.SetSmallCaps = function(isSmallCaps){ return new ApiParag
  * @param {twips} nSpacing - The value of the text spacing measured in twentieths of a point (1/1440 of an inch).
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetSpacing = function(nSpacing){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetSpacing = (nSpacing) => new ApiParagraph()
 
 /**
  * Specifies that the contents of this paragraph are displayed with a single horizontal line through the center of the line.
@@ -2729,7 +2754,7 @@ ApiParagraph.prototype.SetSpacing = function(nSpacing){ return new ApiParagraph(
  * @param {boolean} isStrikeout - Specifies that the contents of the current paragraph are displayed struck through.
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetStrikeout = function(isStrikeout){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetStrikeout = (isStrikeout) => new ApiParagraph()
 
 /**
  * Specifies that the contents of this paragraph are displayed along with a line appearing directly below the character
@@ -2739,7 +2764,7 @@ ApiParagraph.prototype.SetStrikeout = function(isStrikeout){ return new ApiParag
  * @param {boolean} isUnderline - Specifies that the contents of the current paragraph are displayed underlined.
  * @returns {ApiParagraph} this
  */
-ApiParagraph.prototype.SetUnderline = function(isUnderline){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetUnderline = (isUnderline) => new ApiParagraph()
 
 /**
  * Specifies the alignment which will be applied to the contents of this paragraph in relation to the default appearance of the paragraph text:
@@ -2751,7 +2776,7 @@ ApiParagraph.prototype.SetUnderline = function(isUnderline){ return new ApiParag
  * @param {("baseline" | "subscript" | "superscript")} sType - The vertical alignment type applied to the text contents.
  * @returns {ApiParagraph | null} - returns null is sType is invalid.
  */
-ApiParagraph.prototype.SetVertAlign = function(sType){ return new ApiParagraph(); };
+ApiParagraph.prototype.SetVertAlign = (sType) => new ApiParagraph()
 
 /**
  * Returns the last element of the paragraph which is not empty.
@@ -2759,79 +2784,79 @@ ApiParagraph.prototype.SetVertAlign = function(sType){ return new ApiParagraph()
  * @typeofeditors ["CDE"]
  * @returns {ParagraphContent}
  */
-ApiParagraph.prototype.Last = function(){ return new ParagraphContent(); };
+ApiParagraph.prototype.Last = () => new ParagraphContent()
 
 /**
  * Returns a collection of content control objects in the paragraph.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
- * @returns {ApiInlineLvlSdt[]}   
+ * @returns {ApiInlineLvlSdt[]}
  */
-ApiParagraph.prototype.GetAllContentControls = function(){ return [new ApiInlineLvlSdt()]; };
+ApiParagraph.prototype.GetAllContentControls = () => [new ApiInlineLvlSdt()]
 
 /**
  * Returns a collection of drawing objects in the paragraph.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
- * @returns {ApiDrawing[]}  
+ * @returns {ApiDrawing[]}
  */
-ApiParagraph.prototype.GetAllDrawingObjects = function(){ return [new ApiDrawing()]; };
+ApiParagraph.prototype.GetAllDrawingObjects = () => [new ApiDrawing()]
 
 /**
  * Returns a collection of shape objects in the paragraph.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
- * @returns {ApiShape[]}  
+ * @returns {ApiShape[]}
  */
-ApiParagraph.prototype.GetAllShapes = function(){ return [new ApiShape()]; };
+ApiParagraph.prototype.GetAllShapes = () => [new ApiShape()]
 
 /**
  * Returns a collection of image objects in the paragraph.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
- * @returns {ApiImage[]}  
+ * @returns {ApiImage[]}
  */
-ApiParagraph.prototype.GetAllImages = function(){ return [new ApiImage()]; };
+ApiParagraph.prototype.GetAllImages = () => [new ApiImage()]
 
 /**
  * Returns a collection of chart objects in the paragraph.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
- * @returns {ApiChart[]}  
+ * @returns {ApiChart[]}
  */
-ApiParagraph.prototype.GetAllCharts = function(){ return [new ApiChart()]; };
+ApiParagraph.prototype.GetAllCharts = () => [new ApiChart()]
 
 /**
  * Returns a collection of OLE objects in the paragraph.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
- * @returns {ApiOleObject[]}  
+ * @returns {ApiOleObject[]}
  */
-ApiParagraph.prototype.GetAllOleObjects = function(){ return [new ApiOleObject()]; };
+ApiParagraph.prototype.GetAllOleObjects = () => [new ApiOleObject()]
 
 /**
  * Returns a content control that contains the current paragraph.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
- * @returns {ApiBlockLvlSdt | null} - returns null is parent content control doesn't exist.  
+ * @returns {ApiBlockLvlSdt | null} - returns null is parent content control doesn't exist.
  */
-ApiParagraph.prototype.GetParentContentControl = function(){ return new ApiBlockLvlSdt(); };
+ApiParagraph.prototype.GetParentContentControl = () => new ApiBlockLvlSdt()
 
 /**
  * Returns a table that contains the current paragraph.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
- * @returns {ApiTable | null} - returns null if parent table doesn't exist.  
+ * @returns {ApiTable | null} - returns null if parent table doesn't exist.
  */
-ApiParagraph.prototype.GetParentTable = function(){ return new ApiTable(); };
+ApiParagraph.prototype.GetParentTable = () => new ApiTable()
 
 /**
  * Returns a table cell that contains the current paragraph.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
- * @returns {ApiTableCell | null} - returns null if parent cell doesn't exist.  
+ * @returns {ApiTableCell | null} - returns null if parent cell doesn't exist.
  */
-ApiParagraph.prototype.GetParentTableCell = function(){ return new ApiTableCell(); };
+ApiParagraph.prototype.GetParentTableCell = () => new ApiTableCell()
 
 /**
  * Returns the paragraph text.
@@ -2844,15 +2869,15 @@ ApiParagraph.prototype.GetParentTableCell = function(){ return new ApiTableCell(
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiParagraph.prototype.GetText = function(oPr){ return ""; };
+ApiParagraph.prototype.GetText = (oPr) => ""
 
 /**
  * Returns the paragraph text properties.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
- * @returns {ApiTextPr}  
+ * @returns {ApiTextPr}
  */
-ApiParagraph.prototype.GetTextPr = function(){ return new ApiTextPr(); };
+ApiParagraph.prototype.GetTextPr = () => new ApiTextPr()
 
 /**
  * Sets the paragraph text properties.
@@ -2861,16 +2886,16 @@ ApiParagraph.prototype.GetTextPr = function(){ return new ApiTextPr(); };
  * @param {ApiTextPr} oTextPr - The paragraph text properties.
  * @returns {boolean} - returns false if param is invalid.
  */
-ApiParagraph.prototype.SetTextPr = function(oTextPr){ return true; };
+ApiParagraph.prototype.SetTextPr = (oTextPr) => true
 
 /**
  * Wraps the paragraph object with a rich text content control.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
  * @param {number} nType - Defines if this method returns the ApiBlockLvlSdt (nType === 1) or ApiParagraph (any value except 1) object.
- * @returns {ApiParagraph | ApiBlockLvlSdt}  
+ * @returns {ApiParagraph | ApiBlockLvlSdt}
  */
-ApiParagraph.prototype.InsertInContentControl = function(nType){ return new ApiParagraph(); };
+ApiParagraph.prototype.InsertInContentControl = (nType) => new ApiParagraph()
 
 /**
  * Inserts a paragraph at the specified position.
@@ -2879,9 +2904,9 @@ ApiParagraph.prototype.InsertInContentControl = function(nType){ return new ApiP
  * @param {string | ApiParagraph} paragraph - Text or paragraph.
  * @param {string} sPosition - The position where the text or paragraph will be inserted ("before" or "after" the paragraph specified).
  * @param {boolean} beRNewPara - Defines if this method returns a new paragraph (true) or the current paragraph (false).
- * @returns {ApiParagraph | null} - returns null if param paragraph is invalid. 
+ * @returns {ApiParagraph | null} - returns null if param paragraph is invalid.
  */
-ApiParagraph.prototype.InsertParagraph = function(paragraph, sPosition, beRNewPara){ return new ApiParagraph(); };
+ApiParagraph.prototype.InsertParagraph = (paragraph, sPosition, beRNewPara) => new ApiParagraph()
 
 /**
  * Selects the current paragraph.
@@ -2889,7 +2914,7 @@ ApiParagraph.prototype.InsertParagraph = function(paragraph, sPosition, beRNewPa
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiParagraph.prototype.Select = function(){ return true; };
+ApiParagraph.prototype.Select = () => true
 
 /**
  * Searches for a scope of a paragraph object. The search results are a collection of ApiRange objects.
@@ -2897,16 +2922,16 @@ ApiParagraph.prototype.Select = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @param {string} sText - Search string.
  * @param {boolean} isMatchCase - Case sensitive or not.
- * @returns {ApiRange[]}  
+ * @returns {ApiRange[]}
  */
-ApiParagraph.prototype.Search = function(sText, isMatchCase){ return [new ApiRange()]; };
+ApiParagraph.prototype.Search = (sText, isMatchCase) => [new ApiRange()]
 
 /**
  * Wraps the paragraph content in a mail merge field.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
  */
-ApiParagraph.prototype.WrapInMailMergeField = function(){};
+ApiParagraph.prototype.WrapInMailMergeField = () => {}
 
 /**
  * Adds a numbered cross-reference to the current paragraph.
@@ -2920,7 +2945,7 @@ ApiParagraph.prototype.WrapInMailMergeField = function(){};
  * @param {string} [sSepWith=""] - A number separator (used only with the "fullCtxParaNum" sRefType).
  * @returns {boolean}
  */
-ApiParagraph.prototype.AddNumberedCrossRef = function(sRefTo, oParaTo, bLink, bAboveBelow, sSepWith){ return true; };
+ApiParagraph.prototype.AddNumberedCrossRef = (sRefTo, oParaTo, bLink, bAboveBelow, sSepWith) => true
 
 /**
  * Adds a heading cross-reference to the current paragraph.
@@ -2933,7 +2958,7 @@ ApiParagraph.prototype.AddNumberedCrossRef = function(sRefTo, oParaTo, bLink, bA
  * @param {boolean} [bAboveBelow=false] - Specifies if the above/below words indicating the position of the reference should be included (don't used with the "text" and "aboveBelow" sRefType).
  * @returns {boolean}
  */
-ApiParagraph.prototype.AddHeadingCrossRef = function(sRefTo, oParaTo, bLink, bAboveBelow){ return true; };
+ApiParagraph.prototype.AddHeadingCrossRef = (sRefTo, oParaTo, bLink, bAboveBelow) => true
 
 /**
  * Adds a bookmark cross-reference to the current paragraph.
@@ -2947,7 +2972,13 @@ ApiParagraph.prototype.AddHeadingCrossRef = function(sRefTo, oParaTo, bLink, bAb
  * @param {string} [sSepWith=""] - A number separator (used only with the "fullCtxParaNum" sRefType).
  * @returns {boolean}
  */
-ApiParagraph.prototype.AddBookmarkCrossRef = function(sRefTo, sBookmarkName, bLink, bAboveBelow, sSepWith){ return true; };
+ApiParagraph.prototype.AddBookmarkCrossRef = (
+  sRefTo,
+  sBookmarkName,
+  bLink,
+  bAboveBelow,
+  sSepWith,
+) => true
 
 /**
  * Adds a footnote cross-reference to the current paragraph.
@@ -2960,7 +2991,7 @@ ApiParagraph.prototype.AddBookmarkCrossRef = function(sRefTo, sBookmarkName, bLi
  * @param {boolean} [bAboveBelow=false] - Specifies if the above/below words indicating the position of the reference should be included (don't used with the "aboveBelow" sRefType).
  * @returns {boolean}
  */
-ApiParagraph.prototype.AddFootnoteCrossRef = function(sRefTo, oParaTo, bLink, bAboveBelow){ return true; };
+ApiParagraph.prototype.AddFootnoteCrossRef = (sRefTo, oParaTo, bLink, bAboveBelow) => true
 
 /**
  * Adds an endnote cross-reference to the current paragraph.
@@ -2973,7 +3004,7 @@ ApiParagraph.prototype.AddFootnoteCrossRef = function(sRefTo, oParaTo, bLink, bA
  * @param {boolean} [bAboveBelow=false] - Specifies if the above/below words indicating the position of the reference should be included (don't used with the "aboveBelow" sRefType).
  * @returns {boolean}
  */
-ApiParagraph.prototype.AddEndnoteCrossRef = function(sRefTo, oParaTo, bLink, bAboveBelow){ return true; };
+ApiParagraph.prototype.AddEndnoteCrossRef = (sRefTo, oParaTo, bLink, bAboveBelow) => true
 
 /**
  * Adds a caption cross-reference to the current paragraph.
@@ -2987,7 +3018,7 @@ ApiParagraph.prototype.AddEndnoteCrossRef = function(sRefTo, oParaTo, bLink, bAb
  * @param {boolean} [bAboveBelow=false] - Specifies if the above/below words indicating the position of the reference should be included (used only with the "pageNum" sRefType).
  * @returns {boolean}
  */
-ApiParagraph.prototype.AddCaptionCrossRef = function(sCaption, sRefTo, oParaTo, bLink, bAboveBelow){ return true; };
+ApiParagraph.prototype.AddCaptionCrossRef = (sCaption, sRefTo, oParaTo, bLink, bAboveBelow) => true
 
 /**
  * Converts the ApiParagraph object into the JSON object.
@@ -2997,15 +3028,15 @@ ApiParagraph.prototype.AddCaptionCrossRef = function(sCaption, sRefTo, oParaTo, 
  * @param {boolean} bWriteStyles - Specifies if the used styles will be written to the JSON object or not.
  * @returns {JSON}
  */
-ApiParagraph.prototype.ToJSON = function(bWriteNumberings, bWriteStyles){ return new JSON(); };
+ApiParagraph.prototype.ToJSON = (bWriteNumberings, bWriteStyles) => new JSON()
 
 /**
  * Returns the paragraph position within its parent element.
  * @memberof ApiParagraph
  * @typeofeditors ["CDE"]
- * @returns {Number} - returns -1 if the paragraph parent doesn't exist. 
+ * @returns {Number} - returns -1 if the paragraph parent doesn't exist.
  */
-ApiParagraph.prototype.GetPosInParent = function(){ return 0; };
+ApiParagraph.prototype.GetPosInParent = () => 0
 
 /**
  * Replaces the current paragraph with a new element.
@@ -3014,7 +3045,7 @@ ApiParagraph.prototype.GetPosInParent = function(){ return 0; };
  * @param {DocumentElement} oElement - The element to replace the current paragraph with.
  * @returns {boolean}
  */
-ApiParagraph.prototype.ReplaceByElement = function(oElement){ return true; };
+ApiParagraph.prototype.ReplaceByElement = (oElement) => true
 
 /**
  * Adds a caption paragraph after (or before) the current paragraph.
@@ -3032,7 +3063,15 @@ ApiParagraph.prototype.ReplaceByElement = function(oElement){ return true; };
  * @param {CaptionSep} [sCaptionSep="hyphen"] - The caption separator (used if you want to specify the chapter number).
  * @returns {boolean}
  */
-ApiParagraph.prototype.AddCaption = function(sAdditional, sLabel, bExludeLabel, sNumberingFormat, bBefore, nHeadingLvl, sCaptionSep){ return true; };
+ApiParagraph.prototype.AddCaption = (
+  sAdditional,
+  sLabel,
+  bExludeLabel,
+  sNumberingFormat,
+  bBefore,
+  nHeadingLvl,
+  sCaptionSep,
+) => true
 
 /**
  * Returns the paragraph section.
@@ -3040,7 +3079,7 @@ ApiParagraph.prototype.AddCaption = function(sAdditional, sLabel, bExludeLabel, 
  * @typeofeditors ["CDE"]
  * @returns {ApiSection}
  */
-ApiParagraph.prototype.GetSection = function(){ return new ApiSection(); };
+ApiParagraph.prototype.GetSection = () => new ApiSection()
 
 /**
  * Sets the specified section to the current paragraph.
@@ -3049,7 +3088,7 @@ ApiParagraph.prototype.GetSection = function(){ return new ApiSection(); };
  * @param {ApiSection} oSection - The section which will be set to the paragraph.
  * @returns {boolean}
  */
-ApiParagraph.prototype.SetSection = function(oSection){ return true; };
+ApiParagraph.prototype.SetSection = (oSection) => true
 
 /**
  * Returns a type of the ApiRun class.
@@ -3057,7 +3096,7 @@ ApiParagraph.prototype.SetSection = function(oSection){ return true; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"run"}
  */
-ApiRun.prototype.GetClassType = function(){ return ""; };
+ApiRun.prototype.GetClassType = () => ""
 
 /**
  * Returns the text properties of the current run.
@@ -3065,28 +3104,28 @@ ApiRun.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.GetTextPr = function(){ return new ApiTextPr(); };
+ApiRun.prototype.GetTextPr = () => new ApiTextPr()
 
 /**
  * Clears the content from the current run.
  * @memberof ApiRun
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiRun.prototype.ClearContent = function(){};
+ApiRun.prototype.ClearContent = () => {}
 
 /**
  * Removes all the elements from the current run.
  * @memberof ApiRun
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiRun.prototype.RemoveAllElements = function(){};
+ApiRun.prototype.RemoveAllElements = () => {}
 
 /**
  * Deletes the current run.
  * @memberof ApiRun
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiRun.prototype.Delete = function(){};
+ApiRun.prototype.Delete = () => {}
 
 /**
  * Adds some text to the current run.
@@ -3094,35 +3133,35 @@ ApiRun.prototype.Delete = function(){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {string} sText - The text which will be added to the current run.
  */
-ApiRun.prototype.AddText = function(sText){};
+ApiRun.prototype.AddText = (sText) => {}
 
 /**
  * Adds a page break and starts the next element from a new page.
  * @memberof ApiRun
  * @typeofeditors ["CDE"]
  */
-ApiRun.prototype.AddPageBreak = function(){};
+ApiRun.prototype.AddPageBreak = () => {}
 
 /**
  * Adds a line break to the current run position and starts the next element from a new line.
  * @memberof ApiRun
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiRun.prototype.AddLineBreak = function(){};
+ApiRun.prototype.AddLineBreak = () => {}
 
 /**
  * Adds a column break to the current run position and starts the next element from a new column.
  * @memberof ApiRun
  * @typeofeditors ["CDE"]
  */
-ApiRun.prototype.AddColumnBreak = function(){};
+ApiRun.prototype.AddColumnBreak = () => {}
 
 /**
  * Adds a tab stop to the current run.
  * @memberof ApiRun
  * @typeofeditors ["CDE", "CSE", "CPE"]
  */
-ApiRun.prototype.AddTabStop = function(){};
+ApiRun.prototype.AddTabStop = () => {}
 
 /**
  * Adds a drawing object (image, shape or chart) to the current text run.
@@ -3131,7 +3170,7 @@ ApiRun.prototype.AddTabStop = function(){};
  * @param {ApiDrawing} oDrawing - The object which will be added to the current run.
  * @returns {boolean} - returns false if param is invalid.
  */
-ApiRun.prototype.AddDrawing = function(oDrawing){ return true; };
+ApiRun.prototype.AddDrawing = (oDrawing) => true
 
 /**
  * Selects the current run.
@@ -3139,17 +3178,17 @@ ApiRun.prototype.AddDrawing = function(oDrawing){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiRun.prototype.Select = function(){ return true; };
+ApiRun.prototype.Select = () => true
 
 /**
- * Adds a hyperlink to the current run. 
+ * Adds a hyperlink to the current run.
  * @memberof ApiRun
  * @typeofeditors ["CDE"]
  * @param {string} sLink - The link address.
  * @param {string} sScreenTipText - The screen tip text.
  * @returns {ApiHyperlink | null} - returns false if params are invalid.
  */
-ApiRun.prototype.AddHyperlink = function(sLink, sScreenTipText){ return new ApiHyperlink(); };
+ApiRun.prototype.AddHyperlink = (sLink, sScreenTipText) => new ApiHyperlink()
 
 /**
  * Creates a copy of the current run.
@@ -3157,7 +3196,7 @@ ApiRun.prototype.AddHyperlink = function(sLink, sScreenTipText){ return new ApiH
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiRun}
  */
-ApiRun.prototype.Copy = function(){ return new ApiRun(); };
+ApiRun.prototype.Copy = () => new ApiRun()
 
 /**
  * Returns a Range object that represents the part of the document contained in the specified run.
@@ -3165,17 +3204,17 @@ ApiRun.prototype.Copy = function(){ return new ApiRun(); };
  * @typeofeditors ["CDE"]
  * @param {Number} Start - Start character in the current element.
  * @param {Number} End - End character in the current element.
- * @returns {ApiRange} 
+ * @returns {ApiRange}
  * */
-ApiRun.prototype.GetRange = function(Start, End){ return new ApiRange(); };
+ApiRun.prototype.GetRange = (Start, End) => new ApiRange()
 
 /**
  * Returns a content control that contains the current run.
  * @memberof ApiRun
  * @typeofeditors ["CDE"]
- * @returns {ApiBlockLvlSdt | ApiInlineLvlSdt | null} - returns null if parent content control doesn't exist.  
+ * @returns {ApiBlockLvlSdt | ApiInlineLvlSdt | null} - returns null if parent content control doesn't exist.
  */
-ApiRun.prototype.GetParentContentControl = function(){ return new ApiBlockLvlSdt(); };
+ApiRun.prototype.GetParentContentControl = () => new ApiBlockLvlSdt()
 
 /**
  * Returns a table that contains the current run.
@@ -3183,24 +3222,24 @@ ApiRun.prototype.GetParentContentControl = function(){ return new ApiBlockLvlSdt
  * @typeofeditors ["CDE"]
  * @returns {ApiTable | null} - returns null if parent table doesn't exist.
  */
-ApiRun.prototype.GetParentTable = function(){ return new ApiTable(); };
+ApiRun.prototype.GetParentTable = () => new ApiTable()
 
 /**
  * Returns a table cell that contains the current run.
  * @memberof ApiRun
  * @typeofeditors ["CDE"]
- * @returns {ApiTableCell | null} - returns null is parent cell doesn't exist.  
+ * @returns {ApiTableCell | null} - returns null is parent cell doesn't exist.
  */
-ApiRun.prototype.GetParentTableCell = function(){ return new ApiTableCell(); };
+ApiRun.prototype.GetParentTableCell = () => new ApiTableCell()
 
 /**
  * Sets the text properties to the current run.
  * @memberof ApiRun
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {ApiTextPr} oTextPr - The text properties that will be set to the current run.
- * @returns {ApiTextPr}  
+ * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetTextPr = function(oTextPr){ return new ApiTextPr(); };
+ApiRun.prototype.SetTextPr = (oTextPr) => new ApiTextPr()
 
 /**
  * Sets the bold property to the text character.
@@ -3209,7 +3248,7 @@ ApiRun.prototype.SetTextPr = function(oTextPr){ return new ApiTextPr(); };
  * @param {boolean} isBold - Specifies that the contents of the current run are displayed bold.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetBold = function(isBold){ return new ApiTextPr(); };
+ApiRun.prototype.SetBold = (isBold) => new ApiTextPr()
 
 /**
  * Specifies that any lowercase characters in the current text run are formatted for display only as their capital letter character equivalents.
@@ -3218,7 +3257,7 @@ ApiRun.prototype.SetBold = function(isBold){ return new ApiTextPr(); };
  * @param {boolean} isCaps - Specifies that the contents of the current run are displayed capitalized.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetCaps = function(isCaps){ return new ApiTextPr(); };
+ApiRun.prototype.SetCaps = (isCaps) => new ApiTextPr()
 
 /**
  * Sets the text color for the current text run in the RGB format.
@@ -3230,7 +3269,7 @@ ApiRun.prototype.SetCaps = function(isCaps){ return new ApiTextPr(); };
  * @param {boolean} [isAuto=false] - If this parameter is set to "true", then r,g,b parameters will be ignored.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetColor = function(r, g, b, isAuto){ return new ApiTextPr(); };
+ApiRun.prototype.SetColor = (r, g, b, isAuto) => new ApiTextPr()
 
 /**
  * Specifies that the contents of the current run are displayed with two horizontal lines through each character displayed on the line.
@@ -3239,7 +3278,7 @@ ApiRun.prototype.SetColor = function(r, g, b, isAuto){ return new ApiTextPr(); }
  * @param {boolean} isDoubleStrikeout - Specifies that the contents of the current run are displayed double struck through.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetDoubleStrikeout = function(isDoubleStrikeout){ return new ApiTextPr(); };
+ApiRun.prototype.SetDoubleStrikeout = (isDoubleStrikeout) => new ApiTextPr()
 
 /**
  * Sets all 4 font slots with the specified font family.
@@ -3248,7 +3287,7 @@ ApiRun.prototype.SetDoubleStrikeout = function(isDoubleStrikeout){ return new Ap
  * @param {string} sFontFamily - The font family or families used for the current text run.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetFontFamily = function(sFontFamily){ return new ApiTextPr(); };
+ApiRun.prototype.SetFontFamily = (sFontFamily) => new ApiTextPr()
 
 /**
  * Returns all font names from all elements inside the current run.
@@ -3256,7 +3295,7 @@ ApiRun.prototype.SetFontFamily = function(sFontFamily){ return new ApiTextPr(); 
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {string[]} - The font names used for the current run.
  */
-ApiRun.prototype.GetFontNames = function(){ return [""]; };
+ApiRun.prototype.GetFontNames = () => [""]
 
 /**
  * Sets the font size to the characters of the current text run.
@@ -3265,7 +3304,7 @@ ApiRun.prototype.GetFontNames = function(){ return [""]; };
  * @param {hps} nSize - The text size value measured in half-points (1/144 of an inch).
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetFontSize = function(nSize){ return new ApiTextPr(); };
+ApiRun.prototype.SetFontSize = (nSize) => new ApiTextPr()
 
 /**
  * Specifies a highlighting color which is applied as a background to the contents of the current run.
@@ -3274,7 +3313,7 @@ ApiRun.prototype.SetFontSize = function(nSize){ return new ApiTextPr(); };
  * @param {highlightColor} sColor - Available highlight color.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetHighlight = function(sColor){ return new ApiTextPr(); };
+ApiRun.prototype.SetHighlight = (sColor) => new ApiTextPr()
 
 /**
  * Sets the italic property to the text character.
@@ -3283,7 +3322,7 @@ ApiRun.prototype.SetHighlight = function(sColor){ return new ApiTextPr(); };
  * @param {boolean} isItalic - Specifies that the contents of the current run are displayed italicized.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetItalic = function(isItalic){ return new ApiTextPr(); };
+ApiRun.prototype.SetItalic = (isItalic) => new ApiTextPr()
 
 /**
  * Specifies the languages which will be used to check spelling and grammar (if requested) when processing
@@ -3294,7 +3333,7 @@ ApiRun.prototype.SetItalic = function(isItalic){ return new ApiTextPr(); };
  * RFC 4646/BCP 47. Example: "en-CA".
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetLanguage = function(sLangId){ return new ApiTextPr(); };
+ApiRun.prototype.SetLanguage = (sLangId) => new ApiTextPr()
 
 /**
  * Specifies an amount by which text is raised or lowered for this run in relation to the default
@@ -3305,7 +3344,7 @@ ApiRun.prototype.SetLanguage = function(sLangId){ return new ApiTextPr(); };
  * measurement in half-points (1/144 of an inch).
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetPosition = function(nPosition){ return new ApiTextPr(); };
+ApiRun.prototype.SetPosition = (nPosition) => new ApiTextPr()
 
 /**
  * Specifies the shading applied to the contents of the current text run.
@@ -3317,7 +3356,7 @@ ApiRun.prototype.SetPosition = function(nPosition){ return new ApiTextPr(); };
  * @param {byte} b - Blue color component value.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetShd = function(sType, r, g, b){ return new ApiTextPr(); };
+ApiRun.prototype.SetShd = (sType, r, g, b) => new ApiTextPr()
 
 /**
  * Specifies that all the small letter characters in this text run are formatted for display only as their capital
@@ -3327,7 +3366,7 @@ ApiRun.prototype.SetShd = function(sType, r, g, b){ return new ApiTextPr(); };
  * @param {boolean} isSmallCaps - Specifies if the contents of the current run are displayed capitalized two points smaller or not.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetSmallCaps = function(isSmallCaps){ return new ApiTextPr(); };
+ApiRun.prototype.SetSmallCaps = (isSmallCaps) => new ApiTextPr()
 
 /**
  * Sets the text spacing measured in twentieths of a point.
@@ -3336,7 +3375,7 @@ ApiRun.prototype.SetSmallCaps = function(isSmallCaps){ return new ApiTextPr(); }
  * @param {twips} nSpacing - The value of the text spacing measured in twentieths of a point (1/1440 of an inch).
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetSpacing = function(nSpacing){ return new ApiTextPr(); };
+ApiRun.prototype.SetSpacing = (nSpacing) => new ApiTextPr()
 
 /**
  * Specifies that the contents of the current run are displayed with a single horizontal line through the center of the line.
@@ -3345,7 +3384,7 @@ ApiRun.prototype.SetSpacing = function(nSpacing){ return new ApiTextPr(); };
  * @param {boolean} isStrikeout - Specifies that the contents of the current run are displayed struck through.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetStrikeout = function(isStrikeout){ return new ApiTextPr(); };
+ApiRun.prototype.SetStrikeout = (isStrikeout) => new ApiTextPr()
 
 /**
  * Sets a style to the current run.
@@ -3354,7 +3393,7 @@ ApiRun.prototype.SetStrikeout = function(isStrikeout){ return new ApiTextPr(); }
  * @param {ApiStyle} oStyle - The style which must be applied to the text run.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetStyle = function(oStyle){ return new ApiTextPr(); };
+ApiRun.prototype.SetStyle = (oStyle) => new ApiTextPr()
 
 /**
  * Specifies that the contents of the current run are displayed along with a line appearing directly below the character
@@ -3364,7 +3403,7 @@ ApiRun.prototype.SetStyle = function(oStyle){ return new ApiTextPr(); };
  * @param {boolean} isUnderline - Specifies that the contents of the current run are displayed underlined.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetUnderline = function(isUnderline){ return new ApiTextPr(); };
+ApiRun.prototype.SetUnderline = (isUnderline) => new ApiTextPr()
 
 /**
  * Specifies the alignment which will be applied to the contents of the current run in relation to the default appearance of the text run:
@@ -3376,14 +3415,14 @@ ApiRun.prototype.SetUnderline = function(isUnderline){ return new ApiTextPr(); }
  * @param {("baseline" | "subscript" | "superscript")} sType - The vertical alignment type applied to the text contents.
  * @returns {ApiTextPr}
  */
-ApiRun.prototype.SetVertAlign = function(sType){ return new ApiTextPr(); };
+ApiRun.prototype.SetVertAlign = (sType) => new ApiTextPr()
 
 /**
  * Wraps a run in a mail merge field.
  * @memberof ApiRun
  * @typeofeditors ["CDE"]
  */
-ApiRun.prototype.WrapInMailMergeField = function(){};
+ApiRun.prototype.WrapInMailMergeField = () => {}
 
 /**
  * Converts the ApiRun object into the JSON object.
@@ -3392,7 +3431,7 @@ ApiRun.prototype.WrapInMailMergeField = function(){};
  * @param {boolean} bWriteStyles - Specifies if the used styles will be written to the JSON object or not.
  * @returns {JSON}
  */
-ApiRun.prototype.ToJSON = function(bWriteStyles){ return new JSON(); };
+ApiRun.prototype.ToJSON = (bWriteStyles) => new JSON()
 
 /**
  * Adds a comment to the current run.
@@ -3404,7 +3443,7 @@ ApiRun.prototype.ToJSON = function(bWriteStyles){ return new JSON(); };
  * @param {string} sUserId - The user ID of the comment author (optional).
  * @returns {ApiComment} - Returns null if the comment was not added.
  */
-ApiRun.prototype.AddComment = function(sText, sAuthor, sUserId){ return new ApiComment(); };
+ApiRun.prototype.AddComment = (sText, sAuthor, sUserId) => new ApiComment()
 
 /**
  * Returns a text from the text run.
@@ -3415,7 +3454,7 @@ ApiRun.prototype.AddComment = function(sText, sAuthor, sUserId){ return new ApiC
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiRun.prototype.GetText = function(oPr){ return ""; };
+ApiRun.prototype.GetText = (oPr) => ""
 
 /**
  * Returns a type of the ApiSection class.
@@ -3423,10 +3462,10 @@ ApiRun.prototype.GetText = function(oPr){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {"section"}
  */
-ApiSection.prototype.GetClassType = function(){ return ""; };
+ApiSection.prototype.GetClassType = () => ""
 
 /**
- * Specifies a type of the current section. The section type defines how the contents of the current 
+ * Specifies a type of the current section. The section type defines how the contents of the current
  * section are placed relative to the previous section.<br/>
  * WordprocessingML supports five distinct types of section breaks:
  *   * <b>Next page</b> section breaks (the default if type is not specified), which begin the new section on the
@@ -3442,7 +3481,7 @@ ApiSection.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {("nextPage" | "oddPage" | "evenPage" | "continuous" | "nextColumn")} sType - The section break type.
  */
-ApiSection.prototype.SetType = function(sType){};
+ApiSection.prototype.SetType = (sType) => {}
 
 /**
  * Specifies that all the text columns in the current section are of equal width.
@@ -3451,17 +3490,17 @@ ApiSection.prototype.SetType = function(sType){};
  * @param {number} nCount - Number of columns.
  * @param {twips} nSpace - Distance between columns measured in twentieths of a point (1/1440 of an inch).
  */
-ApiSection.prototype.SetEqualColumns = function(nCount, nSpace){};
+ApiSection.prototype.SetEqualColumns = (nCount, nSpace) => {}
 
 /**
- * Specifies that all the columns in the current section have the different widths. Number of columns is equal 
+ * Specifies that all the columns in the current section have the different widths. Number of columns is equal
  * to the length of the aWidth array. The length of the aSpaces array MUST BE equal to (aWidth.length - 1).
  * @memberof ApiSection
  * @typeofeditors ["CDE"]
  * @param {twips[]} aWidths - An array of column width values measured in twentieths of a point (1/1440 of an inch).
  * @param {twips[]} aSpaces - An array of distance values between the columns measured in twentieths of a point (1/1440 of an inch).
  */
-ApiSection.prototype.SetNotEqualColumns = function(aWidths, aSpaces){};
+ApiSection.prototype.SetNotEqualColumns = (aWidths, aSpaces) => {}
 
 /**
  * Specifies the properties (size and orientation) for all the pages in the current section.
@@ -3471,7 +3510,7 @@ ApiSection.prototype.SetNotEqualColumns = function(aWidths, aSpaces){};
  * @param {twips} nHeight - The page height measured in twentieths of a point (1/1440 of an inch).
  * @param {boolean} [isPortrait=false] - Specifies the orientation of all the pages in this section (if set to true, then the portrait orientation is chosen).
  */
-ApiSection.prototype.SetPageSize = function(nWidth, nHeight, isPortrait){};
+ApiSection.prototype.SetPageSize = (nWidth, nHeight, isPortrait) => {}
 
 /**
  * Gets page height for current section.
@@ -3479,7 +3518,7 @@ ApiSection.prototype.SetPageSize = function(nWidth, nHeight, isPortrait){};
  * @typeofeditors ["CDE"]
  * @returns {twips}
  */
-ApiSection.prototype.GetPageHeight = function(){ return new twips(); };
+ApiSection.prototype.GetPageHeight = () => new twips()
 
 /**
  * Gets page width for current section.
@@ -3487,7 +3526,7 @@ ApiSection.prototype.GetPageHeight = function(){ return new twips(); };
  * @typeofeditors ["CDE"]
  * @returns {twips}
  */
-ApiSection.prototype.GetPageWidth = function(){ return new twips(); };
+ApiSection.prototype.GetPageWidth = () => new twips()
 
 /**
  * Specifies the page margins for all the pages in this section.
@@ -3498,7 +3537,7 @@ ApiSection.prototype.GetPageWidth = function(){ return new twips(); };
  * @param {twips} nRight - The right margin width measured in twentieths of a point (1/1440 of an inch).
  * @param {twips} nBottom - The bottom margin height measured in twentieths of a point (1/1440 of an inch).
  */
-ApiSection.prototype.SetPageMargins = function(nLeft, nTop, nRight, nBottom){};
+ApiSection.prototype.SetPageMargins = (nLeft, nTop, nRight, nBottom) => {}
 
 /**
  * Specifies the distance from the top edge of the page to the top edge of the header.
@@ -3506,7 +3545,7 @@ ApiSection.prototype.SetPageMargins = function(nLeft, nTop, nRight, nBottom){};
  * @typeofeditors ["CDE"]
  * @param {twips} nDistance - The distance from the top edge of the page to the top edge of the header measured in twentieths of a point (1/1440 of an inch).
  */
-ApiSection.prototype.SetHeaderDistance = function(nDistance){};
+ApiSection.prototype.SetHeaderDistance = (nDistance) => {}
 
 /**
  * Specifies the distance from the bottom edge of the page to the bottom edge of the footer.
@@ -3515,7 +3554,7 @@ ApiSection.prototype.SetHeaderDistance = function(nDistance){};
  * @param {twips} nDistance - The distance from the bottom edge of the page to the bottom edge of the footer measured
  * in twentieths of a point (1/1440 of an inch).
  */
-ApiSection.prototype.SetFooterDistance = function(nDistance){};
+ApiSection.prototype.SetFooterDistance = (nDistance) => {}
 
 /**
  * Returns the content for the specified header type.
@@ -3526,7 +3565,7 @@ ApiSection.prototype.SetFooterDistance = function(nDistance){};
  * no header with such a type could be found in the current section.
  * @returns {ApiDocumentContent}
  */
-ApiSection.prototype.GetHeader = function(sType, isCreate){ return new ApiDocumentContent(); };
+ApiSection.prototype.GetHeader = (sType, isCreate) => new ApiDocumentContent()
 
 /**
  * Removes the header of the specified type from the current section. After removal, the header will be inherited from
@@ -3535,7 +3574,7 @@ ApiSection.prototype.GetHeader = function(sType, isCreate){ return new ApiDocume
  * @typeofeditors ["CDE"]
  * @param {HdrFtrType} sType - Header type to be removed.
  */
-ApiSection.prototype.RemoveHeader = function(sType){};
+ApiSection.prototype.RemoveHeader = (sType) => {}
 
 /**
  * Returns the content for the specified footer type.
@@ -3546,16 +3585,16 @@ ApiSection.prototype.RemoveHeader = function(sType){};
  * no footer with such a type could be found in the current section.
  * @returns {ApiDocumentContent}
  */
-ApiSection.prototype.GetFooter = function(sType, isCreate){ return new ApiDocumentContent(); };
+ApiSection.prototype.GetFooter = (sType, isCreate) => new ApiDocumentContent()
 
 /**
- * Removes the footer of the specified type from the current section. After removal, the footer will be inherited from 
+ * Removes the footer of the specified type from the current section. After removal, the footer will be inherited from
  * the previous section, or if this is the first section in the document, no footer of the specified type will be presented.
  * @memberof ApiSection
  * @typeofeditors ["CDE"]
  * @param {HdrFtrType} sType - Footer type to be removed.
  */
-ApiSection.prototype.RemoveFooter = function(sType){};
+ApiSection.prototype.RemoveFooter = (sType) => {}
 
 /**
  * Specifies whether the current section in this document has the different header and footer for the section first page.
@@ -3563,7 +3602,7 @@ ApiSection.prototype.RemoveFooter = function(sType){};
  * @typeofeditors ["CDE"]
  * @param {boolean} isTitlePage - If true, the first page of the section will have header and footer that will differ from the other pages of the same section.
  */
-ApiSection.prototype.SetTitlePage = function(isTitlePage){};
+ApiSection.prototype.SetTitlePage = (isTitlePage) => {}
 
 /**
  * Returns the next section if exists.
@@ -3571,7 +3610,7 @@ ApiSection.prototype.SetTitlePage = function(isTitlePage){};
  * @typeofeditors ["CDE"]
  * @returns {ApiSection | null} - returns null if section is last.
  */
-ApiSection.prototype.GetNext = function(){ return new ApiSection(); };
+ApiSection.prototype.GetNext = () => new ApiSection()
 
 /**
  * Returns the previous section if exists.
@@ -3579,7 +3618,7 @@ ApiSection.prototype.GetNext = function(){ return new ApiSection(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiSection | null} - returns null if section is first.
  */
-ApiSection.prototype.GetPrevious = function(){ return new ApiSection(); };
+ApiSection.prototype.GetPrevious = () => new ApiSection()
 
 /**
  * Converts the ApiSection object into the JSON object.
@@ -3589,7 +3628,7 @@ ApiSection.prototype.GetPrevious = function(){ return new ApiSection(); };
  * @param {boolean} bWriteStyles - Specifies if the used styles will be written to the JSON object or not.
  * @returns {JSON}
  */
-ApiSection.prototype.ToJSON = function(bWriteNumberings, bWriteStyles){ return new JSON(); };
+ApiSection.prototype.ToJSON = (bWriteNumberings, bWriteStyles) => new JSON()
 
 /**
  * Returns a type of the ApiTable class.
@@ -3597,7 +3636,7 @@ ApiSection.prototype.ToJSON = function(bWriteNumberings, bWriteStyles){ return n
  * @typeofeditors ["CDE"]
  * @returns {"table"}
  */
-ApiTable.prototype.GetClassType = function(){ return ""; };
+ApiTable.prototype.GetClassType = () => ""
 
 /**
  * Returns a number of rows in the current table.
@@ -3605,7 +3644,7 @@ ApiTable.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {number}
  */
-ApiTable.prototype.GetRowsCount = function(){ return 0; };
+ApiTable.prototype.GetRowsCount = () => 0
 
 /**
  * Returns a table row by its position in the table.
@@ -3614,7 +3653,7 @@ ApiTable.prototype.GetRowsCount = function(){ return 0; };
  * @param {number} nPos - The row position within the table.
  * @returns {ApiTableRow | null} - returns null if param is invalid.
  */
-ApiTable.prototype.GetRow = function(nPos){ return new ApiTableRow(); };
+ApiTable.prototype.GetRow = (nPos) => new ApiTableRow()
 
 /**
  * Returns a cell by its position.
@@ -3624,7 +3663,7 @@ ApiTable.prototype.GetRow = function(nPos){ return new ApiTableRow(); };
  * @param {number} nCell - The cell position in the current table.
  * @returns {ApiTableCell | null} - returns null if params are invalid.
  */
-ApiTable.prototype.GetCell = function(nRow, nCell){ return new ApiTableCell(); };
+ApiTable.prototype.GetCell = (nRow, nCell) => new ApiTableCell()
 
 /**
  * Merges an array of cells. If the merge is done successfully, it will return the resulting merged cell, otherwise the result will be "null".
@@ -3634,7 +3673,7 @@ ApiTable.prototype.GetCell = function(nRow, nCell){ return new ApiTableCell(); }
  * @param {ApiTableCell[]} aCells - The array of cells to be merged.
  * @returns {ApiTableCell}
  */
-ApiTable.prototype.MergeCells = function(aCells){ return new ApiTableCell(); };
+ApiTable.prototype.MergeCells = (aCells) => new ApiTableCell()
 
 /**
  * Sets a style to the current table.
@@ -3643,15 +3682,15 @@ ApiTable.prototype.MergeCells = function(aCells){ return new ApiTableCell(); };
  * @param {ApiStyle} oStyle - The style which will be applied to the current table.
  * @returns {boolean} - returns false if param is invalid.
  */
-ApiTable.prototype.SetStyle = function(oStyle){ return true; };
+ApiTable.prototype.SetStyle = (oStyle) => true
 
 /**
- * Specifies the conditional formatting components of the referenced table style (if one exists) 
- * which will be applied to the set of table rows with the current table-level property exceptions. A table style 
- * can specify up to six different optional conditional formats, for example, different formatting for the first column, 
+ * Specifies the conditional formatting components of the referenced table style (if one exists)
+ * which will be applied to the set of table rows with the current table-level property exceptions. A table style
+ * can specify up to six different optional conditional formats, for example, different formatting for the first column,
  * which then can be applied or omitted from individual table rows in the parent table.
- * 
- * The default setting is to apply the row and column band formatting, but not the first row, last row, first 
+ *
+ * The default setting is to apply the row and column band formatting, but not the first row, last row, first
  * column, or last column formatting.
  * @memberof ApiTable
  * @typeofeditors ["CDE"]
@@ -3662,7 +3701,14 @@ ApiTable.prototype.SetStyle = function(oStyle){ return true; };
  * @param {boolean} isHorBand - Specifies that the horizontal band conditional formatting will not be applied to the table.
  * @param {boolean} isVerBand - Specifies that the vertical band conditional formatting will not be applied to the table.
  */
-ApiTable.prototype.SetTableLook = function(isFirstColumn, isFirstRow, isLastColumn, isLastRow, isHorBand, isVerBand){};
+ApiTable.prototype.SetTableLook = (
+  isFirstColumn,
+  isFirstRow,
+  isLastColumn,
+  isLastRow,
+  isHorBand,
+  isVerBand,
+) => {}
 
 /**
  * Splits the cell into a given number of rows and columns.
@@ -3673,7 +3719,7 @@ ApiTable.prototype.SetTableLook = function(isFirstColumn, isFirstRow, isLastColu
  * @param {Number} [nCol=1] - Count of columns into which the cell will be split.
  * @returns {ApiTable | null} - returns null if can't split.
  */
-ApiTable.prototype.Split = function(oCell, nRow, nCol){ return new ApiTable(); };
+ApiTable.prototype.Split = (oCell, nRow, nCol) => new ApiTable()
 
 /**
  * Adds a new row to the current table.
@@ -3685,7 +3731,7 @@ ApiTable.prototype.Split = function(oCell, nRow, nCol){ return new ApiTable(); }
  * this parameter will be ignored.
  * @returns {ApiTableRow}
  */
-ApiTable.prototype.AddRow = function(oCell, isBefore){ return new ApiTableRow(); };
+ApiTable.prototype.AddRow = (oCell, isBefore) => new ApiTableRow()
 
 /**
  * Adds the new rows to the current table.
@@ -3698,7 +3744,7 @@ ApiTable.prototype.AddRow = function(oCell, isBefore){ return new ApiTableRow();
  * this parameter will be ignored.
  * @returns {ApiTable}
  */
-ApiTable.prototype.AddRows = function(oCell, nCount, isBefore){ return new ApiTable(); };
+ApiTable.prototype.AddRows = (oCell, nCount, isBefore) => new ApiTable()
 
 /**
  * Adds a new column to the current table.
@@ -3708,7 +3754,7 @@ ApiTable.prototype.AddRows = function(oCell, nCount, isBefore){ return new ApiTa
  * @param {boolean} [isBefore=false] - Adds a new column before (false) or after (true) the specified cell. If no cell is specified,
  * then this parameter will be ignored.
  */
-ApiTable.prototype.AddColumn = function(oCell, isBefore){};
+ApiTable.prototype.AddColumn = (oCell, isBefore) => {}
 
 /**
  * Adds the new columns to the current table.
@@ -3719,7 +3765,7 @@ ApiTable.prototype.AddColumn = function(oCell, isBefore){};
  * @param {boolean} [isBefore=false] - Adds the new columns before (false) or after (true) the specified cell. If no cell is specified,
  * then this parameter will be ignored.
  */
-ApiTable.prototype.AddColumns = function(oCell, nCount, isBefore){};
+ApiTable.prototype.AddColumns = (oCell, nCount, isBefore) => {}
 
 /**
  * Adds a paragraph or a table or a blockLvl content control using its position in the cell.
@@ -3729,7 +3775,7 @@ ApiTable.prototype.AddColumns = function(oCell, nCount, isBefore){};
  * @param {number} nPos - The position in the cell where the specified element will be added.
  * @param {DocumentElement} oElement - The document element which will be added at the current position.
  */
-ApiTable.prototype.AddElement = function(oCell, nPos, oElement){};
+ApiTable.prototype.AddElement = (oCell, nPos, oElement) => {}
 
 /**
  * Removes a table row with a specified cell.
@@ -3738,7 +3784,7 @@ ApiTable.prototype.AddElement = function(oCell, nPos, oElement){};
  * @param {ApiTableCell} oCell - The cell which is placed in the row that will be removed.
  * @returns {boolean} Is the table empty after removing.
  */
-ApiTable.prototype.RemoveRow = function(oCell){ return true; };
+ApiTable.prototype.RemoveRow = (oCell) => true
 
 /**
  * Removes a table column with a specified cell.
@@ -3747,7 +3793,7 @@ ApiTable.prototype.RemoveRow = function(oCell){ return true; };
  * @param {ApiTableCell} oCell - The cell which is placed in the column that will be removed.
  * @returns {boolean} Is the table empty after removing.
  */
-ApiTable.prototype.RemoveColumn = function(oCell){ return true; };
+ApiTable.prototype.RemoveColumn = (oCell) => true
 
 /**
  * Creates a copy of the current table.
@@ -3755,7 +3801,7 @@ ApiTable.prototype.RemoveColumn = function(oCell){ return true; };
  * @typeofeditors ["CDE", "CPE"]
  * @returns {ApiTable}
  */
-ApiTable.prototype.Copy = function(){ return new ApiTable(); };
+ApiTable.prototype.Copy = () => new ApiTable()
 
 /**
  * Selects the current table.
@@ -3763,7 +3809,7 @@ ApiTable.prototype.Copy = function(){ return new ApiTable(); };
  * @typeofeditors ["CDE", "CPE"]
  * @returns {boolean}
  */
-ApiTable.prototype.Select = function(){ return true; };
+ApiTable.prototype.Select = () => true
 
 /**
  * Returns a Range object that represents the part of the document contained in the specified table.
@@ -3771,9 +3817,9 @@ ApiTable.prototype.Select = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @param {Number} Start - Start character in the current element.
  * @param {Number} End - End character in the current element.
- * @returns {ApiRange} 
+ * @returns {ApiRange}
  * */
-ApiTable.prototype.GetRange = function(Start, End){ return new ApiRange(); };
+ApiTable.prototype.GetRange = (Start, End) => new ApiRange()
 
 /**
  * Sets the horizontal alignment to the table.
@@ -3782,7 +3828,7 @@ ApiTable.prototype.GetRange = function(Start, End){ return new ApiRange(); };
  * @param {String} sType - Horizontal alignment type: may be "left" or "center" or "right".
  * @returns {boolean} - returns false if param is invalid.
  * */
-ApiTable.prototype.SetHAlign = function(sType){ return true; };
+ApiTable.prototype.SetHAlign = (sType) => true
 
 /**
  * Sets the vertical alignment to the table.
@@ -3790,7 +3836,7 @@ ApiTable.prototype.SetHAlign = function(sType){ return true; };
  * @param {String} sType - Vertical alignment type: may be "top" or "center" or "bottom".
  * @returns {boolean} - returns false if param is invalid.
  * */
-ApiTable.prototype.SetVAlign = function(sType){ return true; };
+ApiTable.prototype.SetVAlign = (sType) => true
 
 /**
  * Sets the table paddings.
@@ -3803,7 +3849,7 @@ ApiTable.prototype.SetVAlign = function(sType){ return true; };
  * @param {Number} nBottom - Bottom padding.
  * @returns {boolean} - returns true.
  * */
-ApiTable.prototype.SetPaddings = function(nLeft, nTop, nRight, nBottom){ return true; };
+ApiTable.prototype.SetPaddings = (nLeft, nTop, nRight, nBottom) => true
 
 /**
  * Sets the table wrapping style.
@@ -3812,7 +3858,7 @@ ApiTable.prototype.SetPaddings = function(nLeft, nTop, nRight, nBottom){ return 
  * @param {boolean} isFlow - Specifies if the table is inline or not.
  * @returns {boolean} - returns false if param is invalid.
  * */
-ApiTable.prototype.SetWrappingStyle = function(isFlow){ return true; };
+ApiTable.prototype.SetWrappingStyle = (isFlow) => true
 
 /**
  * Returns a content control that contains the current table.
@@ -3820,64 +3866,64 @@ ApiTable.prototype.SetWrappingStyle = function(isFlow){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {ApiBlockLvlSdt | null} - return null is parent content control doesn't exist.
  */
-ApiTable.prototype.GetParentContentControl = function(){ return new ApiBlockLvlSdt(); };
+ApiTable.prototype.GetParentContentControl = () => new ApiBlockLvlSdt()
 
 /**
  * Wraps the current table object with a content control.
  * @memberof ApiTable
  * @typeofeditors ["CDE"]
  * @param {number} nType - Defines if this method returns the ApiBlockLvlSdt (nType === 1) or ApiTable (any value except 1) object.
- * @returns {ApiTable | ApiBlockLvlSdt}  
+ * @returns {ApiTable | ApiBlockLvlSdt}
  */
-ApiTable.prototype.InsertInContentControl = function(nType){ return new ApiTable(); };
+ApiTable.prototype.InsertInContentControl = (nType) => new ApiTable()
 
 /**
  * Returns a table that contains the current table.
  * @memberof ApiTable
  * @typeofeditors ["CDE"]
- * @returns {ApiTable | null} - returns null if parent table doesn't exist.  
+ * @returns {ApiTable | null} - returns null if parent table doesn't exist.
  */
-ApiTable.prototype.GetParentTable = function(){ return new ApiTable(); };
+ApiTable.prototype.GetParentTable = () => new ApiTable()
 
 /**
  * Returns the tables that contain the current table.
  * @memberof ApiTable
  * @typeofeditors ["CDE"]
- * @returns {ApiTable[]}  
+ * @returns {ApiTable[]}
  */
-ApiTable.prototype.GetTables = function(){ return [new ApiTable()]; };
+ApiTable.prototype.GetTables = () => [new ApiTable()]
 
 /**
  * Returns the next table if exists.
  * @memberof ApiTable
  * @typeofeditors ["CDE"]
- * @returns {ApiTable | null} - returns null if table is last.  
+ * @returns {ApiTable | null} - returns null if table is last.
  */
-ApiTable.prototype.GetNext = function(){ return new ApiTable(); };
+ApiTable.prototype.GetNext = () => new ApiTable()
 
 /**
  * Returns the previous table if exists.
  * @memberof ApiTable
  * @typeofeditors ["CDE"]
- * @returns {ApiTable | null} - returns null if table is first.  
+ * @returns {ApiTable | null} - returns null if table is first.
  */
-ApiTable.prototype.GetPrevious = function(){ return new ApiTable(); };
+ApiTable.prototype.GetPrevious = () => new ApiTable()
 
 /**
  * Returns a table cell that contains the current table.
  * @memberof ApiTable
  * @typeofeditors ["CDE"]
- * @returns {ApiTableCell | null} - returns null if parent cell doesn't exist.  
+ * @returns {ApiTableCell | null} - returns null if parent cell doesn't exist.
  */
-ApiTable.prototype.GetParentTableCell = function(){ return new ApiTableCell(); };
+ApiTable.prototype.GetParentTableCell = () => new ApiTableCell()
 
 /**
- * Deletes the current table. 
+ * Deletes the current table.
  * @memberof ApiTable
  * @typeofeditors ["CDE"]
  * @returns {boolean} - returns false if parent of table doesn't exist.
  */
-ApiTable.prototype.Delete = function(){ return true; };
+ApiTable.prototype.Delete = () => true
 
 /**
  * Clears the content from the table.
@@ -3885,7 +3931,7 @@ ApiTable.prototype.Delete = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {boolean} - returns true.
  */
-ApiTable.prototype.Clear = function(){ return true; };
+ApiTable.prototype.Clear = () => true
 
 /**
  * Searches for a scope of a table object. The search results are a collection of ApiRange objects.
@@ -3893,9 +3939,9 @@ ApiTable.prototype.Clear = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @param {string} sText - Search string.
  * @param {boolean} isMatchCase - Case sensitive or not.
- * @returns {ApiRange[]}  
+ * @returns {ApiRange[]}
  */
-ApiTable.prototype.Search = function(sText, isMatchCase){ return [new ApiRange()]; };
+ApiTable.prototype.Search = (sText, isMatchCase) => [new ApiRange()]
 
 /**
  * Applies the text settings to the entire contents of the table.
@@ -3904,7 +3950,7 @@ ApiTable.prototype.Search = function(sText, isMatchCase){ return [new ApiRange()
  * @param {ApiTextPr} oTextPr - The text properties that will be set to the current table.
  * @returns {boolean} - returns true.
  */
-ApiTable.prototype.SetTextPr = function(oTextPr){ return true; };
+ApiTable.prototype.SetTextPr = (oTextPr) => true
 
 /**
  * Sets the background color to all cells in the current table.
@@ -3916,7 +3962,7 @@ ApiTable.prototype.SetTextPr = function(oTextPr){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiTable.prototype.SetBackgroundColor = function(r, g, b, bNone){ return true; };
+ApiTable.prototype.SetBackgroundColor = (r, g, b, bNone) => true
 
 /**
  * Converts the ApiTable object into the JSON object.
@@ -3926,15 +3972,15 @@ ApiTable.prototype.SetBackgroundColor = function(r, g, b, bNone){ return true; }
  * @param {boolean} bWriteStyles - Specifies if the used styles will be written to the JSON object or not.
  * @returns {JSON}
  */
-ApiTable.prototype.ToJSON = function(bWriteNumberings, bWriteStyles){ return new JSON(); };
+ApiTable.prototype.ToJSON = (bWriteNumberings, bWriteStyles) => new JSON()
 
 /**
  * Returns the table position within its parent element.
  * @memberof ApiTable
  * @typeofeditors ["CDE"]
- * @returns {Number} - returns -1 if the table parent doesn't exist. 
+ * @returns {Number} - returns -1 if the table parent doesn't exist.
  */
-ApiTable.prototype.GetPosInParent = function(){ return 0; };
+ApiTable.prototype.GetPosInParent = () => 0
 
 /**
  * Replaces the current table with a new element.
@@ -3943,7 +3989,7 @@ ApiTable.prototype.GetPosInParent = function(){ return 0; };
  * @param {DocumentElement} oElement - The element to replace the current table with.
  * @returns {boolean}
  */
-ApiTable.prototype.ReplaceByElement = function(oElement){ return true; };
+ApiTable.prototype.ReplaceByElement = (oElement) => true
 
 /**
  * Adds a comment to all contents of the current table.
@@ -3955,7 +4001,7 @@ ApiTable.prototype.ReplaceByElement = function(oElement){ return true; };
  * @param {string} sUserId - The user ID of the comment author (optional).
  * @returns {ApiComment} - Returns null if the comment was not added.
  */
-ApiTable.prototype.AddComment = function(sText, sAuthor, sUserId){ return new ApiComment(); };
+ApiTable.prototype.AddComment = (sText, sAuthor, sUserId) => new ApiComment()
 
 /**
  * Adds a caption paragraph after (or before) the current table.
@@ -3973,7 +4019,15 @@ ApiTable.prototype.AddComment = function(sText, sAuthor, sUserId){ return new Ap
  * @param {CaptionSep} [sCaptionSep="hyphen"] - The caption separator (used if you want to specify the chapter number).
  * @returns {boolean}
  */
-ApiTable.prototype.AddCaption = function(sAdditional, sLabel, bExludeLabel, sNumberingFormat, bBefore, nHeadingLvl, sCaptionSep){ return true; };
+ApiTable.prototype.AddCaption = (
+  sAdditional,
+  sLabel,
+  bExludeLabel,
+  sNumberingFormat,
+  bBefore,
+  nHeadingLvl,
+  sCaptionSep,
+) => true
 
 /**
  * Returns a type of the ApiTableRow class.
@@ -3981,7 +4035,7 @@ ApiTable.prototype.AddCaption = function(sAdditional, sLabel, bExludeLabel, sNum
  * @typeofeditors ["CDE"]
  * @returns {"tableRow"}
  */
-ApiTableRow.prototype.GetClassType = function(){ return ""; };
+ApiTableRow.prototype.GetClassType = () => ""
 
 /**
  * Returns a number of cells in the current row.
@@ -3989,7 +4043,7 @@ ApiTableRow.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {number}
  */
-ApiTableRow.prototype.GetCellsCount = function(){ return 0; };
+ApiTableRow.prototype.GetCellsCount = () => 0
 
 /**
  * Returns a cell by its position.
@@ -3998,7 +4052,7 @@ ApiTableRow.prototype.GetCellsCount = function(){ return 0; };
  * @param {number} nPos - The cell position in the current row.
  * @returns {ApiTableCell}
  */
-ApiTableRow.prototype.GetCell = function(nPos){ return new ApiTableCell(); };
+ApiTableRow.prototype.GetCell = (nPos) => new ApiTableCell()
 
 /**
  * Returns the current row index.
@@ -4006,7 +4060,7 @@ ApiTableRow.prototype.GetCell = function(nPos){ return new ApiTableCell(); };
  * @typeofeditors ["CDE"]
  * @returns {Number}
  */
-ApiTableRow.prototype.GetIndex = function(){ return 0; };
+ApiTableRow.prototype.GetIndex = () => 0
 
 /**
  * Returns the parent table of the current row.
@@ -4014,7 +4068,7 @@ ApiTableRow.prototype.GetIndex = function(){ return 0; };
  * @typeofeditors ["CDE"]
  * @returns {ApiTable | null} - returns null if parent table doesn't exist.
  */
-ApiTableRow.prototype.GetParentTable = function(){ return new ApiTable(); };
+ApiTableRow.prototype.GetParentTable = () => new ApiTable()
 
 /**
  * Returns the next row if exists.
@@ -4022,7 +4076,7 @@ ApiTableRow.prototype.GetParentTable = function(){ return new ApiTable(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiTableRow | null} - returns null if row is last.
  */
-ApiTableRow.prototype.GetNext = function(){ return new ApiTableRow(); };
+ApiTableRow.prototype.GetNext = () => new ApiTableRow()
 
 /**
  * Returns the previous row if exists.
@@ -4030,25 +4084,25 @@ ApiTableRow.prototype.GetNext = function(){ return new ApiTableRow(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiTableRow | null} - returns null if row is first.
  */
-ApiTableRow.prototype.GetPrevious = function(){ return new ApiTableRow(); };
+ApiTableRow.prototype.GetPrevious = () => new ApiTableRow()
 
 /**
  * Adds the new rows to the current table.
  * @memberof ApiTableRow
  * @typeofeditors ["CDE"]
  * @param {Number} nCount - Count of rows to be added.
- * @param {boolean} [isBefore=false] - Specifies if the rows will be added before or after the current row. 
+ * @param {boolean} [isBefore=false] - Specifies if the rows will be added before or after the current row.
  * @returns {ApiTable | null} - returns null if parent table doesn't exist.
  */
-ApiTableRow.prototype.AddRows = function(nCount, isBefore){ return new ApiTable(); };
+ApiTableRow.prototype.AddRows = (nCount, isBefore) => new ApiTable()
 
 /**
- * Merges the cells in the current row. 
+ * Merges the cells in the current row.
  * @memberof ApiTableRow
  * @typeofeditors ["CDE"]
  * @returns {ApiTableCell | null} - return null if can't merge.
  */
-ApiTableRow.prototype.MergeCells = function(){ return new ApiTableCell(); };
+ApiTableRow.prototype.MergeCells = () => new ApiTableCell()
 
 /**
  * Clears the content from the current row.
@@ -4056,7 +4110,7 @@ ApiTableRow.prototype.MergeCells = function(){ return new ApiTableCell(); };
  * @typeofeditors ["CDE"]
  * @returns {boolean} - returns false if parent table doesn't exist.
  */
-ApiTableRow.prototype.Clear = function(){ return true; };
+ApiTableRow.prototype.Clear = () => true
 
 /**
  * Removes the current table row.
@@ -4064,7 +4118,7 @@ ApiTableRow.prototype.Clear = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {boolean} - return false if parent table doesn't exist.
  */
-ApiTableRow.prototype.Remove = function(){ return true; };
+ApiTableRow.prototype.Remove = () => true
 
 /**
  * Sets the text properties to the current row.
@@ -4073,7 +4127,7 @@ ApiTableRow.prototype.Remove = function(){ return true; };
  * @param {ApiTextPr} oTextPr - The text properties that will be set to the current row.
  * @returns {boolean} - returns false if parent table doesn't exist or param is invalid.
  */
-ApiTableRow.prototype.SetTextPr = function(oTextPr){ return true; };
+ApiTableRow.prototype.SetTextPr = (oTextPr) => true
 
 /**
  * Searches for a scope of a table row object. The search results are a collection of ApiRange objects.
@@ -4083,7 +4137,7 @@ ApiTableRow.prototype.SetTextPr = function(oTextPr){ return true; };
  * @param {boolean} isMatchCase - Case sensitive or not.
  * @returns {ApiRange[]}
  */
-ApiTableRow.prototype.Search = function(sText, isMatchCase){ return [new ApiRange()]; };
+ApiTableRow.prototype.Search = (sText, isMatchCase) => [new ApiRange()]
 
 /**
  * Sets the background color to all cells in the current table row.
@@ -4095,7 +4149,7 @@ ApiTableRow.prototype.Search = function(sText, isMatchCase){ return [new ApiRang
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiTableRow.prototype.SetBackgroundColor = function(r, g, b, bNone){ return true; };
+ApiTableRow.prototype.SetBackgroundColor = (r, g, b, bNone) => true
 
 /**
  * Returns a type of the ApiTableCell class.
@@ -4103,7 +4157,7 @@ ApiTableRow.prototype.SetBackgroundColor = function(r, g, b, bNone){ return true
  * @typeofeditors ["CDE"]
  * @returns {"tableCell"}
  */
-ApiTableCell.prototype.GetClassType = function(){ return ""; };
+ApiTableCell.prototype.GetClassType = () => ""
 
 /**
  * Returns the current cell content.
@@ -4111,7 +4165,7 @@ ApiTableCell.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {ApiDocumentContent}
  */
-ApiTableCell.prototype.GetContent = function(){ return new ApiDocumentContent(); };
+ApiTableCell.prototype.GetContent = () => new ApiDocumentContent()
 
 /**
  * Returns the current cell index.
@@ -4119,7 +4173,7 @@ ApiTableCell.prototype.GetContent = function(){ return new ApiDocumentContent();
  * @typeofeditors ["CDE"]
  * @returns {Number}
  */
-ApiTableCell.prototype.GetIndex = function(){ return 0; };
+ApiTableCell.prototype.GetIndex = () => 0
 
 /**
  * Returns an index of the parent row.
@@ -4127,7 +4181,7 @@ ApiTableCell.prototype.GetIndex = function(){ return 0; };
  * @typeofeditors ["CDE"]
  * @returns {number}
  */
-ApiTableCell.prototype.GetRowIndex = function(){ return 0; };
+ApiTableCell.prototype.GetRowIndex = () => 0
 
 /**
  * Returns a parent row of the current cell.
@@ -4135,7 +4189,7 @@ ApiTableCell.prototype.GetRowIndex = function(){ return 0; };
  * @typeofeditors ["CDE"]
  * @returns {ApiTableRow | null} - returns null if parent row doesn't exist.
  */
-ApiTableCell.prototype.GetParentRow = function(){ return new ApiTableRow(); };
+ApiTableCell.prototype.GetParentRow = () => new ApiTableRow()
 
 /**
  * Returns a parent table of the current cell.
@@ -4143,27 +4197,27 @@ ApiTableCell.prototype.GetParentRow = function(){ return new ApiTableRow(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiTable | null} - returns null if parent table doesn't exist.
  */
-ApiTableCell.prototype.GetParentTable = function(){ return new ApiTable(); };
+ApiTableCell.prototype.GetParentTable = () => new ApiTable()
 
 /**
  * Adds the new rows to the current table.
  * @memberof ApiTableCell
  * @typeofeditors ["CDE"]
  * @param {Number} nCount - Count of rows to be added.
- * @param {boolean} [isBefore=false] - Specifies if the new rows will be added before or after the current cell. 
+ * @param {boolean} [isBefore=false] - Specifies if the new rows will be added before or after the current cell.
  * @returns {ApiTable | null} - returns null if parent table doesn't exist.
  */
-ApiTableCell.prototype.AddRows = function(nCount, isBefore){ return new ApiTable(); };
+ApiTableCell.prototype.AddRows = (nCount, isBefore) => new ApiTable()
 
 /**
  * Adds the new columns to the current table.
  * @memberof ApiTableCell
  * @typeofeditors ["CDE"]
  * @param {Number} nCount - Count of columns to be added.
- * @param {boolean} [isBefore=false] - Specifies if the new columns will be added before or after the current cell. 
+ * @param {boolean} [isBefore=false] - Specifies if the new columns will be added before or after the current cell.
  * @returns {ApiTable | null} - returns null if parent table doesn't exist.
  */
-ApiTableCell.prototype.AddColumns = function(nCount, isBefore){ return new ApiTable(); };
+ApiTableCell.prototype.AddColumns = (nCount, isBefore) => new ApiTable()
 
 /**
  * Removes a column containing the current cell.
@@ -4171,7 +4225,7 @@ ApiTableCell.prototype.AddColumns = function(nCount, isBefore){ return new ApiTa
  * @typeofeditors ["CDE"]
  * @returns {bool | null} Is the table empty after removing. Returns null if parent table doesn't exist.
  */
-ApiTableCell.prototype.RemoveColumn = function(){ return true; };
+ApiTableCell.prototype.RemoveColumn = () => true
 
 /**
  * Removes a row containing the current cell.
@@ -4179,7 +4233,7 @@ ApiTableCell.prototype.RemoveColumn = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {boolean} Is the table empty after removing.
  */
-ApiTableCell.prototype.RemoveRow = function(){ return true; };
+ApiTableCell.prototype.RemoveRow = () => true
 
 /**
  * Searches for a scope of a table cell object. The search results are a collection of ApiRange objects.
@@ -4187,9 +4241,9 @@ ApiTableCell.prototype.RemoveRow = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @param {string} sText - Search string.
  * @param {boolean} isMatchCase - Case sensitive or not.
- * @returns {ApiRange[]}  
+ * @returns {ApiRange[]}
  */
-ApiTableCell.prototype.Search = function(sText, isMatchCase){ return [new ApiRange()]; };
+ApiTableCell.prototype.Search = (sText, isMatchCase) => [new ApiRange()]
 
 /**
  * Returns the next cell if exists.
@@ -4197,15 +4251,15 @@ ApiTableCell.prototype.Search = function(sText, isMatchCase){ return [new ApiRan
  * @typeofeditors ["CDE"]
  * @returns {ApiTableCell | null} - returns null if cell is last.
  */
-ApiTableCell.prototype.GetNext = function(){ return new ApiTableCell(); };
+ApiTableCell.prototype.GetNext = () => new ApiTableCell()
 
 /**
  * Returns the previous cell if exists.
  * @memberof ApiTableCell
  * @typeofeditors ["CDE"]
- * @returns {ApiTableCell | null} - returns null is cell is first. 
+ * @returns {ApiTableCell | null} - returns null is cell is first.
  */
-ApiTableCell.prototype.GetPrevious = function(){ return new ApiTableCell(); };
+ApiTableCell.prototype.GetPrevious = () => new ApiTableCell()
 
 /**
  * Splits the cell into a given number of rows and columns.
@@ -4215,7 +4269,7 @@ ApiTableCell.prototype.GetPrevious = function(){ return new ApiTableCell(); };
  * @param {Number} [nCol=1] - Count of columns into which the cell will be split.
  * @returns {ApiTable | null} - returns null if parent table doesn't exist.
  */
-ApiTableCell.prototype.Split = function(nRow, nCol){ return new ApiTable(); };
+ApiTableCell.prototype.Split = (nRow, nCol) => new ApiTable()
 
 /**
  * Sets the cell properties to the current cell.
@@ -4224,7 +4278,7 @@ ApiTableCell.prototype.Split = function(nRow, nCol){ return new ApiTable(); };
  * @param {ApiTableCellPr} oApiTableCellPr - The properties that will be set to the current table cell.
  * @returns {boolean} - returns false if param is invalid.
  */
-ApiTableCell.prototype.SetCellPr = function(oApiTableCellPr){ return true; };
+ApiTableCell.prototype.SetCellPr = (oApiTableCellPr) => true
 
 /**
  * Applies the text settings to the entire contents of the current cell.
@@ -4233,7 +4287,7 @@ ApiTableCell.prototype.SetCellPr = function(oApiTableCellPr){ return true; };
  * @param {ApiTextPr} oTextPr - The properties that will be set to the current table cell text.
  * @returns {boolean} - returns false if param is invalid.
  */
-ApiTableCell.prototype.SetTextPr = function(oTextPr){ return true; };
+ApiTableCell.prototype.SetTextPr = (oTextPr) => true
 
 /**
  * Clears the content from the current cell.
@@ -4241,7 +4295,7 @@ ApiTableCell.prototype.SetTextPr = function(oTextPr){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {boolean} - returns false if parent row is invalid.
  */
-ApiTableCell.prototype.Clear = function(){ return true; };
+ApiTableCell.prototype.Clear = () => true
 
 /**
  * Adds a paragraph or a table or a blockLvl content control using its position in the cell.
@@ -4251,7 +4305,7 @@ ApiTableCell.prototype.Clear = function(){ return true; };
  * @param {DocumentElement} oElement - The document element which will be added at the current position.
  * @returns {boolean} - returns false if oElement is invalid.
  */
-ApiTableCell.prototype.AddElement = function(nPos, oElement){ return true; };
+ApiTableCell.prototype.AddElement = (nPos, oElement) => true
 
 /**
  * Sets the background color to the current table cell.
@@ -4263,7 +4317,7 @@ ApiTableCell.prototype.AddElement = function(nPos, oElement){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiTableCell.prototype.SetBackgroundColor = function(r, g, b, bNone){ return true; };
+ApiTableCell.prototype.SetBackgroundColor = (r, g, b, bNone) => true
 
 /**
  * Sets the background color to all cells in the column containing the current cell.
@@ -4275,7 +4329,7 @@ ApiTableCell.prototype.SetBackgroundColor = function(r, g, b, bNone){ return tru
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiTableCell.prototype.SetColumnBackgroundColor = function(r, g, b, bNone){ return true; };
+ApiTableCell.prototype.SetColumnBackgroundColor = (r, g, b, bNone) => true
 
 /**
  * Returns a type of the ApiStyle class.
@@ -4283,7 +4337,7 @@ ApiTableCell.prototype.SetColumnBackgroundColor = function(r, g, b, bNone){ retu
  * @typeofeditors ["CDE"]
  * @returns {"style"}
  */
-ApiStyle.prototype.GetClassType = function(){ return ""; };
+ApiStyle.prototype.GetClassType = () => ""
 
 /**
  * Returns a name of the current style.
@@ -4291,7 +4345,7 @@ ApiStyle.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiStyle.prototype.GetName = function(){ return ""; };
+ApiStyle.prototype.GetName = () => ""
 
 /**
  * Sets a name of the current style.
@@ -4299,7 +4353,7 @@ ApiStyle.prototype.GetName = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {string} sStyleName - The name which will be used for the current style.
  */
-ApiStyle.prototype.SetName = function(sStyleName){};
+ApiStyle.prototype.SetName = (sStyleName) => {}
 
 /**
  * Returns a type of the current style.
@@ -4307,7 +4361,7 @@ ApiStyle.prototype.SetName = function(sStyleName){};
  * @typeofeditors ["CDE"]
  * @returns {StyleType}
  */
-ApiStyle.prototype.GetType = function(){ return new StyleType(); };
+ApiStyle.prototype.GetType = () => new StyleType()
 
 /**
  * Returns the text properties of the current style.
@@ -4315,7 +4369,7 @@ ApiStyle.prototype.GetType = function(){ return new StyleType(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiTextPr}
  */
-ApiStyle.prototype.GetTextPr = function(){ return new ApiTextPr(); };
+ApiStyle.prototype.GetTextPr = () => new ApiTextPr()
 
 /**
  * Returns the paragraph properties of the current style.
@@ -4323,7 +4377,7 @@ ApiStyle.prototype.GetTextPr = function(){ return new ApiTextPr(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiParaPr}
  */
-ApiStyle.prototype.GetParaPr = function(){ return new ApiParaPr(); };
+ApiStyle.prototype.GetParaPr = () => new ApiParaPr()
 
 /**
  * Returns the table properties of the current style.
@@ -4332,7 +4386,7 @@ ApiStyle.prototype.GetParaPr = function(){ return new ApiParaPr(); };
  * @returns {ApiTablePr} If the type of this style is not a <code>"table"</code> then it will return
  *     <code>null</code>.
  */
-ApiStyle.prototype.GetTablePr = function(){ return new ApiTablePr(); };
+ApiStyle.prototype.GetTablePr = () => new ApiTablePr()
 
 /**
  * Returns the table row properties of the current style.
@@ -4341,7 +4395,7 @@ ApiStyle.prototype.GetTablePr = function(){ return new ApiTablePr(); };
  * @returns {ApiTableRowPr} If the type of this style is not a <code>"table"</code> then it will return
  *     <code>null</code>.
  */
-ApiStyle.prototype.GetTableRowPr = function(){ return new ApiTableRowPr(); };
+ApiStyle.prototype.GetTableRowPr = () => new ApiTableRowPr()
 
 /**
  * Returns the table cell properties of the current style.
@@ -4349,7 +4403,7 @@ ApiStyle.prototype.GetTableRowPr = function(){ return new ApiTableRowPr(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiTableCellPr}
  */
-ApiStyle.prototype.GetTableCellPr = function(){ return new ApiTableCellPr(); };
+ApiStyle.prototype.GetTableCellPr = () => new ApiTableCellPr()
 
 /**
  * Specifies the reference to the parent style which this style inherits from in the style hierarchy.
@@ -4357,17 +4411,17 @@ ApiStyle.prototype.GetTableCellPr = function(){ return new ApiTableCellPr(); };
  * @typeofeditors ["CDE"]
  * @param {ApiStyle} oStyle - The parent style which the style inherits properties from.
  */
-ApiStyle.prototype.SetBasedOn = function(oStyle){};
+ApiStyle.prototype.SetBasedOn = (oStyle) => {}
 
 /**
- * Returns a set of formatting properties which will be conditionally applied to the parts of a table that match the 
+ * Returns a set of formatting properties which will be conditionally applied to the parts of a table that match the
  * requirement specified in the sType parameter.
  * @memberof ApiStyle
  * @typeofeditors ["CDE"]
  * @param {TableStyleOverrideType} [sType="wholeTable"] - The table part which the formatting properties must be applied to.
  * @returns {ApiTableStylePr}
  */
-ApiStyle.prototype.GetConditionalTableStyle = function(sType){ return new ApiTableStylePr(); };
+ApiStyle.prototype.GetConditionalTableStyle = (sType) => new ApiTableStylePr()
 
 /**
  * Converts the ApiStyle object into the JSON object.
@@ -4376,7 +4430,7 @@ ApiStyle.prototype.GetConditionalTableStyle = function(sType){ return new ApiTab
  * @param {boolean} bWriteNumberings - Specifies if the used numberings will be written to the JSON object or not.
  * @returns {JSON}
  */
-ApiStyle.prototype.ToJSON = function(bWriteNumberings){ return new JSON(); };
+ApiStyle.prototype.ToJSON = (bWriteNumberings) => new JSON()
 
 /**
  * Returns a type of the ApiTextPr class.
@@ -4384,7 +4438,7 @@ ApiStyle.prototype.ToJSON = function(bWriteNumberings){ return new JSON(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"textPr"}
  */
-ApiTextPr.prototype.GetClassType = function(){ return ""; };
+ApiTextPr.prototype.GetClassType = () => ""
 
 /**
  * The text style base method.
@@ -4395,7 +4449,7 @@ ApiTextPr.prototype.GetClassType = function(){ return ""; };
  * @param {ApiStyle} oStyle - The style which must be applied to the text character.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetStyle = function(oStyle){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetStyle = (oStyle) => new ApiTextPr()
 
 /**
  * Gets the style of the current text properties.
@@ -4404,7 +4458,7 @@ ApiTextPr.prototype.SetStyle = function(oStyle){ return new ApiTextPr(); };
  * @returns {ApiStyle} - The used style.
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetStyle = function(){ return new ApiStyle(); };
+ApiTextPr.prototype.GetStyle = () => new ApiStyle()
 
 /**
  * Sets the bold property to the text character.
@@ -4413,7 +4467,7 @@ ApiTextPr.prototype.GetStyle = function(){ return new ApiStyle(); };
  * @param {boolean} isBold - Specifies that the contents of the run are displayed bold.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetBold = function(isBold){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetBold = (isBold) => new ApiTextPr()
 
 /**
  * Gets the bold property from the current text properties.
@@ -4422,7 +4476,7 @@ ApiTextPr.prototype.SetBold = function(isBold){ return new ApiTextPr(); };
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetBold = function(){ return true; };
+ApiTextPr.prototype.GetBold = () => true
 
 /**
  * Sets the italic property to the text character.
@@ -4431,7 +4485,7 @@ ApiTextPr.prototype.GetBold = function(){ return true; };
  * @param {boolean} isItalic - Specifies that the contents of the current run are displayed italicized.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetItalic = function(isItalic){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetItalic = (isItalic) => new ApiTextPr()
 
 /**
  * Gets the italic property from the current text properties.
@@ -4440,7 +4494,7 @@ ApiTextPr.prototype.SetItalic = function(isItalic){ return new ApiTextPr(); };
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetItalic = function(){ return true; };
+ApiTextPr.prototype.GetItalic = () => true
 
 /**
  * Specifies that the contents of the run are displayed with a single horizontal line through the center of the line.
@@ -4449,7 +4503,7 @@ ApiTextPr.prototype.GetItalic = function(){ return true; };
  * @param {boolean} isStrikeout - Specifies that the contents of the current run are displayed struck through.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetStrikeout = function(isStrikeout){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetStrikeout = (isStrikeout) => new ApiTextPr()
 
 /**
  * Gets the strikeout property from the current text properties.
@@ -4458,7 +4512,7 @@ ApiTextPr.prototype.SetStrikeout = function(isStrikeout){ return new ApiTextPr()
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetStrikeout = function(){ return true; };
+ApiTextPr.prototype.GetStrikeout = () => true
 
 /**
  * Specifies that the contents of the run are displayed along with a line appearing directly below the character
@@ -4468,7 +4522,7 @@ ApiTextPr.prototype.GetStrikeout = function(){ return true; };
  * @param {boolean} isUnderline - Specifies that the contents of the current run are displayed underlined.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetUnderline = function(isUnderline){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetUnderline = (isUnderline) => new ApiTextPr()
 
 /**
  * Gets the underline property from the current text properties.
@@ -4477,7 +4531,7 @@ ApiTextPr.prototype.SetUnderline = function(isUnderline){ return new ApiTextPr()
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetUnderline = function(){ return true; };
+ApiTextPr.prototype.GetUnderline = () => true
 
 /**
  * Sets all 4 font slots with the specified font family.
@@ -4486,7 +4540,7 @@ ApiTextPr.prototype.GetUnderline = function(){ return true; };
  * @param {string} sFontFamily - The font family or families used for the current text run.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetFontFamily = function(sFontFamily){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetFontFamily = (sFontFamily) => new ApiTextPr()
 
 /**
  * Gets the font family from the current text properties.
@@ -4495,7 +4549,7 @@ ApiTextPr.prototype.SetFontFamily = function(sFontFamily){ return new ApiTextPr(
  * @returns {string}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetFontFamily = function(){ return ""; };
+ApiTextPr.prototype.GetFontFamily = () => ""
 
 /**
  * Sets the font size to the characters of the current text run.
@@ -4504,7 +4558,7 @@ ApiTextPr.prototype.GetFontFamily = function(){ return ""; };
  * @param {hps} nSize - The text size value measured in half-points (1/144 of an inch).
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetFontSize = function(nSize){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetFontSize = (nSize) => new ApiTextPr()
 
 /**
  * Gets the font size from the current text properties.
@@ -4513,7 +4567,7 @@ ApiTextPr.prototype.SetFontSize = function(nSize){ return new ApiTextPr(); };
  * @returns {hps}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetFontSize = function(){ return new hps(); };
+ApiTextPr.prototype.GetFontSize = () => new hps()
 
 /**
  * Sets the text color to the current text run in the RGB format.
@@ -4525,7 +4579,7 @@ ApiTextPr.prototype.GetFontSize = function(){ return new hps(); };
  * @param {boolean} [isAuto=false] - If this parameter is set to "true", then r,g,b parameters will be ignored.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetColor = function(r, g, b, isAuto){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetColor = (r, g, b, isAuto) => new ApiTextPr()
 
 /**
  * Gets the RGB color from the current text properties.
@@ -4534,7 +4588,7 @@ ApiTextPr.prototype.SetColor = function(r, g, b, isAuto){ return new ApiTextPr()
  * @returns {ApiRGBColor}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetColor = function(){ return new ApiRGBColor(); };
+ApiTextPr.prototype.GetColor = () => new ApiRGBColor()
 
 /**
  * Specifies the alignment which will be applied to the contents of the run in relation to the default appearance of the run text:
@@ -4546,7 +4600,7 @@ ApiTextPr.prototype.GetColor = function(){ return new ApiRGBColor(); };
  * @param {("baseline" | "subscript" | "superscript")} sType - The vertical alignment type applied to the text contents.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetVertAlign = function(sType){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetVertAlign = (sType) => new ApiTextPr()
 
 /**
  * Gets the vertical alignment type from the current text properties.
@@ -4555,7 +4609,7 @@ ApiTextPr.prototype.SetVertAlign = function(sType){ return new ApiTextPr(); };
  * @returns {string}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetVertAlign = function(){ return ""; };
+ApiTextPr.prototype.GetVertAlign = () => ""
 
 /**
  * Specifies a highlighting color which is added to the text properties and applied as a background to the contents of the current run/range/paragraph.
@@ -4564,7 +4618,7 @@ ApiTextPr.prototype.GetVertAlign = function(){ return ""; };
  * @param {highlightColor} sColor - Available highlight color.
  * @returns {ApiTextPr}
  */
-ApiTextPr.prototype.SetHighlight = function(sColor){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetHighlight = (sColor) => new ApiTextPr()
 
 /**
  * Gets the highlight property from the current text properties.
@@ -4573,7 +4627,7 @@ ApiTextPr.prototype.SetHighlight = function(sColor){ return new ApiTextPr(); };
  * @returns {string}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetHighlight = function(){ return ""; };
+ApiTextPr.prototype.GetHighlight = () => ""
 
 /**
  * Sets the text spacing measured in twentieths of a point.
@@ -4582,7 +4636,7 @@ ApiTextPr.prototype.GetHighlight = function(){ return ""; };
  * @param {twips} nSpacing - The value of the text spacing measured in twentieths of a point (1/1440 of an inch).
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetSpacing = function(nSpacing){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetSpacing = (nSpacing) => new ApiTextPr()
 
 /**
  * Gets the text spacing from the current text properties measured in twentieths of a point.
@@ -4591,7 +4645,7 @@ ApiTextPr.prototype.SetSpacing = function(nSpacing){ return new ApiTextPr(); };
  * @returns {twips}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetSpacing = function(){ return new twips(); };
+ApiTextPr.prototype.GetSpacing = () => new twips()
 
 /**
  * Specifies that the contents of the run are displayed with two horizontal lines through each character displayed on the line.
@@ -4600,7 +4654,7 @@ ApiTextPr.prototype.GetSpacing = function(){ return new twips(); };
  * @param {boolean} isDoubleStrikeout - Specifies that the contents of the current run are displayed double struck through.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetDoubleStrikeout = function(isDoubleStrikeout){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetDoubleStrikeout = (isDoubleStrikeout) => new ApiTextPr()
 
 /**
  * Gets the double strikeout property from the current text properties.
@@ -4609,7 +4663,7 @@ ApiTextPr.prototype.SetDoubleStrikeout = function(isDoubleStrikeout){ return new
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetDoubleStrikeout = function(){ return true; };
+ApiTextPr.prototype.GetDoubleStrikeout = () => true
 
 /**
  * Specifies that any lowercase characters in the text run are formatted for display only as their capital letter character equivalents.
@@ -4618,7 +4672,7 @@ ApiTextPr.prototype.GetDoubleStrikeout = function(){ return true; };
  * @param {boolean} isCaps - Specifies that the contents of the current run are displayed capitalized.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetCaps = function(isCaps){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetCaps = (isCaps) => new ApiTextPr()
 
 /**
  * Specifies whether the text with the current text properties are capitalized.
@@ -4627,7 +4681,7 @@ ApiTextPr.prototype.SetCaps = function(isCaps){ return new ApiTextPr(); };
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetCaps = function(){ return true; };
+ApiTextPr.prototype.GetCaps = () => true
 
 /**
  * Specifies that all the small letter characters in the text run are formatted for display only as their capital
@@ -4637,7 +4691,7 @@ ApiTextPr.prototype.GetCaps = function(){ return true; };
  * @param {boolean} isSmallCaps - Specifies if the contents of the current run are displayed capitalized two points smaller or not.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetSmallCaps = function(isSmallCaps){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetSmallCaps = (isSmallCaps) => new ApiTextPr()
 
 /**
  * Specifies whether the text with the current text properties are displayed capitalized two points smaller than the actual font size.
@@ -4646,7 +4700,7 @@ ApiTextPr.prototype.SetSmallCaps = function(isSmallCaps){ return new ApiTextPr()
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetSmallCaps = function(){ return true; };
+ApiTextPr.prototype.GetSmallCaps = () => true
 
 /**
  * Specifies an amount by which text is raised or lowered for this run in relation to the default
@@ -4657,7 +4711,7 @@ ApiTextPr.prototype.GetSmallCaps = function(){ return true; };
  * measurement in half-points (1/144 of an inch).
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetPosition = function(nPosition){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetPosition = (nPosition) => new ApiTextPr()
 
 /**
  * Gets the text position from the current text properties measured in half-points (1/144 of an inch).
@@ -4666,7 +4720,7 @@ ApiTextPr.prototype.SetPosition = function(nPosition){ return new ApiTextPr(); }
  * @returns {hps}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetPosition = function(){ return new hps(); };
+ApiTextPr.prototype.GetPosition = () => new hps()
 
 /**
  * Specifies the languages which will be used to check spelling and grammar (if requested) when processing
@@ -4677,7 +4731,7 @@ ApiTextPr.prototype.GetPosition = function(){ return new hps(); };
  * RFC 4646/BCP 47. Example: "en-CA".
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetLanguage = function(sLangId){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetLanguage = (sLangId) => new ApiTextPr()
 
 /**
  * Gets the language from the current text properties.
@@ -4686,7 +4740,7 @@ ApiTextPr.prototype.SetLanguage = function(sLangId){ return new ApiTextPr(); };
  * @returns {string}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetLanguage = function(){ return ""; };
+ApiTextPr.prototype.GetLanguage = () => ""
 
 /**
  * Specifies the shading applied to the contents of the current text run.
@@ -4698,7 +4752,7 @@ ApiTextPr.prototype.GetLanguage = function(){ return ""; };
  * @param {byte} b - Blue color component value.
  * @returns {ApiTextPr} - this text properties.
  */
-ApiTextPr.prototype.SetShd = function(sType, r, g, b){ return new ApiTextPr(); };
+ApiTextPr.prototype.SetShd = (sType, r, g, b) => new ApiTextPr()
 
 /**
  * Gets the text shading from the current text properties.
@@ -4707,7 +4761,7 @@ ApiTextPr.prototype.SetShd = function(sType, r, g, b){ return new ApiTextPr(); }
  * @returns {ApiRGBColor}
  * @since 8.1.0
  */
-ApiTextPr.prototype.GetShd = function(){ return new ApiRGBColor(); };
+ApiTextPr.prototype.GetShd = () => new ApiRGBColor()
 
 /**
  * Converts the ApiTextPr object into the JSON object.
@@ -4716,7 +4770,7 @@ ApiTextPr.prototype.GetShd = function(){ return new ApiRGBColor(); };
  * @param {boolean} bWriteStyles - Specifies if the used styles will be written to the JSON object or not.
  * @returns {JSON}
  */
-ApiTextPr.prototype.ToJSON = function(bWriteStyles){ return new JSON(); };
+ApiTextPr.prototype.ToJSON = (bWriteStyles) => new JSON()
 
 /**
  * Returns a type of the ApiParaPr class.
@@ -4724,7 +4778,7 @@ ApiTextPr.prototype.ToJSON = function(bWriteStyles){ return new JSON(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"paraPr"}
  */
-ApiParaPr.prototype.GetClassType = function(){ return ""; };
+ApiParaPr.prototype.GetClassType = () => ""
 
 /**
  * The paragraph style base method.
@@ -4733,7 +4787,7 @@ ApiParaPr.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {ApiStyle} oStyle - The style of the paragraph to be set.
  */
-ApiParaPr.prototype.SetStyle = function(oStyle){};
+ApiParaPr.prototype.SetStyle = (oStyle) => {}
 
 /**
  * Returns the paragraph style method.
@@ -4741,17 +4795,17 @@ ApiParaPr.prototype.SetStyle = function(oStyle){};
  * @typeofeditors ["CDE"]
  * @returns {ApiStyle} - The style of the paragraph.
  */
-ApiParaPr.prototype.GetStyle = function(){ return new ApiStyle(); };
+ApiParaPr.prototype.GetStyle = () => new ApiStyle()
 
 /**
- * Specifies that any space before or after this paragraph set using the 
- * {@link ApiParaPr#SetSpacingBefore} or {@link ApiParaPr#SetSpacingAfter} spacing element, should not be applied when the preceding and 
+ * Specifies that any space before or after this paragraph set using the
+ * {@link ApiParaPr#SetSpacingBefore} or {@link ApiParaPr#SetSpacingAfter} spacing element, should not be applied when the preceding and
  * following paragraphs are of the same paragraph style, affecting the top and bottom spacing respectively.
  * @memberof ApiParaPr
  * @typeofeditors ["CDE"]
  * @param {boolean} isContextualSpacing - The true value will enable the paragraph contextual spacing.
  */
-ApiParaPr.prototype.SetContextualSpacing = function(isContextualSpacing){};
+ApiParaPr.prototype.SetContextualSpacing = (isContextualSpacing) => {}
 
 /**
  * Sets the paragraph left side indentation.
@@ -4759,7 +4813,7 @@ ApiParaPr.prototype.SetContextualSpacing = function(isContextualSpacing){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {twips} nValue - The paragraph left side indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.SetIndLeft = function(nValue){};
+ApiParaPr.prototype.SetIndLeft = (nValue) => {}
 
 /**
  * Returns the paragraph left side indentation.
@@ -4767,7 +4821,7 @@ ApiParaPr.prototype.SetIndLeft = function(nValue){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {twips | undefined} - The paragraph left side indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.GetIndLeft = function(){ return new twips(); };
+ApiParaPr.prototype.GetIndLeft = () => new twips()
 
 /**
  * Sets the paragraph right side indentation.
@@ -4775,7 +4829,7 @@ ApiParaPr.prototype.GetIndLeft = function(){ return new twips(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {twips} nValue - The paragraph right side indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.SetIndRight = function(nValue){};
+ApiParaPr.prototype.SetIndRight = (nValue) => {}
 
 /**
  * Returns the paragraph right side indentation.
@@ -4783,7 +4837,7 @@ ApiParaPr.prototype.SetIndRight = function(nValue){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {twips | undefined} - The paragraph right side indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.GetIndRight = function(){ return new twips(); };
+ApiParaPr.prototype.GetIndRight = () => new twips()
 
 /**
  * Sets the paragraph first line indentation.
@@ -4791,7 +4845,7 @@ ApiParaPr.prototype.GetIndRight = function(){ return new twips(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {twips} nValue - The paragraph first line indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.SetIndFirstLine = function(nValue){};
+ApiParaPr.prototype.SetIndFirstLine = (nValue) => {}
 
 /**
  * Returns the paragraph first line indentation.
@@ -4799,7 +4853,7 @@ ApiParaPr.prototype.SetIndFirstLine = function(nValue){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {twips | undefined} - The paragraph first line indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.GetIndFirstLine = function(){ return new twips(); };
+ApiParaPr.prototype.GetIndFirstLine = () => new twips()
 
 /**
  * Sets the paragraph contents justification.
@@ -4808,15 +4862,15 @@ ApiParaPr.prototype.GetIndFirstLine = function(){ return new twips(); };
  * @param {("left" | "right" | "both" | "center")} sJc - The justification type that
  * will be applied to the paragraph contents.
  */
-ApiParaPr.prototype.SetJc = function(sJc){};
+ApiParaPr.prototype.SetJc = (sJc) => {}
 
 /**
  * Returns the paragraph contents justification.
  * @memberof ApiParaPr
  * @typeofeditors ["CDE", "CSE", "CPE"]
- * @returns {("left" | "right" | "both" | "center" | undefined)} 
+ * @returns {("left" | "right" | "both" | "center" | undefined)}
  */
-ApiParaPr.prototype.GetJc = function(){ return ""; };
+ApiParaPr.prototype.GetJc = () => ""
 
 /**
  * Specifies that when rendering the document using a page view, all lines of the current paragraph are maintained on a single page whenever possible.
@@ -4824,7 +4878,7 @@ ApiParaPr.prototype.GetJc = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {boolean} isKeepLines - The true value enables the option to keep lines of the paragraph on a single page.
  */
-ApiParaPr.prototype.SetKeepLines = function(isKeepLines){};
+ApiParaPr.prototype.SetKeepLines = (isKeepLines) => {}
 
 /**
  * Specifies that when rendering the document using a paginated view, the contents of the current paragraph are at least
@@ -4834,7 +4888,7 @@ ApiParaPr.prototype.SetKeepLines = function(isKeepLines){};
  * @param {boolean} isKeepNext - The true value enables the option to keep lines of the paragraph on the same
  * page as the following paragraph.
  */
-ApiParaPr.prototype.SetKeepNext = function(isKeepNext){};
+ApiParaPr.prototype.SetKeepNext = (isKeepNext) => {}
 
 /**
  * Specifies that when rendering the document using a paginated view, the contents of the current paragraph are rendered at
@@ -4844,19 +4898,19 @@ ApiParaPr.prototype.SetKeepNext = function(isKeepNext){};
  * @param {boolean} isPageBreakBefore - The true value enables the option to render the contents of the paragraph
  * at the beginning of a new page in the document.
  */
-ApiParaPr.prototype.SetPageBreakBefore = function(isPageBreakBefore){};
+ApiParaPr.prototype.SetPageBreakBefore = (isPageBreakBefore) => {}
 
 /**
- * Sets the paragraph line spacing. If the value of the sLineRule parameter is either 
- * "atLeast" or "exact", then the value of nLine will be interpreted as twentieths of a point. If 
- * the value of the sLineRule parameter is "auto", then the value of the 
+ * Sets the paragraph line spacing. If the value of the sLineRule parameter is either
+ * "atLeast" or "exact", then the value of nLine will be interpreted as twentieths of a point. If
+ * the value of the sLineRule parameter is "auto", then the value of the
  * nLine parameter will be interpreted as 240ths of a line.
  * @memberof ApiParaPr
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {(twips | line240)} nLine - The line spacing value measured either in twentieths of a point (1/1440 of an inch) or in 240ths of a line.
  * @param {("auto" | "atLeast" | "exact")} sLineRule - The rule that determines the measuring units of the line spacing.
  */
-ApiParaPr.prototype.SetSpacingLine = function(nLine, sLineRule){};
+ApiParaPr.prototype.SetSpacingLine = (nLine, sLineRule) => {}
 
 /**
  * Returns the paragraph line spacing value.
@@ -4864,26 +4918,26 @@ ApiParaPr.prototype.SetSpacingLine = function(nLine, sLineRule){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {twips | line240 | undefined} - to know is twips or line240 use ApiParaPr.prototype.GetSpacingLineRule().
  */
-ApiParaPr.prototype.GetSpacingLineValue = function(){ return new twips(); };
+ApiParaPr.prototype.GetSpacingLineValue = () => new twips()
 
 /**
  * Returns the paragraph line spacing rule.
  * @memberof ApiParaPr
  * @typeofeditors ["CDE", "CSE", "CPE"]
- * @returns {"auto" | "atLeast" | "exact" | undefined} 
+ * @returns {"auto" | "atLeast" | "exact" | undefined}
  */
-ApiParaPr.prototype.GetSpacingLineRule = function(){ return ""; };
+ApiParaPr.prototype.GetSpacingLineRule = () => ""
 
 /**
- * Sets the spacing before the current paragraph. If the value of the isBeforeAuto parameter is true, then 
- * any value of the nBefore is ignored. If isBeforeAuto parameter is not specified, then 
+ * Sets the spacing before the current paragraph. If the value of the isBeforeAuto parameter is true, then
+ * any value of the nBefore is ignored. If isBeforeAuto parameter is not specified, then
  * it will be interpreted as false.
  * @memberof ApiParaPr
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {twips} nBefore - The value of the spacing before the current paragraph measured in twentieths of a point (1/1440 of an inch).
  * @param {boolean} [isBeforeAuto=false] - The true value disables the spacing before the current paragraph.
  */
-ApiParaPr.prototype.SetSpacingBefore = function(nBefore, isBeforeAuto){};
+ApiParaPr.prototype.SetSpacingBefore = (nBefore, isBeforeAuto) => {}
 
 /**
  * Returns the spacing before value of the current paragraph.
@@ -4891,26 +4945,26 @@ ApiParaPr.prototype.SetSpacingBefore = function(nBefore, isBeforeAuto){};
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {twips} - The value of the spacing before the current paragraph measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.GetSpacingBefore = function(){ return new twips(); };
+ApiParaPr.prototype.GetSpacingBefore = () => new twips()
 
 /**
- * Sets the spacing after the current paragraph. If the value of the isAfterAuto parameter is true, then 
- * any value of the nAfter is ignored. If isAfterAuto parameter is not specified, then it 
+ * Sets the spacing after the current paragraph. If the value of the isAfterAuto parameter is true, then
+ * any value of the nAfter is ignored. If isAfterAuto parameter is not specified, then it
  * will be interpreted as false.
  * @memberof ApiParaPr
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @param {twips} nAfter - The value of the spacing after the current paragraph measured in twentieths of a point (1/1440 of an inch).
  * @param {boolean} [isAfterAuto=false] - The true value disables the spacing after the current paragraph.
  */
-ApiParaPr.prototype.SetSpacingAfter = function(nAfter, isAfterAuto){};
+ApiParaPr.prototype.SetSpacingAfter = (nAfter, isAfterAuto) => {}
 
 /**
- * Returns the spacing after value of the current paragraph. 
+ * Returns the spacing after value of the current paragraph.
  * @memberof ApiParaPr
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {twips} - The value of the spacing after the current paragraph measured in twentieths of a point (1/1440 of an inch).
  */
-ApiParaPr.prototype.GetSpacingAfter = function(){ return new twips(); };
+ApiParaPr.prototype.GetSpacingAfter = () => new twips()
 
 /**
  * Specifies the shading applied to the contents of the paragraph.
@@ -4922,7 +4976,7 @@ ApiParaPr.prototype.GetSpacingAfter = function(){ return new twips(); };
  * @param {byte} b - Blue color component value.
  * @param {boolean} [isAuto=false] - The true value disables paragraph contents shading.
  */
-ApiParaPr.prototype.SetShd = function(sType, r, g, b, isAuto){};
+ApiParaPr.prototype.SetShd = (sType, r, g, b, isAuto) => {}
 
 /**
  * Returns the shading applied to the contents of the paragraph.
@@ -4930,7 +4984,7 @@ ApiParaPr.prototype.SetShd = function(sType, r, g, b, isAuto){};
  * @typeofeditors ["CDE"]
  * @returns {ApiRGBColor}
  */
-ApiParaPr.prototype.GetShd = function(){ return new ApiRGBColor(); };
+ApiParaPr.prototype.GetShd = () => new ApiRGBColor()
 
 /**
  * Specifies the border which will be displayed below a set of paragraphs which have the same paragraph border settings.
@@ -4945,7 +4999,7 @@ ApiParaPr.prototype.GetShd = function(){ return new ApiRGBColor(); };
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiParaPr.prototype.SetBottomBorder = function(sType, nSize, nSpace, r, g, b){};
+ApiParaPr.prototype.SetBottomBorder = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Specifies the border which will be displayed at the left side of the page around the specified paragraph.
@@ -4958,7 +5012,7 @@ ApiParaPr.prototype.SetBottomBorder = function(sType, nSize, nSpace, r, g, b){};
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiParaPr.prototype.SetLeftBorder = function(sType, nSize, nSpace, r, g, b){};
+ApiParaPr.prototype.SetLeftBorder = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Specifies the border which will be displayed at the right side of the page around the specified paragraph.
@@ -4971,7 +5025,7 @@ ApiParaPr.prototype.SetLeftBorder = function(sType, nSize, nSpace, r, g, b){};
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiParaPr.prototype.SetRightBorder = function(sType, nSize, nSpace, r, g, b){};
+ApiParaPr.prototype.SetRightBorder = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Specifies the border which will be displayed above a set of paragraphs which have the same set of paragraph border settings.
@@ -4985,7 +5039,7 @@ ApiParaPr.prototype.SetRightBorder = function(sType, nSize, nSpace, r, g, b){};
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiParaPr.prototype.SetTopBorder = function(sType, nSize, nSpace, r, g, b){};
+ApiParaPr.prototype.SetTopBorder = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Specifies the border which will be displayed between each paragraph in a set of paragraphs which have the same set of paragraph border settings.
@@ -4998,7 +5052,7 @@ ApiParaPr.prototype.SetTopBorder = function(sType, nSize, nSpace, r, g, b){};
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiParaPr.prototype.SetBetweenBorder = function(sType, nSize, nSpace, r, g, b){};
+ApiParaPr.prototype.SetBetweenBorder = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Specifies whether a single line of the current paragraph will be displayed on a separate page from the remaining content at display time by moving the line onto the following page.
@@ -5006,7 +5060,7 @@ ApiParaPr.prototype.SetBetweenBorder = function(sType, nSize, nSpace, r, g, b){}
  * @typeofeditors ["CDE"]
  * @param {boolean} isWidowControl - The true value means that a single line of the current paragraph will be displayed on a separate page from the remaining content at display time by moving the line onto the following page.
  */
-ApiParaPr.prototype.SetWidowControl = function(isWidowControl){};
+ApiParaPr.prototype.SetWidowControl = (isWidowControl) => {}
 
 /**
  * Specifies a sequence of custom tab stops which will be used for any tab characters in the current paragraph.
@@ -5018,7 +5072,7 @@ ApiParaPr.prototype.SetWidowControl = function(isWidowControl){};
  * @param {TabJc[]} aVal - An array of the styles of custom tab stops, which determines the behavior of the tab
  * stop and the alignment which will be applied to text entered at the current custom tab stop.
  */
-ApiParaPr.prototype.SetTabs = function(aPos, aVal){};
+ApiParaPr.prototype.SetTabs = (aPos, aVal) => {}
 
 /**
  * Specifies that the current paragraph references a numbering definition instance in the current document.
@@ -5029,7 +5083,7 @@ ApiParaPr.prototype.SetTabs = function(aPos, aVal){};
  * formatting of a paragraph, then this parameter MUST BE specified. Otherwise, if the current instance of the ApiParaPr class
  * is the part of ApiStyle properties, this parameter will be ignored.
  */
-ApiParaPr.prototype.SetNumPr = function(oNumPr, nLvl){};
+ApiParaPr.prototype.SetNumPr = (oNumPr, nLvl) => {}
 
 /**
  * Converts the ApiParaPr object into the JSON object.
@@ -5038,7 +5092,7 @@ ApiParaPr.prototype.SetNumPr = function(oNumPr, nLvl){};
  * @param {boolean} bWriteStyles - Specifies if the used styles will be written to the JSON object or not.
  * @returns {JSON}
  */
-ApiParaPr.prototype.ToJSON = function(bWriteStyles){ return new JSON(); };
+ApiParaPr.prototype.ToJSON = (bWriteStyles) => new JSON()
 
 /**
  * Returns a type of the ApiNumbering class.
@@ -5046,7 +5100,7 @@ ApiParaPr.prototype.ToJSON = function(bWriteStyles){ return new JSON(); };
  * @typeofeditors ["CDE"]
  * @returns {"numbering"}
  */
-ApiNumbering.prototype.GetClassType = function(){ return ""; };
+ApiNumbering.prototype.GetClassType = () => ""
 
 /**
  * Returns the specified level of the current numbering.
@@ -5055,7 +5109,7 @@ ApiNumbering.prototype.GetClassType = function(){ return ""; };
  * @param {number} nLevel - The numbering level index. This value MUST BE from 0 to 8.
  * @returns {ApiNumberingLevel}
  */
-ApiNumbering.prototype.GetLevel = function(nLevel){ return new ApiNumberingLevel(); };
+ApiNumbering.prototype.GetLevel = (nLevel) => new ApiNumberingLevel()
 
 /**
  * Converts the ApiNumbering object into the JSON object.
@@ -5063,7 +5117,7 @@ ApiNumbering.prototype.GetLevel = function(nLevel){ return new ApiNumberingLevel
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiNumbering.prototype.ToJSON = function(){ return new JSON(); };
+ApiNumbering.prototype.ToJSON = () => new JSON()
 
 /**
  * Returns a type of the ApiNumberingLevel class.
@@ -5071,7 +5125,7 @@ ApiNumbering.prototype.ToJSON = function(){ return new JSON(); };
  * @typeofeditors ["CDE"]
  * @returns {"numberingLevel"}
  */
-ApiNumberingLevel.prototype.GetClassType = function(){ return ""; };
+ApiNumberingLevel.prototype.GetClassType = () => ""
 
 /**
  * Returns the numbering definition.
@@ -5079,7 +5133,7 @@ ApiNumberingLevel.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {ApiNumbering}
  */
-ApiNumberingLevel.prototype.GetNumbering = function(){ return new ApiNumbering(); };
+ApiNumberingLevel.prototype.GetNumbering = () => new ApiNumbering()
 
 /**
  * Returns the level index.
@@ -5087,7 +5141,7 @@ ApiNumberingLevel.prototype.GetNumbering = function(){ return new ApiNumbering()
  * @typeofeditors ["CDE"]
  * @returns {number}
  */
-ApiNumberingLevel.prototype.GetLevelIndex = function(){ return 0; };
+ApiNumberingLevel.prototype.GetLevelIndex = () => 0
 
 /**
  * Specifies the text properties which will be applied to the text in the current numbering level itself, not to the text in the subsequent paragraph.
@@ -5096,7 +5150,7 @@ ApiNumberingLevel.prototype.GetLevelIndex = function(){ return 0; };
  * @typeofeditors ["CDE"]
  * @returns {ApiTextPr}
  */
-ApiNumberingLevel.prototype.GetTextPr = function(){ return new ApiTextPr(); };
+ApiNumberingLevel.prototype.GetTextPr = () => new ApiTextPr()
 
 /**
  * Returns the paragraph properties which are applied to any numbered paragraph that references the given numbering definition and numbering level.
@@ -5104,7 +5158,7 @@ ApiNumberingLevel.prototype.GetTextPr = function(){ return new ApiTextPr(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiParaPr}
  */
-ApiNumberingLevel.prototype.GetParaPr = function(){ return new ApiParaPr(); };
+ApiNumberingLevel.prototype.GetParaPr = () => new ApiParaPr()
 
 /**
  * Sets one of the existing predefined numbering templates.
@@ -5113,7 +5167,7 @@ ApiNumberingLevel.prototype.GetParaPr = function(){ return new ApiParaPr(); };
  * @param {("none" | "bullet" | "1)" | "1." | "I." | "A." | "a)" | "a." | "i." )} sType - The predefined numbering template.
  * @param {string} [sSymbol=""] - The symbol used for the list numbering. This parameter has the meaning only if the predefined numbering template is "bullet".
  */
-ApiNumberingLevel.prototype.SetTemplateType = function(sType, sSymbol){};
+ApiNumberingLevel.prototype.SetTemplateType = (sType, sSymbol) => {}
 
 /**
  * Sets your own customized numbering type.
@@ -5124,7 +5178,7 @@ ApiNumberingLevel.prototype.SetTemplateType = function(sType, sSymbol){};
  * @param {string} sTextFormatString - Any text in this parameter will be taken as literal text to be repeated in each instance of this numbering level, except for any use of the percent symbol (%) followed by a number, which will be used to indicate the one-based index of the number to be used at this level. Any number of a level higher than this level will be ignored.
  * @param {("left" | "right" | "center")} sAlign - Type of justification applied to the text run in the current numbering level.
  */
-ApiNumberingLevel.prototype.SetCustomType = function(sType, sTextFormatString, sAlign){};
+ApiNumberingLevel.prototype.SetCustomType = (sType, sTextFormatString, sAlign) => {}
 
 /**
  * Specifies a one-based index which determines when a numbering level should restart to its starting value. A numbering level restarts when an instance of the specified numbering level which is higher (earlier than this level) is used in the given document contents. By default this value is true.
@@ -5132,7 +5186,7 @@ ApiNumberingLevel.prototype.SetCustomType = function(sType, sTextFormatString, s
  * @typeofeditors ["CDE"]
  * @param {boolean} isRestart - The true value means that a numbering level will be restarted to its starting value.
  */
-ApiNumberingLevel.prototype.SetRestart = function(isRestart){};
+ApiNumberingLevel.prototype.SetRestart = (isRestart) => {}
 
 /**
  * Specifies the starting value for the numbering used by the parent numbering level within a given numbering level definition. By default this value is 1.
@@ -5140,7 +5194,7 @@ ApiNumberingLevel.prototype.SetRestart = function(isRestart){};
  * @typeofeditors ["CDE"]
  * @param {number} nStart - The starting value for the numbering used by the parent numbering level.
  */
-ApiNumberingLevel.prototype.SetStart = function(nStart){};
+ApiNumberingLevel.prototype.SetStart = (nStart) => {}
 
 /**
  * Specifies the content which will be added between the given numbering level text and the text of every numbered paragraph which references that numbering level. By default this value is "tab".
@@ -5148,7 +5202,7 @@ ApiNumberingLevel.prototype.SetStart = function(nStart){};
  * @typeofeditors ["CDE"]
  * @param {("space" | "tab" | "none")} sType - The content added between the numbering level text and the text in the numbered paragraph.
  */
-ApiNumberingLevel.prototype.SetSuff = function(sType){};
+ApiNumberingLevel.prototype.SetSuff = (sType) => {}
 
 /**
  * Returns a type of the ApiTablePr class.
@@ -5156,7 +5210,7 @@ ApiNumberingLevel.prototype.SetSuff = function(sType){};
  * @typeofeditors ["CDE"]
  * @returns {"tablePr"}
  */
-ApiTablePr.prototype.GetClassType = function(){ return ""; };
+ApiTablePr.prototype.GetClassType = () => ""
 
 /**
  * Specifies a number of columns which will comprise each table column band for this table style.
@@ -5164,7 +5218,7 @@ ApiTablePr.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {number} nCount - The number of columns measured in positive integers.
  */
-ApiTablePr.prototype.SetStyleColBandSize = function(nCount){};
+ApiTablePr.prototype.SetStyleColBandSize = (nCount) => {}
 
 /**
  * Specifies a number of rows which will comprise each table row band for this table style.
@@ -5172,7 +5226,7 @@ ApiTablePr.prototype.SetStyleColBandSize = function(nCount){};
  * @typeofeditors ["CDE"]
  * @param {number} nCount - The number of rows measured in positive integers.
  */
-ApiTablePr.prototype.SetStyleRowBandSize = function(nCount){};
+ApiTablePr.prototype.SetStyleRowBandSize = (nCount) => {}
 
 /**
  * Specifies the alignment of the current table with respect to the text margins in the current section.
@@ -5180,7 +5234,7 @@ ApiTablePr.prototype.SetStyleRowBandSize = function(nCount){};
  * @typeofeditors ["CDE"]
  * @param {("left" | "right" | "center")} sJcType - The alignment type used for the current table placement.
  */
-ApiTablePr.prototype.SetJc = function(sJcType){};
+ApiTablePr.prototype.SetJc = (sJcType) => {}
 
 /**
  * Specifies the shading which is applied to the extents of the current table.
@@ -5192,7 +5246,7 @@ ApiTablePr.prototype.SetJc = function(sJcType){};
  * @param {byte} b - Blue color component value.
  * @param {boolean} [isAuto=false] - The true value disables the SetShd method use.
  */
-ApiTablePr.prototype.SetShd = function(sType, r, g, b, isAuto){};
+ApiTablePr.prototype.SetShd = (sType, r, g, b, isAuto) => {}
 
 /**
  * Sets the border which will be displayed at the top of the current table.
@@ -5205,7 +5259,7 @@ ApiTablePr.prototype.SetShd = function(sType, r, g, b, isAuto){};
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiTablePr.prototype.SetTableBorderTop = function(sType, nSize, nSpace, r, g, b){};
+ApiTablePr.prototype.SetTableBorderTop = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Sets the border which will be displayed at the bottom of the current table.
@@ -5218,7 +5272,7 @@ ApiTablePr.prototype.SetTableBorderTop = function(sType, nSize, nSpace, r, g, b)
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiTablePr.prototype.SetTableBorderBottom = function(sType, nSize, nSpace, r, g, b){};
+ApiTablePr.prototype.SetTableBorderBottom = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Sets the border which will be displayed on the left of the current table.
@@ -5231,7 +5285,7 @@ ApiTablePr.prototype.SetTableBorderBottom = function(sType, nSize, nSpace, r, g,
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiTablePr.prototype.SetTableBorderLeft = function(sType, nSize, nSpace, r, g, b){};
+ApiTablePr.prototype.SetTableBorderLeft = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Sets the border which will be displayed on the right of the current table.
@@ -5244,7 +5298,7 @@ ApiTablePr.prototype.SetTableBorderLeft = function(sType, nSize, nSpace, r, g, b
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiTablePr.prototype.SetTableBorderRight = function(sType, nSize, nSpace, r, g, b){};
+ApiTablePr.prototype.SetTableBorderRight = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Specifies the border which will be displayed on all horizontal table cell borders which are not on the outmost edge
@@ -5258,7 +5312,7 @@ ApiTablePr.prototype.SetTableBorderRight = function(sType, nSize, nSpace, r, g, 
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiTablePr.prototype.SetTableBorderInsideH = function(sType, nSize, nSpace, r, g, b){};
+ApiTablePr.prototype.SetTableBorderInsideH = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Specifies the border which will be displayed on all vertical table cell borders which are not on the outmost edge
@@ -5272,7 +5326,7 @@ ApiTablePr.prototype.SetTableBorderInsideH = function(sType, nSize, nSpace, r, g
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiTablePr.prototype.SetTableBorderInsideV = function(sType, nSize, nSpace, r, g, b){};
+ApiTablePr.prototype.SetTableBorderInsideV = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Specifies an amount of space which will be left between the bottom extent of the cell contents and the border
@@ -5282,7 +5336,7 @@ ApiTablePr.prototype.SetTableBorderInsideV = function(sType, nSize, nSpace, r, g
  * @param {twips} nValue - The value for the amount of space below the bottom extent of the cell measured in
  * twentieths of a point (1/1440 of an inch).
  */
-ApiTablePr.prototype.SetTableCellMarginBottom = function(nValue){};
+ApiTablePr.prototype.SetTableCellMarginBottom = (nValue) => {}
 
 /**
  * Specifies an amount of space which will be left between the left extent of the cell contents and the left
@@ -5291,7 +5345,7 @@ ApiTablePr.prototype.SetTableCellMarginBottom = function(nValue){};
  * @typeofeditors ["CDE"]
  * @param {twips} nValue - The value for the amount of space to the left extent of the cell measured in twentieths of a point (1/1440 of an inch).
  */
-ApiTablePr.prototype.SetTableCellMarginLeft = function(nValue){};
+ApiTablePr.prototype.SetTableCellMarginLeft = (nValue) => {}
 
 /**
  * Specifies an amount of space which will be left between the right extent of the cell contents and the right
@@ -5300,7 +5354,7 @@ ApiTablePr.prototype.SetTableCellMarginLeft = function(nValue){};
  * @typeofeditors ["CDE"]
  * @param {twips} nValue - The value for the amount of space to the right extent of the cell measured in twentieths of a point (1/1440 of an inch).
  */
-ApiTablePr.prototype.SetTableCellMarginRight = function(nValue){};
+ApiTablePr.prototype.SetTableCellMarginRight = (nValue) => {}
 
 /**
  * Specifies an amount of space which will be left between the top extent of the cell contents and the top border
@@ -5309,7 +5363,7 @@ ApiTablePr.prototype.SetTableCellMarginRight = function(nValue){};
  * @typeofeditors ["CDE"]
  * @param {twips} nValue - The value for the amount of space above the top extent of the cell measured in twentieths of a point (1/1440 of an inch).
  */
-ApiTablePr.prototype.SetTableCellMarginTop = function(nValue){};
+ApiTablePr.prototype.SetTableCellMarginTop = (nValue) => {}
 
 /**
  * Specifies the default table cell spacing (the spacing between adjacent cells and the edges of the table).
@@ -5317,7 +5371,7 @@ ApiTablePr.prototype.SetTableCellMarginTop = function(nValue){};
  * @typeofeditors ["CDE"]
  * @param {?twips} nValue - Spacing value measured in twentieths of a point (1/1440 of an inch). <code>"Null"</code> means that no spacing will be applied.
  */
-ApiTablePr.prototype.SetCellSpacing = function(nValue){};
+ApiTablePr.prototype.SetCellSpacing = (nValue) => {}
 
 /**
  * Specifies the indentation which will be added before the leading edge of the current table in the document
@@ -5326,7 +5380,7 @@ ApiTablePr.prototype.SetCellSpacing = function(nValue){};
  * @typeofeditors ["CDE"]
  * @param {twips} nValue - The indentation value measured in twentieths of a point (1/1440 of an inch).
  */
-ApiTablePr.prototype.SetTableInd = function(nValue){};
+ApiTablePr.prototype.SetTableInd = (nValue) => {}
 
 /**
  * Sets the preferred width to the current table.
@@ -5336,7 +5390,7 @@ ApiTablePr.prototype.SetTableInd = function(nValue){};
  * @param {TableWidth} sType - Type of the width value from one of the available width values types.
  * @param {number} [nValue] - The table width value measured in positive integers.
  */
-ApiTablePr.prototype.SetWidth = function(sType, nValue){};
+ApiTablePr.prototype.SetWidth = (sType, nValue) => {}
 
 /**
  * Specifies the algorithm which will be used to lay out the contents of the current table within the document.
@@ -5344,7 +5398,7 @@ ApiTablePr.prototype.SetWidth = function(sType, nValue){};
  * @typeofeditors ["CDE"]
  * @param {("autofit" | "fixed")} sType - The type of the table layout in the document.
  */
-ApiTablePr.prototype.SetTableLayout = function(sType){};
+ApiTablePr.prototype.SetTableLayout = (sType) => {}
 
 /**
  * Sets the table title (caption).
@@ -5353,7 +5407,7 @@ ApiTablePr.prototype.SetTableLayout = function(sType){};
  * @param {string} sTitle - The table title to be set.
  * @returns {boolean}
  */
-ApiTablePr.prototype.SetTableTitle = function(sTitle){ return true; };
+ApiTablePr.prototype.SetTableTitle = (sTitle) => true
 
 /**
  * Returns the table title (caption).
@@ -5361,7 +5415,7 @@ ApiTablePr.prototype.SetTableTitle = function(sTitle){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiTablePr.prototype.GetTableTitle = function(){ return ""; };
+ApiTablePr.prototype.GetTableTitle = () => ""
 
 /**
  * Sets the table description.
@@ -5370,7 +5424,7 @@ ApiTablePr.prototype.GetTableTitle = function(){ return ""; };
  * @param {string} sDescr - The table description to be set.
  * @returns {boolean}
  */
-ApiTablePr.prototype.SetTableDescription = function(sDescr){ return true; };
+ApiTablePr.prototype.SetTableDescription = (sDescr) => true
 
 /**
  * Returns the table description.
@@ -5378,7 +5432,7 @@ ApiTablePr.prototype.SetTableDescription = function(sDescr){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiTablePr.prototype.GetTableDescription = function(){ return ""; };
+ApiTablePr.prototype.GetTableDescription = () => ""
 
 /**
  * Converts the ApiTablePr object into the JSON object.
@@ -5386,7 +5440,7 @@ ApiTablePr.prototype.GetTableDescription = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiTablePr.prototype.ToJSON = function(){ return new JSON(); };
+ApiTablePr.prototype.ToJSON = () => new JSON()
 
 /**
  * Returns a type of the ApiTableRowPr class.
@@ -5394,7 +5448,7 @@ ApiTablePr.prototype.ToJSON = function(){ return new JSON(); };
  * @typeofeditors ["CDE"]
  * @returns {"tableRowPr"}
  */
-ApiTableRowPr.prototype.GetClassType = function(){ return ""; };
+ApiTableRowPr.prototype.GetClassType = () => ""
 
 /**
  * Sets the height to the current table row within the current table.
@@ -5403,18 +5457,18 @@ ApiTableRowPr.prototype.GetClassType = function(){ return ""; };
  * @param {("auto" | "atLeast")} sHRule - The rule to apply the height value to the current table row or ignore it. Use the <code>"atLeast"</code> value to enable the <code>SetHeight</code> method use.
  * @param {twips} [nValue] - The height for the current table row measured in twentieths of a point (1/1440 of an inch). This value will be ignored if <code>sHRule="auto"<code>.
  */
-ApiTableRowPr.prototype.SetHeight = function(sHRule, nValue){};
+ApiTableRowPr.prototype.SetHeight = (sHRule, nValue) => {}
 
 /**
- * Specifies that the current table row will be repeated at the top of each new page 
- * wherever this table is displayed. This gives this table row the behavior of a 'header' row on 
- * each of these pages. This element can be applied to any number of rows at the top of the 
+ * Specifies that the current table row will be repeated at the top of each new page
+ * wherever this table is displayed. This gives this table row the behavior of a 'header' row on
+ * each of these pages. This element can be applied to any number of rows at the top of the
  * table structure in order to generate multi-row table headers.
  * @memberof ApiTableRowPr
  * @typeofeditors ["CDE"]
  * @param {boolean} isHeader - The true value means that the current table row will be repeated at the top of each new page.
  */
-ApiTableRowPr.prototype.SetTableHeader = function(isHeader){};
+ApiTableRowPr.prototype.SetTableHeader = (isHeader) => {}
 
 /**
  * Converts the ApiTableRowPr object into the JSON object.
@@ -5422,7 +5476,7 @@ ApiTableRowPr.prototype.SetTableHeader = function(isHeader){};
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiTableRowPr.prototype.ToJSON = function(){ return new JSON(); };
+ApiTableRowPr.prototype.ToJSON = () => new JSON()
 
 /**
  * Returns a type of the ApiTableCellPr class.
@@ -5430,7 +5484,7 @@ ApiTableRowPr.prototype.ToJSON = function(){ return new JSON(); };
  * @typeofeditors ["CDE"]
  * @returns {"tableCellPr"}
  */
-ApiTableCellPr.prototype.GetClassType = function(){ return ""; };
+ApiTableCellPr.prototype.GetClassType = () => ""
 
 /**
  * Specifies the shading applied to the contents of the table cell.
@@ -5442,7 +5496,7 @@ ApiTableCellPr.prototype.GetClassType = function(){ return ""; };
  * @param {byte} b - Blue color component value.
  * @param {boolean} [isAuto=false] - The true value disables the table cell contents shading.
  */
-ApiTableCellPr.prototype.SetShd = function(sType, r, g, b, isAuto){};
+ApiTableCellPr.prototype.SetShd = (sType, r, g, b, isAuto) => {}
 
 /**
  * Specifies an amount of space which will be left between the bottom extent of the cell contents and the border
@@ -5453,10 +5507,10 @@ ApiTableCellPr.prototype.SetShd = function(sType, r, g, b, isAuto){};
  * of a point (1/1440 of an inch). If this value is <code>null</code>, then default table cell bottom margin will be used, otherwise
  * the table cell bottom margin will be overridden with the specified value for the current cell.
  */
-ApiTableCellPr.prototype.SetCellMarginBottom = function(nValue){};
+ApiTableCellPr.prototype.SetCellMarginBottom = (nValue) => {}
 
 /**
- * Specifies an amount of space which will be left between the left extent of the cell contents and 
+ * Specifies an amount of space which will be left between the left extent of the cell contents and
  * the border of a specific table cell within a table.
  * @memberof ApiTableCellPr
  * @typeofeditors ["CDE"]
@@ -5464,7 +5518,7 @@ ApiTableCellPr.prototype.SetCellMarginBottom = function(nValue){};
  * of a point (1/1440 of an inch). If this value is <code>null</code>, then default table cell left margin will be used, otherwise
  * the table cell left margin will be overridden with the specified value for the current cell.
  */
-ApiTableCellPr.prototype.SetCellMarginLeft = function(nValue){};
+ApiTableCellPr.prototype.SetCellMarginLeft = (nValue) => {}
 
 /**
  * Specifies an amount of space which will be left between the right extent of the cell contents and the border of a specific table cell within a table.
@@ -5474,7 +5528,7 @@ ApiTableCellPr.prototype.SetCellMarginLeft = function(nValue){};
  * of a point (1/1440 of an inch). If this value is <code>null</code>, then default table cell right margin will be used, otherwise
  * the table cell right margin will be overridden with the specified value for the current cell.
  */
-ApiTableCellPr.prototype.SetCellMarginRight = function(nValue){};
+ApiTableCellPr.prototype.SetCellMarginRight = (nValue) => {}
 
 /**
  * Specifies an amount of space which will be left between the upper extent of the cell contents
@@ -5485,7 +5539,7 @@ ApiTableCellPr.prototype.SetCellMarginRight = function(nValue){};
  * of a point (1/1440 of an inch). If this value is <code>null</code>, then default table cell top margin will be used, otherwise
  * the table cell top margin will be overridden with the specified value for the current cell.
  */
-ApiTableCellPr.prototype.SetCellMarginTop = function(nValue){};
+ApiTableCellPr.prototype.SetCellMarginTop = (nValue) => {}
 
 /**
  * Sets the border which will be displayed at the bottom of the current table cell.
@@ -5498,7 +5552,7 @@ ApiTableCellPr.prototype.SetCellMarginTop = function(nValue){};
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiTableCellPr.prototype.SetCellBorderBottom = function(sType, nSize, nSpace, r, g, b){};
+ApiTableCellPr.prototype.SetCellBorderBottom = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Sets the border which will be displayed to the left of the current table cell.
@@ -5511,7 +5565,7 @@ ApiTableCellPr.prototype.SetCellBorderBottom = function(sType, nSize, nSpace, r,
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiTableCellPr.prototype.SetCellBorderLeft = function(sType, nSize, nSpace, r, g, b){};
+ApiTableCellPr.prototype.SetCellBorderLeft = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Sets the border which will be displayed to the right of the current table cell.
@@ -5524,7 +5578,7 @@ ApiTableCellPr.prototype.SetCellBorderLeft = function(sType, nSize, nSpace, r, g
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiTableCellPr.prototype.SetCellBorderRight = function(sType, nSize, nSpace, r, g, b){};
+ApiTableCellPr.prototype.SetCellBorderRight = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Sets the border which will be displayed at the top of the current table cell.
@@ -5537,7 +5591,7 @@ ApiTableCellPr.prototype.SetCellBorderRight = function(sType, nSize, nSpace, r, 
  * @param {byte} g - Green color component value.
  * @param {byte} b - Blue color component value.
  */
-ApiTableCellPr.prototype.SetCellBorderTop = function(sType, nSize, nSpace, r, g, b){};
+ApiTableCellPr.prototype.SetCellBorderTop = (sType, nSize, nSpace, r, g, b) => {}
 
 /**
  * Sets the preferred width to the current table cell.
@@ -5546,7 +5600,7 @@ ApiTableCellPr.prototype.SetCellBorderTop = function(sType, nSize, nSpace, r, g,
  * @param {TableWidth} sType - Type of the width value from one of the available width values types.
  * @param {number} [nValue] - The table cell width value measured in positive integers.
  */
-ApiTableCellPr.prototype.SetWidth = function(sType, nValue){};
+ApiTableCellPr.prototype.SetWidth = (sType, nValue) => {}
 
 /**
  * Specifies the vertical alignment for the text contents within the current table cell.
@@ -5554,7 +5608,7 @@ ApiTableCellPr.prototype.SetWidth = function(sType, nValue){};
  * @typeofeditors ["CDE"]
  * @param {("top" | "center" | "bottom")} sType - The available types of the vertical alignment for the text contents of the current table cell.
  */
-ApiTableCellPr.prototype.SetVerticalAlign = function(sType){};
+ApiTableCellPr.prototype.SetVerticalAlign = (sType) => {}
 
 /**
  * Specifies the direction of the text flow for this table cell.
@@ -5564,7 +5618,7 @@ ApiTableCellPr.prototype.SetVerticalAlign = function(sType){};
  * - text direction left-to-right moving from top to bottom, <code>"tbrl"</code> - text direction top-to-bottom moving from right
  * to left, <code>"btlr"</code> - text direction bottom-to-top moving from left to right.
  */
-ApiTableCellPr.prototype.SetTextDirection = function(sType){};
+ApiTableCellPr.prototype.SetTextDirection = (sType) => {}
 
 /**
  * Specifies how the current table cell is laid out when the parent table is displayed in a document. This setting
@@ -5573,7 +5627,7 @@ ApiTableCellPr.prototype.SetTextDirection = function(sType){};
  * @typeofeditors ["CDE"]
  * @param {boolean} isNoWrap - The true value means that the current table cell will not be wrapped in the parent table.
  */
-ApiTableCellPr.prototype.SetNoWrap = function(isNoWrap){};
+ApiTableCellPr.prototype.SetNoWrap = (isNoWrap) => {}
 
 /**
  * Converts the ApiTableCellPr object into the JSON object.
@@ -5581,7 +5635,7 @@ ApiTableCellPr.prototype.SetNoWrap = function(isNoWrap){};
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiTableCellPr.prototype.ToJSON = function(){ return new JSON(); };
+ApiTableCellPr.prototype.ToJSON = () => new JSON()
 
 /**
  * Returns a type of the ApiTableStylePr class.
@@ -5589,7 +5643,7 @@ ApiTableCellPr.prototype.ToJSON = function(){ return new JSON(); };
  * @typeofeditors ["CDE"]
  * @returns {"tableStylePr"}
  */
-ApiTableStylePr.prototype.GetClassType = function(){ return ""; };
+ApiTableStylePr.prototype.GetClassType = () => ""
 
 /**
  * Returns a type of the current table conditional style.
@@ -5597,7 +5651,7 @@ ApiTableStylePr.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {TableStyleOverrideType}
  */
-ApiTableStylePr.prototype.GetType = function(){ return new TableStyleOverrideType(); };
+ApiTableStylePr.prototype.GetType = () => new TableStyleOverrideType()
 
 /**
  * Returns a set of the text run properties which will be applied to all the text runs within the table which match the conditional formatting type.
@@ -5605,7 +5659,7 @@ ApiTableStylePr.prototype.GetType = function(){ return new TableStyleOverrideTyp
  * @typeofeditors ["CDE"]
  * @returns {ApiTextPr}
  */
-ApiTableStylePr.prototype.GetTextPr = function(){ return new ApiTextPr(); };
+ApiTableStylePr.prototype.GetTextPr = () => new ApiTextPr()
 
 /**
  * Returns a set of the paragraph properties which will be applied to all the paragraphs within a table which match the conditional formatting type.
@@ -5613,7 +5667,7 @@ ApiTableStylePr.prototype.GetTextPr = function(){ return new ApiTextPr(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiParaPr}
  */
-ApiTableStylePr.prototype.GetParaPr = function(){ return new ApiParaPr(); };
+ApiTableStylePr.prototype.GetParaPr = () => new ApiParaPr()
 
 /**
  * Returns a set of the table properties which will be applied to all the regions within a table which match the conditional formatting type.
@@ -5621,7 +5675,7 @@ ApiTableStylePr.prototype.GetParaPr = function(){ return new ApiParaPr(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiTablePr}
  */
-ApiTableStylePr.prototype.GetTablePr = function(){ return new ApiTablePr(); };
+ApiTableStylePr.prototype.GetTablePr = () => new ApiTablePr()
 
 /**
  * Returns a set of the table row properties which will be applied to all the rows within a table which match the conditional formatting type.
@@ -5629,7 +5683,7 @@ ApiTableStylePr.prototype.GetTablePr = function(){ return new ApiTablePr(); };
  * @typeofeditors ["CDE"]
  * @returns {ApiTableRowPr}
  */
-ApiTableStylePr.prototype.GetTableRowPr = function(){ return new ApiTableRowPr(); };
+ApiTableStylePr.prototype.GetTableRowPr = () => new ApiTableRowPr()
 
 /**
  * Returns a set of the table cell properties which will be applied to all the cells within a table which match the conditional formatting type.
@@ -5637,7 +5691,7 @@ ApiTableStylePr.prototype.GetTableRowPr = function(){ return new ApiTableRowPr()
  * @typeofeditors ["CDE"]
  * @returns {ApiTableCellPr}
  */
-ApiTableStylePr.prototype.GetTableCellPr = function(){ return new ApiTableCellPr(); };
+ApiTableStylePr.prototype.GetTableCellPr = () => new ApiTableCellPr()
 
 /**
  * Converts the ApiTableStylePr object into the JSON object.
@@ -5645,7 +5699,7 @@ ApiTableStylePr.prototype.GetTableCellPr = function(){ return new ApiTableCellPr
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiTableStylePr.prototype.ToJSON = function(){ return new JSON(); };
+ApiTableStylePr.prototype.ToJSON = () => new JSON()
 
 /**
  * Returns a type of the ApiDrawing class.
@@ -5653,7 +5707,7 @@ ApiTableStylePr.prototype.ToJSON = function(){ return new JSON(); };
  * @typeofeditors ["CDE", "CPE"]
  * @returns {"drawing"}
  */
-ApiDrawing.prototype.GetClassType = function(){ return ""; };
+ApiDrawing.prototype.GetClassType = () => ""
 
 /**
  * Sets the size of the object (image, shape, chart) bounding box.
@@ -5662,7 +5716,7 @@ ApiDrawing.prototype.GetClassType = function(){ return ""; };
  * @param {EMU} nWidth - The object width measured in English measure units.
  * @param {EMU} nHeight - The object height measured in English measure units.
  */
-ApiDrawing.prototype.SetSize = function(nWidth, nHeight){};
+ApiDrawing.prototype.SetSize = (nWidth, nHeight) => {}
 
 /**
  * Sets the wrapping type of the current object (image, shape, chart). One of the following wrapping style types can be set:
@@ -5678,7 +5732,7 @@ ApiDrawing.prototype.SetSize = function(nWidth, nHeight){};
  * @typeofeditors ["CDE"]
  * @param {"inline" | "square" | "tight" | "through" | "topAndBottom" | "behind" | "inFront"} sType - The wrapping style type available for the object.
  */
-ApiDrawing.prototype.SetWrappingStyle = function(sType){};
+ApiDrawing.prototype.SetWrappingStyle = (sType) => {}
 
 /**
  * Specifies how the floating object will be horizontally aligned.
@@ -5687,7 +5741,7 @@ ApiDrawing.prototype.SetWrappingStyle = function(sType){};
  * @param {RelFromH} [sRelativeFrom="page"] - The document element which will be taken as a countdown point for the object horizontal alignment.
  * @param {("left" | "right" | "center")} [sAlign="left"] - The alignment type which will be used for the object horizontal alignment.
  */
-ApiDrawing.prototype.SetHorAlign = function(sRelativeFrom, sAlign){};
+ApiDrawing.prototype.SetHorAlign = (sRelativeFrom, sAlign) => {}
 
 /**
  * Specifies how the floating object will be vertically aligned.
@@ -5696,7 +5750,7 @@ ApiDrawing.prototype.SetHorAlign = function(sRelativeFrom, sAlign){};
  * @param {RelFromV} [sRelativeFrom="page"] - The document element which will be taken as a countdown point for the object vertical alignment.
  * @param {("top" | "bottom" | "center")} [sAlign="top"] - The alingment type which will be used for the object vertical alignment.
  */
-ApiDrawing.prototype.SetVerAlign = function(sRelativeFrom, sAlign){};
+ApiDrawing.prototype.SetVerAlign = (sRelativeFrom, sAlign) => {}
 
 /**
  * Sets the absolute measurement for the horizontal positioning of the floating object.
@@ -5705,7 +5759,7 @@ ApiDrawing.prototype.SetVerAlign = function(sRelativeFrom, sAlign){};
  * @param {RelFromH} sRelativeFrom - The document element which will be taken as a countdown point for the object horizontal alignment.
  * @param {EMU} nDistance - The distance from the right side of the document element to the floating object measured in English measure units.
  */
-ApiDrawing.prototype.SetHorPosition = function(sRelativeFrom, nDistance){};
+ApiDrawing.prototype.SetHorPosition = (sRelativeFrom, nDistance) => {}
 
 /**
  * Sets the absolute measurement for the vertical positioning of the floating object.
@@ -5714,7 +5768,7 @@ ApiDrawing.prototype.SetHorPosition = function(sRelativeFrom, nDistance){};
  * @param {RelFromV} sRelativeFrom - The document element which will be taken as a countdown point for the object vertical alignment.
  * @param {EMU} nDistance - The distance from the bottom part of the document element to the floating object measured in English measure units.
  */
-ApiDrawing.prototype.SetVerPosition = function(sRelativeFrom, nDistance){};
+ApiDrawing.prototype.SetVerPosition = (sRelativeFrom, nDistance) => {}
 
 /**
  * Specifies the minimum distance which will be maintained between the edges of the current drawing object and any
@@ -5726,7 +5780,7 @@ ApiDrawing.prototype.SetVerPosition = function(sRelativeFrom, nDistance){};
  * @param {EMU} nRight - The distance from the right side of the current object and the subsequent text run measured in English measure units.
  * @param {EMU} nBottom - The distance from the bottom side of the current object and the subsequent text run measured in English measure units.
  */
-ApiDrawing.prototype.SetDistances = function(nLeft, nTop, nRight, nBottom){};
+ApiDrawing.prototype.SetDistances = (nLeft, nTop, nRight, nBottom) => {}
 
 /**
  * Returns a parent paragraph that contains the graphic object.
@@ -5734,7 +5788,7 @@ ApiDrawing.prototype.SetDistances = function(nLeft, nTop, nRight, nBottom){};
  * @typeofeditors ["CDE"]
  * @returns {ApiParagraph | null} - returns null if parent paragraph doesn't exist.
  */
-ApiDrawing.prototype.GetParentParagraph = function(){ return new ApiParagraph(); };
+ApiDrawing.prototype.GetParentParagraph = () => new ApiParagraph()
 
 /**
  * Returns a parent content control that contains the graphic object.
@@ -5742,7 +5796,7 @@ ApiDrawing.prototype.GetParentParagraph = function(){ return new ApiParagraph();
  * @typeofeditors ["CDE"]
  * @returns {ApiBlockLvlSdt | null} - returns null if parent content control doesn't exist.
  */
-ApiDrawing.prototype.GetParentContentControl = function(){ return new ApiBlockLvlSdt(); };
+ApiDrawing.prototype.GetParentContentControl = () => new ApiBlockLvlSdt()
 
 /**
  * Returns a parent table that contains the graphic object.
@@ -5750,38 +5804,38 @@ ApiDrawing.prototype.GetParentContentControl = function(){ return new ApiBlockLv
  * @typeofeditors ["CDE"]
  * @returns {ApiTable | null} - returns null if parent table doesn't exist.
  */
-ApiDrawing.prototype.GetParentTable = function(){ return new ApiTable(); };
+ApiDrawing.prototype.GetParentTable = () => new ApiTable()
 
 /**
  * Returns a parent table cell that contains the graphic object.
  * @typeofeditors ["CDE"]
  * @returns {ApiTableCell | null} - returns null if parent cell doesn't exist.
  */
-ApiDrawing.prototype.GetParentTableCell = function(){ return new ApiTableCell(); };
+ApiDrawing.prototype.GetParentTableCell = () => new ApiTableCell()
 
 /**
- * Deletes the current graphic object. 
+ * Deletes the current graphic object.
  * @typeofeditors ["CDE"]
  * @returns {boolean} - returns false if drawing object haven't parent.
  */
-ApiDrawing.prototype.Delete = function(){ return true; };
+ApiDrawing.prototype.Delete = () => true
 
 /**
- * Copies the current graphic object. 
+ * Copies the current graphic object.
  * @memberof ApiDrawing
  * @typeofeditors ["CDE"]
  * @returns {ApiDrawing}
  */
-ApiDrawing.prototype.Copy = function(){ return new ApiDrawing(); };
+ApiDrawing.prototype.Copy = () => new ApiDrawing()
 
 /**
  * Wraps the graphic object with a rich text content control.
  * @memberof ApiDrawing
  * @typeofeditors ["CDE"]
  * @param {number} nType - Defines if this method returns the ApiBlockLvlSdt (nType === 1) or ApiDrawing (any value except 1) object.
- * @returns {ApiDrawing | ApiBlockLvlSdt}  
+ * @returns {ApiDrawing | ApiBlockLvlSdt}
  */
-ApiDrawing.prototype.InsertInContentControl = function(nType){ return new ApiDrawing(); };
+ApiDrawing.prototype.InsertInContentControl = (nType) => new ApiDrawing()
 
 /**
  * Inserts a paragraph at the specified position.
@@ -5792,14 +5846,14 @@ ApiDrawing.prototype.InsertInContentControl = function(nType){ return new ApiDra
  * @param {boolean} beRNewPara - Defines if this method returns a new paragraph (true) or the current ApiDrawing (false).
  * @returns {ApiParagraph | ApiDrawing} - returns null if parent paragraph doesn't exist.
  */
-ApiDrawing.prototype.InsertParagraph = function(paragraph, sPosition, beRNewPara){ return new ApiParagraph(); };
+ApiDrawing.prototype.InsertParagraph = (paragraph, sPosition, beRNewPara) => new ApiParagraph()
 
 /**
  * Selects the current graphic object.
  * @memberof ApiDrawing
  * @typeofeditors ["CDE"]
  */
-ApiDrawing.prototype.Select = function(){};
+ApiDrawing.prototype.Select = () => {}
 
 /**
  * Inserts a break at the specified location in the main document.
@@ -5809,7 +5863,7 @@ ApiDrawing.prototype.Select = function(){};
  * @param {string}position  - The position where the page or line break will be inserted ("before" or "after" the current drawing).
  * @returns {boolean}  - returns false if drawing object haven't parent run or params are invalid.
  */
-ApiDrawing.prototype.AddBreak = function(breakType, position){ return true; };
+ApiDrawing.prototype.AddBreak = (breakType, position) => true
 
 /**
  * Flips the current drawing horizontally.
@@ -5817,7 +5871,7 @@ ApiDrawing.prototype.AddBreak = function(breakType, position){ return true; };
  * @typeofeditors ["CDE"]
  * @param {boolean} bFlip - Specifies if the figure will be flipped horizontally or not.
  */
-ApiDrawing.prototype.SetHorFlip = function(bFlip){};
+ApiDrawing.prototype.SetHorFlip = (bFlip) => {}
 
 /**
  * Flips the current drawing vertically.
@@ -5826,7 +5880,7 @@ ApiDrawing.prototype.SetHorFlip = function(bFlip){};
  * @param {boolean} bFlip - Specifies if the figure will be flipped vertically or not.
  * @returns {boolean} - returns false if param is invalid.
  */
-ApiDrawing.prototype.SetVertFlip = function(bFlip){ return true; };
+ApiDrawing.prototype.SetVertFlip = (bFlip) => true
 
 /**
  * Scales the height of the figure using the specified coefficient.
@@ -5835,7 +5889,7 @@ ApiDrawing.prototype.SetVertFlip = function(bFlip){ return true; };
  * @param {number} coefficient - The coefficient by which the figure height will be scaled.
  * @returns {boolean} - return false if param is invalid.
  */
-ApiDrawing.prototype.ScaleHeight = function(coefficient){ return true; };
+ApiDrawing.prototype.ScaleHeight = (coefficient) => true
 
 /**
  * Scales the width of the figure using the specified coefficient.
@@ -5844,7 +5898,7 @@ ApiDrawing.prototype.ScaleHeight = function(coefficient){ return true; };
  * @param {number} coefficient - The coefficient by which the figure width will be scaled.
  * @returns {boolean} - return false if param is invali.
  */
-ApiDrawing.prototype.ScaleWidth = function(coefficient){ return true; };
+ApiDrawing.prototype.ScaleWidth = (coefficient) => true
 
 /**
  * Sets the fill formatting properties to the current graphic object.
@@ -5853,7 +5907,7 @@ ApiDrawing.prototype.ScaleWidth = function(coefficient){ return true; };
  * @param {ApiFill} oFill - The fill type used to fill the graphic object.
  * @returns {boolean} - returns false if param is invalid.
  */
-ApiDrawing.prototype.Fill = function(oFill){ return true; };
+ApiDrawing.prototype.Fill = (oFill) => true
 
 /**
  * Sets the outline properties to the specified graphic object.
@@ -5862,23 +5916,23 @@ ApiDrawing.prototype.Fill = function(oFill){ return true; };
  * @param {ApiStroke} oStroke - The stroke used to create the graphic object outline.
  * @returns {boolean} - returns false if param is invalid.
  */
-ApiDrawing.prototype.SetOutLine = function(oStroke){ return true; };
+ApiDrawing.prototype.SetOutLine = (oStroke) => true
 
 /**
- * Returns the next inline drawing object if exists. 
+ * Returns the next inline drawing object if exists.
  *  @memberof ApiDrawing
  * @typeofeditors ["CDE"]
  * @returns {ApiDrawing | null} - returns null if drawing object is last.
  */
-ApiDrawing.prototype.GetNextDrawing = function(){ return new ApiDrawing(); };
+ApiDrawing.prototype.GetNextDrawing = () => new ApiDrawing()
 
 /**
- * Returns the previous inline drawing object if exists. 
+ * Returns the previous inline drawing object if exists.
  * @memberof ApiDrawing
  * @typeofeditors ["CDE"]
  * @returns {ApiDrawing | null} - returns null if drawing object is first.
  */
-ApiDrawing.prototype.GetPrevDrawing = function(){ return new ApiDrawing(); };
+ApiDrawing.prototype.GetPrevDrawing = () => new ApiDrawing()
 
 /**
  * Converts the ApiDrawing object into the JSON object.
@@ -5888,7 +5942,7 @@ ApiDrawing.prototype.GetPrevDrawing = function(){ return new ApiDrawing(); };
  * @param {boolean} bWriteStyles - Specifies if the used styles will be written to the JSON object or not.
  * @returns {JSON}
  */
-ApiDrawing.prototype.ToJSON = function(bWriteNumberings, bWriteStyles){ return new JSON(); };
+ApiDrawing.prototype.ToJSON = (bWriteNumberings, bWriteStyles) => new JSON()
 
 /**
  * Returns the width of the current drawing.
@@ -5896,7 +5950,7 @@ ApiDrawing.prototype.ToJSON = function(bWriteNumberings, bWriteStyles){ return n
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {EMU}
  */
-ApiDrawing.prototype.GetWidth = function(){ return new EMU(); };
+ApiDrawing.prototype.GetWidth = () => new EMU()
 
 /**
  * Returns the height of the current drawing.
@@ -5904,7 +5958,7 @@ ApiDrawing.prototype.GetWidth = function(){ return new EMU(); };
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {EMU}
  */
-ApiDrawing.prototype.GetHeight = function(){ return new EMU(); };
+ApiDrawing.prototype.GetHeight = () => new EMU()
 
 /**
  * Returns the lock value for the specified lock type of the current drawing.
@@ -5913,7 +5967,7 @@ ApiDrawing.prototype.GetHeight = function(){ return new EMU(); };
  * | "noChangeArrowheads" | "noChangeShapeType" | "noDrilldown" | "noTextEdit" | "noCrop" | "txBox"} sType - Lock type in the string format.
  * @returns {bool}
  */
-ApiDrawing.prototype.GetLockValue = function(sType){ return true; };
+ApiDrawing.prototype.GetLockValue = (sType) => true
 
 /**
  * Sets the lock value to the specified lock type of the current drawing.
@@ -5923,7 +5977,7 @@ ApiDrawing.prototype.GetLockValue = function(sType){ return true; };
  * @param {bool} bValue - Specifies if the specified lock is applied to the current drawing.
  * @returns {bool}
  */
-ApiDrawing.prototype.SetLockValue = function(sType, bValue){ return true; };
+ApiDrawing.prototype.SetLockValue = (sType, bValue) => true
 
 /**
  * Sets the properties from another drawing to the current drawing.
@@ -5933,7 +5987,7 @@ ApiDrawing.prototype.SetLockValue = function(sType, bValue){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiDrawing.prototype.SetDrawingPrFromDrawing = function(oAnotherDrawing){ return true; };
+ApiDrawing.prototype.SetDrawingPrFromDrawing = (oAnotherDrawing) => true
 
 /**
  * Returns a type of the ApiImage class.
@@ -5941,23 +5995,23 @@ ApiDrawing.prototype.SetDrawingPrFromDrawing = function(oAnotherDrawing){ return
  * @typeofeditors ["CDE", "CPE"]
  * @returns {"image"}
  */
-ApiImage.prototype.GetClassType = function(){ return ""; };
+ApiImage.prototype.GetClassType = () => ""
 
 /**
- * Returns the next inline image if exists. 
+ * Returns the next inline image if exists.
  * @memberof ApiImage
  * @typeofeditors ["CDE"]
  * @returns {ApiImage | null} - returns null if image is last.
  */
-ApiImage.prototype.GetNextImage= function(){ return new ApiImage(); };
+ApiImage.prototype.GetNextImage = () => new ApiImage()
 
 /**
- * Returns the previous inline image if exists. 
+ * Returns the previous inline image if exists.
  * @memberof ApiImage
  * @typeofeditors ["CDE"]
  * @returns {ApiImage | null} - returns null if image is first.
  */
-ApiImage.prototype.GetPrevImage= function(){ return new ApiImage(); };
+ApiImage.prototype.GetPrevImage = () => new ApiImage()
 
 /**
  * Returns a type of the ApiOleObject class.
@@ -5965,7 +6019,7 @@ ApiImage.prototype.GetPrevImage= function(){ return new ApiImage(); };
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {"oleObject"}
  */
-ApiOleObject.prototype.GetClassType = function(){ return ""; };
+ApiOleObject.prototype.GetClassType = () => ""
 
 /**
  * Sets the data to the current OLE object.
@@ -5974,7 +6028,7 @@ ApiOleObject.prototype.GetClassType = function(){ return ""; };
  * @param {string} sData - The OLE object string data.
  * @returns {boolean}
  */
-ApiOleObject.prototype.SetData = function(sData){ return true; };
+ApiOleObject.prototype.SetData = (sData) => true
 
 /**
  * Returns the string data from the current OLE object.
@@ -5982,7 +6036,7 @@ ApiOleObject.prototype.SetData = function(sData){ return true; };
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {string}
  */
-ApiOleObject.prototype.GetData = function(){ return ""; };
+ApiOleObject.prototype.GetData = () => ""
 
 /**
  * Sets the application ID to the current OLE object.
@@ -5991,7 +6045,7 @@ ApiOleObject.prototype.GetData = function(){ return ""; };
  * @param {string} sAppId - The application ID associated with the curent OLE object.
  * @returns {boolean}
  */
-ApiOleObject.prototype.SetApplicationId = function(sAppId){ return true; };
+ApiOleObject.prototype.SetApplicationId = (sAppId) => true
 
 /**
  * Returns the application ID from the current OLE object.
@@ -5999,7 +6053,7 @@ ApiOleObject.prototype.SetApplicationId = function(sAppId){ return true; };
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {string}
  */
-ApiOleObject.prototype.GetApplicationId = function(){ return ""; };
+ApiOleObject.prototype.GetApplicationId = () => ""
 
 /**
  * Returns a type of the ApiShape class.
@@ -6007,7 +6061,7 @@ ApiOleObject.prototype.GetApplicationId = function(){ return ""; };
  * @typeofeditors ["CDE", "CSE"]
  * @returns {"shape"}
  */
-ApiShape.prototype.GetClassType = function(){ return ""; };
+ApiShape.prototype.GetClassType = () => ""
 
 /**
  * Returns the shape inner contents where a paragraph or text runs can be inserted.
@@ -6015,7 +6069,7 @@ ApiShape.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE", "CSE"]
  * @returns {ApiDocumentContent}
  */
-ApiShape.prototype.GetDocContent = function(){ return new ApiDocumentContent(); };
+ApiShape.prototype.GetDocContent = () => new ApiDocumentContent()
 
 /**
  * Returns the shape inner contents where a paragraph or text runs can be inserted.
@@ -6023,7 +6077,7 @@ ApiShape.prototype.GetDocContent = function(){ return new ApiDocumentContent(); 
  * @typeofeditors ["CDE", "CSE"]
  * @returns {ApiDocumentContent}
  */
-ApiShape.prototype.GetContent = function(){ return new ApiDocumentContent(); };
+ApiShape.prototype.GetContent = () => new ApiDocumentContent()
 
 /**
  * Sets the vertical alignment to the shape content where a paragraph or text runs can be inserted.
@@ -6031,7 +6085,7 @@ ApiShape.prototype.GetContent = function(){ return new ApiDocumentContent(); };
  * @typeofeditors ["CDE", "CSE"]
  * @param {VerticalTextAlign} VerticalAlign - The type of the vertical alignment for the shape inner contents.
  */
-ApiShape.prototype.SetVerticalTextAlign = function(VerticalAlign){};
+ApiShape.prototype.SetVerticalTextAlign = (VerticalAlign) => {}
 
 /**
  * Sets the text paddings to the current shape.
@@ -6042,23 +6096,23 @@ ApiShape.prototype.SetVerticalTextAlign = function(VerticalAlign){};
  * @param {?EMU} nRight - Right padding.
  * @param {?EMU} nBottom - Bottom padding.
  */
-ApiShape.prototype.SetPaddings = function(nLeft, nTop, nRight, nBottom){};
+ApiShape.prototype.SetPaddings = (nLeft, nTop, nRight, nBottom) => {}
 
 /**
- * Returns the next inline shape if exists. 
+ * Returns the next inline shape if exists.
  * @memberof ApiShape
  * @typeofeditors ["CDE"]
  * @returns {ApiShape | null} - returns null if shape is last.
  */
-ApiShape.prototype.GetNextShape = function(){ return new ApiShape(); };
+ApiShape.prototype.GetNextShape = () => new ApiShape()
 
 /**
- * Returns the previous inline shape if exists. 
+ * Returns the previous inline shape if exists.
  * @memberof ApiShape
  * @typeofeditors ["CDE"]
  * @returns {ApiShape | null} - returns null is shape is first.
  */
-ApiShape.prototype.GetPrevShape= function(){ return new ApiShape(); };
+ApiShape.prototype.GetPrevShape = () => new ApiShape()
 
 /**
  * Returns a type of the ApiChart class.
@@ -6066,7 +6120,7 @@ ApiShape.prototype.GetPrevShape= function(){ return new ApiShape(); };
  * @typeofeditors ["CDE"]
  * @returns {"chart"}
  */
-ApiChart.prototype.GetClassType = function(){ return ""; };
+ApiChart.prototype.GetClassType = () => ""
 
 /**
  *  Specifies the chart title.
@@ -6076,7 +6130,7 @@ ApiChart.prototype.GetClassType = function(){ return ""; };
  *  @param {pt} nFontSize - The text size value measured in points.
  *  @param {?bool} bIsBold - Specifies if the chart title is written in bold font or not.
  */
-ApiChart.prototype.SetTitle = function (sTitle, nFontSize, bIsBold){};
+ApiChart.prototype.SetTitle = (sTitle, nFontSize, bIsBold) => {}
 
 /**
  *  Specifies the chart horizontal axis title.
@@ -6086,7 +6140,7 @@ ApiChart.prototype.SetTitle = function (sTitle, nFontSize, bIsBold){};
  *  @param {pt} nFontSize - The text size value measured in points.
  *  @param {?bool} bIsBold - Specifies if the horizontal axis title is written in bold font or not.
  * */
-ApiChart.prototype.SetHorAxisTitle = function (sTitle, nFontSize, bIsBold){};
+ApiChart.prototype.SetHorAxisTitle = (sTitle, nFontSize, bIsBold) => {}
 
 /**
  *  Specifies the chart vertical axis title.
@@ -6096,7 +6150,7 @@ ApiChart.prototype.SetHorAxisTitle = function (sTitle, nFontSize, bIsBold){};
  *  @param {pt} nFontSize - The text size value measured in points.
  *  @param {?bool} bIsBold - Specifies if the vertical axis title is written in bold font or not.
  * */
-ApiChart.prototype.SetVerAxisTitle = function (sTitle, nFontSize, bIsBold){};
+ApiChart.prototype.SetVerAxisTitle = (sTitle, nFontSize, bIsBold) => {}
 
 /**
  * Specifies the vertical axis orientation.
@@ -6104,7 +6158,7 @@ ApiChart.prototype.SetVerAxisTitle = function (sTitle, nFontSize, bIsBold){};
  * @typeofeditors ["CDE"]
  * @param {boolean} bIsMinMax - The <code>true</code> value will set the normal data direction for the vertical axis (from minimum to maximum).
  * */
-ApiChart.prototype.SetVerAxisOrientation = function(bIsMinMax){};
+ApiChart.prototype.SetVerAxisOrientation = (bIsMinMax) => {}
 
 /**
  * Specifies the horizontal axis orientation.
@@ -6112,7 +6166,7 @@ ApiChart.prototype.SetVerAxisOrientation = function(bIsMinMax){};
  * @typeofeditors ["CDE"]
  * @param {boolean} bIsMinMax - The <code>true</code> value will set the normal data direction for the horizontal axis (from minimum to maximum).
  * */
-ApiChart.prototype.SetHorAxisOrientation = function(bIsMinMax){};
+ApiChart.prototype.SetHorAxisOrientation = (bIsMinMax) => {}
 
 /**
  * Specifies the chart legend position.
@@ -6120,7 +6174,7 @@ ApiChart.prototype.SetHorAxisOrientation = function(bIsMinMax){};
  * @typeofeditors ["CDE"]
  * @param {"left" | "top" | "right" | "bottom" | "none"} sLegendPos - The position of the chart legend inside the chart window.
  * */
-ApiChart.prototype.SetLegendPos = function(sLegendPos){};
+ApiChart.prototype.SetLegendPos = (sLegendPos) => {}
 
 /**
  * Specifies the legend font size.
@@ -6128,7 +6182,7 @@ ApiChart.prototype.SetLegendPos = function(sLegendPos){};
  * @typeofeditors ["CDE"]
  * @param {pt} nFontSize - The text size value measured in points.
  * */
-ApiChart.prototype.SetLegendFontSize = function(nFontSize){};
+ApiChart.prototype.SetLegendFontSize = (nFontSize) => {}
 
 /**
  * Specifies which chart data labels are shown for the chart.
@@ -6139,7 +6193,7 @@ ApiChart.prototype.SetLegendFontSize = function(nFontSize){};
  * @param {boolean} bShowVal - Whether to show or hide the chart data values.
  * @param {boolean} bShowPercent - Whether to show or hide the percent for the data values (works with stacked chart types).
  * */
-ApiChart.prototype.SetShowDataLabels = function(bShowSerName, bShowCatName, bShowVal, bShowPercent){};
+ApiChart.prototype.SetShowDataLabels = (bShowSerName, bShowCatName, bShowVal, bShowPercent) => {}
 
 /**
  * Spicifies the show options for data labels.
@@ -6152,7 +6206,14 @@ ApiChart.prototype.SetShowDataLabels = function(bShowSerName, bShowCatName, bSho
  * @param {boolean} bShowVal - Whether to show or hide the chart data values.
  * @param {boolean} bShowPercent - Whether to show or hide the percent for the data values (works with stacked chart types).
  * */
-ApiChart.prototype.SetShowPointDataLabel = function(nSeriesIndex, nPointIndex, bShowSerName, bShowCatName, bShowVal, bShowPercent){};
+ApiChart.prototype.SetShowPointDataLabel = (
+  nSeriesIndex,
+  nPointIndex,
+  bShowSerName,
+  bShowCatName,
+  bShowVal,
+  bShowPercent,
+) => {}
 
 /**
  * Spicifies tick labels position for the vertical axis.
@@ -6160,7 +6221,7 @@ ApiChart.prototype.SetShowPointDataLabel = function(nSeriesIndex, nPointIndex, b
  * @typeofeditors ["CDE"]
  * @param {TickLabelPosition} sTickLabelPosition - The type for the position of chart vertical tick labels.
  * */
-ApiChart.prototype.SetVertAxisTickLabelPosition = function(sTickLabelPosition){};
+ApiChart.prototype.SetVertAxisTickLabelPosition = (sTickLabelPosition) => {}
 
 /**
  * Spicifies tick labels position for the horizontal axis.
@@ -6168,7 +6229,7 @@ ApiChart.prototype.SetVertAxisTickLabelPosition = function(sTickLabelPosition){}
  * @typeofeditors ["CDE"]
  * @param {TickLabelPosition} sTickLabelPosition - The type for the position of chart horizontal tick labels.
  * */
-ApiChart.prototype.SetHorAxisTickLabelPosition = function(sTickLabelPosition){};
+ApiChart.prototype.SetHorAxisTickLabelPosition = (sTickLabelPosition) => {}
 
 /**
  * Specifies major tick mark for the horizontal axis.
@@ -6176,7 +6237,7 @@ ApiChart.prototype.SetHorAxisTickLabelPosition = function(sTickLabelPosition){};
  * @typeofeditors ["CDE"]
  * @param {TickMark} sTickMark - The type of tick mark appearance.
  * */
-ApiChart.prototype.SetHorAxisMajorTickMark = function(sTickMark){};
+ApiChart.prototype.SetHorAxisMajorTickMark = (sTickMark) => {}
 
 /**
  * Specifies minor tick mark for the horizontal axis.
@@ -6184,7 +6245,7 @@ ApiChart.prototype.SetHorAxisMajorTickMark = function(sTickMark){};
  * @typeofeditors ["CDE"]
  * @param {TickMark} sTickMark - The type of tick mark appearance.
  * */
-ApiChart.prototype.SetHorAxisMinorTickMark = function(sTickMark){};
+ApiChart.prototype.SetHorAxisMinorTickMark = (sTickMark) => {}
 
 /**
  * Specifies major tick mark for the vertical axis.
@@ -6192,7 +6253,7 @@ ApiChart.prototype.SetHorAxisMinorTickMark = function(sTickMark){};
  * @typeofeditors ["CDE"]
  * @param {TickMark} sTickMark - The type of tick mark appearance.
  * */
-ApiChart.prototype.SetVertAxisMajorTickMark = function(sTickMark){};
+ApiChart.prototype.SetVertAxisMajorTickMark = (sTickMark) => {}
 
 /**
  * Specifies minor tick mark for the vertical axis.
@@ -6200,7 +6261,7 @@ ApiChart.prototype.SetVertAxisMajorTickMark = function(sTickMark){};
  * @typeofeditors ["CDE"]
  * @param {TickMark} sTickMark - The type of tick mark appearance.
  * */
-ApiChart.prototype.SetVertAxisMinorTickMark = function(sTickMark){};
+ApiChart.prototype.SetVertAxisMinorTickMark = (sTickMark) => {}
 
 /**
  * Specifies major vertical gridline visual properties.
@@ -6208,7 +6269,7 @@ ApiChart.prototype.SetVertAxisMinorTickMark = function(sTickMark){};
  * @typeofeditors ["CDE"]
  * @param {?ApiStroke} oStroke - The stroke used to create the element shadow.
  * */
-ApiChart.prototype.SetMajorVerticalGridlines = function(oStroke){};
+ApiChart.prototype.SetMajorVerticalGridlines = (oStroke) => {}
 
 /**
  * Specifies minor vertical gridline visual properties.
@@ -6216,7 +6277,7 @@ ApiChart.prototype.SetMajorVerticalGridlines = function(oStroke){};
  * @typeofeditors ["CDE"]
  * @param {?ApiStroke} oStroke - The stroke used to create the element shadow.
  * */
-ApiChart.prototype.SetMinorVerticalGridlines = function(oStroke){};
+ApiChart.prototype.SetMinorVerticalGridlines = (oStroke) => {}
 
 /**
  * Specifies major horizontal gridline visual properties.
@@ -6224,7 +6285,7 @@ ApiChart.prototype.SetMinorVerticalGridlines = function(oStroke){};
  * @typeofeditors ["CDE"]
  * @param {?ApiStroke} oStroke - The stroke used to create the element shadow.
  * */
-ApiChart.prototype.SetMajorHorizontalGridlines = function(oStroke){};
+ApiChart.prototype.SetMajorHorizontalGridlines = (oStroke) => {}
 
 /**
  * Specifies minor horizontal gridline visual properties.
@@ -6232,7 +6293,7 @@ ApiChart.prototype.SetMajorHorizontalGridlines = function(oStroke){};
  * @typeofeditors ["CDE"]
  * @param {?ApiStroke} oStroke - The stroke used to create the element shadow.
  * */
-ApiChart.prototype.SetMinorHorizontalGridlines = function(oStroke){};
+ApiChart.prototype.SetMinorHorizontalGridlines = (oStroke) => {}
 
 /**
  * Specifies font size for labels of the horizontal axis.
@@ -6240,7 +6301,7 @@ ApiChart.prototype.SetMinorHorizontalGridlines = function(oStroke){};
  * @typeofeditors ["CDE"]
  * @param {pt} nFontSize - The text size value measured in points.
  */
-ApiChart.prototype.SetHorAxisLablesFontSize = function(nFontSize){};
+ApiChart.prototype.SetHorAxisLablesFontSize = (nFontSize) => {}
 
 /**
  * Specifies font size for labels of the vertical axis.
@@ -6248,7 +6309,7 @@ ApiChart.prototype.SetHorAxisLablesFontSize = function(nFontSize){};
  * @typeofeditors ["CDE"]
  * @param {pt} nFontSize - The text size value measured in points.
  */
-ApiChart.prototype.SetVertAxisLablesFontSize = function(nFontSize){};
+ApiChart.prototype.SetVertAxisLablesFontSize = (nFontSize) => {}
 
 /**
  * Returns the next inline chart if exists.
@@ -6256,15 +6317,15 @@ ApiChart.prototype.SetVertAxisLablesFontSize = function(nFontSize){};
  * @typeofeditors ["CDE"]
  * @returns {ApiChart | null} - returns null if chart is last.
  */
-ApiChart.prototype.GetNextChart = function(){ return new ApiChart(); };
+ApiChart.prototype.GetNextChart = () => new ApiChart()
 
 /**
- * Returns the previous inline chart if exists. 
+ * Returns the previous inline chart if exists.
  * @memberof ApiChart
  * @typeofeditors ["CDE"]
  * @returns {ApiChart | null} - return null if char if first.
  */
-ApiChart.prototype.GetPrevChart= function(){ return new ApiChart(); };
+ApiChart.prototype.GetPrevChart = () => new ApiChart()
 
 /**
  * Removes the specified series from the current chart.
@@ -6273,7 +6334,7 @@ ApiChart.prototype.GetPrevChart= function(){ return new ApiChart(); };
  * @param {number} nSeria - The index of the chart series.
  * @returns {boolean}
  */
-ApiChart.prototype.RemoveSeria = function(nSeria){ return true; };
+ApiChart.prototype.RemoveSeria = (nSeria) => true
 
 /**
  * Sets values to the specified chart series.
@@ -6283,7 +6344,7 @@ ApiChart.prototype.RemoveSeria = function(nSeria){ return true; };
  * @param {number} nSeria - The index of the chart series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetSeriaValues = function(aValues, nSeria){ return true; };
+ApiChart.prototype.SetSeriaValues = (aValues, nSeria) => true
 
 /**
  * Sets the x-axis values to all chart series. It is used with the scatter charts only.
@@ -6292,7 +6353,7 @@ ApiChart.prototype.SetSeriaValues = function(aValues, nSeria){ return true; };
  * @param {string[]} aValues - The array of the data which will be set to the x-axis data points.
  * @returns {boolean}
  */
-ApiChart.prototype.SetXValues = function(aValues){ return true; };
+ApiChart.prototype.SetXValues = (aValues) => true
 
 /**
  * Sets a name to the specified chart series.
@@ -6302,7 +6363,7 @@ ApiChart.prototype.SetXValues = function(aValues){ return true; };
  * @param {number} nSeria - The index of the chart series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetSeriaName = function(sName, nSeria){ return true; };
+ApiChart.prototype.SetSeriaName = (sName, nSeria) => true
 
 /**
  * Sets a name to the specified chart category.
@@ -6312,7 +6373,7 @@ ApiChart.prototype.SetSeriaName = function(sName, nSeria){ return true; };
  * @param {number} nCategory - The index of the chart category.
  * @returns {boolean}
  */
-ApiChart.prototype.SetCategoryName = function(sName, nCategory){ return true; };
+ApiChart.prototype.SetCategoryName = (sName, nCategory) => true
 
 /**
  * Sets a style to the current chart by style ID.
@@ -6321,7 +6382,7 @@ ApiChart.prototype.SetCategoryName = function(sName, nCategory){ return true; };
  * @param nStyleId - One of the styles available in the editor.
  * @returns {boolean}
  */
-ApiChart.prototype.ApplyChartStyle = function(nStyleId){ return true; };
+ApiChart.prototype.ApplyChartStyle = (nStyleId) => true
 
 /**
  * Sets the fill to the chart plot area.
@@ -6330,7 +6391,7 @@ ApiChart.prototype.ApplyChartStyle = function(nStyleId){ return true; };
  * @param {ApiFill} oFill - The fill type used to fill the plot area.
  * @returns {boolean}
  */
-ApiChart.prototype.SetPlotAreaFill = function(oFill){ return true; };
+ApiChart.prototype.SetPlotAreaFill = (oFill) => true
 
 /**
  * Sets the outline to the chart plot area.
@@ -6339,7 +6400,7 @@ ApiChart.prototype.SetPlotAreaFill = function(oFill){ return true; };
  * @param {ApiStroke} oStroke - The stroke used to create the plot area outline.
  * @returns {boolean}
  */
-ApiChart.prototype.SetPlotAreaOutLine = function(oStroke){ return true; };
+ApiChart.prototype.SetPlotAreaOutLine = (oStroke) => true
 
 /**
  * Sets the fill to the specified chart series.
@@ -6350,7 +6411,7 @@ ApiChart.prototype.SetPlotAreaOutLine = function(oStroke){ return true; };
  * @param {boolean} [bAll=false] - Specifies if the fill will be applied to all series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetSeriesFill = function(oFill, nSeries, bAll){ return true; };
+ApiChart.prototype.SetSeriesFill = (oFill, nSeries, bAll) => true
 
 /**
  * Sets the outline to the specified chart series.
@@ -6361,7 +6422,7 @@ ApiChart.prototype.SetSeriesFill = function(oFill, nSeries, bAll){ return true; 
  * @param {boolean} [bAll=false] - Specifies if the outline will be applied to all series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetSeriesOutLine = function(oStroke, nSeries, bAll){ return true; };
+ApiChart.prototype.SetSeriesOutLine = (oStroke, nSeries, bAll) => true
 
 /**
  * Sets the fill to the data point in the specified chart series.
@@ -6373,7 +6434,7 @@ ApiChart.prototype.SetSeriesOutLine = function(oStroke, nSeries, bAll){ return t
  * @param {boolean} [bAllSeries=false] - Specifies if the fill will be applied to the specified data point in all series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetDataPointFill = function(oFill, nSeries, nDataPoint, bAllSeries){ return true; };
+ApiChart.prototype.SetDataPointFill = (oFill, nSeries, nDataPoint, bAllSeries) => true
 
 /**
  * Sets the outline to the data point in the specified chart series.
@@ -6385,7 +6446,7 @@ ApiChart.prototype.SetDataPointFill = function(oFill, nSeries, nDataPoint, bAllS
  * @param {boolean} bAllSeries - Specifies if the outline will be applied to the specified data point in all series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetDataPointOutLine = function(oStroke, nSeries, nDataPoint, bAllSeries){ return true; };
+ApiChart.prototype.SetDataPointOutLine = (oStroke, nSeries, nDataPoint, bAllSeries) => true
 
 /**
  * Sets the fill to the marker in the specified chart series.
@@ -6397,7 +6458,7 @@ ApiChart.prototype.SetDataPointOutLine = function(oStroke, nSeries, nDataPoint, 
  * @param {boolean} [bAllMarkers=false] - Specifies if the fill will be applied to all markers in the specified chart series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetMarkerFill = function(oFill, nSeries, nMarker, bAllMarkers){ return true; };
+ApiChart.prototype.SetMarkerFill = (oFill, nSeries, nMarker, bAllMarkers) => true
 
 /**
  * Sets the outline to the marker in the specified chart series.
@@ -6409,7 +6470,7 @@ ApiChart.prototype.SetMarkerFill = function(oFill, nSeries, nMarker, bAllMarkers
  * @param {boolean} [bAllMarkers=false] - Specifies if the outline will be applied to all markers in the specified chart series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetMarkerOutLine = function(oStroke, nSeries, nMarker, bAllMarkers){ return true; };
+ApiChart.prototype.SetMarkerOutLine = (oStroke, nSeries, nMarker, bAllMarkers) => true
 
 /**
  * Sets the fill to the chart title.
@@ -6418,7 +6479,7 @@ ApiChart.prototype.SetMarkerOutLine = function(oStroke, nSeries, nMarker, bAllMa
  * @param {ApiFill} oFill - The fill type used to fill the title.
  * @returns {boolean}
  */
-ApiChart.prototype.SetTitleFill = function(oFill){ return true; };
+ApiChart.prototype.SetTitleFill = (oFill) => true
 
 /**
  * Sets the outline to the chart title.
@@ -6427,7 +6488,7 @@ ApiChart.prototype.SetTitleFill = function(oFill){ return true; };
  * @param {ApiStroke} oStroke - The stroke used to create the title outline.
  * @returns {boolean}
  */
-ApiChart.prototype.SetTitleOutLine = function(oStroke){ return true; };
+ApiChart.prototype.SetTitleOutLine = (oStroke) => true
 
 /**
  * Sets the fill to the chart legend.
@@ -6436,7 +6497,7 @@ ApiChart.prototype.SetTitleOutLine = function(oStroke){ return true; };
  * @param {ApiFill} oFill - The fill type used to fill the legend.
  * @returns {boolean}
  */
-ApiChart.prototype.SetLegendFill = function(oFill){ return true; };
+ApiChart.prototype.SetLegendFill = (oFill) => true
 
 /**
  * Sets the outline to the chart legend.
@@ -6445,7 +6506,7 @@ ApiChart.prototype.SetLegendFill = function(oFill){ return true; };
  * @param {ApiStroke} oStroke - The stroke used to create the legend outline.
  * @returns {boolean}
  */
-ApiChart.prototype.SetLegendOutLine = function(oStroke){ return true; };
+ApiChart.prototype.SetLegendOutLine = (oStroke) => true
 
 /**
  * Sets the specified numeric format to the axis values.
@@ -6455,7 +6516,7 @@ ApiChart.prototype.SetLegendOutLine = function(oStroke){ return true; };
  * @param {AxisPos} - Axis position in the chart.
  * @returns {boolean}
  */
-ApiChart.prototype.SetAxieNumFormat = function(sFormat, sAxiePos){ return true; };
+ApiChart.prototype.SetAxieNumFormat = (sFormat, sAxiePos) => true
 
 /**
  * Sets the specified numeric format to the chart series.
@@ -6465,7 +6526,7 @@ ApiChart.prototype.SetAxieNumFormat = function(sFormat, sAxiePos){ return true; 
  * @param {Number} nSeria - Series index.
  * @returns {boolean}
  */
-ApiChart.prototype.SetSeriaNumFormat = function(sFormat, nSeria){ return true; };
+ApiChart.prototype.SetSeriaNumFormat = (sFormat, nSeria) => true
 
 /**
  * Sets the specified numeric format to the chart data point.
@@ -6477,7 +6538,7 @@ ApiChart.prototype.SetSeriaNumFormat = function(sFormat, nSeria){ return true; }
  * @param {boolean} bAllSeries - Specifies if the numeric format will be applied to the specified data point in all series.
  * @returns {boolean}
  */
-ApiChart.prototype.SetDataPointNumFormat = function(sFormat, nSeria, nDataPoint, bAllSeries){ return true; };
+ApiChart.prototype.SetDataPointNumFormat = (sFormat, nSeria, nDataPoint, bAllSeries) => true
 
 /**
  * Returns a type of the ApiFill class.
@@ -6485,7 +6546,7 @@ ApiChart.prototype.SetDataPointNumFormat = function(sFormat, nSeria, nDataPoint,
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"fill"}
  */
-ApiFill.prototype.GetClassType = function(){ return ""; };
+ApiFill.prototype.GetClassType = () => ""
 
 /**
  * Converts the ApiFill object into the JSON object.
@@ -6493,7 +6554,7 @@ ApiFill.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiFill.prototype.ToJSON = function(){ return new JSON(); };
+ApiFill.prototype.ToJSON = () => new JSON()
 
 /**
  * Returns a type of the ApiStroke class.
@@ -6501,7 +6562,7 @@ ApiFill.prototype.ToJSON = function(){ return new JSON(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"stroke"}
  */
-ApiStroke.prototype.GetClassType = function(){ return ""; };
+ApiStroke.prototype.GetClassType = () => ""
 
 /**
  * Converts the ApiStroke object into the JSON object.
@@ -6509,7 +6570,7 @@ ApiStroke.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiStroke.prototype.ToJSON = function(){ return new JSON(); };
+ApiStroke.prototype.ToJSON = () => new JSON()
 
 /**
  * Returns a type of the ApiGradientStop class.
@@ -6517,7 +6578,7 @@ ApiStroke.prototype.ToJSON = function(){ return new JSON(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"gradientStop"}
  */
-ApiGradientStop.prototype.GetClassType = function (){ return ""; };
+ApiGradientStop.prototype.GetClassType = () => ""
 
 /**
  * Converts the ApiGradientStop object into the JSON object.
@@ -6525,7 +6586,7 @@ ApiGradientStop.prototype.GetClassType = function (){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiGradientStop.prototype.ToJSON = function(){ return new JSON(); };
+ApiGradientStop.prototype.ToJSON = () => new JSON()
 
 /**
  * Returns a type of the ApiUniColor class.
@@ -6533,7 +6594,7 @@ ApiGradientStop.prototype.ToJSON = function(){ return new JSON(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"uniColor"}
  */
-ApiUniColor.prototype.GetClassType = function (){ return ""; };
+ApiUniColor.prototype.GetClassType = () => ""
 
 /**
  * Converts the ApiUniColor object into the JSON object.
@@ -6541,7 +6602,7 @@ ApiUniColor.prototype.GetClassType = function (){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiUniColor.prototype.ToJSON = function(){ return new JSON(); };
+ApiUniColor.prototype.ToJSON = () => new JSON()
 
 /**
  * Returns a type of the ApiRGBColor class.
@@ -6549,7 +6610,7 @@ ApiUniColor.prototype.ToJSON = function(){ return new JSON(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"rgbColor"}
  */
-ApiRGBColor.prototype.GetClassType = function (){ return ""; };
+ApiRGBColor.prototype.GetClassType = () => ""
 
 /**
  * Converts the ApiRGBColor object into the JSON object.
@@ -6557,7 +6618,7 @@ ApiRGBColor.prototype.GetClassType = function (){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiRGBColor.prototype.ToJSON = function(){ return new JSON(); };
+ApiRGBColor.prototype.ToJSON = () => new JSON()
 
 /**
  * Returns a type of the ApiSchemeColor class.
@@ -6565,7 +6626,7 @@ ApiRGBColor.prototype.ToJSON = function(){ return new JSON(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"schemeColor"}
  */
-ApiSchemeColor.prototype.GetClassType = function (){ return ""; };
+ApiSchemeColor.prototype.GetClassType = () => ""
 
 /**
  * Converts the ApiSchemeColor object into the JSON object.
@@ -6573,7 +6634,7 @@ ApiSchemeColor.prototype.GetClassType = function (){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiSchemeColor.prototype.ToJSON = function(){ return new JSON(); };
+ApiSchemeColor.prototype.ToJSON = () => new JSON()
 
 /**
  * Returns a type of the ApiPresetColor class.
@@ -6581,7 +6642,7 @@ ApiSchemeColor.prototype.ToJSON = function(){ return new JSON(); };
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {"presetColor"}
  */
-ApiPresetColor.prototype.GetClassType = function (){ return ""; };
+ApiPresetColor.prototype.GetClassType = () => ""
 
 /**
  * Converts the ApiPresetColor object into the JSON object.
@@ -6589,7 +6650,7 @@ ApiPresetColor.prototype.GetClassType = function (){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {JSON}
  */
-ApiPresetColor.prototype.ToJSON = function(){ return new JSON(); };
+ApiPresetColor.prototype.ToJSON = () => new JSON()
 
 /**
  * Returns a type of the ApiInlineLvlSdt class.
@@ -6597,7 +6658,7 @@ ApiPresetColor.prototype.ToJSON = function(){ return new JSON(); };
  * @typeofeditors ["CDE"]
  * @returns {"inlineLvlSdt"}
  */
-ApiInlineLvlSdt.prototype.GetClassType = function(){ return ""; };
+ApiInlineLvlSdt.prototype.GetClassType = () => ""
 
 /**
  * Sets the lock to the current inline text content control:
@@ -6608,7 +6669,7 @@ ApiInlineLvlSdt.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {"contentLocked" | "sdtContentLocked" | "sdtLocked"} sLockType - The lock type applied to the inline text content control.
  */
-ApiInlineLvlSdt.prototype.SetLock = function(sLockType){};
+ApiInlineLvlSdt.prototype.SetLock = (sLockType) => {}
 
 /**
  * Returns the lock type of the current container.
@@ -6616,7 +6677,7 @@ ApiInlineLvlSdt.prototype.SetLock = function(sLockType){};
  * @typeofeditors ["CDE"]
  * @returns {SdtLock}
  */
-ApiInlineLvlSdt.prototype.GetLock = function(){ return new SdtLock(); };
+ApiInlineLvlSdt.prototype.GetLock = () => new SdtLock()
 
 /**
  * Adds a string tag to the current inline text content control.
@@ -6624,7 +6685,7 @@ ApiInlineLvlSdt.prototype.GetLock = function(){ return new SdtLock(); };
  * @typeofeditors ["CDE"]
  * @param {string} sTag - The tag which will be added to the current inline text content control.
  */
-ApiInlineLvlSdt.prototype.SetTag = function(sTag){};
+ApiInlineLvlSdt.prototype.SetTag = (sTag) => {}
 
 /**
  * Returns the tag attribute for the current container.
@@ -6632,7 +6693,7 @@ ApiInlineLvlSdt.prototype.SetTag = function(sTag){};
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiInlineLvlSdt.prototype.GetTag = function(){ return ""; };
+ApiInlineLvlSdt.prototype.GetTag = () => ""
 
 /**
  * Adds a string label to the current inline text content control.
@@ -6640,7 +6701,7 @@ ApiInlineLvlSdt.prototype.GetTag = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {string} sLabel - The label which will be added to the current inline text content control. Can be a positive or negative integer from <b>-2147483647</b> to <b>2147483647</b>.
  */
-ApiInlineLvlSdt.prototype.SetLabel = function(sLabel){};
+ApiInlineLvlSdt.prototype.SetLabel = (sLabel) => {}
 
 /**
  * Returns the label attribute for the current container.
@@ -6648,7 +6709,7 @@ ApiInlineLvlSdt.prototype.SetLabel = function(sLabel){};
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiInlineLvlSdt.prototype.GetLabel = function(){ return ""; };
+ApiInlineLvlSdt.prototype.GetLabel = () => ""
 
 /**
  * Sets the alias attribute to the current container.
@@ -6656,7 +6717,7 @@ ApiInlineLvlSdt.prototype.GetLabel = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {string} sAlias - The alias which will be added to the current inline text content control.
  */
-ApiInlineLvlSdt.prototype.SetAlias = function(sAlias){};
+ApiInlineLvlSdt.prototype.SetAlias = (sAlias) => {}
 
 /**
  * Returns the alias attribute for the current container.
@@ -6664,17 +6725,17 @@ ApiInlineLvlSdt.prototype.SetAlias = function(sAlias){};
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiInlineLvlSdt.prototype.GetAlias = function(){ return ""; };
+ApiInlineLvlSdt.prototype.GetAlias = () => ""
 
 /**
- * Returns a number of elements in the current inline text content control. The text content 
- * control is created with one text run present in it by default, so even without any 
+ * Returns a number of elements in the current inline text content control. The text content
+ * control is created with one text run present in it by default, so even without any
  * element added this method will return the value of '1'.
  * @memberof ApiInlineLvlSdt
  * @typeofeditors ["CDE"]
  * @returns {number}
  */
-ApiInlineLvlSdt.prototype.GetElementsCount = function(){ return 0; };
+ApiInlineLvlSdt.prototype.GetElementsCount = () => 0
 
 /**
  * Returns an element of the current inline text content control using the position specified.
@@ -6683,7 +6744,7 @@ ApiInlineLvlSdt.prototype.GetElementsCount = function(){ return 0; };
  * @param {number} nPos - The position where the element which content we want to get must be located.
  * @returns {ParagraphContent}
  */
-ApiInlineLvlSdt.prototype.GetElement = function(nPos){ return new ParagraphContent(); };
+ApiInlineLvlSdt.prototype.GetElement = (nPos) => new ParagraphContent()
 
 /**
  * Removes an element using the position specified from the current inline text content control.
@@ -6692,7 +6753,7 @@ ApiInlineLvlSdt.prototype.GetElement = function(nPos){ return new ParagraphConte
  * @param {number} nPos - The position of the element which we want to remove from the current inline text content control.
  * @returns {boolean}
  */
-ApiInlineLvlSdt.prototype.RemoveElement = function(nPos){ return true; };
+ApiInlineLvlSdt.prototype.RemoveElement = (nPos) => true
 
 /**
  * Removes all the elements from the current inline text content control.
@@ -6700,7 +6761,7 @@ ApiInlineLvlSdt.prototype.RemoveElement = function(nPos){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {boolean} - returns false if control has not elements.
  */
-ApiInlineLvlSdt.prototype.RemoveAllElements = function(){ return true; };
+ApiInlineLvlSdt.prototype.RemoveAllElements = () => true
 
 /**
  * Adds an element to the inline text content control.
@@ -6710,7 +6771,7 @@ ApiInlineLvlSdt.prototype.RemoveAllElements = function(){ return true; };
  * @param {number} [nPos] - The position of the element where it will be added to the current inline text content control. If this value is not specified, then the element will be added to the end of the current inline text content control.
  * @returns {boolean} - returns false if oElement unsupported.
  */
-ApiInlineLvlSdt.prototype.AddElement = function(oElement, nPos){ return true; };
+ApiInlineLvlSdt.prototype.AddElement = (oElement, nPos) => true
 
 /**
  * Adds an element to the end of inline text content control.
@@ -6719,16 +6780,16 @@ ApiInlineLvlSdt.prototype.AddElement = function(oElement, nPos){ return true; };
  * @param {DocumentElement} oElement - The document element which will be added to the end of the container.
  * @returns {boolean} - returns false if oElement unsupported.
  */
-ApiInlineLvlSdt.prototype.Push = function(oElement){ return true; };
+ApiInlineLvlSdt.prototype.Push = (oElement) => true
 
 /**
- * Adds text to the current content control. 
+ * Adds text to the current content control.
  * @memberof ApiInlineLvlSdt
  * @typeofeditors ["CDE"]
  * @param {String} sText - The text which will be added to the content control.
  * @returns {boolean} - returns false if param is invalid.
  */
-ApiInlineLvlSdt.prototype.AddText = function(sText){ return true; };
+ApiInlineLvlSdt.prototype.AddText = (sText) => true
 
 /**
  * Removes a content control and its content. If keepContent is true, the content is not deleted.
@@ -6737,7 +6798,7 @@ ApiInlineLvlSdt.prototype.AddText = function(sText){ return true; };
  * @param {boolean} keepContent - Specifies if the content will be deleted or not.
  * @returns {boolean} - returns false if control haven't parent paragraph.
  */
-ApiInlineLvlSdt.prototype.Delete = function(keepContent){ return true; };
+ApiInlineLvlSdt.prototype.Delete = (keepContent) => true
 
 /**
  * Applies text settings to the content of the content control.
@@ -6746,7 +6807,7 @@ ApiInlineLvlSdt.prototype.Delete = function(keepContent){ return true; };
  * @param {ApiTextPr} oTextPr - The properties that will be set to the content of the content control.
  * @returns {ApiInlineLvlSdt} this.
  */
-ApiInlineLvlSdt.prototype.SetTextPr = function(oTextPr){ return new ApiInlineLvlSdt(); };
+ApiInlineLvlSdt.prototype.SetTextPr = (oTextPr) => new ApiInlineLvlSdt()
 
 /**
  * Returns a paragraph that contains the current content control.
@@ -6754,7 +6815,7 @@ ApiInlineLvlSdt.prototype.SetTextPr = function(oTextPr){ return new ApiInlineLvl
  * @typeofeditors ["CDE"]
  * @returns {ApiParagraph | null} - returns null if parent paragraph doesn't exist.
  */
-ApiInlineLvlSdt.prototype.GetParentParagraph = function(){ return new ApiParagraph(); };
+ApiInlineLvlSdt.prototype.GetParentParagraph = () => new ApiParagraph()
 
 /**
  * Returns a content control that contains the current content control.
@@ -6762,23 +6823,23 @@ ApiInlineLvlSdt.prototype.GetParentParagraph = function(){ return new ApiParagra
  * @typeofeditors ["CDE"]
  * @returns {ApiBlockLvlSdt | ApiInlineLvlSdt | null} - returns null if parent content control doesn't exist.
  */
-ApiInlineLvlSdt.prototype.GetParentContentControl = function(){ return new ApiBlockLvlSdt(); };
+ApiInlineLvlSdt.prototype.GetParentContentControl = () => new ApiBlockLvlSdt()
 
 /**
  * Returns a table that contains the current content control.
  * @memberof ApiInlineLvlSdt
  * @typeofeditors ["CDE"]
- * @returns {ApiTable | null} - returns null if parent table doesn't exist.  
+ * @returns {ApiTable | null} - returns null if parent table doesn't exist.
  */
-ApiInlineLvlSdt.prototype.GetParentTable = function(){ return new ApiTable(); };
+ApiInlineLvlSdt.prototype.GetParentTable = () => new ApiTable()
 
 /**
  * Returns a table cell that contains the current content control.
  * @memberof ApiInlineLvlSdt
  * @typeofeditors ["CDE"]
- * @returns {ApiTableCell | null} - return null if parent cell doesn't exist.  
+ * @returns {ApiTableCell | null} - return null if parent cell doesn't exist.
  */
-ApiInlineLvlSdt.prototype.GetParentTableCell = function(){ return new ApiTableCell(); };
+ApiInlineLvlSdt.prototype.GetParentTableCell = () => new ApiTableCell()
 
 /**
  * Returns a Range object that represents the part of the document contained in the specified content control.
@@ -6786,9 +6847,9 @@ ApiInlineLvlSdt.prototype.GetParentTableCell = function(){ return new ApiTableCe
  * @typeofeditors ["CDE"]
  * @param {Number} Start - Start character in the current element.
  * @param {Number} End - End character in the current element.
- * @returns {ApiRange} 
+ * @returns {ApiRange}
  * */
-ApiInlineLvlSdt.prototype.GetRange = function(Start, End){ return new ApiRange(); };
+ApiInlineLvlSdt.prototype.GetRange = (Start, End) => new ApiRange()
 
 /**
  * Creates a copy of an inline content control. Ignores comments, footnote references, complex fields.
@@ -6796,7 +6857,7 @@ ApiInlineLvlSdt.prototype.GetRange = function(Start, End){ return new ApiRange()
  * @typeofeditors ["CDE"]
  * @returns {ApiInlineLvlSdt}
  */
-ApiInlineLvlSdt.prototype.Copy = function(){ return new ApiInlineLvlSdt(); };
+ApiInlineLvlSdt.prototype.Copy = () => new ApiInlineLvlSdt()
 
 /**
  * Converts the ApiInlineLvlSdt object into the JSON object.
@@ -6805,7 +6866,7 @@ ApiInlineLvlSdt.prototype.Copy = function(){ return new ApiInlineLvlSdt(); };
  * @param {boolean} bWriteStyles - Specifies if the used styles will be written to the JSON object or not.
  * @returns {JSON}
  */
-ApiInlineLvlSdt.prototype.ToJSON = function(bWriteStyles){ return new JSON(); };
+ApiInlineLvlSdt.prototype.ToJSON = (bWriteStyles) => new JSON()
 
 /**
  * Returns the placeholder text from the current inline content control.
@@ -6813,7 +6874,7 @@ ApiInlineLvlSdt.prototype.ToJSON = function(bWriteStyles){ return new JSON(); };
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiInlineLvlSdt.prototype.GetPlaceholderText = function(){ return ""; };
+ApiInlineLvlSdt.prototype.GetPlaceholderText = () => ""
 
 /**
  * Sets the placeholder text to the current inline content control.
@@ -6823,7 +6884,7 @@ ApiInlineLvlSdt.prototype.GetPlaceholderText = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiInlineLvlSdt.prototype.SetPlaceholderText = function(sText){ return true; };
+ApiInlineLvlSdt.prototype.SetPlaceholderText = (sText) => true
 
 /**
  * Checks if the content control is a form.
@@ -6831,7 +6892,7 @@ ApiInlineLvlSdt.prototype.SetPlaceholderText = function(sText){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiInlineLvlSdt.prototype.IsForm = function(){ return true; };
+ApiInlineLvlSdt.prototype.IsForm = () => true
 
 /**
  * Adds a comment to the current inline content control.
@@ -6843,7 +6904,7 @@ ApiInlineLvlSdt.prototype.IsForm = function(){ return true; };
  * @param {string} sUserId - The user ID of the comment author (optional).
  * @returns {ApiComment} - Returns null if the comment was not added.
  */
-ApiInlineLvlSdt.prototype.AddComment = function(sText, sAuthor, sUserId){ return new ApiComment(); };
+ApiInlineLvlSdt.prototype.AddComment = (sText, sAuthor, sUserId) => new ApiComment()
 
 /**
  * Place cursor before/after the current content control
@@ -6851,7 +6912,7 @@ ApiInlineLvlSdt.prototype.AddComment = function(sText, sAuthor, sUserId){ return
  * @memberof ApiInlineLvlSdt
  * @typeofeditors ["CDE"]
  */
-ApiInlineLvlSdt.prototype.MoveCursorOutside = function(isAfter){};
+ApiInlineLvlSdt.prototype.MoveCursorOutside = (isAfter) => {}
 
 /**
  * Returns a list of values of the combo box / dropdown list content control.
@@ -6859,7 +6920,7 @@ ApiInlineLvlSdt.prototype.MoveCursorOutside = function(isAfter){};
  * @typeofeditors ["CDE"]
  * @returns {ApiContentControlList}
  */
-ApiInlineLvlSdt.prototype.GetDropdownList = function(){ return new ApiContentControlList(); };
+ApiInlineLvlSdt.prototype.GetDropdownList = () => new ApiContentControlList()
 
 /**
  * Returns a type of the ApiContentControlList class.
@@ -6867,7 +6928,7 @@ ApiInlineLvlSdt.prototype.GetDropdownList = function(){ return new ApiContentCon
  * @typeofeditors ["CDE"]
  * @returns {"contentControlList"}
  */
-ApiContentControlList.prototype.GetClassType = function(){ return ""; };
+ApiContentControlList.prototype.GetClassType = () => ""
 
 /**
  * Returns a collection of items (the ApiContentControlListEntry objects) of the combo box / dropdown list content control.
@@ -6875,7 +6936,7 @@ ApiContentControlList.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {ApiContentControlListEntry[]}
  */
-ApiContentControlList.prototype.GetAllItems = function(){ return [new ApiContentControlListEntry()]; };
+ApiContentControlList.prototype.GetAllItems = () => [new ApiContentControlListEntry()]
 
 /**
  * Returns a number of items of the combo box / dropdown list content control.
@@ -6883,7 +6944,7 @@ ApiContentControlList.prototype.GetAllItems = function(){ return [new ApiContent
  * @typeofeditors ["CDE"]
  * @returns {number}
  */
-ApiContentControlList.prototype.GetElementsCount = function(){ return 0; };
+ApiContentControlList.prototype.GetElementsCount = () => 0
 
 /**
  * Returns a parent of the combo box / dropdown list content control.
@@ -6891,7 +6952,7 @@ ApiContentControlList.prototype.GetElementsCount = function(){ return 0; };
  * @typeofeditors ["CDE"]
  * @returns {ApiInlineLvlSdt | ApiBlockLvlSdt}
  */
-ApiContentControlList.prototype.GetParent = function(){ return new ApiInlineLvlSdt(); };
+ApiContentControlList.prototype.GetParent = () => new ApiInlineLvlSdt()
 
 /**
  * Adds a new value to the combo box / dropdown list content control.
@@ -6902,14 +6963,14 @@ ApiContentControlList.prototype.GetParent = function(){ return new ApiInlineLvlS
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiContentControlList.prototype.Add = function(sText, sValue, nIndex){ return true; };
+ApiContentControlList.prototype.Add = (sText, sValue, nIndex) => true
 
 /**
  * Clears a list of values of the combo box / dropdown list content control.
  * @memberof ApiContentControlList
  * @typeofeditors ["CDE"]
  */
-ApiContentControlList.prototype.Clear = function(){};
+ApiContentControlList.prototype.Clear = () => {}
 
 /**
  * Returns an item of the combo box / dropdown list content control by the position specified in the request.
@@ -6918,7 +6979,7 @@ ApiContentControlList.prototype.Clear = function(){};
  * @typeofeditors ["CDE"]
  * @returns {ApiContentControlListEntry}
  */
-ApiContentControlList.prototype.GetItem = function(nIndex){ return new ApiContentControlListEntry(); };
+ApiContentControlList.prototype.GetItem = (nIndex) => new ApiContentControlListEntry()
 
 /**
  * Returns a type of the ApiContentControlListEntry class.
@@ -6926,7 +6987,7 @@ ApiContentControlList.prototype.GetItem = function(nIndex){ return new ApiConten
  * @typeofeditors ["CDE"]
  * @returns {"contentControlList"}
  */
-ApiContentControlListEntry.prototype.GetClassType = function(){ return ""; };
+ApiContentControlListEntry.prototype.GetClassType = () => ""
 
 /**
  * Returns a parent of the content control list item in the combo box / dropdown list content control.
@@ -6934,7 +6995,7 @@ ApiContentControlListEntry.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {ApiContentControlList}
  */
-ApiContentControlListEntry.prototype.GetParent = function(){ return new ApiContentControlList(); };
+ApiContentControlListEntry.prototype.GetParent = () => new ApiContentControlList()
 
 /**
  * Selects the list entry in the combo box / dropdown list content control and sets the text of the content control to the selected item value.
@@ -6942,7 +7003,7 @@ ApiContentControlListEntry.prototype.GetParent = function(){ return new ApiConte
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiContentControlListEntry.prototype.Select = function(){ return true; };
+ApiContentControlListEntry.prototype.Select = () => true
 
 /**
  * Moves the current item in the parent combo box / dropdown list content control up one element.
@@ -6950,7 +7011,7 @@ ApiContentControlListEntry.prototype.Select = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiContentControlListEntry.prototype.MoveUp = function(){ return true; };
+ApiContentControlListEntry.prototype.MoveUp = () => true
 
 /**
  * Moves the current item in the parent combo box / dropdown list content control down one element, so that it is after the item that originally followed it.
@@ -6958,7 +7019,7 @@ ApiContentControlListEntry.prototype.MoveUp = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiContentControlListEntry.prototype.MoveDown = function(){ return true; };
+ApiContentControlListEntry.prototype.MoveDown = () => true
 
 /**
  * Returns an index of the content control list item in the combo box / dropdown list content control.
@@ -6966,7 +7027,7 @@ ApiContentControlListEntry.prototype.MoveDown = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {number}
  */
-ApiContentControlListEntry.prototype.GetIndex = function(){ return 0; };
+ApiContentControlListEntry.prototype.GetIndex = () => 0
 
 /**
  * Sets an index to the content control list item in the combo box / dropdown list content control.
@@ -6975,7 +7036,7 @@ ApiContentControlListEntry.prototype.GetIndex = function(){ return 0; };
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiContentControlListEntry.prototype.SetIndex = function(nIndex){ return true; };
+ApiContentControlListEntry.prototype.SetIndex = (nIndex) => true
 
 /**
  * Deletes the specified item in the combo box / dropdown list content control.
@@ -6983,7 +7044,7 @@ ApiContentControlListEntry.prototype.SetIndex = function(nIndex){ return true; }
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiContentControlListEntry.prototype.Delete = function(){ return true; };
+ApiContentControlListEntry.prototype.Delete = () => true
 
 /**
  * Returns a String that represents the display text of a list item for the combo box / dropdown list content control.
@@ -6991,7 +7052,7 @@ ApiContentControlListEntry.prototype.Delete = function(){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiContentControlListEntry.prototype.GetText = function(){ return ""; };
+ApiContentControlListEntry.prototype.GetText = () => ""
 
 /**
  * Sets a String that represents the display text of a list item for the combo box / dropdown list content control.
@@ -7000,7 +7061,7 @@ ApiContentControlListEntry.prototype.GetText = function(){ return ""; };
  * @param {string} sText - The display text of a list item.
  * @returns {boolean}
  */
-ApiContentControlListEntry.prototype.SetText = function(sText){ return true; };
+ApiContentControlListEntry.prototype.SetText = (sText) => true
 
 /**
  * Returns a String that represents the value of a list item for the combo box / dropdown list content control.
@@ -7008,7 +7069,7 @@ ApiContentControlListEntry.prototype.SetText = function(sText){ return true; };
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiContentControlListEntry.prototype.GetValue = function(){ return ""; };
+ApiContentControlListEntry.prototype.GetValue = () => ""
 
 /**
  * Sets a String that represents the value of a list item for the combo box / dropdown list content control.
@@ -7017,7 +7078,7 @@ ApiContentControlListEntry.prototype.GetValue = function(){ return ""; };
  * @param {string} sValue - The value of a list item.
  * @returns {boolean}
  */
-ApiContentControlListEntry.prototype.SetValue = function(sValue){ return true; };
+ApiContentControlListEntry.prototype.SetValue = (sValue) => true
 
 /**
  * Returns a type of the ApiBlockLvlSdt class.
@@ -7025,7 +7086,7 @@ ApiContentControlListEntry.prototype.SetValue = function(sValue){ return true; }
  * @typeofeditors ["CDE"]
  * @returns {"blockLvlSdt"}
  */
-ApiBlockLvlSdt.prototype.GetClassType = function(){ return ""; };
+ApiBlockLvlSdt.prototype.GetClassType = () => ""
 
 /**
  * Sets the lock to the current block text content control:
@@ -7036,7 +7097,7 @@ ApiBlockLvlSdt.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {"contentLocked" | "sdtContentLocked" | "sdtLocked"} sLockType - The type of the lock applied to the block text content control.
  */
-ApiBlockLvlSdt.prototype.SetLock = function(sLockType){};
+ApiBlockLvlSdt.prototype.SetLock = (sLockType) => {}
 
 /**
  * Returns the lock type of the current container.
@@ -7044,7 +7105,7 @@ ApiBlockLvlSdt.prototype.SetLock = function(sLockType){};
  * @typeofeditors ["CDE"]
  * @returns {SdtLock}
  */
-ApiBlockLvlSdt.prototype.GetLock = function(){ return new SdtLock(); };
+ApiBlockLvlSdt.prototype.GetLock = () => new SdtLock()
 
 /**
  * Sets the tag attribute to the current container.
@@ -7052,7 +7113,7 @@ ApiBlockLvlSdt.prototype.GetLock = function(){ return new SdtLock(); };
  * @typeofeditors ["CDE"]
  * @param {string} sTag - The tag which will be added to the current container.
  */
-ApiBlockLvlSdt.prototype.SetTag = function(sTag){};
+ApiBlockLvlSdt.prototype.SetTag = (sTag) => {}
 
 /**
  * Returns the tag attribute for the current container.
@@ -7060,7 +7121,7 @@ ApiBlockLvlSdt.prototype.SetTag = function(sTag){};
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiBlockLvlSdt.prototype.GetTag = function(){ return ""; };
+ApiBlockLvlSdt.prototype.GetTag = () => ""
 
 /**
  * Sets the label attribute to the current container.
@@ -7068,7 +7129,7 @@ ApiBlockLvlSdt.prototype.GetTag = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {string} sLabel - The label which will be added to the current container. Can be a positive or negative integer from <b>-2147483647</b> to <b>2147483647</b>.
  */
-ApiBlockLvlSdt.prototype.SetLabel = function(sLabel){};
+ApiBlockLvlSdt.prototype.SetLabel = (sLabel) => {}
 
 /**
  * Returns the label attribute for the current container.
@@ -7076,7 +7137,7 @@ ApiBlockLvlSdt.prototype.SetLabel = function(sLabel){};
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiBlockLvlSdt.prototype.GetLabel = function(){ return ""; };
+ApiBlockLvlSdt.prototype.GetLabel = () => ""
 
 /**
  * Sets the alias attribute to the current container.
@@ -7084,7 +7145,7 @@ ApiBlockLvlSdt.prototype.GetLabel = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {string} sAlias - The alias which will be added to the current container.
  */
-ApiBlockLvlSdt.prototype.SetAlias = function(sAlias){};
+ApiBlockLvlSdt.prototype.SetAlias = (sAlias) => {}
 
 /**
  * Returns the alias attribute for the current container.
@@ -7092,7 +7153,7 @@ ApiBlockLvlSdt.prototype.SetAlias = function(sAlias){};
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiBlockLvlSdt.prototype.GetAlias = function(){ return ""; };
+ApiBlockLvlSdt.prototype.GetAlias = () => ""
 
 /**
  * Returns the content of the current container.
@@ -7100,7 +7161,7 @@ ApiBlockLvlSdt.prototype.GetAlias = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {ApiDocumentContent}
  */
-ApiBlockLvlSdt.prototype.GetContent = function(){ return new ApiDocumentContent(); };
+ApiBlockLvlSdt.prototype.GetContent = () => new ApiDocumentContent()
 
 /**
  * Returns a collection of content control objects in the current content control.
@@ -7108,7 +7169,7 @@ ApiBlockLvlSdt.prototype.GetContent = function(){ return new ApiDocumentContent(
  * @typeofeditors ["CDE"]
  * @returns {ApiBlockLvlSdt[] | ApiInlineLvlSdt[]}
  */
-ApiBlockLvlSdt.prototype.GetAllContentControls = function(){ return [new ApiBlockLvlSdt()]; };
+ApiBlockLvlSdt.prototype.GetAllContentControls = () => [new ApiBlockLvlSdt()]
 
 /**
  * Returns a collection of paragraph objects in the current content control.
@@ -7116,7 +7177,7 @@ ApiBlockLvlSdt.prototype.GetAllContentControls = function(){ return [new ApiBloc
  * @typeofeditors ["CDE"]
  * @returns {ApiParagraph[]}
  */
-ApiBlockLvlSdt.prototype.GetAllParagraphs = function(){ return [new ApiParagraph()]; };
+ApiBlockLvlSdt.prototype.GetAllParagraphs = () => [new ApiParagraph()]
 
 /**
  * Returns a collection of tables on a given absolute page.
@@ -7125,9 +7186,9 @@ ApiBlockLvlSdt.prototype.GetAllParagraphs = function(){ return [new ApiParagraph
  * @memberof ApiBlockLvlSdt
  * @typeofeditors ["CDE"]
  * @param nPage - Page number. If it is not specified, an empty array will be returned.
- * @returns {ApiTable[]}  
+ * @returns {ApiTable[]}
  */
-ApiBlockLvlSdt.prototype.GetAllTablesOnPage = function(nPage){ return [new ApiTable()]; };
+ApiBlockLvlSdt.prototype.GetAllTablesOnPage = (nPage) => [new ApiTable()]
 
 /**
  * Clears the contents from the current content control.
@@ -7135,7 +7196,7 @@ ApiBlockLvlSdt.prototype.GetAllTablesOnPage = function(nPage){ return [new ApiTa
  * @typeofeditors ["CDE"]
  * @returns {boolean} - returns true.
  */
-ApiBlockLvlSdt.prototype.RemoveAllElements = function(){ return true; };
+ApiBlockLvlSdt.prototype.RemoveAllElements = () => true
 
 /**
  * Removes a content control and its content. If keepContent is true, the content is not deleted.
@@ -7144,7 +7205,7 @@ ApiBlockLvlSdt.prototype.RemoveAllElements = function(){ return true; };
  * @param {boolean} keepContent - Specifies if the content will be deleted or not.
  * @returns {boolean} - returns false if content control haven't parent.
  */
-ApiBlockLvlSdt.prototype.Delete = function(keepContent){ return true; };
+ApiBlockLvlSdt.prototype.Delete = (keepContent) => true
 
 /**
  * Applies text settings to the content of the content control.
@@ -7152,39 +7213,39 @@ ApiBlockLvlSdt.prototype.Delete = function(keepContent){ return true; };
  * @typeofeditors ["CDE"]
  * @param {ApiTextPr} oTextPr - The properties that will be set to the content of the content control.
  */
-ApiBlockLvlSdt.prototype.SetTextPr = function(oTextPr){};
+ApiBlockLvlSdt.prototype.SetTextPr = (oTextPr) => {}
 
 /**
  * Returns a collection of drawing objects in the current content control.
  * @memberof ApiBlockLvlSdt
  * @typeofeditors ["CDE"]
- * @returns {ApiDrawing[]}  
+ * @returns {ApiDrawing[]}
  */
-ApiBlockLvlSdt.prototype.GetAllDrawingObjects = function(){ return [new ApiDrawing()]; };
+ApiBlockLvlSdt.prototype.GetAllDrawingObjects = () => [new ApiDrawing()]
 
 /**
  * Returns a content control that contains the current content control.
  * @memberof ApiBlockLvlSdt
  * @typeofeditors ["CDE"]
- * @returns {ApiBlockLvlSdt | null} - returns null if parent content control doesn't exist.  
+ * @returns {ApiBlockLvlSdt | null} - returns null if parent content control doesn't exist.
  */
-ApiBlockLvlSdt.prototype.GetParentContentControl = function(){ return new ApiBlockLvlSdt(); };
+ApiBlockLvlSdt.prototype.GetParentContentControl = () => new ApiBlockLvlSdt()
 
 /**
  * Returns a table that contains the current content control.
  * @memberof ApiBlockLvlSdt
  * @typeofeditors ["CDE"]
- * @returns {ApiTable | null} - returns null is parent table does'n exist.  
+ * @returns {ApiTable | null} - returns null is parent table does'n exist.
  */
-ApiBlockLvlSdt.prototype.GetParentTable = function(){ return new ApiTable(); };
+ApiBlockLvlSdt.prototype.GetParentTable = () => new ApiTable()
 
 /**
  * Returns a table cell that contains the current content control.
  * @memberof ApiBlockLvlSdt
  * @typeofeditors ["CDE"]
- * @returns {ApiTableCell | null} - returns null if parent cell doesn't exist.  
+ * @returns {ApiTableCell | null} - returns null if parent cell doesn't exist.
  */
-ApiBlockLvlSdt.prototype.GetParentTableCell = function(){ return new ApiTableCell(); };
+ApiBlockLvlSdt.prototype.GetParentTableCell = () => new ApiTableCell()
 
 /**
  * Pushes a paragraph or a table or a block content control to actually add it to the current container.
@@ -7193,7 +7254,7 @@ ApiBlockLvlSdt.prototype.GetParentTableCell = function(){ return new ApiTableCel
  * @param {DocumentElement} oElement - The type of the element which will be pushed to the current container.
  * @returns {boolean} - returns false if oElement unsupported.
  */
-ApiBlockLvlSdt.prototype.Push = function(oElement){ return true; };
+ApiBlockLvlSdt.prototype.Push = (oElement) => true
 
 /**
  * Adds a paragraph or a table or a block content control to the current container.
@@ -7203,7 +7264,7 @@ ApiBlockLvlSdt.prototype.Push = function(oElement){ return true; };
  * @param {Number} nPos - The specified position.
  * @returns {boolean} - returns false if oElement unsupported.
  */
-ApiBlockLvlSdt.prototype.AddElement = function(oElement, nPos){ return true; };
+ApiBlockLvlSdt.prototype.AddElement = (oElement, nPos) => true
 
 /**
  * Adds a text to the current content control.
@@ -7212,7 +7273,7 @@ ApiBlockLvlSdt.prototype.AddElement = function(oElement, nPos){ return true; };
  * @param {String} sText - The text which will be added to the content control.
  * @returns {boolean} - returns false if param is invalid.
  */
-ApiBlockLvlSdt.prototype.AddText = function(sText){ return true; };
+ApiBlockLvlSdt.prototype.AddText = (sText) => true
 
 /**
  * Returns a Range object that represents the part of the document contained in the specified content control.
@@ -7220,9 +7281,9 @@ ApiBlockLvlSdt.prototype.AddText = function(sText){ return true; };
  * @typeofeditors ["CDE"]
  * @param {Number} Start - Start character in the current element.
  * @param {Number} End - End character in the current element.
- * @returns {ApiRange} 
+ * @returns {ApiRange}
  * */
-ApiBlockLvlSdt.prototype.GetRange = function(Start, End){ return new ApiRange(); };
+ApiBlockLvlSdt.prototype.GetRange = (Start, End) => new ApiRange()
 
 /**
  * Searches for a scope of a content control object. The search results are a collection of ApiRange objects.
@@ -7230,16 +7291,16 @@ ApiBlockLvlSdt.prototype.GetRange = function(Start, End){ return new ApiRange();
  * @typeofeditors ["CDE"]
  * @param {string} sText - Search string.
  * @param {boolean} isMatchCase - Case sensitive or not.
- * @returns {ApiRange[]}  
+ * @returns {ApiRange[]}
  */
-ApiBlockLvlSdt.prototype.Search = function(sText, isMatchCase){ return [new ApiRange()]; };
+ApiBlockLvlSdt.prototype.Search = (sText, isMatchCase) => [new ApiRange()]
 
 /**
  * Selects the current content control.
  * @memberof ApiBlockLvlSdt
  * @typeofeditors ["CDE"]
  */
-ApiBlockLvlSdt.prototype.Select = function(){};
+ApiBlockLvlSdt.prototype.Select = () => {}
 
 /**
  * Returns the placeholder text from the current content control.
@@ -7247,7 +7308,7 @@ ApiBlockLvlSdt.prototype.Select = function(){};
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiBlockLvlSdt.prototype.GetPlaceholderText = function(){ return ""; };
+ApiBlockLvlSdt.prototype.GetPlaceholderText = () => ""
 
 /**
  * Sets the placeholder text to the current content control.
@@ -7256,15 +7317,15 @@ ApiBlockLvlSdt.prototype.GetPlaceholderText = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {boolean}
  */
-ApiBlockLvlSdt.prototype.SetPlaceholderText = function(sText){ return true; };
+ApiBlockLvlSdt.prototype.SetPlaceholderText = (sText) => true
 
 /**
  * Returns the content control position within its parent element.
  * @memberof ApiBlockLvlSdt
  * @typeofeditors ["CDE"]
- * @returns {Number} - returns -1 if the content control parent doesn't exist. 
+ * @returns {Number} - returns -1 if the content control parent doesn't exist.
  */
-ApiBlockLvlSdt.prototype.GetPosInParent = function(){ return 0; };
+ApiBlockLvlSdt.prototype.GetPosInParent = () => 0
 
 /**
  * Replaces the current content control with a new element.
@@ -7273,7 +7334,7 @@ ApiBlockLvlSdt.prototype.GetPosInParent = function(){ return 0; };
  * @param {DocumentElement} oElement - The element to replace the current content control with.
  * @returns {boolean}
  */
-ApiBlockLvlSdt.prototype.ReplaceByElement = function(oElement){ return true; };
+ApiBlockLvlSdt.prototype.ReplaceByElement = (oElement) => true
 
 /**
  * Adds a comment to the current block content control.
@@ -7285,7 +7346,7 @@ ApiBlockLvlSdt.prototype.ReplaceByElement = function(oElement){ return true; };
  * @param {string} sUserId - The user ID of the comment author (optional).
  * @returns {ApiComment} - Returns null if the comment was not added.
  */
-ApiBlockLvlSdt.prototype.AddComment = function(sText, sAuthor, sUserId){ return new ApiComment(); };
+ApiBlockLvlSdt.prototype.AddComment = (sText, sAuthor, sUserId) => new ApiComment()
 
 /**
  * Adds a caption paragraph after (or before) the current content control.
@@ -7303,7 +7364,15 @@ ApiBlockLvlSdt.prototype.AddComment = function(sText, sAuthor, sUserId){ return 
  * @param {CaptionSep} [sCaptionSep="hyphen"] - The caption separator (used if you want to specify the chapter number).
  * @returns {boolean}
  */
-ApiBlockLvlSdt.prototype.AddCaption = function(sAdditional, sLabel, bExludeLabel, sNumberingFormat, bBefore, nHeadingLvl, sCaptionSep){ return true; };
+ApiBlockLvlSdt.prototype.AddCaption = (
+  sAdditional,
+  sLabel,
+  bExludeLabel,
+  sNumberingFormat,
+  bBefore,
+  nHeadingLvl,
+  sCaptionSep,
+) => true
 
 /**
  * Returns a list of values of the combo box / dropdown list content control.
@@ -7311,7 +7380,7 @@ ApiBlockLvlSdt.prototype.AddCaption = function(sAdditional, sLabel, bExludeLabel
  * @typeofeditors ["CDE"]
  * @returns {ApiContentControlList}
  */
-ApiBlockLvlSdt.prototype.GetDropdownList = function(){ return new ApiContentControlList(); };
+ApiBlockLvlSdt.prototype.GetDropdownList = () => new ApiContentControlList()
 
 /**
  * Place cursor before/after the current content control
@@ -7319,7 +7388,7 @@ ApiBlockLvlSdt.prototype.GetDropdownList = function(){ return new ApiContentCont
  * @memberof ApiBlockLvlSdt
  * @typeofeditors ["CDE"]
  */
-ApiBlockLvlSdt.prototype.MoveCursorOutside = function(isAfter){};
+ApiBlockLvlSdt.prototype.MoveCursorOutside = (isAfter) => {}
 
 /**
  * Returns a type of the ApiFormBase class.
@@ -7327,7 +7396,7 @@ ApiBlockLvlSdt.prototype.MoveCursorOutside = function(isAfter){};
  * @typeofeditors ["CDE", "CFE"]
  * @returns {"form"}
  */
-ApiFormBase.prototype.GetClassType = function(){ return ""; };
+ApiFormBase.prototype.GetClassType = () => ""
 
 /**
  * Returns a type of the current form.
@@ -7335,7 +7404,7 @@ ApiFormBase.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {FormType}
  */
-ApiFormBase.prototype.GetFormType = function(){ return new FormType(); };
+ApiFormBase.prototype.GetFormType = () => new FormType()
 
 /**
  * Returns the current form key.
@@ -7343,7 +7412,7 @@ ApiFormBase.prototype.GetFormType = function(){ return new FormType(); };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {string}
  */
-ApiFormBase.prototype.GetFormKey = function(){ return ""; };
+ApiFormBase.prototype.GetFormKey = () => ""
 
 /**
  * Sets a key to the current form.
@@ -7352,7 +7421,7 @@ ApiFormBase.prototype.GetFormKey = function(){ return ""; };
  * @param {string} sKey - Form key.
  * @returns {boolean}
  */
-ApiFormBase.prototype.SetFormKey = function(sKey){ return true; };
+ApiFormBase.prototype.SetFormKey = (sKey) => true
 
 /**
  * Returns the tip text of the current form.
@@ -7360,7 +7429,7 @@ ApiFormBase.prototype.SetFormKey = function(sKey){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {string}
  */
-ApiFormBase.prototype.GetTipText = function(){ return ""; };
+ApiFormBase.prototype.GetTipText = () => ""
 
 /**
  * Sets the tip text to the current form.
@@ -7369,7 +7438,7 @@ ApiFormBase.prototype.GetTipText = function(){ return ""; };
  * @param {string} sText - Tip text.
  * @returns {boolean}
  */
-ApiFormBase.prototype.SetTipText = function(sText){ return true; };
+ApiFormBase.prototype.SetTipText = (sText) => true
 
 /**
  * Checks if the current form is required.
@@ -7377,7 +7446,7 @@ ApiFormBase.prototype.SetTipText = function(sText){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiFormBase.prototype.IsRequired = function(){ return true; };
+ApiFormBase.prototype.IsRequired = () => true
 
 /**
  * Specifies if the current form should be required.
@@ -7386,7 +7455,7 @@ ApiFormBase.prototype.IsRequired = function(){ return true; };
  * @param {boolean} bRequired - Defines if the current form is required (true) or not (false).
  * @returns {boolean}
  */
-ApiFormBase.prototype.SetRequired = function(bRequired){ return true; };
+ApiFormBase.prototype.SetRequired = (bRequired) => true
 
 /**
  * Checks if the current form is fixed size.
@@ -7394,7 +7463,7 @@ ApiFormBase.prototype.SetRequired = function(bRequired){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiFormBase.prototype.IsFixed = function(){ return true; };
+ApiFormBase.prototype.IsFixed = () => true
 
 /**
  * Converts the current form to a fixed size form.
@@ -7404,7 +7473,7 @@ ApiFormBase.prototype.IsFixed = function(){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiFormBase.prototype.ToFixed = function(nWidth, nHeight){ return true; };
+ApiFormBase.prototype.ToFixed = (nWidth, nHeight) => true
 
 /**
  * Converts the current form to an inline form.
@@ -7413,7 +7482,7 @@ ApiFormBase.prototype.ToFixed = function(nWidth, nHeight){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiFormBase.prototype.ToInline = function(){ return true; };
+ApiFormBase.prototype.ToInline = () => true
 
 /**
  * Sets the border color to the current form.
@@ -7425,7 +7494,7 @@ ApiFormBase.prototype.ToInline = function(){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiFormBase.prototype.SetBorderColor = function(r, g, b, bNone){ return true; };
+ApiFormBase.prototype.SetBorderColor = (r, g, b, bNone) => true
 
 /**
  * Sets the background color to the current form.
@@ -7437,7 +7506,7 @@ ApiFormBase.prototype.SetBorderColor = function(r, g, b, bNone){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiFormBase.prototype.SetBackgroundColor = function(r, g, b, bNone){ return true; };
+ApiFormBase.prototype.SetBackgroundColor = (r, g, b, bNone) => true
 
 /**
  * Returns the text from the current form.
@@ -7446,14 +7515,14 @@ ApiFormBase.prototype.SetBackgroundColor = function(r, g, b, bNone){ return true
  * @typeofeditors ["CDE", "CFE"]
  * @returns {string}
  */
-ApiFormBase.prototype.GetText = function(){ return ""; };
+ApiFormBase.prototype.GetText = () => ""
 
 /**
  * Clears the current form.
  * @memberof ApiFormBase
  * @typeofeditors ["CDE", "CFE"]
  */
-ApiFormBase.prototype.Clear = function(){};
+ApiFormBase.prototype.Clear = () => {}
 
 /**
  * Returns a shape in which the form is placed to control the position and size of the fixed size form frame.
@@ -7462,7 +7531,7 @@ ApiFormBase.prototype.Clear = function(){};
  * @typeofeditors ["CDE", "CFE"]
  * @returns {ApiShape} - returns the shape in which the form is placed.
  */
-ApiFormBase.prototype.GetWrapperShape = function(){ return new ApiShape(); };
+ApiFormBase.prototype.GetWrapperShape = () => new ApiShape()
 
 /**
  * Sets the placeholder text to the current form.
@@ -7472,7 +7541,7 @@ ApiFormBase.prototype.GetWrapperShape = function(){ return new ApiShape(); };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiFormBase.prototype.SetPlaceholderText = function(sText){ return true; };
+ApiFormBase.prototype.SetPlaceholderText = (sText) => true
 
 /**
  * Sets the text properties to the current form.
@@ -7480,18 +7549,18 @@ ApiFormBase.prototype.SetPlaceholderText = function(sText){ return true; };
  * @memberof ApiFormBase
  * @typeofeditors ["CDE", "CFE"]
  * @param {ApiTextPr} oTextPr - The text properties that will be set to the current form.
- * @returns {boolean}  
+ * @returns {boolean}
  */
-ApiFormBase.prototype.SetTextPr = function(oTextPr){ return true; };
+ApiFormBase.prototype.SetTextPr = (oTextPr) => true
 
 /**
  * Returns the text properties from the current form.
  * *Used if possible for this type of form*
  * @memberof ApiFormBase
  * @typeofeditors ["CDE", "CFE"]
- * @returns {ApiTextPr}  
+ * @returns {ApiTextPr}
  */
-ApiFormBase.prototype.GetTextPr = function(){ return new ApiTextPr(); };
+ApiFormBase.prototype.GetTextPr = () => new ApiTextPr()
 
 /**
  * Place cursor before/after the current form.
@@ -7499,7 +7568,7 @@ ApiFormBase.prototype.GetTextPr = function(){ return new ApiTextPr(); };
  * @memberof ApiFormBase
  * @typeofeditors ["CDE"]
  */
-ApiFormBase.prototype.MoveCursorOutside = function(isAfter){};
+ApiFormBase.prototype.MoveCursorOutside = (isAfter) => {}
 
 /**
  * Copies the current form (copies with the shape if it exists).
@@ -7507,7 +7576,7 @@ ApiFormBase.prototype.MoveCursorOutside = function(isAfter){};
  * @typeofeditors ["CDE", "CFE"]
  * @returns {ApiForm}
  */
-ApiFormBase.prototype.Copy = function(){ return new ApiForm(); };
+ApiFormBase.prototype.Copy = () => new ApiForm()
 
 /**
  * Checks if the text field content is autofit, i.e. whether the font size adjusts to the size of the fixed size form.
@@ -7515,7 +7584,7 @@ ApiFormBase.prototype.Copy = function(){ return new ApiForm(); };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiTextForm.prototype.IsAutoFit = function(){ return true; };
+ApiTextForm.prototype.IsAutoFit = () => true
 
 /**
  * Specifies if the text field content should be autofit, i.e. whether the font size adjusts to the size of the fixed size form.
@@ -7524,7 +7593,7 @@ ApiTextForm.prototype.IsAutoFit = function(){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiTextForm.prototype.SetAutoFit = function(bAutoFit){ return true; };
+ApiTextForm.prototype.SetAutoFit = (bAutoFit) => true
 
 /**
  * Checks if the current text field is multiline.
@@ -7532,7 +7601,7 @@ ApiTextForm.prototype.SetAutoFit = function(bAutoFit){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiTextForm.prototype.IsMultiline = function(){ return true; };
+ApiTextForm.prototype.IsMultiline = () => true
 
 /**
  * Specifies if the current text field should be miltiline.
@@ -7541,7 +7610,7 @@ ApiTextForm.prototype.IsMultiline = function(){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean} - return false, if the text field is not fixed size.
  */
-ApiTextForm.prototype.SetMultiline = function(bMultiline){ return true; };
+ApiTextForm.prototype.SetMultiline = (bMultiline) => true
 
 /**
  * Returns a limit of the text field characters.
@@ -7549,7 +7618,7 @@ ApiTextForm.prototype.SetMultiline = function(bMultiline){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {number} - if this method returns -1 -> the form has no limit for characters
  */
-ApiTextForm.prototype.GetCharactersLimit = function(){ return 0; };
+ApiTextForm.prototype.GetCharactersLimit = () => 0
 
 /**
  * Sets a limit to the text field characters.
@@ -7560,7 +7629,7 @@ ApiTextForm.prototype.GetCharactersLimit = function(){ return 0; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiTextForm.prototype.SetCharactersLimit = function(nChars){ return true; };
+ApiTextForm.prototype.SetCharactersLimit = (nChars) => true
 
 /**
  * Checks if the text field is a comb of characters with the same cell width.
@@ -7568,7 +7637,7 @@ ApiTextForm.prototype.SetCharactersLimit = function(nChars){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiTextForm.prototype.IsComb = function(){ return true; };
+ApiTextForm.prototype.IsComb = () => true
 
 /**
  * Specifies if the text field should be a comb of characters with the same cell width.
@@ -7578,7 +7647,7 @@ ApiTextForm.prototype.IsComb = function(){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiTextForm.prototype.SetComb = function(bComb){ return true; };
+ApiTextForm.prototype.SetComb = (bComb) => true
 
 /**
  * Sets the cell width to the applied comb of characters.
@@ -7588,7 +7657,7 @@ ApiTextForm.prototype.SetComb = function(bComb){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiTextForm.prototype.SetCellWidth = function(nCellWidth){ return true; };
+ApiTextForm.prototype.SetCellWidth = (nCellWidth) => true
 
 /**
  * Sets the text to the current text field.
@@ -7597,7 +7666,7 @@ ApiTextForm.prototype.SetCellWidth = function(nCellWidth){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiTextForm.prototype.SetText = function(sText){ return true; };
+ApiTextForm.prototype.SetText = (sText) => true
 
 /**
  * Returns the current scaling condition of the picture form.
@@ -7605,7 +7674,7 @@ ApiTextForm.prototype.SetText = function(sText){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {ScaleFlag}
  */
-ApiPictureForm.prototype.GetScaleFlag = function(){ return new ScaleFlag(); };
+ApiPictureForm.prototype.GetScaleFlag = () => new ScaleFlag()
 
 /**
  * Sets the scaling condition to the current picture form.
@@ -7614,7 +7683,7 @@ ApiPictureForm.prototype.GetScaleFlag = function(){ return new ScaleFlag(); };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiPictureForm.prototype.SetScaleFlag = function(sScaleFlag){ return true; };
+ApiPictureForm.prototype.SetScaleFlag = (sScaleFlag) => true
 
 /**
  * Locks the aspect ratio of the current picture form.
@@ -7623,7 +7692,7 @@ ApiPictureForm.prototype.SetScaleFlag = function(sScaleFlag){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiPictureForm.prototype.SetLockAspectRatio = function(isLock){ return true; };
+ApiPictureForm.prototype.SetLockAspectRatio = (isLock) => true
 
 /**
  * Checks if the aspect ratio of the current picture form is locked or not.
@@ -7631,7 +7700,7 @@ ApiPictureForm.prototype.SetLockAspectRatio = function(isLock){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiPictureForm.prototype.IsLockAspectRatio = function(){ return true; };
+ApiPictureForm.prototype.IsLockAspectRatio = () => true
 
 /**
  * Sets the picture position inside the current form:
@@ -7644,7 +7713,7 @@ ApiPictureForm.prototype.IsLockAspectRatio = function(){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiPictureForm.prototype.SetPicturePosition = function(nShiftX, nShiftY){ return true; };
+ApiPictureForm.prototype.SetPicturePosition = (nShiftX, nShiftY) => true
 
 /**
  * Returns the picture position inside the current form.
@@ -7652,7 +7721,7 @@ ApiPictureForm.prototype.SetPicturePosition = function(nShiftX, nShiftY){ return
  * @typeofeditors ["CDE", "CFE"]
  * @returns {Array.<percentage>} Array of two numbers [shiftX, shiftY]
  */
-ApiPictureForm.prototype.GetPicturePosition = function(){ return []; };
+ApiPictureForm.prototype.GetPicturePosition = () => []
 
 /**
  * Respects the form border width when scaling the image.
@@ -7661,7 +7730,7 @@ ApiPictureForm.prototype.GetPicturePosition = function(){ return []; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiPictureForm.prototype.SetRespectBorders = function(isRespect){ return true; };
+ApiPictureForm.prototype.SetRespectBorders = (isRespect) => true
 
 /**
  * Checks if the form border width is respected or not.
@@ -7669,7 +7738,7 @@ ApiPictureForm.prototype.SetRespectBorders = function(isRespect){ return true; }
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiPictureForm.prototype.IsRespectBorders = function(){ return true; };
+ApiPictureForm.prototype.IsRespectBorders = () => true
 
 /**
  * Returns an image in the base64 format from the current picture form.
@@ -7677,7 +7746,7 @@ ApiPictureForm.prototype.IsRespectBorders = function(){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {base64img}
  */
-ApiPictureForm.prototype.GetImage = function(){ return base64img; };
+ApiPictureForm.prototype.GetImage = () => base64img
 
 /**
  * Sets an image to the current picture form.
@@ -7688,7 +7757,7 @@ ApiPictureForm.prototype.GetImage = function(){ return base64img; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiPictureForm.prototype.SetImage = function(sImageSrc, nWidth, nHeight){ return true; };
+ApiPictureForm.prototype.SetImage = (sImageSrc, nWidth, nHeight) => true
 
 /**
  * Returns the list values from the current combo box.
@@ -7696,7 +7765,7 @@ ApiPictureForm.prototype.SetImage = function(sImageSrc, nWidth, nHeight){ return
  * @typeofeditors ["CDE", "CFE"]
  * @returns {string[]}
  */
-ApiComboBoxForm.prototype.GetListValues = function(){ return [""]; };
+ApiComboBoxForm.prototype.GetListValues = () => [""]
 
 /**
  * Sets the list values to the current combo box.
@@ -7705,16 +7774,16 @@ ApiComboBoxForm.prototype.GetListValues = function(){ return [""]; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiComboBoxForm.prototype.SetListValues = function(aListString){ return true; };
+ApiComboBoxForm.prototype.SetListValues = (aListString) => true
 
 /**
- * Selects the specified value from the combo box list values. 
+ * Selects the specified value from the combo box list values.
  * @memberof ApiComboBoxForm
  * @param {string} sValue - The combo box list value that will be selected.
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiComboBoxForm.prototype.SelectListValue = function(sValue){ return true; };
+ApiComboBoxForm.prototype.SelectListValue = (sValue) => true
 
 /**
  * Sets the text to the current combo box.
@@ -7724,7 +7793,7 @@ ApiComboBoxForm.prototype.SelectListValue = function(sValue){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiComboBoxForm.prototype.SetText = function(sText){ return true; };
+ApiComboBoxForm.prototype.SetText = (sText) => true
 
 /**
  * Checks if the combo box text can be edited. If it is not editable, then this form is a dropdown list.
@@ -7732,7 +7801,7 @@ ApiComboBoxForm.prototype.SetText = function(sText){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiComboBoxForm.prototype.IsEditable = function(){ return true; };
+ApiComboBoxForm.prototype.IsEditable = () => true
 
 /**
  * Checks the current checkbox.
@@ -7741,7 +7810,7 @@ ApiComboBoxForm.prototype.IsEditable = function(){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiCheckBoxForm.prototype.SetChecked = function(isChecked){ return true; };
+ApiCheckBoxForm.prototype.SetChecked = (isChecked) => true
 
 /**
  * Returns the state of the current checkbox (checked or not).
@@ -7749,15 +7818,15 @@ ApiCheckBoxForm.prototype.SetChecked = function(isChecked){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiCheckBoxForm.prototype.IsChecked = function(){ return true; };
+ApiCheckBoxForm.prototype.IsChecked = () => true
 
 /**
- * Checks if the current checkbox is a radio button. 
+ * Checks if the current checkbox is a radio button.
  * @memberof ApiCheckBoxForm
  * @typeofeditors ["CDE", "CFE"]
  * @returns {boolean}
  */
-ApiCheckBoxForm.prototype.IsRadioButton = function(){ return true; };
+ApiCheckBoxForm.prototype.IsRadioButton = () => true
 
 /**
  * Returns the radio group key if the current checkbox is a radio button.
@@ -7765,7 +7834,7 @@ ApiCheckBoxForm.prototype.IsRadioButton = function(){ return true; };
  * @typeofeditors ["CDE", "CFE"]
  * @returns {string}
  */
-ApiCheckBoxForm.prototype.GetRadioGroup = function(){ return ""; };
+ApiCheckBoxForm.prototype.GetRadioGroup = () => ""
 
 /**
  * Sets the radio group key to the current radio button.
@@ -7773,7 +7842,7 @@ ApiCheckBoxForm.prototype.GetRadioGroup = function(){ return ""; };
  * @param {string} sKey - Radio group key.
  * @typeofeditors ["CDE", "CFE"]
  */
-ApiCheckBoxForm.prototype.SetRadioGroup = function(sKey){};
+ApiCheckBoxForm.prototype.SetRadioGroup = (sKey) => {}
 
 /**
  * Gets the date format of the current form.
@@ -7782,7 +7851,7 @@ ApiCheckBoxForm.prototype.SetRadioGroup = function(sKey){};
  * @returns {string}
  * @since 8.1.0
  */
-ApiDateForm.prototype.GetFormat = function() { return ""; };
+ApiDateForm.prototype.GetFormat = () => ""
 
 /**
  * Sets the date format to the current form.
@@ -7792,7 +7861,7 @@ ApiDateForm.prototype.GetFormat = function() { return ""; };
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiDateForm.prototype.SetFormat = function(sFormat){ return true; };
+ApiDateForm.prototype.SetFormat = (sFormat) => true
 
 /**
  * Gets the used date language of the current form.
@@ -7801,7 +7870,7 @@ ApiDateForm.prototype.SetFormat = function(sFormat){ return true; };
  * @returns {string}
  * @since 8.1.0
  */
-ApiDateForm.prototype.GetLanguage = function() { return ""; };
+ApiDateForm.prototype.GetLanguage = () => ""
 
 /**
  * Sets the date language to the current form.
@@ -7812,7 +7881,7 @@ ApiDateForm.prototype.GetLanguage = function() { return ""; };
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiDateForm.prototype.SetLanguage = function(sLangId){ return true; };
+ApiDateForm.prototype.SetLanguage = (sLangId) => true
 
 /**
  * Returns the timestamp of the current form.
@@ -7821,7 +7890,7 @@ ApiDateForm.prototype.SetLanguage = function(sLangId){ return true; };
  * @returns {number}
  * @since 8.1.0
  */
-ApiDateForm.prototype.GetTime = function(){ return 0; };
+ApiDateForm.prototype.GetTime = () => 0
 
 /**
  * Sets the timestamp to the current form.
@@ -7831,7 +7900,7 @@ ApiDateForm.prototype.GetTime = function(){ return 0; };
  * @returns {boolean}
  * @since 8.1.0
  */
-ApiDateForm.prototype.SetTime = function(nTimeStamp){ return true; };
+ApiDateForm.prototype.SetTime = (nTimeStamp) => true
 
 /**
  * Converts the ApiBlockLvlSdt object into the JSON object.
@@ -7841,7 +7910,7 @@ ApiDateForm.prototype.SetTime = function(nTimeStamp){ return true; };
  * @param {boolean} bWriteStyles - Specifies if the used styles will be written to the JSON object or not.
  * @returns {JSON}
  */
-ApiBlockLvlSdt.prototype.ToJSON = function(bWriteNumberings, bWriteStyles){ return new JSON(); };
+ApiBlockLvlSdt.prototype.ToJSON = (bWriteNumberings, bWriteStyles) => new JSON()
 
 /**
  * Replaces each paragraph (or text in cell) in the select with the corresponding text from an array of strings.
@@ -7851,7 +7920,7 @@ ApiBlockLvlSdt.prototype.ToJSON = function(bWriteNumberings, bWriteStyles){ retu
  * @param {string} [sParaTab=" "] - A character which is used to specify the tab in the source text.
  * @param {string} [sParaNewLine=" "] - A character which is used to specify the line break character in the source text.
  */
-ApiInterface.prototype.ReplaceTextSmart = function(arrString, sParaTab, sParaNewLine){};
+ApiInterface.prototype.ReplaceTextSmart = (arrString, sParaTab, sParaNewLine) => {}
 
 /**
  * Converts a document to Markdown or HTML text.
@@ -7865,7 +7934,13 @@ ApiInterface.prototype.ReplaceTextSmart = function(arrString, sParaTab, sParaNew
  * in the following way: \<tag&gt;text\</tag&gt;. By default, the opening angle brackets will be replaced with the special characters.
  * @returns {string}
  */
-ApiInterface.prototype.ConvertDocument = function(sConvertType, bHtmlHeadings, bBase64img, bDemoteHeadings, bRenderHTMLTags){ return ""; };
+ApiInterface.prototype.ConvertDocument = (
+  sConvertType,
+  bHtmlHeadings,
+  bBase64img,
+  bDemoteHeadings,
+  bRenderHTMLTags,
+) => ""
 
 /**
  * Creates the empty text properties.
@@ -7873,7 +7948,7 @@ ApiInterface.prototype.ConvertDocument = function(sConvertType, bHtmlHeadings, b
  * @typeofeditors ["CDE", "CSE", "CPE"]
  * @returns {ApiTextPr}
  */
-ApiInterface.prototype.CreateTextPr = function () { return new ApiTextPr(); };
+ApiInterface.prototype.CreateTextPr = () => new ApiTextPr()
 
 /**
  * Creates a Text Art object with the parameters specified.
@@ -7889,7 +7964,16 @@ ApiInterface.prototype.CreateTextPr = function () { return new ApiTextPr(); };
  * @param {EMU} [nHeight=1828800] - The Text Art heigth measured in English measure units.
  * @returns {ApiDrawing}
  */
-ApiInterface.prototype.CreateWordArt = function(oTextPr, sText, sTransform, oFill, oStroke, nRotAngle, nWidth, nHeight) { return new ApiDrawing(); };
+ApiInterface.prototype.CreateWordArt = (
+  oTextPr,
+  sText,
+  sTransform,
+  oFill,
+  oStroke,
+  nRotAngle,
+  nWidth,
+  nHeight,
+) => new ApiDrawing()
 
 /**
  * Returns the full name of the currently opened file.
@@ -7897,7 +7981,7 @@ ApiInterface.prototype.CreateWordArt = function(oTextPr, sText, sTransform, oFil
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {string}
  */
-ApiInterface.prototype.GetFullName = function () { return ""; };
+ApiInterface.prototype.GetFullName = () => ""
 
 /**
  * Returns the full name of the currently opened file.
@@ -7905,7 +7989,7 @@ ApiInterface.prototype.GetFullName = function () { return ""; };
  * @typeofeditors ["CDE", "CPE", "CSE"]
  * @returns {string}
  */
-ApiInterface.prototype.FullName = ApiInterface.prototype.GetFullName ();
+ApiInterface.prototype.FullName = ApiInterface.prototype.GetFullName()
 
 /**
  * Returns a type of the ApiComment class.
@@ -7913,7 +7997,7 @@ ApiInterface.prototype.FullName = ApiInterface.prototype.GetFullName ();
  * @typeofeditors ["CDE", "CPE"]
  * @returns {"comment"}
  */
-ApiComment.prototype.GetClassType = function (){ return ""; };
+ApiComment.prototype.GetClassType = () => ""
 
 /**
  * Returns the current comment ID. If the comment doesn't have an ID, null is returned.
@@ -7921,7 +8005,7 @@ ApiComment.prototype.GetClassType = function (){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiComment.prototype.GetId = function (){ return ""; };
+ApiComment.prototype.GetId = () => ""
 
 /**
  * Returns the comment text.
@@ -7929,7 +8013,7 @@ ApiComment.prototype.GetId = function (){ return ""; };
  * @typeofeditors ["CDE", "CPE"]
  * @returns {string}
  */
-ApiComment.prototype.GetText = function () { return ""; };
+ApiComment.prototype.GetText = () => ""
 
 /**
  * Sets the comment text.
@@ -7938,7 +8022,7 @@ ApiComment.prototype.GetText = function () { return ""; };
  * @param {string} sText - The comment text.
  * @returns {ApiComment} - this
  */
-ApiComment.prototype.SetText = function (sText) { return new ApiComment(); };
+ApiComment.prototype.SetText = (sText) => new ApiComment()
 
 /**
  * Returns the comment author's name.
@@ -7946,7 +8030,7 @@ ApiComment.prototype.SetText = function (sText) { return new ApiComment(); };
  * @typeofeditors ["CDE", "CPE"]
  * @returns {string}
  */
-ApiComment.prototype.GetAuthorName = function () { return ""; };
+ApiComment.prototype.GetAuthorName = () => ""
 
 /**
  * Sets the comment author's name.
@@ -7955,7 +8039,7 @@ ApiComment.prototype.GetAuthorName = function () { return ""; };
  * @param {string} sAuthorName - The comment author's name.
  * @returns {ApiComment} - this
  */
-ApiComment.prototype.SetAuthorName = function (sAuthorName) { return new ApiComment(); };
+ApiComment.prototype.SetAuthorName = (sAuthorName) => new ApiComment()
 
 /**
  * Returns the user ID of the comment author.
@@ -7963,7 +8047,7 @@ ApiComment.prototype.SetAuthorName = function (sAuthorName) { return new ApiComm
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiComment.prototype.GetUserId = function () { return ""; };
+ApiComment.prototype.GetUserId = () => ""
 
 /**
  * Sets the user ID to the comment author.
@@ -7972,7 +8056,7 @@ ApiComment.prototype.GetUserId = function () { return ""; };
  * @param {string} sUserId - The user ID of the comment author.
  * @returns {ApiComment} - this
  */
-ApiComment.prototype.SetUserId = function (sUserId) { return new ApiComment(); };
+ApiComment.prototype.SetUserId = (sUserId) => new ApiComment()
 
 /**
  * Checks if a comment is solved or not.
@@ -7980,7 +8064,7 @@ ApiComment.prototype.SetUserId = function (sUserId) { return new ApiComment(); }
  * @typeofeditors ["CDE", "CPE"]
  * @returns {boolean}
  */
-ApiComment.prototype.IsSolved = function () { return true; };
+ApiComment.prototype.IsSolved = () => true
 
 /**
  * Marks a comment as solved.
@@ -7989,7 +8073,7 @@ ApiComment.prototype.IsSolved = function () { return true; };
  * @param {boolean} bSolved - Specifies if a comment is solved or not.
  * @returns {ApiComment} - this
  */
-ApiComment.prototype.SetSolved = function (bSolved) { return new ApiComment(); };
+ApiComment.prototype.SetSolved = (bSolved) => new ApiComment()
 
 /**
  * Returns the timestamp of the comment creation in UTC format.
@@ -7997,7 +8081,7 @@ ApiComment.prototype.SetSolved = function (bSolved) { return new ApiComment(); }
  * @typeofeditors ["CDE", "CPE"]
  * @returns {Number}
  */
-ApiComment.prototype.GetTimeUTC = function () { return 0; };
+ApiComment.prototype.GetTimeUTC = () => 0
 
 /**
  * Sets the timestamp of the comment creation in UTC format.
@@ -8006,7 +8090,7 @@ ApiComment.prototype.GetTimeUTC = function () { return 0; };
  * @param {Number | String} nTimeStamp - The timestamp of the comment creation in UTC format.
  * @returns {ApiComment} - this
  */
-ApiComment.prototype.SetTimeUTC = function (timeStamp) { return new ApiComment(); };
+ApiComment.prototype.SetTimeUTC = (timeStamp) => new ApiComment()
 
 /**
  * Returns the timestamp of the comment creation in the current time zone format.
@@ -8014,7 +8098,7 @@ ApiComment.prototype.SetTimeUTC = function (timeStamp) { return new ApiComment()
  * @typeofeditors ["CDE", "CPE"]
  * @returns {Number}
  */
-ApiComment.prototype.GetTime = function () { return 0; };
+ApiComment.prototype.GetTime = () => 0
 
 /**
  * Sets the timestamp of the comment creation in the current time zone format.
@@ -8023,7 +8107,7 @@ ApiComment.prototype.GetTime = function () { return 0; };
  * @param {Number | String} nTimeStamp - The timestamp of the comment creation in the current time zone format.
  * @returns {ApiComment} - this
  */
-ApiComment.prototype.SetTime = function (timeStamp) { return new ApiComment(); };
+ApiComment.prototype.SetTime = (timeStamp) => new ApiComment()
 
 /**
  * Returns the quote text of the current comment.
@@ -8031,7 +8115,7 @@ ApiComment.prototype.SetTime = function (timeStamp) { return new ApiComment(); }
  * @typeofeditors ["CDE", "CPE"]
  * @returns {Number}
  */
-ApiComment.prototype.GetQuoteText = function () { return 0; };
+ApiComment.prototype.GetQuoteText = () => 0
 
 /**
  * Returns a number of the comment replies.
@@ -8039,7 +8123,7 @@ ApiComment.prototype.GetQuoteText = function () { return 0; };
  * @typeofeditors ["CDE", "CPE"]
  * @returns {Number}
  */
-ApiComment.prototype.GetRepliesCount = function () { return 0; };
+ApiComment.prototype.GetRepliesCount = () => 0
 
 /**
  * Returns the specified comment reply.
@@ -8048,7 +8132,7 @@ ApiComment.prototype.GetRepliesCount = function () { return 0; };
  * @param {Number} [nIndex = 0] - The comment reply index.
  * @returns {ApiCommentReply}
  */
-ApiComment.prototype.GetReply = function (nIndex) { return new ApiCommentReply(); };
+ApiComment.prototype.GetReply = (nIndex) => new ApiCommentReply()
 
 /**
  * Adds a reply to a comment.
@@ -8060,7 +8144,7 @@ ApiComment.prototype.GetReply = function (nIndex) { return new ApiCommentReply()
  * @param {Number} [nPos=this.GetRepliesCount()] - The comment reply position.
  * @returns {ApiComment} - this
  */
-ApiComment.prototype.AddReply = function (sText, sAuthorName, sUserId, nPos) { return new ApiComment(); };
+ApiComment.prototype.AddReply = (sText, sAuthorName, sUserId, nPos) => new ApiComment()
 
 /**
  * Removes the specified comment replies.
@@ -8071,7 +8155,7 @@ ApiComment.prototype.AddReply = function (sText, sAuthorName, sUserId, nPos) { r
  * @param {boolean} [bRemoveAll = false] - Specifies whether to remove all comment replies or not.
  * @returns {ApiComment} - this
  */
-ApiComment.prototype.RemoveReplies = function (nPos, nCount, bRemoveAll) { return new ApiComment(); };
+ApiComment.prototype.RemoveReplies = (nPos, nCount, bRemoveAll) => new ApiComment()
 
 /**
  * Deletes the current comment from the document.
@@ -8079,7 +8163,7 @@ ApiComment.prototype.RemoveReplies = function (nPos, nCount, bRemoveAll) { retur
  * @typeofeditors ["CDE", "CPE"]
  * @returns {boolean}
  */
-ApiComment.prototype.Delete = function (){ return true; };
+ApiComment.prototype.Delete = () => true
 
 /**
  * Returns a type of the ApiCommentReply class.
@@ -8087,7 +8171,7 @@ ApiComment.prototype.Delete = function (){ return true; };
  * @typeofeditors ["CDE", "CPE"]
  * @returns {"commentReply"}
  */
-ApiCommentReply.prototype.GetClassType = function () { return ""; };
+ApiCommentReply.prototype.GetClassType = () => ""
 
 /**
  * Returns the comment reply text.
@@ -8095,7 +8179,7 @@ ApiCommentReply.prototype.GetClassType = function () { return ""; };
  * @typeofeditors ["CDE", "CPE"]
  * @returns {string}
  */
-ApiCommentReply.prototype.GetText = function () { return ""; };
+ApiCommentReply.prototype.GetText = () => ""
 
 /**
  * Sets the comment reply text.
@@ -8104,7 +8188,7 @@ ApiCommentReply.prototype.GetText = function () { return ""; };
  * @param {string} sText - The comment reply text.
  * @returns {ApiCommentReply} - this
  */
-ApiCommentReply.prototype.SetText = function (sText) { return new ApiCommentReply(); };
+ApiCommentReply.prototype.SetText = (sText) => new ApiCommentReply()
 
 /**
  * Returns the comment reply author's name.
@@ -8112,7 +8196,7 @@ ApiCommentReply.prototype.SetText = function (sText) { return new ApiCommentRepl
  * @typeofeditors ["CDE", "CPE"]
  * @returns {string}
  */
-ApiCommentReply.prototype.GetAuthorName = function () { return ""; };
+ApiCommentReply.prototype.GetAuthorName = () => ""
 
 /**
  * Sets the comment reply author's name.
@@ -8121,7 +8205,7 @@ ApiCommentReply.prototype.GetAuthorName = function () { return ""; };
  * @param {string} sAuthorName - The comment reply author's name.
  * @returns {ApiCommentReply} - this
  */
-ApiCommentReply.prototype.SetAuthorName = function (sAuthorName) { return new ApiCommentReply(); };
+ApiCommentReply.prototype.SetAuthorName = (sAuthorName) => new ApiCommentReply()
 
 /**
  * Returns the user ID of the comment reply author.
@@ -8129,7 +8213,7 @@ ApiCommentReply.prototype.SetAuthorName = function (sAuthorName) { return new Ap
  * @typeofeditors ["CDE"]
  * @returns {string}
  */
-ApiCommentReply.prototype.GetUserId = function () { return ""; };
+ApiCommentReply.prototype.GetUserId = () => ""
 
 /**
  * Sets the user ID to the comment reply author.
@@ -8138,7 +8222,7 @@ ApiCommentReply.prototype.GetUserId = function () { return ""; };
  * @param {string} sUserId - The user ID of the comment reply author.
  * @returns {ApiCommentReply} - this
  */
-ApiCommentReply.prototype.SetUserId = function (sUserId) { return new ApiCommentReply(); };
+ApiCommentReply.prototype.SetUserId = (sUserId) => new ApiCommentReply()
 
 /**
  * Returns a type of the ApiWatermarkSettings class.
@@ -8146,7 +8230,7 @@ ApiCommentReply.prototype.SetUserId = function (sUserId) { return new ApiComment
  * @typeofeditors ["CDE"]
  * @returns {"watermarkSettings"}
  */
-ApiWatermarkSettings.prototype.GetClassType = function(){ return ""; };
+ApiWatermarkSettings.prototype.GetClassType = () => ""
 
 /**
  * Sets the type of the watermark in the document.
@@ -8154,7 +8238,7 @@ ApiWatermarkSettings.prototype.GetClassType = function(){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {WatermarkType} sType - The watermark type.
  */
-ApiWatermarkSettings.prototype.SetType = function (sType){};
+ApiWatermarkSettings.prototype.SetType = (sType) => {}
 
 /**
  * Returns the type of the watermark in the document.
@@ -8162,7 +8246,7 @@ ApiWatermarkSettings.prototype.SetType = function (sType){};
  * @typeofeditors ["CDE"]
  * @returns {WatermarkType}
  */
-ApiWatermarkSettings.prototype.GetType = function (){ return new WatermarkType(); };
+ApiWatermarkSettings.prototype.GetType = () => new WatermarkType()
 
 /**
  * Sets the text of the watermark in the document.
@@ -8170,7 +8254,7 @@ ApiWatermarkSettings.prototype.GetType = function (){ return new WatermarkType()
  * @typeofeditors ["CDE"]
  * @param {string} sText - The watermark text.
  */
-ApiWatermarkSettings.prototype.SetText = function (sText){};
+ApiWatermarkSettings.prototype.SetText = (sText) => {}
 
 /**
  * Returns the text of the watermark in the document.
@@ -8178,7 +8262,7 @@ ApiWatermarkSettings.prototype.SetText = function (sText){};
  * @typeofeditors ["CDE"]
  * @returns {string | null}
  */
-ApiWatermarkSettings.prototype.GetText = function (){ return ""; };
+ApiWatermarkSettings.prototype.GetText = () => ""
 
 /**
  * Sets the text properties of the watermark in the document.
@@ -8186,7 +8270,7 @@ ApiWatermarkSettings.prototype.GetText = function (){ return ""; };
  * @typeofeditors ["CDE"]
  * @param {ApiTextPr} oTextPr - The watermark text properties.
  */
-ApiWatermarkSettings.prototype.SetTextPr = function (oTextPr){};
+ApiWatermarkSettings.prototype.SetTextPr = (oTextPr) => {}
 
 /**
  * Returns the text properties of the watermark in the document.
@@ -8194,7 +8278,7 @@ ApiWatermarkSettings.prototype.SetTextPr = function (oTextPr){};
  * @typeofeditors ["CDE"]
  * @returns {ApiTextPr}
  */
-ApiWatermarkSettings.prototype.GetTextPr = function (){ return new ApiTextPr(); };
+ApiWatermarkSettings.prototype.GetTextPr = () => new ApiTextPr()
 
 /**
  * Sets the opacity of the watermark in the document.
@@ -8202,7 +8286,7 @@ ApiWatermarkSettings.prototype.GetTextPr = function (){ return new ApiTextPr(); 
  * @typeofeditors ["CDE"]
  * @param {number} nOpacity - The watermark opacity. This value must be from 0 to 255.
  */
-ApiWatermarkSettings.prototype.SetOpacity = function (nOpacity){};
+ApiWatermarkSettings.prototype.SetOpacity = (nOpacity) => {}
 
 /**
  * Returns the opacity of the watermark in the document.
@@ -8210,7 +8294,7 @@ ApiWatermarkSettings.prototype.SetOpacity = function (nOpacity){};
  * @typeofeditors ["CDE"]
  * @returns {number} - The watermark opacity. This value must be from 0 to 255.
  */
-ApiWatermarkSettings.prototype.GetOpacity = function (){ return 0; };
+ApiWatermarkSettings.prototype.GetOpacity = () => 0
 
 /**
  * Sets the direction of the watermark in the document.
@@ -8218,7 +8302,7 @@ ApiWatermarkSettings.prototype.GetOpacity = function (){ return 0; };
  * @typeofeditors ["CDE"]
  * @param {WatermarkDirection} sDirection - The watermark direction.
  */
-ApiWatermarkSettings.prototype.SetDirection = function (sDirection){};
+ApiWatermarkSettings.prototype.SetDirection = (sDirection) => {}
 
 /**
  * Returns the direction of the watermark in the document.
@@ -8226,7 +8310,7 @@ ApiWatermarkSettings.prototype.SetDirection = function (sDirection){};
  * @typeofeditors ["CDE"]
  * @returns {WatermarkDirection} - The watermark direction.
  */
-ApiWatermarkSettings.prototype.GetDirection = function (){ return new WatermarkDirection(); };
+ApiWatermarkSettings.prototype.GetDirection = () => new WatermarkDirection()
 
 /**
  * Sets the image URL of the watermark in the document.
@@ -8234,7 +8318,7 @@ ApiWatermarkSettings.prototype.GetDirection = function (){ return new WatermarkD
  * @typeofeditors ["CDE"]
  * @param {string} sURL - The watermark image URL.
  */
-ApiWatermarkSettings.prototype.SetImageURL = function (sURL){};
+ApiWatermarkSettings.prototype.SetImageURL = (sURL) => {}
 
 /**
  * Returns the image URL of the watermark in the document.
@@ -8242,7 +8326,7 @@ ApiWatermarkSettings.prototype.SetImageURL = function (sURL){};
  * @typeofeditors ["CDE"]
  * @returns {string | null} - The watermark image URL.
  */
-ApiWatermarkSettings.prototype.GetImageURL = function (){ return ""; };
+ApiWatermarkSettings.prototype.GetImageURL = () => ""
 
 /**
  * Returns the width of the watermark image in the document.
@@ -8250,7 +8334,7 @@ ApiWatermarkSettings.prototype.GetImageURL = function (){ return ""; };
  * @typeofeditors ["CDE"]
  * @returns {EMU | null} - The watermark image width in EMU.
  */
-ApiWatermarkSettings.prototype.GetImageWidth = function (){ return new EMU(); };
+ApiWatermarkSettings.prototype.GetImageWidth = () => new EMU()
 
 /**
  * Returns the height of the watermark image in the document.
@@ -8258,7 +8342,7 @@ ApiWatermarkSettings.prototype.GetImageWidth = function (){ return new EMU(); };
  * @typeofeditors ["CDE"]
  * @returns {EMU | null} - The watermark image height in EMU.
  */
-ApiWatermarkSettings.prototype.GetImageHeight = function (){ return new EMU(); };
+ApiWatermarkSettings.prototype.GetImageHeight = () => new EMU()
 
 /**
  * Sets the size (width and height) of the watermark image in the document.
@@ -8267,7 +8351,7 @@ ApiWatermarkSettings.prototype.GetImageHeight = function (){ return new EMU(); }
  * @param {EMU} nWidth - The watermark image width.
  * @param {EMU} nHeight - The watermark image height.
  */
-ApiWatermarkSettings.prototype.SetImageSize = function (nWidth, nHeight){};
+ApiWatermarkSettings.prototype.SetImageSize = (nWidth, nHeight) => {}
 
 /**
  * В проверке на лок, которую мы делаем после выполнения скрипта, нужно различать действия сделанные через
@@ -8276,20 +8360,24 @@ ApiWatermarkSettings.prototype.SetImageSize = function (nWidth, nHeight){};
  * @param t
  * @returns {*}
  */
-function executeNoFormLockCheck(fn, t){ return null; }
+function executeNoFormLockCheck(fn, t) {
+  return null
+}
 
 /**
  * Gets a document color object by color name.
  * @param {highlightColor} sColor - available highlight color
  * @returns {object}
  */
-function private_getHighlightColorByName(sColor){ return null; }
+function private_getHighlightColorByName(sColor) {
+  return null
+}
 
 /**
  * Gets a document highlight name by color object.
  * @param {object} oColor - available highlight color
  * @returns {highlightColor}
  */
-function private_getHighlightNameByColor(oColor){ return null; }
-
-
+function private_getHighlightNameByColor(oColor) {
+  return null
+}

@@ -30,15 +30,15 @@
  *
  */
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 define([
     'text!common/main/lib/template/AutoCorrectDialog.template',
     'common/main/lib/view/AdvancedSettingsWindow'
-], function (contentTemplate) { 'use strict';
-    var _mathStore = new Common.UI.DataViewStore();
-    var _functionsStore = new Common.UI.DataViewStore();
-    var _exciptionsStore = new Common.UI.DataViewStore();
-    var _exciptionsLangs = [0x0409, 0x0419];
+], (contentTemplate) => { 
+    const _mathStore = new Common.UI.DataViewStore();
+    const _functionsStore = new Common.UI.DataViewStore();
+    const _exciptionsStore = new Common.UI.DataViewStore();
+    let _exciptionsLangs = [0x0409, 0x0419];
     Common.Views.AutoCorrectDialog = Common.Views.AdvancedSettingsWindow.extend(_.extend({
         options: {
             contentWidth: 375,
@@ -48,40 +48,39 @@ define([
         },
 
         initialize : function(options) {
-            var filter = Common.localStorage.getKeysFilter(),
-                me = this;
-            this.appPrefix = (filter && filter.length) ? filter.split(',')[0] : '';
+            const filter = Common.localStorage.getKeysFilter();
+            this.appPrefix = (filter?.length) ? filter.split(',')[0] : '';
 
-            var items = [
+            const items = [
                 {panelId: 'id-autocorrect-dialog-settings-math',        panelCaption: this.textMathCorrect},
                 {panelId: 'id-autocorrect-dialog-settings-recognized',  panelCaption: this.textRecognized}
             ];
-            if (this.appPrefix=='de-' || this.appPrefix=='pe-') {
+            if (this.appPrefix==='de-' || this.appPrefix==='pe-') {
                 items.push({panelId: 'id-autocorrect-dialog-settings-de-autoformat',  panelCaption: this.textAutoFormat});
                 items.push({panelId: 'id-autocorrect-dialog-settings-exceptions',  panelCaption: this.textAutoCorrect});
 
-            } else if (this.appPrefix=='sse-')
+            } else if (this.appPrefix==='sse-')
                 items.push({panelId: 'id-autocorrect-dialog-settings-sse-autoformat',  panelCaption: this.textAutoFormat});
 
             _.extend(this.options, {
                 title: this.textTitle,
-                storageName: this.appPrefix + 'autocorrect-dialog-category',
+                storageName: `${this.appPrefix}autocorrect-dialog-category`,
                 items: items,
                 contentTemplate: _.template(contentTemplate)({scope: this})
             }, options || {});
 
             this.api = this.options.api;
 
-            var path = this.appPrefix + "settings-math-correct";
-            var value = Common.Utils.InternalSettings.get(path + "-add");
+            let path = `${this.appPrefix}settings-math-correct`;
+            let value = Common.Utils.InternalSettings.get(`${path}-add`);
             this.arrAdd = value ? JSON.parse(value) : [];
-            value = Common.Utils.InternalSettings.get(path + "-rem");
+            value = Common.Utils.InternalSettings.get(`${path}-rem`);
             this.arrRem = value ? JSON.parse(value) : [];
 
-            path = this.appPrefix + "settings-rec-functions";
-            value = Common.Utils.InternalSettings.get(path + "-add");
+            path = `${this.appPrefix}settings-rec-functions`;
+            value = Common.Utils.InternalSettings.get(`${path}-add`);
             this.arrAddRec = value ? JSON.parse(value) : [];
-            value = Common.Utils.InternalSettings.get(path + "-rem");
+            value = Common.Utils.InternalSettings.get(`${path}-rem`);
             this.arrRemRec = value ? JSON.parse(value) : [];
 
             this.arrAddExceptions = {};
@@ -93,20 +92,19 @@ define([
         render: function() {
             Common.Views.AdvancedSettingsWindow.prototype.render.call(this);
 
-            var $window = this.getChild();
-            var me = this;
-            var panelAutoFormat = $window.find('#id-autocorrect-dialog-settings-' + (this.appPrefix=='pe-' ? 'de-' : this.appPrefix) + 'autoformat');
+            const $window = this.getChild();
+            const panelAutoFormat = $window.find(`#id-autocorrect-dialog-settings-${this.appPrefix==='pe-' ? 'de-' : this.appPrefix}autoformat`);
 
             // Math correct
             this.chReplaceType = new Common.UI.CheckBox({
                 el: $window.find('#auto-correct-chb-replace-type'),
                 labelText: this.textReplaceType,
-                value: Common.Utils.InternalSettings.get(this.appPrefix + "settings-math-correct-replace-type")
-            }).on('change', function(field, newValue, oldValue, eOpts){
-                var checked = (field.getValue()==='checked');
-                Common.localStorage.setBool(me.appPrefix + "settings-math-correct-replace-type", checked);
-                Common.Utils.InternalSettings.set(me.appPrefix + "settings-math-correct-replace-type", checked);
-                me.api.asc_updateFlagAutoCorrectMathSymbols(checked);
+                value: Common.Utils.InternalSettings.get(`${this.appPrefix}settings-math-correct-replace-type`)
+            }).on('change', (field, newValue, oldValue, eOpts)=> {
+                const checked = (field.getValue()==='checked');
+                Common.localStorage.setBool(`${this.appPrefix}settings-math-correct-replace-type`, checked);
+                Common.Utils.InternalSettings.set(`${this.appPrefix}settings-math-correct-replace-type`, checked);
+                this.api.asc_updateFlagAutoCorrectMathSymbols(checked);
             });
 
             this.onInitList();
@@ -132,37 +130,37 @@ define([
                 allowBlank       : true,
                 validateOnChange : true,
                 maxLength        : 31,
-                validation       : function () { return true; }
-            }).on ('changing', function (input, value) {
-                var _selectedItem;
+                validation       : () => true
+            }).on ('changing', (input, value) => {
+                let _selectedItem;
                 if (value.length) {
-                    var store = me.mathList.store;
-                    _selectedItem = store.find(function(item) {
-                        if ( item.get('replaced').indexOf(value) == 0) {
+                    const store = this.mathList.store;
+                    _selectedItem = store.find((item) => {
+                        if ( item.get('replaced').indexOf(value) === 0) {
                             return true;
                         }
                     });
                     if (_selectedItem) {
-                        me.mathList.scrollToRecord(_selectedItem, true);
-                        if (_selectedItem.get('replaced') == value)
-                            me.mathList.selectRecord(_selectedItem, true);
+                        this.mathList.scrollToRecord(_selectedItem, true);
+                        if (_selectedItem.get('replaced') === value)
+                            this.mathList.selectRecord(_selectedItem, true);
                         else
                             _selectedItem = null;
                     }
                 }
-                (!_selectedItem) && me.mathList.deselectAll();
-                me.updateControls(_selectedItem);
+                (!_selectedItem) && this.mathList.deselectAll();
+                this.updateControls(_selectedItem);
             });
 
-            this.inputReplace.cmpEl.find('input').on('keydown', function(event){
-                if (event.key == 'ArrowDown') {
-                    var _selectedItem = me.mathList.getSelectedRec() || me.mathList.store.at(0);
+            this.inputReplace.cmpEl.find('input').on('keydown', (event)=> {
+                if (event.key === 'ArrowDown') {
+                    const _selectedItem = this.mathList.getSelectedRec() || this.mathList.store.at(0);
                     if (_selectedItem) {
-                        me.mathList.selectRecord(_selectedItem);
-                        me.mathList.scrollToRecord(_selectedItem);
+                        this.mathList.selectRecord(_selectedItem);
+                        this.mathList.scrollToRecord(_selectedItem);
                     }
-                    _.delay(function(){
-                        me.mathList.focus();
+                    _.delay(()=> {
+                        this.mathList.focus();
                     },10);
 
                 }
@@ -173,9 +171,9 @@ define([
                 allowBlank       : true,
                 validateOnChange : true,
                 maxLength        : 255,
-                validation       : function () { return true; }
-            }).on ('changing', function (input, value) {
-                me.updateControls();
+                validation       : () => true
+            }).on ('changing', (input, value) => {
+                this.updateControls();
             });
             // this.inputBy.cmpEl.find('input').css('font-size', '13px');
 
@@ -215,37 +213,37 @@ define([
                 allowBlank       : true,
                 validateOnChange : true,
                 maxLength        : 255,
-                validation       : function () { return true; }
-            }).on ('changing', function (input, value) {
-                var _selectedItem;
+                validation       : () => true
+            }).on ('changing', (input, value) => {
+                let _selectedItem;
                 if (value.length) {
-                    var store = me.mathRecList.store;
-                    _selectedItem = store.find(function(item) {
-                        if ( item.get('value').indexOf(value) == 0) {
+                    const store = this.mathRecList.store;
+                    _selectedItem = store.find((item) => {
+                        if ( item.get('value').indexOf(value) === 0) {
                             return true;
                         }
                     });
                     if (_selectedItem) {
-                        me.mathRecList.scrollToRecord(_selectedItem, true);
-                        if (_selectedItem.get('value') == value)
-                            me.mathRecList.selectRecord(_selectedItem, true);
+                        this.mathRecList.scrollToRecord(_selectedItem, true);
+                        if (_selectedItem.get('value') === value)
+                            this.mathRecList.selectRecord(_selectedItem, true);
                         else
                             _selectedItem = null;
                     }
                 }
-                (!_selectedItem) && me.mathRecList.deselectAll();
-                me.updateRecControls(_selectedItem);
+                (!_selectedItem) && this.mathRecList.deselectAll();
+                this.updateRecControls(_selectedItem);
             });
 
-            this.inputRecFind.cmpEl.find('input').on('keydown', function(event){
-                if (event.key == 'ArrowDown') {
-                    var _selectedItem = me.mathRecList.getSelectedRec() || me.mathRecList.store.at(0);
+            this.inputRecFind.cmpEl.find('input').on('keydown', (event)=> {
+                if (event.key === 'ArrowDown') {
+                    const _selectedItem = this.mathRecList.getSelectedRec() || this.mathRecList.store.at(0);
                     if (_selectedItem) {
-                        me.mathRecList.selectRecord(_selectedItem);
-                        me.mathRecList.scrollToRecord(_selectedItem);
+                        this.mathRecList.selectRecord(_selectedItem);
+                        this.mathRecList.scrollToRecord(_selectedItem);
                     }
-                    _.delay(function(){
-                        me.mathRecList.focus();
+                    _.delay(()=> {
+                        this.mathRecList.focus();
                     },10);
 
                 }
@@ -266,72 +264,72 @@ define([
             });
             this.btnDeleteRec.on('click', _.bind(this.onDeleteRec, this, false));
 
-            if (this.appPrefix=='de-' || this.appPrefix=='pe-') {
+            if (this.appPrefix==='de-' || this.appPrefix==='pe-') {
                 this.chQuotes = new Common.UI.CheckBox({
                     el: $window.find('#id-autocorrect-dialog-chk-quotes'),
                     labelText: this.textQuotes,
-                    value: Common.Utils.InternalSettings.get(this.appPrefix + "settings-autoformat-smart-quotes")
-                }).on('change', function(field, newValue, oldValue, eOpts){
-                    var checked = (field.getValue()==='checked');
-                    Common.localStorage.setBool(me.appPrefix + "settings-autoformat-smart-quotes", checked);
-                    Common.Utils.InternalSettings.set(me.appPrefix + "settings-autoformat-smart-quotes", checked);
-                    me.api.asc_SetAutoCorrectSmartQuotes(checked);
+                    value: Common.Utils.InternalSettings.get(`${this.appPrefix}settings-autoformat-smart-quotes`)
+                }).on('change', (field, newValue, oldValue, eOpts)=> {
+                    const checked = (field.getValue()==='checked');
+                    Common.localStorage.setBool(`${this.appPrefix}settings-autoformat-smart-quotes`, checked);
+                    Common.Utils.InternalSettings.set(`${this.appPrefix}settings-autoformat-smart-quotes`, checked);
+                    this.api.asc_SetAutoCorrectSmartQuotes(checked);
                 });
                 this.chHyphens = new Common.UI.CheckBox({
                     el: $window.find('#id-autocorrect-dialog-chk-hyphens'),
                     labelText: this.textHyphens,
-                    value: Common.Utils.InternalSettings.get(this.appPrefix + "settings-autoformat-hyphens")
-                }).on('change', function(field, newValue, oldValue, eOpts){
-                    var checked = (field.getValue()==='checked');
-                    Common.localStorage.setBool(me.appPrefix + "settings-autoformat-hyphens", checked);
-                    Common.Utils.InternalSettings.set(me.appPrefix + "settings-autoformat-hyphens", checked);
-                    me.api.asc_SetAutoCorrectHyphensWithDash(checked);
+                    value: Common.Utils.InternalSettings.get(`${this.appPrefix}settings-autoformat-hyphens`)
+                }).on('change', (field, newValue, oldValue, eOpts)=> {
+                    const checked = (field.getValue()==='checked');
+                    Common.localStorage.setBool(`${this.appPrefix}settings-autoformat-hyphens`, checked);
+                    Common.Utils.InternalSettings.set(`${this.appPrefix}settings-autoformat-hyphens`, checked);
+                    this.api.asc_SetAutoCorrectHyphensWithDash(checked);
                 });
                 this.chBulleted = new Common.UI.CheckBox({
                     el: $window.find('#id-autocorrect-dialog-chk-bulleted'),
                     labelText: this.textBulleted,
-                    value: Common.Utils.InternalSettings.get(this.appPrefix + "settings-autoformat-bulleted")
-                }).on('change', function(field, newValue, oldValue, eOpts){
-                    var checked = (field.getValue()==='checked');
-                    Common.localStorage.setBool(me.appPrefix + "settings-autoformat-bulleted", checked);
-                    Common.Utils.InternalSettings.set(me.appPrefix + "settings-autoformat-bulleted", checked);
-                    me.api.asc_SetAutomaticBulletedLists(checked);
+                    value: Common.Utils.InternalSettings.get(`${this.appPrefix}settings-autoformat-bulleted`)
+                }).on('change', (field, newValue, oldValue, eOpts)=> {
+                    const checked = (field.getValue()==='checked');
+                    Common.localStorage.setBool(`${this.appPrefix}settings-autoformat-bulleted`, checked);
+                    Common.Utils.InternalSettings.set(`${this.appPrefix}settings-autoformat-bulleted`, checked);
+                    this.api.asc_SetAutomaticBulletedLists(checked);
                 });
                 this.chNumbered = new Common.UI.CheckBox({
                     el: $window.find('#id-autocorrect-dialog-chk-numbered'),
                     labelText: this.textNumbered,
-                    value: Common.Utils.InternalSettings.get(this.appPrefix + "settings-autoformat-numbered")
-                }).on('change', function(field, newValue, oldValue, eOpts){
-                    var checked = (field.getValue()==='checked');
-                    Common.localStorage.setBool(me.appPrefix + "settings-autoformat-numbered", checked);
-                    Common.Utils.InternalSettings.set(me.appPrefix + "settings-autoformat-numbered", checked);
-                    me.api.asc_SetAutomaticNumberedLists(checked);
+                    value: Common.Utils.InternalSettings.get(`${this.appPrefix}settings-autoformat-numbered`)
+                }).on('change', (field, newValue, oldValue, eOpts)=> {
+                    const checked = (field.getValue()==='checked');
+                    Common.localStorage.setBool(`${this.appPrefix}settings-autoformat-numbered`, checked);
+                    Common.Utils.InternalSettings.set(`${this.appPrefix}settings-autoformat-numbered`, checked);
+                    this.api.asc_SetAutomaticNumberedLists(checked);
                 });
                 this.chDoubleSpaces = new Common.UI.CheckBox({
                     el: panelAutoFormat.find('#id-autocorrect-dialog-chk-double-space'),
                     labelText: this.textDoubleSpaces,
-                    value: Common.Utils.InternalSettings.get(this.appPrefix + "settings-autoformat-double-space")
-                }).on('change', function(field, newValue, oldValue, eOpts){
-                    var checked = (field.getValue()==='checked');
-                    Common.localStorage.setBool(me.appPrefix + "settings-autoformat-double-space", checked);
-                    Common.Utils.InternalSettings.set(me.appPrefix + "settings-autoformat-double-space", checked);
-                    me.api.asc_SetAutoCorrectDoubleSpaceWithPeriod(checked);
+                    value: Common.Utils.InternalSettings.get(`${this.appPrefix}settings-autoformat-double-space`)
+                }).on('change', (field, newValue, oldValue, eOpts)=> {
+                    const checked = (field.getValue()==='checked');
+                    Common.localStorage.setBool(`${this.appPrefix}settings-autoformat-double-space`, checked);
+                    Common.Utils.InternalSettings.set(`${this.appPrefix}settings-autoformat-double-space`, checked);
+                    this.api.asc_SetAutoCorrectDoubleSpaceWithPeriod(checked);
                 });
 
                 // AutoCorrect
                 if (this.api)
                     _exciptionsLangs = this.api.asc_GetAutoCorrectSettings().get_FirstLetterExceptionManager().get_DefaultLangs() || [];
-                _exciptionsLangs.forEach(function(lang) {
-                    var path = me.appPrefix + "settings-letter-exception";
+                _exciptionsLangs.forEach((lang) => {
+                    const path = `${this.appPrefix}settings-letter-exception`;
 
-                    var value = Common.Utils.InternalSettings.get(path + "-add-" + lang);
-                    me.arrAddExceptions[lang] = value ? JSON.parse(value) : [];
+                    let value = Common.Utils.InternalSettings.get(`${path}-add-${lang}`);
+                    this.arrAddExceptions[lang] = value ? JSON.parse(value) : [];
 
-                    value = Common.Utils.InternalSettings.get(path + "-rem-" + lang);
-                    me.arrRemExceptions[lang] = value ? JSON.parse(value) : [];
+                    value = Common.Utils.InternalSettings.get(`${path}-rem-${lang}`);
+                    this.arrRemExceptions[lang] = value ? JSON.parse(value) : [];
                 });
 
-                var exciptionsActiveLang = Common.Utils.InternalSettings.get('settings-letter-exception-lang');
+                let exciptionsActiveLang = Common.Utils.InternalSettings.get('settings-letter-exception-lang');
                 this.exceptionsLangCmb = new Common.UI.ComboBox({
                     el          : $window.find('#auto-correct-exceptions-lang'),
                     style       : 'width: 145px;',
@@ -341,31 +339,29 @@ define([
                     restoreMenuHeightAndTop: true,
                     cls         : 'input-group-nr',
                     dataHintDirection: 'bottom',
-                    data        : _exciptionsLangs.map(function(lang){
-                        lang = parseInt(lang);
-                        var langName = Common.util.LanguageInfo.getLocalLanguageName(lang);
+                    data        : _exciptionsLangs.map((lang)=> {
+                        lang = Number.parseInt(lang);
+                        const langName = Common.util.LanguageInfo.getLocalLanguageName(lang);
                         return { 
                             displayValue: langName[1], 
                             shortName: langName[0],
                             value: lang
                         };
                     })
-                }).on('selected', function(combo, record) {
-                    if(exciptionsActiveLang != record.value) {
+                }).on('selected', (combo, record) => {
+                    if(exciptionsActiveLang !== record.value) {
                         exciptionsActiveLang = record.value;
                         Common.Utils.InternalSettings.set('settings-letter-exception-lang', exciptionsActiveLang);
-                        me.onInitExceptionsList(true);
-                        me.onChangeInputException(me.exceptionsFindInput, me.exceptionsFindInput.getValue());
+                        this.onInitExceptionsList(true);
+                        this.onChangeInputException(this.exceptionsFindInput, this.exceptionsFindInput.getValue());
                     }
                 });
 
                 if(!exciptionsActiveLang) {
-                    var curLangObj = this.exceptionsLangCmb.store.findWhere({value: this.api.asc_getDefaultLanguage()});
+                    let curLangObj = this.exceptionsLangCmb.store.findWhere({value: this.api.asc_getDefaultLanguage()});
                     if (!curLangObj) {
-                        var nameLang = Common.util.LanguageInfo.getLocalLanguageName(this.api.asc_getDefaultLanguage())[0].split(/[\-\_]/)[0];
-                        curLangObj = this.exceptionsLangCmb.store.find(function(lang){
-                            return lang.get('shortName').indexOf(nameLang)==0;
-                        });
+                        const nameLang = Common.util.LanguageInfo.getLocalLanguageName(this.api.asc_getDefaultLanguage())[0].split(/[\-\_]/)[0];
+                        curLangObj = this.exceptionsLangCmb.store.find((lang)=> lang.get('shortName').indexOf(nameLang)===0);
                     }
                     if(curLangObj) exciptionsActiveLang = curLangObj.get('value');
                 }
@@ -391,18 +387,18 @@ define([
                     allowBlank       : true,
                     validateOnChange : true,
                     maxLength        : 255,
-                    validation       : function () { return true; }
+                    validation       : () => true
                 }).on ('changing', _.bind(this.onChangeInputException, this));
     
-                this.exceptionsFindInput.cmpEl.find('input').on('keydown', function(event){
-                    if (event.key == 'ArrowDown') {
-                        var _selectedItem = me.exceptionsList.getSelectedRec() || me.exceptionsList.store.at(0);
+                this.exceptionsFindInput.cmpEl.find('input').on('keydown', (event)=> {
+                    if (event.key === 'ArrowDown') {
+                        const _selectedItem = this.exceptionsList.getSelectedRec() || this.exceptionsList.store.at(0);
                         if (_selectedItem) {
-                            me.exceptionsList.selectRecord(_selectedItem);
-                            me.exceptionsList.scrollToRecord(_selectedItem);
+                            this.exceptionsList.selectRecord(_selectedItem);
+                            this.exceptionsList.scrollToRecord(_selectedItem);
                         }
-                        _.delay(function(){
-                            me.exceptionsList.focus();
+                        _.delay(()=> {
+                            this.exceptionsList.focus();
                         },10);
     
                     }
@@ -427,47 +423,47 @@ define([
                 this.chkSentenceExceptions = new Common.UI.CheckBox({
                     el: $window.find('#auto-correct-exceptions-chk-sentence'),
                     labelText: this.textFLSentence,
-                    value: Common.Utils.InternalSettings.get(this.appPrefix + "settings-letter-exception-sentence")
-                }).on('change', function(field, newValue, oldValue, eOpts){
-                    var checked = (field.getValue()==='checked');
-                    Common.localStorage.setBool(me.appPrefix + "settings-letter-exception-sentence", checked);
-                    Common.Utils.InternalSettings.set(me.appPrefix + "settings-letter-exception-sentence", checked);
-                    me.api.asc_SetAutoCorrectFirstLetterOfSentences && me.api.asc_SetAutoCorrectFirstLetterOfSentences(checked);
+                    value: Common.Utils.InternalSettings.get(`${this.appPrefix}settings-letter-exception-sentence`)
+                }).on('change', (field, newValue, oldValue, eOpts)=> {
+                    const checked = (field.getValue()==='checked');
+                    Common.localStorage.setBool(`${this.appPrefix}settings-letter-exception-sentence`, checked);
+                    Common.Utils.InternalSettings.set(`${this.appPrefix}settings-letter-exception-sentence`, checked);
+                    this.api.asc_SetAutoCorrectFirstLetterOfSentences?.(checked);
                 });
 
                 this.chkSentenceCells = new Common.UI.CheckBox({
                     el: $window.find('#auto-correct-exceptions-chk-cells'),
                     labelText: this.textFLCells,
-                    value: Common.Utils.InternalSettings.get(this.appPrefix + "settings-letter-exception-cells")
-                }).on('change', function(field, newValue, oldValue, eOpts){
-                    var checked = (field.getValue()==='checked');
-                    Common.localStorage.setBool(me.appPrefix + "settings-letter-exception-cells", checked);
-                    Common.Utils.InternalSettings.set(me.appPrefix + "settings-letter-exception-cells", checked);
-                    me.api.asc_SetAutoCorrectFirstLetterOfCells && me.api.asc_SetAutoCorrectFirstLetterOfCells(checked);
+                    value: Common.Utils.InternalSettings.get(`${this.appPrefix}settings-letter-exception-cells`)
+                }).on('change', (field, newValue, oldValue, eOpts)=> {
+                    const checked = (field.getValue()==='checked');
+                    Common.localStorage.setBool(`${this.appPrefix}settings-letter-exception-cells`, checked);
+                    Common.Utils.InternalSettings.set(`${this.appPrefix}settings-letter-exception-cells`, checked);
+                    this.api.asc_SetAutoCorrectFirstLetterOfCells?.(checked);
                 });
 
                 this.btnsCategory[3].on('click', _.bind(this.onAutocorrectCategoryClick, this, false));
-            } else if (this.appPrefix=='sse-') {
+            } else if (this.appPrefix==='sse-') {
                 this.chNewRows = new Common.UI.CheckBox({
                     el: $window.find('#id-autocorrect-dialog-chk-new-rows'),
                     labelText: this.textNewRowCol,
-                    value: Common.Utils.InternalSettings.get(this.appPrefix + "settings-autoformat-new-rows")
-                }).on('change', function(field, newValue, oldValue, eOpts){
-                    var checked = (field.getValue()==='checked');
-                    Common.localStorage.setBool(me.appPrefix + "settings-autoformat-new-rows", checked);
-                    Common.Utils.InternalSettings.set(me.appPrefix + "settings-autoformat-new-rows", checked);
-                    me.api.asc_setIncludeNewRowColTable(checked);
+                    value: Common.Utils.InternalSettings.get(`${this.appPrefix}settings-autoformat-new-rows`)
+                }).on('change', (field, newValue, oldValue, eOpts)=> {
+                    const checked = (field.getValue()==='checked');
+                    Common.localStorage.setBool(`${this.appPrefix}settings-autoformat-new-rows`, checked);
+                    Common.Utils.InternalSettings.set(`${this.appPrefix}settings-autoformat-new-rows`, checked);
+                    this.api.asc_setIncludeNewRowColTable(checked);
                 });
             }
             this.chHyperlink = new Common.UI.CheckBox({
                 el: panelAutoFormat.find('#id-autocorrect-dialog-chk-hyperlink'),
                 labelText: this.textHyperlink,
-                value: Common.Utils.InternalSettings.get(this.appPrefix + "settings-autoformat-hyperlink")
-            }).on('change', function(field, newValue, oldValue, eOpts){
-                var checked = (field.getValue()==='checked');
-                Common.localStorage.setBool(me.appPrefix + "settings-autoformat-hyperlink", checked);
-                Common.Utils.InternalSettings.set(me.appPrefix + "settings-autoformat-hyperlink", checked);
-                me.api.asc_SetAutoCorrectHyperlinks(checked);
+                value: Common.Utils.InternalSettings.get(`${this.appPrefix}settings-autoformat-hyperlink`)
+            }).on('change', (field, newValue, oldValue, eOpts)=> {
+                const checked = (field.getValue()==='checked');
+                Common.localStorage.setBool(`${this.appPrefix}settings-autoformat-hyperlink`, checked);
+                Common.Utils.InternalSettings.set(`${this.appPrefix}settings-autoformat-hyperlink`, checked);
+                this.api.asc_SetAutoCorrectHyperlinks(checked);
             });
 
             this.btnsCategory[0].on('click', _.bind(this.onMathCategoryClick, this, false));
@@ -482,13 +478,13 @@ define([
             this.updateRecControls();
             this.updateExceptionsControls();
             if (this.storageName) {
-                var value = Common.localStorage.getItem(this.storageName);
-                this.setActiveCategory((value!==null) ? parseInt(value) : 0);
+                const value = Common.localStorage.getItem(this.storageName);
+                this.setActiveCategory((value!==null) ? Number.parseInt(value) : 0);
             }
         },
 
         getFocusedComponents: function() {
-            var arr = this.btnsCategory.concat([
+            let arr = this.btnsCategory.concat([
                     this.chReplaceType, this.inputReplace, this.inputBy, this.mathList, this.btnReset, this.btnEdit, this.btnDelete, // 0 tab
                     this.inputRecFind, this.mathRecList, this.btnResetRec, this.btnAddRec, this.btnDeleteRec, // 1 tab
                 ]);
@@ -498,7 +494,7 @@ define([
             return arr;
         },
 
-        getSettings: function() {
+        getSettings: () => {
             return;
         },
 
@@ -514,11 +510,11 @@ define([
             if (!this.mathList) return;
 
             rec = rec || this.mathList.getSelectedRec();
-            var inputBy = this.inputBy.getValue(),
-                inputReplace = this.inputReplace.getValue();
+            const inputBy = this.inputBy.getValue();
+            const inputReplace = this.inputReplace.getValue();
             if (rec) {
-                var disabled = rec.get('defaultDisabled'),
-                    defChanged = rec.get('defaultValue') && (rec.get('defaultValueStr')!==rec.get('by'));
+                const disabled = rec.get('defaultDisabled');
+                const defChanged = rec.get('defaultValue') && (rec.get('defaultValueStr')!==rec.get('by'));
                 this.btnDelete.setCaption(disabled ? this.textRestore : this.textDelete);
                 this.btnEdit.setDisabled(disabled || inputBy === rec.get('by') && !defChanged || !inputBy || !inputReplace);
                 this.btnEdit.setCaption(defChanged && (inputBy === rec.get('by')) ? this.textReset : this.textReplace);
@@ -533,62 +529,59 @@ define([
         show: function() {
             Common.Views.AdvancedSettingsWindow.prototype.show.apply(this, arguments);
 
-            var value = this.getActiveCategory();
-            if (value==0) this.onMathCategoryClick(true);
-            else if (value==1) this.onRecCategoryClick(true);
-            else if (value==2) this.onAutoformatCategoryClick(true);
-            else if (value==3) this.onAutocorrectCategoryClick(true);
+            const value = this.getActiveCategory();
+            if (value===0) this.onMathCategoryClick(true);
+            else if (value===1) this.onRecCategoryClick(true);
+            else if (value===2) this.onAutoformatCategoryClick(true);
+            else if (value===3) this.onAutocorrectCategoryClick(true);
         },
 
         close: function() {
             Common.Views.AdvancedSettingsWindow.prototype.close.apply(this, arguments);
-            this.mathList && this.mathList.deselectAll();
-            this.mathRecList && this.mathRecList.deselectAll();
+            this.mathList?.deselectAll();
+            this.mathRecList?.deselectAll();
         },
 
         onMathCategoryClick: function(delay) {
-            var me = this;
-            _.delay(function(){
-                $('input', me.inputReplace.cmpEl).select().focus();
+            _.delay(()=> {
+                $('input', this.inputReplace.cmpEl).select().focus();
             },delay ? 50 : 0);
 
-            if (me.mathList.store.length < _mathStore.length) {
-                _.delay(function(){
-                    me.mathList.setStore(_mathStore);
-                    me.mathList.onResetItems();
+            if (this.mathList.store.length < _mathStore.length) {
+                _.delay(()=> {
+                    this.mathList.setStore(_mathStore);
+                    this.mathList.onResetItems();
                 },delay ? 100 : 10);
             }
         },
 
         onAutoformatCategoryClick: function(delay) {
-            var me = this;
-            _.delay(function(){
-                (me.appPrefix=='sse-') ? me.chHyperlink.focus() : me.chQuotes.focus();
+            _.delay(()=> {
+                (this.appPrefix==='sse-') ? this.chHyperlink.focus() : this.chQuotes.focus();
             },delay ? 50 : 0);
         },
 
         onAutocorrectCategoryClick: function(delay) {
-            var me = this;
-            _.delay(function(){
-                $('input', me.exceptionsFindInput.cmpEl).select().focus();
+            _.delay(()=> {
+                $('input', this.exceptionsFindInput.cmpEl).select().focus();
             },delay ? 50 : 0);
 
-            if (me.exceptionsList.store.length < _exciptionsStore.length) {
-                _.delay(function(){
-                    me.exceptionsList.setStore(_exciptionsStore);
-                    me.exceptionsList.onResetItems();
+            if (this.exceptionsList.store.length < _exciptionsStore.length) {
+                _.delay(()=> {
+                    this.exceptionsList.setStore(_exciptionsStore);
+                    this.exceptionsList.onResetItems();
                 },delay ? 100 : 10);
             }
         },
 
         onDelete: function() {
-            var rec = this.mathList.getSelectedRec();
-            var path = '';
-            var val;
+            const rec = this.mathList.getSelectedRec();
+            let path = '';
+            let val;
             if (rec) {
                 if (rec.get('defaultValue')) {
-                    path = this.appPrefix + "settings-math-correct-rem";
-                    var disabled = !rec.get('defaultDisabled');
+                    path = `${this.appPrefix}settings-math-correct-rem`;
+                    const disabled = !rec.get('defaultDisabled');
                     rec.set('defaultDisabled', disabled);
                     if (disabled)
                         this.arrRem.push(rec.get('replaced'));
@@ -603,11 +596,11 @@ define([
                     _mathStore.remove(rec);
 
                     this.arrAdd.splice(this.arrAdd.indexOf(rec.get('replaced')), 1);
-                    path = this.appPrefix + "settings-math-correct-add";
+                    path = `${this.appPrefix}settings-math-correct-add`;
                     val = JSON.stringify(this.arrAdd);
                     Common.Utils.InternalSettings.set(path, val);
                     Common.localStorage.setItem(path, val);
-                    this.mathList.scroller && this.mathList.scroller.update({});
+                    this.mathList.scroller?.update({});
                     this.api.asc_deleteFromAutoCorrectMathSymbols(rec.get('replaced'));   
                 }
                 this.updateControls();
@@ -615,31 +608,30 @@ define([
         },
 
         onEdit: function() {
-            var rec = this.mathList.getSelectedRec(),
-                by = '',
-                me = this,
-                applySettings = function(record, by) {
-                    var path = me.appPrefix + "settings-math-correct-add";
-                    var val = JSON.stringify(me.arrAdd);
+            let rec = this.mathList.getSelectedRec();
+            let by = '';
+            const applySettings = (record, by) => {
+                    const path = `${this.appPrefix}settings-math-correct-add`;
+                    const val = JSON.stringify(this.arrAdd);
                     Common.Utils.InternalSettings.set(path, val);
                     Common.localStorage.setItem(path, val);
-                    me.api.asc_AddOrEditFromAutoCorrectMathSymbols(record.get('replaced'), by);
-                    me.mathList.selectRecord(record);
-                    me.mathList.scrollToRecord(record);
+                    this.api.asc_AddOrEditFromAutoCorrectMathSymbols(record.get('replaced'), by);
+                    this.mathList.selectRecord(record);
+                    this.mathList.scrollToRecord(record);
                 };
             if (!rec) {
                 rec = _mathStore.findWhere({replaced: this.inputReplace.getValue()})
             }
             if (rec) {
-                var idx = _.findIndex(this.arrAdd, function(item){return (item[0]==rec.get('replaced'));});
-                var restore = rec.get('defaultValue') && (rec.get('defaultValueStr')!==rec.get('by')) && (this.inputBy.getValue() === rec.get('by'));
+                const idx = _.findIndex(this.arrAdd, (item)=> (item[0]===rec.get('replaced')));
+                const restore = rec.get('defaultValue') && (rec.get('defaultValueStr')!==rec.get('by')) && (this.inputBy.getValue() === rec.get('by'));
                 Common.UI.warning({
                     maxwidth: 500,
                     msg: restore ? this.warnRestore.replace('%1', Common.Utils.String.htmlEncode(rec.get('replaced'))) : this.warnReplace.replace('%1', Common.Utils.String.htmlEncode(rec.get('replaced'))),
                     buttons: ['yes', 'no'],
                     primary: 'yes',
                     callback: _.bind(function(btn, dontshow){
-                        if (btn == 'yes') {
+                        if (btn === 'yes') {
                             if (restore) {// reset to default
                                 by = rec.get('defaultValue');
                                 rec.set('by', rec.get('defaultValueStr'));
@@ -676,7 +668,7 @@ define([
                 buttons: ['yes', 'no'],
                 primary: 'yes',
                 callback: _.bind(function(btn, dontshow){
-                    if (btn == 'yes') {
+                    if (btn === 'yes') {
                         this.api.asc_resetToDefaultAutoCorrectMathSymbols();
                         this.onResetList();
                     }
@@ -686,17 +678,17 @@ define([
 
         onResetList: function() {
             // remove storage data
-            var path = this.appPrefix + "settings-math-correct";
-            var val = JSON.stringify([]);
-            Common.Utils.InternalSettings.set(path + "-add", val);
-            Common.localStorage.setItem(path + "-add", val);
-            Common.Utils.InternalSettings.set(path + "-rem", val);
-            Common.localStorage.setItem(path + "-rem", val);
+            const path = `${this.appPrefix}settings-math-correct`;
+            const val = JSON.stringify([]);
+            Common.Utils.InternalSettings.set(`${path}-add`, val);
+            Common.localStorage.setItem(`${path}-add`, val);
+            Common.Utils.InternalSettings.set(`${path}-rem`, val);
+            Common.localStorage.setItem(`${path}-rem`, val);
             this.arrAdd = [];
             this.arrRem = [];
 
             _mathStore.remove(_mathStore.where({defaultValue: undefined}));
-            _mathStore.each(function(item, index){
+            _mathStore.each((item, index)=> {
                 item.set('by', item.get('defaultValueStr'));
                 item.set('defaultDisabled', false);
             });
@@ -711,27 +703,27 @@ define([
         onInitList: function() {
             if (_mathStore.length>0) return;
 
-            _mathStore.comparator = function(item1, item2) {
-                var n1 = item1.get('replaced').toLowerCase(),
-                    n2 = item2.get('replaced').toLowerCase();
-                if (n1==n2) return 0;
+            _mathStore.comparator = (item1, item2) => {
+                const n1 = item1.get('replaced').toLowerCase();
+                const n2 = item2.get('replaced').toLowerCase();
+                if (n1===n2) return 0;
                 return (n1<n2) ? -1 : 1;
             };
 
-            var arrAdd = this.arrAdd,
-                arrRem = this.arrRem;
+            const arrAdd = this.arrAdd;
+            const arrRem = this.arrRem;
 
-            var arr = (this.api) ? this.api.asc_getAutoCorrectMathSymbols() : [],
-                data = [];
-            _.each(arr, function(item, index){
-                var itm = {
+            const arr = (this.api) ? this.api.asc_getAutoCorrectMathSymbols() : [];
+            const data = [];
+            _.each(arr, (item, index)=> {
+                const itm = {
                     replaced: item[0],
                     defaultValue: item[1],
                     defaultDisabled: arrRem.indexOf(item[0])>-1
                 };
-                if (typeof item[1]=='object') {
+                if (typeof item[1]==='object') {
                     itm.defaultValueStr = '';
-                    _.each(item[1], function(ch){
+                    _.each(item[1], (ch)=> {
                         itm.defaultValueStr += Common.Utils.String.encodeSurrogateChar(ch);
                     });
                     itm.by = itm.defaultValueStr;
@@ -741,9 +733,9 @@ define([
                 data.push(itm);
             });
 
-            var dataAdd = [];
-            _.each(arrAdd, function(item, index){
-                var idx = _.findIndex(data, {replaced: item[0]});
+            const dataAdd = [];
+            _.each(arrAdd, (item, index)=> {
+                const idx = _.findIndex(data, {replaced: item[0]});
                 if (idx<0) {
                     dataAdd.push({
                         replaced: item[0],
@@ -751,7 +743,7 @@ define([
                         defaultDisabled: false
                     });
                 } else {
-                    var changed = data[idx];
+                    const changed = data[idx];
                     changed.by = item[1];
                 }
             });
@@ -762,19 +754,19 @@ define([
         onInitRecList: function() {
             if (_functionsStore.length>0) return;
 
-            _functionsStore.comparator = function(item1, item2) {
-                var n1 = item1.get('value').toLowerCase(),
-                    n2 = item2.get('value').toLowerCase();
-                if (n1==n2) return 0;
+            _functionsStore.comparator = (item1, item2) => {
+                const n1 = item1.get('value').toLowerCase();
+                const n2 = item2.get('value').toLowerCase();
+                if (n1===n2) return 0;
                 return (n1<n2) ? -1 : 1;
             };
 
-            var arrAdd = this.arrAddRec,
-                arrRem = this.arrRemRec;
+            const arrAdd = this.arrAddRec;
+            const arrRem = this.arrRemRec;
 
-            var arr = (this.api) ? this.api.asc_getAutoCorrectMathFunctions() : [],
-                data = [];
-            _.each(arr, function(item, index){
+            const arr = (this.api) ? this.api.asc_getAutoCorrectMathFunctions() : [];
+            const data = [];
+            _.each(arr, (item, index)=> {
                 data.push({
                     value: item,
                     defaultValue: true,
@@ -782,8 +774,8 @@ define([
                 });
             });
 
-            var dataAdd = [];
-            _.each(arrAdd, function(item, index){
+            const dataAdd = [];
+            _.each(arrAdd, (item, index)=> {
                 if (_.findIndex(data, {value: item})<0) {
                     dataAdd.push({
                         value: item,
@@ -803,7 +795,7 @@ define([
                 buttons: ['yes', 'no'],
                 primary: 'yes',
                 callback: _.bind(function(btn, dontshow){
-                    if (btn == 'yes') {
+                    if (btn === 'yes') {
                         this.api.asc_resetToDefaultAutoCorrectMathFunctions();
                         this.onResetRecList();
                     }
@@ -813,17 +805,17 @@ define([
 
         onResetRecList: function() {
             // remove storage data
-            var path = this.appPrefix + "settings-rec-functions";
-            var val = JSON.stringify([]);
-            Common.Utils.InternalSettings.set(path + "-add", val);
-            Common.localStorage.setItem(path + "-add", val);
-            Common.Utils.InternalSettings.set(path + "-rem", val);
-            Common.localStorage.setItem(path + "-rem", val);
+            const path = `${this.appPrefix}settings-rec-functions`;
+            const val = JSON.stringify([]);
+            Common.Utils.InternalSettings.set(`${path}-add`, val);
+            Common.localStorage.setItem(`${path}-add`, val);
+            Common.Utils.InternalSettings.set(`${path}-rem`, val);
+            Common.localStorage.setItem(`${path}-rem`, val);
             this.arrAddRec = [];
             this.arrRemRec = [];
 
             _functionsStore.remove(_functionsStore.where({defaultValue: false}));
-            _functionsStore.each(function(item, index){
+            _functionsStore.each((item, index)=> {
                 item.set('defaultDisabled', false);
             });
             this.mathRecList.deselectAll();
@@ -835,27 +827,26 @@ define([
         },
 
         onRecCategoryClick: function(delay) {
-            var me = this;
-            _.delay(function(){
-                $('input', me.inputRecFind.cmpEl).select().focus();
+            _.delay(()=> {
+                $('input', this.inputRecFind.cmpEl).select().focus();
             },delay ? 50 : 0);
 
-            if (me.mathRecList.store.length < _functionsStore.length) {
-                _.delay(function(){
-                    me.mathRecList.setStore(_functionsStore);
-                    me.mathRecList.onResetItems();
+            if (this.mathRecList.store.length < _functionsStore.length) {
+                _.delay(()=> {
+                    this.mathRecList.setStore(_functionsStore);
+                    this.mathRecList.onResetItems();
                 },delay ? 100 : 10);
             }
         },
 
         onDeleteRec: function() {
-            var rec = this.mathRecList.getSelectedRec();
-            var path;
-            var val;
+            const rec = this.mathRecList.getSelectedRec();
+            let path;
+            let val;
             if (rec) {
                 if (rec.get('defaultValue')) {
-                    path = this.appPrefix + "settings-rec-functions-rem";
-                    var disabled = !rec.get('defaultDisabled');
+                    path = `${this.appPrefix}settings-rec-functions-rem`;
+                    const disabled = !rec.get('defaultDisabled');
                     rec.set('defaultDisabled', disabled);
                     if (disabled)
                         this.arrRemRec.push(rec.get('value'));
@@ -870,11 +861,11 @@ define([
                     _functionsStore.remove(rec);
 
                     this.arrAddRec.splice(this.arrAddRec.indexOf(rec.get('value')), 1);
-                    path = this.appPrefix + "settings-rec-functions-add";
+                    path = `${this.appPrefix}settings-rec-functions-add`;
                     val = JSON.stringify(this.arrAddRec);
                     Common.Utils.InternalSettings.set(path, val);
                     Common.localStorage.setItem(path, val);
-                    this.mathRecList.scroller && this.mathRecList.scroller.update({});
+                    this.mathRecList.scroller?.update({});
                     this.api.asc_deleteFromAutoCorrectMathFunctions(rec.get('value'));
                 }
                 this.updateRecControls();
@@ -882,16 +873,15 @@ define([
         },
 
         onAddRec: function() {
-            var rec = this.mathRecList.getSelectedRec(),
-                me = this,
-                applySettings = function(record) {
-                    var path = me.appPrefix + "settings-rec-functions-add";
-                    var val = JSON.stringify(me.arrAddRec);
+            let rec = this.mathRecList.getSelectedRec();
+            const applySettings = (record) => {
+                    const path = `${this.appPrefix}settings-rec-functions-add`;
+                    const val = JSON.stringify(this.arrAddRec);
                     Common.Utils.InternalSettings.set(path, val);
                     Common.localStorage.setItem(path, val);
-                    me.api.asc_AddFromAutoCorrectMathFunctions(record.get('value'));
-                    me.mathRecList.selectRecord(record);
-                    me.mathRecList.scrollToRecord(record);
+                    this.api.asc_AddFromAutoCorrectMathFunctions(record.get('value'));
+                    this.mathRecList.selectRecord(record);
+                    this.mathRecList.scrollToRecord(record);
                 };
             if (!rec) {
                 rec = _functionsStore.findWhere({value: this.inputRecFind.getValue()})
@@ -911,8 +901,8 @@ define([
                         msg: this.textWarnAddRec
                     });
             } else {
-                me.mathRecList.selectRecord(rec);
-                me.mathRecList.scrollToRecord(rec);
+                this.mathRecList.selectRecord(rec);
+                this.mathRecList.scrollToRecord(rec);
             }
         },
 
@@ -927,9 +917,9 @@ define([
             if (!this.mathRecList) return;
 
             rec = rec || this.mathRecList.getSelectedRec();
-            var value = this.inputRecFind.getValue();
+            const value = this.inputRecFind.getValue();
 
-            this.btnDeleteRec.setCaption(rec && rec.get('defaultDisabled') ? this.textRestore : this.textDelete);
+            this.btnDeleteRec.setCaption(rec?.get('defaultDisabled') ? this.textRestore : this.textDelete);
             this.btnDeleteRec.setDisabled(!rec);
             this.btnAddRec.setDisabled(!!rec || !value);
         },
@@ -937,20 +927,20 @@ define([
         onInitExceptionsList: function(overrideNotEmptyStore) {
             if (_exciptionsStore.length>0 && !overrideNotEmptyStore) return;
 
-            _exciptionsStore.comparator = function(item1, item2) {
-                var n1 = item1.get('value').toLowerCase(),
-                    n2 = item2.get('value').toLowerCase();
-                if (n1==n2) return 0;
+            _exciptionsStore.comparator = (item1, item2) => {
+                const n1 = item1.get('value').toLowerCase();
+                const n2 = item2.get('value').toLowerCase();
+                if (n1===n2) return 0;
                 return (n1<n2) ? -1 : 1;
             };
-            var activeLang = this.exceptionsLangCmb.getValue(),
-                arrAdd = this.arrAddExceptions[activeLang] ? this.arrAddExceptions[activeLang] : [],
-                arrRem = this.arrRemExceptions[activeLang] ? this.arrRemExceptions[activeLang] : [];
+            const activeLang = this.exceptionsLangCmb.getValue();
+            const arrAdd = this.arrAddExceptions[activeLang] ? this.arrAddExceptions[activeLang] : [];
+            const arrRem = this.arrRemExceptions[activeLang] ? this.arrRemExceptions[activeLang] : [];
 
-            var arr = (this.api) ? this.api.asc_GetAutoCorrectSettings().get_FirstLetterExceptionManager()
-                                   .get_DefaultExceptions(activeLang) : [],
-                data = [];
-            _.each(arr, function(item, index){
+            const arr = (this.api) ? this.api.asc_GetAutoCorrectSettings().get_FirstLetterExceptionManager()
+                                   .get_DefaultExceptions(activeLang) : [];
+            const data = [];
+            _.each(arr, (item, index)=> {
                 data.push({
                     value: item,
                     defaultValue: true,
@@ -958,8 +948,8 @@ define([
                 });
             });
 
-            var dataAdd = [];
-            _.each(arrAdd, function(item, index){
+            const dataAdd = [];
+            _.each(arrAdd, (item, index)=> {
                 if (_.findIndex(data, {value: item})<0) {
                     dataAdd.push({
                         value: item,
@@ -973,8 +963,8 @@ define([
         },
 
         onResetExceptionsToDefault: function() {
-            var apiFlManager = this.api.asc_GetAutoCorrectSettings().get_FirstLetterExceptionManager();
-            var activeLang = this.exceptionsLangCmb.getValue();
+            const apiFlManager = this.api.asc_GetAutoCorrectSettings().get_FirstLetterExceptionManager();
+            const activeLang = this.exceptionsLangCmb.getValue();
 
             Common.UI.warning({
                 maxwidth: 500,
@@ -982,7 +972,7 @@ define([
                 buttons: ['yes', 'no'],
                 primary: 'yes',
                 callback: _.bind(function(btn, dontshow){
-                    if (btn == 'yes') {
+                    if (btn === 'yes') {
                         apiFlManager.put_Exceptions(apiFlManager.get_DefaultExceptions(activeLang), activeLang);
                         this.onResetExceptionsList();
                     }
@@ -991,19 +981,19 @@ define([
         },
 
         onResetExceptionsList: function() {
-            var path = this.appPrefix + "settings-letter-exception";
-            var activeLang = this.exceptionsLangCmb.getValue();
-            var val = JSON.stringify([]);
-            Common.Utils.InternalSettings.set(path + "-add-" + activeLang, val);
-            Common.localStorage.setItem(path + "-add-" + activeLang, val);
-            Common.Utils.InternalSettings.set(path + "-rem-" + activeLang, val);
-            Common.localStorage.setItem(path + "-rem-" + activeLang, val);
+            const path = `${this.appPrefix}settings-letter-exception`;
+            const activeLang = this.exceptionsLangCmb.getValue();
+            const val = JSON.stringify([]);
+            Common.Utils.InternalSettings.set(`${path}-add-${activeLang}`, val);
+            Common.localStorage.setItem(`${path}-add-${activeLang}`, val);
+            Common.Utils.InternalSettings.set(`${path}-rem-${activeLang}`, val);
+            Common.localStorage.setItem(`${path}-rem-${activeLang}`, val);
 
             this.arrAddExceptions[activeLang] = [];
             this.arrRemExceptions[activeLang] = [];
 
             _exciptionsStore.remove(_exciptionsStore.where({defaultValue: false}));
-            _exciptionsStore.each(function(item, index){
+            _exciptionsStore.each((item, index)=> {
                 item.set('defaultDisabled', false);
             });
             this.exceptionsList.deselectAll();
@@ -1015,15 +1005,15 @@ define([
         },
         
         onDeleteException: function() {
-            var rec = this.exceptionsList.getSelectedRec();
-            var apiFlManager = this.api.asc_GetAutoCorrectSettings().get_FirstLetterExceptionManager();
-            var activeLang = this.exceptionsLangCmb.getValue();
+            const rec = this.exceptionsList.getSelectedRec();
+            const apiFlManager = this.api.asc_GetAutoCorrectSettings().get_FirstLetterExceptionManager();
+            const activeLang = this.exceptionsLangCmb.getValue();
             if (rec) {
-                var val;
-                var path = '';
+                let val;
+                let path = '';
                 if (rec.get('defaultValue')) {
-                    var disabled = !rec.get('defaultDisabled');
-                    path = this.appPrefix + "settings-letter-exception-rem-" + activeLang;
+                    const disabled = !rec.get('defaultDisabled');
+                    path = `${this.appPrefix}settings-letter-exception-rem-${activeLang}`;
                     rec.set('defaultDisabled', disabled);
                     if (disabled)
                         this.arrRemExceptions[activeLang].push(rec.get('value'));
@@ -1039,11 +1029,11 @@ define([
                     _exciptionsStore.remove(rec);
                     
                     this.arrAddExceptions[activeLang].splice(this.arrAddExceptions[activeLang].indexOf(rec.get('value')), 1);
-                    path = this.appPrefix + "settings-letter-exception-add-" + activeLang;
+                    path = `${this.appPrefix}settings-letter-exception-add-${activeLang}`;
                     val = JSON.stringify(this.arrAddExceptions[activeLang]);
                     Common.Utils.InternalSettings.set(path, val);
                     Common.localStorage.setItem(path, val);
-                    this.exceptionsList.scroller && this.exceptionsList.scroller.update({});
+                    this.exceptionsList.scroller?.update({});
                     apiFlManager.remove_Exception(rec.get('value'), activeLang);
                 }
                 this.updateExceptionsControls();
@@ -1051,18 +1041,17 @@ define([
         },
 
         onAddException: function() {
-            var rec = this.exceptionsList.getSelectedRec(),
-                activeLang = this.exceptionsLangCmb.getValue(),
-                me = this,
-                value = this.exceptionsFindInput.getValue().trim(),
-                applySettings = function(record) {
-                    var path = me.appPrefix + "settings-letter-exception-add-" + activeLang;
-                    var val = JSON.stringify(me.arrAddExceptions[activeLang]);
+            let rec = this.exceptionsList.getSelectedRec();
+            const activeLang = this.exceptionsLangCmb.getValue();
+            let value = this.exceptionsFindInput.getValue().trim();
+            const applySettings = (record) => {
+                    const path = `${this.appPrefix}settings-letter-exception-add-${activeLang}`;
+                    const val = JSON.stringify(this.arrAddExceptions[activeLang]);
                     Common.Utils.InternalSettings.set(path, val);
                     Common.localStorage.setItem(path, val);
-                    me.api.asc_GetAutoCorrectSettings().get_FirstLetterExceptionManager().add_Exception(record.get('value') ,activeLang);
-                    me.exceptionsList.selectRecord(record);
-                    me.exceptionsList.scrollToRecord(record);
+                    this.api.asc_GetAutoCorrectSettings().get_FirstLetterExceptionManager().add_Exception(record.get('value') ,activeLang);
+                    this.exceptionsList.selectRecord(record);
+                    this.exceptionsList.scrollToRecord(record);
                 };
             if (!rec) {
                 rec = _exciptionsStore.findWhere({value: value})
@@ -1084,8 +1073,8 @@ define([
                         msg: this.textWarnAddFL
                     });
             } else {
-                me.exceptionsList.selectRecord(rec);
-                me.exceptionsList.scrollToRecord(rec);
+                this.exceptionsList.selectRecord(rec);
+                this.exceptionsList.scrollToRecord(rec);
             }
         },
 
@@ -1097,21 +1086,21 @@ define([
         },
 
         onChangeInputException: function (input, value) {
-            var _selectedItem;
+            let _selectedItem;
             value = value.trim();
             if (value.length) {
                 if(value[value.length-1] === '.')
                     value = value.slice(0, -1);
 
-                var store = this.exceptionsList.store;
-                _selectedItem = store.find(function(item) {
-                    if ( item.get('value').indexOf(value) == 0) {
+                const store = this.exceptionsList.store;
+                _selectedItem = store.find((item) => {
+                    if ( item.get('value').indexOf(value) === 0) {
                         return true;
                     }
                 });
                 if (_selectedItem) {
                     this.exceptionsList.scrollToRecord(_selectedItem, true);
-                    if (_selectedItem.get('value') == value)
+                    if (_selectedItem.get('value') === value)
                         this.exceptionsList.selectRecord(_selectedItem, true);
                     else
                         _selectedItem = null;
@@ -1125,9 +1114,9 @@ define([
             if (!this.exceptionsList) return;
 
             rec = rec || this.exceptionsList.getSelectedRec();
-            var value = this.exceptionsFindInput.getValue();
+            const value = this.exceptionsFindInput.getValue();
 
-            this.btnDeleteExceptions.setCaption(rec && rec.get('defaultDisabled') ? this.textRestore : this.textDelete);
+            this.btnDeleteExceptions.setCaption(rec?.get('defaultDisabled') ? this.textRestore : this.textDelete);
             this.btnDeleteExceptions.setDisabled(!rec);
             this.btnAddExceptions.setDisabled(!!rec || !value);
         },

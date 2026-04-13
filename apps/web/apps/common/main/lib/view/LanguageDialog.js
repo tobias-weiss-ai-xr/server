@@ -31,9 +31,9 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () { 'use strict';
+define([], () => { 
 
     Common.Views.LanguageDialog = Common.UI.Window.extend(_.extend({
 
@@ -64,10 +64,10 @@ define([], function () { 'use strict';
     render: function() {
         Common.UI.Window.prototype.render.call(this);
 
-        var $window = this.getChild();
+        const $window = this.getChild();
         $window.find('.dlg-btn').on('click', _.bind(this.onBtnClick, this));
 
-        var lckey = "app-settings-recent-langs";
+        const lckey = "app-settings-recent-langs";
         this.cmbLanguage = new Common.UI.ComboBoxRecent({
             el: $window.find('#id-document-language'),
             cls: 'input-group-nr',
@@ -75,8 +75,8 @@ define([], function () { 'use strict';
             menuStyle: 'min-width: 318px; max-height: 285px;',
             editable: false,
             recent: {
-                count: Common.Utils.InternalSettings.get(lckey + "-count") || 5,
-                offset: Common.Utils.InternalSettings.get(lckey + "-offset") || 0,
+                count: Common.Utils.InternalSettings.get(`${lckey}-count`) || 5,
+                offset: Common.Utils.InternalSettings.get(`${lckey}-offset`) || 0,
                 key: lckey,
                 valueField: 'value'
             },
@@ -110,13 +110,11 @@ define([], function () { 'use strict';
 
         if (this.cmbLanguage.scroller) this.cmbLanguage.scroller.update({alwaysVisibleY: true});
         this.cmbLanguage.on('selected', _.bind(this.onLangSelect, this));
-        var langname = Common.util.LanguageInfo.getLocalLanguageName(this.options.current);
+        const langname = Common.util.LanguageInfo.getLocalLanguageName(this.options.current);
         this.cmbLanguage.setValue(langname[0], langname[1]);
         this.onLangSelect(this.cmbLanguage, this.cmbLanguage.getSelectedRecord());
-
-        var me = this;
-        setTimeout(function(){
-            me.cmbLanguage.focus();
+        setTimeout(()=> {
+            this.cmbLanguage.focus();
         }, 100);
     },
 
@@ -129,7 +127,7 @@ define([], function () { 'use strict';
     },
 
     close: function(suppressevent) {
-        var $window = this.getChild();
+        const $window = this.getChild();
         if (!$window.find('.combobox.open').length) {
             Common.UI.Window.prototype.close.call(this, arguments);
         }
@@ -137,15 +135,15 @@ define([], function () { 'use strict';
 
     onBtnClick: function(event) {
         if (this.options.handler) {
-            this.options.handler.call(this, event.currentTarget.attributes['result'].value, this.cmbLanguage.getValue());
+            this.options.handler.call(this, event.currentTarget.attributes.result.value, this.cmbLanguage.getValue());
         }
 
         this.close();
     },
 
-    onLangSelect: function(cmb, rec, e) {
-        cmb.$el.find('.input-icon').toggleClass('spellcheck-lang', rec && rec.spellcheck);
-        cmb._input.css(Common.UI.isRTL() ? 'padding-right' : 'padding-left', rec && rec.spellcheck ? 25 : 3);
+    onLangSelect: (cmb, rec, e) => {
+        cmb.$el.find('.input-icon').toggleClass('spellcheck-lang', rec?.spellcheck);
+        cmb._input.css(Common.UI.isRTL() ? 'padding-right' : 'padding-left', rec?.spellcheck ? 25 : 3);
     },
 
     onPrimary: function() {

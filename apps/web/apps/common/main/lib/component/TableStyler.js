@@ -30,189 +30,176 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
-], function () {
-    'use strict';
+], () => {
     Common.UI.CellBorder = function (options){
-        var me =this;
 
-        var virtualBorderSize,
-            virtualBorderColor,
-            borderSize,
-            borderColor,
-            borderAlfa;
+        let virtualBorderSize;
+        let virtualBorderColor;
+        let borderSize;
+        let borderColor;
+        let borderAlfa;
 
-        me.overwriteStyle       = options.overwriteStyle !== undefined ? options.overwriteStyle : true;
-        me.maxBorderSize        = options.maxBorderSize ? options.maxBorderSize : 8;
-        me.defaultBorderSize    = options.defaultBorderSize !== undefined ? options.defaultBorderSize : 1;
-        me.defaultBorderColor   = options.defaultBorderColor ? options.defaultBorderColor : '#ccc';
-        me.col                  = options.col !== undefined ? options.col : -1;
-        me.row                  = options.row !== undefined ? options.row : -1;
-        me.cellPadding          = options.cellPadding !== undefined ? options.cellPadding : 10;
-        me.tablePadding         = options.tablePadding !== undefined ? options.tablePadding : 10;
-        me.X1                   = options.x1 !== undefined ? options.x1 : 0;
-        me.Y1                   = options.y1 !== undefined ? options.y1 : 0;
-        me.X2                   = options.x2 !== undefined ? options.x2 : 0;
-        me.Y2                   = options.y2 !== undefined ? options.y2 : 0;
-        me.numInCell            = options.numInCell !== undefined ? options.numInCell : -1;
-        me.scale                = options.scale !== undefined ? options.scale : 2;
-        me.rows                 = options.rows !== undefined ? options.rows : 2;
-        me.columns              = options.columns !== undefined ? options.columns : 2;
-        me.context              = options.context;
+        this.overwriteStyle       = options.overwriteStyle !== undefined ? options.overwriteStyle : true;
+        this.maxBorderSize        = options.maxBorderSize ? options.maxBorderSize : 8;
+        this.defaultBorderSize    = options.defaultBorderSize !== undefined ? options.defaultBorderSize : 1;
+        this.defaultBorderColor   = options.defaultBorderColor ? options.defaultBorderColor : '#ccc';
+        this.col                  = options.col !== undefined ? options.col : -1;
+        this.row                  = options.row !== undefined ? options.row : -1;
+        this.cellPadding          = options.cellPadding !== undefined ? options.cellPadding : 10;
+        this.tablePadding         = options.tablePadding !== undefined ? options.tablePadding : 10;
+        this.X1                   = options.x1 !== undefined ? options.x1 : 0;
+        this.Y1                   = options.y1 !== undefined ? options.y1 : 0;
+        this.X2                   = options.x2 !== undefined ? options.x2 : 0;
+        this.Y2                   = options.y2 !== undefined ? options.y2 : 0;
+        this.numInCell            = options.numInCell !== undefined ? options.numInCell : -1;
+        this.scale                = options.scale !== undefined ? options.scale : 2;
+        this.rows                 = options.rows !== undefined ? options.rows : 2;
+        this.columns              = options.columns !== undefined ? options.columns : 2;
+        this.context              = options.context;
 
-        virtualBorderSize       = me.defaultBorderSize;
-        virtualBorderColor      = new Common.Utils.RGBColor(me.defaultBorderColor);
+        virtualBorderSize       = this.defaultBorderSize;
+        virtualBorderColor      = new Common.Utils.RGBColor(this.defaultBorderColor);
         borderSize = virtualBorderSize;
         borderColor = virtualBorderColor;
         borderAlfa = 1;
 
-        me.setBordersSize = function (size) {
+        this.setBordersSize = function (size) {
             borderSize = (size > this.maxBorderSize) ? this.maxBorderSize : size;
             borderAlfa = (size < 1) ? 0.3 : 1;
         };
 
-        me.setBordersColor = function( color) {
-            var newColor = color;
-            if(typeof(color) == "string")
+        this.setBordersColor = ( color) => {
+            let newColor = color;
+            if(typeof(color) === "string")
                 newColor = new Common.Utils.RGBColor(color);
             borderColor = newColor;
         };
 
-        me.getBorderSize = function() {
-            return borderSize;
-        };
+        this.getBorderSize = () => borderSize;
 
-        me.getBorderColor = function() {
-            return borderColor.toHex();
-        };
+        this.getBorderColor = () => borderColor.toHex();
 
-        me.setVirtualBorderSize = function(size) {
+        this.setVirtualBorderSize = function(size) {
             virtualBorderSize = (size > this.maxBorderSize) ? this.maxBorderSize : size;
         };
 
-        me.setVirtualBorderColor = function(color){
+        this.setVirtualBorderColor = (color)=> {
             virtualBorderColor = color;
         };
 
-        me.getVirtualBorderSize = function() {
-            return virtualBorderSize;
-        };
+        this.getVirtualBorderSize = () => virtualBorderSize;
 
-        me.getVirtualBorderColor = function() {
-            return virtualBorderColor.toHex();
-        };
+        this.getVirtualBorderColor = () => virtualBorderColor.toHex();
 
-        me.scaleBorderSize = function (size){
-            return (size*me.scale + 0.5)>>0;
-        };
+        this.scaleBorderSize = (size)=> (size*this.scale + 0.5)>>0;
 
-        me.getLine = function (){
-            var size = me.scaleBorderSize(borderSize);
-            if(me.numInCell < 0) {
-                if (me.Y1 == me.Y2)
+        this.getLine = ()=> {
+            let size = this.scaleBorderSize(borderSize);
+            if(this.numInCell < 0) {
+                if (this.Y1 === this.Y2)
                     return {
-                        X1: me.X1 >> 0,
-                        Y1: ((me.Y1 + size / 2) >> 0) - size / 2,
-                        X2: (me.X2) >> 0,
-                        Y2: ((me.Y2 + size / 2) >> 0) - size / 2
+                        X1: this.X1 >> 0,
+                        Y1: ((this.Y1 + size / 2) >> 0) - size / 2,
+                        X2: (this.X2) >> 0,
+                        Y2: ((this.Y2 + size / 2) >> 0) - size / 2
                     };
-                else
+                
                     return {
-                        X1: ((me.X1 + size / 2) >> 0) - size / 2,
-                        Y1: me.Y1 >> 0,
-                        X2: ((me.X2 + size / 2) >> 0) - size / 2,
-                        Y2: me.Y2 >> 0
+                        X1: ((this.X1 + size / 2) >> 0) - size / 2,
+                        Y1: this.Y1 >> 0,
+                        X2: ((this.X2 + size / 2) >> 0) - size / 2,
+                        Y2: this.Y2 >> 0
                     };
             }
-            else {
-                var lines = [], step,
-                    cellPadding = me.cellPadding * me.scale;
-                size *= (me.numInCell === 0)? 1 : -1;
+            
+                const lines = [];
+                let step;
+                const cellPadding = this.cellPadding * this.scale;
+                size *= (this.numInCell === 0)? 1 : -1;
 
-                if (me.Y1 == me.Y2){
-                    step = (me.X2 - me.X1)/me.columns;
-                    for(var col = 0; col < me.columns; col++ ){
+                if (this.Y1 === this.Y2){
+                    step = (this.X2 - this.X1)/this.columns;
+                    for(let col = 0; col < this.columns; col++ ){
                         lines.push({
-                            X1: (me.X1 + col * step + ((col > 0) | 0) * cellPadding/2) >> 0,
-                            Y1: (me.Y1 >> 0) + size / 2,
-                            X2: (me.X1 + (col + 1) * step - ((col < me.columns - 1) | 0) * cellPadding/2) >> 0,
-                            Y2: (me.Y1 >> 0) + size / 2
+                            X1: (this.X1 + col * step + ((col > 0) | 0) * cellPadding/2) >> 0,
+                            Y1: (this.Y1 >> 0) + size / 2,
+                            X2: (this.X1 + (col + 1) * step - ((col < this.columns - 1) | 0) * cellPadding/2) >> 0,
+                            Y2: (this.Y1 >> 0) + size / 2
                         });
                     }
                 }
                 else {
-                    step = (me.Y2 - me.Y1)/me.rows;
-                    for(var row = 0; row < me.rows; row++ ) {
+                    step = (this.Y2 - this.Y1)/this.rows;
+                    for(let row = 0; row < this.rows; row++ ) {
                         lines.push({
-                            X1: (me.X1 >> 0) + size / 2,
-                            Y1: (me.Y1 + row * step + ((row >0) | 0) * cellPadding/2) >> 0,
-                            X2: (me.X1 >> 0) + size / 2,
-                            Y2: (me.Y1 + (row + 1) * step - ((row < me.rows - 1) | 0) * cellPadding/2) >> 0
+                            X1: (this.X1 >> 0) + size / 2,
+                            Y1: (this.Y1 + row * step + ((row >0) | 0) * cellPadding/2) >> 0,
+                            X2: (this.X1 >> 0) + size / 2,
+                            Y2: (this.Y1 + (row + 1) * step - ((row < this.rows - 1) | 0) * cellPadding/2) >> 0
                         });
                     }
                 }
                 return lines;
-            }
         };
 
-        me.inRect = function (MX, MY){
-            var h = me.scale * me.tablePadding/2;
-            var line =  me.getLine();
-            var mxScale = MX*me.scale,
-                myScale = MY*me.scale;
-            if(me.numInCell < 0) {
+        this.inRect = (MX, MY)=> {
+            const h = this.scale * this.tablePadding/2;
+            const line =  this.getLine();
+            const mxScale = MX*this.scale;
+            const myScale = MY*this.scale;
+            if(this.numInCell < 0) {
 
-                if (line.Y1 == line.Y2)
+                if (line.Y1 === line.Y2)
                     return ((mxScale > line.X1 && mxScale < line.X2) && (myScale > line.Y1 - h && myScale < line.Y1 + h));
-                else
+                
                     return ((myScale > line.Y1 && myScale < line.Y2) && (mxScale > line.X1 - h && mxScale < line.X1 + h));
             }
-            else {
-                if (me.Y1 == me.Y2) {
-                    for(var i = 0; i < line.length; i++) {
+            
+                if (this.Y1 === this.Y2) {
+                    for(let i = 0; i < line.length; i++) {
                         if ((mxScale > line[i].X1 && mxScale < line[i].X2) && (myScale > line[i].Y1 - h && myScale < line[i].Y1 + h))
                             return true;
                     }
                 }
                 else {
-                    for(var i = 0; i < line.length; i++) {
+                    for(let i = 0; i < line.length; i++) {
                         if((myScale > line[i].Y1 && myScale < line[i].Y2) && (mxScale > line[i].X1 - h && mxScale < line[i].X1 + h))
                             return  true;
                     }
                 }
                 return  false;
-            }
         };
 
-        me.drawBorder = function (){
-            if(borderSize == 0) return;
-            var line =  me.getLine();
-            me.context.beginPath();
-            me.context.globalAlpha = borderAlfa;
-            me.context.lineWidth = me.scaleBorderSize(borderSize);
-            me.context.strokeStyle = me.getBorderColor();
-            if(me.numInCell < 0) {
-                me.context.moveTo(line.X1, line.Y1);
-                me.context.lineTo(line.X2, line.Y2);
+        this.drawBorder = ()=> {
+            if(borderSize === 0) return;
+            const line =  this.getLine();
+            this.context.beginPath();
+            this.context.globalAlpha = borderAlfa;
+            this.context.lineWidth = this.scaleBorderSize(borderSize);
+            this.context.strokeStyle = this.getBorderColor();
+            if(this.numInCell < 0) {
+                this.context.moveTo(line.X1, line.Y1);
+                this.context.lineTo(line.X2, line.Y2);
             } else {
-                _.each(line, function (ln){
-                    me.context.moveTo(ln.X1, ln.Y1);
-                    me.context.lineTo(ln.X2, ln.Y2);
+                _.each(line, (ln)=> {
+                    this.context.moveTo(ln.X1, ln.Y1);
+                    this.context.lineTo(ln.X2, ln.Y2);
                 });
             }
-            me.context.stroke();
-            me.context.globalAlpha = 1;
+            this.context.stroke();
+            this.context.globalAlpha = 1;
         };
 
-        me.setBorderParams = function (){
-            if(borderSize == virtualBorderSize &&  virtualBorderColor.isEqual(borderColor) && me.overwriteStyle){
-                me.setBordersSize(0);
+        this.setBorderParams = ()=> {
+            if(borderSize === virtualBorderSize &&  virtualBorderColor.isEqual(borderColor) && this.overwriteStyle){
+                this.setBordersSize(0);
                 return;
             }
-            me.setBordersSize(virtualBorderSize);
-            me.setBordersColor(virtualBorderColor);
+            this.setBordersSize(virtualBorderSize);
+            this.setBordersColor(virtualBorderColor);
         };
 
     }
@@ -245,99 +232,98 @@ define([
 
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
+            let virtualBorderSize;
+            let virtualBorderColor;
+            this.id                   = this.options.id || Common.UI.getId();
+            this.scale                = Common.Utils.applicationPixelRatio();
+            this.scale                = this.scale >= 1 ? this.scale : 1;
+            this.width                = ((this.options.width * this.scale) >> 0) / this.scale;
+            this.height               = ((this.options.height * this.scale) >> 0) / this.scale;
+            this.rows                 = this.options.rows;
+            this.columns              = this.options.columns;
+            this.cellPadding          = this.options.cellPadding;
+            this.tablePadding         = this.options.tablePadding;
+            this.overwriteStyle       = this.options.overwriteStyle;
+            this.maxBorderSize        = this.options.maxBorderSize;
+            this.spacingMode          = this.options.spacingMode;
+            this.twoModes             = this.options.twoModes;
+            this.defaultBorderSize    = this.options.defaultBorderSize;
+            this.defaultBorderColor   = this.options.defaultBorderColor;
+            this.sizeCorner           = this.options.sizeCorner;
+            this.backgroundColor      = 'transparent';
+            this.backgroundCellColor  = 'transparent';
 
-            var me = this,
-                virtualBorderSize,
-                virtualBorderColor;
-            me.id                   = me.options.id || Common.UI.getId();
-            me.scale                = Common.Utils.applicationPixelRatio();
-            me.scale                = me.scale >= 1 ? me.scale : 1;
-            me.width                = ((me.options.width * me.scale) >> 0) / me.scale;
-            me.height               = ((me.options.height * me.scale) >> 0) / me.scale;
-            me.rows                 = me.options.rows;
-            me.columns              = me.options.columns;
-            me.cellPadding          = me.options.cellPadding;
-            me.tablePadding         = me.options.tablePadding;
-            me.overwriteStyle       = me.options.overwriteStyle;
-            me.maxBorderSize        = me.options.maxBorderSize;
-            me.spacingMode          = me.options.spacingMode;
-            me.twoModes             = me.options.twoModes;
-            me.defaultBorderSize    = me.options.defaultBorderSize;
-            me.defaultBorderColor   = me.options.defaultBorderColor;
-            me.sizeCorner           = me.options.sizeCorner;
-            me.backgroundColor      = 'transparent';
-            me.backgroundCellColor  = 'transparent';
+            virtualBorderSize       = (this.defaultBorderSize > this.maxBorderSize) ? this.maxBorderSize : this.defaultBorderSize;
+            virtualBorderColor      = new Common.Utils.RGBColor(this.defaultBorderColor);
 
-            virtualBorderSize       = (me.defaultBorderSize > me.maxBorderSize) ? me.maxBorderSize : me.defaultBorderSize;
-            virtualBorderColor      = new Common.Utils.RGBColor(me.defaultBorderColor);
-
-            var borderSize = {
+            const borderSize = {
                 top     : virtualBorderSize,
                 right   : virtualBorderSize,
                 bottom  : virtualBorderSize,
                 left    : virtualBorderSize
             };
 
-            var borderColor = {
+            const borderColor = {
                 top     : virtualBorderColor,
                 right   : virtualBorderColor,
                 bottom  : virtualBorderColor,
                 left    : virtualBorderColor
             };
 
-            me.rendered             = false;
+            this.rendered             = false;
 
-            me.on('render:after', function(cmp) {
+            this.on('render:after', (cmp) => {
 
-                me.canv.addEventListener('click', function (e) {
-                    var mouseX, mouseY;
+                this.canv.addEventListener('click', (e) => {
+                    let mouseX;
+                    let mouseY;
 
                     if (e.offsetX !== undefined) {
-                        mouseX = parseInt(e.offsetX * Common.Utils.zoom());
-                        mouseY = parseInt(e.offsetY * Common.Utils.zoom());
+                        mouseX = Number.parseInt(e.offsetX * Common.Utils.zoom());
+                        mouseY = Number.parseInt(e.offsetY * Common.Utils.zoom());
                     } else if (e.layerX) {
                         mouseX = e.layerX;
                         mouseY = e.layerY;
                     }
-                    var redraw = false;
+                    let redraw = false;
 
-                    if (me.inRect('t', mouseX, mouseY)) {
-                        me.setBorderParams('t');
+                    if (this.inRect('t', mouseX, mouseY)) {
+                        this.setBorderParams('t');
                         redraw = true;
-                        me.fireEvent('borderclick', me, 't',  borderSize.top, borderColor.top.toHex());
+                        this.fireEvent('borderclick', this, 't',  borderSize.top, borderColor.top.toHex());
                     }
-                    else if (me.inRect('b', mouseX, mouseY)) {
-                        me.setBorderParams('b');
+                    else if (this.inRect('b', mouseX, mouseY)) {
+                        this.setBorderParams('b');
                         redraw = true;
-                        me.fireEvent('borderclick', me, 'b',  borderSize.bottom, borderColor.bottom.toHex());
+                        this.fireEvent('borderclick', this, 'b',  borderSize.bottom, borderColor.bottom.toHex());
                     }
-                    else if (me.inRect('l', mouseX, mouseY)) {
-                        me.setBorderParams('l');
+                    else if (this.inRect('l', mouseX, mouseY)) {
+                        this.setBorderParams('l');
                         redraw = true;
-                        me.fireEvent('borderclick', me, 'l',  borderSize.left, borderColor.left.toHex());
+                        this.fireEvent('borderclick', this, 'l',  borderSize.left, borderColor.left.toHex());
                     }
-                    else if (me.inRect('r', mouseX, mouseY)) {
-                        me.setBorderParams('r');
+                    else if (this.inRect('r', mouseX, mouseY)) {
+                        this.setBorderParams('r');
                         redraw = true;
-                        me.fireEvent('borderclick', me, 'r',  borderSize.right, borderColor.right.toHex());
+                        this.fireEvent('borderclick', this, 'r',  borderSize.right, borderColor.right.toHex());
                     }
                     else {
-                        for (var i = 0; i < me._cellBorders.length; i++) {
-                            if (me._cellBorders[i].inRect(mouseX, mouseY)) {
+                        for (let i = 0; i < this._cellBorders.length; i++) {
+                            if (this._cellBorders[i].inRect(mouseX, mouseY)) {
                                 redraw = true;
-                                me._cellBorders[i].setBorderParams();
-                                me.fireEvent('borderclick:cellborder', me, me._cellBorders[i],  me._cellBorders[i].getBorderSize(), me._cellBorders[i].getBorderColor());
+                                this._cellBorders[i].setBorderParams();
+                                this.fireEvent('borderclick:cellborder', this, this._cellBorders[i],  this._cellBorders[i].getBorderSize(), this._cellBorders[i].getBorderColor());
 
-                                if(me.spacingMode) {
-                                    var secondBorder = undefined;
-                                    if(me._cellBorders[i].col > 0 && me._cellBorders[i].numInCell === 0)
-                                        secondBorder = me.getCellBorder(-1, me._cellBorders[i].col - 1, 1);
-                                    else if(me._cellBorders[i].row > 0 && me._cellBorders[i].numInCell === 0)
-                                        secondBorder = me.getCellBorder(me._cellBorders[i].row - 1, -1,  1);
-                                    else if(me._cellBorders[i].col > -1 && me._cellBorders[i].col < me.columns - 1 && me._cellBorders[i].numInCell === 1)
-                                        secondBorder = me.getCellBorder(-1, me._cellBorders[i].col + 1,  0);
-                                    else if(me._cellBorders[i].row > -1 && me._cellBorders[i].row < me.rows - 1 && me._cellBorders[i].numInCell === 1)
-                                        secondBorder = me.getCellBorder(me._cellBorders[i].row + 1, -1,  0);
+                                if(this.spacingMode) {
+                                    let secondBorder = undefined;
+                                    if(this._cellBorders[i].col > 0 && this._cellBorders[i].numInCell === 0)
+                                        secondBorder = this.getCellBorder(-1, this._cellBorders[i].col - 1, 1);
+                                    else if(this._cellBorders[i].row > 0 && this._cellBorders[i].numInCell === 0)
+                                        secondBorder = this.getCellBorder(this._cellBorders[i].row - 1, -1,  1);
+                                    else if(this._cellBorders[i].col > -1 && this._cellBorders[i].col < this.columns - 1 && this._cellBorders[i].numInCell === 1)
+                                        secondBorder = this.getCellBorder(-1, this._cellBorders[i].col + 1,  0);
+                                    else if(this._cellBorders[i].row > -1 && this._cellBorders[i].row < this.rows - 1 && this._cellBorders[i].numInCell === 1)
+                                        secondBorder = this.getCellBorder(this._cellBorders[i].row + 1, -1,  0);
 
                                     (secondBorder) && secondBorder.setBorderParams();
                                 }
@@ -346,117 +332,114 @@ define([
                             }
                         }
                     }
-                    (redraw) && me.redrawTable();
+                    (redraw) && this.redrawTable();
                 });
 
-                $(window).resize(me.resizeTable);
+                $(window).resize(this.resizeTable);
             });
 
-            me.resizeTable = function (){
-                me.context.clearRect(0,0, me.width*me.scale, me.height*me.scale);
-                me.scale = Common.Utils.applicationPixelRatio();
-                me.scale = me.scale>=1 ? me.scale : 1;
-                me.width = ((me.options.width * me.scale)>>0) / me.scale;
-                me.height = ((me.options.height * me.scale) >> 0) / me.scale;
-                me.cmpEl.css({'width': me.width, 'height': me.height});
-                me.cmpEl.parent().css({'width': me.width, 'height': me.height});
+            this.resizeTable = ()=> {
+                this.context.clearRect(0,0, this.width*this.scale, this.height*this.scale);
+                this.scale = Common.Utils.applicationPixelRatio();
+                this.scale = this.scale>=1 ? this.scale : 1;
+                this.width = ((this.options.width * this.scale)>>0) / this.scale;
+                this.height = ((this.options.height * this.scale) >> 0) / this.scale;
+                this.cmpEl.css({'width': this.width, 'height': this.height});
+                this.cmpEl.parent().css({'width': this.width, 'height': this.height});
 
-                me._cellBorders.forEach(function(b){
-                    b.scale = me.scale;
+                this._cellBorders.forEach((b)=> {
+                    b.scale = this.scale;
                 });
 
-                var i, sizeCorner = me.sizeCorner * me.scale;
-                var ctxWidth = me.width*me.scale,
-                    ctxHeight = me.height*me.scale,
-                    stepX = (ctxWidth - 2 * sizeCorner)/me.columns,
-                    stepY = (ctxHeight - 2 * sizeCorner)/me.rows;
+                let i;
+                let sizeCorner = this.sizeCorner * this.scale;
+                const ctxWidth = this.width*this.scale;
+                const ctxHeight = this.height*this.scale;
+                let stepX = (ctxWidth - 2 * sizeCorner)/this.columns;
+                let stepY = (ctxHeight - 2 * sizeCorner)/this.rows;
 
-                if(!me.spacingMode) {
+                if(!this.spacingMode) {
                     i = 0;
-                    for (var row = 0; row < me.rows - 1; row++) {
-                        me._cellBorders[i].Y1 = (row + 1) * stepY + sizeCorner;
-                        me._cellBorders[i].Y2 = me._cellBorders[i].Y1;
-                        me._cellBorders[i].X1 = sizeCorner;
-                        me._cellBorders[i].X2 = ctxWidth - sizeCorner;
+                    for (let row = 0; row < this.rows - 1; row++) {
+                        this._cellBorders[i].Y1 = (row + 1) * stepY + sizeCorner;
+                        this._cellBorders[i].Y2 = this._cellBorders[i].Y1;
+                        this._cellBorders[i].X1 = sizeCorner;
+                        this._cellBorders[i].X2 = ctxWidth - sizeCorner;
                         i++
                     }
 
-                    for (var col = 0; col < me.columns - 1; col++) {
-                        me._cellBorders[i].Y1 = sizeCorner;
-                        me._cellBorders[i].Y2 = ctxHeight - sizeCorner;
-                        me._cellBorders[i].X1 = (col + 1) * stepX + sizeCorner;
-                        me._cellBorders[i].X2 = me._cellBorders[i].X1;
+                    for (let col = 0; col < this.columns - 1; col++) {
+                        this._cellBorders[i].Y1 = sizeCorner;
+                        this._cellBorders[i].Y2 = ctxHeight - sizeCorner;
+                        this._cellBorders[i].X1 = (col + 1) * stepX + sizeCorner;
+                        this._cellBorders[i].X2 = this._cellBorders[i].X1;
                         i++
                     }
                 }
                 else {
-                    var cellPadding = me.cellPadding * me.scale;
+                    const cellPadding = this.cellPadding * this.scale;
                     sizeCorner += cellPadding;
-                    stepX = (ctxWidth - 2 * sizeCorner) / me.columns;
-                    stepY = (ctxHeight - 2 * sizeCorner) / me.rows;
+                    stepX = (ctxWidth - 2 * sizeCorner) / this.columns;
+                    stepY = (ctxHeight - 2 * sizeCorner) / this.rows;
                     i = 0;
 
-                    for (var col = 0; col < me.columns; col++) {
-                        for(var n = 0; n< 2; n++) {
-                            me._cellBorders[i].Y1 = sizeCorner;
-                            me._cellBorders[i].Y2 = ctxHeight - sizeCorner;
-                            me._cellBorders[i].X1 = (n == 0) ?
+                    for (let col = 0; col < this.columns; col++) {
+                        for(let n = 0; n< 2; n++) {
+                            this._cellBorders[i].Y1 = sizeCorner;
+                            this._cellBorders[i].Y2 = ctxHeight - sizeCorner;
+                            this._cellBorders[i].X1 = (n === 0) ?
                                 (col) * (stepX + cellPadding / 2) + sizeCorner:
-                                me.width * me.scale - sizeCorner - (me.columns - col - 1) * (stepX + cellPadding / 2);
-                            me._cellBorders[i].X2 = me._cellBorders[i].X1;
+                                this.width * this.scale - sizeCorner - (this.columns - col - 1) * (stepX + cellPadding / 2);
+                            this._cellBorders[i].X2 = this._cellBorders[i].X1;
                             i++
                         }
                     }
 
-                    for (var row = 0; row < me.rows; row++) {
-                        for(var n = 0; n< 2; n++) {
-                            me._cellBorders[i].Y1 = (n == 0) ?
+                    for (let row = 0; row < this.rows; row++) {
+                        for(let n = 0; n< 2; n++) {
+                            this._cellBorders[i].Y1 = (n === 0) ?
                                 (row) * (stepY + cellPadding / 2) + sizeCorner:
-                                me.height * me.scale - sizeCorner - (me.rows - row - 1) * (stepY + cellPadding / 2);
-                            me._cellBorders[i].Y2 = me._cellBorders[i].Y1;
-                            me._cellBorders[i].X1 = sizeCorner;
-                            me._cellBorders[i].X2 = ctxWidth - sizeCorner;
+                                this.height * this.scale - sizeCorner - (this.rows - row - 1) * (stepY + cellPadding / 2);
+                            this._cellBorders[i].Y2 = this._cellBorders[i].Y1;
+                            this._cellBorders[i].X1 = sizeCorner;
+                            this._cellBorders[i].X2 = ctxWidth - sizeCorner;
                             i++;
                         }
                     }
                 }
 
-                me.canv.width = me.width * me.scale;
-                me.canv.height = me.height * me.scale;
-                me.drawTable();
+                this.canv.width = this.width * this.scale;
+                this.canv.height = this.height * this.scale;
+                this.drawTable();
             };
 
-            me.getVirtualBorderSize = function(){
-                return virtualBorderSize;
-            };
+            this.getVirtualBorderSize = ()=> virtualBorderSize;
 
-            me.getVirtualBorderColor = function(){
-                return virtualBorderColor.toHex();
-            };
+            this.getVirtualBorderColor = ()=> virtualBorderColor.toHex();
 
-            me.setVirtualBorderSize = function(size){
-                virtualBorderSize = (size > me.maxBorderSize) ? me.maxBorderSize : size;
+            this.setVirtualBorderSize = (size)=> {
+                virtualBorderSize = (size > this.maxBorderSize) ? this.maxBorderSize : size;
 
-                for(var i =0; i < me._cellBorders.length; i++){
-                    me._cellBorders[i].setVirtualBorderSize(size);
+                for(let i =0; i < this._cellBorders.length; i++){
+                    this._cellBorders[i].setVirtualBorderSize(size);
                 }
             };
 
-            me.setVirtualBorderColor = function(color){
-                var newColor = new Common.Utils.RGBColor(color);
+            this.setVirtualBorderColor = (color)=> {
+                const newColor = new Common.Utils.RGBColor(color);
 
                 if (virtualBorderColor.isEqual(newColor))
                     return;
 
                 virtualBorderColor = newColor;
 
-                for(var i =0; i < me._cellBorders.length; i++){
-                    me._cellBorders[i].setVirtualBorderColor(newColor);
+                for(let i =0; i < this._cellBorders.length; i++){
+                    this._cellBorders[i].setVirtualBorderColor(newColor);
                 }
             };
 
-            me.setBordersSize = function(borders, size){
-                size = (size > me.maxBorderSize) ? me.maxBorderSize : size;
+            this.setBordersSize = (borders, size)=> {
+                size = (size > this.maxBorderSize) ? this.maxBorderSize : size;
                 if (borders.indexOf('t') > -1) {
                     borderSize.top = size;
                 }
@@ -471,12 +454,10 @@ define([
                 }
             };
 
-            me.scaleBorderSize = function (size){
-                return (size*me.scale +0.5)>>0;
-            };
+            this.scaleBorderSize = (size)=> (size*this.scale +0.5)>>0;
 
-            me.setBordersColor = function(borders, color){
-                var newColor = new Common.Utils.RGBColor(color);
+            this.setBordersColor = (borders, color)=> {
+                const newColor = new Common.Utils.RGBColor(color);
 
                 if (borders.indexOf('t') > -1)
                     borderColor.top = newColor;
@@ -489,7 +470,7 @@ define([
 
             };
 
-            me.getBorderSize = function(border){
+            this.getBorderSize = (border)=> {
                 switch(border){
                     case 't':
                         return borderSize.top;
@@ -503,7 +484,7 @@ define([
                 return null;
             };
 
-            me.getBorderColor = function(border){
+            this.getBorderColor = (border)=> {
                 switch(border){
                     case 't':
                         return borderColor.top.toHex();
@@ -517,27 +498,25 @@ define([
                 return null;
             };
 
-            me.getBorderAlpha = function (border) {
-                return me.getBorderSize(border)<1 ? 0.2 : 1;
-            };
+            this.getBorderAlpha = (border) => this.getBorderSize(border)<1 ? 0.2 : 1;
 
-            me.setBorderParams = function(border) {
-                var color = new Common.Utils.RGBColor(me.getBorderColor(border));
-                var size = me.getBorderSize(border);
-                if(size == virtualBorderSize && virtualBorderColor.isEqual(color) && me.overwriteStyle) {
-                    me.setBordersSize(border,0);
+            this.setBorderParams = (border) => {
+                const color = new Common.Utils.RGBColor(this.getBorderColor(border));
+                const size = this.getBorderSize(border);
+                if(size === virtualBorderSize && virtualBorderColor.isEqual(color) && this.overwriteStyle) {
+                    this.setBordersSize(border,0);
                     return;
                 }
-                me.setBordersSize(border, me.getVirtualBorderSize());
-                me.setBordersColor(border,me.getVirtualBorderColor());
+                this.setBordersSize(border, this.getVirtualBorderSize());
+                this.setBordersColor(border,this.getVirtualBorderColor());
             };
 
-            me.getLine =function  (size, border ){
-                var sizeCornerScale = me.sizeCorner * me.scale ;
-                var borderWidth = me.scaleBorderSize(size);
-                var linePoints={},
-                    canvWidth = me.width * me.scale,
-                    canvHeight =me.height * me.scale;
+            this.getLine =(size, border )=> {
+                const sizeCornerScale = this.sizeCorner * this.scale ;
+                const borderWidth = this.scaleBorderSize(size);
+                const linePoints={};
+                const canvWidth = this.width * this.scale;
+                const canvHeight =this.height * this.scale;
                 switch (border){
                     case 't':
                         linePoints.X1 = sizeCornerScale >>0;
@@ -567,29 +546,29 @@ define([
                 return linePoints;
             };
 
-            me.inRect= function(border, MX, MY) {
-                var h = me.tablePadding/2;
-                var sizeBorder = me.getBorderSize(border);
-                var line = me.getLine(sizeBorder, border);
+            this.inRect= (border, MX, MY) => {
+                const h = this.tablePadding/2;
+                const sizeBorder = this.getBorderSize(border);
+                let line = this.getLine(sizeBorder, border);
 
-                line = {X1: line.X1/me.scale, Y1: line.Y1/me.scale, X2: line.X2/me.scale, Y2: line.Y2/me.scale};
+                line = {X1: line.X1/this.scale, Y1: line.Y1/this.scale, X2: line.X2/this.scale, Y2: line.Y2/this.scale};
 
-                if (line.Y1 == line.Y2)
+                if (line.Y1 === line.Y2)
                     return ((MX > line.X1 && MX < line.X2) && (MY > line.Y1 - h && MY < line.Y1 + h));
-                else
+                
                     return((MY > line.Y1 && MY < line.Y2) && (MX > line.X1 - h && MX < line.X1 + h));
             };
 
-            me.setTableColor = function(color) {
-                me.backgroundColor = (color == 'transparent' ) ? color : ('#'+color);
+            this.setTableColor = (color) => {
+                this.backgroundColor = (color === 'transparent' ) ? color : (`#${color}`);
             };
 
-            me.setCellsColor = function(color) {
-                me.backgroundCellColor = (color == 'transparent' ) ? color : ('#'+color);
+            this.setCellsColor = (color) => {
+                this.backgroundCellColor = (color === 'transparent' ) ? color : (`#${color}`);
             };
 
-            if (me.options.el) {
-                me.render(null, {
+            if (this.options.el) {
+                this.render(null, {
                     borderSize: borderSize,
                     borderColor: borderColor,
                     virtualBorderSize: virtualBorderSize,
@@ -599,7 +578,7 @@ define([
         },
 
         render : function(parentEl) {
-            var cfg = arguments[1];
+            const cfg = arguments[1];
 
             this.trigger('render:before', this);
 
@@ -621,14 +600,14 @@ define([
             else
                 this.cmpEl = $(this.el);
 
-            this.canv = $('#' + this.id + '-table-canvas')[0];
+            this.canv = $(`#${this.id}-table-canvas`)[0];
             this.context = this.canv.getContext('2d');
 
-            var sizeCorner = this.sizeCorner * this.scale
+            let sizeCorner = this.sizeCorner * this.scale
             sizeCorner += (this.spacingMode) ? this.cellPadding * this.scale : 0;
             if (!this.rendered) {
                 this._cellBorders = [];
-                var generalOpt = {
+                const generalOpt = {
                     scale           : this.scale,
                     context         : this.context,
                     cellPadding     : this.cellPadding,
@@ -651,12 +630,12 @@ define([
         },
 
         createHorizontalBorders: function (generalOpt, sizeCorner){
-            var opt = generalOpt;
-            var ctxWidth = this.width * this.scale,
-                stepY = (this.height * this.scale - 2 * sizeCorner) / this.rows,
-                cellPadding = this.cellPadding*this.scale;
+            const opt = generalOpt;
+            const ctxWidth = this.width * this.scale;
+            const stepY = (this.height * this.scale - 2 * sizeCorner) / this.rows;
+            const cellPadding = this.cellPadding*this.scale;
             if(!this.spacingMode) {
-                for (var row = 0; row < this.rows - 1; row++) {
+                for (let row = 0; row < this.rows - 1; row++) {
                     opt.y1 = (row + 1) * stepY + sizeCorner;
                     opt.y2 = opt.y1;
                     opt.x1 = sizeCorner;
@@ -666,10 +645,10 @@ define([
                     this._cellBorders.push(new Common.UI.CellBorder(opt));
                 }
             } else {
-                for (var row = 0; row < this.rows; row++) {
-                    for (var n = 0; n < 2; n++) {
+                for (let row = 0; row < this.rows; row++) {
+                    for (let n = 0; n < 2; n++) {
                         opt.numInCell = n;
-                        opt.y1 = (n == 0) ?
+                        opt.y1 = (n === 0) ?
                             (row) * (stepY + cellPadding / 2) + sizeCorner :
                             this.height*this.scale - sizeCorner - (this.rows - row - 1) * (stepY + cellPadding / 2);
                         opt.y2 = opt.y1;
@@ -684,12 +663,12 @@ define([
         },
 
         createVerticaLBorders: function (generalOpt, sizeCorner){
-            var opt = generalOpt;
-            var ctxHeight = this.height * this.scale,
-                stepX = (this.width * this.scale - 2 * sizeCorner) / this.columns,
-                cellPadding = this.cellPadding*this.scale;
+            const opt = generalOpt;
+            const ctxHeight = this.height * this.scale;
+            const stepX = (this.width * this.scale - 2 * sizeCorner) / this.columns;
+            const cellPadding = this.cellPadding*this.scale;
             if(!this.spacingMode) {
-                for (var col = 0; col < this.columns - 1; col++) {
+                for (let col = 0; col < this.columns - 1; col++) {
                     opt.y1 = sizeCorner;
                     opt.y2 = ctxHeight - sizeCorner;
                     opt.x1 = (col + 1) * stepX + sizeCorner;
@@ -700,12 +679,12 @@ define([
                 }
             }
             else {
-                for (var col = 0; col < this.columns; col++) {
-                    for (var n = 0; n < 2; n++) {
+                for (let col = 0; col < this.columns; col++) {
+                    for (let n = 0; n < 2; n++) {
                         opt.numInCell = n;
                         opt.y1 = sizeCorner;
                         opt.y2 = ctxHeight - sizeCorner;
-                        opt.x1 = (n == 0) ?
+                        opt.x1 = (n === 0) ?
                             (col) * (stepX + cellPadding / 2) + sizeCorner :
                             this.width * this.scale - sizeCorner - (this.columns - col - 1) * (stepX + cellPadding / 2);
                         opt.x2 = opt.x1;
@@ -718,11 +697,11 @@ define([
         },
 
         drawCorners: function ( ) {
-            var connerLineSize = (0.5*this.scale+0.5) >> 0,
-                sizeCornerScale =this.sizeCorner * this.scale,
-                canvWidth = this.width * this.scale,
-                canvHeight = this.height * this.scale,
-                diff = connerLineSize/2;
+            const connerLineSize = (0.5*this.scale+0.5) >> 0;
+            const sizeCornerScale =this.sizeCorner * this.scale;
+            const canvWidth = this.width * this.scale;
+            const canvHeight = this.height * this.scale;
+            const diff = connerLineSize/2;
 
             this.context.setLineDash([connerLineSize,connerLineSize]);
             this.context.lineWidth = connerLineSize;
@@ -816,16 +795,16 @@ define([
         },
 
         fillCells: function(){
-            if(!this.spacingMode || this.backgroundCellColor == 'transparent') return;
-            var sizeCorner = (this.sizeCorner + this.cellPadding) * this.scale,
-                cellPadding = this.cellPadding * this.scale,
-                stepX = (this.width * this.scale - 2 * sizeCorner)/this.columns,
-                stepY = (this.height * this.scale - 2 * sizeCorner)/this.rows;
+            if(!this.spacingMode || this.backgroundCellColor === 'transparent') return;
+            const sizeCorner = (this.sizeCorner + this.cellPadding) * this.scale;
+            const cellPadding = this.cellPadding * this.scale;
+            const stepX = (this.width * this.scale - 2 * sizeCorner)/this.columns;
+            const stepY = (this.height * this.scale - 2 * sizeCorner)/this.rows;
 
             this.context.beginPath();
             this.context.fillStyle = this.backgroundCellColor;
-            for(var row = 0; row < this.rows; row++ ){
-                for (var col = 0; col < this.columns; col++){
+            for(let row = 0; row < this.rows; row++ ){
+                for (let col = 0; col < this.columns; col++){
 
                     this.context.fillRect(
                         (sizeCorner + col * stepX + (col > 0 | 0) * cellPadding/2 )>>0,
@@ -839,9 +818,9 @@ define([
         },
 
         drawBorder: function (border){
-            var size = this.getBorderSize(border);
+            const size = this.getBorderSize(border);
             if(!size) return;
-            var points = this.getLine(size, border);
+            const points = this.getLine(size, border);
             this.context.imageSmoothingEnabled = false;
             this.context.mozImageSmoothingEnabled = false;
             this.context.msImageSmoothingEnabled = false;
@@ -857,9 +836,17 @@ define([
         },
 
         fillWithLines: function (){
-            var tdPadding = this.maxBorderSize + 4,
-                hFillLine = (2 * this.scale + 0.5) >> 0,
-                tdWidth, tdHeight, tdX, tdY, xLeft,x1, w, y1, h;
+            let tdPadding = this.maxBorderSize + 4;
+            const hFillLine = (2 * this.scale + 0.5) >> 0;
+            let tdWidth;
+            let tdHeight;
+            let tdX;
+            let tdY;
+            let xLeft;
+            let x1;
+            let w;
+            let y1;
+            let h;
             this.context.setLineDash([hFillLine, hFillLine]);
             this.context.strokeStyle = "#c0c0c0";
 
@@ -869,9 +856,9 @@ define([
                 tdY = this.sizeCorner;
                 xLeft = this.sizeCorner;
 
-                for (var row = 0; row < this.rows; row++) {
+                for (let row = 0; row < this.rows; row++) {
                     tdX = xLeft;
-                    for (var col = 0; col < this.columns; col++) {
+                    for (let col = 0; col < this.columns; col++) {
                         x1 = ((tdX + tdPadding) * this.scale) >> 0;
                         y1 = (tdY + tdPadding) * this.scale;
                         w = ((tdWidth - 2 * tdPadding) * this.scale + 0.5) >> 0;
@@ -889,16 +876,16 @@ define([
                 }
             }
             else {
-                var sizeCorner = (this.sizeCorner + this.cellPadding) * this.scale,
-                    cellPadding = this.cellPadding * this.scale;
+                const sizeCorner = (this.sizeCorner + this.cellPadding) * this.scale;
+                const cellPadding = this.cellPadding * this.scale;
                 tdWidth = (this.width * this.scale - 2 * sizeCorner)/this.columns;
                 tdHeight = (this.height * this.scale - 2 * sizeCorner)/this.rows;
                 tdPadding *= this.scale;
 
                 this.context.beginPath();
                 this.context.fillStyle = this.backgroundCellColor;
-                for(var row = 0; row < this.rows; row++ ){
-                    for (var col = 0; col < this.columns; col++){
+                for(let row = 0; row < this.rows; row++ ){
+                    for (let col = 0; col < this.columns; col++){
 
                         w = (tdWidth - (((col > 0) | 0) + ((col < this.columns-1) |0)) * cellPadding/2 -2*tdPadding + 0.5)>>0
                         h = tdHeight - (((row > 0) | 0) + ((row < this.rows-1) |0)) * cellPadding/2 -2*tdPadding;
@@ -919,17 +906,17 @@ define([
 
         drawTable: function (){
             this.drawCorners();
-            var sizeCornerScale = this.sizeCorner * this.scale;
-            var tableWidth = (this.width * this.scale  - 2 * sizeCornerScale) >> 0,
-                tableHeight = (this.height * this.scale  - 2 * sizeCornerScale) >> 0;
+            const sizeCornerScale = this.sizeCorner * this.scale;
+            const tableWidth = (this.width * this.scale  - 2 * sizeCornerScale) >> 0;
+            const tableHeight = (this.height * this.scale  - 2 * sizeCornerScale) >> 0;
             this.context.fillStyle = this.backgroundColor;
-            if(this.backgroundColor != 'transparent' ){
+            if(this.backgroundColor !== 'transparent' ){
                 this.context.beginPath();
                 this.context.fillRect(sizeCornerScale >> 0, sizeCornerScale >> 0, tableWidth , tableHeight);
                 this.context.stroke();
             }
             this.fillCells();
-            this._cellBorders.forEach(function (item){item.drawBorder();});
+            this._cellBorders.forEach((item)=> {item.drawBorder();});
 
             this.drawBorder('l');
             this.drawBorder('r');

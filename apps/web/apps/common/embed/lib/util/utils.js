@@ -23,175 +23,174 @@
  *
  */
 
-+function () {
-    !window.common && (window.common = {});
-    !common.utils && (common.utils = {});
+;+(() => {
+  !window.common && (window.common = {})
+  !common.utils && (common.utils = {})
 
-    common.utils = new(function(){
-        var userAgent = navigator.userAgent.toLowerCase(),
-            check = function(regex){
-                return regex.test(userAgent);
-            },
-            version = function (is, regex) {
-                var m;
-                return (is && (m = regex.exec(userAgent))) ? parseFloat(m[1]) : 0;
-            },
-            isOpera = check(/opera/),
-            isIE = !isOpera && (check(/msie/) || check(/trident/) || check(/edge/)),
-            isChrome = !isIE && check(/\bchrome\b/),
-            chromeVersion = version(true, /\bchrome\/(\d+\.\d+)/),
-            isMac = check(/macintosh|mac os x/),
-            zoom = 1,
-            checkSize = function () {
-                var scale = {};
-                if (!!window.AscCommon && !!window.AscCommon.checkDeviceScale) {
-                    scale = window.AscCommon.checkDeviceScale();
-                    AscCommon.correctApplicationScale(scale);
-                    scale.correct && (zoom = scale.zoom);
-                }
-            },
-            isOffsetUsedZoom = function() {
-                if (isChrome && 128 <= chromeVersion)
-                    return (zoom === 1) ? false : true;
-                return false;
-            },
-            getBoundingClientRect = function(element) {
-                let rect = element.getBoundingClientRect();
-                if (!isOffsetUsedZoom())
-                    return rect;
+  common.utils = new (function () {
+    const userAgent = navigator.userAgent.toLowerCase()
+    const check = (regex) => regex.test(userAgent)
+    const version = (is, regex) => {
+      let m
+      return is && (m = regex.exec(userAgent)) ? Number.parseFloat(m[1]) : 0
+    }
+    const isOpera = check(/opera/)
+    const isIE = !isOpera && (check(/msie/) || check(/trident/) || check(/edge/))
+    const isChrome = !isIE && check(/\bchrome\b/)
+    const chromeVersion = version(true, /\bchrome\/(\d+\.\d+)/)
+    const isMac = check(/macintosh|mac os x/)
+    let zoom = 1
+    const checkSize = () => {
+      let scale = {}
+      if (!!window.AscCommon && !!window.AscCommon.checkDeviceScale) {
+        scale = window.AscCommon.checkDeviceScale()
+        AscCommon.correctApplicationScale(scale)
+        scale.correct && (zoom = scale.zoom)
+      }
+    }
+    const isOffsetUsedZoom = () => {
+      if (isChrome && 128 <= chromeVersion) return !(zoom === 1)
+      return false
+    }
+    const getBoundingClientRect = (element) => {
+      const rect = element.getBoundingClientRect()
+      if (!isOffsetUsedZoom()) return rect
 
-                let koef = zoom;
-                let newRect = {}
-                if (rect.x!==undefined) newRect.x = rect.x * koef;
-                if (rect.y!==undefined) newRect.y = rect.y * koef;
-                if (rect.width!==undefined) newRect.width = rect.width * koef;
-                if (rect.height!==undefined) newRect.height = rect.height * koef;
+      const koef = zoom
+      const newRect = {}
+      if (rect.x !== undefined) newRect.x = rect.x * koef
+      if (rect.y !== undefined) newRect.y = rect.y * koef
+      if (rect.width !== undefined) newRect.width = rect.width * koef
+      if (rect.height !== undefined) newRect.height = rect.height * koef
 
-                if (rect.left!==undefined) newRect.left = rect.left * koef;
-                if (rect.top!==undefined) newRect.top = rect.top * koef;
-                if (rect.right!==undefined) newRect.right = rect.right * koef;
-                if (rect.bottom!==undefined) newRect.bottom = rect.bottom * koef;
-                return newRect;
-            },
-            getOffset = function($element) {
-                let pos = $element.offset();
-                if (!isOffsetUsedZoom())
-                    return pos;
-                return {left: pos.left * zoom, top: pos.top * zoom};
-            },
-            setOffset = function($element, options) {
-                var curPosition, curLeft, curCSSTop, curTop, curOffset, curCSSLeft, calculatePosition,
-                    position = $element.css("position"),
-                    props = {};
+      if (rect.left !== undefined) newRect.left = rect.left * koef
+      if (rect.top !== undefined) newRect.top = rect.top * koef
+      if (rect.right !== undefined) newRect.right = rect.right * koef
+      if (rect.bottom !== undefined) newRect.bottom = rect.bottom * koef
+      return newRect
+    }
+    const getOffset = ($element) => {
+      const pos = $element.offset()
+      if (!isOffsetUsedZoom()) return pos
+      return { left: pos.left * zoom, top: pos.top * zoom }
+    }
+    const setOffset = ($element, options) => {
+      let curPosition
+      let curLeft
+      let curCSSTop
+      let curTop
+      let curOffset
+      let curCSSLeft
+      let calculatePosition
+      const position = $element.css("position")
+      const props = {}
 
-                if ( position === "static" ) {
-                    $element[0].style.position = "relative";
-                }
+      if (position === "static") {
+        $element[0].style.position = "relative"
+      }
 
-                curOffset = getOffset($element);
-                curCSSTop = $element.css("top");
-                curCSSLeft = $element.css("left");
-                calculatePosition = ( position === "absolute" || position === "fixed" ) &&
-                    ( curCSSTop + curCSSLeft ).indexOf( "auto" ) > -1;
+      curOffset = getOffset($element)
+      curCSSTop = $element.css("top")
+      curCSSLeft = $element.css("left")
+      calculatePosition =
+        (position === "absolute" || position === "fixed") &&
+        (curCSSTop + curCSSLeft).indexOf("auto") > -1
 
-                if ( calculatePosition ) {
-                    curPosition = getPosition($element);
-                    curTop = curPosition.top;
-                    curLeft = curPosition.left;
-                } else {
-                    curTop = parseFloat( curCSSTop ) || 0;
-                    curLeft = parseFloat( curCSSLeft ) || 0;
-                }
+      if (calculatePosition) {
+        curPosition = getPosition($element)
+        curTop = curPosition.top
+        curLeft = curPosition.left
+      } else {
+        curTop = Number.parseFloat(curCSSTop) || 0
+        curLeft = Number.parseFloat(curCSSLeft) || 0
+      }
 
-                if ( options.top != null ) {
-                    props.top = ( options.top - curOffset.top ) + curTop;
-                }
-                if ( options.left != null ) {
-                    props.left = ( options.left - curOffset.left ) + curLeft;
-                }
-                $element.css( props );
-            },
-            getPosition = function($element) {
-                let pos = $element.position();
-                if (!isOffsetUsedZoom())
-                    return pos;
-                return {left: pos.left * zoom, top: pos.top * zoom};
-            };
-        if (!isIE) {
-            checkSize();
-            $(window).on('resize', checkSize);
+      if (options.top != null) {
+        props.top = options.top - curOffset.top + curTop
+      }
+      if (options.left != null) {
+        props.left = options.left - curOffset.left + curLeft
+      }
+      $element.css(props)
+    }
+    const getPosition = ($element) => {
+      const pos = $element.position()
+      if (!isOffsetUsedZoom()) return pos
+      return { left: pos.left * zoom, top: pos.top * zoom }
+    }
+    if (!isIE) {
+      checkSize()
+      $(window).on("resize", checkSize)
+    }
+    return {
+      openLink: (url) => {
+        if (url) {
+          const newDocumentPage = window.open(url, "_blank")
+          if (newDocumentPage) newDocumentPage.focus()
         }
-        return {
-            openLink: function(url) {
-                if (url) {
-                    var newDocumentPage = window.open(url, '_blank');
-                    if (newDocumentPage)
-                        newDocumentPage.focus();
-                }
+      },
+      dialogPrint: (url, api) => {
+        $("#id-print-frame").remove()
+
+        if (url) {
+          const iframePrint = document.createElement("iframe")
+
+          iframePrint.id = "id-print-frame"
+          iframePrint.style.display = "none"
+          iframePrint.style.visibility = "hidden"
+          iframePrint.style.position = "fixed"
+          iframePrint.style.right = "0"
+          iframePrint.style.bottom = "0"
+          document.body.appendChild(iframePrint)
+
+          iframePrint.onload = () => {
+            try {
+              iframePrint.contentWindow.focus()
+              iframePrint.contentWindow.print()
+              iframePrint.contentWindow.blur()
+              window.focus()
+            } catch (e) {
+              api.asc_DownloadAs(new Asc.asc_CDownloadOptions(Asc.c_oAscFileType.PDF))
             }
-            , dialogPrint: function(url, api) {
-                $('#id-print-frame').remove();
+          }
 
-                if ( !!url ) {
-                    var iframePrint = document.createElement("iframe");
+          iframePrint.src = url
+        }
+      },
+      htmlEncode: (value) => $("<div/>").text(value).html(),
 
-                    iframePrint.id = "id-print-frame";
-                    iframePrint.style.display = 'none';
-                    iframePrint.style.visibility = "hidden";
-                    iframePrint.style.position = "fixed";
-                    iframePrint.style.right = "0";
-                    iframePrint.style.bottom = "0";
-                    document.body.appendChild(iframePrint);
+      fillUserInfo: (info, lang, defname, defid) => {
+        const _user = info || {}
+        _user.anonymous = !_user.id
+        !_user.id && (_user.id = defid)
+        _user.fullname = !_user.name ? defname : _user.name
+        _user.group &&
+          (_user.fullname =
+            _user.group.toString() + AscCommon.UserInfoParser.getSeparator() + _user.fullname)
+        _user.guest = !_user.name
+        return _user
+      },
 
-                    iframePrint.onload = function () {
-                        try {
-                            iframePrint.contentWindow.focus();
-                            iframePrint.contentWindow.print();
-                            iframePrint.contentWindow.blur();
-                            window.focus();
-                        } catch (e) {
-                            api.asc_DownloadAs(new Asc.asc_CDownloadOptions(Asc.c_oAscFileType.PDF));
-                        }
-                    };
-
-                    iframePrint.src = url;
-                }
-            },
-            htmlEncode: function(value) {
-                return $('<div/>').text(value).html();
-            },
-
-            fillUserInfo: function(info, lang, defname, defid) {
-                var _user = info || {};
-                _user.anonymous = !_user.id;
-                !_user.id && (_user.id = defid);
-                _user.fullname = !_user.name ? defname : _user.name;
-                _user.group && (_user.fullname = (_user.group).toString() + AscCommon.UserInfoParser.getSeparator() + _user.fullname);
-                _user.guest = !_user.name;
-                return _user;
-            },
-
-            fixedDigits: function(num, digits, fill) {
-                (fill===undefined) && (fill = '0');
-                var strfill = "",
-                    str = num.toString();
-                for (var i=str.length; i<digits; i++) strfill += fill;
-                return strfill + str;
-            },
-            getKeyByValue: function(obj, value) {
-                for(var prop in obj) {
-                    if(obj.hasOwnProperty(prop)) {
-                        if(obj[prop] === value)
-                            return prop;
-                    }
-                }
-            },
-            getBoundingClientRect: getBoundingClientRect,
-            getOffset: getOffset,
-            setOffset: setOffset,
-            getPosition: getPosition,
-            isMac : isMac,
-            isIE: isIE
-        };
-    })();
-}();
+      fixedDigits: (num, digits, fill) => {
+        fill === undefined && (fill = "0")
+        let strfill = ""
+        const str = num.toString()
+        for (let i = str.length; i < digits; i++) strfill += fill
+        return strfill + str
+      },
+      getKeyByValue: (obj, value) => {
+        for (const prop in obj) {
+          if (obj.hasOwnProperty(prop)) {
+            if (obj[prop] === value) return prop
+          }
+        }
+      },
+      getBoundingClientRect: getBoundingClientRect,
+      getOffset: getOffset,
+      setOffset: setOffset,
+      getPosition: getPosition,
+      isMac: isMac,
+      isIE: isIE,
+    }
+  })()
+})()

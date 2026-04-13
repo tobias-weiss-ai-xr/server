@@ -31,9 +31,9 @@
 
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () { 'use strict';
+define([], () => { 
 
     SSE.Views.CellRangeDialog = Common.UI.Window.extend(_.extend({
         options: {
@@ -62,10 +62,9 @@ define([], function () { 'use strict';
         render: function() {
             Common.UI.Window.prototype.render.call(this);
 
-            var $window = this.getChild(),
-                me = this;
+            const $window = this.getChild();
 
-            me.inputRange = new Common.UI.InputField({
+            this.inputRange = new Common.UI.InputField({
                 el          : $('#id-dlg-cell-range'),
                 name        : 'range',
                 style       : 'width: 100%;',
@@ -89,7 +88,6 @@ define([], function () { 'use strict';
         },
 
         setSettings: function(settings) {
-            var me = this;
 
             this.settings = settings;
             this.inputRange.setValue(settings.range ? settings.range : '');
@@ -98,40 +96,39 @@ define([], function () { 'use strict';
                 settings.type = Asc.c_oAscSelectionDialogType.Chart;
 
             if (settings.api) {
-                me.api = settings.api;
-                me.wrapEvents = {
-                    onApiRangeChanged: _.bind(me.onApiRangeChanged, me)
+                this.api = settings.api;
+                this.wrapEvents = {
+                    onApiRangeChanged: _.bind(this.onApiRangeChanged, this)
                 };
 
-                me.api.asc_setSelectionDialogMode(settings.type, settings.range ? settings.range : '');
-                me.api.asc_registerCallback('asc_onSelectionRangeChanged', me.wrapEvents.onApiRangeChanged);
+                this.api.asc_setSelectionDialogMode(settings.type, settings.range ? settings.range : '');
+                this.api.asc_registerCallback('asc_onSelectionRangeChanged', this.wrapEvents.onApiRangeChanged);
                 Common.NotificationCenter.trigger('cells:range', settings.type);
             }
 
-            me.inputRange.validation = function(value) {
+            this.inputRange.validation = (value) => {
                 if (settings.validation) {
-                    return settings.validation.call(me, value);
-                } else {
+                    return settings.validation.call(this, value);
+                }
                     if (settings.type === Asc.c_oAscSelectionDialogType.Function) {
                         settings.argvalues[settings.argindex] = value;
-                        me.api.asc_insertArgumentsInFormula(settings.argvalues);
+                        this.api.asc_insertArgumentsInFormula(settings.argvalues);
                     }
-                    var isvalid = (settings.type === Asc.c_oAscSelectionDialogType.Function) || me.api.asc_checkDataRange(settings.type, value, false);
-                    return (isvalid==Asc.c_oAscError.ID.DataRangeError) ? me.txtInvalidRange : true;
-                }
+                    const isvalid = (settings.type === Asc.c_oAscSelectionDialogType.Function) || this.api.asc_checkDataRange(settings.type, value, false);
+                    return (isvalid===Asc.c_oAscError.ID.DataRangeError) ? this.txtInvalidRange : true;
             };
 
-            if (settings.type == Asc.c_oAscSelectionDialogType.Function) {
-                _.delay(function(){
-                    me.inputRange._input.focus();
+            if (settings.type === Asc.c_oAscSelectionDialogType.Function) {
+                _.delay(()=> {
+                    this.inputRange._input.focus();
                     if (settings.selection) {
-                        me.inputRange._input[0].selectionStart = settings.selection.start;
-                        me.inputRange._input[0].selectionEnd = settings.selection.end;
+                        this.inputRange._input[0].selectionStart = settings.selection.start;
+                        this.inputRange._input[0].selectionEnd = settings.selection.end;
                     }
                 },10);
-                me.inputRange._input.on('focus', function() {
-                    me._addedTextLength=0;
-                    me.api.asc_cleanSelectRange();
+                this.inputRange._input.on('focus', () => {
+                    this._addedTextLength=0;
+                    this.api.asc_cleanSelectRange();
                 });
             }
         },
@@ -141,13 +138,13 @@ define([], function () { 'use strict';
         },
 
         onApiRangeChanged: function(name) {
-            if (this.settings.type == Asc.c_oAscSelectionDialogType.Function) {
-                var oldlen = this._addedTextLength || 0,
-                    val = this.inputRange.getValue(),
-                    input = this.inputRange._input[0],
-                    start = input.selectionStart - oldlen,
-                    end =  input.selectionEnd,
-                    add = (start>0 && oldlen==0) && !this.api.asc_canEnterWizardRange(val.charAt(start-1)) ? '+' : '';
+            if (this.settings.type === Asc.c_oAscSelectionDialogType.Function) {
+                const oldlen = this._addedTextLength || 0;
+                let val = this.inputRange.getValue();
+                const input = this.inputRange._input[0];
+                const start = input.selectionStart - oldlen;
+                const end =  input.selectionEnd;
+                const add = (start>0 && oldlen===0) && !this.api.asc_canEnterWizardRange(val.charAt(start-1)) ? '+' : '';
                 this._addedTextLength = name.length;
 
                 val = val.substring(0, start) + add + name + val.substring(end, val.length);
@@ -156,8 +153,8 @@ define([], function () { 'use strict';
 
                 this.settings.argvalues[this.settings.argindex] = val;
                 this.api.asc_insertArgumentsInFormula(this.settings.argvalues);
-            } else if (this.settings.type == Asc.c_oAscSelectionDialogType.DataValidation || this.settings.type == Asc.c_oAscSelectionDialogType.ConditionalFormattingRule) {
-                this.inputRange.setValue('=' + name);
+            } else if (this.settings.type === Asc.c_oAscSelectionDialogType.DataValidation || this.settings.type === Asc.c_oAscSelectionDialogType.ConditionalFormattingRule) {
+                this.inputRange.setValue(`=${name}`);
             } else
                 this.inputRange.setValue(name);
             if (this.inputRange.cmpEl.hasClass('error'))
@@ -165,7 +162,7 @@ define([], function () { 'use strict';
         },
 
         onBtnClick: function(event) {
-            this._handleInput(event.currentTarget.attributes['result'].value);
+            this._handleInput(event.currentTarget.attributes.result.value);
         },
 
         onClose: function(event) {
@@ -180,7 +177,7 @@ define([], function () { 'use strict';
 
         _handleInput: function(state) {
             if (this.options.handler) {
-                if (state == 'ok') {
+                if (state === 'ok') {
                     if (this.inputRange.checkValidate() !== true)
                         return;
                 }

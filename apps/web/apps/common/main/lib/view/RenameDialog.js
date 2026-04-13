@@ -29,100 +29,98 @@
  *
  */
 
-define([], function () { 'use strict';
-
-    Common.Views.RenameDialog = Common.UI.Window.extend(_.extend({
+define([], () => {
+  Common.Views.RenameDialog = Common.UI.Window.extend(
+    _.extend(
+      {
         options: {
-            width: 330,
-            header: false,
-            cls: 'modal-dlg',
-            filename: '',
-            buttons: ['ok', 'cancel']
+          width: 330,
+          header: false,
+          cls: "modal-dlg",
+          filename: "",
+          buttons: ["ok", "cancel"],
         },
 
-        initialize : function(options) {
-            _.extend(this.options, options || {});
+        initialize: function (options) {
+          _.extend(this.options, options || {})
 
-            this.template = [
-                '<div class="box">',
-                    '<div class="input-row">',
-                        '<label>' + this.textName + '</label>',
-                    '</div>',
-                    '<div id="id-dlg-newname" class="input-row"></div>',
-                '</div>'
-            ].join('');
+          this.template = [
+            '<div class="box">',
+            '<div class="input-row">',
+            `<label>${this.textName}</label>`,
+            "</div>",
+            '<div id="id-dlg-newname" class="input-row"></div>',
+            "</div>",
+          ].join("")
 
-            this.options.tpl = _.template(this.template)(this.options);
+          this.options.tpl = _.template(this.template)(this.options)
 
-            Common.UI.Window.prototype.initialize.call(this, this.options);
+          Common.UI.Window.prototype.initialize.call(this, this.options)
         },
 
-        render: function() {
-            Common.UI.Window.prototype.render.call(this);
+        render: function () {
+          Common.UI.Window.prototype.render.call(this)
+          this.inputName = new Common.UI.InputField({
+            el: $("#id-dlg-newname"),
+            style: "width: 100%;",
+            validateOnBlur: false,
+            maxLength: this.options.maxLength,
+            validation: (value) =>
+              /[\t*\+:\"<>?|\\\\/]/gim.test(value) ? `${this.txtInvalidName}*+:\"<>?|\/` : true,
+          })
 
-            var me = this;
-            me.inputName = new Common.UI.InputField({
-                el          : $('#id-dlg-newname'),
-                style       : 'width: 100%;',
-                validateOnBlur: false,
-                maxLength: me.options.maxLength,
-                validation  : function(value) {
-                    return (/[\t*\+:\"<>?|\\\\/]/gim.test(value)) ? me.txtInvalidName + "*+:\"<>?|\/" : true;
-                }
-            });
+          const $window = this.getChild()
+          $window.find(".btn").on("click", _.bind(this.onBtnClick, this))
 
-            var $window = this.getChild();
-            $window.find('.btn').on('click',     _.bind(this.onBtnClick, this));
-
-            me.inputNameEl = $window.find('input');
+          this.inputNameEl = $window.find("input")
         },
 
-        getFocusedComponents: function() {
-            return [this.inputName].concat(this.getFooterButtons());
+        getFocusedComponents: function () {
+          return [this.inputName].concat(this.getFooterButtons())
         },
 
         getDefaultFocusableComponent: function () {
-            return this.inputName;
+          return this.inputName
         },
 
-        show: function() {
-            Common.UI.Window.prototype.show.apply(this, arguments);
-
-            var me = this;
-            var idx = me.options.filename.lastIndexOf('.');
-            if (idx>0)
-                me.options.filename = me.options.filename.substring(0, idx);
-            _.delay(function(){
-                me.inputName.setValue(me.options.filename);
-                me.inputNameEl.focus().select();
-            },100);
+        show: function () {
+          Common.UI.Window.prototype.show.apply(this, arguments)
+          const idx = this.options.filename.lastIndexOf(".")
+          if (idx > 0) this.options.filename = this.options.filename.substring(0, idx)
+          _.delay(() => {
+            this.inputName.setValue(this.options.filename)
+            this.inputNameEl.focus().select()
+          }, 100)
         },
 
-        onPrimary: function(event) {
-            this._handleInput('ok');
-            return false;
+        onPrimary: function (event) {
+          this._handleInput("ok")
+          return false
         },
 
-        onBtnClick: function(event) {
-            this._handleInput(event.currentTarget.attributes['result'].value);
+        onBtnClick: function (event) {
+          this._handleInput(event.currentTarget.attributes.result.value)
         },
 
-        _handleInput: function(state) {
-            if (this.options.handler) {
-                if (state == 'ok') {
-                    if (this.inputName.checkValidate() !== true)  {
-                        this.inputNameEl.focus();
-                        return;
-                    }
-                }
-
-                this.options.handler.call(this, state, this.inputName.getValue());
+        _handleInput: function (state) {
+          if (this.options.handler) {
+            if (state === "ok") {
+              if (this.inputName.checkValidate() !== true) {
+                this.inputNameEl.focus()
+                return
+              }
             }
 
-            this.close();
+            this.options.handler.call(this, state, this.inputName.getValue())
+          }
+
+          this.close()
         },
 
-        textName        : 'File name',
-        txtInvalidName  : 'The file name cannot contain any of the following characters: '
-    }, Common.Views.RenameDialog || {}));
-});
+        textName: "File name",
+        txtInvalidName: "The file name cannot contain any of the following characters: ",
+      },
+      Common.Views.RenameDialog || {},
+    ),
+  )
+})

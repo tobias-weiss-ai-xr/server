@@ -30,23 +30,21 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Models = Common.Models || {};
 
 define([
     'backbone'
-], function(Backbone){ 'use strict';
+], (Backbone)=> { 
 
     Common.Models.Font = Backbone.Model.extend({
-        defaults: function() {
-            return {
+        defaults: () => ({
                 id      : Common.UI.getId(),
                 name    : null,
                 cloneid : null,
                 imgidx  : 0,
                 type    : 0
-            }
-        }
+            })
     });
 });

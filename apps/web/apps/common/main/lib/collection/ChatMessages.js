@@ -31,15 +31,10 @@
  *
  */
 
-define([
-    'backbone',
-    'common/main/lib/model/ChatMessage'
-], function(Backbone){
-    'use strict';
+define(["backbone", "common/main/lib/model/ChatMessage"], (Backbone) => {
+  !Common.Collections && (Common.Collections = {})
 
-    !Common.Collections && (Common.Collections = {});
-
-    Common.Collections.ChatMessages = Backbone.Collection.extend({
-        model: Common.Models.ChatMessage
-    });
-});
+  Common.Collections.ChatMessages = Backbone.Collection.extend({
+    model: Common.Models.ChatMessage,
+  })
+})

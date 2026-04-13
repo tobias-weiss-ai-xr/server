@@ -71,13 +71,12 @@
 
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'common/main/lib/component/ToggleManager'
-], function () {
-    'use strict';
+], () => {
 
     Common.UI.MenuItem = Common.UI.BaseView.extend({
         options : {
@@ -120,73 +119,70 @@ define([
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
 
-            var me = this;
-
-            this.id             = me.options.id || Common.UI.getId();
-            this.cls            = me.options.cls;
-            this.style          = me.options.style;
-            this.caption        = me.options.caption;
-            this.menu           = me.options.menu || null;
-            this.checkable      = me.options.checkable;
-            this.checked        = me.options.checked;
-            me.allowDepress     = me.options.allowDepress;
-            this.disabled       = me.options.disabled;
-            this.visible        = me.options.visible;
-            this.value          = me.options.value;
-            this.toggleGroup    = me.options.toggleGroup;
-            this.template       = me.options.template || this.template;
-            this.iconCls        = me.options.iconCls;
-            this.iconImg        = me.options.iconImg;
-            this.hint           = me.options.hint;
+            this.id             = this.options.id || Common.UI.getId();
+            this.cls            = this.options.cls;
+            this.style          = this.options.style;
+            this.caption        = this.options.caption;
+            this.menu           = this.options.menu || null;
+            this.checkable      = this.options.checkable;
+            this.checked        = this.options.checked;
+            this.allowDepress     = this.options.allowDepress;
+            this.disabled       = this.options.disabled;
+            this.visible        = this.options.visible;
+            this.value          = this.options.value;
+            this.toggleGroup    = this.options.toggleGroup;
+            this.template       = this.options.template || this.template;
+            this.iconCls        = this.options.iconCls;
+            this.iconImg        = this.options.iconImg;
+            this.hint           = this.options.hint;
             this.rendered       = false;
-            this.header         = me.options.header;
+            this.header         = this.options.header;
 
             if (this.menu !== null && !(this.menu instanceof Common.UI.Menu) && !(this.menu instanceof Common.UI.MenuSimple)) {
-                this.menu = new Common.UI.Menu(_.extend({}, me.options.menu));
+                this.menu = new Common.UI.Menu(_.extend({}, this.options.menu));
             }
 
-            if (me.options.el)
+            if (this.options.el)
                 this.render();
         },
 
         render: function() {
-            var me = this,
-                el = me.$el || $(this.el);
+            const el = this.$el || $(this.el);
 
-            me.cmpEl = el;
-            me.trigger('render:before', me);
+            this.cmpEl = el;
+            this.trigger('render:before', this);
 
-            if (me.caption === '--') {
+            if (this.caption === '--') {
                 el.addClass('divider');
             } else {
                 if (!this.rendered) {
                     el.off('click');
-                    Common.UI.ToggleManager.unregister(me);
+                    Common.UI.ToggleManager.unregister(this);
 
                     el.html(this.template({
-                        id      : me.id,
-                        caption : me.caption,
-                        iconCls : me.iconCls,
-                        iconImg : me.iconImg,
-                        style   : me.style,
-                        options : me.options,
-                        header  : me.header 
+                        id      : this.id,
+                        caption : this.caption,
+                        iconCls : this.iconCls,
+                        iconImg : this.iconImg,
+                        style   : this.style,
+                        options : this.options,
+                        header  : this.header 
                     }));
 
-                    if (me.menu) {
+                    if (this.menu) {
                         el.addClass('dropdown-submenu');
 
-                        me.menu.render(el);
-                        el.mouseenter(_.bind(me.menu.alignPosition, me.menu));
+                        this.menu.render(el);
+                        el.mouseenter(_.bind(this.menu.alignPosition, this.menu));
 //                        el.focusin(_.bind(me.onFocusItem, me));
-                        el.focusout(_.bind(me.onBlurItem, me));
+                        el.focusout(_.bind(this.onBlurItem, this));
                         el.hover(
-                            _.bind(me.onHoverItem, me),
-                            _.bind(me.onUnHoverItem, me)
+                            _.bind(this.onHoverItem, this),
+                            _.bind(this.onUnHoverItem, this)
                         );
                     }
 
-                    var firstChild = el.children(':first');
+                    const firstChild = el.children(':first');
 
                     if (this.checkable && firstChild) {
                         firstChild.toggleClass('checkable', this.checkable);
@@ -197,7 +193,7 @@ define([
                         }
                     }
 
-                    if (me.options.hint) {
+                    if (this.options.hint) {
                         this.createHint();
                     }
 
@@ -210,15 +206,15 @@ define([
                     el.on('click',      _.bind(this.onItemClick, this));
                     el.on('mousedown',  _.bind(this.onItemMouseDown, this));
 
-                    Common.UI.ToggleManager.register(me);
+                    Common.UI.ToggleManager.register(this);
 
-                    if (me.options.scaling !== false && me.iconCls) {
+                    if (this.options.scaling !== false && this.iconCls) {
                         el.attr('ratio', 'ratio');
-                        me.applyScaling(Common.UI.Scaling.currentRatio());
+                        this.applyScaling(Common.UI.Scaling.currentRatio());
 
-                        el.on('app:scaling', function (e, info) {
-                            if ( me.options.scaling != info.ratio ) {
-                                me.applyScaling(info.ratio);
+                        el.on('app:scaling', (e, info) => {
+                            if ( this.options.scaling !== info.ratio ) {
+                                this.applyScaling(info.ratio);
                             }
                         });
                     }
@@ -227,9 +223,9 @@ define([
             if (!this.visible)
                 this.setVisible(this.visible);
 
-            me.rendered = true;
+            this.rendered = true;
 
-            me.trigger('render:after', me);
+            this.trigger('render:after', this);
 
             return this;
         },
@@ -240,14 +236,14 @@ define([
             this.cmpEl.attr('data-toggle', 'tooltip');
             this.cmpEl.tooltip({
                 title       : this.options.hint,
-                placement   : this.options.hintAnchor||function(tip, element) {
-                    var pos = Common.Utils.getBoundingClientRect(element),
-                        actualWidth = tip.offsetWidth,
-                        actualHeight = tip.offsetHeight,
-                        innerWidth = Common.Utils.innerWidth(),
-                        innerHeight = Common.Utils.innerHeight();
-                    var top = pos.top,
-                        left = pos.left + pos.width + 2;
+                placement   : this.options.hintAnchor||((tip, element) => {
+                    const pos = Common.Utils.getBoundingClientRect(element);
+                    const actualWidth = tip.offsetWidth;
+                    const actualHeight = tip.offsetHeight;
+                    const innerWidth = Common.Utils.innerWidth();
+                    const innerHeight = Common.Utils.innerHeight();
+                    let top = pos.top;
+                    let left = pos.left + pos.width + 2;
                     if (top + actualHeight > innerHeight) {
                         top = innerHeight - actualHeight - 2;
                     }
@@ -255,7 +251,7 @@ define([
                         left = pos.left - actualWidth - 2;
                     }
                     Common.Utils.setOffset($(tip),{top: top,left: left}).addClass('in');
-                }
+                })
             });
         },
 
@@ -276,14 +272,14 @@ define([
 
         setIconCls: function(iconCls) {
             if (this.rendered && !_.isEmpty(this.iconCls)) {
-                var firstChild = this.cmpEl.children(':first');
+                const firstChild = this.cmpEl.children(':first');
                 if (firstChild) {
                     firstChild.find('.menu-item-icon').removeClass(this.iconCls).addClass(iconCls);
-                    var svgIcon = firstChild.find('use.zoom-int');
+                    const svgIcon = firstChild.find('use.zoom-int');
                     if (svgIcon.length) {
-                        var re_icon_name = /btn-[^\s]+/.exec(iconCls),
-                            icon_name = re_icon_name ? re_icon_name[0] : "null";
-                        svgIcon.attr('href', '#' + icon_name);
+                        const re_icon_name = /btn-[^\s]+/.exec(iconCls);
+                        const icon_name = re_icon_name ? re_icon_name[0] : "null";
+                        svgIcon.attr('href', `#${icon_name}`);
                     }
                 }
             }
@@ -310,13 +306,13 @@ define([
         },
 
         toggle: function(toggle, suppressEvent) {
-            var state = toggle === undefined ? !this.checked : !!toggle;
+            const state = toggle === undefined ? !this.checked : !!toggle;
 
             if (this.checkable) {
                 this.checked = state;
 
                 if (this.rendered) {
-                    var firstChild = this.cmpEl.children(':first');
+                    const firstChild = this.cmpEl.children(':first');
 
                     if (firstChild) {
                         firstChild.toggleClass('checked', this.checked);
@@ -331,9 +327,9 @@ define([
             }
         },
 
-        onItemMouseDown: function(e) {
-            Common.UI.HintManager && Common.UI.HintManager.isHintVisible() && Common.UI.HintManager.clearHints(false, true);
-            if (e.which != 1) {
+        onItemMouseDown: (e) => {
+            Common.UI.HintManager?.isHintVisible() && Common.UI.HintManager.clearHints(false, true);
+            if (e.which !== 1) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -343,14 +339,14 @@ define([
         },
 
         onItemClick: function(e) {
-            if (e.which != 1 && (e.which !== undefined || this.menu))
+            if (e.which !== 1 && (e.which !== undefined || this.menu))
                 return false;
 
             if (!this.disabled && (this.allowDepress || !(this.checked && this.toggleGroup)) && !this.menu)
                 this.setChecked(!this.checked);
 
             if (this.menu) {
-                if (e.target.id == this.id) {
+                if (e.target.id === this.id) {
                     this._doHover(e);
                     return false;
                 }
@@ -387,40 +383,38 @@ define([
         },
 
         _doHover: function(e) {
-            var me = this;
 
-            if (me.menu && !me.disabled) {
-                clearTimeout(me.hideMenuTimer);
+            if (this.menu && !this.disabled) {
+                clearTimeout(this.hideMenuTimer);
 
-                me.cmpEl.trigger('show.bs.dropdown');
-                me.expandMenuTimer = _.delay(function(){
-                    me.cmpEl.addClass('over');
-                    me.cmpEl.trigger('shown.bs.dropdown');
+                this.cmpEl.trigger('show.bs.dropdown');
+                this.expandMenuTimer = _.delay(()=> {
+                    this.cmpEl.addClass('over');
+                    this.cmpEl.trigger('shown.bs.dropdown');
                 }, 200);
             }
         },
 
         _doUnHover: function(e) {
-            var me = this;
-            if (me.cmpEl.hasClass('dropdown-submenu') && me.cmpEl.hasClass('over') &&
-               (e && e.relatedTarget && me.cmpEl.find(e.relatedTarget).length>0 || me.cmpEl.hasClass('focused-submenu'))) {
+            if (this.cmpEl.hasClass('dropdown-submenu') && this.cmpEl.hasClass('over') &&
+               (e?.relatedTarget && this.cmpEl.find(e.relatedTarget).length>0 || this.cmpEl.hasClass('focused-submenu'))) {
                 // When focus go from menuItem to it's submenu don't hide this submenu
-                me.cmpEl.removeClass('focused-submenu');
+                this.cmpEl.removeClass('focused-submenu');
                 return;
             }
-            if (me.menu && !me.disabled) {
-                clearTimeout(me.expandMenuTimer);
+            if (this.menu && !this.disabled) {
+                clearTimeout(this.expandMenuTimer);
 
-                me.hideMenuTimer = _.delay(function(){
-                    if (!me.menu.isOver)
-                        me.cmpEl.removeClass('over');
+                this.hideMenuTimer = _.delay(()=> {
+                    if (!this.menu.isOver)
+                        this.cmpEl.removeClass('over');
                 }, 200);
 
                 if (e && e.type !== 'focusout') { // when mouseleave from clicked menu item with submenu
-                    var focused = me.cmpEl.children(':focus');
+                    const focused = this.cmpEl.children(':focus');
                     if (focused.length>0) {
                         focused.blur();
-                        me.cmpEl.closest('ul').focus();
+                        this.cmpEl.closest('ul').focus();
                     }
                 }
             }
@@ -431,10 +425,10 @@ define([
                 if (this.rendered) {
                     if (this.menu && (this.menu instanceof Common.UI.Menu || this.menu instanceof Common.UI.MenuSimple)) {
                         Common.UI.Menu.Manager.unregister(this.menu);
-                        this.menu.cmpEl && this.menu.cmpEl.remove();
+                        this.menu.cmpEl?.remove();
                     }
                     this.menu = m;
-                    var el = this.cmpEl;
+                    const el = this.cmpEl;
                     el.addClass('dropdown-submenu');
                     this.menu.render(el);
                     el.mouseenter(_.bind(this.menu.alignPosition, this.menu));
@@ -449,18 +443,17 @@ define([
         },
 
         applyScaling: function (ratio) {
-            var me = this;
-            if (me.options.scaling != ratio) {
-                me.options.scaling = ratio;
-                var firstChild = this.cmpEl.children(':first');
+            if (this.options.scaling !== ratio) {
+                this.options.scaling = ratio;
+                const firstChild = this.cmpEl.children(':first');
 
                 if (ratio > 2) {
                     if (!firstChild.find('svg.menu-item-icon').length) {
-                        var iconCls = me.iconCls,
-                            re_icon_name = /btn-[^\s]+/.exec(iconCls),
-                            icon_name = re_icon_name ? re_icon_name[0] : "null",
-                            rtlCls = (iconCls ? iconCls.indexOf('icon-rtl') : -1) > -1 ? 'icon-rtl' : '',
-                            svg_icon = '<svg class="menu-item-icon uni-scale %rtlCls"><use href="#%iconname"></use></svg>'.replace('%iconname', icon_name).replace('%rtlCls', rtlCls);
+                        const iconCls = this.iconCls;
+                        const re_icon_name = /btn-[^\s]+/.exec(iconCls);
+                        const icon_name = re_icon_name ? re_icon_name[0] : "null";
+                        const rtlCls = (iconCls ? iconCls.indexOf('icon-rtl') : -1) > -1 ? 'icon-rtl' : '';
+                        const svg_icon = '<svg class="menu-item-icon uni-scale %rtlCls"><use href="#%iconname"></use></svg>'.replace('%iconname', icon_name).replace('%rtlCls', rtlCls);
 
                         firstChild.find('span.menu-item-icon').after(svg_icon);
                     }
@@ -469,7 +462,7 @@ define([
         }
     });
 
-    Common.UI.MenuItemSeparator = function(options) {
+    Common.UI.MenuItemSeparator = (options) => {
         options = options || {};
         options.caption = '--';
         return new Common.UI.MenuItem(options);
@@ -482,18 +475,17 @@ define([
             this.isCustomItem = true;
             this.baseUrl = options.baseUrl || '';
             this.iconsSet = Common.UI.iconsStr2IconsObj(options.iconsSet || ['']);
-            var icons = Common.UI.getSuitableIcons(this.iconsSet);
-            this.iconImg = this.baseUrl + icons['normal'];
+            const icons = Common.UI.getSuitableIcons(this.iconsSet);
+            this.iconImg = this.baseUrl + icons.normal;
         },
 
         render: function () {
             Common.UI.MenuItem.prototype.render.call(this);
 
             if (this.options.scaling !== false) {
-                var me = this;
-                me.cmpEl.attr('ratio', 'ratio');
-                me.cmpEl.on('app:scaling', function (e, info) {
-                    me.applyScaling(info.ratio);
+                this.cmpEl.attr('ratio', 'ratio');
+                this.cmpEl.on('app:scaling', (e, info) => {
+                    this.applyScaling(info.ratio);
                 });
             }
 
@@ -503,13 +495,13 @@ define([
         },
 
         updateIcons: function() {
-            var icons = Common.UI.getSuitableIcons(this.iconsSet);
-            this.iconImg = this.baseUrl + icons['normal'];
+            const icons = Common.UI.getSuitableIcons(this.iconsSet);
+            this.iconImg = this.baseUrl + icons.normal;
             this.updateIcon();
         },
 
         updateIcon: function() {
-            this.cmpEl && this.cmpEl.find('img.menu-item-icon').attr('src', this.iconImg).addClass('custom-icon');
+            this.cmpEl?.find('img.menu-item-icon').attr('src', this.iconImg).addClass('custom-icon');
         },
 
         applyScaling: function (ratio) {

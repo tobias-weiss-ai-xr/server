@@ -2,15 +2,7 @@
   "name": "backbone",
   "description": "Give your JS App some Backbone with Models, Views, Collections, and Events.",
   "url": "http://backbonejs.org",
-  "keywords": [
-    "model",
-    "view",
-    "controller",
-    "router",
-    "server",
-    "client",
-    "browser"
-  ],
+  "keywords": ["model", "view", "controller", "router", "server", "client", "browser"],
   "author": "Jeremy Ashkenas",
   "dependencies": {
     "underscore": ">=1.8.3"

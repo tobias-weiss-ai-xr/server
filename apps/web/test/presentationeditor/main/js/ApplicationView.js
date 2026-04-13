@@ -23,16 +23,15 @@
  *
  */
 if (PE === undefined) {
-    var PE = {};
+  const PE = {}
 }
 
-PE.ApplicationView = new(function(){
-    // Initialize view
+PE.ApplicationView = new (function () {
+  // Initialize view
 
-    function createView(){
-    }
+  function createView() {}
 
-    return {
-        create: createView
-    }
-})();
+  return {
+    create: createView,
+  }
+})()

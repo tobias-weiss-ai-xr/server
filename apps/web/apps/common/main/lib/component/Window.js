@@ -124,17 +124,16 @@
  */
 
  if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'common/main/lib/component/CheckBox',
     'common/main/lib/controller/FocusManager'
-], function () {
-    'use strict';
+], () => {
 
-    Common.UI.Window = Common.UI.BaseView.extend(_.extend((function(){
-        var config = {
+    Common.UI.Window = Common.UI.BaseView.extend(_.extend((()=> {
+        const config = {
                 closable:   true,
                 header:     true,
                 modal:      true,
@@ -156,7 +155,7 @@ define([
                 role: 'dialog'
         };
 
-        var template = '<div class="asc-window<%= modal?" modal":"" %><%= cls?" "+cls:"" %>" id="<%= id %>" style="width:<%= width %>px;" role="<%= role %>" aria-modal="<%= modal %>">' +
+        const template = '<div class="asc-window<%= modal?" modal":"" %><%= cls?" "+cls:"" %>" id="<%= id %>" style="width:<%= width %>px;" role="<%= role %>" aria-modal="<%= modal %>">' +
                             '<% if (header==true) { %>' +
                                 '<div class="header">' +
                                     '<div class="tools">' +
@@ -182,9 +181,9 @@ define([
                         '</div>';
 
         function _getMask() {
-            var mask = $('.modals-mask');
+            let mask = $('.modals-mask');
 
-            if( mask.length == 0) {
+            if( mask.length === 0) {
                 mask = $("<div class='modals-mask'>")
                     .appendTo(document.body).hide();
                 mask.attr('counter', 0);
@@ -196,7 +195,7 @@ define([
         function _keydown(event) {
             if (!this.isLocked() && this.isVisible()
                         && this.initConfig.enableKeyEvents && this.pauseKeyEvents !== false) {
-                if (this.initConfig.keydowncallback && this.initConfig.keydowncallback.call(this, event))
+                if (this.initConfig.keydowncallback?.call(this, event))
                     return false;
 
                 switch (event.keyCode) {
@@ -208,13 +207,13 @@ define([
                                 if (this.initConfig.toolcallback)
                                     this.initConfig.toolcallback.call(this);
                                 else
-                                    (this.initConfig.toolclose=='hide') ? this.hide() : this.close();
+                                    (this.initConfig.toolclose==='hide') ? this.hide() : this.close();
                             }
                             return false;
                         }
                         break;
-                    case Common.UI.Keys.RETURN:
-                        var target = $(event.target);
+                    case Common.UI.Keys.RETURN: {
+                        const target = $(event.target);
                         if (target.hasClass('dlg-btn') && !target.hasClass('primary')) return;
 
                         if (this.$window.find('.btn.primary').length && $('.asc-loadmask').length<1) {
@@ -224,14 +223,15 @@ define([
                             }
                         }
                         break;
+                    }
                 }
             }
         }
 
         function _readDocumetGeometry() {
-            if (window.innerHeight == undefined) {
-                var width  = document.documentElement.offsetWidth,
-                height = document.documentElement.offsetHeight;
+            if (window.innerHeight === undefined) {
+                const width  = document.documentElement.offsetWidth;
+                const height = document.documentElement.offsetHeight;
             } else {
                 width  = Common.Utils.innerWidth();
                 height = Common.Utils.innerHeight();
@@ -241,30 +241,30 @@ define([
         }
 
         function _autoSize() {
-            if (this.initConfig.height == 'auto') {
-                var height = Math.ceil(parseFloat(this.$window.find('> .body').css('height')));
-                this.initConfig.header && (height += parseInt(this.$window.find('> .header').css('height')));
+            if (this.initConfig.height === 'auto') {
+                let height = Math.ceil(Number.parseFloat(this.$window.find('> .body').css('height')));
+                this.initConfig.header && (height += Number.parseInt(this.$window.find('> .header').css('height')));
                 this.$window.height(height);
             }
         }
 
         function _centre() {
-            var main_geometry = _readDocumetGeometry(),
-                main_width = main_geometry.width,
-                main_height = main_geometry.height;
+            const main_geometry = _readDocumetGeometry();
+            const main_width = main_geometry.width;
+            const main_height = main_geometry.height;
 
-            if (this.initConfig.height == 'auto') {
-                var win_height = parseInt(this.$window.find('.body').css('height'));
-                this.initConfig.header && (win_height += parseInt(this.$window.find('.header').css('height')));
+            if (this.initConfig.height === 'auto') {
+                let win_height = Number.parseInt(this.$window.find('.body').css('height'));
+                this.initConfig.header && (win_height += Number.parseInt(this.$window.find('.header').css('height')));
             } else {
                 win_height = this.initConfig.height;
                 win_height > main_height && (win_height = main_height);
             }
 
-            var win_width = (this.initConfig.width=='auto') ? parseInt(this.$window.find('.body').css('width')) : this.initConfig.width;
+            const win_width = (this.initConfig.width==='auto') ? Number.parseInt(this.$window.find('.body').css('width')) : this.initConfig.width;
             
-            var top  = main_geometry.top + Math.floor((parseInt(main_height) - parseInt(win_height)) / 2);
-            var left = Math.floor((parseInt(main_width) - parseInt(win_width)) / 2);
+            const top  = main_geometry.top + Math.floor((Number.parseInt(main_height) - Number.parseInt(win_height)) / 2);
+            const left = Math.floor((Number.parseInt(main_width) - Number.parseInt(win_width)) / 2);
 
             this.$window.css({
                 left: left < 0 ? 0 : left,
@@ -273,9 +273,9 @@ define([
         }
 
         function _setVisible() {
-            var main_geometry = _readDocumetGeometry(),
-                main_width = main_geometry.width,
-                main_height = main_geometry.height;
+            const main_geometry = _readDocumetGeometry();
+            const main_width = main_geometry.width;
+            const main_height = main_geometry.height;
 
             if (this.getLeft() + this.getWidth() > main_width)
                 this.$window.css('left', main_width - this.getWidth());
@@ -304,14 +304,14 @@ define([
         function _dragstart(event) {
             if ( $(event.target).hasClass('close') || $(event.target).hasClass('help') ) return;
             Common.UI.Menu.Manager.hideAll();
-            var zoom = (event instanceof jQuery.Event) ? Common.Utils.zoom() : 1;
+            const zoom = (event instanceof jQuery.Event) ? Common.Utils.zoom() : 1;
             this.dragging.enabled = true;
             this.dragging.initx = event.pageX*zoom - this.getLeft();
             this.dragging.inity = event.pageY*zoom - this.getTop();
 
-            var main_geometry = _readDocumetGeometry(),
-                main_width = main_geometry.width,
-                main_height = main_geometry.height;
+            const main_geometry = _readDocumetGeometry();
+            const main_width = main_geometry.width;
+            const main_height = main_geometry.height;
 
             this.dragging.maxx  = main_width - this.getWidth();
             this.dragging.maxy  = main_height - this.getHeight();
@@ -340,10 +340,10 @@ define([
 
         function _mousemove(event) {
             if (this.dragging.enabled) {
-                var zoom = (event instanceof jQuery.Event) ? Common.Utils.zoom() : 1,
-                    left    = event.pageX*zoom - this.dragging.initx,
-                    top     = event.pageY*zoom - this.dragging.inity,
-                    topedge = Common.Utils.InternalSettings.get('window-inactive-area-top');
+                const zoom = (event instanceof jQuery.Event) ? Common.Utils.zoom() : 1;
+                let left    = event.pageX*zoom - this.dragging.initx;
+                let top     = event.pageY*zoom - this.dragging.inity;
+                const topedge = Common.Utils.InternalSettings.get('window-inactive-area-top');
 
                 left < 0 ? (left = 0) : left > this.dragging.maxx && (left = this.dragging.maxx);
                 top < topedge ? (top = topedge) : top > this.dragging.maxy && (top = this.dragging.maxy);
@@ -351,20 +351,20 @@ define([
                 this.$window.css({left: left, top: top});
 
                 this.dragging.wasDragged = true;
-                this.initConfig.autoPosOnResize == 'relative' && _calcWindowPositionRatio.call(this);
+                this.initConfig.autoPosOnResize === 'relative' && _calcWindowPositionRatio.call(this);
             }
         }
 
         function _onProcessMouse(data) {
-            if (data.type == 'mouseup' && this.dragging.enabled) {
+            if (data.type === 'mouseup' && this.dragging.enabled) {
                 _mouseup.call(this);
             }
         }
 
         function _onResizeWindow() {
-            if(this.initConfig.autoPosOnResize == 'center' && !this.dragging.wasDragged) {
+            if(this.initConfig.autoPosOnResize === 'center' && !this.dragging.wasDragged) {
                 this.setPosition();
-            } else if(this.initConfig.autoPosOnResize == 'relative' && this.windowPositionRatio) {
+            } else if(this.initConfig.autoPosOnResize === 'relative' && this.windowPositionRatio) {
                 const documentGeometry = _readDocumetGeometry();
                 const newPos = {
                     x: documentGeometry.width * this.windowPositionRatio.left - (this.getWidth() / 2),
@@ -391,13 +391,13 @@ define([
         }
 
         function _onResizeMove(){
-            var main_geometry = _readDocumetGeometry(),
-                main_width = main_geometry.width,
-                main_height = main_geometry.height,
-                win_height = this.getHeight(),
-                win_width = this.getWidth(),
-                top = this.getTop(),
-                left = this.getLeft();
+            const main_geometry = _readDocumetGeometry();
+            const main_width = main_geometry.width;
+            const main_height = main_geometry.height;
+            const win_height = this.getHeight();
+            const win_width = this.getWidth();
+            let top = this.getTop();
+            let left = this.getLeft();
 
             top = top + win_height > main_height ? main_height - win_height : top;
             left = left + win_width > main_width ? main_width - win_width : left;
@@ -411,9 +411,9 @@ define([
         /* window resize functions */
         function _resizestart(event) {
             Common.UI.Menu.Manager.hideAll();
-            var el = $(event.target),
-                left = this.getLeft(),
-                top = this.getTop();
+            const el = $(event.target);
+            const left = this.getLeft();
+            const top = this.getTop();
 
             this.resizing.enabled = true;
             this.resizing.initpage_x = event.pageX*Common.Utils.zoom();
@@ -424,11 +424,11 @@ define([
             this.resizing.inith = this.getHeight();
             this.resizing.type = [el.hasClass('left') ? -1 : (el.hasClass('right') ? 1 : 0), el.hasClass('top') ? -1 : (el.hasClass('bottom') ? 1 : 0)];
 
-            var main_geometry = _readDocumetGeometry(),
-                main_width = main_geometry.width,
-                main_height = main_geometry.height;
-            var maxwidth = (this.initConfig.maxwidth) ? this.initConfig.maxwidth : main_width,
-                maxheight = (this.initConfig.maxheight) ? this.initConfig.maxheight : main_height;
+            const main_geometry = _readDocumetGeometry();
+            const main_width = main_geometry.width;
+            const main_height = main_geometry.height;
+            const maxwidth = (this.initConfig.maxwidth) ? this.initConfig.maxwidth : main_width;
+            const maxheight = (this.initConfig.maxheight) ? this.initConfig.maxheight : main_height;
 
             this.resizing.minw  = this.initConfig.minwidth;
             this.resizing.maxw = (this.resizing.type[0]>0) ? Math.min(main_width-left, maxwidth) : Math.min(left+this.resizing.initw, maxwidth);
@@ -447,12 +447,12 @@ define([
 
         function _resize(event) {
             if (this.resizing.enabled) {
-                var resized = false,
-                    zoom = (event instanceof jQuery.Event) ? Common.Utils.zoom() : 1,
-                    pageX = event.pageX*zoom,
-                    pageY = event.pageY*zoom;
+                let resized = false;
+                const zoom = (event instanceof jQuery.Event) ? Common.Utils.zoom() : 1;
+                let pageX = event.pageX*zoom;
+                let pageY = event.pageY*zoom;
                 if (this.resizing.type[0]) {
-                    var new_width = this.resizing.initw + (pageX - this.resizing.initpage_x) * this.resizing.type[0];
+                    let new_width = this.resizing.initw + (pageX - this.resizing.initpage_x) * this.resizing.type[0];
                     if (new_width>this.resizing.maxw) {
                         pageX = pageX - (new_width-this.resizing.maxw) * this.resizing.type[0];
                         new_width = this.resizing.maxw;
@@ -467,7 +467,7 @@ define([
                     resized = true;
                 }
                 if (this.resizing.type[1]) {
-                    var new_height = this.resizing.inith + (pageY - this.resizing.initpage_y) * this.resizing.type[1];
+                    let new_height = this.resizing.inith + (pageY - this.resizing.initpage_y) * this.resizing.type[1];
                     if (new_height>this.resizing.maxh) {
                         pageY = pageY - (new_height-this.resizing.maxh) * this.resizing.type[1];
                         new_height = this.resizing.maxh;
@@ -497,7 +497,7 @@ define([
         }
 
         Common.UI.alert = function(options) {
-            var me = this.Window.prototype;
+            const me = this.Window.prototype;
 
             if (!options.buttons) {
                 options.buttons = ['ok'];
@@ -506,13 +506,7 @@ define([
 
             if (!options.width) options.width = 'auto';
             
-            var template =  '<div class="info-box">' +
-                                '<% if (typeof iconCls !== "undefined") { %><div class="icon <%= iconCls %>"></div><% } %>' +
-                                '<div class="text" <% if (typeof iconCls == "undefined") { %> style="padding-' + (Common.UI.isRTL() ? 'right' : 'left') + ':10px;"<% } %>><span><%= msg %></span>' +
-                                    '<% if (dontshow) { %><div class="dont-show-checkbox"></div><% } %>' +
-                                '</div>' +
-                            '</div>' +
-                            '<% if (dontshow) { %><div class="separator horizontal" style="width: 100%;"></div><% } %>';
+            const template =  `<div class="info-box"><% if (typeof iconCls !== "undefined") { %><div class="icon <%= iconCls %>"></div><% } %><div class="text" <% if (typeof iconCls == "undefined") { %> style="padding-${Common.UI.isRTL() ? 'right' : 'left'}:10px;"<% } %>><span><%= msg %></span><% if (dontshow) { %><div class="dont-show-checkbox"></div><% } %></div></div><% if (dontshow) { %><div class="separator horizontal" style="width: 100%;"></div><% } %>`;
 
             _.extend(options, {
                 cls: 'alert',
@@ -527,41 +521,41 @@ define([
                 }
             });
 
-            var win = new Common.UI.Window(options),
-               chDontShow = null;
+            const win = new Common.UI.Window(options);
+            let chDontShow = null;
             win.getFocusedComponents = getFocusedComponents;
             win.getDefaultFocusableComponent = getDefaultFocusableComponent;
 
             function autoSize(window) {
-                var text_cnt    = window.getChild('.info-box');
-                var text        = window.getChild('.info-box .text > span');
-                var footer      = window.getChild('.footer');
-                var header      = window.getChild('.header');
-                var body        = window.getChild('.body');
-                var icon        = window.getChild('.icon'),
-                    icon_height = (icon.length>0) ? icon.height() : 0,
-                    icon_width = (icon.length>0) ? $(icon).outerWidth(true) : 0;
-                var check       = window.getChild('.info-box .dont-show-checkbox');
+                const text_cnt    = window.getChild('.info-box');
+                const text        = window.getChild('.info-box .text > span');
+                const footer      = window.getChild('.footer');
+                const header      = window.getChild('.header');
+                const body        = window.getChild('.body');
+                const icon        = window.getChild('.icon');
+                const icon_height = (icon.length>0) ? icon.height() : 0;
+                const icon_width = (icon.length>0) ? $(icon).outerWidth(true) : 0;
+                const check       = window.getChild('.info-box .dont-show-checkbox');
 
                 if (!options.dontshow) body.css('padding-bottom', '10px');
 
-                if ((options.maxwidth || options.minwidth) && options.width=='auto') {
-                    var width = !Common.UI.isRTL() ? (Common.Utils.getPosition(text).left + text.width() + parseInt(text_cnt.css('padding-right'))) :
-                        (parseInt(text_cnt.css('padding-right')) + icon_width + text.width() + parseInt(text_cnt.css('padding-left')));
+                if ((options.maxwidth || options.minwidth) && options.width==='auto') {
+                    const width = !Common.UI.isRTL() ? (Common.Utils.getPosition(text).left + text.width() + Number.parseInt(text_cnt.css('padding-right'))) :
+                        (Number.parseInt(text_cnt.css('padding-right')) + icon_width + text.width() + Number.parseInt(text_cnt.css('padding-left')));
                     if (options.maxwidth && width > options.maxwidth)
                         options.width = options.maxwidth;
                     else if (options.minwidth && width < options.minwidth)
                         options.width = options.minwidth;
                 }
-                if (options.width=='auto') {
-                    text_cnt.height(Math.max(text.height(), icon_height) + ((check.length>0) ? (check.height() + parseInt(check.css('margin-top'))) : 0));
-                    body.height(parseInt(text_cnt.css('height')) + parseInt(footer.css('height')));
-                    var span_el = check.find('span');
-                    var width = !Common.UI.isRTL() ?
-                        (Math.max(text.width(), span_el.length>0 ? Common.Utils.getPosition(span_el).left + span_el.width() : 0) + Common.Utils.getPosition(text).left + parseInt(text_cnt.css('padding-right'))) :
-                        (parseInt(text_cnt.css('padding-right')) + icon_width + parseInt(text_cnt.css('padding-left')) +
+                if (options.width==='auto') {
+                    text_cnt.height(Math.max(text.height(), icon_height) + ((check.length>0) ? (check.height() + Number.parseInt(check.css('margin-top'))) : 0));
+                    body.height(Number.parseInt(text_cnt.css('height')) + Number.parseInt(footer.css('height')));
+                    const span_el = check.find('span');
+                    const width = !Common.UI.isRTL() ?
+                        (Math.max(text.width(), span_el.length>0 ? Common.Utils.getPosition(span_el).left + span_el.width() : 0) + Common.Utils.getPosition(text).left + Number.parseInt(text_cnt.css('padding-right'))) :
+                        (Number.parseInt(text_cnt.css('padding-right')) + icon_width + Number.parseInt(text_cnt.css('padding-left')) +
                             (Math.max(text.width(), check.length>0 ? $(check).find('.checkbox-indeterminate').outerWidth(true) : 0)));
-                    window.setSize(width, parseInt(body.css('height')) + parseInt(header.css('height')));
+                    window.setSize(width, Number.parseInt(body.css('height')) + Number.parseInt(header.css('height')));
                 } else {
                     text.css({
                         'white-space': 'normal',
@@ -569,17 +563,17 @@ define([
                         'word-wrap': 'break-word'
                     });
                     window.setWidth(options.width);
-                    text_cnt.height(Math.max(text.height(), icon_height) + ((check.length>0) ? (check.height() + parseInt(check.css('margin-top'))) : 0));
-                    body.height(parseInt(text_cnt.css('height')) + parseInt(footer.css('height')));
-                    window.setHeight(parseInt(body.css('height')) + parseInt(header.css('height')));
+                    text_cnt.height(Math.max(text.height(), icon_height) + ((check.length>0) ? (check.height() + Number.parseInt(check.css('margin-top'))) : 0));
+                    body.height(Number.parseInt(text_cnt.css('height')) + Number.parseInt(footer.css('height')));
+                    window.setHeight(Number.parseInt(body.css('height')) + Number.parseInt(header.css('height')));
                 }
                 if (text.height()>0 && text.height() < icon_height/2)
-                    text.css({'vertical-align': 'baseline', 'line-height': icon_height+'px'});
+                    text.css({'vertical-align': 'baseline', 'line-height': `${icon_height}px`});
             }
 
             function onBtnClick(event) {
                 if (options.callback) {
-                    options.callback.call(win, event.currentTarget.attributes['result'].value, (chDontShow) ? (chDontShow.getValue() == 'checked') : false);
+                    options.callback.call(win, event.currentTarget.attributes.result.value, (chDontShow) ? (chDontShow.getValue() === 'checked') : false);
                 }
 
                 win.close(true);
@@ -595,14 +589,12 @@ define([
            }
 
             function getDefaultFocusableComponent() {
-                return _.find(win.getFooterButtons(), function (item) {
-                    return (item.$el && item.$el.find('.primary').addBack().filter('.primary').length>0);
-                });
+                return _.find(win.getFooterButtons(), (item) => (item.$el && item.$el.find('.primary').addBack().filter('.primary').length>0));
             }
 
             win.on({
-                'render:after': function(obj){
-                    var footer = obj.getChild('.footer');
+                'render:after': (obj)=> {
+                    const footer = obj.getChild('.footer');
                     options.dontshow && footer.addClass('dontshow');
                     footer.find('.dlg-btn').on('click', onBtnClick);
                     chDontShow = new Common.UI.CheckBox({
@@ -611,8 +603,8 @@ define([
                     });
                     autoSize(obj);
                 },
-                close: function() {
-                    options.callback && options.callback.call(win, 'close');
+                close: () => {
+                    options.callback?.call(win, 'close');
                 }
             });
 
@@ -674,23 +666,23 @@ define([
                 this.initConfig = {};
                 this.binding = {};
 
-                var arrBtns = {ok: this.okButtonText, cancel: this.cancelButtonText,
+                const arrBtns = {ok: this.okButtonText, cancel: this.cancelButtonText,
                     yes: this.yesButtonText, no: this.noButtonText,
                     close: this.closeButtonText};
 
                 if (options.buttons && _.isArray(options.buttons)) {
-                    if (options.primary==undefined)
+                    if (options.primary===undefined)
                         options.primary = 'ok';
-                    var newBtns = [];
-                    _.each(options.buttons, function(b){
-                        if (typeof(b) == 'object') {
+                    const newBtns = [];
+                    _.each(options.buttons, (b)=> {
+                        if (typeof(b) === 'object') {
                             if (b.value !== undefined) {
-                                var item = {value: b.value, text: b.caption, cls: 'auto' + ((b.primary || options.primary==b.value) ? ' primary' : '') + (b.cls ? ' ' + b.cls : '')};
+                                const item = {value: b.value, text: b.caption, cls: `auto${(b.primary || options.primary===b.value) ? ' primary' : ''}${b.cls ? ` ${b.cls}` : ''}`};
                                 b.id && (item.id = b.id);
                                 newBtns.push(item);
                             }
                         } else if (b!==undefined) {
-                            newBtns.push({value: b, text: arrBtns[b], cls: (options.primary==b || _.indexOf(options.primary, b)>-1) ? 'primary' : ''});
+                            newBtns.push({value: b, text: arrBtns[b], cls: (options.primary===b || _.indexOf(options.primary, b)>-1) ? 'primary' : ''});
                         }
                     });
 
@@ -700,20 +692,20 @@ define([
 
                 _.extend(this.initConfig, config, options || {});
 
-                !this.initConfig.id && (this.initConfig.id = 'window-' + this.cid);
+                !this.initConfig.id && (this.initConfig.id = `window-${this.cid}`);
                 !this.initConfig.tpl && (this.initConfig.tpl = '');
 
                 Common.UI.BaseView.prototype.initialize.call(this, this.initConfig);
             },
 
             render: function() {
-                var renderto = this.initConfig.renderTo || document.body;
+                const renderto = this.initConfig.renderTo || document.body;
 
                 $(renderto).append(
                     _.template(template)(this.initConfig)
                 );
 
-                this.$window = $('#' + this.initConfig.id);
+                this.$window = $(`#${this.initConfig.id}`);
 
                 if (Common.Locale.getCurrentLanguage() && Common.Locale.getCurrentLanguage() !== 'en')
                     this.$window.attr('applang', Common.Locale.getCurrentLanguage());
@@ -726,14 +718,14 @@ define([
                     this.binding.dragStop     = _.bind(_mouseup, this);
                     this.binding.dragStart    = _.bind(_dragstart, this);
 
-                    var doclose = function() {
+                    const doclose = function() {
                         if ( this.$window.find('.tool.close').hasClass('disabled') ) return;
                         if (this.initConfig.toolcallback)
                             this.initConfig.toolcallback.call(this);
                         else
-                            (this.initConfig.toolclose=='hide') ? this.hide() : this.close();
+                            (this.initConfig.toolclose==='hide') ? this.hide() : this.close();
                     };
-                    var dohelp = function() {
+                    const dohelp = function() {
                         if ( this.$window.find('.tool.help').hasClass('disabled') ) return;
                         this.fireEvent('help',this);
                     };
@@ -742,8 +734,8 @@ define([
                     this.$window.find('.tool.help').on('click', _.bind(dohelp, this));
                     if (!this.initConfig.modal)
                         Common.Gateway.on('processmouse', _.bind(_onProcessMouse, this));
-                    var tools = this.$window.find('.tools .tool').length;
-                    (tools>0) && this.$window.find('> .header > .title').css({'padding-right': tools * 20 + 'px', 'padding-left': tools * 20 + 'px'});
+                    const tools = this.$window.find('.tools .tool').length;
+                    (tools>0) && this.$window.find('> .header > .title').css({'padding-right': `${tools * 20}px`, 'padding-left': `${tools * 20}px`});
                     this.$window.find('.body').css({
                         'border-top-left-radius': '0px',
                         'border-top-right-radius': '0px'
@@ -759,9 +751,9 @@ define([
                 if (this.initConfig.resizable)
                     this.setResizable(this.initConfig.resizable);
 
-                var me = this;
-                this.binding.winclose = function(obj) {
-                    if (me.$window && me.isVisible() && me.$window == obj.$window) me.close();
+                const me = this;
+                this.binding.winclose = (obj) => {
+                    if (me.$window && me.isVisible() && me.$window === obj.$window) me.close();
                 };
                 this.binding.onAppRepaint = _.bind(this.onAppRepaint, this);
                 this.binding.onThemeChanged = _.bind(this.onThemeChanged, this);
@@ -772,18 +764,17 @@ define([
                 this.initConfig.footerCls && this.$window.find('.footer').addClass(this.initConfig.footerCls);
 
                 this.menuAddAlign = function(menuRoot, left, top) {
-                    var self = this;
                     if (!me.$window.hasClass('notransform')) {
                         me.$window.addClass('notransform');
                         menuRoot.addClass('hidden');
-                        setTimeout(function() {
+                        setTimeout(() => {
                             menuRoot.removeClass('hidden');
                             menuRoot.css({left: left, top: top});
-                            self.options.additionalAlign = null;
+                            this.options.additionalAlign = null;
                         }, 300);
                     } else {
                         menuRoot.css({left: left, top: top});
-                        self.options.additionalAlign = null;
+                        this.options.additionalAlign = null;
                     }
                 };
 
@@ -793,18 +784,18 @@ define([
 
             show: function(x,y) {
                 if (this.initConfig.modal) {
-                    var mask = _getMask();
+                    const mask = _getMask();
                     if (this.options.animate === false || this.options.animate && this.options.animate.mask === false) { // animate.mask = false -> don't animate mask
-                        mask.attr('counter', parseInt(mask.attr('counter'))+1);
+                        mask.attr('counter', Number.parseInt(mask.attr('counter'))+1);
                         mask.show();
                     } else {
-                        var maskOpacity = this.initConfig.transparentMask ? 0 : $(':root').css('--modal-window-mask-opacity');
+                        const maskOpacity = this.initConfig.transparentMask ? 0 : $(':root').css('--modal-window-mask-opacity');
 
                         mask.css('opacity', 0);
-                        mask.attr('counter', parseInt(mask.attr('counter'))+1);
+                        mask.attr('counter', Number.parseInt(mask.attr('counter'))+1);
                         mask.show();
 
-                        setTimeout(function () {
+                        setTimeout(() => {
                             mask.css(_getTransformation(maskOpacity));
                         }, 1);
                     }
@@ -830,18 +821,16 @@ define([
                     this.$window.show();
                 }
 
-                $(document).on('keydown.' + this.cid, this.binding.keydown);
-                if(this.initConfig.automove || this.initConfig.autoPosOnResize != 'none'){
+                $(document).on(`keydown.${this.cid}`, this.binding.keydown);
+                if(this.initConfig.automove || this.initConfig.autoPosOnResize !== 'none'){
                     this.binding.windowresize = _.bind(_onResizeWindow, this);
                     $(window).on('resize', this.binding.windowresize);
                 }
 
-                this.initConfig.autoPosOnResize == 'relative' && _calcWindowPositionRatio.call(this);
+                this.initConfig.autoPosOnResize === 'relative' && _calcWindowPositionRatio.call(this);
 
-                var me = this;
-
-                setTimeout(function () {
-                    me.fireEvent('animate:before', me);
+                setTimeout(() => {
+                    this.fireEvent('animate:before', this);
                 }, 10);
 
                 if (this.options.animate !== false) {
@@ -853,8 +842,8 @@ define([
                         opacity: 0
                     });
 
-                    setTimeout(function () {
-                        me.$window.css({
+                    setTimeout(() => {
+                        this.$window.css({
                             '-webkit-transition': '0.2s opacity, 0.2s -webkit-transform',
                             '-webkit-transform': 'scale(1)',
                             '-moz-transition': '0.2s opacity, 0.2s -moz-transform',
@@ -865,21 +854,21 @@ define([
                             '-o-transform': 'scale(1)',
                             'opacity': '1'
                         });
-                        setTimeout(function () {
-                            me.fireEvent('animate:after', me);
+                        setTimeout(() => {
+                            this.fireEvent('animate:after', this);
                         }, 210);
                     }, 1);
 
-                    setTimeout(function () {
-                        me.$window.addClass('notransform');
-                        me.fireEvent('show', me);
+                    setTimeout(() => {
+                        this.$window.addClass('notransform');
+                        this.fireEvent('show', this);
                     }, (this.initConfig.modal) ? 1000 : 350);
                 } else {
                     this.$window.css({opacity: 1});
                     this.$window.addClass('notransform');
                     this.fireEvent('show', this);
-                    setTimeout(function () {
-                        me.fireEvent('animate:after', me);
+                    setTimeout(() => {
+                        this.fireEvent('animate:after', this);
                     }, 10);
                 }
 
@@ -887,7 +876,7 @@ define([
             },
 
             close: function(suppressevent) {
-                $(document).off('keydown.' + this.cid);
+                $(document).off(`keydown.${this.cid}`);
                 this.binding.windowresize && $(window).off('resize', this.binding.windowresize);
                 if ( this.initConfig.header ) {
                     this.$window.find('.header').off('mousedown', this.binding.dragStart);
@@ -897,9 +886,9 @@ define([
                 Common.NotificationCenter.off('uitheme:changed', this.binding.onThemeChanged);
 
                 if (this.initConfig.modal) {
-                    var mask = _getMask(),
-                        hide_mask = true;
-                    mask.attr('counter', parseInt(mask.attr('counter'))-1);
+                    const mask = _getMask();
+                    let hide_mask = true;
+                    mask.attr('counter', Number.parseInt(mask.attr('counter'))-1);
 
                     if (this.$lastmodal.length > 0) {
                         this.$lastmodal.removeClass('dethrone');
@@ -908,25 +897,25 @@ define([
 
                     if ( hide_mask ) {
                         if (this.options.animate !== false) {
-                            var maskOpacity = this.initConfig.transparentMask ? 0 : $(':root').css('--modal-window-mask-opacity');
+                            const maskOpacity = this.initConfig.transparentMask ? 0 : $(':root').css('--modal-window-mask-opacity');
                             mask.css(_getTransformation(0));
 
-                            setTimeout(function () {
-                                if (parseInt(mask.attr('counter'))<1) {
+                            setTimeout(() => {
+                                if (Number.parseInt(mask.attr('counter'))<1) {
                                     mask.css('opacity', maskOpacity);
                                     mask.hide();
                                     mask.attr('counter', 0);
                                 }
                             }, 300);
                         } else {
-                            if (parseInt(mask.attr('counter'))<1) {
+                            if (Number.parseInt(mask.attr('counter'))<1) {
                                 mask.hide();
                                 mask.attr('counter', 0);
                             }
                         }
                     }
 
-                    Common.NotificationCenter.trigger('modal:close', this, hide_mask && (parseInt(mask.attr('counter'))<1));
+                    Common.NotificationCenter.trigger('modal:close', this, hide_mask && (Number.parseInt(mask.attr('counter'))<1));
                 }
 
                 this.$window.remove();
@@ -935,13 +924,13 @@ define([
             },
 
             hide: function() {
-                $(document).off('keydown.' + this.cid);
+                $(document).off(`keydown.${this.cid}`);
                 this.binding.windowresize && $(window).off('resize', this.binding.windowresize);
                 if (this.$window) {
                     if (this.initConfig.modal) {
-                        var mask = _getMask(),
-                            hide_mask = true;
-                        mask.attr('counter', parseInt(mask.attr('counter'))-1);
+                        const mask = _getMask();
+                        let hide_mask = true;
+                        mask.attr('counter', Number.parseInt(mask.attr('counter'))-1);
 
                         if (this.$lastmodal.length > 0) {
                             this.$lastmodal.removeClass('dethrone');
@@ -950,24 +939,24 @@ define([
 
                         if ( hide_mask ) {
                             if (this.options.animate !== false) {
-                                var maskOpacity = this.initConfig.transparentMask ? 0 : $(':root').css('--modal-window-mask-opacity');
+                                const maskOpacity = this.initConfig.transparentMask ? 0 : $(':root').css('--modal-window-mask-opacity');
                                 mask.css(_getTransformation(0));
 
-                                setTimeout(function () {
-                                    if (parseInt(mask.attr('counter'))<1) {
+                                setTimeout(() => {
+                                    if (Number.parseInt(mask.attr('counter'))<1) {
                                         mask.css('opacity', maskOpacity);
                                         mask.hide();
                                         mask.attr('counter', 0);
                                     }
                                 }, 300);
                             } else {
-                                if (parseInt(mask.attr('counter'))<1) {
+                                if (Number.parseInt(mask.attr('counter'))<1) {
                                     mask.hide();
                                     mask.attr('counter', 0);
                                 }
                             }
                         }
-                        Common.NotificationCenter.trigger('modal:hide', this, hide_mask && (parseInt(mask.attr('counter'))<1));
+                        Common.NotificationCenter.trigger('modal:hide', this, hide_mask && (Number.parseInt(mask.attr('counter'))<1));
                     }
                     this.$window.hide();
                     this.$window.removeClass('notransform');
@@ -986,33 +975,33 @@ define([
 
             setWidth: function(width) {
                 if (this.$window && width >= 0) {
-                    var min = parseInt(this.$window.css('min-width'));
+                    const min = Number.parseInt(this.$window.css('min-width'));
                     width < min && (width = min);
-                    width -= (parseInt(this.$window.css('border-left-width')) + parseInt(this.$window.css('border-right-width')));
+                    width -= (Number.parseInt(this.$window.css('border-left-width')) + Number.parseInt(this.$window.css('border-right-width')));
                     this.$window.width(width);
                 }
             },
 
             getWidth: function() {
-                return this.$window ? parseInt(this.$window.css('width')) : undefined;
+                return this.$window ? Number.parseInt(this.$window.css('width')) : undefined;
             },
 
             setHeight: function(height) {
                 if (this.$window && height >= 0) {
-                    var min = parseInt(this.$window.css('min-height'));
+                    const min = Number.parseInt(this.$window.css('min-height'));
                     height < min && (height = min);
-                    height -= (parseInt(this.$window.css('border-bottom-width')) + parseInt(this.$window.css('border-top-width')));
+                    height -= (Number.parseInt(this.$window.css('border-bottom-width')) + Number.parseInt(this.$window.css('border-top-width')));
                     this.$window.height(height);
 
                     if (this.initConfig.header)
-                        height -= parseInt(this.$window.find('> .header').css('height'));
+                        height -= Number.parseInt(this.$window.find('> .header').css('height'));
 
                     this.$window.find('> .body').css('height', height);
                 }
             },
 
             getHeight: function() {
-                return this.$window ? parseInt(this.$window.css('height')) : undefined;
+                return this.$window ? Number.parseInt(this.$window.css('height')) : undefined;
             },
 
             setSize: function(w, h) {
@@ -1033,11 +1022,11 @@ define([
             },
 
             getLeft: function() {
-                return parseInt(this.$window.css('left'));
+                return Number.parseInt(this.$window.css('left'));
             },
 
             getTop: function() {
-                return parseInt(this.$window.css('top'));
+                return Number.parseInt(this.$window.css('top'));
             },
 
             setPosition: function(x, y) {
@@ -1051,20 +1040,13 @@ define([
             },
 
             isVisible: function() {
-                return this.$window && this.$window.is(':visible');
+                return this.$window?.is(':visible');
             },
 
             setResizable: function(resizable, minSize, maxSize) {
                 if (resizable !== this.resizable) {
                     if (resizable) {
-                        var bordersTemplate = '<div class="resize-border left bottom" style="cursor: sw-resize;"></div>' +
-                            '<div class="resize-border left" style="top:' + ((this.initConfig.header) ? '33' : '5') + 'px; bottom: 5px; height: auto; border-right-style: solid; cursor: w-resize;"></div>' +
-                            '<div class="resize-border bottom" style="left: 4px; right: 4px; width: auto; z-index: 2; border-top-style: solid; cursor: s-resize;"></div>' +
-                            '<div class="resize-border right bottom" style="cursor: se-resize;"></div>' +
-                            '<div class="resize-border right" style="top:' + ((this.initConfig.header) ? '33' : '5') + 'px; bottom: 5px; height: auto; border-left-style: solid; cursor: e-resize;"></div>' +
-                            '<div class="resize-border left top" style="cursor: nw-resize;"></div>' +
-                            '<div class="resize-border top" style="left: 4px; right: 4px; width: auto; z-index: 2; border-bottom-style:' + ((this.initConfig.header) ? "none" : "solid") + '; cursor: n-resize;"></div>' +
-                            '<div class="resize-border right top" style="cursor: ne-resize;"></div>';
+                        let bordersTemplate = `<div class="resize-border left bottom" style="cursor: sw-resize;"></div><div class="resize-border left" style="top:${(this.initConfig.header) ? '33' : '5'}px; bottom: 5px; height: auto; border-right-style: solid; cursor: w-resize;"></div><div class="resize-border bottom" style="left: 4px; right: 4px; width: auto; z-index: 2; border-top-style: solid; cursor: s-resize;"></div><div class="resize-border right bottom" style="cursor: se-resize;"></div><div class="resize-border right" style="top:${(this.initConfig.header) ? '33' : '5'}px; bottom: 5px; height: auto; border-left-style: solid; cursor: e-resize;"></div><div class="resize-border left top" style="cursor: nw-resize;"></div><div class="resize-border top" style="left: 4px; right: 4px; width: auto; z-index: 2; border-bottom-style:${(this.initConfig.header) ? "none" : "solid"}; cursor: n-resize;"></div><div class="resize-border right top" style="cursor: ne-resize;"></div>`;
                         if (this.initConfig.header)
                             bordersTemplate += '<div class="resize-border left" style="top: 5px; height: 28px; cursor: w-resize;"></div>' +
                                                '<div class="resize-border right" style="top: 5px; height: 28px; cursor: e-resize;"></div>';
@@ -1121,19 +1103,17 @@ define([
                 this.initConfig.enableKeyEvents && (this.pauseKeyEvents = true);
             },
 
-            onPrimary: function() {},
+            onPrimary: () => {},
 
-            getFocusedComponents: function() {
-                return [];
-            },
+            getFocusedComponents: () => [],
 
-            getDefaultFocusableComponent: function() {
+            getDefaultFocusableComponent: () => {
             },
 
             getFooterButtons: function() {
                 if (!this.footerButtons) {
-                    var arr = [];
-                    this.$window.find('.dlg-btn').each(function(index, item) {
+                    const arr = [];
+                    this.$window.find('.dlg-btn').each((index, item) => {
                         arr.push(new Common.UI.Button({
                             el: $(item)
                         }));

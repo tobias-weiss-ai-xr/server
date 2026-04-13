@@ -29,23 +29,23 @@
  *
  */
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 if (Common.UI === undefined) {
     Common.UI = {};
 }
 
 Common.UI.ExternalUsers = new( function() {
-    var externalUsers = [],
-        isUsersLoading = false,
-        externalUsersInfo = [],
-        isUsersInfoLoading = false,
-        stackUsersInfoResponse = [],
-        requestedUsersInfo = [],
-        api,
-        userColors = [];
+    let externalUsers = [];
+    let isUsersLoading = false;
+    let externalUsersInfo = [];
+    let isUsersInfoLoading = false;
+    const stackUsersInfoResponse = [];
+    let requestedUsersInfo = [];
+    let api;
+    const userColors = [];
 
-    var _get = function(type, ids, from, count, search) {
+    const _get = (type, ids, from, count, search) => {
         if (type==='info') {
             (typeof ids !== 'object') && (ids = [ids]);
             ids && (ids = _.uniq(ids));
@@ -70,20 +70,20 @@ Common.UI.ExternalUsers = new( function() {
         }
     };
 
-    var _getImage = function(id, request) {
-        var image,
-            user = _.findWhere(externalUsersInfo, {id: id})
+    const _getImage = (id, request) => {
+        let image
+        const user = _.findWhere(externalUsersInfo, {id: id})
         user && (image = user.image);
         request && (image===undefined) && _get('info', [id]);
         return image;
     };
 
-    var _setImage = function(id, image) {
-        var user = _.findWhere(externalUsersInfo, {id: id})
+    const _setImage = (id, image) => {
+        const user = _.findWhere(externalUsersInfo, {id: id})
         user ? (user.image = image) : externalUsersInfo.push({id: id, image: image});
     };
 
-    var _onUsersInfo = function(data) {
+    const _onUsersInfo = (data) => {
         if (data.c !== 'info') return;
 
         if (isUsersInfoLoading) {
@@ -93,9 +93,9 @@ Common.UI.ExternalUsers = new( function() {
 
         isUsersInfoLoading = true;
 
-        var append = [];
-        data.users && _.each(data.users, function(item) {
-            var user = _.findWhere(externalUsersInfo, {id: item.id});
+        const append = [];
+        data.users && _.each(data.users, (item) => {
+            const user = _.findWhere(externalUsersInfo, {id: item.id});
             if (user) {
                 user.image = item.image;
                 user.name = item.name;
@@ -110,35 +110,35 @@ Common.UI.ExternalUsers = new( function() {
             _onUsersInfo(stackUsersInfoResponse.shift());
     };
 
-    var _init = function(canRequestUsers, _api) {
+    const _init = (canRequestUsers, _api) => {
         Common.Gateway.on('setusers', _onUsersInfo);
         api = _api;
         if (!canRequestUsers) return;
 
-        Common.Gateway.on('setusers', function(data) {
+        Common.Gateway.on('setusers', (data) => {
             if (data.c === 'info') return;
             if (data.users===null) {// clear user lists
                 externalUsers = [];
                 return;
             }
-            var type = data.c || 'mention',
-                users = data.users || [];
+            const type = data.c || 'mention';
+            const users = data.users || [];
             if (data.isPaginated===undefined) // use old scheme
                 externalUsers[type] = users;
             isUsersLoading = false;
             Common.NotificationCenter.trigger('mentions:setusers', type, users, data.isPaginated);
         });
 
-        Common.NotificationCenter.on('mentions:clearusers',   function(type) {
+        Common.NotificationCenter.on('mentions:clearusers',   (type) => {
             if (type !== 'info')
                 externalUsers[type || 'mention'] = undefined;
         });
     };
 
-    var _getColor = function(id, intValue) {
+    const _getColor = (id, intValue) => {
         if (!userColors[id]) {
-            var color = api.asc_getUserColorById(id);
-            userColors[id] = ["#"+("000000"+color.toString(16)).substr(-6), color];
+            const color = api.asc_getUserColorById(id);
+            userColors[id] = [`#${(`000000${color.toString(16)}`).substr(-6)}`, color];
         }
 
         return intValue ? userColors[id][1] : userColors[id][0];

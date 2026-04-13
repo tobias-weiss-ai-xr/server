@@ -30,15 +30,13 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView'
-], function () {
-    'use strict';
+], () => {
 
-    Common.UI.UpDownPicker = Common.UI.BaseView.extend((function(){
-        return {
+    Common.UI.UpDownPicker = Common.UI.BaseView.extend((()=> ({
             options: {
                 caption: '',
                 iconUpCls: 'btn-zoomup',
@@ -80,7 +78,7 @@ define([
             },
 
             render: function() {
-                var el = this.$el || $(this.el);
+                const el = this.$el || $(this.el);
                 el.html($(this.template({
                     options: this.options
                 })));
@@ -106,6 +104,5 @@ define([
 
                 this.disabled = disabled;
             }
-        }
-    })())
+        }))())
 });

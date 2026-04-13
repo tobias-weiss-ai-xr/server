@@ -42,23 +42,20 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/ComboBox'
-], function () {
-    'use strict';
+], () => {
 
     Common.UI.BordersModel = Backbone.Model.extend({
-        defaults: function() {
-            return {
+        defaults: () => ({
                 value: null,
                 displayValue: null,
                 pxValue: null,
                 id: Common.UI.getId(),
                 imgId: undefined
-            }
-        }
+            })
     });
 
     Common.UI.BordersStore = Backbone.Collection.extend({
@@ -94,15 +91,15 @@ define([
         ].join('')),
 
         initialize : function(options) {
-            var txtPt = Common.Utils.Metric.getMetricName(Common.Utils.Metric.c_MetricUnits.pt),
-                data = [
-                    {displayValue: '0.5 ' + txtPt,   value: 0.5, pxValue: 0.5,  imgId: 'half-pt'},
-                    {displayValue: '1 ' + txtPt,     value: 1,   pxValue: 1,    imgId: 'one-pt'},
-                    {displayValue: '1.5 ' + txtPt,   value: 1.5, pxValue: 2,    imgId: 'one-and-half-pt'},
-                    {displayValue: '2.25 ' + txtPt,  value: 2.25,pxValue: 3,    imgId: 'two-and-quarter-pt'},
-                    {displayValue: '3 ' + txtPt,     value: 3,   pxValue: 4,    imgId: 'three-pt'},
-                    {displayValue: '4.5 ' + txtPt,   value: 4.5, pxValue: 6,    imgId: 'four-and-half-pt'},
-                    {displayValue: '6 ' + txtPt,     value: 6,   pxValue: 8,    imgId: 'six-pt'}
+            const txtPt = Common.Utils.Metric.getMetricName(Common.Utils.Metric.c_MetricUnits.pt);
+            const data = [
+                    {displayValue: `0.5 ${txtPt}`,   value: 0.5, pxValue: 0.5,  imgId: 'half-pt'},
+                    {displayValue: `1 ${txtPt}`,     value: 1,   pxValue: 1,    imgId: 'one-pt'},
+                    {displayValue: `1.5 ${txtPt}`,   value: 1.5, pxValue: 2,    imgId: 'one-and-half-pt'},
+                    {displayValue: `2.25 ${txtPt}`,  value: 2.25,pxValue: 3,    imgId: 'two-and-quarter-pt'},
+                    {displayValue: `3 ${txtPt}`,     value: 3,   pxValue: 4,    imgId: 'three-pt'},
+                    {displayValue: `4.5 ${txtPt}`,   value: 4.5, pxValue: 6,    imgId: 'four-and-half-pt'},
+                    {displayValue: `6 ${txtPt}`,     value: 6,   pxValue: 8,    imgId: 'six-pt'}
                 ];
             if (options.allowNoBorders !== false)
                 data.unshift({displayValue: this.txtNoBorders, value: 0, pxValue: 0 });
@@ -122,13 +119,13 @@ define([
         },
 
         itemClicked: function (e) {
-            var el = $(e.currentTarget).parent();
+            const el = $(e.currentTarget).parent();
 
             this._selectedItem = this.store.findWhere({
                 id: el.attr('id')
             });
             if (this._selectedItem) {
-                var $selectedItems = $('.selected', $(this.el));
+                const $selectedItems = $('.selected', $(this.el));
                 $selectedItems.removeClass('selected');
                 $selectedItems.attr('aria-checked', false);
                 el.addClass('selected');
@@ -141,13 +138,13 @@ define([
         },
 
         updateFormControl: function(record) {
-            var formcontrol = $(this.el).find('.form-control');
-            var image = formcontrol.find('> .img-line');
-            var text = formcontrol.find('> .text');
+            const formcontrol = $(this.el).find('.form-control');
+            const image = formcontrol.find('> .img-line');
+            const text = formcontrol.find('> .text');
 
             if (record.get('value')>0) {
-                var elm = formcontrol.find('use');
-                (elm.length>0)  && elm[0].setAttribute('xlink:href', '#' + record.get('imgId'));
+                const elm = formcontrol.find('use');
+                (elm.length>0)  && elm[0].setAttribute('xlink:href', `#${record.get('imgId')}`);
                 image.show();
                 text.hide();
             } else {
@@ -157,19 +154,19 @@ define([
         },
 
         setValue: function(value) {
-            this._selectedItem = (value===null || value===undefined) ? undefined : _.find(this.store.models, function(item) {
+            this._selectedItem = (value===null || value===undefined) ? undefined : _.find(this.store.models, (item) => {
                 if ( value<item.attributes.value+0.01 && value>item.attributes.value-0.01) {
                     return true;
                 }
             });
 
-            var $selectedItems = $('.selected', $(this.el));
+            const $selectedItems = $('.selected', $(this.el));
             $selectedItems.removeClass('selected');
             $selectedItems.attr('aria-checked', false);
 
             if (this._selectedItem) {
                 this.updateFormControl(this._selectedItem);
-                var $newSelectedItem = $('#' + this._selectedItem.get('id'), $(this.el));
+                const $newSelectedItem = $(`#${this._selectedItem.get('id')}`, $(this.el));
                 $newSelectedItem.addClass('selected');
                 $newSelectedItem.attr('aria-checked', true);
             } else {
@@ -178,7 +175,7 @@ define([
         },
 
         focus: function() {
-            this._formControl && this._formControl.focus();
+            this._formControl?.focus();
         },
 
         txtNoBorders: 'No Borders'
@@ -221,15 +218,15 @@ define([
 
         initialize : function(options) {
             this.txtNoBorders = options.txtNoBorders || this.txtNoBorders;
-            var txtPt = Common.Utils.Metric.getMetricName(Common.Utils.Metric.c_MetricUnits.pt),
-                data = [
-                    {displayValue: '0.5 ' + txtPt,   value: 0.5, pxValue: 0.5,  imgId: 'half-pt'},
-                    {displayValue: '1 ' + txtPt,     value: 1,   pxValue: 1,    imgId: 'one-pt'},
-                    {displayValue: '1.5 ' + txtPt,   value: 1.5, pxValue: 2,    imgId: 'one-and-half-pt'},
-                    {displayValue: '2.25 ' + txtPt,  value: 2.25,pxValue: 3,    imgId: 'two-and-quarter-pt'},
-                    {displayValue: '3 ' + txtPt,     value: 3,   pxValue: 4,    imgId: 'three-pt'},
-                    {displayValue: '4.5 ' + txtPt,   value: 4.5, pxValue: 6,    imgId: 'four-and-half-pt'},
-                    {displayValue: '6 ' + txtPt,     value: 6,   pxValue: 8,    imgId: 'six-pt'}
+            const txtPt = Common.Utils.Metric.getMetricName(Common.Utils.Metric.c_MetricUnits.pt);
+            const data = [
+                    {displayValue: `0.5 ${txtPt}`,   value: 0.5, pxValue: 0.5,  imgId: 'half-pt'},
+                    {displayValue: `1 ${txtPt}`,     value: 1,   pxValue: 1,    imgId: 'one-pt'},
+                    {displayValue: `1.5 ${txtPt}`,   value: 1.5, pxValue: 2,    imgId: 'one-and-half-pt'},
+                    {displayValue: `2.25 ${txtPt}`,  value: 2.25,pxValue: 3,    imgId: 'two-and-quarter-pt'},
+                    {displayValue: `3 ${txtPt}`,     value: 3,   pxValue: 4,    imgId: 'three-pt'},
+                    {displayValue: `4.5 ${txtPt}`,   value: 4.5, pxValue: 6,    imgId: 'four-and-half-pt'},
+                    {displayValue: `6 ${txtPt}`,     value: 6,   pxValue: 8,    imgId: 'six-pt'}
                 ];
 
             if (options.allowNoBorders !== false)
@@ -298,12 +295,12 @@ define([
 
         updateFormControl: function(record) {
             if (record) {
-               var elm = $(this.el).find('.form-control > .img-line use');
+               const elm = $(this.el).find('.form-control > .img-line use');
                 if(elm.length) {
-                    var height = Math.ceil(record.get('pxValue'));
+                    let height = Math.ceil(record.get('pxValue'));
                     height = height ? height : 3;
-                    elm[0].setAttribute('xlink:href', '#' + record.get('imgId'));
-                    elm.parent().css('height', height + 'px');
+                    elm[0].setAttribute('xlink:href', `#${record.get('imgId')}`);
+                    elm.parent().css('height', `${height}px`);
                 }
                 $(this.el).find('.form-control > .img-line').show();
             }
@@ -312,19 +309,19 @@ define([
         },
 
         setValue: function(value) {
-            this._selectedItem = (value===null || value===undefined) ? undefined : _.find(this.store.models, function(item) {
+            this._selectedItem = (value===null || value===undefined) ? undefined : _.find(this.store.models, (item) => {
                 if ( value<item.attributes.value+0.01 && value>item.attributes.value-0.01) {
                     return true;
                 }
             });
 
-            var $selectedItems = $('.selected', $(this.el));
+            const $selectedItems = $('.selected', $(this.el));
             $selectedItems.removeClass('selected');
             $selectedItems.attr('aria-checked', false);
 
             this.updateFormControl(this._selectedItem);
             if (this._selectedItem) {
-                var $newSelectedItem = $('#' + this._selectedItem.get('id'), $(this.el));
+                const $newSelectedItem = $(`#${this._selectedItem.get('id')}`, $(this.el));
                 $newSelectedItem.addClass('selected');
                 $newSelectedItem.attr('aria-checked', true);
             }
@@ -362,13 +359,13 @@ define([
         },
 
         itemClicked: function (e) {
-            var el = $(e.currentTarget).parent();
+            const el = $(e.currentTarget).parent();
 
             this._selectedItem = this.store.findWhere({
                 id: el.attr('id')
             });
             if (this._selectedItem) {
-                var $selectedItems = $('.selected', $(this.el));
+                const $selectedItems = $('.selected', $(this.el));
                 $selectedItems.removeClass('selected');
                 $selectedItems.attr('aria-checked', false);
                 el.addClass('selected');
@@ -381,10 +378,10 @@ define([
         },
 
         updateFormControl: function(record) {
-            var formcontrol = $(this.el).find('.form-control > div');
+            const formcontrol = $(this.el).find('.form-control > div');
 
             formcontrol[0].innerHTML = record.get('displayValue');
-            if (record.get('value')!=-1) {
+            if (record.get('value')!==-1) {
                 formcontrol.css({'margin-top': '0'});
                 formcontrol.css(record.get('styleObj'));
             } else {
@@ -394,20 +391,20 @@ define([
         },
 
         setValue: function(value) {
-            var obj;
+            let obj;
             this._selectedItem = this.store.findWhere((obj={}, obj[this.valueField]=value, obj));
 
-            var $selectedItems = $('.selected', $(this.el));
+            const $selectedItems = $('.selected', $(this.el));
             $selectedItems.removeClass('selected');
             $selectedItems.attr('aria-checked', false);
 
             if (this._selectedItem) {
                 this.updateFormControl(this._selectedItem);
-                var $newSelectedItem = $('#' + this._selectedItem.get('id'), $(this.el));
+                const $newSelectedItem = $(`#${this._selectedItem.get('id')}`, $(this.el));
                 $newSelectedItem.addClass('selected');
                 $newSelectedItem.attr('aria-checked', true);
             } else {
-                var formcontrol = $(this.el).find('.form-control > div');
+                const formcontrol = $(this.el).find('.form-control > div');
                 formcontrol[0].innerHTML = value;
                 formcontrol.css('margin-top', '1px');
                 formcontrol.css({'color': '', 'text-align': '', 'background': '', 'border': ''});
@@ -439,7 +436,7 @@ define([
 
             if (!_.isUndefined(this.scroller)) {
                 this.scroller.destroy();
-                delete this.scroller;
+                this.scroller = undefined;
             }
             this.scroller = new Common.UI.Scroller(_.extend({
                 el: $('.dropdown-menu', this.cmpEl),
@@ -475,7 +472,7 @@ define([
         },
 
         focus: function() {
-            this._formControl && this._formControl.focus();
+            this._formControl?.focus();
         }
 
     }, Common.UI.ComboBoxColor || {}));
@@ -514,13 +511,13 @@ define([
         },
 
         itemClicked: function (e) {
-            var el = $(e.currentTarget).parent();
+            const el = $(e.currentTarget).parent();
 
             this._selectedItem = this.store.findWhere({
                 id: el.attr('id')
             });
             if (this._selectedItem) {
-                var $selectedItems = $('.selected', $(this.el));
+                const $selectedItems = $('.selected', $(this.el));
                 $selectedItems.removeClass('selected');
                 $selectedItems.attr('aria-checked', false);
                 el.addClass('selected');
@@ -533,12 +530,12 @@ define([
         },
 
         updateFormControl: function(record) {
-            var formcontrol = $(this.el).find('.form-control > div');
+            const formcontrol = $(this.el).find('.form-control > div');
 
-            if (record.get('value')!=-1) {
-                var str = '';
-                _.each(record.get('data').iconSet, function(icon) {
-                    str += '<img src="' + record.get('data').icons.at(icon-1).get("icon") + '">';
+            if (record.get('value')!==-1) {
+                let str = '';
+                _.each(record.get('data').iconSet, (icon) => {
+                    str += `<img src="${record.get('data').icons.at(icon-1).get("icon")}">`;
                 });
                 formcontrol[0].innerHTML = str;
                 formcontrol.css({'margin-top': '0'});
@@ -549,20 +546,20 @@ define([
         },
 
         setValue: function(value) {
-            var obj;
+            let obj;
             this._selectedItem = this.store.findWhere((obj={}, obj[this.valueField]=value, obj));
 
-            var $selectedItems = $('.selected', $(this.el));
+            const $selectedItems = $('.selected', $(this.el));
             $selectedItems.removeClass('selected');
             $selectedItems.attr('aria-checked', false);
 
             if (this._selectedItem) {
                 this.updateFormControl(this._selectedItem);
-                var $newSelectedItem = $('#' + this._selectedItem.get('id'), $(this.el));
+                const $newSelectedItem = $(`#${this._selectedItem.get('id')}`, $(this.el));
                 $newSelectedItem.addClass('selected');
                 $newSelectedItem.attr('aria-checked', true);
             } else {
-                var formcontrol = $(this.el).find('.form-control > div');
+                const formcontrol = $(this.el).find('.form-control > div');
                 formcontrol[0].innerHTML = value;
                 formcontrol.css({'margin-top': '1px'});
             }
@@ -597,7 +594,7 @@ define([
 
             if (!_.isUndefined(this.scroller)) {
                 this.scroller.destroy();
-                delete this.scroller;
+                this.scroller = undefined;
             }
             this.scroller = new Common.UI.Scroller(_.extend({
                 el: $('.dropdown-menu', this.cmpEl),
@@ -609,7 +606,7 @@ define([
         },
 
         focus: function() {
-            this._formControl && this._formControl.focus();
+            this._formControl?.focus();
         }
 
     }, Common.UI.ComboBoxIcons || {}));

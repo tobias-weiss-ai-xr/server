@@ -23,10 +23,9 @@
  *
  */
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () {
-    'use strict';
+define([], () => {
 
     Common.UI.MaskedField = Common.UI.BaseView.extend({
         options : {
@@ -36,26 +35,24 @@ define([], function () {
 
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
-
-            var me = this,
-                el = me.$el || $(this.el);
+            const el = this.$el || $(this.el);
 
             el.addClass('user-select form-control');
-            el.attr('maxlength', me.options.maxLength);
-            el.on('keypress', function(e) {
-                var charCode = String.fromCharCode(e.which);
-                if(!me.options.maskExp.test(charCode) && !e.ctrlKey){
-                    if (e.keyCode==Common.UI.Keys.RETURN) me.trigger('changed', me, el.val());
+            el.attr('maxlength', this.options.maxLength);
+            el.on('keypress', (e) => {
+                const charCode = String.fromCharCode(e.which);
+                if(!this.options.maskExp.test(charCode) && !e.ctrlKey){
+                    if (e.keyCode===Common.UI.Keys.RETURN) this.trigger('changed', this, el.val());
                     e.preventDefault();
                     e.stopPropagation();
                 }
 
             });
-            el.on('input', function(e) {
-                me.trigger('change', me, el.val());
+            el.on('input', (e) => {
+                this.trigger('change', this, el.val());
             });
-            el.on('blur',  function(e) {
-                me.trigger('changed', me, el.val());
+            el.on('blur',  (e) => {
+                this.trigger('changed', this, el.val());
             });
         },
 

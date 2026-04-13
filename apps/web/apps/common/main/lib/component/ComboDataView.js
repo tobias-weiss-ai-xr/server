@@ -30,13 +30,12 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'common/main/lib/component/DataView'
-], function () {
-    'use strict';
+], () => {
 
     Common.UI.ComboDataView = Common.UI.BaseView.extend({
         options : {
@@ -91,7 +90,7 @@ define([
             this.fillOnChangeVisibility = this.options.fillOnChangeVisibility || false;
             this.itemTemplate   = this.options.itemTemplate || _.template([
                 '<div class="style" id="<%= id %>">',
-                    '<img src="<%= imageUrl %>" width="' + this.itemWidth + '" height="' + this.itemHeight + '" + <% if(typeof imageUrl === "undefined" || imageUrl===null || imageUrl==="") { %> style="visibility: hidden;" <% } %>/>',
+                    `<img src="<%= imageUrl %>" width="${this.itemWidth}" height="${this.itemHeight}" + <% if(typeof imageUrl === "undefined" || imageUrl===null || imageUrl==="") { %> style="visibility: hidden;" <% } %>/>`,
                     '<% if (typeof title !== "undefined") {%>',
                         '<span class="title"><%= title %></span>',
                     '<% } %>',
@@ -125,7 +124,7 @@ define([
                 parentMenu: this.openButton.menu,
                 outerMenu:  this.options.additionalMenuItems ? {menu: this.openButton.menu, index: 0} : undefined,
                 restoreHeight: this.menuMaxHeight,
-                style: 'max-height: '+this.menuMaxHeight+'px;',
+                style: `max-height: ${this.menuMaxHeight}px;`,
                 enableKeyEvents: this.options.enableKeyEvents,
                 groups: this.groups,
                 store: this.store,
@@ -144,74 +143,73 @@ define([
 
         render: function(parentEl) {
             if (!this.rendered) {
-                var me = this;
 
-                me.trigger('render:before', me);
+                this.trigger('render:before', this);
 
-                me.cmpEl = me.$el || $(me.el);
+                this.cmpEl = this.$el || $(this.el);
 
-                var templateEl = me.template({
-                    id      : me.id,
-                    cls     : me.cls,
-                    style   : me.style
+                const templateEl = this.template({
+                    id      : this.id,
+                    cls     : this.cls,
+                    style   : this.style
                 });
 
                 if (parentEl) {
-                    me.setElement(parentEl, false);
+                    this.setElement(parentEl, false);
 
-                    me.cmpEl = $(templateEl);
+                    this.cmpEl = $(templateEl);
 
-                    parentEl.html(me.cmpEl);
+                    parentEl.html(this.cmpEl);
                   } else {
-                    me.cmpEl.html(templateEl);
+                    this.cmpEl.html(templateEl);
                 }
 
-                me.rootWidth  = me.cmpEl.width();
-                me.rootHeight = me.cmpEl.height();
+                this.rootWidth  = this.cmpEl.width();
+                this.rootHeight = this.cmpEl.height();
 
-                me.fieldPicker.render($('.view', me.cmpEl));
-                me.openButton.render($('.button', me.cmpEl));
-                me.menuPicker.render($('.menu-picker-container', me.cmpEl));
+                this.fieldPicker.render($('.view', this.cmpEl));
+                this.openButton.render($('.button', this.cmpEl));
+                this.menuPicker.render($('.menu-picker-container', this.cmpEl));
 
-                if (me.openButton.menu.cmpEl) {
-                    if (me.openButton.menu.cmpEl) {
-                        me.openButton.menu.menuAlignEl = me.cmpEl;
-                        me.openButton.menu.cmpEl.css('min-width', me.itemWidth);
-                        me.openButton.menu.on('show:before',          _.bind(me.onBeforeShowMenu, me));
-                        me.openButton.menu.on('show:after',           _.bind(me.onAfterShowMenu, me));
-                        me.openButton.cmpEl.on('hide.bs.dropdown',    _.bind(me.onBeforeHideMenu, me));
-                        me.openButton.cmpEl.on('hidden.bs.dropdown',  _.bind(me.onAfterHideMenu, me));
+                if (this.openButton.menu.cmpEl) {
+                    if (this.openButton.menu.cmpEl) {
+                        this.openButton.menu.menuAlignEl = this.cmpEl;
+                        this.openButton.menu.cmpEl.css('min-width', this.itemWidth);
+                        this.openButton.menu.on('show:before',          _.bind(this.onBeforeShowMenu, this));
+                        this.openButton.menu.on('show:after',           _.bind(this.onAfterShowMenu, this));
+                        this.openButton.cmpEl.on('hide.bs.dropdown',    _.bind(this.onBeforeHideMenu, this));
+                        this.openButton.cmpEl.on('hidden.bs.dropdown',  _.bind(this.onAfterHideMenu, this));
                     }
                 }
 
-                if (me.options.hint) {
-                    me.cmpEl.attr('data-toggle', 'tooltip');
-                    me.cmpEl.tooltip({
-                        title       : me.options.hint,
-                        placement   : me.options.hintAnchor || 'cursor'
+                if (this.options.hint) {
+                    this.cmpEl.attr('data-toggle', 'tooltip');
+                    this.cmpEl.tooltip({
+                        title       : this.options.hint,
+                        placement   : this.options.hintAnchor || 'cursor'
                     });
                 }
 
-                me.autoWidth && me.cmpEl.addClass('auto-width');
+                this.autoWidth && this.cmpEl.addClass('auto-width');
 
-                me.fieldPicker.on('item:select', _.bind(me.onFieldPickerSelect, me));
-                me.menuPicker.on('item:select',  _.bind(me.onMenuPickerSelect, me));
-                me.fieldPicker.on('item:click',  _.bind(me.onFieldPickerClick, me));
-                me.menuPicker.on('item:click',   _.bind(me.onMenuPickerClick, me));
-                me.fieldPicker.on('item:contextmenu', _.bind(me.onPickerItemContextMenu, me));
-                me.menuPicker.on('item:contextmenu',  _.bind(me.onPickerItemContextMenu, me));
+                this.fieldPicker.on('item:select', _.bind(this.onFieldPickerSelect, this));
+                this.menuPicker.on('item:select',  _.bind(this.onMenuPickerSelect, this));
+                this.fieldPicker.on('item:click',  _.bind(this.onFieldPickerClick, this));
+                this.menuPicker.on('item:click',   _.bind(this.onMenuPickerClick, this));
+                this.fieldPicker.on('item:contextmenu', _.bind(this.onPickerItemContextMenu, this));
+                this.menuPicker.on('item:contextmenu',  _.bind(this.onPickerItemContextMenu, this));
 
-                me.fieldPicker.el.addEventListener('contextmenu', _.bind(me.onPickerComboContextMenu, me), false);
-                me.menuPicker.el.addEventListener('contextmenu', _.bind(me.onPickerComboContextMenu, me), false);
+                this.fieldPicker.el.addEventListener('contextmenu', _.bind(this.onPickerComboContextMenu, this), false);
+                this.menuPicker.el.addEventListener('contextmenu', _.bind(this.onPickerComboContextMenu, this), false);
 
                 Common.NotificationCenter.on('more:toggle', _.bind(this.onMoreToggle, this));
                 Common.NotificationCenter.on('tab:active', _.bind(this.onTabActive, this));
                 Common.NotificationCenter.on('window:resize', _.bind(this.startCheckSize, this));
-                me.checkSize();
-                me.onResize();
-                me.rendered = true;
+                this.checkSize();
+                this.onResize();
+                this.rendered = true;
                 
-                me.trigger('render:after', me);
+                this.trigger('render:after', this);
             }
             if (this.disabled) {
                 this.setDisabled(!!this.disabled);
@@ -231,61 +229,57 @@ define([
         },
 
         checkVisibility: function() {
-            var me = this;
-            if (!me._timer_visibility) {
-                me._timer_visibility =  setInterval(function() {
-                    if (me.isVisible()) {
-                        clearInterval(me._timer_visibility);
-                        delete me._timer_visibility;
-                        var record = me.menuPicker.getSelectedRec();
-                        record && me.fillComboView(record, !!record, true);
+            if (!this._timer_visibility) {
+                this._timer_visibility =  setInterval(() => {
+                    if (this.isVisible()) {
+                        clearInterval(this._timer_visibility);
+                        this._timer_visibility = undefined;
+                        const record = this.menuPicker.getSelectedRec();
+                        record && this.fillComboView(record, !!record, true);
                     }
                 }, 500);
             }
         },
 
         startCheckSize: function() {
-            var me = this;
-            me.checkSize();
-            if (!me._timer_id) {
-                me._needCheckSize = 0;
-                me._timer_id =  setInterval(function() {
-                    if (me._needCheckSize++ < 10)
-                        me.checkSize();
+            this.checkSize();
+            if (!this._timer_id) {
+                this._needCheckSize = 0;
+                this._timer_id =  setInterval(() => {
+                    if (this._needCheckSize++ < 10)
+                        this.checkSize();
                     else {
-                        clearInterval(me._timer_id);
-                        delete me._timer_id;
+                        clearInterval(this._timer_id);
+                        this._timer_id = undefined;
                     }
                 }, 500);
             } else
-                me._needCheckSize = 0;
+                this._needCheckSize = 0;
         },
 
         checkSize: function() {
-            if (this.cmpEl && this.cmpEl.is(':visible')) {
+            if (this.cmpEl?.is(':visible')) {
                 if(this.autoWidth && this.menuPicker.store.length > 0) {
-                    var wrapWidth = this.$el.width();
-                    if(wrapWidth != this.wrapWidth || this.needFillComboView){
+                    let wrapWidth = this.$el.width();
+                    if(wrapWidth !== this.wrapWidth || this.needFillComboView){
                         wrapWidth = this.autoChangeWidth();
                         wrapWidth && (this.wrapWidth = wrapWidth);
 
-                        var picker = this.menuPicker;
-                        var record = picker.getSelectedRec();
+                        const picker = this.menuPicker;
+                        const record = picker.getSelectedRec();
                         this.fillComboView(record || picker.store.at(0), !!record, true);                   
                     }
                 }
-                
-                var me = this,
-                    width  = this.cmpEl.width(),
-                    height = this.cmpEl.height();
+                const width  = this.cmpEl.width();
+                const height = this.cmpEl.height();
                 if (width < this.minWidth) return;
 
-                if (this.rootWidth != width || this.rootHeight != height) {
+                if (this.rootWidth !== width || this.rootHeight !== height) {
                     this.rootWidth  = width;
                     this.rootHeight = height;
-                    setTimeout(function() {
-                        me.openButton.menu.cmpEl.outerWidth();
-                        me.rootWidth = me.cmpEl.width();
+                    setTimeout(() => {
+                        this.openButton.menu.cmpEl.outerWidth();
+                        this.rootWidth = this.cmpEl.width();
                     }, 10);
                     this.onResize();
                 }
@@ -294,17 +288,17 @@ define([
 
         onResize: function() {
             if (this.openButton) {
-                var button = $('button', this.openButton.cmpEl);
-                var cntButton = $('.button', this.cmpEl);
+                const button = $('button', this.openButton.cmpEl);
+                const cntButton = $('.button', this.cmpEl);
                 button && cntButton.width() > 0 && button.css({
                     height: cntButton.height()
                 });
 
                 this.openButton.menu.hide();
 
-                var picker = this.menuPicker;
+                const picker = this.menuPicker;
                 if (picker) {
-                    var record = picker.getSelectedRec();
+                    const record = picker.getSelectedRec();
                     this.itemMarginLeft = undefined;
                     this.fillComboView(record || picker.store.at(0), !!record, true);
 
@@ -318,12 +312,12 @@ define([
     
         autoChangeWidth: function() {
             if(this.menuPicker.dataViewItems[0]){
-                var wrapEl = this.$el,
-                    widthCalc = this.checkAutoWidth(wrapEl, wrapEl.width()),
-                    cmbDataViewEl = this.cmpEl;
+                const wrapEl = this.$el;
+                const widthCalc = this.checkAutoWidth(wrapEl, wrapEl.width());
+                const cmbDataViewEl = this.cmpEl;
                 if (widthCalc) {
                     cmbDataViewEl.css('width', widthCalc);
-                    wrapEl.css('width', (widthCalc + parseFloat(wrapEl.css('padding-left')) + parseFloat(wrapEl.css('padding-right'))) + 'px');
+                    wrapEl.css('width', `${widthCalc + Number.parseFloat(wrapEl.css('padding-left')) + Number.parseFloat(wrapEl.css('padding-right'))}px`);
                 }
 
                 if(this.initAutoWidth) {
@@ -332,44 +326,44 @@ define([
                     cmbDataViewEl.css('top', '50%');
                     cmbDataViewEl.css('bottom', '50%');
                     cmbDataViewEl.css('margin', 'auto 0');
-                    cmbDataViewEl.css('width', wrapEl.width() + 'px');
+                    cmbDataViewEl.css('width', `${wrapEl.width()}px`);
                 }
 
                 return widthCalc;
             }
         },
 
-        checkAutoWidth: function(el, width) {
-            var $menuPicker = el.find('.menu-picker'),
-                $fieldPicker = el.find('.field-picker').closest('.view'),
-                cmbDataViewEl = el.find('.combo-dataview');
+        checkAutoWidth: (el, width) => {
+            const $menuPicker = el.find('.menu-picker');
+            const $fieldPicker = el.find('.field-picker').closest('.view');
+            const cmbDataViewEl = el.find('.combo-dataview');
             if ($menuPicker && $menuPicker.length>0) {
-                var itemEl = $menuPicker.find('.item'),
-                    storeLength = itemEl.length,
-                    fieldItemEl = $fieldPicker.find('.item');
+                let itemEl = $menuPicker.find('.item');
+                const storeLength = itemEl.length;
+                const fieldItemEl = $fieldPicker.find('.item');
                 if (itemEl.length>0) {
                     itemEl = $(itemEl[0]);
-                    var itemWidth = itemEl.width();
+                    let itemWidth = itemEl.width();
                     if (itemWidth<1) {
                         itemWidth = fieldItemEl.length>0 ? $(fieldItemEl[0]).width() : 0;
                     }
                     if (itemWidth<1) return;
 
-                    itemWidth += parseFloat(itemEl.css('padding-left')) + parseFloat(itemEl.css('padding-right')) + 2 * parseFloat(itemEl.css('border-width'));
-                    var itemMargins = parseFloat(itemEl.css('margin-left')) + parseFloat(itemEl.css('margin-right'));
+                    itemWidth += Number.parseFloat(itemEl.css('padding-left')) + Number.parseFloat(itemEl.css('padding-right')) + 2 * Number.parseFloat(itemEl.css('border-width'));
+                    const itemMargins = Number.parseFloat(itemEl.css('margin-left')) + Number.parseFloat(itemEl.css('margin-right'));
 
-                    var fieldPickerPadding = parseFloat($fieldPicker.css(Common.UI.isRTL() ? 'padding-left' : 'padding-right'));
-                    var fieldPickerBorder = parseFloat($fieldPicker.css('border-width'));
-                    var dataView = $fieldPicker.find('.dataview');
-                    var dataviewPaddings = parseFloat(dataView.css('padding-left')) + parseFloat(dataView.css('padding-right'));
+                    const fieldPickerPadding = Number.parseFloat($fieldPicker.css(Common.UI.isRTL() ? 'padding-left' : 'padding-right'));
+                    const fieldPickerBorder = Number.parseFloat($fieldPicker.css('border-width'));
+                    const dataView = $fieldPicker.find('.dataview');
+                    const dataviewPaddings = Number.parseFloat(dataView.css('padding-left')) + Number.parseFloat(dataView.css('padding-right'));
 
-                    var cmbDataViewPaddings = parseFloat(cmbDataViewEl.css('padding-left')) + parseFloat(cmbDataViewEl.css('padding-right'));
-                    var itemsCount =  Math.floor((width - fieldPickerPadding - dataviewPaddings - 2 * fieldPickerBorder - cmbDataViewPaddings) / (itemWidth + itemMargins));
+                    const cmbDataViewPaddings = Number.parseFloat(cmbDataViewEl.css('padding-left')) + Number.parseFloat(cmbDataViewEl.css('padding-right'));
+                    let itemsCount =  Math.floor((width - fieldPickerPadding - dataviewPaddings - 2 * fieldPickerBorder - cmbDataViewPaddings) / (itemWidth + itemMargins));
                     if(itemsCount > storeLength)
                         itemsCount = storeLength;
 
-                    var widthCalc = Math.ceil((itemsCount * (itemWidth + itemMargins) + fieldPickerPadding + dataviewPaddings + 2 * fieldPickerBorder + cmbDataViewPaddings) * 10) / 10;
-                    var maxWidth = parseFloat(cmbDataViewEl.css('max-width'));
+                    let widthCalc = Math.ceil((itemsCount * (itemWidth + itemMargins) + fieldPickerPadding + dataviewPaddings + 2 * fieldPickerBorder + cmbDataViewPaddings) * 10) / 10;
+                    const maxWidth = Number.parseFloat(cmbDataViewEl.css('max-width'));
                     if(widthCalc > maxWidth)
                         widthCalc = maxWidth;
 
@@ -379,19 +373,18 @@ define([
         },
 
         onBeforeShowMenu: function(e) {
-            var me = this;
 
-            if (_.isFunction(me.beforeOpenHandler)){
-                me.beforeOpenHandler(me, e);
-            } else if (me.openButton.menu.cmpEl) {
-                me.openButton.menu.cmpEl.css({
-                    'width' : me.cmpEl.width() - me.openButton.cmpEl.width(),
-                    'min-height': me.cmpEl.height()
+            if (_.isFunction(this.beforeOpenHandler)){
+                this.beforeOpenHandler(this, e);
+            } else if (this.openButton.menu.cmpEl) {
+                this.openButton.menu.cmpEl.css({
+                    'width' : this.cmpEl.width() - this.openButton.cmpEl.width(),
+                    'min-height': this.cmpEl.height()
                 });
             }
 
-            if (me.options.hint) {
-                var tip = me.cmpEl.data('bs.tooltip');
+            if (this.options.hint) {
+                const tip = this.cmpEl.data('bs.tooltip');
                 if (tip) {
                     if (tip.dontShow===undefined)
                         tip.dontShow = true;
@@ -412,9 +405,8 @@ define([
         },
 
         onAfterShowMenu: function(e) {
-            var me = this;
-            if (me.menuPicker.scroller) {
-                me.menuPicker.scroller.update({
+            if (this.menuPicker.scroller) {
+                this.menuPicker.scroller.update({
                     includePadding: true,
                     suppressScrollX: true,
                     alwaysVisibleY: true
@@ -428,7 +420,7 @@ define([
             this.trigger('hide:after', this, e, isFromInputControl);
         },
 
-        onFieldPickerSelect: function(picker, item, record) {
+        onFieldPickerSelect: (picker, item, record) => {
             //
         },
 
@@ -448,7 +440,7 @@ define([
                 this.trigger('click', this, record);
 
             if (this.options.hint) {
-                var tip = this.cmpEl.data('bs.tooltip');
+                const tip = this.cmpEl.data('bs.tooltip');
                 if (tip) {
                     if (tip.dontShow===undefined)
                         tip.dontShow = true;
@@ -497,9 +489,9 @@ define([
             this.fieldPicker.setDisabled(disabled);
 
             if (this.needFillComboView && !disabled) {
-                var picker = this.menuPicker;
+                const picker = this.menuPicker;
                 if (picker) {
-                    var record = picker.getSelectedRec();
+                    const record = picker.getSelectedRec();
                     this.fillComboView(record || picker.store.at(0), false);
                 }
             }
@@ -512,60 +504,58 @@ define([
         fillComboView: function(record, forceSelect, forceFill) {
             if (!_.isUndefined(record) && record instanceof Backbone.Model){
                 this.needFillComboView = !this.isVisible();
-
-                var me              = this,
-                    store           = me.menuPicker.store,
-                    fieldPickerEl   = $(me.fieldPicker.el);
+                const store           = this.menuPicker.store;
+                const fieldPickerEl   = $(this.fieldPicker.el);
 
                 if (store) {
-                    if (forceFill || !me.fieldPicker.store.findWhere({'id': record.get('id')})){
-                        if (me.itemMarginLeft===undefined) {
-                            var div = $($(this.menuPicker.el).find('.inner > div:not(.grouped-data):not(.ps-scrollbar-x-rail):not(.ps-scrollbar-y-rail)')[0]);
+                    if (forceFill || !this.fieldPicker.store.findWhere({'id': record.get('id')})){
+                        if (this.itemMarginLeft===undefined) {
+                            let div = $($(this.menuPicker.el).find('.inner > div:not(.grouped-data):not(.ps-scrollbar-x-rail):not(.ps-scrollbar-y-rail)')[0]);
                             if (!div || div.length<1) { // try to find items in groups
                                 div = $($(this.menuPicker.el).find('.inner .group-items-container > div:not(.grouped-data):not(.ps-scrollbar-x-rail):not(.ps-scrollbar-y-rail)')[0]);
                             }
                             if (div.length > 0) {
-                                me.itemMarginLeft  = parseInt(div.css('margin-left'));
-                                me.itemMarginRight = parseInt(div.css('margin-right'));
-                                me.itemPaddingLeft  = parseInt(div.css('padding-left'));
-                                me.itemPaddingRight = parseInt(div.css('padding-right'));
-                                me.itemBorderLeft  = parseInt(div.css('border-left-width'));
-                                me.itemBorderRight = parseInt(div.css('border-right-width'));
+                                this.itemMarginLeft  = Number.parseInt(div.css('margin-left'));
+                                this.itemMarginRight = Number.parseInt(div.css('margin-right'));
+                                this.itemPaddingLeft  = Number.parseInt(div.css('padding-left'));
+                                this.itemPaddingRight = Number.parseInt(div.css('padding-right'));
+                                this.itemBorderLeft  = Number.parseInt(div.css('border-left-width'));
+                                this.itemBorderRight = Number.parseInt(div.css('border-right-width'));
                             }
                         }
 
-                        var indexRec = store.indexOf(record);
+                        let indexRec = store.indexOf(record);
                         if (indexRec < 0)
                             return;
 
-                        var countRec = store.length,
-                            maxViewCount = Math.floor(Math.max(fieldPickerEl.width(), me.minWidth) / (me.itemWidth + (me.itemMarginLeft || 0) + (me.itemMarginRight || 0) + (me.itemPaddingLeft || 0) + (me.itemPaddingRight || 0) +
-                                                                                                (me.itemBorderLeft || 0) + (me.itemBorderRight || 0))),
-                            newStyles = [];
+                        const countRec = store.length;
+                        let maxViewCount = Math.floor(Math.max(fieldPickerEl.width(), this.minWidth) / (this.itemWidth + (this.itemMarginLeft || 0) + (this.itemMarginRight || 0) + (this.itemPaddingLeft || 0) + (this.itemPaddingRight || 0) +
+                                                                                                (this.itemBorderLeft || 0) + (this.itemBorderRight || 0)));
+                        const newStyles = [];
 
-                        if (fieldPickerEl.height() / me.itemHeight > 2)
-                            maxViewCount *= Math.floor(fieldPickerEl.height() / me.itemHeight);
+                        if (fieldPickerEl.height() / this.itemHeight > 2)
+                            maxViewCount *= Math.floor(fieldPickerEl.height() / this.itemHeight);
 
                         indexRec = Math.floor(indexRec / maxViewCount) * maxViewCount;
                         if (countRec - indexRec < maxViewCount)
                             indexRec = Math.max(countRec - maxViewCount, 0);
-                        for (var index = indexRec, viewCount = 0; index < countRec && viewCount < maxViewCount; index++, viewCount++) {
+                        for (let index = indexRec, viewCount = 0; index < countRec && viewCount < maxViewCount; index++, viewCount++) {
                             newStyles.push(store.at(index));
                         }
 
-                        me.fieldPicker.store.reset(newStyles);
+                        this.fieldPicker.store.reset(newStyles);
                     }
 
                     if (forceSelect) {
-                        var selectRecord = me.fieldPicker.store.findWhere({'id': record.get('id')});
+                        const selectRecord = this.fieldPicker.store.findWhere({'id': record.get('id')});
                         if (selectRecord){
-                            me.suspendEvents();
-                            me.fieldPicker.selectRecord(selectRecord, true);
-                            me.resumeEvents();
+                            this.suspendEvents();
+                            this.fieldPicker.selectRecord(selectRecord, true);
+                            this.resumeEvents();
                         }
                     }
-                    me.fillOnChangeVisibility && !me.isVisible() && me.checkVisibility();
-                    return me.fieldPicker.store.models; // return list of visible items
+                    this.fillOnChangeVisibility && !this.isVisible() && this.checkVisibility();
+                    return this.fieldPicker.store.models; // return list of visible items
                 }
             }
         },
@@ -589,19 +579,19 @@ define([
         },
 
         setItemWidth: function(width) {
-            if (this.itemWidth != width)
+            if (this.itemWidth !== width)
                 this.itemWidth = Common.Utils.applicationPixelRatio() > 1 ? width / 2 : width;
         },
 
         setItemHeight: function(height) {
-            if (this.itemHeight != height)
+            if (this.itemHeight !== height)
                 this.itemHeight = Common.Utils.applicationPixelRatio() > 1 ? height / 2 : height;
         },
 
         removeTips: function() {
-            var picker = this.menuPicker;
-            _.each(picker.dataViewItems, function(item) {
-                var tip = item.$el.data('bs.tooltip');
+            const picker = this.menuPicker;
+            _.each(picker.dataViewItems, (item) => {
+                const tip = item.$el.data('bs.tooltip');
                 if (tip) (tip.tip()).remove();
             }, picker);
         }

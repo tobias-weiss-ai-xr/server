@@ -30,22 +30,22 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Controllers = Common.Controllers || {};
 
 define([
     'core'
-], function () { 'use strict';
-    Common.Controllers.ExternalOleEditor = Backbone.Controller.extend(_.extend((function() {
-        var appLang         = '{{DEFAULT_LANG}}',
-            customization   = undefined,
-            targetApp       = '',
-            externalEditor  = null,
-            isAppFirstOpened = true;
+], () => { 
+    Common.Controllers.ExternalOleEditor = Backbone.Controller.extend(_.extend((() => {
+        let appLang         = '{{DEFAULT_LANG}}';
+        let customization   = undefined;
+        let targetApp       = '';
+        let externalEditor  = null;
+        let isAppFirstOpened = true;
 
 
-        var createExternalEditor = function() {
+        const createExternalEditor = function() {
             Common.UI.HintManager.setInternalEditorLoading(true);
             !!customization && (customization.uiTheme = Common.localStorage.getItem("ui-theme-id", "theme-light"));
             externalEditor = new DocsAPI.DocEditor('id-ole-editor-placeholder', {
@@ -67,12 +67,12 @@ define([
                     canBackToFolder : false,
                     canCreateNew    : false,
                     customization   : customization,
-                    user            : {id: ('uid-'+Date.now())}
+                    user            : {id: (`uid-${Date.now()}`)}
                 },
                 events: {
-                    'onAppReady'            : function() {},
-                    'onDocumentStateChange' : function() {},
-                    'onError'               : function() {},
+                    'onAppReady'            : () => {},
+                    'onDocumentStateChange' : () => {},
+                    'onError'               : () => {},
                     'onInternalMessage'     : _.bind(this.onInternalMessage, this)
                 }
             });
@@ -86,20 +86,20 @@ define([
                 this.addListeners({
                     'Common.Views.ExternalOleEditor': {
                         'setoledata': _.bind(this.setOleData, this),
-                        'drag': _.bind(function(o, state){
-                            externalEditor && externalEditor.serviceCommand('window:drag', state == 'start');
+                        'drag': _.bind((o, state)=> {
+                            externalEditor?.serviceCommand('window:drag', state === 'start');
                         },this),
-                        'resize': _.bind(function(o, state){
-                            externalEditor && externalEditor.serviceCommand('window:resize', state == 'start');
+                        'resize': _.bind((o, state)=> {
+                            externalEditor?.serviceCommand('window:resize', state === 'start');
                         },this),
                         'animate:before': _.bind(function(){
                             if(!this.isAppFirstOpened) {
-                                externalEditor && externalEditor.serviceCommand('reshow');
+                                externalEditor?.serviceCommand('reshow');
                             }
                         },this),
                         'show': _.bind(function(cmp){
-                            var h = this.oleEditorView.getHeight(),
-                                innerHeight = Common.Utils.innerHeight() - Common.Utils.InternalSettings.get('window-inactive-area-top');
+                            const h = this.oleEditorView.getHeight();
+                            const innerHeight = Common.Utils.innerHeight() - Common.Utils.InternalSettings.get('window-inactive-area-top');
                             if (innerHeight<h) {
                                 this.oleEditorView.setHeight(innerHeight);
                             }
@@ -136,7 +136,7 @@ define([
                 Common.NotificationCenter.on('script:loaded', _.bind(this.onPostLoadComplete, this));
             },
 
-            onLaunch: function() {},
+            onLaunch: () => {},
 
             onPostLoadComplete: function() {
                 this.views = this.getApplication().getClasseRefs('view', ['Common.Views.ExternalOleEditor']);
@@ -154,7 +154,7 @@ define([
                 if (this.isHandlerCalled) return;
                 this.isHandlerCalled = true;
                 if (this.oleEditorView._isExternalDocReady)
-                    externalEditor && externalEditor.serviceCommand('queryClose',{mr:result});
+                    externalEditor?.serviceCommand('queryClose',{mr:result});
                 else {
                     this.oleEditorView.hide();
                     this.isHandlerCalled = false;
@@ -163,13 +163,13 @@ define([
 
             setOleData: function() {
                 if (!isAppFirstOpened) {
-                    externalEditor && externalEditor.serviceCommand('setOleData', this.oleEditorView._oleData);
+                    externalEditor?.serviceCommand('setOleData', this.oleEditorView._oleData);
                     this.oleEditorView._oleData = null;
                 }
             },
 
-            loadConfig: function(data) {
-                if (data && data.config) {
+            loadConfig: (data) => {
+                if (data?.config) {
                     if (data.config.lang) appLang = data.config.lang;
                     if (data.config.customization) customization = data.config.customization;
                     if (data.config.targetApp) targetApp = data.config.targetApp;
@@ -199,10 +199,10 @@ define([
             },
 
             onInternalMessage: function(data) {
-                var eventData  = data.data;
+                const eventData  = data.data;
 
                 if (this.oleEditorView) {
-                    if (eventData.type == 'documentReady') {
+                    if (eventData.type === 'documentReady') {
                         this.oleEditorView._isExternalDocReady = true;
                         this.isExternalEditorVisible && (isAppFirstOpened = false);
                         this.oleEditorView._oleData && this.setOleData();
@@ -210,58 +210,58 @@ define([
                             this.onOleEditingDisabled();
                         }
                     } else
-                    if (eventData.type == 'frameEditorReady') {
+                    if (eventData.type === 'frameEditorReady') {
                         if (this.needDisableEditing===undefined)
                             this.oleEditorView.setControlsDisabled(false);
                     } else
-                    if (eventData.type == "shortcut") {
-                        if (eventData.data.key == 'escape')
+                    if (eventData.type === "shortcut") {
+                        if (eventData.data.key === 'escape')
                             this.oleEditorView.hide();
                     } else
-                    if (eventData.type == "canClose") {
+                    if (eventData.type === "canClose") {
                         if (eventData.data.answer === true) {
                             if (externalEditor) {
                                 externalEditor.serviceCommand('setAppDisabled',true);
-                                if (eventData.data.mr == 'ok')
+                                if (eventData.data.mr === 'ok')
                                     externalEditor.serviceCommand('getOleData');
                             }
                             this.oleEditorView.hide();
                         }
                         this.isHandlerCalled = false;
                     } else
-                    if (eventData.type == "processMouse") {
-                        if (eventData.data.event == 'mouse:up') {
+                    if (eventData.type === "processMouse") {
+                        if (eventData.data.event === 'mouse:up') {
                             this.oleEditorView.binding.dragStop();
                             if (this.oleEditorView.binding.resizeStop)  this.oleEditorView.binding.resizeStop();
                         } else
-                        if (eventData.data.event == 'mouse:move') {
-                            var x = parseInt(this.oleEditorView.$window.css('left')) + eventData.data.pagex,
-                                y = parseInt(this.oleEditorView.$window.css('top')) + eventData.data.pagey + 34;
+                        if (eventData.data.event === 'mouse:move') {
+                            const x = Number.parseInt(this.oleEditorView.$window.css('left')) + eventData.data.pagex;
+                            const y = Number.parseInt(this.oleEditorView.$window.css('top')) + eventData.data.pagey + 34;
                             this.oleEditorView.binding.drag({pageX:x, pageY:y});
                             if (this.oleEditorView.binding.resize)  this.oleEditorView.binding.resize({pageX:x, pageY:y});
                         }
                     }  else
-                    if (eventData.type == "resize") {
-                        var w = eventData.data.width,
-                            h = eventData.data.height;
+                    if (eventData.type === "resize") {
+                        const w = eventData.data.width;
+                        const h = eventData.data.height;
                         if (w>0 && h>0)
                             this.oleEditorView.setInnerSize(w, h);
                     } else
-                    if (eventData.type == "frameToGeneralData") {
-                        this.api && this.api.asc_getInformationBetweenFrameAndGeneralEditor(eventData.data);
+                    if (eventData.type === "frameToGeneralData") {
+                        this.api?.asc_getInformationBetweenFrameAndGeneralEditor(eventData.data);
                     } else
                         this.oleEditorView.fireEvent('internalmessage', this.oleEditorView, eventData);
                 }
             } ,
 
             onProcessMouse: function(data) {
-                if (data.type == 'mouseup' && this.isExternalEditorVisible) {
-                    externalEditor && externalEditor.serviceCommand('processmouse', data);
+                if (data.type === 'mouseup' && this.isExternalEditorVisible) {
+                    externalEditor?.serviceCommand('processmouse', data);
                 }
             },
 
-            onSendFromGeneralToFrameEditor: function(data) {
-                externalEditor && externalEditor.serviceCommand('generalToFrameData', data);
+            onSendFromGeneralToFrameEditor: (data) => {
+                externalEditor?.serviceCommand('generalToFrameData', data);
             },
 
             warningTitle: 'Warning',

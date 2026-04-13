@@ -29,116 +29,107 @@
  *
  */
 
-define(['gateway'], function () {
-    Common.localStorage = new (function() {
-        var _storeName, _filter;
-        var _store = {};
+define(["gateway"], () => {
+  Common.localStorage = new (function () {
+    let _storeName
+    let _filter
+    let _store = {}
 
-        var ongetstore = function(data) {
-            if (data.type == 'localstorage') {
-                _store = data.keys;
-            }
-        };
+    const ongetstore = (data) => {
+      if (data.type === "localstorage") {
+        _store = data.keys
+      }
+    }
 
-        Common.Gateway.on('internalcommand', ongetstore);
+    Common.Gateway.on("internalcommand", ongetstore)
 
-        var _refresh = function() {
-            // if (!_lsAllowed)
-            //     Common.Gateway.internalMessage('localstorage', {cmd:'get', keys:_filter});
-        };
+    const _refresh = () => {
+      // if (!_lsAllowed)
+      //     Common.Gateway.internalMessage('localstorage', {cmd:'get', keys:_filter});
+    }
 
-        var _save = function() {
-            // if (!_lsAllowed)
-            //     Common.Gateway.internalMessage('localstorage', {cmd:'set', keys:_store});
-        };
+    const _save = () => {
+      // if (!_lsAllowed)
+      //     Common.Gateway.internalMessage('localstorage', {cmd:'set', keys:_store});
+    }
 
-        var _setItem = function(name, value, just) {
-            if (_lsAllowed) {
-                try
-                {
-                    localStorage.setItem(name, value);
-                }
-                catch (error){}
-
-            } else {
-                _store[name] = value;
-
-                // if (just===true) {
-                    // TDDO: remove after ver 7.2. using external local storage is depricated
-                    // Common.Gateway.internalMessage('localstorage', {
-                    //     cmd:'set',
-                    //     keys: {
-                    //         name: value
-                    //     }
-                    // });
-                // }
-            }
-        };
-
-        var _setItemAsBool = function(name, value, just) {
-            _setItem(name, value ? 1 : 0, just);
-        };
-
-        var _getItem = function(name) {
-            if (_lsAllowed)
-                return localStorage.getItem(name);
-            else
-                return _store[name]===undefined ? null : _store[name];
-        };
-
-        var _getItemAsBool = function (name, defValue) {
-            var value = _getItem(name);
-            defValue = defValue || false;
-            return (value!==null) ? (parseInt(value) != 0) : defValue;
-        };
-
-        var _getItemAsInt = function (name, defValue) {
-            var value = _getItem(name);
-            return (value!==null) ? parseInt(value) : defValue || 0;
-        };
-
-        var _getItemExists = function (name) {
-            var value = _getItem(name);
-            return value !== null;
-        };
-
-        var _removeItem = function(name) {
-            if (_lsAllowed)
-                localStorage.removeItem(name);
-            else
-                delete _store[name];
-        };
-
+    const _setItem = (name, value, just) => {
+      if (_lsAllowed) {
         try {
-            localStorage.setItem('test', 1);    // for WebView checking !!window.localStorage not enough
-            localStorage.removeItem('test');
-            var _lsAllowed = true;
-        } catch (e) {
-            _lsAllowed = false;
-        }
+          localStorage.setItem(name, value)
+        } catch (error) {}
+      } else {
+        _store[name] = value
 
-        return {
-            getId: function() {
-                return _storeName;
-            },
-            setId: function(name) {
-                _storeName = name;
-            },
-            getItem: _getItem,
-            getItemAsInt: _getItemAsInt,
-            getBool: _getItemAsBool,
-            setBool: _setItemAsBool,
-            setItem: _setItem,
-            removeItem: _removeItem,
-            setKeysFilter: function(value) {
-                _filter = value;
-            },
-            getKeysFilter: function() {
-                return _filter;
-            },
-            itemExists: _getItemExists,
-            sync: _refresh,
-            save: _save
-        };
-    })();
-});
+        // if (just===true) {
+        // TDDO: remove after ver 7.2. using external local storage is depricated
+        // Common.Gateway.internalMessage('localstorage', {
+        //     cmd:'set',
+        //     keys: {
+        //         name: value
+        //     }
+        // });
+        // }
+      }
+    }
+
+    const _setItemAsBool = (name, value, just) => {
+      _setItem(name, value ? 1 : 0, just)
+    }
+
+    const _getItem = (name) => {
+      if (_lsAllowed) return localStorage.getItem(name)
+
+      return _store[name] === undefined ? null : _store[name]
+    }
+
+    const _getItemAsBool = (name, defValue) => {
+      const value = _getItem(name)
+      defValue = defValue || false
+      return value !== null ? Number.parseInt(value) !== 0 : defValue
+    }
+
+    const _getItemAsInt = (name, defValue) => {
+      const value = _getItem(name)
+      return value !== null ? Number.parseInt(value) : defValue || 0
+    }
+
+    const _getItemExists = (name) => {
+      const value = _getItem(name)
+      return value !== null
+    }
+
+    const _removeItem = (name) => {
+      if (_lsAllowed) localStorage.removeItem(name)
+      else delete _store[name]
+    }
+
+    try {
+      localStorage.setItem("test", 1) // for WebView checking !!window.localStorage not enough
+      localStorage.removeItem("test")
+      const _lsAllowed = true
+    } catch (e) {
+      _lsAllowed = false
+    }
+
+    return {
+      getId: () => _storeName,
+      setId: (name) => {
+        _storeName = name
+      },
+      getItem: _getItem,
+      getItemAsInt: _getItemAsInt,
+      getBool: _getItemAsBool,
+      setBool: _setItemAsBool,
+      setItem: _setItem,
+      removeItem: _removeItem,
+      setKeysFilter: (value) => {
+        _filter = value
+      },
+      getKeysFilter: () => _filter,
+      itemExists: _getItemExists,
+      sync: _refresh,
+      save: _save,
+    }
+  })()
+})

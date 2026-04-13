@@ -31,26 +31,26 @@
 
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 if (Common.UI === undefined) {
     Common.UI = {};
 }
 
 Common.UI.FocusManager = new(function() {
-    var _tabindex = 1,
-        _windows = [],
-        _count = 0;
+    const _tabindex = 1;
+    const _windows = [];
+    let _count = 0;
 
-    var register = function(fields) {
-        var arr = [];
+    const register = (fields) => {
+        const arr = [];
         if (!fields.forEach) {
             fields = [fields];
         }
-        fields.forEach(function(field) {
+        fields.forEach((field) => {
             if (field) {
-                var item = {};
-                if (field.cmp && typeof field.selector == 'string')
+                let item = {};
+                if (field.cmp && typeof field.selector === 'string')
                     item = field;
                 else {
                     item.cmp = field;
@@ -68,40 +68,40 @@ Common.UI.FocusManager = new(function() {
                         item.selector = '.form-control';
                 }
                 item.el = (item.cmp.$el || $(item.cmp.el || item.cmp)).find(item.selector).addBack().filter(item.selector);
-                item.el && item.el.attr && (item.cmp.setTabIndex ? item.cmp.setTabIndex(_tabindex) : item.el.attr('tabindex', _tabindex.toString()));
+                item.el?.attr && (item.cmp.setTabIndex ? item.cmp.setTabIndex(_tabindex) : item.el.attr('tabindex', _tabindex.toString()));
                 arr.push(item);
             }
         });
         return arr;
     };
 
-    var addTraps = function(current) {
+    const addTraps = (current) => {
         if (!current || current.traps || !current.fields || current.fields.length<1) return;
 
-        var trapFirst = $('<span aria-hidden="true" tabindex="' + _tabindex + '"></span>');
-        trapFirst.on('focus', function() {
+        const trapFirst = $(`<span aria-hidden="true" tabindex="${_tabindex}"></span>`);
+        trapFirst.on('focus', () => {
             if (current.hidden) return;
-            var fields = current.fields;
-            for (var i=fields.length-1; i>=0; i--) {
-                var field = fields[i];
-                if ((field.cmp.isVisible ? field.cmp.isVisible() : field.cmp.is(':visible')) && !(field.cmp.isDisabled && field.cmp.isDisabled())) {
-                    var el = (field.selector) ? (field.cmp.$el || $(field.cmp.el || field.cmp)).find(field.selector).addBack().filter(field.selector) : field.el;
-                    el && setTimeout(function(){ el.focus(); }, 10);
+            const fields = current.fields;
+            for (let i=fields.length-1; i>=0; i--) {
+                const field = fields[i];
+                if ((field.cmp.isVisible ? field.cmp.isVisible() : field.cmp.is(':visible')) && !(field.cmp.isDisabled?.())) {
+                    const el = (field.selector) ? (field.cmp.$el || $(field.cmp.el || field.cmp)).find(field.selector).addBack().filter(field.selector) : field.el;
+                    el && setTimeout(()=> { el.focus(); }, 10);
                     break;
                 }
             }
         });
         current.parent.$window.prepend(trapFirst);
 
-        var trapLast = $('<span aria-hidden="true" tabindex="' + (_tabindex+1) + '"></span>');
-        trapLast.on('focus', function() {
+        const trapLast = $(`<span aria-hidden="true" tabindex="${_tabindex+1}"></span>`);
+        trapLast.on('focus', () => {
             if (current.hidden) return;
-            var fields = current.fields;
-            for (var i=0; i<fields.length; i++) {
-                var field = fields[i];
-                if ((field.cmp.isVisible ? field.cmp.isVisible() : field.cmp.is(':visible')) && !(field.cmp.isDisabled && field.cmp.isDisabled())) {
-                    var el = (field.selector) ? (field.cmp.$el || $(field.cmp.el || field.cmp)).find(field.selector).addBack().filter(field.selector) : field.el;
-                    el && setTimeout(function(){ el.focus(); }, 10);
+            const fields = current.fields;
+            for (let i=0; i<fields.length; i++) {
+                const field = fields[i];
+                if ((field.cmp.isVisible ? field.cmp.isVisible() : field.cmp.is(':visible')) && !(field.cmp.isDisabled?.())) {
+                    const el = (field.selector) ? (field.cmp.$el || $(field.cmp.el || field.cmp)).find(field.selector).addBack().filter(field.selector) : field.el;
+                    el && setTimeout(()=> { el.focus(); }, 10);
                     break;
                 }
             }
@@ -110,23 +110,23 @@ Common.UI.FocusManager = new(function() {
         current.traps = [trapFirst, trapLast];
     };
 
-    var updateTabIndexes = function(increment, winindex) {
-        var step = increment ? 1 : -1;
-        for (var cid in _windows) {
+    const updateTabIndexes = (increment, winindex) => {
+        const step = increment ? 1 : -1;
+        for (const cid in _windows) {
             if (_windows.hasOwnProperty(cid)) {
-                var item = _windows[cid];
+                const item = _windows[cid];
                 if (item && item.index < winindex && item.traps)
-                    item.traps[1].attr('tabindex', (parseInt(item.traps[1].attr('tabindex')) + step).toString());
+                    item.traps[1].attr('tabindex', (Number.parseInt(item.traps[1].attr('tabindex')) + step).toString());
                 if (!increment && item && item.index > winindex) //change windows indexes when close one
                     item.index--;
             }
         }
     };
 
-    var _insert = function(e, fields, index) { // index<0 - index from the end of array
-        if (e && e.cid) {
+    const _insert = (e, fields, index) => { // index<0 - index from the end of array
+        if (e?.cid) {
             if (_windows[e.cid]) {
-                var currfields = _windows[e.cid].fields || [];
+                const currfields = _windows[e.cid].fields || [];
                 (index<0) && (index += currfields.length);
                 _windows[e.cid].fields = (index===undefined) ? currfields.concat(register(fields))
                                                              : currfields.slice(0, index).concat(register(fields)).concat(currfields.slice(index));
@@ -143,23 +143,23 @@ Common.UI.FocusManager = new(function() {
         }
     };
 
-    var _add = function(e, fields) {
+    const _add = (e, fields) => {
         _insert(e, fields);
     };
 
-    var _remove = function(e, start, len) {
-        if (e && e.cid && _windows[e.cid] && _windows[e.cid].fields && start!==undefined) {
-            var removed = _windows[e.cid].fields.splice(start, len);
-            removed && removed.forEach(function(item) {
-                item.el && item.el.attr && (item.cmp.setTabIndex ? item.cmp.setTabIndex(-1) : item.el.attr('tabindex', "-1"));
+    const _remove = (e, start, len) => {
+        if (e?.cid && _windows[e.cid] && _windows[e.cid].fields && start!==undefined) {
+            const removed = _windows[e.cid].fields.splice(start, len);
+            removed?.forEach((item) => {
+                item.el?.attr && (item.cmp.setTabIndex ? item.cmp.setTabIndex(-1) : item.el.attr('tabindex', "-1"));
             });
         }
     };
 
-    var _init = function() {
+    const _init = () => {
         Common.NotificationCenter.on({
-            'modal:show': function(e){
-                if (e && e.cid) {
+            'modal:show': (e)=> {
+                if (e?.cid) {
                     if (_windows[e.cid]) {
                         _windows[e.cid].hidden = false;
                     } else {
@@ -172,24 +172,24 @@ Common.UI.FocusManager = new(function() {
                     }
                 }
             },
-            'window:show': function(e){
-                if (e && e.cid && _windows[e.cid] && !_windows[e.cid].fields) {
+            'window:show': (e)=> {
+                if (e?.cid && _windows[e.cid] && !_windows[e.cid].fields) {
                     _windows[e.cid].fields = register(e.getFocusedComponents());
                     addTraps(_windows[e.cid]);
                 }
 
-                var el = e ? e.getDefaultFocusableComponent() : null;
-                el && setTimeout(function(){ el.focus(); }, 100);
+                const el = e ? e.getDefaultFocusableComponent() : null;
+                el && setTimeout(()=> { el.focus(); }, 100);
             },
-            'modal:close': function(e, last) {
-                if (e && e.cid && _windows[e.cid]) {
+            'modal:close': (e, last) => {
+                if (e?.cid && _windows[e.cid]) {
                     updateTabIndexes(false, _windows[e.cid].index);
                     delete _windows[e.cid];
                     _count--;
                 }
             },
-            'modal:hide': function(e, last) {
-                if (e && e.cid && _windows[e.cid]) {
+            'modal:hide': (e, last) => {
+                if (e?.cid && _windows[e.cid]) {
                     _windows[e.cid].hidden = true;
                 }
             }

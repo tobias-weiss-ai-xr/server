@@ -31,7 +31,7 @@
  *
  */
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'jquery',
@@ -46,27 +46,24 @@ define([
     'common/main/lib/component/Window',
     'common/main/lib/component/SynchronizeTip',
     'common/main/lib/component/Mixtbar'
-], function ($, _, Backbone, template, template_view) {
-    'use strict';
+], ($, _, Backbone, template, template_view) => {
 
     if (!Common.enumLock)
         Common.enumLock = {};
 
-    var enumLock = {
+    const enumLock = {
         cantPrint:      'cant-print',
         lostConnect:    'disconnect',
         disableOnStart: 'on-start',
         fileMenuOpened: 'file-menu-opened'
     };
-    for (var key in enumLock) {
+    for (const key in enumLock) {
         if (enumLock.hasOwnProperty(key)) {
             Common.enumLock[key] = enumLock[key];
         }
     }
 
-    VE.Views.Toolbar =  Common.UI.Mixtbar.extend(_.extend((function(){
-
-        return {
+    VE.Views.Toolbar =  Common.UI.Mixtbar.extend(_.extend((()=> ({
             el: '#toolbar',
 
             // Compile our stats template
@@ -78,37 +75,35 @@ define([
             },
 
             initialize: function () {
-                var me = this;
 
                 /**
                  * UI Components
                  */
 
                 this._state = {};
-                Common.NotificationCenter.on('app:ready', me.onAppReady.bind(this));
+                Common.NotificationCenter.on('app:ready', this.onAppReady.bind(this));
                 return this;
             },
 
-            applyLayoutEdit: function(config) {
+            applyLayoutEdit: (config) => {
                 if (!config.isEdit) return;
 
-                var _set = Common.enumLock,
-                    arr = [];
+                const _set = Common.enumLock;
+                const arr = [];
 
                 Common.UI.LayoutManager.addControls(arr);
                 return arr;
             },
 
             applyLayout: function (config) {
-                var me = this;
-                me.lockControls = [];
-                var _set = Common.enumLock;
+                this.lockControls = [];
+                const _set = Common.enumLock;
                 if ( config.isEdit ) {
                 } else {
                     Common.UI.Mixtbar.prototype.initialize.call(this, {
                             template: _.template(template_view),
                             tabs: [
-                                {caption: me.textTabFile, action: 'file', layoutname: 'toolbar-file', haspanel:false, dataHintTitle: 'F'}
+                                {caption: this.textTabFile, action: 'file', layoutname: 'toolbar-file', haspanel:false, dataHintTitle: 'F'}
                             ]
                         }
                     );
@@ -117,7 +112,6 @@ define([
             },
 
             render: function (mode) {
-                var me = this;
 
                 /**
                  * Render UI layout
@@ -125,21 +119,21 @@ define([
 
                 this.fireEvent('render:before', [this]);
 
-                me.isCompactView = mode.compactview;
+                this.isCompactView = mode.compactview;
                 if ( mode.isEdit) {
                     // me.$el.html(me.rendererComponents(me.$layout, mode));
                 } else {
-                    me.$layout.find('.canedit').hide();
-                    me.$layout.addClass('folded');
-                    me.$el.html(me.$layout);
+                    this.$layout.find('.canedit').hide();
+                    this.$layout.addClass('folded');
+                    this.$el.html(this.$layout);
                 }
 
                 this.fireEvent('render:after', [this]);
                 Common.UI.Mixtbar.prototype.afterRender.call(this);
 
                 Common.NotificationCenter.on({
-                    'window:resize': function() {
-                        Common.UI.Mixtbar.prototype.onResize.apply(me, arguments);
+                    'window:resize': () => {
+                        Common.UI.Mixtbar.prototype.onResize.apply(this, arguments);
                     }
                 });
 
@@ -149,38 +143,37 @@ define([
                     // Common.NotificationCenter.on('desktop:window', _.bind(me.onDesktopWindow, me));
                 }
 
-                if ( me.isCompactView )
-                    me.setFolded(true);
+                if ( this.isCompactView )
+                    this.setFolded(true);
 
                 return this;
             },
 
             onTabClick: function (e) {
-                var me = this,
-                    tab = $(e.currentTarget).find('> a[data-tab]').data('tab'),
-                    is_file_active = me.isTabActive('file');
+                const tab = $(e.currentTarget).find('> a[data-tab]').data('tab');
+                const is_file_active = this.isTabActive('file');
 
-                if (!me._isDocReady || tab === 'file' && !Common.Controllers.LaunchController.isScriptLoaded()) return;
+                if (!this._isDocReady || tab === 'file' && !Common.Controllers.LaunchController.isScriptLoaded()) return;
 
-                Common.UI.Mixtbar.prototype.onTabClick.apply(me, arguments);
+                Common.UI.Mixtbar.prototype.onTabClick.apply(this, arguments);
 
                 if ( is_file_active ) {
-                    me.fireEvent('file:close');
+                    this.fireEvent('file:close');
                 } else
-                if ( tab == 'file' ) {
-                    me.fireEvent('file:open');
-                    me.setTab(tab);
+                if ( tab === 'file' ) {
+                    this.fireEvent('file:open');
+                    this.setTab(tab);
                 }
             },
 
-            rendererComponentsEdit: function($host, mode) {
+            rendererComponentsEdit: ($host, mode) => {
             },
 
-            rendererComponentsCommon: function($host) {
+            rendererComponentsCommon: ($host) => {
             },
 
             rendererComponents: function (html, mode) {
-                var $host = $(html);
+                const $host = $(html);
                 this.rendererComponentsCommon($host);
                 if (mode.isEdit) {
                     this.rendererComponentsEdit($host, mode);
@@ -190,15 +183,14 @@ define([
             },
 
             onAppReady: function (config) {
-                var me = this;
-                me._isDocReady = true;
-                (new Promise( function(resolve, reject) {
+                this._isDocReady = true;
+                (new Promise( (resolve, reject) => {
                     resolve();
-                })).then(function () {
+                })).then(() => {
                 });
             },
 
-            createDelayedElementsCommon: function() {
+            createDelayedElementsCommon: () => {
             },
 
             createDelayedElementsEdit: function() {
@@ -212,7 +204,7 @@ define([
                 }
             },
 
-            onToolbarAfterRender: function(toolbar) {
+            onToolbarAfterRender: (toolbar) => {
                 // DataView and pickers
             },
 
@@ -236,16 +228,15 @@ define([
             },
 
             /** coauthoring begin **/
-            onApiUsersChanged: function (users) {
+            onApiUsersChanged: (users) => {
             },
 
-            onDesktopWindow: function() {
+            onDesktopWindow: () => {
             },
             /** coauthoring end **/
 
             lockToolbar: function (causes, lock, opts) {
                 Common.Utils.lockControls(causes, lock, opts, this.lockControls);
             }
-        }
-    })(), VE.Views.Toolbar || {}));
+        }))(), VE.Views.Toolbar || {}));
 });

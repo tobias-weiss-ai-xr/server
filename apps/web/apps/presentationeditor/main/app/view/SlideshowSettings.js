@@ -29,83 +29,91 @@
  *
  */
 
-define([], function () { 'use strict';
-
-    PE.Views.SlideshowSettings = Common.UI.Window.extend(_.extend({
+define([], () => {
+  PE.Views.SlideshowSettings = Common.UI.Window.extend(
+    _.extend(
+      {
         options: {
-            width: 315,
-            header: true,
-            style: 'min-width: 315px;',
-            cls: 'modal-dlg',
-            id: 'window-slideshow-settings',
-            buttons: ['ok', 'cancel']
+          width: 315,
+          header: true,
+          style: "min-width: 315px;",
+          cls: "modal-dlg",
+          id: "window-slideshow-settings",
+          buttons: ["ok", "cancel"],
         },
 
-        initialize : function(options) {
-            _.extend(this.options, {
-                title: this.textTitle
-            }, options || {});
+        initialize: function (options) {
+          _.extend(
+            this.options,
+            {
+              title: this.textTitle,
+            },
+            options || {},
+          )
 
-            this.template = [
-                '<div class="box">',
-                    '<div id="slideshow-checkbox-loop" style="margin-bottom:5px;"></div>',
-                '</div>'
-            ].join('');
+          this.template = [
+            '<div class="box">',
+            '<div id="slideshow-checkbox-loop" style="margin-bottom:5px;"></div>',
+            "</div>",
+          ].join("")
 
-            this.options.tpl = _.template(this.template)(this.options);
+          this.options.tpl = _.template(this.template)(this.options)
 
-            this.spinners = [];
-            this._noApply = false;
+          this.spinners = []
+          this._noApply = false
 
-            Common.UI.Window.prototype.initialize.call(this, this.options);
+          Common.UI.Window.prototype.initialize.call(this, this.options)
         },
 
-        render: function() {
-            Common.UI.Window.prototype.render.call(this);
+        render: function () {
+          Common.UI.Window.prototype.render.call(this)
 
-            this.chLoop = new Common.UI.CheckBox({
-                el: $('#slideshow-checkbox-loop'),
-                labelText: this.textLoop
-            });
+          this.chLoop = new Common.UI.CheckBox({
+            el: $("#slideshow-checkbox-loop"),
+            labelText: this.textLoop,
+          })
 
-            var $window = this.getChild();
-            $window.find('.dlg-btn').on('click', _.bind(this.onBtnClick, this));
+          const $window = this.getChild()
+          $window.find(".dlg-btn").on("click", _.bind(this.onBtnClick, this))
         },
 
-        getFocusedComponents: function() {
-            return [ this.chLoop ].concat(this.getFooterButtons());
+        getFocusedComponents: function () {
+          return [this.chLoop].concat(this.getFooterButtons())
         },
 
         getDefaultFocusableComponent: function () {
-            return this.chLoop;
+          return this.chLoop
         },
 
-        _handleInput: function(state) {
-            if (this.options.handler) {
-                this.options.handler.call(this, this, state);
-            }
+        _handleInput: function (state) {
+          if (this.options.handler) {
+            this.options.handler.call(this, this, state)
+          }
 
-            this.close();
+          this.close()
         },
 
-        onBtnClick: function(event) {
-            this._handleInput(event.currentTarget.attributes['result'].value);
+        onBtnClick: function (event) {
+          this._handleInput(event.currentTarget.attributes.result.value)
         },
 
-        onPrimary: function() {
-            this._handleInput('ok');
-            return false;
+        onPrimary: function () {
+          this._handleInput("ok")
+          return false
         },
 
         setSettings: function (loop) {
-            this.chLoop.setValue(loop);
+          this.chLoop.setValue(loop)
         },
 
-        getSettings: function() {
-            return (this.chLoop.getValue()=='checked');
+        getSettings: function () {
+          return this.chLoop.getValue() === "checked"
         },
 
-        textTitle:     'Show Settings',
-        textLoop:      'Loop continuously until \'Esc\' is pressed'
-    }, PE.Views.SlideshowSettings || {}))
-});
+        textTitle: "Show Settings",
+        textLoop: "Loop continuously until 'Esc' is pressed",
+      },
+      PE.Views.SlideshowSettings || {},
+    ),
+  )
+})

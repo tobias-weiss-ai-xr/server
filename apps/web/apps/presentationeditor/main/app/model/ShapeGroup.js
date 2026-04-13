@@ -29,31 +29,23 @@
  *
  */
 
+define(["backbone"], (Backbone) => {
+  PE.Models = PE.Models || {}
 
-define([
-    'backbone'
-], function(Backbone){ 'use strict';
+  PE.Models.ShapeModel = Backbone.Model.extend({
+    defaults: () => ({
+      id: Common.UI.getId(),
+      imageUrl: null,
+      data: null,
+    }),
+  })
 
-    PE.Models = PE.Models || {};
-
-    PE.Models.ShapeModel = Backbone.Model.extend({
-        defaults: function() {
-            return {
-                id: Common.UI.getId(),
-                imageUrl: null,
-                data: null
-            }
-        }
-    });
-
-    PE.Models.ShapeGroup = Backbone.Model.extend({
-        defaults: function() {
-            return {
-                id: Common.UI.getId(),
-                groupName: null,
-                groupId: null,
-                groupStore: null
-            }
-        }
-    });
-});
+  PE.Models.ShapeGroup = Backbone.Model.extend({
+    defaults: () => ({
+      id: Common.UI.getId(),
+      groupName: null,
+      groupId: null,
+      groupStore: null,
+    }),
+  })
+})

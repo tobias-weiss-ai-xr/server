@@ -30,31 +30,31 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Controllers = Common.Controllers || {};
 
 define([
     'core',
     'common/main/lib/collection/Fonts'
-], function () { 'use strict';
-    Common.Controllers.Fonts = Backbone.Controller.extend((function() {
-        var FONT_TYPE_RECENT = 4;
-        var cachedStore;
+], () => { 
+    Common.Controllers.Fonts = Backbone.Controller.extend((() => {
+        const FONT_TYPE_RECENT = 4;
+        let cachedStore;
 
         function isFontSaved(store, rec) {
-            var out = rec.get('type') == FONT_TYPE_RECENT,
-                i = -1,
-                c = store.length,
-                su,
-                n = rec.get('name');
+            let out = rec.get('type') === FONT_TYPE_RECENT;
+            let i = -1;
+            const c = store.length;
+            let su;
+            const n = rec.get('name');
             while (!out && ++i < c) {
                 su = store.at(i);
 
-                if (su.get('type') != FONT_TYPE_RECENT)
+                if (su.get('type') !== FONT_TYPE_RECENT)
                     break;
 
-                out = su.get('name') == n;
+                out = su.get('name') === n;
             }
 
             return out;
@@ -99,9 +99,9 @@ define([
         }
 
         function onApiLoadFonts(fonts, select) {
-            var fontsArray = [];
-            _.each(fonts, function(font){
-                var fontId = font.asc_getFontId();
+            const fontsArray = [];
+            _.each(fonts, (font)=> {
+                const fontId = font.asc_getFontId();
                 fontsArray.push({
                     id          :_.isEmpty(fontId) ? Common.UI.getId() : fontId,
                     name        : font.asc_getFontName(),
@@ -112,7 +112,7 @@ define([
             });
 
             cachedStore = this.getCollection('Common.Collections.Fonts');
-            cachedStore && cachedStore.add(fontsArray);
+            cachedStore?.add(fontsArray);
 
             if ( Common.NotificationCenter._events['fonts:load'] ) {
                 Common.NotificationCenter.trigger('fonts:load', cachedStore, select);
@@ -129,15 +129,13 @@ define([
             ],
             views: [],
 
-            store: function () {
-                return cachedStore;
-            },
+            store: () => cachedStore,
 
             initialize: function() {
                 Common.NotificationCenter.on('fonts:select', _.bind(onSelectFont, this))
             },
 
-            onLaunch: function() {
+            onLaunch: () => {
                 //
             },
 

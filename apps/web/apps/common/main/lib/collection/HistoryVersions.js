@@ -27,7 +27,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Collections = Common.Collections || {};
 
@@ -36,8 +36,7 @@ define([
     'backbone',
     'common/main/lib/model/HistoryVersion',
     'common/main/lib/component/TreeView'
-], function(_, Backbone){
-    'use strict';
+], (_, Backbone)=> {
 
     Common.Collections.HistoryVersions = Common.UI.TreeViewStore.extend(_.extend({
              model: Common.Models.HistoryVersion,

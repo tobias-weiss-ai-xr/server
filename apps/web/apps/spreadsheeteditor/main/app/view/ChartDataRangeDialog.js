@@ -31,9 +31,9 @@
 
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () { 'use strict';
+define([], () => { 
 
     SSE.Views.ChartDataRangeDialog = Common.UI.Window.extend(_.extend({
         options: {
@@ -48,7 +48,7 @@ define([], function () { 'use strict';
             this.isScatter = options.isScatter;
 
             _.extend(this.options, {
-                title: this.type==1 ? this.txtTitleSeries : this.txtTitleCategory
+                title: this.type===1 ? this.txtTitleSeries : this.txtTitleCategory
             }, options);
 
             this.template = [
@@ -56,7 +56,7 @@ define([], function () { 'use strict';
                 '<table cols="2" style="width: 100%;">',
                 '<tr>',
                     '<td colspan="2">',
-                        '<label>' + (this.type==1 ? this.txtSeriesName : this.txtAxisLabel) + '</label>',
+                        `<label>${this.type===1 ? this.txtSeriesName : this.txtAxisLabel}</label>`,
                     '</td>',
                 '</tr>',
                 '<tr>',
@@ -64,13 +64,13 @@ define([], function () { 'use strict';
                         '<div id="id-dlg-chart-range-range1"></div>',
                     '</td>',
                     '<td style="padding-bottom: 8px;">',
-                        '<label id="id-dlg-chart-range-lbl1" class="margin-left-5" style="width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px;">' + this.txtChoose + '</label>',
+                        `<label id="id-dlg-chart-range-lbl1" class="margin-left-5" style="width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px;">${this.txtChoose}</label>`,
                     '</td>',
                 '</tr>',
                 '<% if (type==1) { %>',
                 '<tr>',
                     '<td colspan="2">',
-                        '<label>' + (this.isScatter ? this.txtXValues : this.txtValues) + '</label>',
+                        `<label>${this.isScatter ? this.txtXValues : this.txtValues}</label>`,
                     '</td>',
                 '</tr>',
                 '<tr>',
@@ -84,7 +84,7 @@ define([], function () { 'use strict';
                 '<% if (isScatter) { %>',
                 '<tr>',
                     '<td colspan="2">',
-                        '<label>' + this.txtYValues + '</label>',
+                        `<label>${this.txtYValues}</label>`,
                     '</td>',
                 '</tr>',
                 '<tr>',
@@ -109,50 +109,49 @@ define([], function () { 'use strict';
         render: function() {
             Common.UI.Window.prototype.render.call(this);
 
-            var $window = this.getChild(),
-                me = this;
+            const $window = this.getChild();
 
-            me.inputRange1 = new Common.UI.InputFieldBtn({
+            this.inputRange1 = new Common.UI.InputFieldBtn({
                 el: $('#id-dlg-chart-range-range1'),
                 style: '100%',
                 btnHint: this.textSelectData,
                 // validateOnChange: true,
                 validateOnBlur: false
-            }).on('changed:after', function(input, newValue, oldValue, e) {
-                if (newValue == oldValue) return;
-                me.updateRangeData(1, newValue);
-            }).on('changing', function(input, newValue, oldValue, e) {
-                if (newValue == oldValue) return;
+            }).on('changed:after', (input, newValue, oldValue, e) => {
+                if (newValue === oldValue) return;
+                this.updateRangeData(1, newValue);
+            }).on('changing', (input, newValue, oldValue, e) => {
+                if (newValue === oldValue) return;
                 // me.onInputChanging(input, newValue, oldValue);
             }).on('button:click', _.bind(this.onSelectData, this, 1));
             this.lblRange1 = $window.find('#id-dlg-chart-range-lbl1');
 
-            me.inputRange2 = new Common.UI.InputFieldBtn({
+            this.inputRange2 = new Common.UI.InputFieldBtn({
                 el: $('#id-dlg-chart-range-range2'),
                 style: '100%',
                 btnHint: this.textSelectData,
                 // validateOnChange: true,
                 validateOnBlur: false
-            }).on('changed:after', function(input, newValue, oldValue, e) {
-                if (newValue == oldValue) return;
-                me.updateRangeData(2, newValue);
-            }).on('changing', function(input, newValue, oldValue, e) {
-                if (newValue == oldValue) return;
+            }).on('changed:after', (input, newValue, oldValue, e) => {
+                if (newValue === oldValue) return;
+                this.updateRangeData(2, newValue);
+            }).on('changing', (input, newValue, oldValue, e) => {
+                if (newValue === oldValue) return;
                 // me.onInputChanging(input, newValue, oldValue);
             }).on('button:click', _.bind(this.onSelectData, this, 2));
             this.lblRange2 = $window.find('#id-dlg-chart-range-lbl2');
 
-            me.inputRange3 = new Common.UI.InputFieldBtn({
+            this.inputRange3 = new Common.UI.InputFieldBtn({
                 el: $('#id-dlg-chart-range-range3'),
                 style: '100%',
                 btnHint: this.textSelectData,
                 // validateOnChange: true,
                 validateOnBlur: false
-            }).on('changed:after', function(input, newValue, oldValue, e) {
-                if (newValue == oldValue) return;
-                me.updateRangeData(3, newValue);
-            }).on('changing', function(input, newValue, oldValue, e) {
-                if (newValue == oldValue) return;
+            }).on('changed:after', (input, newValue, oldValue, e) => {
+                if (newValue === oldValue) return;
+                this.updateRangeData(3, newValue);
+            }).on('changing', (input, newValue, oldValue, e) => {
+                if (newValue === oldValue) return;
                 // me.onInputChanging(input, newValue, oldValue);
             }).on('button:click', _.bind(this.onSelectData, this, 3));
             this.lblRange3 = $window.find('#id-dlg-chart-range-lbl3');
@@ -176,34 +175,33 @@ define([], function () { 'use strict';
         },
 
         setSettings: function(settings) {
-            var me = this;
             this.api = settings.api;
             this.props = settings.props;
             this.chartSettings = settings.chartSettings;
 
-            if (this.type==1) {
+            if (this.type===1) {
                 if (this.props.series) {
-                    var series = this.props.series;
+                    const series = this.props.series;
                     this.inputRange1.setValue(series.asc_getName());
-                    this.lblRange1.text((this.inputRange1.getValue()!=='') ? ('= ' + (series.asc_getNameVal() || '')) : this.txtChoose);
+                    this.lblRange1.text((this.inputRange1.getValue()!=='') ? (`= ${series.asc_getNameVal() || ''}`) : this.txtChoose);
                     if (this.props.isScatter) {
-                        var arr = series.asc_getXValuesArr();
+                        let arr = series.asc_getXValuesArr();
                         this.inputRange2.setValue(series.asc_getXValues());
-                        this.lblRange2.text((this.inputRange2.getValue()!=='') ? ('= ' + (arr ? arr.join('; ') : '')) : this.txtChoose);
+                        this.lblRange2.text((this.inputRange2.getValue()!=='') ? (`= ${arr ? arr.join('; ') : ''}`) : this.txtChoose);
 
                         this.inputRange3.setValue(series.asc_getYValues());
                         arr = series.asc_getYValuesArr();
-                        this.lblRange3.text((this.inputRange3.getValue()!=='') ? ('= ' + (arr ? arr.join('; ') : '')) : this.txtChoose);
+                        this.lblRange3.text((this.inputRange3.getValue()!=='') ? (`= ${arr ? arr.join('; ') : ''}`) : this.txtChoose);
                     } else {
-                        var arr = series.asc_getValuesArr();
+                        const arr = series.asc_getValuesArr();
                         this.inputRange2.setValue(series.asc_getValues());
-                        this.lblRange2.text((this.inputRange2.getValue()!=='') ? ('= ' + (arr ? arr.join('; ') : '')) : this.txtChoose);
+                        this.lblRange2.text((this.inputRange2.getValue()!=='') ? (`= ${arr ? arr.join('; ') : ''}`) : this.txtChoose);
                     }
                 }
             } else {
-                var arr = this.props.values;
+                const arr = this.props.values;
                 this.inputRange1.setValue(this.props.category || '');
-                this.lblRange1.text((this.inputRange1.getValue()!=='') ? ('= ' + (arr ? arr.join('; ') : '')) : this.txtChoose);
+                this.lblRange1.text((this.inputRange1.getValue()!=='') ? (`= ${arr ? arr.join('; ') : ''}`) : this.txtChoose);
             }
         },
 
@@ -212,44 +210,43 @@ define([], function () { 'use strict';
         },
 
         onSelectData: function(type, input) {
-            var me = this;
-            if (me.api) {
-                var handlerDlg = function(dlg, result) {
-                    if (result == 'ok') {
+            if (this.api) {
+                const handlerDlg = (dlg, result) => {
+                    if (result === 'ok') {
                         input.setValue(dlg.getSettings());
-                        _.delay(function(){
-                            me.updateRangeData(type, dlg.getSettings());
+                        _.delay(()=> {
+                            this.updateRangeData(type, dlg.getSettings());
                         },10);
                     }
                 };
 
-                var win = new SSE.Views.CellRangeDialog({
+                const win = new SSE.Views.CellRangeDialog({
                     allowBlank: true,
                     handler: handlerDlg
-                }).on('close', function() {
+                }).on('close', () => {
                     // me.onInputChanging(input);
-                    me.show();
-                    _.delay(function(){
-                        me._noApply = true;
+                    this.show();
+                    _.delay(()=> {
+                        this._noApply = true;
                         input.focus();
-                        me._noApply = false;
+                        this._noApply = false;
                     },1);
                 });
 
-                var xy = Common.Utils.getOffset(me.$window);
-                me.hide();
-                win.show(me.$window, xy);
+                const xy = Common.Utils.getOffset(this.$window);
+                this.hide();
+                win.show(this.$window, xy);
                 win.setSettings({
-                    api     : me.api,
+                    api     : this.api,
                     range   : !_.isEmpty(input.getValue()) ? input.getValue() : '',
                     type    : Asc.c_oAscSelectionDialogType.Chart,
-                    validation: function() {return true;}
+                    validation: () => true
                 });
             }
         },
 
         isRangeValid: function(type, value) {
-            var isvalid;
+            let isvalid;
             switch (type) {
                 case 1:
                     if (this.props.series) {
@@ -269,10 +266,10 @@ define([], function () { 'use strict';
                     isvalid = this.props.series.asc_IsValidYValues(value);
                     break;
             }
-            if (isvalid === true || isvalid == Asc.c_oAscError.ID.No)
+            if (isvalid === true || isvalid === Asc.c_oAscError.ID.No)
                 return true;
 
-            var error = this.textInvalidRange;
+            let error = this.textInvalidRange;
             switch (isvalid) {
                 case Asc.c_oAscError.ID.StockChartError:
                     error = this.errorStockChart;
@@ -304,46 +301,47 @@ define([], function () { 'use strict';
             if (!this.isRangeValid(type, value)) return;
 
             if (this.props.series) {
-                var series = this.props.series;
+                const series = this.props.series;
                 switch (type) {
                     case 1:
                         series.asc_setName(value);
-                        this.lblRange1.text((this.inputRange1.getValue()!=='') ? ('= ' + (series.asc_getNameVal() || '')) : this.txtChoose);
+                        this.lblRange1.text((this.inputRange1.getValue()!=='') ? (`= ${series.asc_getNameVal() || ''}`) : this.txtChoose);
                         break;
                     case 2:
                         if (this.isScatter) {
-                            var arr = series.asc_getXValuesArr();
+                            const arr = series.asc_getXValuesArr();
                             series.asc_setXValues(value);
-                            this.lblRange2.text((this.inputRange2.getValue()!=='') ? ('= ' + (arr ? arr.join('; ') : '')) : this.txtChoose);
+                            this.lblRange2.text((this.inputRange2.getValue()!=='') ? (`= ${arr ? arr.join('; ') : ''}`) : this.txtChoose);
                         } else {
-                            var arr = series.asc_getValuesArr();
+                            const arr = series.asc_getValuesArr();
                             series.asc_setValues(value);
-                            this.lblRange2.text((this.inputRange2.getValue()!=='') ? ('= ' + (arr ? arr.join('; ') : '')) : this.txtChoose);
+                            this.lblRange2.text((this.inputRange2.getValue()!=='') ? (`= ${arr ? arr.join('; ') : ''}`) : this.txtChoose);
                         }
                         break;
-                    case 3:
-                        var arr = series.asc_getYValuesArr();
+                    case 3: {
+                        const arr = series.asc_getYValuesArr();
                         series.asc_setYValues(value);
-                        this.lblRange3.text((this.inputRange3.getValue()!=='') ? ('= ' + (arr ? arr.join('; ') : '')) : this.txtChoose);
+                        this.lblRange3.text((this.inputRange3.getValue()!=='') ? (`= ${arr ? arr.join('; ') : ''}`) : this.txtChoose);
                         break;
+                    }
                 }
             } else {
                 this.chartSettings.setCatFormula(value);
-                var arr = this.chartSettings.getCatValues();
-                this.lblRange1.text((this.inputRange1.getValue()!=='') ? ('= ' + (arr ? arr.join('; ') : '')) : this.txtChoose);
+                const arr = this.chartSettings.getCatValues();
+                this.lblRange1.text((this.inputRange1.getValue()!=='') ? (`= ${arr ? arr.join('; ') : ''}`) : this.txtChoose);
             }
         },
 
         onBtnClick: function(event) {
-            this._handleInput(event.currentTarget.attributes['result'].value);
+            this._handleInput(event.currentTarget.attributes.result.value);
         },
 
         _handleInput: function(state) {
             if (this.options.handler) {
-                if (state == 'ok') {
+                if (state === 'ok') {
                     if (!this.isRangeValid(1, this.inputRange1.getValue())) return;
-                    if (this.type==1 && !this.isRangeValid(2, this.inputRange2.getValue())) return;
-                    if (this.type==1 && this.isScatter && !this.isRangeValid(3, this.inputRange3.getValue())) return;
+                    if (this.type===1 && !this.isRangeValid(2, this.inputRange2.getValue())) return;
+                    if (this.type===1 && this.isScatter && !this.isRangeValid(3, this.inputRange3.getValue())) return;
                 }
                 if (this.options.handler.call(this, this, state))
                     return;

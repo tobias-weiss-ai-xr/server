@@ -29,21 +29,14 @@
  *
  */
 
-define([
-    'backbone',
-    'presentationeditor/main/app/model/SlideLayout'
-], function(Backbone){ 'use strict';
+define(["backbone", "presentationeditor/main/app/model/SlideLayout"], (Backbone) => {
+  PE.Collections = PE.Collections || {}
 
-    PE.Collections = PE.Collections || {};
+  PE.Collections.SlideLayouts = Backbone.Collection.extend({
+    model: PE.Models.SlideLayout,
 
-    PE.Collections.SlideLayouts = Backbone.Collection.extend({
-        model: PE.Models.SlideLayout,
-
-        findLayoutByIndex: function(index) {
-            return this.find(
-                function(model){
-                    return model.get('data').idx == index;
-                });
-        }
-    });
-});
+    findLayoutByIndex: function (index) {
+      return this.find((model) => model.get("data").idx === index)
+    },
+  })
+})

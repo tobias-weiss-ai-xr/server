@@ -28,48 +28,54 @@
  *  Created on 4/08/14
  *
  */
-define([
-    'common/main/lib/view/ExternalEditor'
-], function () { 'use strict';
-    Common.Views.ExternalDiagramEditor = Common.Views.ExternalEditor.extend(_.extend({
-        initialize : function(options) {
-            var _options = {};
-            _.extend(_options,  {
-                id: 'id-external-diagram-editor',
-                title: this.textTitle,
-                // storageName: 'diagram-editor',
-                sdkplaceholder: 'id-diagram-editor-placeholder',
-                initwidth: 730,
-                initheight: 275,
-                minwidth: 730,
-                minheight: 275,
-                footer: false,
-                transparentMask: true
-            }, options);
+define(["common/main/lib/view/ExternalEditor"], () => {
+  Common.Views.ExternalDiagramEditor = Common.Views.ExternalEditor.extend(
+    _.extend(
+      {
+        initialize: function (options) {
+          const _options = {}
+          _.extend(
+            _options,
+            {
+              id: "id-external-diagram-editor",
+              title: this.textTitle,
+              // storageName: 'diagram-editor',
+              sdkplaceholder: "id-diagram-editor-placeholder",
+              initwidth: 730,
+              initheight: 275,
+              minwidth: 730,
+              minheight: 275,
+              footer: false,
+              transparentMask: true,
+            },
+            options,
+          )
 
-            this._chartData = null;
-            Common.Views.ExternalEditor.prototype.initialize.call(this, _options);
+          this._chartData = null
+          Common.Views.ExternalEditor.prototype.initialize.call(this, _options)
         },
 
-        show: function() {
-            this.setPlaceholder();
-            Common.Views.ExternalEditor.prototype.show.apply(this, arguments);
+        show: function () {
+          this.setPlaceholder()
+          Common.Views.ExternalEditor.prototype.show.apply(this, arguments)
         },
 
-        setChartData: function(data) {
-            this._chartData = data;
-            if (this._isExternalDocReady)
-                this.fireEvent('setchartdata', this);
+        setChartData: function (data) {
+          this._chartData = data
+          if (this._isExternalDocReady) this.fireEvent("setchartdata", this)
         },
 
-        setPlaceholder: function(placeholder) {
-            this._placeholder = placeholder;
+        setPlaceholder: function (placeholder) {
+          this._placeholder = placeholder
         },
 
-        getPlaceholder: function() {
-            return this._placeholder;
+        getPlaceholder: function () {
+          return this._placeholder
         },
 
-        textTitle: 'Chart Editor'
-    }, Common.Views.ExternalDiagramEditor || {}));
-});
+        textTitle: "Chart Editor",
+      },
+      Common.Views.ExternalDiagramEditor || {},
+    ),
+  )
+})

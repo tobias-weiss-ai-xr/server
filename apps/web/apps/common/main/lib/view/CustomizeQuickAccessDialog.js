@@ -30,9 +30,9 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () { 'use strict';
+define([], () => { 
 
     Common.Views.CustomizeQuickAccessDialog = Common.UI.Window.extend(_.extend({
         options: {
@@ -49,7 +49,7 @@ define([], function () { 'use strict';
 
             this.template = [
                 '<div class="box">',
-                    '<label class="padding-medium">' + this.textMsg + '</label>',
+                    `<label class="padding-medium">${this.textMsg}</label>`,
                     '<div class="padding-small" id="quick-access-chb-save"></div>',
                     '<div class="padding-small" id="quick-access-chb-print"></div>',
                     '<div class="padding-small" id="quick-access-chb-quick-print" style="display:none;"></div>',
@@ -70,7 +70,7 @@ define([], function () { 'use strict';
             Common.UI.Window.prototype.render.call(this);
             this.focusedComponents = [];
 
-            var $window = this.getChild();
+            const $window = this.getChild();
             $window.find('.dlg-btn').on('click', _.bind(this.onBtnClick, this));
 
             if (this.options.showSave) {
@@ -115,7 +115,7 @@ define([], function () { 'use strict';
             });
             this.focusedComponents.push(this.chRedo);
 
-            if (!!window.PE) {
+            if (window.PE) {
                 this.chStartOver = new Common.UI.CheckBox({
                     el: $('#quick-access-chb-start-over'),
                     labelText: this.textStartOver,
@@ -135,7 +135,7 @@ define([], function () { 'use strict';
         },
 
         onBtnClick: function(event) {
-            if (event.currentTarget.attributes['result'].value === 'ok') {
+            if (event.currentTarget.attributes.result.value === 'ok') {
                 Common.NotificationCenter.trigger('quickaccess:changed', {
                     save: this.chSave ? this.chSave.getValue() === 'checked' : undefined,
                     print: this.chPrint ? this.chPrint.getValue() === 'checked' : undefined,

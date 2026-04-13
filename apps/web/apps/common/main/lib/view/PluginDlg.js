@@ -27,16 +27,15 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Views = Common.Views || {};
 
-define([], function () {
-    'use strict';
+define([], () => {
 
     Common.Views.PluginDlg = Common.UI.Window.extend(_.extend({
         initialize : function(options) {
-            var _options = {};
+            const _options = {};
             _.extend(_options,  {
                 header: true,
                 enableKeyEvents: false,
@@ -51,7 +50,7 @@ define([], function () {
             _options.height = 'auto';
 
             this.template = [
-                '<div id="id-plugin-container" class="box" style="height:' + _options.contentHeight + 'px;">',
+                `<div id="id-plugin-container" class="box" style="height:${_options.contentHeight}px;">`,
                 '<div id="id-plugin-placeholder" style="width: 100%;height: 100%;"></div>',
                 '</div>',
                 '<% if ((typeof buttons !== "undefined") && _.size(buttons) > 0) { %>',
@@ -71,14 +70,14 @@ define([], function () {
         render: function() {
             Common.UI.Window.prototype.render.call(this);
 
-            var bodyEl = this.$window.find('> .body');
+            const bodyEl = this.$window.find('> .body');
             bodyEl.css({height: 'auto', overflow: 'hidden'});
             this.boxEl = this.$window.find('.body > .box');
 
-            this._headerFooterHeight = this.options.header ? parseInt(this.$window.find('.header').css('height')) : 0;
+            this._headerFooterHeight = this.options.header ? Number.parseInt(this.$window.find('.header').css('height')) : 0;
             if (this.options.buttons && _.size(this.options.buttons)>0)
-                this._headerFooterHeight += parseInt(this.$window.find('.footer').css('height')) + parseInt(bodyEl.css('padding-top')) + parseInt(bodyEl.css('padding-bottom'));
-            this._headerFooterHeight += ((parseInt(this.$window.css('border-top-width')) + parseInt(this.$window.css('border-bottom-width'))));
+                this._headerFooterHeight += Number.parseInt(this.$window.find('.footer').css('height')) + Number.parseInt(bodyEl.css('padding-top')) + Number.parseInt(bodyEl.css('padding-bottom'));
+            this._headerFooterHeight += ((Number.parseInt(this.$window.css('border-top-width')) + Number.parseInt(this.$window.css('border-bottom-width'))));
 
             if (Common.Utils.innerHeight()-this.bordersOffset*2 < this.options.contentHeight + this._headerFooterHeight) {
                 this._restoreHeight = this.options.contentHeight + this._headerFooterHeight;
@@ -88,7 +87,7 @@ define([], function () {
 
             this.$window.find('.header').prepend($('<div class="tools left hidden"></div>'));
 
-            var iframe = document.createElement("iframe");
+            const iframe = document.createElement("iframe");
             iframe.id           = this.frameId;
             iframe.name         = 'pluginFrameEditor';
             iframe.width        = '100%';
@@ -98,31 +97,29 @@ define([], function () {
             iframe.scrolling    = "no";
             iframe.allow = "camera; microphone; display-capture";
             iframe.onload       = _.bind(this._onLoad,this);
-
-            var me = this;
-            var pholder = this.$window.find('#id-plugin-placeholder');
+            const pholder = this.$window.find('#id-plugin-placeholder');
             if (this.loader) {
-                setTimeout(function(){
-                    if (me.isLoaded) return;
-                    me.loadMask = new Common.UI.LoadMask({owner: pholder});
-                    me.loadMask.setTitle(me.textLoading);
-                    me.loadMask.show();
-                    if (me.isLoaded) me.loadMask.hide();
+                setTimeout(()=> {
+                    if (this.isLoaded) return;
+                    this.loadMask = new Common.UI.LoadMask({owner: pholder});
+                    this.loadMask.setTitle(this.textLoading);
+                    this.loadMask.show();
+                    if (this.isLoaded) this.loadMask.hide();
                 }, 500);
             }
 
             iframe.src = this.url;
             pholder.append(iframe);
             this.frame = iframe;
-            this.on('resizing', function(args){
-                me.boxEl.css('height', parseInt(me.$window.css('height')) - me._headerFooterHeight);
+            this.on('resizing', (args)=> {
+                this.boxEl.css('height', Number.parseInt(this.$window.css('height')) - this._headerFooterHeight);
             });
 
-            var onMainWindowResize = function(){
-                me.onWindowResize();
+            const onMainWindowResize = ()=> {
+                this.onWindowResize();
             };
             $(window).on('resize', onMainWindowResize);
-            this.on('close', function() {
+            this.on('close', () => {
                 $(window).off('resize', onMainWindowResize);
             });
 
@@ -138,10 +135,10 @@ define([], function () {
         },
 
         setInnerSize: function(width, height) {
-            var maxHeight = Common.Utils.innerHeight(),
-                maxWidth = Common.Utils.innerWidth(),
-                borders_width = (parseInt(this.$window.css('border-left-width')) + parseInt(this.$window.css('border-right-width'))),
-                bordersOffset = this.bordersOffset*2;
+            const maxHeight = Common.Utils.innerHeight();
+            const maxWidth = Common.Utils.innerWidth();
+            const borders_width = (Number.parseInt(this.$window.css('border-left-width')) + Number.parseInt(this.$window.css('border-right-width')));
+            const bordersOffset = this.bordersOffset*2;
             if (maxHeight - bordersOffset<height + this._headerFooterHeight)
                 height = maxHeight - bordersOffset - this._headerFooterHeight;
             if (maxWidth - bordersOffset<width + borders_width)
@@ -161,18 +158,18 @@ define([], function () {
         },
 
         onWindowResize: function() {
-            var main_width  = Common.Utils.innerWidth(),
-                main_height = Common.Utils.innerHeight(),
-                win_width = this.getWidth(),
-                win_height = this.getHeight(),
-                bordersOffset = (this.resizable) ? 0 : this.bordersOffset;
+            const main_width  = Common.Utils.innerWidth();
+            const main_height = Common.Utils.innerHeight();
+            const win_width = this.getWidth();
+            const win_height = this.getHeight();
+            const bordersOffset = (this.resizable) ? 0 : this.bordersOffset;
             if (win_height<main_height-bordersOffset*2+0.1 ) {
                 if (!this.resizable && this._restoreHeight>0 && win_height < this._restoreHeight) {
-                    var height = Math.max(Math.min(this._restoreHeight, main_height-bordersOffset*2), this.initConfig.minheight);
+                    const height = Math.max(Math.min(this._restoreHeight, main_height-bordersOffset*2), this.initConfig.minheight);
                     this.setHeight(height);
                     this.boxEl.css('height', height - this._headerFooterHeight);
                 }
-                var top = this.getTop();
+                const top = this.getTop();
                 if (top<bordersOffset) this.$window.css('top', bordersOffset);
                 else if (top+win_height>main_height-bordersOffset)
                     this.$window.css('top', main_height-bordersOffset - win_height);
@@ -188,7 +185,7 @@ define([], function () {
                 if (!this.resizable && this._restoreWidth>0 && win_width < this._restoreWidth) {
                     this.setWidth(Math.max(Math.min(this._restoreWidth, main_width-bordersOffset*2), this.initConfig.minwidth));
                 }
-                var left = this.getLeft();
+                const left = this.getLeft();
                 if (left<bordersOffset) this.$window.css('left', bordersOffset);
                 else if (left+win_width>main_width-bordersOffset)
                     this.$window.css('left', main_width-bordersOffset-win_width);
@@ -202,31 +199,31 @@ define([], function () {
         },
 
         showDockedButton: function() {
-            var header = this.$window.find('.header .tools:not(.left)'),
-                // header = this.$window.find('.header .tools.left'),
-                btnId = 'id-plugindlg-docked',
-                btn = header.find('#' + btnId);
+            const header = this.$window.find('.header .tools:not(.left)');
+            // header = this.$window.find('.header .tools.left'),
+            const btnId = 'id-plugindlg-docked';
+            let btn = header.find(`#${btnId}`);
             if (btn.length < 1) {
-                var iconCls = 'btn-pin';
-                btn = $('<div id="' + btnId + '" class="tool custom toolbar__icon ' + iconCls + '"></div>');
+                const iconCls = 'btn-pin';
+                btn = $(`<div id="${btnId}" class="tool custom toolbar__icon ${iconCls}"></div>`);
                 btn.on('click', _.bind(function() {
-                    var tip = btn.data('bs.tooltip');
+                    const tip = btn.data('bs.tooltip');
                     if (tip) tip.dontShow = true;
                     this.fireEvent('docked', this.frameId);
                 }, this));
                 header.append(btn);
-                btn.tooltip({title: this.textDock, placement: 'cursor', zIndex: parseInt(this.$window.css('z-index')) + 10});
+                btn.tooltip({title: this.textDock, placement: 'cursor', zIndex: Number.parseInt(this.$window.css('z-index')) + 10});
             }
             btn.show();
             header.removeClass('hidden');
         },
 
         showButton: function(id, toRight) {
-            var header = this.$window.find(toRight ? '.header .tools:not(.left)' : '.header .tools.left'),
-                btn = header.find('#id-plugindlg-' + id);
+            const header = this.$window.find(toRight ? '.header .tools:not(.left)' : '.header .tools.left');
+            let btn = header.find(`#id-plugindlg-${id}`);
             if (btn.length<1) {
-                var iconCls = (id ==='back') ? 'btn-promote' : 'btn-' + Common.Utils.String.htmlEncode(id);
-                btn = $('<div id="id-plugindlg-' + id + '" class="tool custom toolbar__icon ' + iconCls + '"></div>');
+                const iconCls = (id ==='back') ? 'btn-promote' : `btn-${Common.Utils.String.htmlEncode(id)}`;
+                btn = $(`<div id="id-plugindlg-${id}" class="tool custom toolbar__icon ${iconCls}"></div>`);
                 btn.on('click', _.bind(function() {
                     this.fireEvent('header:click',id);
                 }, this));
@@ -237,7 +234,7 @@ define([], function () {
         },
 
         hideButton: function(id) {
-            var btn = this.$window.find('.header #id-plugindlg-' + id);
+            const btn = this.$window.find(`.header #id-plugindlg-${id}`);
             if (btn.length>0) {
                 btn.hide();
             }

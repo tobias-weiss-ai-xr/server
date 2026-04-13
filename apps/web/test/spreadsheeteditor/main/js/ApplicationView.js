@@ -24,14 +24,13 @@
  */
 
 if (SSE === undefined) {
-    var SSE = {};
+  const SSE = {}
 }
 
-SSE.ApplicationView = new(function(){
-    function createView(){
-    }
+SSE.ApplicationView = new (function () {
+  function createView() {}
 
-    return {
-        create: createView
-    }
-})();
+  return {
+    create: createView,
+  }
+})()

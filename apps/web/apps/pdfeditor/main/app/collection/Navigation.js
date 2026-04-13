@@ -26,16 +26,10 @@
  * Date: 14.12.17
  */
 
-define([
-    'underscore',
-    'backbone',
-    'common/main/lib/component/TreeView'
-], function(_, Backbone){
-    'use strict';
+define(["underscore", "backbone", "common/main/lib/component/TreeView"], (_, Backbone) => {
+  PDFE.Collections = PDFE.Collections || {}
 
-    PDFE.Collections = PDFE.Collections || {};
-
-    PDFE.Collections.Navigation = Common.UI.TreeViewStore.extend({
-        model: Common.UI.TreeViewModel
-    });
-});
+  PDFE.Collections.Navigation = Common.UI.TreeViewStore.extend({
+    model: Common.UI.TreeViewModel,
+  })
+})

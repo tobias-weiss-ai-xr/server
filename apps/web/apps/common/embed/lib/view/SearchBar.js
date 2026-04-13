@@ -30,48 +30,47 @@
  *
  */
 
-!window.common && (window.common = {});
-!common.view && (common.view = {});
-common.view.SearchBar = new(function() {
-    var tpl = '<div class="asc-window search-window" style="display: none;">' +
-                    '<div class="body">{body}</div>' +
-                '</div>';
-    var tplBody = '<div class="search-input-group">' +
-                    '<input type="text" id="search-bar-text" placeholder="{textFind}" autocomplete="off">' +
-                    '<div id="search-bar-results">0/0</div>' +
-                '</div>' +
-                '<div class="tools">' +
-                    '<button id="search-bar-back" class="svg-icon search-arrow-up"></button>' +
-                    '<button id="search-bar-next" class="svg-icon search-arrow-down"></button>' +
-                    '<button id="search-bar-close" class="svg-icon search-close"></button>' +
-                '</div>';
+!window.common && (window.common = {})
+!common.view && (common.view = {})
+common.view.SearchBar = new (function () {
+  const tpl =
+    '<div class="asc-window search-window" style="display: none;">' +
+    '<div class="body">{body}</div>' +
+    "</div>"
+  const tplBody =
+    '<div class="search-input-group">' +
+    '<input type="text" id="search-bar-text" placeholder="{textFind}" autocomplete="off">' +
+    '<div id="search-bar-results">0/0</div>' +
+    "</div>" +
+    '<div class="tools">' +
+    '<button id="search-bar-back" class="svg-icon search-arrow-up"></button>' +
+    '<button id="search-bar-next" class="svg-icon search-arrow-down"></button>' +
+    '<button id="search-bar-close" class="svg-icon search-close"></button>' +
+    "</div>"
 
-    return {
-        create: function(parent) {
-            !parent && (parent = 'body');
+  return {
+    create: function (parent) {
+      !parent && (parent = "body")
 
-            var _$dlg = $(tpl
-                .replace(/\{body}/, tplBody)
-                .replace(/\{textFind}/, this.textFind))
-                    .appendTo(parent)
-                    .attr('id', 'dlg-search');
+      const _$dlg = $(tpl.replace(/\{body}/, tplBody).replace(/\{textFind}/, this.textFind))
+        .appendTo(parent)
+        .attr("id", "dlg-search")
 
-            return _$dlg;
-        },
+      return _$dlg
+    },
 
-        disableNavButtons: function (resultNumber, allResults) {
-            var disable = $('#search-bar-text').val() === '' || !allResults;
-            $('#search-bar-back').attr({disabled: disable});
-            $('#search-bar-next').attr({disabled: disable});
-        },
+    disableNavButtons: (resultNumber, allResults) => {
+      const disable = $("#search-bar-text").val() === "" || !allResults
+      $("#search-bar-back").attr({ disabled: disable })
+      $("#search-bar-next").attr({ disabled: disable })
+    },
 
-        updateResultsNumber: function (current, all) {
-            var $results = $('#search-bar-results'),
-                $input = $('#search-bar-text');
-            $results.text(!all || $input.val() === '' ? '0/0' : current + 1 + '/' + all);
-        },
+    updateResultsNumber: (current, all) => {
+      const $results = $("#search-bar-results")
+      const $input = $("#search-bar-text")
+      $results.text(!all || $input.val() === "" ? "0/0" : `${current + 1}/${all}`)
+    },
 
-        textFind: 'Find'
-
-    };
-})();
+    textFind: "Find",
+  }
+})()

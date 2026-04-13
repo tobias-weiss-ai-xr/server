@@ -89,14 +89,13 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'backbone'
-], function () {
-    'use strict';
+], () => {
 
-    var BaseLayout = function(options) {
+    const BaseLayout = function(options) {
         this.box        = null;
         this.panels     = [];
         this.splitters  = [];
@@ -104,15 +103,13 @@ define([
         _.extend(this, options || {});
     };
 
-    var LayoutPanel = function() {
-        return {
+    const LayoutPanel = () => ({
             width       : null,
             height      : null,
             resize      : false,
             stretch     : false,
             rely        : false
-        }
-    };
+        });
 
     _.extend(BaseLayout.prototype, Backbone.Events, {
         initialize: function(options) {
@@ -123,18 +120,22 @@ define([
                 eventStop: _.bind(this.resizeStop, this)
             };
 
-            var panel, resizer, stretch = false;
+            let panel;
+            let resizer;
+            const stretch = false;
             this.freeze = options.freeze;
             this.changeLayout(options.items);
         },
 
-        doLayout: function() {
+        doLayout: () => {
         },
 
         changeLayout: function(items) {
-            var panel, resizer, stretch = false;
-            this.splitters && this.splitters.forEach(function(item) {
-                item.resizer && item.resizer.el.remove();
+            let panel;
+            let resizer;
+            let stretch = false;
+            this.splitters?.forEach((item) => {
+                item.resizer?.el.remove();
             }, this);
             this.splitters = [];
             this.panels = [];
@@ -181,59 +182,55 @@ define([
             this.freezePanels(this.freeze);
         },
 
-        getElementHeight: function(el) {
-            return parseInt(el.css('height'));
-        },
+        getElementHeight: (el) => Number.parseInt(el.css('height')),
 
-        getElementWidth: function(el) {
-            return parseInt(el.css('width'));
-        },
+        getElementWidth: (el) => Number.parseInt(el.css('width')),
 
         getItem: function (alias) {
-            for (var p in this.panels) {
-                var panel = this.panels[p];
-                if ( panel.alias == alias ) return panel;
+            for (const p in this.panels) {
+                const panel = this.panels[p];
+                if ( panel.alias === alias ) return panel;
             }
         },
 
         hideItemResizer: function(alias, isHide) {
             const panel = this.getItem(alias);
-            if(panel && panel.resize) {
+            if(panel?.resize) {
                 panel.resize.hidden = isHide;
                 panel.resize.el && (panel.resize.el[isHide ? 'hide' : 'show']());
             }
         },
 
-        onSelectStart: function(e) {
+        onSelectStart: (e) => {
             if (e.preventDefault) e.preventDefault();
             return false;
         },
 
-        addHandler: function(elem, type, handler) {
+        addHandler: (elem, type, handler) => {
             if (elem.addEventListener) {
                 elem.addEventListener(type, handler);
             } else
             if (elem.attachEvent) {
-                elem.attachEvent('on' + type, handler);
+                elem.attachEvent(`on${type}`, handler);
             } else {
-                elem['on' + type] = handler;
+                elem[`on${type}`] = handler;
             }
         },
 
-        removeHandler: function(elem, type, handler) {
+        removeHandler: (elem, type, handler) => {
             if (elem.removeEventListener) {
                 elem.removeEventListener(type, handler);
             } else
             if (elem.detachEvent) {
-                elem.detachEvent('on' + type, handler);
+                elem.detachEvent(`on${type}`, handler);
             } else {
-                elem['on' + type] = null;
+                elem[`on${type}`] = null;
             }
         },
 
-        clearSelection: function() {
+        clearSelection: () => {
             if (window.getSelection) {
-                var selection = window.getSelection();
+                const selection = window.getSelection();
                 if (selection.empty) selection.empty(); else
                 if (selection.removeAllRanges) selection.removeAllRanges();
             } else if (document.selection) {
@@ -252,7 +249,7 @@ define([
                 mouseup     : this.resize.eventStop
             });
 
-            var panel             = e.data.panel;
+            const panel             = e.data.panel;
             this.resize.type      = e.data.type;
             this.resize.$el       = panel.el;
             this.resize.min       = panel.minpos > 0 ? panel.minpos : this.resize.$el.parent().width() + panel.minpos;
@@ -263,46 +260,46 @@ define([
 
             this.resize.$el.addClass('move');
 
-            if (e.data.type == 'vertical') {
-                this.resize.height  = parseInt(this.resize.$el.css('height'));
+            if (e.data.type === 'vertical') {
+                this.resize.height  = Number.parseInt(this.resize.$el.css('height'));
                 this.resize.max     = (panel.maxpos > 0 ? panel.maxpos : this.resize.$el.parent().height() + panel.maxpos) - this.resize.height;
-                this.resize.inity   = e.pageY*Common.Utils.zoom() - parseInt(e.currentTarget.style.top);
+                this.resize.inity   = e.pageY*Common.Utils.zoom() - Number.parseInt(e.currentTarget.style.top);
             } else
-            if (e.data.type == 'horizontal') {
-                this.resize.width   = parseInt(this.resize.$el.css('width'));
+            if (e.data.type === 'horizontal') {
+                this.resize.width   = Number.parseInt(this.resize.$el.css('width'));
                 this.resize.max     = (panel.maxpos > 0 ? panel.maxpos : this.resize.$el.parent().width() + panel.maxpos) - this.resize.width;
-                this.resize.initx   = e.pageX*Common.Utils.zoom() - parseInt(e.currentTarget.style.left);
+                this.resize.initx   = e.pageX*Common.Utils.zoom() - Number.parseInt(e.currentTarget.style.left);
             }
-            if (this.resize.multiply && this.resize.multiply.koeff)
+            if (this.resize.multiply?.koeff)
                 this.resize.max = Math.floor(this.resize.max/this.resize.multiply.koeff) * this.resize.multiply.koeff + (this.resize.multiply.offset || 0);
             Common.NotificationCenter.trigger('layout:resizestart');
         },
 
         resizeMove: function(e) {
-            var zoom = (e instanceof jQuery.Event) ? Common.Utils.zoom() : 1;
-            if (this.resize.type == 'vertical') {
-                var prop    = 'top',
-                    value   = e.pageY*zoom - this.resize.inity;
+            const zoom = (e instanceof jQuery.Event) ? Common.Utils.zoom() : 1;
+            if (this.resize.type === 'vertical') {
+                const prop    = 'top';
+                const value   = e.pageY*zoom - this.resize.inity;
             } else
-            if (this.resize.type == 'horizontal') {
+            if (this.resize.type === 'horizontal') {
                 prop        = 'left';
                 value       = e.pageX*zoom - this.resize.initx;
             }
-            if (this.resize.multiply && this.resize.multiply.koeff) {
-                var m = this.resize.multiply.koeff,
-                    val = value/m,
-                    vfloor = Math.floor(val) * m + (this.resize.multiply.offset || 0),
-                    vceil = Math.ceil(val) * m + (this.resize.multiply.offset || 0);
+            if (this.resize.multiply?.koeff) {
+                const m = this.resize.multiply.koeff;
+                const val = value/m;
+                const vfloor = Math.floor(val) * m + (this.resize.multiply.offset || 0);
+                const vceil = Math.ceil(val) * m + (this.resize.multiply.offset || 0);
                 value = (value>vfloor+m/2) ? vceil : vfloor;
             }
             if (this.resize.fmin && this.resize.fmax) {
                 if (!(value < this.resize.fmin()) && !(value > this.resize.fmax())) {
-                    this.resize.$el[0].style[prop] = value + 'px';
+                    this.resize.$el[0].style[prop] = `${value}px`;
                 }
             } else {
 
                 if (!(value < this.resize.min) && !(value > this.resize.max)) {
-                    this.resize.$el[0].style[prop] = value + 'px';
+                    this.resize.$el[0].style[prop] = `${value}px`;
                 }
             }
         },
@@ -317,25 +314,25 @@ define([
 
             if (!this.resize.$el) return;
 
-            var zoom = (e instanceof jQuery.Event) ? Common.Utils.zoom() : 1;
+            const zoom = (e instanceof jQuery.Event) ? Common.Utils.zoom() : 1;
             if (!(e instanceof jQuery.Event) && (e.pageY === undefined || e.pageX === undefined)) {
                 e.pageY = e.y;
                 e.pageX = e.x;
 
             }
-            if (this.resize.type == 'vertical') {
-                var prop = 'height';
-                var value = e.pageY*zoom - this.resize.inity;
+            if (this.resize.type === 'vertical') {
+                const prop = 'height';
+                const value = e.pageY*zoom - this.resize.inity;
             } else
-            if (this.resize.type == 'horizontal') {
+            if (this.resize.type === 'horizontal') {
                 prop = 'width';
                 value = e.pageX*zoom - this.resize.initx;
             }
-            if (this.resize.multiply && this.resize.multiply.koeff) {
-                var m = this.resize.multiply.koeff,
-                    val = value/m,
-                    vfloor = Math.floor(val) * m + (this.resize.multiply.offset || 0),
-                    vceil = Math.ceil(val) * m + (this.resize.multiply.offset || 0);
+            if (this.resize.multiply?.koeff) {
+                const m = this.resize.multiply.koeff;
+                const val = value/m;
+                const vfloor = Math.floor(val) * m + (this.resize.multiply.offset || 0);
+                const vceil = Math.ceil(val) * m + (this.resize.multiply.offset || 0);
                 value = (value>vfloor+m/2) ? vceil : vfloor;
             }
             if (this.resize.fmin && this.resize.fmax) {
@@ -346,34 +343,36 @@ define([
                 value > this.resize.max && (value = this.resize.max);
             }
 
-            var panel = null, next = null, oldValue = 0;
+            let panel = null;
+            let next = null;
+            let oldValue = 0;
 
             if (this.resize.$el.hasClass('after')) {
                 panel = this.resize.$el.prev();
                 next = this.resize.$el.next();
-                oldValue = parseInt(panel.css(prop));
+                oldValue = Number.parseInt(panel.css(prop));
             } else {
                 panel = this.resize.$el.next();
                 next = this.resize.$el.prev();
-                oldValue = parseInt(panel.css(prop));
+                oldValue = Number.parseInt(panel.css(prop));
                 value = panel.parent()[prop]() - (value + this.resize[prop]);
             }
 
-            if (this.resize.type == 'vertical')
+            if (this.resize.type === 'vertical')
                 value -= Common.Utils.getPosition(panel).top;
             // if (this.resize.type == 'horizontal')
             //     value -= panel.position().left;
 
-            panel.css(prop, value + 'px');
+            panel.css(prop, `${value}px`);
 
             if (this.resize.behaviour) {
-                next.css(prop, parseInt(next.css(prop)) - (value - oldValue));
+                next.css(prop, Number.parseInt(next.css(prop)) - (value - oldValue));
             }
 
             this.resize.$el.removeClass('move');
-            delete this.resize.$el;
+            this.resize.$el = undefined;
 
-            if (this.resize.value != value) {
+            if (this.resize.value !== value) {
                 this.doLayout();
                 this.trigger('layout:resizedrag', this);
             }
@@ -382,7 +381,7 @@ define([
 
         freezePanels: function (value) {
 
-            this.panels.forEach( function (panel) {
+            this.panels.forEach( (panel) => {
 
                 if (!panel.stretch && panel.resize) {
                     $(panel.resize.el).css('cursor', value ? 'default' : '');
@@ -398,9 +397,11 @@ define([
                 return false;
             }
 
-            var panel = null, next = null, oldValue = 0,
-                resize = this.splitters[index].resizer,
-                prop = 'height';
+            let panel = null;
+            let next = null;
+            let oldValue = 0;
+            const resize = this.splitters[index].resizer;
+            const prop = 'height';
 
             value < resize.fmin() && (value = resize.fmin());
             value > resize.fmax() && (value = resize.fmax());
@@ -409,12 +410,12 @@ define([
             if (resize.el.hasClass('after')) {
                 panel = resize.el.prev();
                 next = resize.el.next();
-                oldValue = parseInt(panel.css(prop));
+                oldValue = Number.parseInt(panel.css(prop));
             } else {
                 panel = resize.el.next();
                 value = panel.parent()[prop]() - (value + resize[prop]);
                 next = resize.el.next();
-                oldValue = parseInt(panel.css(prop));
+                oldValue = Number.parseInt(panel.css(prop));
             }
 
            // if (resize.type == 'vertical')
@@ -422,13 +423,13 @@ define([
            // if (resize.type == 'horizontal')
            //     value -= panel.position().left;
 
-            panel.css(prop, value + 'px');
+            panel.css(prop, `${value}px`);
 
             if (resize.behaviour) {
-                next.css(prop, parseInt(next.css(prop)) - (value - oldValue));
+                next.css(prop, Number.parseInt(next.css(prop)) - (value - oldValue));
             }
 
-            if (resize.value != value) {
+            if (resize.value !== value) {
                 this.doLayout();
             }
             return (Math.abs(oldValue-value)>0.99);
@@ -448,7 +449,9 @@ define([
         },
 
         doLayout: function() {
-            var height = 0, stretchable, style;
+            let height = 0;
+            let stretchable;
+            let style;
             this.panels.forEach(function(panel){
                 if ( !panel.stretch ) {
                     style = panel.el.is(':visible');
@@ -507,7 +510,9 @@ define([
         },
 
         doLayout: function(event) {
-            var width = 0, stretchable, style;
+            let width = 0;
+            let stretchable;
+            let style;
             this.panels.forEach(function(panel){
                 if ( !panel.stretch ) {
                     style = panel.el.is(':visible');

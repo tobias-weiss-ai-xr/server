@@ -31,7 +31,7 @@
  *
  */
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'jquery',
@@ -53,13 +53,12 @@ define([
     'common/main/lib/component/SynchronizeTip',
     'common/main/lib/component/Mixtbar',
     'common/main/lib/component/ComboDataViewShape'
-], function ($, _, Backbone, template, template_view) {
-    'use strict';
+], ($, _, Backbone, template, template_view) => {
 
     if (!Common.enumLock)
         Common.enumLock = {};
 
-    var enumLock = {
+    const enumLock = {
         undoLock:       'can-undo',
         redoLock:       'can-redo',
         copyLock:       'can-copy',
@@ -101,15 +100,13 @@ define([
         cantDelPage: 'cant-del-page',
         objectWithoutParagraph:  'object-without-paragraph',
     };
-    for (var key in enumLock) {
+    for (const key in enumLock) {
         if (enumLock.hasOwnProperty(key)) {
             Common.enumLock[key] = enumLock[key];
         }
     }
 
-    PDFE.Views.Toolbar =  Common.UI.Mixtbar.extend(_.extend((function(){
-
-        return {
+    PDFE.Views.Toolbar =  Common.UI.Mixtbar.extend(_.extend((()=> ({
             el: '#toolbar',
 
             // Compile our stats template
@@ -121,7 +118,6 @@ define([
             },
 
             initialize: function () {
-                var me = this;
 
                 /**
                  * UI Components
@@ -133,15 +129,15 @@ define([
                 this._state = {
                     hasCollaborativeChanges: undefined
                 };
-                Common.NotificationCenter.on('app:ready', me.onAppReady.bind(this));
+                Common.NotificationCenter.on('app:ready', this.onAppReady.bind(this));
                 return this;
             },
 
             applyLayoutPDFEdit: function(config) {
                 if (!config.isPDFEdit) return;
 
-                var _set = Common.enumLock,
-                    arr = [];
+                const _set = Common.enumLock;
+                const arr = [];
 
                 const shortcutHints = {};
                 // tab Edit
@@ -352,7 +348,7 @@ define([
                 this.paragraphControls.push(this.btnTextHighlightColor);
                 arr.push(this.btnTextHighlightColor);
 
-                var colorsconfig = Common.UI.simpleColorsConfig;
+                const colorsconfig = Common.UI.simpleColorsConfig;
                 this.btnFontColor = new Common.UI.ButtonColored({
                     id: 'id-toolbar-btn-fontcolor',
                     cls: 'btn-toolbar',
@@ -412,7 +408,7 @@ define([
                 this.btnMarkers = new Common.UI.Button({
                     id: 'id-toolbar-btn-markers',
                     cls: 'btn-toolbar',
-                    iconCls: 'toolbar__icon ' + (!Common.UI.isRTL() ? 'btn-setmarkers' : 'btn-setmarkers-rtl'),
+                    iconCls: `toolbar__icon ${!Common.UI.isRTL() ? 'btn-setmarkers' : 'btn-setmarkers-rtl'}`,
                     lock: [_set.paragraphLock, _set.lostConnect, _set.noParagraphSelected, _set.inSmartart, _set.inSmartartInternal, _set.disableOnStart, _set.inAnnotation],
                     enableToggle: true,
                     toggleGroup: 'markersGroup',
@@ -428,7 +424,7 @@ define([
                 this.btnNumbers = new Common.UI.Button({
                     id: 'id-toolbar-btn-numbering',
                     cls: 'btn-toolbar',
-                    iconCls: 'toolbar__icon ' + (!Common.UI.isRTL() ? 'btn-numbering' : 'btn-numbering-rtl'),
+                    iconCls: `toolbar__icon ${!Common.UI.isRTL() ? 'btn-numbering' : 'btn-numbering-rtl'}`,
                     lock: [_set.paragraphLock, _set.lostConnect, _set.noParagraphSelected, _set.inSmartart, _set.inSmartartInternal, _set.disableOnStart, _set.inAnnotation],
                     enableToggle: true,
                     toggleGroup: 'markersGroup',
@@ -441,10 +437,10 @@ define([
                 this.paragraphControls.push(this.btnNumbers);
                 arr.push(this.btnNumbers);
 
-                var clone = function (source) {
-                    var obj = {};
-                    for (var prop in source)
-                        obj[prop] = (typeof(source[prop]) == 'object') ? clone(source[prop]) : source[prop];
+                const clone = (source) => {
+                    const obj = {};
+                    for (const prop in source)
+                        obj[prop] = (typeof(source[prop]) === 'object') ? clone(source[prop]) : source[prop];
                     return obj;
                 };
 
@@ -513,28 +509,28 @@ define([
                 shortcutHints.LeftPara = {
                     btn: this.btnHorizontalAlign.menu.items[0],
                     label: this.textAlignLeft,
-                    applyCallback: function(item, hintText) {
+                    applyCallback: (item, hintText) => {
                         item.btn.setCaption(hintText);
                     }
                 };
                 shortcutHints.CenterPara = {
                     btn: this.btnHorizontalAlign.menu.items[1],
                     label: this.textAlignCenter,
-                    applyCallback: function(item, hintText) {
+                    applyCallback: (item, hintText) => {
                         item.btn.setCaption(hintText);
                     }
                 };
                 shortcutHints.RightPara = {
                     btn: this.btnHorizontalAlign.menu.items[2],
                     label: this.textAlignRight,
-                    applyCallback: function(item, hintText) {
+                    applyCallback: (item, hintText) => {
                         item.btn.setCaption(hintText);
                     }
                 };
                 shortcutHints.JustifyPara = {
                     btn: this.btnHorizontalAlign.menu.items[3],
                     label: this.textAlignJust,
-                    applyCallback: function(item, hintText) {
+                    applyCallback: (item, hintText) => {
                         item.btn.setCaption(hintText);
                     }
                 };
@@ -709,7 +705,7 @@ define([
                     checkable: true,
                     toggleGroup: 'slidealign',
                     value: -1
-                }).on('click', function (mnu) {
+                }).on('click', (mnu) => {
                     Common.Utils.InternalSettings.set("pdfe-align-to-slide", true);
                 });
                 this.mniAlignObjects = new Common.UI.MenuItem({
@@ -717,7 +713,7 @@ define([
                     checkable: true,
                     toggleGroup: 'slidealign',
                     value: -1
-                }).on('click', function (mnu) {
+                }).on('click', (mnu) => {
                     Common.Utils.InternalSettings.set("pdfe-align-to-slide", false);
                 });
 
@@ -916,16 +912,15 @@ define([
             },
 
             applyLayout: function (config) {
-                var me = this;
-                me.lockControls = [];
-                var _set = Common.enumLock;
+                this.lockControls = [];
+                const _set = Common.enumLock;
                 if ( config.isEdit ) {
                     Common.UI.Mixtbar.prototype.initialize.call(this, {
                             template: _.template(template),
                             tabs: [
-                                {caption: me.textTabFile, action: 'file', extcls: 'canedit', layoutname: 'toolbar-file', haspanel:false, dataHintTitle: 'F'},
-                                {caption: me.textTabHome, action: 'home', extcls: 'canedit', dataHintTitle: 'H'},
-                                {caption: me.textTabComment, action: 'comment', extcls: 'canedit', dataHintTitle: 'C'}
+                                {caption: this.textTabFile, action: 'file', extcls: 'canedit', layoutname: 'toolbar-file', haspanel:false, dataHintTitle: 'F'},
+                                {caption: this.textTabHome, action: 'home', extcls: 'canedit', dataHintTitle: 'H'},
+                                {caption: this.textTabComment, action: 'comment', extcls: 'canedit', dataHintTitle: 'C'}
                             ],
                             config: config
                         }
@@ -936,7 +931,7 @@ define([
                     this.btnSave = new Common.UI.Button({
                         id: 'id-toolbar-btn-save',
                         cls: 'btn-toolbar',
-                        iconCls: 'toolbar__icon no-mask ' + this.btnSaveCls,
+                        iconCls: `toolbar__icon no-mask ${this.btnSaveCls}`,
                         lock: [_set.cantSave, _set.lostConnect, _set.disableOnStart],
                         signals: ['disabled'],
                         dataHint: '1',
@@ -998,7 +993,7 @@ define([
                     });
                     this.toolbarControls.push(this.btnStamp);
 
-                    var colorsconfig = Common.UI.simpleColorsConfig;
+                    const colorsconfig = Common.UI.simpleColorsConfig;
                     this.btnStrikeout = new Common.UI.ButtonColored({
                         id: 'id-toolbar-btn-strikeout',
                         cls: 'btn-toolbar',
@@ -1128,51 +1123,51 @@ define([
                         additionalItemsBefore: [
                             {
                                 cls: 'shifted-right',
-                                tipForMainBtn: me.tipInsertRectComment,
-                                caption: me.txtRectComment,
+                                tipForMainBtn: this.tipInsertRectComment,
+                                caption: this.txtRectComment,
                                 checkable: true,
                                 checkmark: false,
                                 toggleGroup: 'shapecomment',
                                 iconCls     : 'menu__icon btn-annotation-rectangle',
                                 value: AscPDF.ANNOTATIONS_TYPES.Square,
                                 iconClsForMainBtn: 'btn-big-annotation-rectangle',
-                                captionForMainBtn: me.capBtnRectComment
+                                captionForMainBtn: this.capBtnRectComment
                             },
                             {
                                 cls: 'shifted-right',
-                                tipForMainBtn: me.tipInsertCircleComment,
-                                caption: me.txtCircleComment,
+                                tipForMainBtn: this.tipInsertCircleComment,
+                                caption: this.txtCircleComment,
                                 checkable: true,
                                 checkmark: false,
                                 toggleGroup: 'shapecomment',
                                 iconCls     : 'menu__icon btn-annotation-circle',
                                 value: AscPDF.ANNOTATIONS_TYPES.Circle,
                                 iconClsForMainBtn: 'btn-big-annotation-circle',
-                                captionForMainBtn: me.capBtnCircleComment
+                                captionForMainBtn: this.capBtnCircleComment
                             },
                             {
                                 cls: 'shifted-right',
-                                tipForMainBtn: me.tipInsertArrowComment,
-                                caption: me.txtArrowComment,
+                                tipForMainBtn: this.tipInsertArrowComment,
+                                caption: this.txtArrowComment,
                                 checkable: true,
                                 checkmark: false,
                                 toggleGroup: 'shapecomment',
                                 iconCls     : 'menu__icon btn-annotation-arrow',
                                 value: AscPDF.ANNOTATIONS_TYPES.Line,
                                 iconClsForMainBtn: 'btn-big-annotation-arrow',
-                                captionForMainBtn: me.capBtnArrowComment
+                                captionForMainBtn: this.capBtnArrowComment
                             },
                             {
                                 cls: 'shifted-right',
-                                tipForMainBtn: me.tipInsertPolyLineComment,
-                                caption: me.txtPolyLineComment,
+                                tipForMainBtn: this.tipInsertPolyLineComment,
+                                caption: this.txtPolyLineComment,
                                 checkable: true,
                                 checkmark: false,
                                 toggleGroup: 'shapecomment',
                                 iconCls     : 'menu__icon btn-annotation-connected-lines',
                                 value: AscPDF.ANNOTATIONS_TYPES.PolyLine,
                                 iconClsForMainBtn: 'btn-big-annotation-connected-lines',
-                                captionForMainBtn: me.capBtnPolyLineComment
+                                captionForMainBtn: this.capBtnPolyLineComment
                             },
                             {caption: '--'},
                         ],
@@ -1212,8 +1207,8 @@ define([
                     Common.UI.Mixtbar.prototype.initialize.call(this, {
                             template: _.template(template),
                             tabs: [
-                                {caption: me.textTabFile, action: 'file', extcls: 'canedit', layoutname: 'toolbar-file', haspanel:false, dataHintTitle: 'F'},
-                                {caption: me.textTabHome, action: 'home', extcls: 'canedit', dataHintTitle: 'H'}
+                                {caption: this.textTabFile, action: 'file', extcls: 'canedit', layoutname: 'toolbar-file', haspanel:false, dataHintTitle: 'F'},
+                                {caption: this.textTabHome, action: 'home', extcls: 'canedit', dataHintTitle: 'H'}
                             ],
                             config: config
                         }
@@ -1399,7 +1394,7 @@ define([
                         cls: 'btn-toolbar x-huge icon-top',
                         iconCls: 'toolbar__icon btn-select',
                         lock: [_set.disableOnStart],
-                        caption: me.capBtnSelect,
+                        caption: this.capBtnSelect,
                         toggleGroup: 'select-tools-tb',
                         enableToggle: true,
                         allowDepress: false,
@@ -1414,7 +1409,7 @@ define([
                         cls: 'btn-toolbar x-huge icon-top',
                         iconCls: 'toolbar__icon btn-big-hand-tool',
                         lock: [_set.disableOnStart],
-                        caption: me.capBtnHand,
+                        caption: this.capBtnHand,
                         toggleGroup: 'select-tools-tb',
                         enableToggle: true,
                         allowDepress: false,
@@ -1434,13 +1429,13 @@ define([
                         fixedValue: '/ 1',
                         value: 1,
                         lock: [_set.disableOnStart],
-                        validation  : function(value) {
+                        validation  : (value) => {
                             if (/(^[0-9]+$)/.test(value)) {
-                                value = parseInt(value);
+                                value = Number.parseInt(value);
                                 if (value===undefined || value===null || value<1)
-                                    me.fieldPages.setValue(me.api.getCurrentPage()+1);
+                                    this.fieldPages.setValue(this.api.getCurrentPage()+1);
                             } else
-                                me.fieldPages.setValue(me.api.getCurrentPage()+1);
+                                this.fieldPages.setValue(this.api.getCurrentPage()+1);
 
                             return true;
                         }
@@ -1493,7 +1488,7 @@ define([
                     //
 
                     // Disable all components before load document
-                    this.lockControls = me.toolbarControls.concat(me.paragraphControls).concat(me.shapeControls);
+                    this.lockControls = this.toolbarControls.concat(this.paragraphControls).concat(this.shapeControls);
                     Common.UI.LayoutManager.addControls(this.lockControls);
                     this.lockToolbar(Common.enumLock.disableOnStart, true, {array: this.lockControls});
 
@@ -1502,7 +1497,7 @@ define([
                     Common.UI.Mixtbar.prototype.initialize.call(this, {
                             template: _.template(template_view),
                             tabs: [
-                                {caption: me.textTabFile, action: 'file', layoutname: 'toolbar-file', haspanel: false, dataHintTitle: 'F'}
+                                {caption: this.textTabFile, action: 'file', layoutname: 'toolbar-file', haspanel: false, dataHintTitle: 'F'}
                             ],
                             config: config
                         }
@@ -1512,7 +1507,6 @@ define([
             },
 
             render: function (mode) {
-                var me = this;
 
                 /**
                  * Render UI layout
@@ -1520,21 +1514,21 @@ define([
 
                 this.fireEvent('render:before', [this]);
 
-                me.isCompactView = mode.isCompactView;
+                this.isCompactView = mode.isCompactView;
                 if ( mode.isEdit || mode.isRestrictedEdit) {
-                    me.$el.html(me.rendererComponents(me.$layout, mode));
+                    this.$el.html(this.rendererComponents(this.$layout, mode));
                 } else {
-                    me.$layout.find('.canedit').hide();
-                    me.isCompactView && me.$layout.addClass('folded');
-                    me.$el.html(me.$layout);
+                    this.$layout.find('.canedit').hide();
+                    this.isCompactView && this.$layout.addClass('folded');
+                    this.$el.html(this.$layout);
                 }
 
                 this.fireEvent('render:after', [this]);
                 Common.UI.Mixtbar.prototype.afterRender.call(this);
 
                 Common.NotificationCenter.on({
-                    'window:resize': function() {
-                        Common.UI.Mixtbar.prototype.onResize.apply(me, arguments);
+                    'window:resize': () => {
+                        Common.UI.Mixtbar.prototype.onResize.apply(this, arguments);
                     }
                 });
 
@@ -1545,37 +1539,36 @@ define([
                     /** coauthoring end **/
                     Common.NotificationCenter.on('desktop:window', _.bind(this.onDesktopWindow, this));
                 }
-                (mode.isEdit || mode.isRestrictedEdit) && me.setTab('home');
+                (mode.isEdit || mode.isRestrictedEdit) && this.setTab('home');
 
-                if ( me.isCompactView )
-                    me.setFolded(true);
+                if ( this.isCompactView )
+                    this.setFolded(true);
 
                 return this;
             },
 
             onTabClick: function (e) {
-                var me = this,
-                    tab = $(e.currentTarget).find('> a[data-tab]').data('tab'),
-                    is_file_active = me.isTabActive('file');
+                const tab = $(e.currentTarget).find('> a[data-tab]').data('tab');
+                const is_file_active = this.isTabActive('file');
 
-                if (!me._isDocReady || tab === 'file' && !Common.Controllers.LaunchController.isScriptLoaded()) return;
+                if (!this._isDocReady || tab === 'file' && !Common.Controllers.LaunchController.isScriptLoaded()) return;
 
-                Common.UI.Mixtbar.prototype.onTabClick.apply(me, arguments);
+                Common.UI.Mixtbar.prototype.onTabClick.apply(this, arguments);
 
                 if ( is_file_active ) {
-                    me.fireEvent('file:close');
+                    this.fireEvent('file:close');
                 } else
-                if ( tab == 'file' ) {
-                    me.fireEvent('file:open');
-                    me.setTab(tab);
+                if ( tab === 'file' ) {
+                    this.fireEvent('file:open');
+                    this.setTab(tab);
                 }
 
-                if ( me.isTabActive('home'))
-                    me.fireEvent('home:open');
+                if ( this.isTabActive('home'))
+                    this.fireEvent('home:open');
             },
 
             rendererComponentsRestrictedEdit: function($host) {
-                var _injectComponent = function (id, cmp) {
+                const _injectComponent = (id, cmp) => {
                     Common.Utils.injectComponent($host.findById(id), cmp);
                 };
                 _injectComponent('#slot-btn-form-prev', this.btnPrevForm);
@@ -1585,7 +1578,7 @@ define([
             },
 
             rendererComponentsPDFEdit: function($host, mode) {
-                var _injectComponent = function (id, cmp) {
+                const _injectComponent = (id, cmp) => {
                     Common.Utils.injectComponent($host.findById(id), cmp);
                 };
 
@@ -1621,7 +1614,7 @@ define([
             },
 
             rendererComponentsAnnotate: function($host) {
-                var _injectComponent = function (id, cmp) {
+                const _injectComponent = (id, cmp) => {
                     Common.Utils.injectComponent($host.findById(id), cmp);
                 };
                 _injectComponent('#slot-btn-comment', this.btnAddComment);
@@ -1635,7 +1628,7 @@ define([
             },
 
             rendererComponentsCommon: function($host) {
-                var _injectComponent = function (id, cmp) {
+                const _injectComponent = (id, cmp) => {
                     Common.Utils.injectComponent($host.findById(id), cmp);
                 };
                 _injectComponent('#slot-btn-print', this.btnPrint);
@@ -1659,7 +1652,7 @@ define([
             },
 
             rendererComponents: function (html, mode) {
-                var $host = $(html);
+                const $host = $(html);
                 this.rendererComponentsCommon($host);
                 if (mode.isEdit) {
                     this.rendererComponentsAnnotate($host);
@@ -1672,15 +1665,14 @@ define([
             },
 
             createPen: function(button, id, opacity) {
-                var me = this;
                 button.setMenu();
                 button.currentColor = button.color;
                 if (opacity) {
-                    var onShowAfter = function(menu) {
+                    const onShowAfter = (menu) => {
                         if (menu.sizePicker) {
-                            menu.sizePicker.setValue(Common.Utils.InternalSettings.get("pdfe-annot-opacity-" + id) + '%');
+                            menu.sizePicker.setValue(`${Common.Utils.InternalSettings.get(`pdfe-annot-opacity-${id}`)}%`);
                         } else {
-                            menu.sizePicker = me.createOpacityPicker(button, id, menu.cmpEl.find('.custom-scale'));
+                            menu.sizePicker = this.createOpacityPicker(button, id, menu.cmpEl.find('.custom-scale'));
                         }
                     };
                     button.menu.on('show:after', onShowAfter);
@@ -1690,14 +1682,14 @@ define([
             },
 
             createOpacityPicker: function(button, id, el) {
-                var me = this;
-                var sizePicker = new Common.UI.UpDownPicker({
+                const me = this;
+                const sizePicker = new Common.UI.UpDownPicker({
                     el: el,
                     caption: this.txtOpacity,
                     minWidth: 40
                 });
                 sizePicker.on('click', function (direction) {
-                    var val = Common.Utils.InternalSettings.get("pdfe-annot-opacity-" + id);
+                    let val = Common.Utils.InternalSettings.get(`pdfe-annot-opacity-${id}`);
                     if (direction === 'up') {
                         if (val % 10 > 0.1) {
                             val = Math.ceil(val / 10) * 10;
@@ -1713,35 +1705,34 @@ define([
                         }
                         val = Math.max(0, val);
                     }
-                    this.setValue(val + '%');
-                    Common.Utils.InternalSettings.set("pdfe-annot-opacity-" + id, val);
-                    Common.localStorage.setItem("pdfe-annot-opacity-" + id, val);
+                    this.setValue(`${val}%`);
+                    Common.Utils.InternalSettings.set(`pdfe-annot-opacity-${id}`, val);
+                    Common.localStorage.setItem(`pdfe-annot-opacity-${id}`, val);
                     if (button.pressed) {
-                        var strcolor = button.currentColor || '0000FF',
-                            r = strcolor[0] + strcolor[1],
-                            g = strcolor[2] + strcolor[3],
-                            b = strcolor[4] + strcolor[5];
-                        me.api && me.api.SetMarkerFormat(button.options.type, true, val, parseInt(r, 16), parseInt(g, 16), parseInt(b, 16));
+                        const strcolor = button.currentColor || '0000FF';
+                        const r = strcolor[0] + strcolor[1];
+                        const g = strcolor[2] + strcolor[3];
+                        const b = strcolor[4] + strcolor[5];
+                        me.api?.SetMarkerFormat(button.options.type, true, val, Number.parseInt(r, 16), Number.parseInt(g, 16), Number.parseInt(b, 16));
                     }
                 });
-                sizePicker.setValue(Common.Utils.InternalSettings.get("pdfe-annot-opacity-" + id) + '%');
+                sizePicker.setValue(`${Common.Utils.InternalSettings.get(`pdfe-annot-opacity-${id}`)}%`);
                 return sizePicker;
             },
 
             onAppReady: function (config) {
-                var me = this;
-                me._isDocReady = true;
-                (new Promise( function(resolve, reject) {
+                this._isDocReady = true;
+                (new Promise( (resolve, reject) => {
                     resolve();
-                })).then(function () {
+                })).then(() => {
                     if ( !config.isEdit && !config.isRestrictedEdit) return;
 
-                    if(me.btnPrint.menu){
-                        me.btnPrint.setMenu(
+                    if(this.btnPrint.menu){
+                        this.btnPrint.setMenu(
                             new Common.UI.Menu({
                                 items:[
                                     {
-                                        caption:            me.tipPrint,
+                                        caption:            this.tipPrint,
                                         iconCls:            'menu__icon btn-print',
                                         toggleGroup:        'viewPrint',
                                         value:              'print',
@@ -1749,7 +1740,7 @@ define([
                                         platformKey:         Common.Utils.String.platformKey('Ctrl+P')
                                     },
                                     {
-                                        caption:            me.tipPrintQuick,
+                                        caption:            this.tipPrintQuick,
                                         iconCls:            'menu__icon btn-quick-print',
                                         toggleGroup:        'viewPrint',
                                         value:              'print-quick',
@@ -1759,73 +1750,73 @@ define([
                                 ]
                             }));
                     }
-                    if (me.btnStrikeout && me.btnStrikeout.menu) {
+                    if (this.btnStrikeout?.menu) {
                         Common.Utils.InternalSettings.set("pdfe-annot-opacity-strikeout", Common.localStorage.getItemAsInt("pdfe-annot-opacity-strikeout", 100));
-                        me.mnuStrikeoutColorPicker = me.createPen(me.btnStrikeout, 'strikeout', true);
-                        me.mnusStrikeoutColorPicker = [me.mnuStrikeoutColorPicker];
+                        this.mnuStrikeoutColorPicker = this.createPen(this.btnStrikeout, 'strikeout', true);
+                        this.mnusStrikeoutColorPicker = [this.mnuStrikeoutColorPicker];
                     }
-                    if (me.btnUnderline && me.btnUnderline.menu) {
+                    if (this.btnUnderline?.menu) {
                         Common.Utils.InternalSettings.set("pdfe-annot-opacity-underline", Common.localStorage.getItemAsInt("pdfe-annot-opacity-underline", 100));
-                        me.mnuUnderlineColorPicker = me.createPen(me.btnUnderline, 'underline', true);
-                        me.mnusUnderlineColorPicker = [me.mnuUnderlineColorPicker];
+                        this.mnuUnderlineColorPicker = this.createPen(this.btnUnderline, 'underline', true);
+                        this.mnusUnderlineColorPicker = [this.mnuUnderlineColorPicker];
                     }
-                    if (me.btnHighlight && me.btnHighlight.menu) {
+                    if (this.btnHighlight?.menu) {
                         Common.Utils.InternalSettings.set("pdfe-annot-opacity-highlight", Common.localStorage.getItemAsInt("pdfe-annot-opacity-highlight", 50));
-                        me.mnuHighlightColorPicker = me.createPen(me.btnHighlight, 'highlight', true);
-                        me.mnusHighlightColorPicker = [me.mnuHighlightColorPicker];
+                        this.mnuHighlightColorPicker = this.createPen(this.btnHighlight, 'highlight', true);
+                        this.mnusHighlightColorPicker = [this.mnuHighlightColorPicker];
                     }
 
-                    if (me.btnTextComment) {
-                        me.btnTextComment.options.textboxType = AscPDF.FREE_TEXT_INTENT_TYPE.freeText;
-                        me.btnTextComment.setMenu(new Common.UI.Menu({
+                    if (this.btnTextComment) {
+                        this.btnTextComment.options.textboxType = AscPDF.FREE_TEXT_INTENT_TYPE.freeText;
+                        this.btnTextComment.setMenu(new Common.UI.Menu({
                             items: [
                                 {
-                                    caption: me.tipInsertTextComment,
+                                    caption: this.tipInsertTextComment,
                                     iconCls     : 'menu__icon btn-text-comment',
                                     value: AscPDF.FREE_TEXT_INTENT_TYPE.freeText,
                                     iconClsForMainBtn: 'btn-big-text-comment',
-                                    captionForMainBtn: me.capBtnTextComment
+                                    captionForMainBtn: this.capBtnTextComment
                                 },
                                 {
-                                    caption: me.tipInsertTextCallout,
+                                    caption: this.tipInsertTextCallout,
                                     iconCls     : 'menu__icon btn-text-callout',
                                     value: AscPDF.FREE_TEXT_INTENT_TYPE.freeTextCallout,
                                     iconClsForMainBtn: 'btn-big-text-callout',
-                                    captionForMainBtn: me.capBtnTextCallout
+                                    captionForMainBtn: this.capBtnTextCallout
                                 },
                             ]
                         }));
                     }
-                    if (me.btnShapeComment) {
-                        var btn = me.btnShapeComment;
+                    if (this.btnShapeComment) {
+                        const btn = this.btnShapeComment;
                         btn.options.shapeType = AscPDF.ANNOTATIONS_TYPES.Square;
                         btn.setMenu();
                         btn.currentColor = btn.color;
-                        let onShowAfter = function(menu) {
-                            var sizePicker = new Common.UI.UpDownPicker({
+                        const onShowAfter = (menu) => {
+                            const sizePicker = new Common.UI.UpDownPicker({
                                 el: menu.cmpEl.find('.custom-scale'),
-                                caption: me.txtSize,
+                                caption: this.txtSize,
                                 minWidth: 50
                             });
-                            sizePicker.setValue(btn.options.currentSize.arr[btn.options.currentSize.idx] + ' ' + me.txtMM);
-                            sizePicker.on('click', function (direction) {
-                                me.fireEvent('shapeannot:size', [direction]);
+                            sizePicker.setValue(`${btn.options.currentSize.arr[btn.options.currentSize.idx]} ${this.txtMM}`);
+                            sizePicker.on('click', (direction) => {
+                                this.fireEvent('shapeannot:size', [direction]);
                             });
                             btn.sizePicker = sizePicker;
                             menu.off('show:after', onShowAfter);
                         };
                         btn.menu.on('show:after', onShowAfter);
-                        me.mnuShapeCommentColorPicker = btn.getPicker();
+                        this.mnuShapeCommentColorPicker = btn.getPicker();
                     }
-                    if (me.btnStamp) {
-                        me.btnStamp.setMenu(new Common.UI.Menu({
+                    if (this.btnStamp) {
+                        this.btnStamp.setMenu(new Common.UI.Menu({
                             restoreHeight: 500
                         }));
-                        var menu = me.btnStamp.menu;
+                        const menu = this.btnStamp.menu;
                         if (menu.cmpEl) {
                             menu.cmpEl.attr('ratio', 'ratio');
-                            menu.cmpEl.on('app:scaling', function (e, info) {
-                                if ( me.options.scaling != info.ratio ) {
+                            menu.cmpEl.on('app:scaling', (e, info) => {
+                                if ( this.options.scaling !== info.ratio ) {
                                     menu.hide();
                                     menu.removeAll();
                                 }
@@ -1850,8 +1841,8 @@ define([
                 this.btnClear.updateHint(this.textClearFields);
                 this.btnPrevForm.updateHint(this.tipPrevForm);
                 this.btnNextForm.updateHint(this.tipNextForm);
-                this.btnSubmit && this.btnSubmit.updateHint(this.tipSubmit);
-                this.btnSaveForm && this.btnSaveForm.updateHint(this.mode.canRequestSaveAs || !!this.mode.saveAsUrl ? this.tipSaveForm : this.tipDownloadForm);
+                this.btnSubmit?.updateHint(this.tipSubmit);
+                this.btnSaveForm?.updateHint(this.mode.canRequestSaveAs || !!this.mode.saveAsUrl ? this.tipSaveForm : this.tipDownloadForm);
             },
 
             createDelayedElementsPDFAnnotate: function() {
@@ -1866,7 +1857,7 @@ define([
                 this.btnTextComment.updateHint(this.tipInsertTextComment);
                 this.btnShapeComment.updateHint(this.tipInsertRectComment);
                 this.btnStamp.updateHint(this.tipInsertStamp);
-                this.btnEditMode && this.btnEditMode.updateHint(this.tipEditMode);
+                this.btnEditMode?.updateHint(this.tipEditMode);
             },
 
             createDelayedElementsPDFEdit: function() {
@@ -1930,7 +1921,7 @@ define([
                     '{"bulletTypeface":{"type":"bufont","typeface":"Arial"},"bulletType":{"type":"char","char":"–","startAt":null}}'
                 ];
 
-                var _conf = this.mnuMarkersPicker.conf;
+                let _conf = this.mnuMarkersPicker.conf;
                 this.mnuMarkersPicker = new Common.UI.DataView({
                     el: $('#id-toolbar-menu-markers'),
                     parentMenu: this.btnMarkers.menu,
@@ -1939,15 +1930,15 @@ define([
                     allowScrollbar: false,
                     delayRenderTips: true,
                     store: new Common.UI.DataViewStore([
-                        {id: 'id-markers-' + Common.UI.getId(), data: {type: 0, subtype: -1},numberingInfo: this._markersArr[0], skipRenderOnChange: true, tip: this.tipNone},
-                        {id: 'id-markers-' + Common.UI.getId(), data: {type: 0, subtype: 1}, numberingInfo: this._markersArr[1], skipRenderOnChange: true, tip: this.tipMarkersFRound},
-                        {id: 'id-markers-' + Common.UI.getId(), data: {type: 0, subtype: 2}, numberingInfo: this._markersArr[2], skipRenderOnChange: true, tip: this.tipMarkersHRound},
-                        {id: 'id-markers-' + Common.UI.getId(), data: {type: 0, subtype: 3}, numberingInfo: this._markersArr[3], skipRenderOnChange: true, tip: this.tipMarkersFSquare},
-                        {id: 'id-markers-' + Common.UI.getId(), data: {type: 0, subtype: 4}, numberingInfo: this._markersArr[4], skipRenderOnChange: true, tip: this.tipMarkersStar},
-                        {id: 'id-markers-' + Common.UI.getId(), data: {type: 0, subtype: 5}, numberingInfo: this._markersArr[5], skipRenderOnChange: true, tip: this.tipMarkersArrow},
-                        {id: 'id-markers-' + Common.UI.getId(), data: {type: 0, subtype: 6}, numberingInfo: this._markersArr[6], skipRenderOnChange: true, tip: this.tipMarkersCheckmark},
-                        {id: 'id-markers-' + Common.UI.getId(), data: {type: 0, subtype: 7}, numberingInfo: this._markersArr[7], skipRenderOnChange: true, tip: this.tipMarkersFRhombus},
-                        {id: 'id-markers-' + Common.UI.getId(), data: {type: 0, subtype: 8}, numberingInfo: this._markersArr[8], skipRenderOnChange: true, tip: this.tipMarkersDash}
+                        {id: `id-markers-${Common.UI.getId()}`, data: {type: 0, subtype: -1},numberingInfo: this._markersArr[0], skipRenderOnChange: true, tip: this.tipNone},
+                        {id: `id-markers-${Common.UI.getId()}`, data: {type: 0, subtype: 1}, numberingInfo: this._markersArr[1], skipRenderOnChange: true, tip: this.tipMarkersFRound},
+                        {id: `id-markers-${Common.UI.getId()}`, data: {type: 0, subtype: 2}, numberingInfo: this._markersArr[2], skipRenderOnChange: true, tip: this.tipMarkersHRound},
+                        {id: `id-markers-${Common.UI.getId()}`, data: {type: 0, subtype: 3}, numberingInfo: this._markersArr[3], skipRenderOnChange: true, tip: this.tipMarkersFSquare},
+                        {id: `id-markers-${Common.UI.getId()}`, data: {type: 0, subtype: 4}, numberingInfo: this._markersArr[4], skipRenderOnChange: true, tip: this.tipMarkersStar},
+                        {id: `id-markers-${Common.UI.getId()}`, data: {type: 0, subtype: 5}, numberingInfo: this._markersArr[5], skipRenderOnChange: true, tip: this.tipMarkersArrow},
+                        {id: `id-markers-${Common.UI.getId()}`, data: {type: 0, subtype: 6}, numberingInfo: this._markersArr[6], skipRenderOnChange: true, tip: this.tipMarkersCheckmark},
+                        {id: `id-markers-${Common.UI.getId()}`, data: {type: 0, subtype: 7}, numberingInfo: this._markersArr[7], skipRenderOnChange: true, tip: this.tipMarkersFRhombus},
+                        {id: `id-markers-${Common.UI.getId()}`, data: {type: 0, subtype: 8}, numberingInfo: this._markersArr[8], skipRenderOnChange: true, tip: this.tipMarkersDash}
                     ]),
                     itemTemplate: _.template('<div id="<%= id %>" class="item-markerlist"></div>')
                 });
@@ -1974,21 +1965,21 @@ define([
                     allowScrollbar: false,
                     delayRenderTips: true,
                     store: new Common.UI.DataViewStore([
-                        {id: 'id-numbers-' + Common.UI.getId(), data: {type: 1, subtype: -1}, numberingInfo: this._numbersArr[0], skipRenderOnChange: true, tip: this.tipNone},
-                        {id: 'id-numbers-' + Common.UI.getId(), data: {type: 1, subtype: 4}, numberingInfo: this._numbersArr[1], skipRenderOnChange: true, tip: this.tipNumCapitalLetters},
-                        {id: 'id-numbers-' + Common.UI.getId(), data: {type: 1, subtype: 5}, numberingInfo: this._numbersArr[2], skipRenderOnChange: true, tip: this.tipNumLettersParentheses},
-                        {id: 'id-numbers-' + Common.UI.getId(), data: {type: 1, subtype: 6}, numberingInfo: this._numbersArr[3], skipRenderOnChange: true, tip: this.tipNumLettersPoints},
-                        {id: 'id-numbers-' + Common.UI.getId(), data: {type: 1, subtype: 1}, numberingInfo: this._numbersArr[4], skipRenderOnChange: true, tip: this.tipNumNumbersPoint},
-                        {id: 'id-numbers-' + Common.UI.getId(), data: {type: 1, subtype: 2}, numberingInfo: this._numbersArr[5], skipRenderOnChange: true, tip: this.tipNumNumbersParentheses},
-                        {id: 'id-numbers-' + Common.UI.getId(), data: {type: 1, subtype: 3}, numberingInfo: this._numbersArr[6], skipRenderOnChange: true, tip: this.tipNumRoman},
-                        {id: 'id-numbers-' + Common.UI.getId(), data: {type: 1, subtype: 7}, numberingInfo: this._numbersArr[7], skipRenderOnChange: true, tip: this.tipNumRomanSmall}
+                        {id: `id-numbers-${Common.UI.getId()}`, data: {type: 1, subtype: -1}, numberingInfo: this._numbersArr[0], skipRenderOnChange: true, tip: this.tipNone},
+                        {id: `id-numbers-${Common.UI.getId()}`, data: {type: 1, subtype: 4}, numberingInfo: this._numbersArr[1], skipRenderOnChange: true, tip: this.tipNumCapitalLetters},
+                        {id: `id-numbers-${Common.UI.getId()}`, data: {type: 1, subtype: 5}, numberingInfo: this._numbersArr[2], skipRenderOnChange: true, tip: this.tipNumLettersParentheses},
+                        {id: `id-numbers-${Common.UI.getId()}`, data: {type: 1, subtype: 6}, numberingInfo: this._numbersArr[3], skipRenderOnChange: true, tip: this.tipNumLettersPoints},
+                        {id: `id-numbers-${Common.UI.getId()}`, data: {type: 1, subtype: 1}, numberingInfo: this._numbersArr[4], skipRenderOnChange: true, tip: this.tipNumNumbersPoint},
+                        {id: `id-numbers-${Common.UI.getId()}`, data: {type: 1, subtype: 2}, numberingInfo: this._numbersArr[5], skipRenderOnChange: true, tip: this.tipNumNumbersParentheses},
+                        {id: `id-numbers-${Common.UI.getId()}`, data: {type: 1, subtype: 3}, numberingInfo: this._numbersArr[6], skipRenderOnChange: true, tip: this.tipNumRoman},
+                        {id: `id-numbers-${Common.UI.getId()}`, data: {type: 1, subtype: 7}, numberingInfo: this._numbersArr[7], skipRenderOnChange: true, tip: this.tipNumRomanSmall}
                     ]),
                     itemTemplate: _.template('<div id="<%= id %>" class="item-multilevellist"></div>')
                 });
                 this.btnNumbers.menu.setInnerMenu([{menu: this.mnuNumbersPicker, index: 0}]);
                 _conf && this.mnuNumbersPicker.selectByIndex(_conf.index, true);
 
-                if (this.btnTextHighlightColor && this.btnTextHighlightColor.cmpEl) {
+                if (this.btnTextHighlightColor?.cmpEl) {
                     this.btnTextHighlightColor.currentColor = 'FFFF00';
                     this.btnTextHighlightColor.setColor(this.btnTextHighlightColor.currentColor);
                     this.mnuTextHighlightColorPicker = new Common.UI.ThemeColorPalette({
@@ -2001,7 +1992,7 @@ define([
                             Common.Utils.ThemeColor.txtYellow, Common.Utils.ThemeColor.txtBrightGreen, Common.Utils.ThemeColor.txtTurquosie, Common.Utils.ThemeColor.txtPink,
                             Common.Utils.ThemeColor.txtBlue, Common.Utils.ThemeColor.txtRed, Common.Utils.ThemeColor.txtDarkBlue, Common.Utils.ThemeColor.txtTeal,
                             Common.Utils.ThemeColor.txtGreen, Common.Utils.ThemeColor.txtViolet, Common.Utils.ThemeColor.txtDarkRed, Common.Utils.ThemeColor.txtDarkYellow,
-                            Common.Utils.ThemeColor.txtWhite, Common.Utils.ThemeColor.txtGray + '-25%', Common.Utils.ThemeColor.txtGray + '-50%', Common.Utils.ThemeColor.txtBlack
+                            Common.Utils.ThemeColor.txtWhite, `${Common.Utils.ThemeColor.txtGray}-25%`, `${Common.Utils.ThemeColor.txtGray}-50%`, Common.Utils.ThemeColor.txtBlack
                         ],
                         value: 'FFFF00',
                         dynamiccolors: 0,
@@ -2014,7 +2005,7 @@ define([
                     this.btnTextHighlightColor.setPicker(this.mnuTextHighlightColorPicker);
                     this.btnTextHighlightColor.menu.setInnerMenu([{menu: this.mnuTextHighlightColorPicker, index: 0}]);
                 }
-                if (this.btnFontColor && this.btnFontColor.menu) {
+                if (this.btnFontColor?.menu) {
                     this.mnuFontColorPicker = this.createPen(this.btnFontColor, 'font');
                 }
             },
@@ -2028,11 +2019,11 @@ define([
                     this.createDelayedElementsRestrictedEdit();
             },
 
-            onToolbarAfterRender: function(toolbar) {
+            onToolbarAfterRender: (toolbar) => {
                 // DataView and pickers
             },
 
-            updateMetricUnit: function () {
+            updateMetricUnit: () => {
             },
 
             setApi: function (api) {
@@ -2094,10 +2085,10 @@ define([
             },
 
             createSynchTip: function () {
-                var direction = Common.UI.isRTL() ? 'left' : 'right';
+                const direction = Common.UI.isRTL() ? 'left' : 'right';
                 this.synchTooltip = new Common.UI.SynchronizeTip({
                     extCls: (this.mode.compactHeader) ? undefined : 'inc-index',
-                    placement: this.mode.isDesktopApp ? 'bottom-' + direction : direction + '-bottom',
+                    placement: this.mode.isDesktopApp ? `bottom-${direction}` : `${direction}-bottom`,
                     target: this.btnCollabChanges.$el
                 });
                 this.synchTooltip.on('dontshowclick', function () {
@@ -2126,10 +2117,9 @@ define([
 
             synchronizeChanges: function () {
                 if ( !this._state.previewmode && this.btnCollabChanges && this.btnCollabChanges.rendered ) {
-                    var me = this;
 
-                    if ( me.btnCollabChanges.cmpEl.hasClass('notify') ) {
-                        me.btnCollabChanges.cmpEl.removeClass('notify');
+                    if ( this.btnCollabChanges.cmpEl.hasClass('notify') ) {
+                        this.btnCollabChanges.cmpEl.removeClass('notify');
                         if (this.synchTooltip)
                             this.synchTooltip.hide();
 
@@ -2141,7 +2131,7 @@ define([
                             },
                         });
 
-                        this.lockToolbar(Common.enumLock.cantSave, !me.mode.forcesave && !me.mode.canSaveDocumentToBinary || !me.mode.isPDFEdit && !me.mode.isPDFAnnotate && me.mode.canSaveToFile || !me.mode.showSaveButton,
+                        this.lockToolbar(Common.enumLock.cantSave, !this.mode.forcesave && !this.mode.canSaveDocumentToBinary || !this.mode.isPDFEdit && !this.mode.isPDFAnnotate && this.mode.canSaveToFile || !this.mode.showSaveButton,
                                     {array: [this.btnSave]});
                         this._state.hasCollaborativeChanges = false;
                     }
@@ -2151,17 +2141,15 @@ define([
             onApiUsersChanged: function (users) {
                 if (!(this.mode.isPDFAnnotate || this.mode.isPDFEdit)) return;
 
-                var editusers = [];
-                _.each(users, function (item) {
+                const editusers = [];
+                _.each(users, (item) => {
                     if (!item.asc_getView())
                         editusers.push(item);
                 });
-
-                var me = this;
-                var length = _.size(editusers);
-                var cls = (length > 1) ? 'btn-save-coauth' : 'btn-save';
-                if ( cls !== me.btnSaveCls && me.btnCollabChanges && me.btnCollabChanges.rendered ) {
-                    me.btnSaveTip = ((length > 1) ? me.tipSaveCoauth : me.tipSave );
+                const length = _.size(editusers);
+                const cls = (length > 1) ? 'btn-save-coauth' : 'btn-save';
+                if ( cls !== this.btnSaveCls && this.btnCollabChanges && this.btnCollabChanges.rendered ) {
+                    this.btnSaveTip = ((length > 1) ? this.tipSaveCoauth : this.tipSave );
                     PDFE.getController('Common.Controllers.Shortcuts').updateShortcutHints({
                         Save: {
                             btn: this.btnCollabChanges,
@@ -2169,14 +2157,14 @@ define([
                             ignoreUpdates: true
                         },
                     });
-                    me.btnCollabChanges.updateHint(me.btnSaveTip);
-                    me.btnCollabChanges.changeIcon({next: cls, curr: me.btnSaveCls});
-                    me.btnSaveCls = cls;
+                    this.btnCollabChanges.updateHint(this.btnSaveTip);
+                    this.btnCollabChanges.changeIcon({next: cls, curr: this.btnSaveCls});
+                    this.btnSaveCls = cls;
                 }
             },
 
             onDesktopWindow: function() {
-                if (this.synchTooltip && this.synchTooltip.isVisible()) {
+                if (this.synchTooltip?.isVisible()) {
                     this.synchTooltip.show(); // change position for visible tip
                 }
             },
@@ -2193,6 +2181,5 @@ define([
             tipNumNumbersParentheses: '1) 2) 3)',
             tipNumRoman: 'I. II. III.',
             tipNumRomanSmall: 'i. ii. iii.'
-        }
-    })(), PDFE.Views.Toolbar || {}));
+        }))(), PDFE.Views.Toolbar || {}));
 });

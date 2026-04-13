@@ -32,140 +32,143 @@
  */
 
 define([
-    'jquery',
-    'underscore',
-    'backbone',
-    'gateway',
-    'common/main/lib/util/utils',
-    'common/main/lib/component/Menu',
-    'common/main/lib/component/Calendar'
-], function ($, _, Backbone, gateway) { 'use strict';
-
-    PDFE.Views.DocumentHolder =  Backbone.View.extend(_.extend({
-        el: '#editor_sdk',
+  "jquery",
+  "underscore",
+  "backbone",
+  "gateway",
+  "common/main/lib/util/utils",
+  "common/main/lib/component/Menu",
+  "common/main/lib/component/Calendar",
+], ($, _, Backbone, gateway) => {
+  PDFE.Views.DocumentHolder = Backbone.View.extend(
+    _.extend(
+      {
+        el: "#editor_sdk",
 
         // Compile our stats template
         template: null,
 
         // Delegated events for creating new items, and clearing completed ones.
-        events: {
-        },
+        events: {},
 
         initialize: function () {
-            this._isDisabled = false;
-            this._preventCustomClick = null;
-            this._hasCustomItems = false;
-            this._pagesCount = 0;
-            this._currentTranslateObj = this;
+          this._isDisabled = false
+          this._preventCustomClick = null
+          this._hasCustomItems = false
+          this._pagesCount = 0
+          this._currentTranslateObj = this
         },
 
         render: function () {
-            this.fireEvent('render:before', this);
+          this.fireEvent("render:before", this)
 
-            this.cmpEl = $(this.el);
+          this.cmpEl = $(this.el)
 
-            this.fireEvent('render:after', this);
-            return this;
+          this.fireEvent("render:after", this)
+          return this
         },
 
-        setApi: function(o) {
-            this.api = o;
-            return this;
+        setApi: function (o) {
+          this.api = o
+          return this
         },
 
-        setMode: function(m) {
-            this.mode = m;
-            return this;
+        setMode: function (m) {
+          this.mode = m
+          return this
         },
 
-        createDelayedElementsPDFViewer: function() {},
+        createDelayedElementsPDFViewer: () => {},
 
-        createDelayedElementsPDFEditor: function() {},
+        createDelayedElementsPDFEditor: () => {},
 
-        createDelayedElementsPDFForms: function() {},
+        createDelayedElementsPDFForms: () => {},
 
-        createEquationMenu: function(toggleGroup, menuAlign) {
-            return new Common.UI.Menu({
-                cls: 'ppm-toolbar shifted-right',
-                menuAlign: menuAlign,
-                items   : [
-                    new Common.UI.MenuItem({
-                        caption     : this.currProfText,
-                        iconCls     : 'menu__icon btn-professional-equation',
-                        type        : 'view',
-                        value       : {all: false, linear: false}
-                    }),
-                    new Common.UI.MenuItem({
-                        caption     : this.currLinearText,
-                        iconCls     : 'menu__icon btn-linear-equation',
-                        type        : 'view',
-                        value       : {all: false, linear: true}
-                    }),
-                    new Common.UI.MenuItem({
-                        caption     : this.allProfText,
-                        iconCls     : 'menu__icon btn-professional-equation',
-                        type        : 'view',
-                        value       : {all: true, linear: false}
-                    }),
-                    new Common.UI.MenuItem({
-                        caption     : this.allLinearText,
-                        iconCls     : 'menu__icon btn-linear-equation',
-                        type        : 'view',
-                        value       : {all: true, linear: true}
-                    }),
-                    { caption     : '--' },
-                    new Common.UI.MenuItem({
-                        caption     : this.unicodeText,
-                        checkable   : true,
-                        checked     : false,
-                        toggleGroup : toggleGroup,
-                        type        : 'input',
-                        value       : Asc.c_oAscMathInputType.Unicode
-                    }),
-                    new Common.UI.MenuItem({
-                        caption     : this.latexText,
-                        checkable   : true,
-                        checked     : false,
-                        toggleGroup : toggleGroup,
-                        type        : 'input',
-                        value       : Asc.c_oAscMathInputType.LaTeX
-                    }),
-                    { caption     : '--' },
-                    new Common.UI.MenuItem({
-                        caption     : this.hideEqToolbar,
-                        isToolbarHide: false,
-                        type        : 'hide',
-                    })
-                ]
-            });
+        createEquationMenu: function (toggleGroup, menuAlign) {
+          return new Common.UI.Menu({
+            cls: "ppm-toolbar shifted-right",
+            menuAlign: menuAlign,
+            items: [
+              new Common.UI.MenuItem({
+                caption: this.currProfText,
+                iconCls: "menu__icon btn-professional-equation",
+                type: "view",
+                value: { all: false, linear: false },
+              }),
+              new Common.UI.MenuItem({
+                caption: this.currLinearText,
+                iconCls: "menu__icon btn-linear-equation",
+                type: "view",
+                value: { all: false, linear: true },
+              }),
+              new Common.UI.MenuItem({
+                caption: this.allProfText,
+                iconCls: "menu__icon btn-professional-equation",
+                type: "view",
+                value: { all: true, linear: false },
+              }),
+              new Common.UI.MenuItem({
+                caption: this.allLinearText,
+                iconCls: "menu__icon btn-linear-equation",
+                type: "view",
+                value: { all: true, linear: true },
+              }),
+              { caption: "--" },
+              new Common.UI.MenuItem({
+                caption: this.unicodeText,
+                checkable: true,
+                checked: false,
+                toggleGroup: toggleGroup,
+                type: "input",
+                value: Asc.c_oAscMathInputType.Unicode,
+              }),
+              new Common.UI.MenuItem({
+                caption: this.latexText,
+                checkable: true,
+                checked: false,
+                toggleGroup: toggleGroup,
+                type: "input",
+                value: Asc.c_oAscMathInputType.LaTeX,
+              }),
+              { caption: "--" },
+              new Common.UI.MenuItem({
+                caption: this.hideEqToolbar,
+                isToolbarHide: false,
+                type: "hide",
+              }),
+            ],
+          })
         },
 
-        createTextBar: function(textBarBtns) {},
+        createTextBar: (textBarBtns) => {},
 
-        createAnnotBar: function(annotBarBtns) {},
+        createAnnotBar: (annotBarBtns) => {},
 
-        focus: function() {
-            var me = this;
-            _.defer(function(){  me.cmpEl.focus(); }, 50);
+        focus: function () {
+          _.defer(() => {
+            this.cmpEl.focus()
+          }, 50)
         },
 
-        SetDisabled: function(state, canProtect, fillFormMode) {
-            this._isDisabled = state;
+        SetDisabled: function (state, canProtect, fillFormMode) {
+          this._isDisabled = state
         },
 
-        addEquationMenu: function() {},
+        addEquationMenu: () => {},
 
-        clearEquationMenu: function() {},
+        clearEquationMenu: () => {},
 
-        equationCallback: function() {},
+        equationCallback: () => {},
 
-        initEquationMenu: function() {},
+        initEquationMenu: () => {},
 
-        updateCustomItems: function() {},
+        updateCustomItems: () => {},
 
-        clearCustomItems: function() {},
+        clearCustomItems: () => {},
 
-        parseIcons: function() {}
-
-    }, PDFE.Views.DocumentHolder || {}));
-});
+        parseIcons: () => {},
+      },
+      PDFE.Views.DocumentHolder || {},
+    ),
+  )
+})

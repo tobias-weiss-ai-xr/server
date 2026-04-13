@@ -30,14 +30,12 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
-], function () {
-    'use strict';
+], () => {
 
-    Common.UI.ComboBoxDataView = Common.UI.BaseView.extend((function() {
-        return {
+    Common.UI.ComboBoxDataView = Common.UI.BaseView.extend((() => ({
             options : {
                 id          : null,
                 cls         : '',
@@ -65,39 +63,36 @@ define([
             initialize : function(options) {
                 Common.UI.BaseView.prototype.initialize.call(this, options);
 
-                var me = this;
-
-                me.id             = me.options.id || Common.UI.getId();
-                this.cls            = me.options.cls;
-                this.style          = me.options.style;
-                this.menuCls        = me.options.menuCls;
-                this.menuStyle      = me.options.menuStyle;
-                this.dataViewStyle  = me.options.dataViewStyle;
-                this.dataViewCls    = me.options.dataViewCls;
-                this.template       = me.options.template || me.template;
-                this.itemTemplate   = me.options.itemTemplate;
-                this.disabled       = me.options.disabled;
-                this.groups         = me.options.groups         || null;
-                this.store          = me.options.store || new Common.UI.DataViewStore();
-                this.updateFormControl = me.options.updateFormControl;
-                this.options.data && me.store.add(this.options.data);
+                this.id             = this.options.id || Common.UI.getId();
+                this.cls            = this.options.cls;
+                this.style          = this.options.style;
+                this.menuCls        = this.options.menuCls;
+                this.menuStyle      = this.options.menuStyle;
+                this.dataViewStyle  = this.options.dataViewStyle;
+                this.dataViewCls    = this.options.dataViewCls;
+                this.template       = this.options.template || this.template;
+                this.itemTemplate   = this.options.itemTemplate;
+                this.disabled       = this.options.disabled;
+                this.groups         = this.options.groups         || null;
+                this.store          = this.options.store || new Common.UI.DataViewStore();
+                this.updateFormControl = this.options.updateFormControl;
+                this.options.data && this.store.add(this.options.data);
                 this.formTemplate   = this.options.formTemplate || _.template([
                     '<div class="form-control" style="width: 100px;" data-hint="<%= dataHint %>" data-hint-direction="<%= dataHintDirection %>" data-hint-offset="<%= dataHintOffset %>">',
                         '<i class="img-arrows"><svg><use xlink:href=""></use></svg></i>',
                     '</div>'
                 ].join(''));
 
-                me.rendered         = me.options.rendered || false;
-                if (me.options.el) {
-                    me.render();
-                } else if (me.options.parentEl)
-                    me.render(me.options.parentEl);
+                this.rendered         = this.options.rendered || false;
+                if (this.options.el) {
+                    this.render();
+                } else if (this.options.parentEl)
+                    this.render(this.options.parentEl);
             },
 
             render : function(parentEl) {
-                var me = this;
 
-                if (!me.rendered) {
+                if (!this.rendered) {
                     this.cmpEl = $(this.template({
                         id          : this.id,
                         cls         : this.cls,
@@ -114,18 +109,18 @@ define([
                         this.$el.html(this.cmpEl);
                     }
                 } else {
-                    this.cmpEl = me.$el || $(this.el);
+                    this.cmpEl = this.$el || $(this.el);
                 }
 
-                if (!me.rendered) {
-                    var el = this.cmpEl;
+                if (!this.rendered) {
+                    const el = this.cmpEl;
                     this._button = el.find('.btn');
                     this._formControl = el.find('.form-control');
-                    Common.NotificationCenter.on('menumanager:hideall', _.bind(me.closeMenu, me));
+                    Common.NotificationCenter.on('menumanager:hideall', _.bind(this.closeMenu, this));
                 }
-                me.getMenu();
-                me.rendered = true;
-                if (me.disabled) me.setDisabled(me.disabled);
+                this.getMenu();
+                this.rendered = true;
+                if (this.disabled) this.setDisabled(this.disabled);
 
                 return this;
             },
@@ -134,20 +129,20 @@ define([
                 if (typeof this.menu !== 'object') {
                     options = options || this.options;
 
-                    var id = Common.UI.getId(),
-                        el = (this.$el || $(this.el)),
-                        menu = (new Common.UI.Menu({
+                    const id = Common.UI.getId();
+                    const el = (this.$el || $(this.el));
+                    const menu = (new Common.UI.Menu({
                             id: id,
                             cls: options.menuCls,
                             style: options.menuStyle,
                             additionalAlign: options.additionalAlign,
                             items: (options.additionalItems ? options.additionalItems : []).concat([
-                                { template: _.template('<div id="' + id + '-data-menu" style="' + options.dataViewStyle + '" class="' + options.dataViewCls + '"></div>') }
+                                { template: _.template(`<div id="${id}-data-menu" style="${options.dataViewStyle}" class="${options.dataViewCls}"></div>`) }
                             ])
                         })).render(el);
 
                     this.dataPicker = new Common.UI.DataView({
-                        el: el.find('#' + id + '-data-menu'),
+                        el: el.find(`#${id}-data-menu`),
                         parentMenu: menu,
                         outerMenu: {menu: menu, index: options.additionalItems ? options.additionalItems.length : 0, focusOnShow: !options.additionalItems},
                         groups: options.groups,
@@ -157,16 +152,14 @@ define([
                     });
                     this.dataPicker.on('item:click', _.bind(this.onClickItem, this));
                     menu.setInnerMenu([{menu: this.dataPicker, index: options.additionalItems ? options.additionalItems.length : 0}]);
-
-                    var me = this;
                     menu.on('keydown:before', _.bind(this.onBeforeKeyDown, this));
-                    menu.on('show:after', function(menu) {
-                        me.dataPicker && _.delay(function() {
-                            !options.additionalItems && me.dataPicker.focus();
+                    menu.on('show:after', (menu) => {
+                        this.dataPicker && _.delay(() => {
+                            !options.additionalItems && this.dataPicker.focus();
                         }, 10);
-                    }).on('hide:after', function() {
-                        if (me.options.takeFocusOnClose) {
-                            setTimeout(function(){me.focus();}, 1);
+                    }).on('hide:after', () => {
+                        if (this.options.takeFocusOnClose) {
+                            setTimeout(()=> {this.focus();}, 1);
                         }
                     });
                     this.menu = menu;
@@ -189,13 +182,13 @@ define([
                 if (!this.rendered)
                     return;
 
-                this.dataPicker && this.dataPicker.selectRecord(record, true);
+                this.dataPicker?.selectRecord(record, true);
                 if (this.updateFormControl)
                     this.updateFormControl.call(this, record);
             },
 
             onBeforeKeyDown: function(menu, e) {
-                if ((e.keyCode == Common.UI.Keys.DOWN || e.keyCode == Common.UI.Keys.SPACE) && !this.isMenuOpen()) {
+                if ((e.keyCode === Common.UI.Keys.DOWN || e.keyCode === Common.UI.Keys.SPACE) && !this.isMenuOpen()) {
                     $('button', this.cmpEl).click();
                     e.preventDefault();
                     e.stopPropagation();
@@ -240,8 +233,7 @@ define([
             },
 
             focus: function() {
-                this._formControl && this._formControl.focus();
+                this._formControl?.focus();
             }
-        }
-    })());
+        }))());
 });

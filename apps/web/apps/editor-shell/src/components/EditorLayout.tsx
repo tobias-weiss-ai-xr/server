@@ -1,11 +1,11 @@
+import type { EditorConfig } from "@/types/editor"
 import type { ReactNode } from "react"
-import { Toolbar } from "./Toolbar"
-import { StatusBar } from "./StatusBar"
 import { Canvas } from "./Canvas"
 import { LeftPanel } from "./LeftPanel"
 import { RightPanel } from "./RightPanel"
+import { StatusBar } from "./StatusBar"
 import { TabBar } from "./TabBar"
-import type { EditorConfig } from "@/types/editor"
+import { Toolbar } from "./Toolbar"
 
 interface EditorLayoutProps {
   editorType: EditorConfig["type"]

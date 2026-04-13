@@ -1,8 +1,8 @@
 export default {
-  input: 'fetch.js',
+  input: "fetch.js",
   output: {
-    file: 'dist/fetch.umd.js',
-    format: 'umd',
-    name: 'WHATWGFetch'
-  }
+    file: "dist/fetch.umd.js",
+    format: "umd",
+    name: "WHATWGFetch",
+  },
 }

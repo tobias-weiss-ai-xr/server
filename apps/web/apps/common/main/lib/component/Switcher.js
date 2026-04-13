@@ -27,13 +27,12 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'underscore'
-], function (base, _) {
-    'use strict';
+], (base, _) => {
 
     Common.UI.Switcher = Common.UI.BaseView.extend({
 
@@ -55,24 +54,21 @@ define([
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
 
-            var me = this;
-
-            me.hint = me.options.hint;
-            me.width = me.options.width;
-            me.thumbWidth = me.options.thumbWidth;
-            me.delta = (me.width - me.thumbWidth - 2)/2;
-            me.disabled = me.options.disabled;
+            this.hint = this.options.hint;
+            this.width = this.options.width;
+            this.thumbWidth = this.options.thumbWidth;
+            this.delta = (this.width - this.thumbWidth - 2)/2;
+            this.disabled = this.options.disabled;
             
-            if (me.options.el)
-                me.render();
+            if (this.options.el)
+                this.render();
 
-            this.setValue(me.options.value);
+            this.setValue(this.options.value);
         },
 
         render : function(parentEl) {
-            var me = this;
 
-            if (!me.rendered) {
+            if (!this.rendered) {
                 this.cmpEl = $(this.template({
                 }));
 
@@ -86,7 +82,7 @@ define([
                 if (this.options.hint) {
                     this.cmpEl.attr('data-toggle', 'tooltip');
                     this.cmpEl.tooltip({
-                        title: (typeof this.options.hint == 'string') ? this.options.hint : this.options.hint[0],
+                        title: (typeof this.options.hint === 'string') ? this.options.hint : this.options.hint[0],
                         placement: this.options.hintAnchor||'cursor'
                     });
                 }
@@ -96,11 +92,11 @@ define([
 
             this.thumb = this.cmpEl.find('.thumb');
 
-            this.cmpEl.width(me.width);
-            this.thumb.width(me.thumbWidth);
+            this.cmpEl.width(this.width);
+            this.thumb.width(this.thumbWidth);
 
-            var onMouseUp = function (e) {
-                if ( me.disabled ) return;
+            const onMouseUp = (e) => {
+                if ( this.disabled ) return;
 
                 e.preventDefault();
                 e.stopPropagation();
@@ -108,48 +104,48 @@ define([
                 $(document).off('mouseup.switcher',   onMouseUp);
                 $(document).off('mousemove.switcher', onMouseMove);
 
-                var pos = Math.round((e.pageX*Common.Utils.zoom() - me._dragstart));
-                me.value = (me.value) ? (pos > -me.delta) : (pos > me.delta);
-                me.cmpEl.toggleClass('on', me.value);
-                me.thumb.css({left: '', right: ''});
-                if (me.lastValue !== me.value) {
-                    me.trigger('change', me, me.value);
+                const pos = Math.round((e.pageX*Common.Utils.zoom() - this._dragstart));
+                this.value = (this.value) ? (pos > -this.delta) : (pos > this.delta);
+                this.cmpEl.toggleClass('on', this.value);
+                this.thumb.css({left: '', right: ''});
+                if (this.lastValue !== this.value) {
+                    this.trigger('change', this, this.value);
                 }
 
-                me._dragstart = undefined;
+                this._dragstart = undefined;
             };
 
-            var onMouseMove = function (e) {
-                if ( me.disabled ) return;
-                if ( me._dragstart===undefined ) return;
+            const onMouseMove = (e) => {
+                if ( this.disabled ) return;
+                if ( this._dragstart===undefined ) return;
 
                 e.preventDefault();
                 e.stopPropagation();
 
-                var pos = Math.round((e.pageX*Common.Utils.zoom() - me._dragstart));
-                if (me.value) {
-                    me.thumb.css({right: (pos<1) ? Math.min(me.width-me.thumbWidth - 4, -pos) : 0, left: 'auto'});
+                const pos = Math.round((e.pageX*Common.Utils.zoom() - this._dragstart));
+                if (this.value) {
+                    this.thumb.css({right: (pos<1) ? Math.min(this.width-this.thumbWidth - 4, -pos) : 0, left: 'auto'});
                 } else {
-                    me.thumb.css({left: (pos>-1) ? Math.min(me.width-me.thumbWidth - 4, pos) : 0, right: 'auto'});
+                    this.thumb.css({left: (pos>-1) ? Math.min(this.width-this.thumbWidth - 4, pos) : 0, right: 'auto'});
                 }
-                if (!me._isMouseMove) me._isMouseMove = Math.abs(pos)>0;
+                if (!this._isMouseMove) this._isMouseMove = Math.abs(pos)>0;
             };
 
-            var onMouseDown = function (e) {
-                if ( me.disabled ) return;
-                me._dragstart = e.pageX*Common.Utils.zoom();
-                me._isMouseMove = false;
-                me.lastValue = me.value;
+            const onMouseDown = (e) => {
+                if ( this.disabled ) return;
+                this._dragstart = e.pageX*Common.Utils.zoom();
+                this._isMouseMove = false;
+                this.lastValue = this.value;
                 
                 $(document).on('mouseup.switcher',   onMouseUp);
                 $(document).on('mousemove.switcher', onMouseMove);
             };
 
-            var onSwitcherClick = function (e) {
-                if ( me.disabled || me._isMouseMove) { me._isMouseMove = false; return;}
+            const onSwitcherClick = (e) => {
+                if ( this.disabled || this._isMouseMove) { this._isMouseMove = false; return;}
 
-                if (me.options.hint) {
-                    var tip = me.cmpEl.data('bs.tooltip');
+                if (this.options.hint) {
+                    const tip = this.cmpEl.data('bs.tooltip');
                     if (tip) {
                         if (tip.dontShow===undefined)
                             tip.dontShow = true;
@@ -158,28 +154,28 @@ define([
                     }
                 }
 
-                me.value = !me.value;
-                me.cmpEl.toggleClass('on', me.value);
-                me.trigger('change', me, me.value);
+                this.value = !this.value;
+                this.cmpEl.toggleClass('on', this.value);
+                this.trigger('change', this, this.value);
             };
 
-            if (!me.rendered) {
-                var el = me.cmpEl;
+            if (!this.rendered) {
+                const el = this.cmpEl;
                 el.on('mousedown', '.thumb', onMouseDown);
                 el.on('click', onSwitcherClick);
             }
 
-            if (me.disabled) {
-                me.setDisabled(!(me.disabled=false));
+            if (this.disabled) {
+                this.setDisabled(!(this.disabled=false));
             }
 
-            me.rendered = true;
+            this.rendered = true;
 
             return this;
         },
 
         setThumbPosition: function(x) {
-            var isOn = (this.value) ? (x < -this.delta) : (x > this.delta);
+            const isOn = (this.value) ? (x < -this.delta) : (x > this.delta);
             this.thumb.css((isOn) ? {right: 0, left: 'auto'} : {left: 0, right: 'auto'});
         },
 
@@ -195,7 +191,7 @@ define([
         setDisabled: function(disabled) {
             if (disabled !== this.disabled) {
                 if ((disabled || !Common.Utils.isGecko) && this.options.hint) {
-                    var tip = this.cmpEl.data('bs.tooltip');
+                    const tip = this.cmpEl.data('bs.tooltip');
                     if (tip) {
                         disabled && tip.hide();
                         !Common.Utils.isGecko && (tip.enabled = !disabled);
@@ -221,12 +217,12 @@ define([
 
             this.cmpEl.tooltip({
                 html: !!isHtml,
-                title: (typeof hint == 'string') ? hint : hint[0],
+                title: (typeof hint === 'string') ? hint : hint[0],
                 placement: this.options.hintAnchor||'cursor'
             });
 
             if (this.disabled || !Common.Utils.isGecko) {
-                var tip = this.cmpEl.data('bs.tooltip');
+                const tip = this.cmpEl.data('bs.tooltip');
                 if (tip) {
                     this.disabled && tip.hide();
                     !Common.Utils.isGecko && (tip.enabled = !this.disabled);

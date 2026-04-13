@@ -31,14 +31,13 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 Common.Controllers = Common.Controllers || {};
 
 define([
     'core',
     'common/main/lib/view/Protection'
-], function () {
-    'use strict';
+], () => {
 
     Common.Controllers.Protection = Backbone.Controller.extend(_.extend({
         models : [],
@@ -69,7 +68,7 @@ define([
             this.setApi(api);
 
             if (data) {
-                this.sdkViewName        =   data['sdkviewname'] || this.sdkViewName;
+                this.sdkViewName        =   data.sdkviewname || this.sdkViewName;
             }
         },
         setApi: function (api) {
@@ -101,11 +100,11 @@ define([
         },
 
         onDocumentPassword: function(hasPassword, disabled) {
-            this.view && this.view.onDocumentPassword(hasPassword, disabled);
+            this.view?.onDocumentPassword(hasPassword, disabled);
         },
 
         SetDisabled: function(state, canProtect) {
-            this.view && this.view.SetDisabled(state, canProtect);
+            this.view?.SetDisabled(state, canProtect);
         },
 
         onPasswordClick: function(btn, opts){
@@ -129,7 +128,7 @@ define([
         },
 
         onProtectForm: function(state) {
-            this.api && this.api.asc_markAsFinal(state);
+            this.api?.asc_markAsFinal(state);
         },
 
         createToolbarPanel: function() {
@@ -142,18 +141,17 @@ define([
         },
 
         onAppReady: function (config) {
-            var me = this;
-            (new Promise(function (accept, reject) {
+            (new Promise((accept, reject) => {
                 accept();
-            })).then(function(){
-                me.onChangeProtectDocument();
-                Common.NotificationCenter.on('protect:doclock', _.bind(me.onChangeProtectDocument, me));
+            })).then(()=> {
+                this.onChangeProtectDocument();
+                Common.NotificationCenter.on('protect:doclock', _.bind(this.onChangeProtectDocument, this));
             });
         },
 
         onChangeProtectDocument: function(props) {
             if (!props) {
-                var docprotect = this.getApplication().getController('DocProtection');
+                const docprotect = this.getApplication().getController('DocProtection');
                 props = docprotect ? docprotect.getDocProps() : null;
             }
             if (props && this.view) {
@@ -162,12 +160,11 @@ define([
         },
 
         addPassword: function() {
-            var me = this,
-                win = new Common.Views.PasswordDialog({
-                    api: me.api,
-                    handler: function(result, props) {
-                        if (result == 'ok') {
-                            me.api.asc_setCurrentPassword(props);
+            const win = new Common.Views.PasswordDialog({
+                    api: this.api,
+                    handler: (result, props) => {
+                        if (result === 'ok') {
+                            this.api.asc_setCurrentPassword(props);
                         }
                         Common.NotificationCenter.trigger('edit:complete');
                     }
@@ -181,14 +178,13 @@ define([
         },
 
         addInvisibleSignature: function() {
-            var me = this,
-                win = new Common.Views.SignDialog({
-                    api: me.api,
+            const win = new Common.Views.SignDialog({
+                    api: this.api,
                     signType: 'invisible',
-                    handler: function(dlg, result) {
-                        if (result == 'ok') {
-                            var props = dlg.getSettings();
-                            me.api.asc_Sign(props.certificateId);
+                    handler: (dlg, result) => {
+                        if (result === 'ok') {
+                            const props = dlg.getSettings();
+                            this.api.asc_Sign(props.certificateId);
                         }
                         Common.NotificationCenter.trigger('edit:complete');
                     }
@@ -198,12 +194,11 @@ define([
         },
 
         addVisibleSignature: function(signed, guid) {
-            var me = this,
-                win = new Common.Views.SignSettingsDialog({
+            const win = new Common.Views.SignSettingsDialog({
                     type: (!signed) ? 'edit' : 'view',
-                    handler: function(dlg, result) {
-                        if (!signed && result == 'ok') {
-                            me.api.asc_AddSignatureLine2(dlg.getSettings());
+                    handler: (dlg, result) => {
+                        if (!signed && result === 'ok') {
+                            this.api.asc_AddSignatureLine2(dlg.getSettings());
                         }
                         Common.NotificationCenter.trigger('edit:complete');
                     }
@@ -216,28 +211,27 @@ define([
         },
 
         signVisibleSignature: function(guid, width, height) {
-            var me = this;
-            if (_.isUndefined(me.fontStore)) {
-                me.fontStore = new Common.Collections.Fonts();
-                var fonts = me.getApplication().getController('Toolbar').getView('Toolbar').cmbFontName.store.toJSON();
-                var arr = [];
-                _.each(fonts, function(font, index){
+            if (_.isUndefined(this.fontStore)) {
+                this.fontStore = new Common.Collections.Fonts();
+                const fonts = this.getApplication().getController('Toolbar').getView('Toolbar').cmbFontName.store.toJSON();
+                const arr = [];
+                _.each(fonts, (font, index)=> {
                     if (!font.cloneid) {
                         arr.push(_.clone(font));
                     }
                 });
-                me.fontStore.add(arr);
+                this.fontStore.add(arr);
             }
 
-            var win = new Common.Views.SignDialog({
-                api: me.api,
+            const win = new Common.Views.SignDialog({
+                api: this.api,
                 signType: 'visible',
-                fontStore: me.fontStore,
+                fontStore: this.fontStore,
                 signSize: {width: width || 0, height: height || 0},
-                handler: function(dlg, result) {
-                    if (result == 'ok') {
-                        var props = dlg.getSettings();
-                        me.api.asc_Sign(props.certificateId, guid, props.images[0], props.images[1]);
+                handler: (dlg, result) => {
+                    if (result === 'ok') {
+                        const props = dlg.getSettings();
+                        this.api.asc_Sign(props.certificateId, guid, props.images[0], props.images[1]);
                     }
                     Common.NotificationCenter.trigger('edit:complete');
                 }
@@ -259,7 +253,7 @@ define([
         },
 
         onChangeDocMode: function () {
-            if(this.view && this.view.btnProtectForm) {
+            if(this.view?.btnProtectForm) {
                 this.view.btnProtectForm.toggle(this.api.asc_isFinal(), true);
             }
         }

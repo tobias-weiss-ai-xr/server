@@ -30,411 +30,426 @@
  */
 
 define([
-    'text!presentationeditor/main/app/template/StatusBar.template',
-    'backbone',
-    'tip',
-    'common/main/lib/component/Menu',
-    'common/main/lib/component/Window',
-    'presentationeditor/main/app/model/Pages'
- ], function(template, Backbone){
-        'use strict';
+  "text!presentationeditor/main/app/template/StatusBar.template",
+  "backbone",
+  "tip",
+  "common/main/lib/component/Menu",
+  "common/main/lib/component/Window",
+  "presentationeditor/main/app/model/Pages",
+], (template, Backbone) => {
+  function _onCountPages(count) {
+    if (this.pages.get("count") < 0) $("#status-label-pages").css("display", "inline-block")
 
-        function _onCountPages(count){
-            if (this.pages.get('count')<0)
-                $('#status-label-pages').css('display', 'inline-block');
+    this.pages.set("count", count)
+    const isDisabled = count <= 0
+    if (this.btnPreview.isDisabled() !== isDisabled) this.btnPreview.setDisabled(isDisabled)
+  }
 
-            this.pages.set('count', count);
-            var isDisabled = (count<=0);
-            if (this.btnPreview.isDisabled() !== isDisabled)
-                this.btnPreview.setDisabled(isDisabled);
-        }
+  function _onCurrentPage(number) {
+    this.pages.set("current", number)
+  }
 
-        function _onCurrentPage(number){
-            this.pages.set('current', number);
-        }
+  function _onApiPageSize(width, height, type, firstNum) {
+    firstNum !== undefined && this.pages.set("start", firstNum)
+  }
 
-        function _onApiPageSize(width, height, type, firstNum){
-            (firstNum!==undefined) && this.pages.set('start', firstNum);
-        }
+  const _tplPages = _.template("Slide <%= current %> of <%= count %>")
 
-        var _tplPages = _.template('Slide <%= current %> of <%= count %>');
+  function _updatePagesCaption(model, value, opts) {
+    const start = model.get("start")
+    const count = model.get("count")
+    $("#status-label-pages").text(
+      Common.Utils.String.format(
+        this.pageIndexText,
+        model.get("current") + start,
+        start === 1 ? count : `${start} .. ${count + start - 1}`,
+      ),
+    )
+  }
 
-        function _updatePagesCaption(model,value,opts) {
-            var start = model.get('start'),
-                count = model.get('count');
-            $('#status-label-pages').text(
-                Common.Utils.String.format(this.pageIndexText, model.get('current') + start, start===1 ? count : start + ' .. ' + (count + start - 1)) );
-        }
+  function _clickLanguage(menu, item) {
+    this.btnLanguage.setCaption(item.caption)
+    this.langMenu.prevTip = item.value
 
-        function _clickLanguage(menu, item) {
-            this.btnLanguage.setCaption(item.caption);
-            this.langMenu.prevTip = item.value;
+    this.fireEvent("langchanged", [this, item.code, item.caption])
+  }
 
-            this.fireEvent('langchanged', [this, item.code, item.caption]);
-        }
+  PE.Views.Statusbar = Backbone.View.extend(
+    _.extend(
+      {
+        el: "#statusbar",
+        template: _.template(template),
 
-        PE.Views.Statusbar = Backbone.View.extend(_.extend({
-            el: '#statusbar',
-            template: _.template(template),
+        events: {},
 
-            events: {},
+        api: undefined,
+        pages: undefined,
 
-            api: undefined,
-            pages: undefined,
+        initialize: function (options) {
+          _.extend(this, options)
+          this.pages = new PE.Models.Pages({ current: 1, count: -1, start: 1 })
+          this.pages.on("change", _.bind(_updatePagesCaption, this))
+          this._state = { no_paragraph: true }
+        },
 
-            initialize: function (options) {
-                _.extend(this, options);
-                this.pages = new PE.Models.Pages({current:1, count:-1, start: 1});
-                this.pages.on('change', _.bind(_updatePagesCaption,this));
-                this._state = {no_paragraph: true};
+        render: function () {
+          $(this.el).html(
+            this.template({
+              scope: this,
+            }),
+          )
+
+          this.btnZoomToPage = new Common.UI.Button({
+            el: $("#btn-zoom-topage", this.el),
+            hint: this.tipFitPage,
+            hintAnchor: "top",
+            toggleGroup: "status-zoom",
+            enableToggle: true,
+          })
+
+          this.btnZoomToWidth = new Common.UI.Button({
+            el: $("#btn-zoom-towidth", this.el),
+            hint: this.tipFitWidth,
+            hintAnchor: "top",
+            toggleGroup: "status-zoom",
+            enableToggle: true,
+          })
+
+          this.btnZoomDown = new Common.UI.Button({
+            el: $("#btn-zoom-down", this.el),
+            hint: this.tipZoomOut,
+            hintAnchor: "top",
+          })
+          PE.getController("Common.Controllers.Shortcuts").updateShortcutHints({
+            ZoomOut: {
+              btn: this.btnZoomDown,
+              label: this.tipZoomOut,
             },
+          })
 
-            render: function () {
-                var me = this;
-                $(this.el).html(this.template({
-                    scope: this
-                }));
-
-                this.btnZoomToPage = new Common.UI.Button({
-                    el: $('#btn-zoom-topage',this.el),
-                    hint: this.tipFitPage,
-                    hintAnchor: 'top',
-                    toggleGroup: 'status-zoom',
-                    enableToggle: true
-                });
-
-                this.btnZoomToWidth = new Common.UI.Button({
-                    el: $('#btn-zoom-towidth',this.el),
-                    hint: this.tipFitWidth,
-                    hintAnchor: 'top',
-                    toggleGroup: 'status-zoom',
-                    enableToggle: true
-                });
-
-                this.btnZoomDown = new Common.UI.Button({
-                    el: $('#btn-zoom-down',this.el),
-                    hint: this.tipZoomOut,
-                    hintAnchor: 'top'
-                });
-                PE.getController('Common.Controllers.Shortcuts').updateShortcutHints({
-                    ZoomOut: {
-                        btn: this.btnZoomDown,
-                        label: this.tipZoomOut
-                    }
-                });
-                
-
-                this.btnZoomUp = new Common.UI.Button({
-                    el: $('#btn-zoom-up',this.el),
-                    hint: this.tipZoomIn,
-                    hintAnchor: 'top-right'
-                });
-                 PE.getController('Common.Controllers.Shortcuts').updateShortcutHints({
-                    ZoomIn: {
-                        btn: this.btnZoomUp,
-                        label: this.tipZoomIn
-                    }
-                });
-
-                this.cntZoom = new Common.UI.Button({
-                    el: $('.cnt-zoom',this.el),
-                    hint: this.tipZoomFactor,
-                    hintAnchor: 'top'
-                });
-                this.cntZoom.cmpEl.on('show.bs.dropdown', function () {
-                        _.defer(function(){
-                            me.cntZoom.cmpEl.find('ul').focus();
-                        }, 100);
-                    }
-                );
-                this.cntZoom.cmpEl.on('hide.bs.dropdown', function () {
-                        _.defer(function(){
-                            me.api.asc_enableKeyEvents(true);
-                        }, 100);
-                    }
-                );
-
-                this.zoomMenu = new Common.UI.Menu({
-                    style: 'margin-top:-5px;',
-                    menuAlign: 'bl-tl',
-                    items: [
-                        { caption: "50%", value: 50 },
-                        { caption: "75%", value: 75 },
-                        { caption: "100%", value: 100 },
-                        { caption: "125%", value: 125 },
-                        { caption: "150%", value: 150 },
-                        { caption: "175%", value: 175 },
-                        { caption: "200%", value: 200 },
-                        { caption: "300%", value: 300 },
-                        { caption: "400%", value: 400 },
-                        { caption: "500%", value: 500 }
-                    ]
-                });
-                this.zoomMenu.render($('.cnt-zoom',this.el));
-                this.zoomMenu.cmpEl.attr({tabindex: -1});
-
-                this.txtGoToPage = new Common.UI.InputField({
-                    el          : $('#status-goto-page'),
-                    allowBlank  : true,
-                    validateOnChange: true,
-                    style       : 'width: 60px;',
-                    maskExp: /[0-9]/,
-                    validation  : function(value) {
-                        if (/(^[0-9]+$)/.test(value)) {
-                            value = parseInt(value);
-                            if (undefined !== value && value >= me.pages.get('start') && value < me.pages.get('count')+me.pages.get('start'))
-                                return true;
-                        }
-
-                        return me.txtPageNumInvalid;
-                    }
-                }).on('keypress:after', function(input, e) {
-                        if (e.keyCode === Common.UI.Keys.RETURN) {
-                            var box = me.$el.find('#status-goto-box'),
-                                edit = box.find('input[type=text]'), page = parseInt(edit.val()),
-                                start = me.pages.get('start');
-                            if (isNaN(page) || page >= me.pages.get('count')+start || page < start) {
-                                edit.select();
-                                return false;
-                            }
-
-                            box.focus();                        // for IE
-                            box.parent().removeClass('open');
-
-                            me.api.goToPage(page - start);
-                            me.api.asc_enableKeyEvents(true);
-
-                            return false;
-                        }
-                    }
-                ).on('keyup:after', function(input, e) {
-                        if (e.keyCode === Common.UI.Keys.ESC) {
-                            var box = me.$el.find('#status-goto-box');
-                            box.focus();                        // for IE
-                            box.parent().removeClass('open');
-                            me.api.asc_enableKeyEvents(true);
-                            return false;
-                        }
-                    }
-                );
-
-                var goto = this.$el.find('#status-goto-box');
-                goto.on('click', function() {
-                    return false;
-                });
-                goto.parent().on('show.bs.dropdown',
-                    function () {
-                        me.txtGoToPage.setValue(me.api.getCurrentPage() + me.pages.get('start'));
-                        me.txtGoToPage.checkValidate();
-                        var edit = me.txtGoToPage.$el.find('input');
-                        _.defer(function(){edit.focus(); edit.select();}, 100);
-
-                    }
-                );
-                goto.parent().on('hide.bs.dropdown',
-                    function () { var box = me.$el.find('#status-goto-box');
-                        if (me.api && box) {
-                            box.focus();                        // for IE
-                            box.parent().removeClass('open');
-
-                            me.api.asc_enableKeyEvents(true);
-                        }
-                    }
-                );
-
-                this.btnPreview = new Common.UI.Button({
-                    parentEl: $('#slot-status-btn-preview'),
-                    cls: 'btn-toolbar',
-                    iconCls: 'toolbar__icon btn-preview',
-                    hint: this.tipPreview,
-                    hintAnchor: 'top',
-                    split: true,
-                    menu: new Common.UI.Menu({
-                        menuAlign: 'bl-tl',
-                        style: 'margin-top:-5px;',
-                        items: [
-                            {caption: this.textShowBegin, value: 0},
-                            {caption: this.textShowCurrent, value: 1},
-                            {caption: this.textShowPresenterView, value: 2}
-                        ]
-                    }),
-                    dataHint: '0',
-                    dataHintDirection: 'top',
-                    dataHintOffset: '0, -16'
-                });
-
-                this.langMenu = new Common.UI.MenuSimple({
-                    cls: 'lang-menu shifted-right',
-                    style: 'margin-top:-5px;',
-                    restoreHeight: 285,
-                    itemTemplate: _.template([
-                        '<a id="<%= id %>" tabindex="-1" type="menuitem" langval="<%= value %>" class="<% if (checked) { %> checked <% } %>">',
-                            '<div>',
-                                '<i class="icon <% if (spellcheck) { %> toolbar__icon btn-ic-docspell spellcheck-lang <% } %>"></i>',
-                                '<%= caption %>',
-                            '</div>',
-                            '<label style="opacity: 0.6"><%= captionEn %></label>',
-                        '</a>'
-                    ].join('')),
-                    menuAlign: 'bl-tl',
-                    search: true,
-                    searchFields: ['caption', 'captionEn'],
-                    focusToCheckedItem: true
-                });
-
-                this.btnLanguage = new Common.UI.Button({
-                    parentEl: $('#btn-cnt-lang', this.el),
-                    cls         : 'btn-toolbar',
-                    scaling     : false,
-                    caption     : 'English – United States',
-                    hint: this.tipSetLang,
-                    hintAnchor  : 'top-left',
-                    disabled: true,
-                    dataHint    : '0',
-                    dataHintDirection: 'top',
-                    menu: this.langMenu
-                });
-                this.langMenu.prevTip = 'en';
-                this.langMenu.on('item:click', _.bind(_clickLanguage,this));
-
-                return this;
+          this.btnZoomUp = new Common.UI.Button({
+            el: $("#btn-zoom-up", this.el),
+            hint: this.tipZoomIn,
+            hintAnchor: "top-right",
+          })
+          PE.getController("Common.Controllers.Shortcuts").updateShortcutHints({
+            ZoomIn: {
+              btn: this.btnZoomUp,
+              label: this.tipZoomIn,
             },
+          })
 
-            setApi: function(api) {
-                this.api = api;
+          this.cntZoom = new Common.UI.Button({
+            el: $(".cnt-zoom", this.el),
+            hint: this.tipZoomFactor,
+            hintAnchor: "top",
+          })
+          this.cntZoom.cmpEl.on("show.bs.dropdown", () => {
+            _.defer(() => {
+              this.cntZoom.cmpEl.find("ul").focus()
+            }, 100)
+          })
+          this.cntZoom.cmpEl.on("hide.bs.dropdown", () => {
+            _.defer(() => {
+              this.api.asc_enableKeyEvents(true)
+            }, 100)
+          })
 
-                if (this.api) {
-                    this.api.asc_registerCallback('asc_onCountPages',   _.bind(_onCountPages, this));
-                    this.api.asc_registerCallback('asc_onCurrentPage',  _.bind(_onCurrentPage, this));
-                    this.api.asc_registerCallback('asc_onPresentationSize', _.bind(_onApiPageSize, this));
-                    this.api.asc_registerCallback('asc_onFocusObject', _.bind(this.onApiFocusObject, this));
-                    this.api.asc_registerCallback('asc_onCoAuthoringDisconnect',_.bind(this.onApiCoAuthoringDisconnect, this));
-                    Common.NotificationCenter.on('api:disconnect',     _.bind(this.onApiCoAuthoringDisconnect, this));
+          this.zoomMenu = new Common.UI.Menu({
+            style: "margin-top:-5px;",
+            menuAlign: "bl-tl",
+            items: [
+              { caption: "50%", value: 50 },
+              { caption: "75%", value: 75 },
+              { caption: "100%", value: 100 },
+              { caption: "125%", value: 125 },
+              { caption: "150%", value: 150 },
+              { caption: "175%", value: 175 },
+              { caption: "200%", value: 200 },
+              { caption: "300%", value: 300 },
+              { caption: "400%", value: 400 },
+              { caption: "500%", value: 500 },
+            ],
+          })
+          this.zoomMenu.render($(".cnt-zoom", this.el))
+          this.zoomMenu.cmpEl.attr({ tabindex: -1 })
+
+          this.txtGoToPage = new Common.UI.InputField({
+            el: $("#status-goto-page"),
+            allowBlank: true,
+            validateOnChange: true,
+            style: "width: 60px;",
+            maskExp: /[0-9]/,
+            validation: (value) => {
+              if (/(^[0-9]+$)/.test(value)) {
+                value = Number.parseInt(value)
+                if (
+                  undefined !== value &&
+                  value >= this.pages.get("start") &&
+                  value < this.pages.get("count") + this.pages.get("start")
+                )
+                  return true
+              }
+
+              return this.txtPageNumInvalid
+            },
+          })
+            .on("keypress:after", (input, e) => {
+              if (e.keyCode === Common.UI.Keys.RETURN) {
+                const box = this.$el.find("#status-goto-box")
+                const edit = box.find("input[type=text]")
+                const page = Number.parseInt(edit.val())
+                const start = this.pages.get("start")
+                if (Number.isNaN(page) || page >= this.pages.get("count") + start || page < start) {
+                  edit.select()
+                  return false
                 }
 
-                return this;
+                box.focus() // for IE
+                box.parent().removeClass("open")
 
-            },
+                this.api.goToPage(page - start)
+                this.api.asc_enableKeyEvents(true)
 
-            setMode: function(mode) {
-                this.mode = mode;
-                this.$el.find('.el-edit')[this.mode.isEdit?'show':'hide']();
-            },
+                return false
+              }
+            })
+            .on("keyup:after", (input, e) => {
+              if (e.keyCode === Common.UI.Keys.ESC) {
+                const box = this.$el.find("#status-goto-box")
+                box.focus() // for IE
+                box.parent().removeClass("open")
+                this.api.asc_enableKeyEvents(true)
+                return false
+              }
+            })
 
-            setVisible: function(visible) {
-                visible
-                    ? this.show()
-                    : this.hide();
-            },
+          const goto = this.$el.find("#status-goto-box")
+          goto.on("click", () => false)
+          goto.parent().on("show.bs.dropdown", () => {
+            this.txtGoToPage.setValue(this.api.getCurrentPage() + this.pages.get("start"))
+            this.txtGoToPage.checkValidate()
+            const edit = this.txtGoToPage.$el.find("input")
+            _.defer(() => {
+              edit.focus()
+              edit.select()
+            }, 100)
+          })
+          goto.parent().on("hide.bs.dropdown", () => {
+            const box = this.$el.find("#status-goto-box")
+            if (this.api && box) {
+              box.focus() // for IE
+              box.parent().removeClass("open")
 
-            isVisible: function() {
-                return this.$el && this.$el.is(':visible');
-            },
+              this.api.asc_enableKeyEvents(true)
+            }
+          })
 
-            getStatusLabel: function() {
-                return $('.statusbar #status-label-action');
-            },
+          this.btnPreview = new Common.UI.Button({
+            parentEl: $("#slot-status-btn-preview"),
+            cls: "btn-toolbar",
+            iconCls: "toolbar__icon btn-preview",
+            hint: this.tipPreview,
+            hintAnchor: "top",
+            split: true,
+            menu: new Common.UI.Menu({
+              menuAlign: "bl-tl",
+              style: "margin-top:-5px;",
+              items: [
+                { caption: this.textShowBegin, value: 0 },
+                { caption: this.textShowCurrent, value: 1 },
+                { caption: this.textShowPresenterView, value: 2 },
+              ],
+            }),
+            dataHint: "0",
+            dataHintDirection: "top",
+            dataHintOffset: "0, -16",
+          })
 
-            showStatusMessage: function(message) {
-                this.getStatusLabel().text(message);
-            },
+          this.langMenu = new Common.UI.MenuSimple({
+            cls: "lang-menu shifted-right",
+            style: "margin-top:-5px;",
+            restoreHeight: 285,
+            itemTemplate: _.template(
+              [
+                '<a id="<%= id %>" tabindex="-1" type="menuitem" langval="<%= value %>" class="<% if (checked) { %> checked <% } %>">',
+                "<div>",
+                '<i class="icon <% if (spellcheck) { %> toolbar__icon btn-ic-docspell spellcheck-lang <% } %>"></i>',
+                "<%= caption %>",
+                "</div>",
+                '<label style="opacity: 0.6"><%= captionEn %></label>',
+                "</a>",
+              ].join(""),
+            ),
+            menuAlign: "bl-tl",
+            search: true,
+            searchFields: ["caption", "captionEn"],
+            focusToCheckedItem: true,
+          })
 
-            clearStatusMessage: function() {
-                this.getStatusLabel().text('');
-            },
+          this.btnLanguage = new Common.UI.Button({
+            parentEl: $("#btn-cnt-lang", this.el),
+            cls: "btn-toolbar",
+            scaling: false,
+            caption: "English – United States",
+            hint: this.tipSetLang,
+            hintAnchor: "top-left",
+            disabled: true,
+            dataHint: "0",
+            dataHintDirection: "top",
+            menu: this.langMenu,
+          })
+          this.langMenu.prevTip = "en"
+          this.langMenu.on("item:click", _.bind(_clickLanguage, this))
 
-            showSlideMasterStatus: function (show) {
-                if (show) {
-                    $('#status-label-pages').css('display', 'none');
-                    $('#status-label-slide-master').css('display', 'inline-block');
-                } else {
-                    $('#status-label-pages').css('display', 'inline-block');
-                    $('#status-label-slide-master').css('display', 'none');
-                }
-            },
+          return this
+        },
 
-            reloadLanguages: function(array) {
-                var arr = [],
-                    saved = this.langMenu.saved;
-                _.each(array, function(item) {
-                    arr.push({
-                        caption     : item['displayValue'],
-                        captionEn   : item['displayValueEn'],
-                        value       : item['value'],
-                        code        : item['code'],
-                        checkable   : true,
-                        spellcheck  : item['spellcheck']
-                    });
-                });
-                this.langMenu.setRecent({
-                    count: Common.Utils.InternalSettings.get("app-settings-recent-langs-count") || 5,
-                    offset: Common.Utils.InternalSettings.get("app-settings-recent-langs-offset") || 0,
-                    key: 'app-settings-recent-langs',
-                    valueField: 'value'
-                });
-                this.langMenu.resetItems(arr);
-                if (this.langMenu.items.length>0) {
-                    var index = _.findIndex(this.langMenu.items, {caption: saved});
-                    (index>-1) && this.langMenu.setChecked(index, true);
-                    this.btnLanguage.setDisabled(false || this._state.no_paragraph);
-                }
-            },
+        setApi: function (api) {
+          this.api = api
 
-            setLanguage: function(info) {
-                if (this.langMenu.prevTip != info.value && info.code !== undefined) {
-                    this.btnLanguage.setCaption(info.displayValue);
-                    this.langMenu.prevTip = info.value;
-                    var index = _.findIndex(this.langMenu.items, {caption: info.displayValue});
-                    if (index>-1) {
-                        this.langMenu.setChecked(index, true);
-                    } else {
-                        this.langMenu.saved = info.displayValue;
-                        this.langMenu.clearAll();
-                    }
-                }
-            },
+          if (this.api) {
+            this.api.asc_registerCallback("asc_onCountPages", _.bind(_onCountPages, this))
+            this.api.asc_registerCallback("asc_onCurrentPage", _.bind(_onCurrentPage, this))
+            this.api.asc_registerCallback("asc_onPresentationSize", _.bind(_onApiPageSize, this))
+            this.api.asc_registerCallback("asc_onFocusObject", _.bind(this.onApiFocusObject, this))
+            this.api.asc_registerCallback(
+              "asc_onCoAuthoringDisconnect",
+              _.bind(this.onApiCoAuthoringDisconnect, this),
+            )
+            Common.NotificationCenter.on(
+              "api:disconnect",
+              _.bind(this.onApiCoAuthoringDisconnect, this),
+            )
+          }
 
-            SetDisabled: function(disable) {
-                this.btnLanguage.setDisabled(disable || this.langMenu.items.length<1 || this._state.no_paragraph);
-            },
+          return this
+        },
 
-            onApiFocusObject: function(selectedObjects) {
-                if (!this.mode || !this.mode.isEdit) return;
+        setMode: function (mode) {
+          this.mode = mode
+          this.$el.find(".el-edit")[this.mode.isEdit ? "show" : "hide"]()
+        },
 
-                this._state.no_paragraph = true;
-                var i = -1;
-                while (++i < selectedObjects.length) {
-                    var type = selectedObjects[i].get_ObjectType();
-                    if (type == Asc.c_oAscTypeSelectElement.Paragraph || type == Asc.c_oAscTypeSelectElement.Shape || type == Asc.c_oAscTypeSelectElement.Chart || type == Asc.c_oAscTypeSelectElement.Table) {
-                        this._state.no_paragraph = selectedObjects[i].get_ObjectValue().get_Locked();
-                        if (this._state.no_paragraph) break;  // break if one of the objects is locked
-                    }
-                }
-                this._state.no_paragraph = this._state.no_paragraph || this.langMenu.items.length<1;
-                if (this._state.no_paragraph !== this.btnLanguage.isDisabled())
-                    this.btnLanguage.setDisabled(this._state.no_paragraph);
-            },
+        setVisible: function (visible) {
+          visible ? this.show() : this.hide()
+        },
 
-            onApiCoAuthoringDisconnect: function() {
-                this.setMode({isDisconnected:true});
-                this.SetDisabled(true);
-            },
+        isVisible: function () {
+          return this.$el?.is(":visible")
+        },
 
-            pageIndexText   : 'Slide {0} of {1}',
-            goToPageText    : 'Go to Slide',
-            tipFitPage      : 'Fit to Slide',
-            tipFitWidth     : 'Fit to Width',
-            tipZoomIn       : 'Zoom In',
-            tipZoomOut      : 'Zoom Out',
-            tipZoomFactor   : 'Magnification',
-            txtPageNumInvalid: 'Slide number invalid',
-            tipPreview      : 'Start Slideshow',
-            tipAccessRights : 'Manage document access rights',
-            tipSetLang      : 'Set Text Language',
-            textShowBegin: 'Show from Beginning',
-            textShowCurrent: 'Show from Current slide',
-            textShowPresenterView: 'Show presenter view',
-            textSlideMaster: 'Slide master'
-        }, PE.Views.Statusbar || {}));
-    }
-);
+        getStatusLabel: () => $(".statusbar #status-label-action"),
+
+        showStatusMessage: function (message) {
+          this.getStatusLabel().text(message)
+        },
+
+        clearStatusMessage: function () {
+          this.getStatusLabel().text("")
+        },
+
+        showSlideMasterStatus: (show) => {
+          if (show) {
+            $("#status-label-pages").css("display", "none")
+            $("#status-label-slide-master").css("display", "inline-block")
+          } else {
+            $("#status-label-pages").css("display", "inline-block")
+            $("#status-label-slide-master").css("display", "none")
+          }
+        },
+
+        reloadLanguages: function (array) {
+          const arr = []
+          const saved = this.langMenu.saved
+          _.each(array, (item) => {
+            arr.push({
+              caption: item.displayValue,
+              captionEn: item.displayValueEn,
+              value: item.value,
+              code: item.code,
+              checkable: true,
+              spellcheck: item.spellcheck,
+            })
+          })
+          this.langMenu.setRecent({
+            count: Common.Utils.InternalSettings.get("app-settings-recent-langs-count") || 5,
+            offset: Common.Utils.InternalSettings.get("app-settings-recent-langs-offset") || 0,
+            key: "app-settings-recent-langs",
+            valueField: "value",
+          })
+          this.langMenu.resetItems(arr)
+          if (this.langMenu.items.length > 0) {
+            const index = _.findIndex(this.langMenu.items, { caption: saved })
+            index > -1 && this.langMenu.setChecked(index, true)
+            this.btnLanguage.setDisabled(false || this._state.no_paragraph)
+          }
+        },
+
+        setLanguage: function (info) {
+          if (this.langMenu.prevTip !== info.value && info.code !== undefined) {
+            this.btnLanguage.setCaption(info.displayValue)
+            this.langMenu.prevTip = info.value
+            const index = _.findIndex(this.langMenu.items, { caption: info.displayValue })
+            if (index > -1) {
+              this.langMenu.setChecked(index, true)
+            } else {
+              this.langMenu.saved = info.displayValue
+              this.langMenu.clearAll()
+            }
+          }
+        },
+
+        SetDisabled: function (disable) {
+          this.btnLanguage.setDisabled(
+            disable || this.langMenu.items.length < 1 || this._state.no_paragraph,
+          )
+        },
+
+        onApiFocusObject: function (selectedObjects) {
+          if (!this.mode || !this.mode.isEdit) return
+
+          this._state.no_paragraph = true
+          let i = -1
+          while (++i < selectedObjects.length) {
+            const type = selectedObjects[i].get_ObjectType()
+            if (
+              type === Asc.c_oAscTypeSelectElement.Paragraph ||
+              type === Asc.c_oAscTypeSelectElement.Shape ||
+              type === Asc.c_oAscTypeSelectElement.Chart ||
+              type === Asc.c_oAscTypeSelectElement.Table
+            ) {
+              this._state.no_paragraph = selectedObjects[i].get_ObjectValue().get_Locked()
+              if (this._state.no_paragraph) break // break if one of the objects is locked
+            }
+          }
+          this._state.no_paragraph = this._state.no_paragraph || this.langMenu.items.length < 1
+          if (this._state.no_paragraph !== this.btnLanguage.isDisabled())
+            this.btnLanguage.setDisabled(this._state.no_paragraph)
+        },
+
+        onApiCoAuthoringDisconnect: function () {
+          this.setMode({ isDisconnected: true })
+          this.SetDisabled(true)
+        },
+
+        pageIndexText: "Slide {0} of {1}",
+        goToPageText: "Go to Slide",
+        tipFitPage: "Fit to Slide",
+        tipFitWidth: "Fit to Width",
+        tipZoomIn: "Zoom In",
+        tipZoomOut: "Zoom Out",
+        tipZoomFactor: "Magnification",
+        txtPageNumInvalid: "Slide number invalid",
+        tipPreview: "Start Slideshow",
+        tipAccessRights: "Manage document access rights",
+        tipSetLang: "Set Text Language",
+        textShowBegin: "Show from Beginning",
+        textShowCurrent: "Show from Current slide",
+        textShowPresenterView: "Show presenter view",
+        textSlideMaster: "Slide master",
+      },
+      PE.Views.Statusbar || {},
+    ),
+  )
+})

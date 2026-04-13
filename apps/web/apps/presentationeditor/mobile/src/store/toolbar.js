@@ -1,62 +1,62 @@
-import {action, observable, makeObservable} from 'mobx';
+import { action, makeObservable, observable } from "mobx"
 
 export class storeToolbarSettings {
-    constructor() {
-        makeObservable(this, {
-            isCanUndo: observable,
-            setCanUndo: action,
-            isCanRedo: observable,
-            setCanRedo: action,
-            countPages: observable,
-            setCountPages: action,
-            disabledControls: observable,
-            setDisabledControls: action,
-            disabledEditControls: observable,
-            setDisabledEditControls: action,
-            disabledSettings: observable, 
-            setDisabledSettings: action
-        })
-    }
+  constructor() {
+    makeObservable(this, {
+      isCanUndo: observable,
+      setCanUndo: action,
+      isCanRedo: observable,
+      setCanRedo: action,
+      countPages: observable,
+      setCountPages: action,
+      disabledControls: observable,
+      setDisabledControls: action,
+      disabledEditControls: observable,
+      setDisabledEditControls: action,
+      disabledSettings: observable,
+      setDisabledSettings: action,
+    })
+  }
 
-    disabledControls = true;
+  disabledControls = true
 
-    setDisabledControls(value) {
-        this.disabledControls = value;
-    }
+  setDisabledControls(value) {
+    this.disabledControls = value
+  }
 
-    disabledEditControls = false;
+  disabledEditControls = false
 
-    setDisabledEditControls(value) {
-        this.disabledEditControls = value;
-    }
+  setDisabledEditControls(value) {
+    this.disabledEditControls = value
+  }
 
-    disabledSettings = false;
+  disabledSettings = false
 
-    setDisabledSettings(value) {
-        this.disabledSettings = value;
-    }
+  setDisabledSettings(value) {
+    this.disabledSettings = value
+  }
 
-    isCanUndo = false;
+  isCanUndo = false
 
-    setCanUndo(can) {
-        this.isCanUndo = can;
-    }
+  setCanUndo(can) {
+    this.isCanUndo = can
+  }
 
-    isCanRedo = false;
+  isCanRedo = false
 
-    setCanRedo(can) {
-        this.isCanRedo = can;
-    }
+  setCanRedo(can) {
+    this.isCanRedo = can
+  }
 
-    countPages = 0;
+  countPages = 0
 
-    setCountPages(count) {
-        this.countPages = count;
-    }
-        
-    isShowBack = false;
+  setCountPages(count) {
+    this.countPages = count
+  }
 
-    setShowBack = (value) => {
-        this.isShowBack = !!value;
-    };
+  isShowBack = false
+
+  setShowBack = (value) => {
+    this.isShowBack = !!value
+  }
 }

@@ -30,7 +30,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Collections = Common.Collections || {};
 
@@ -38,15 +38,14 @@ define([
     'underscore',
     'backbone',
     'common/main/lib/model/Comment'
-], function(_, Backbone){
-    'use strict';
+], (_, Backbone)=> {
 
     Common.Collections.Comments = Backbone.Collection.extend({
         model: Common.Models.Comment,
         groups: null,
 
         clearEditing: function () {
-            this.each(function(comment) {
+            this.each((comment) => {
                 comment.set('editText', false);
                 comment.set('editTextInPopover', false);
                 comment.set('showReply', false);
@@ -56,13 +55,13 @@ define([
         },
 
         getCommentsReplysCount: function(userid) {
-            var cnt = 0;
-            this.each(function(comment) {
-                if (comment.get('userid')==userid) cnt++;
-                var rpl = comment.get('replys');
+            let cnt = 0;
+            this.each((comment) => {
+                if (comment.get('userid')===userid) cnt++;
+                const rpl = comment.get('replys');
                 if (rpl && rpl.length>0) {
-                    rpl.forEach(function(reply) {
-                        if (reply.get('userid')==userid) cnt ++;
+                    rpl.forEach((reply) => {
+                        if (reply.get('userid')===userid) cnt ++;
                     });
                 }
             });

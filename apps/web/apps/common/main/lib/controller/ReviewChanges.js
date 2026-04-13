@@ -30,7 +30,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 Common.Controllers = Common.Controllers || {};
 
 define([
@@ -39,8 +39,7 @@ define([
     'common/main/lib/collection/ReviewChanges',
     'common/main/lib/view/ReviewChanges',
     'common/main/lib/view/ReviewPopover'
-], function () {
-    'use strict';
+], () => {
 
     Common.Controllers.ReviewChanges = Backbone.Controller.extend(_.extend({
         models : [],
@@ -95,8 +94,8 @@ define([
             this.collection     =   this.getApplication().getCollection('Common.Collections.ReviewChanges');
             this.userCollection =   this.getApplication().getCollection('Common.Collections.Users');
             this.viewmode = false;
-            var filter = Common.localStorage.getKeysFilter();
-            this.appPrefix = (filter && filter.length) ? filter.split(',')[0] : '';
+            const filter = Common.localStorage.getKeysFilter();
+            this.appPrefix = (filter?.length) ? filter.split(',')[0] : '';
 
             this._state = { posx: -1000, posy: -1000, popoverVisible: false, previewMode: false, compareSettings: null, wsLock: false, wsProps: [],
                             displayMode: Asc.c_oAscDisplayModeInReview.Edit,
@@ -131,7 +130,7 @@ define([
 
             if (data) {
                 this.currentUserId      =   data.config.user.id;
-                this.sdkViewName        =   data['sdkviewname'] || this.sdkViewName;
+                this.sdkViewName        =   data.sdkviewname || this.sdkViewName;
             }
             return this;
         },
@@ -202,27 +201,26 @@ define([
         },
 
         updatePreviewMode: function() {
-            var viewmode = this._state.disableEditing || this._state.docProtection.isReadOnly || this._state.docProtection.isFormsOnly || this._state.docProtection.isCommentsOnly;
+            const viewmode = this._state.disableEditing || this._state.docProtection.isReadOnly || this._state.docProtection.isFormsOnly || this._state.docProtection.isCommentsOnly;
 
             if (this.viewmode === viewmode) return;
             this.viewmode = viewmode;
             if (viewmode)
                 this.prevcanReview = this.appConfig.canReview;
             this.appConfig.canReview = (viewmode) ? false : this.prevcanReview;
-            var me = this;
-            this.popoverChanges && this.popoverChanges.each(function (model) {
-                model.set('hint', !me.appConfig.canReview);
+            this.popoverChanges?.each((model) => {
+                model.set('hint', !this.appConfig.canReview);
             });
         },
 
-        isSelectedChangesLocked: function(changes, isShow) {
+        isSelectedChangesLocked: (changes, isShow) => {
             if (!changes || changes.length<1) return true;
 
             if (isShow)
                 return changes[0].get('lock') || !changes[0].get('editable');
 
-            for (var i=0; i<changes.length; i++) {
-                var change = changes[i];
+            for (let i=0; i<changes.length; i++) {
+                const change = changes[i];
                 if (change.get('lock') || !change.get('editable'))
                     return true; // lock button if at least one change is locked
             }
@@ -230,8 +228,8 @@ define([
         },
 
         onApiShowChange: function (sdkchange, isShow) {
-            var btnlock = true,
-                changes;
+            let btnlock = true;
+            let changes;
             this._state.sdkchange = sdkchange;
             if (this.appConfig.canReview && !(this.appConfig.isReviewOnly || this._state.docProtection.isReviewOnly)) {
                 if (sdkchange && sdkchange.length>0) {
@@ -242,18 +240,18 @@ define([
                     // Common.Utils.lockControls(Common.enumLock.reviewChangelock, btnlock, {array: [this.view.btnAccept, this.view.btnReject]});
                     this.dlgChanges && Common.Utils.lockControls(Common.enumLock.reviewChangelock, btnlock, {array: [this.dlgChanges.btnAccept, this.dlgChanges.btnReject]});
                     this._state.lock = btnlock;
-                    Common.Utils.InternalSettings.set(this.appPrefix + "accept-reject-lock", btnlock);
+                    Common.Utils.InternalSettings.set(`${this.appPrefix}accept-reject-lock`, btnlock);
                 }
             }
 
             if (this.getPopover()) {
                 if (!this.appConfig.reviewHoverMode && (this._state.displayMode !== Asc.c_oAscDisplayModeInReview.Simple) && sdkchange && sdkchange.length>0 && isShow) { // show changes balloon only for current position, not selection
-                    var i = 0,
-                        posX = sdkchange[0].get_X(),
-                        posY = sdkchange[0].get_Y(),
-                        animate = ( Math.abs(this._state.posx-posX)>0.001 || Math.abs(this._state.posy-posY)>0.001) || (sdkchange.length !== this._state.changes_length),
-                        lock = (sdkchange[0].get_LockUserId()!==null),
-                        lockUser = this.getUserName(sdkchange[0].get_LockUserId());
+                    const i = 0;
+                    const posX = sdkchange[0].get_X();
+                    const posY = sdkchange[0].get_Y();
+                    const animate = ( Math.abs(this._state.posx-posX)>0.001 || Math.abs(this._state.posy-posY)>0.001) || (sdkchange.length !== this._state.changes_length);
+                    const lock = (sdkchange[0].get_LockUserId()!==null);
+                    const lockUser = this.getUserName(sdkchange[0].get_LockUserId());
 
                     this.getPopover().hideTips();
                     this.popoverChanges.reset(changes || this.readSDKChange(sdkchange));
@@ -280,11 +278,12 @@ define([
         },
 
         onApiUpdateChangePosition: function (posX, posY) {
-            var i, useAnimation = false,
-                change = null,
-                text = undefined,
-                saveTxtId = '',
-                saveTxtReplyId = '';
+            let i;
+            const useAnimation = false;
+            const change = null;
+            const text = undefined;
+            const saveTxtId = '';
+            const saveTxtReplyId = '';
 
             if (this.getPopover()) {
                 if (posY < 0 || this.getPopover().sdkBounds.outerHeight < posY) {
@@ -323,106 +322,108 @@ define([
         // helpers
 
         readSDKChange: function (data) {
-            var me = this, arr = [], arrIds = [],
-                cmm = Common.Utils.String.textComma + ' ';
-            _.each(data, function(item) {
-                var changetext = '', proptext = '',
-                    value = item.get_Value(),
-                    movetype = item.get_MoveType(),
-                    settings = false;
+            const arr = [];
+            const arrIds = [];
+            const cmm = `${Common.Utils.String.textComma} `;
+            _.each(data, (item) => {
+                let changetext = '';
+                let proptext = '';
+                const value = item.get_Value();
+                const movetype = item.get_MoveType();
+                const settings = false;
                 switch (item.get_Type()) {
                     case Asc.c_oAscRevisionsChangeType.TextAdd:
-                        changetext = (movetype==Asc.c_oAscRevisionsMove.NoMove) ? me.textInserted : me.textParaMoveTo;
-                        if (typeof value == 'object') {
-                            _.each(value, function(obj) {
+                        changetext = (movetype===Asc.c_oAscRevisionsMove.NoMove) ? this.textInserted : this.textParaMoveTo;
+                        if (typeof value === 'object') {
+                            _.each(value, (obj) => {
                                 if (typeof obj === 'string')
-                                    changetext += (' ' + Common.Utils.String.htmlEncode(obj));
+                                    changetext += (` ${Common.Utils.String.htmlEncode(obj)}`);
                                 else {
                                     switch (obj) {
                                         case 0:
-                                            changetext += (' &lt;' + me.textImage + '&gt;');
+                                            changetext += (` &lt;${this.textImage}&gt;`);
                                         break;
                                         case 1:
-                                            changetext += (' &lt;' + me.textShape + '&gt;');
+                                            changetext += (` &lt;${this.textShape}&gt;`);
                                         break;
                                         case 2:
-                                            changetext += (' &lt;' + me.textChart + '&gt;');
+                                            changetext += (` &lt;${this.textChart}&gt;`);
                                         break;
                                         case 3:
-                                            changetext += (' &lt;' + me.textEquation + '&gt;');
+                                            changetext += (` &lt;${this.textEquation}&gt;`);
                                         break;
                                     }
                                 }
                             })
                         } else if (typeof value === 'string') {
-                            changetext +=  (' ' + Common.Utils.String.htmlEncode(value));
+                            changetext +=  (` ${Common.Utils.String.htmlEncode(value)}`);
                         }
                     break;
                     case Asc.c_oAscRevisionsChangeType.TextRem:
-                        changetext = (movetype==Asc.c_oAscRevisionsMove.NoMove) ? me.textDeleted : (item.is_MovedDown() ? me.textParaMoveFromDown : me.textParaMoveFromUp);
-                        if (typeof value == 'object') {
-                            _.each(value, function(obj) {
+                        changetext = (movetype===Asc.c_oAscRevisionsMove.NoMove) ? this.textDeleted : (item.is_MovedDown() ? this.textParaMoveFromDown : this.textParaMoveFromUp);
+                        if (typeof value === 'object') {
+                            _.each(value, (obj) => {
                                 if (typeof obj === 'string')
-                                    changetext += (' ' + Common.Utils.String.htmlEncode(obj));
+                                    changetext += (` ${Common.Utils.String.htmlEncode(obj)}`);
                                 else {
                                     switch (obj) {
                                         case 0:
-                                            changetext += (' &lt;' + me.textImage + '&gt;');
+                                            changetext += (` &lt;${this.textImage}&gt;`);
                                         break;
                                         case 1:
-                                            changetext += (' &lt;' + me.textShape + '&gt;');
+                                            changetext += (` &lt;${this.textShape}&gt;`);
                                         break;
                                         case 2:
-                                            changetext += (' &lt;' + me.textChart + '&gt;');
+                                            changetext += (` &lt;${this.textChart}&gt;`);
                                         break;
                                         case 3:
-                                            changetext += (' &lt;' + me.textEquation + '&gt;');
+                                            changetext += (` &lt;${this.textEquation}&gt;`);
                                         break;
                                     }
                                 }
                             })
                         } else if (typeof value === 'string') {
-                            changetext +=  (' ' + Common.Utils.String.htmlEncode(value));
+                            changetext +=  (` ${Common.Utils.String.htmlEncode(value)}`);
                         }
                     break;
                     case Asc.c_oAscRevisionsChangeType.ParaAdd:
-                        changetext = me.textParaInserted;
+                        changetext = this.textParaInserted;
                     break;
                     case Asc.c_oAscRevisionsChangeType.ParaRem:
-                        changetext = me.textParaDeleted;
+                        changetext = this.textParaDeleted;
                     break;
                     case Asc.c_oAscRevisionsChangeType.TextPr:
-                        changetext = '<b>' + me.textFormatted;
+                        changetext = `<b>${this.textFormatted}`;
                         if (value.Get_Bold() !== undefined)
-                            proptext += ((value.Get_Bold() ? '' : me.textNot) + me.textBold + cmm);
+                            proptext += ((value.Get_Bold() ? '' : this.textNot) + this.textBold + cmm);
                         if (value.Get_Italic() !== undefined)
-                            proptext += ((value.Get_Italic() ? '' : me.textNot) + me.textItalic + cmm);
+                            proptext += ((value.Get_Italic() ? '' : this.textNot) + this.textItalic + cmm);
                         if (value.Get_Underline() !== undefined)
-                            proptext += ((value.Get_Underline() ? '' : me.textNot) + me.textUnderline + cmm);
+                            proptext += ((value.Get_Underline() ? '' : this.textNot) + this.textUnderline + cmm);
                         if (value.Get_Strikeout() !== undefined)
-                            proptext += ((value.Get_Strikeout() ? '' : me.textNot) + me.textStrikeout + cmm);
+                            proptext += ((value.Get_Strikeout() ? '' : this.textNot) + this.textStrikeout + cmm);
                         if (value.Get_DStrikeout() !== undefined)
-                            proptext += ((value.Get_DStrikeout() ? '' : me.textNot) + me.textDStrikeout + cmm);
+                            proptext += ((value.Get_DStrikeout() ? '' : this.textNot) + this.textDStrikeout + cmm);
                         if (value.Get_Caps() !== undefined)
-                            proptext += ((value.Get_Caps() ? '' : me.textNot) + me.textCaps + cmm);
+                            proptext += ((value.Get_Caps() ? '' : this.textNot) + this.textCaps + cmm);
                         if (value.Get_SmallCaps() !== undefined)
-                            proptext += ((value.Get_SmallCaps() ? '' : me.textNot) + me.textSmallCaps + cmm);
+                            proptext += ((value.Get_SmallCaps() ? '' : this.textNot) + this.textSmallCaps + cmm);
                         if (value.Get_VertAlign() !== undefined)
-                            proptext += (((value.Get_VertAlign()===Asc.vertalign_SuperScript) ? me.textSuperScript : ((value.Get_VertAlign()===Asc.vertalign_SubScript) ? me.textSubScript : me.textBaseline)) + cmm);
+                            proptext += (((value.Get_VertAlign()===Asc.vertalign_SuperScript) ? this.textSuperScript : ((value.Get_VertAlign()===Asc.vertalign_SubScript) ? this.textSubScript : this.textBaseline)) + cmm);
                         if (value.Get_Color() !== undefined)
-                            proptext += (me.textColor + cmm);
+                            proptext += (this.textColor + cmm);
                         if (value.Get_Highlight() !== undefined)
-                            proptext += (me.textHighlight + cmm);
+                            proptext += (this.textHighlight + cmm);
                         if (value.Get_Shd() !== undefined)
-                            proptext += (me.textShd + cmm);
+                            proptext += (this.textShd + cmm);
                         if (value.Get_FontFamily() !== undefined)
                             proptext += (value.Get_FontFamily() + cmm);
                         if (value.Get_FontSize() !== undefined)
                             proptext += (value.Get_FontSize() + cmm);
                         if (value.Get_Spacing() !== undefined)
-                            proptext += (me.textSpacing + ' ' + Common.Utils.Metric.fnRecalcFromMM(value.Get_Spacing()).toFixed(2) + ' ' + Common.Utils.Metric.getCurrentMetricName() + cmm);
+                            proptext += (`${this.textSpacing} ${Common.Utils.Metric.fnRecalcFromMM(value.Get_Spacing()).toFixed(2)} ${Common.Utils.Metric.getCurrentMetricName()}${cmm}`);
                         if (value.Get_Position() !== undefined)
-                            proptext += (me.textPosition + ' ' + Common.Utils.Metric.fnRecalcFromMM(value.Get_Position()).toFixed(2) + ' ' + Common.Utils.Metric.getCurrentMetricName() + cmm);
+                            proptext += (`${this.textPosition} ${Common.Utils.Metric.fnRecalcFromMM(value.Get_Position()).toFixed(2)} ${Common.Utils.Metric.getCurrentMetricName()}${cmm}`);
                         if (value.Get_Lang() !== undefined)
                             proptext += (Common.util.LanguageInfo.getLocalLanguageName(value.Get_Lang())[1] + cmm);
 
@@ -434,59 +435,59 @@ define([
                         changetext += proptext;
                     break;
                     case Asc.c_oAscRevisionsChangeType.ParaPr:
-                        changetext = '<b>' + me.textParaFormatted;
+                        changetext = `<b>${this.textParaFormatted}`;
                         if (value.Get_ContextualSpacing())
-                            proptext += ((value.Get_ContextualSpacing() ? me.textContextual : me.textNoContextual) + cmm);
+                            proptext += ((value.Get_ContextualSpacing() ? this.textContextual : this.textNoContextual) + cmm);
                         if (value.Get_IndLeft() !== undefined)
-                            proptext += (me.textIndentLeft + ' ' + Common.Utils.Metric.fnRecalcFromMM(value.Get_IndLeft()).toFixed(2) + ' ' + Common.Utils.Metric.getCurrentMetricName() + cmm);
+                            proptext += (`${this.textIndentLeft} ${Common.Utils.Metric.fnRecalcFromMM(value.Get_IndLeft()).toFixed(2)} ${Common.Utils.Metric.getCurrentMetricName()}${cmm}`);
                         if (value.Get_IndRight() !== undefined)
-                            proptext += (me.textIndentRight + ' ' + Common.Utils.Metric.fnRecalcFromMM(value.Get_IndRight()).toFixed(2) + ' ' + Common.Utils.Metric.getCurrentMetricName() + cmm);
+                            proptext += (`${this.textIndentRight} ${Common.Utils.Metric.fnRecalcFromMM(value.Get_IndRight()).toFixed(2)} ${Common.Utils.Metric.getCurrentMetricName()}${cmm}`);
                         if (value.Get_IndFirstLine() !== undefined)
-                            proptext += (me.textFirstLine + ' ' + Common.Utils.Metric.fnRecalcFromMM(value.Get_IndFirstLine()).toFixed(2) + ' ' + Common.Utils.Metric.getCurrentMetricName() + cmm);
+                            proptext += (`${this.textFirstLine} ${Common.Utils.Metric.fnRecalcFromMM(value.Get_IndFirstLine()).toFixed(2)} ${Common.Utils.Metric.getCurrentMetricName()}${cmm}`);
                         if (value.Get_Jc() !== undefined) {
                             switch (value.Get_Jc()) {
                                 case 0:
-                                    proptext += (me.textRight + cmm);
+                                    proptext += (this.textRight + cmm);
                                     break;
                                 case 1:
-                                    proptext += (me.textLeft + cmm);
+                                    proptext += (this.textLeft + cmm);
                                     break;
                                 case 2:
-                                    proptext += (me.textCenter + cmm);
+                                    proptext += (this.textCenter + cmm);
                                     break;
                                 case 3:
-                                    proptext += (me.textJustify + cmm);
+                                    proptext += (this.textJustify + cmm);
                                     break;
 
                             }
                         }
                         if (value.Get_KeepLines() !== undefined)
-                            proptext += ((value.Get_KeepLines() ? me.textKeepLines : me.textNoKeepLines) + cmm);
+                            proptext += ((value.Get_KeepLines() ? this.textKeepLines : this.textNoKeepLines) + cmm);
                         if (value.Get_KeepNext())
-                            proptext += ((value.Get_KeepNext() ? me.textKeepNext : me.textNoKeepNext) + cmm);
+                            proptext += ((value.Get_KeepNext() ? this.textKeepNext : this.textNoKeepNext) + cmm);
                         if (value.Get_PageBreakBefore())
-                            proptext += ((value.Get_PageBreakBefore() ? me.textBreakBefore : me.textNoBreakBefore) + cmm);
+                            proptext += ((value.Get_PageBreakBefore() ? this.textBreakBefore : this.textNoBreakBefore) + cmm);
                         if (value.Get_SpacingLineRule() !== undefined && value.Get_SpacingLine() !== undefined) {
-                            proptext += me.textLineSpacing;
-                            proptext += (((value.Get_SpacingLineRule() == c_paragraphLinerule.LINERULE_LEAST) ? me.textAtLeast : ((value.Get_SpacingLineRule() == c_paragraphLinerule.LINERULE_AUTO) ? me.textMultiple : me.textExact)) + ' ');
-                            proptext += (((value.Get_SpacingLineRule()==c_paragraphLinerule.LINERULE_AUTO) ? value.Get_SpacingLine() : Common.Utils.Metric.fnRecalcFromMM(value.Get_SpacingLine()).toFixed(2) + ' ' + Common.Utils.Metric.getCurrentMetricName()) + cmm);
+                            proptext += this.textLineSpacing;
+                            proptext += (`${(value.Get_SpacingLineRule() === c_paragraphLinerule.LINERULE_LEAST) ? this.textAtLeast : ((value.Get_SpacingLineRule() === c_paragraphLinerule.LINERULE_AUTO) ? this.textMultiple : this.textExact)} `);
+                            proptext += (((value.Get_SpacingLineRule()===c_paragraphLinerule.LINERULE_AUTO) ? value.Get_SpacingLine() : `${Common.Utils.Metric.fnRecalcFromMM(value.Get_SpacingLine()).toFixed(2)} ${Common.Utils.Metric.getCurrentMetricName()}`) + cmm);
                         }
                         if (value.Get_SpacingBeforeAutoSpacing())
-                            proptext += (me.textSpacingBefore + ' ' + me.textAuto +cmm);
+                            proptext += (`${this.textSpacingBefore} ${this.textAuto}${cmm}`);
                         else if (value.Get_SpacingBefore() !== undefined)
-                            proptext += (me.textSpacingBefore + ' ' + Common.Utils.Metric.fnRecalcFromMM(value.Get_SpacingBefore()).toFixed(2) + ' ' + Common.Utils.Metric.getCurrentMetricName() + cmm);
+                            proptext += (`${this.textSpacingBefore} ${Common.Utils.Metric.fnRecalcFromMM(value.Get_SpacingBefore()).toFixed(2)} ${Common.Utils.Metric.getCurrentMetricName()}${cmm}`);
                         if (value.Get_SpacingAfterAutoSpacing())
-                            proptext += (me.textSpacingAfter + ' ' + me.textAuto +cmm);
+                            proptext += (`${this.textSpacingAfter} ${this.textAuto}${cmm}`);
                         else if (value.Get_SpacingAfter() !== undefined)
-                            proptext += (me.textSpacingAfter + ' ' + Common.Utils.Metric.fnRecalcFromMM(value.Get_SpacingAfter()).toFixed(2) + ' ' + Common.Utils.Metric.getCurrentMetricName() + cmm);
+                            proptext += (`${this.textSpacingAfter} ${Common.Utils.Metric.fnRecalcFromMM(value.Get_SpacingAfter()).toFixed(2)} ${Common.Utils.Metric.getCurrentMetricName()}${cmm}`);
                         if (value.Get_WidowControl())
-                            proptext += ((value.Get_WidowControl() ? me.textWidow : me.textNoWidow) + cmm);
+                            proptext += ((value.Get_WidowControl() ? this.textWidow : this.textNoWidow) + cmm);
                         if (value.Get_Tabs() !== undefined)
-                            proptext += (me.textTabs + cmm);
+                            proptext += (this.textTabs + cmm);
                         if (value.Get_NumPr() !== undefined)
-                            proptext += (me.textNum + cmm);
+                            proptext += (this.textNum + cmm);
                         if (value.Get_PStyle() !== undefined) {
-                            var style = me.api.asc_GetStyleNameById(value.Get_PStyle());
+                            const style = this.api.asc_GetStyleNameById(value.Get_PStyle());
                             if (!_.isEmpty(style)) proptext += (style + cmm);
                         }
 
@@ -498,38 +499,38 @@ define([
                         changetext += proptext;
                     break;
                     case Asc.c_oAscRevisionsChangeType.TablePr:
-                        changetext = me.textTableChanged;
+                        changetext = this.textTableChanged;
                     break;
                     case Asc.c_oAscRevisionsChangeType.RowsAdd:
-                        changetext = me.textTableRowsAdd;
+                        changetext = this.textTableRowsAdd;
                     break;
                     case Asc.c_oAscRevisionsChangeType.RowsRem:
-                        changetext = me.textTableRowsDel;
+                        changetext = this.textTableRowsDel;
                     break;
                 }
-                var date = (item.get_DateTime() == '') ? new Date() : new Date(item.get_DateTime()),
-                    user = me.userCollection.findOriginalUser(item.get_UserId()),
-                    isProtectedReview = me._state.docProtection.isReviewOnly,
-                    avatar = Common.UI.ExternalUsers.getImage(item.get_UserId()),
-                    change = new Common.Models.ReviewChange({
+                const date = (item.get_DateTime() === '') ? new Date() : new Date(item.get_DateTime());
+                const user = this.userCollection.findOriginalUser(item.get_UserId());
+                const isProtectedReview = this._state.docProtection.isReviewOnly;
+                const avatar = Common.UI.ExternalUsers.getImage(item.get_UserId());
+                const change = new Common.Models.ReviewChange({
                         uid         : Common.UI.getId(),
                         userid      : item.get_UserId(),
                         username    : item.get_UserName(),
                         usercolor   : (user) ? user.get('color') : Common.UI.ExternalUsers.getColor(item.get_UserId() || item.get_UserName()),
                         initials    : Common.Utils.getUserInitials(AscCommon.UserInfoParser.getParsedName(item.get_UserName())),
                         avatar      : avatar,
-                        date        : me.dateToLocaleTimeString(date),
+                        date        : this.dateToLocaleTimeString(date),
                         changetext  : changetext,
                         id          : Common.UI.getId(),
                         lock        : (item.get_LockUserId()!==null),
-                        lockuser    : me.getUserName(item.get_LockUserId()),
+                        lockuser    : this.getUserName(item.get_LockUserId()),
                         type        : item.get_Type(),
                         changedata  : item,
-                        scope       : me.view,
-                        hint        : !me.appConfig.canReview,
-                        docProtection: me._state.docProtection,
-                        goto        : (item.get_MoveType() == Asc.c_oAscRevisionsMove.MoveTo || item.get_MoveType() == Asc.c_oAscRevisionsMove.MoveFrom),
-                        editable    : (me.appConfig.isReviewOnly || isProtectedReview) && (item.get_UserId() == me.currentUserId) || !(me.appConfig.isReviewOnly || isProtectedReview) && (!me.appConfig.canUseReviewPermissions || AscCommon.UserInfoParser.canEditReview(item.get_UserName()))
+                        scope       : this.view,
+                        hint        : !this.appConfig.canReview,
+                        docProtection: this._state.docProtection,
+                        goto        : (item.get_MoveType() === Asc.c_oAscRevisionsMove.MoveTo || item.get_MoveType() === Asc.c_oAscRevisionsMove.MoveFrom),
+                        editable    : (this.appConfig.isReviewOnly || isProtectedReview) && (item.get_UserId() === this.currentUserId) || !(this.appConfig.isReviewOnly || isProtectedReview) && (!this.appConfig.canUseReviewPermissions || AscCommon.UserInfoParser.canEditReview(item.get_UserName()))
                     });
 
                 arr.push(change);
@@ -541,7 +542,7 @@ define([
 
         getUserName: function(id){
             if (this.userCollection && id!==null){
-                var rec = this.userCollection.findUser(id);
+                const rec = this.userCollection.findUser(id);
                 if (rec) return AscCommon.UserInfoParser.getParsedName(rec.get('username'));
             }
             return '';
@@ -549,22 +550,22 @@ define([
 
         dateToLocaleTimeString: function (date) {
             function format(date) {
-                var strTime,
-                    hours = date.getHours(),
-                    minutes = date.getMinutes(),
-                    ampm = hours >= 12 ? 'pm' : 'am';
+                let strTime;
+                let hours = date.getHours();
+                let minutes = date.getMinutes();
+                const ampm = hours >= 12 ? 'pm' : 'am';
 
                 hours = hours % 12;
                 hours = hours ? hours : 12; // the hour '0' should be '12'
-                minutes = minutes < 10 ? '0'+minutes : minutes;
-                strTime = hours + ':' + minutes + ' ' + ampm;
+                minutes = minutes < 10 ? `0${minutes}` : minutes;
+                strTime = `${hours}:${minutes} ${ampm}`;
 
                 return strTime;
             }
 
-            var lang = (this.appConfig ? this.appConfig.lang || 'en' : 'en').replace('_', '-').toLowerCase();
+            let lang = (this.appConfig ? this.appConfig.lang || 'en' : 'en').replace('_', '-').toLowerCase();
             try {
-                if ( lang == 'ar-SA'.toLowerCase() ) lang = lang + '-u-nu-latn-ca-gregory';
+                if ( lang === 'ar-SA'.toLowerCase() ) lang = `${lang}-u-nu-latn-ca-gregory`;
                 return date.toLocaleString(lang, {dateStyle: 'short', timeStyle: 'short'});
             } catch (e) {
                 lang = 'en';
@@ -572,7 +573,7 @@ define([
             }
 
             // MM/dd/yyyy hh:mm AM
-            return (date.getMonth() + 1) + '/' + (date.getDate()) + '/' + date.getFullYear() + ' ' + format(date);
+            return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${format(date)}`;
         },
 
         onBtnPreviewClick: function(btn, opts){
@@ -633,8 +634,8 @@ define([
                 this.view.turnChanges(true);
             } else
             if ( this.appConfig.canReview ) {
-                state = (state=='off') ? false : state; // support of prev. version (on/off)
-                if (!!global) {
+                state = (state==='off') ? false : state; // support of prev. version (on/off)
+                if (global) {
                     this.api.asc_SetLocalTrackRevisions(null);
                     this.api.asc_SetGlobalTrackRevisions(!!state);
                 } else
@@ -647,12 +648,12 @@ define([
                 this.view.turnChanges(true);
             } else
             if ( this.appConfig.canReview ) {
-                var global = (localFlag===null),
-                    state = global ? globalFlag : localFlag;
-                Common.Utils.InternalSettings.set(this.appPrefix + "track-changes", (state ? 0 : 1) + (global ? 2 : 0));
+                const global = (localFlag===null);
+                const state = global ? globalFlag : localFlag;
+                Common.Utils.InternalSettings.set(`${this.appPrefix}track-changes`, (state ? 0 : 1) + (global ? 2 : 0));
                 this.view.turnChanges(state, global);
                 if (userId && this.userCollection) {
-                    var rec = this.userCollection.findOriginalUser(userId);
+                    const rec = this.userCollection.findOriginalUser(userId);
                     rec && Common.NotificationCenter.trigger('showmessage', {msg: Common.Utils.String.format(globalFlag ? this.textOnGlobal : this.textOffGlobal, AscCommon.UserInfoParser.getParsedName(rec.get('username')))},
                                                                             {timeout: 5000, hideCloseTip: true});
                 }
@@ -660,57 +661,56 @@ define([
         },
 
         onTurnSpelling: function (state, suspend) {
-            state = (state == 'on');
-            this.view && this.view.turnSpelling(state);
+            state = (state === 'on');
+            this.view?.turnSpelling(state);
 
             if (Common.UI.FeaturesManager.canChange('spellcheck') && !suspend) {
-                Common.localStorage.setItem(this.appPrefix + "settings-spellcheck", state ? 1 : 0);
+                Common.localStorage.setItem(`${this.appPrefix}settings-spellcheck`, state ? 1 : 0);
                 this.api.asc_setSpellCheck(state);
-                Common.Utils.InternalSettings.set(this.appPrefix + "settings-spellcheck", state);
+                Common.Utils.InternalSettings.set(`${this.appPrefix}settings-spellcheck`, state);
             }
         },
 
         onReviewViewClick: function(menu, item, e) {
             this.turnDisplayMode(item.value);
             if (!this.appConfig.isEdit && !this.appConfig.isRestrictedEdit)
-                Common.localStorage.setItem(this.appPrefix + "review-mode", item.value); // for viewer
-            else if (item.value=='markup' || item.value=='simple') {
-                Common.localStorage.setItem(this.appPrefix + "review-mode-editor", item.value); // for editor save only markup modes
-                Common.Utils.InternalSettings.set(this.appPrefix + "review-mode-editor", item.value);
+                Common.localStorage.setItem(`${this.appPrefix}review-mode`, item.value); // for viewer
+            else if (item.value==='markup' || item.value==='simple') {
+                Common.localStorage.setItem(`${this.appPrefix}review-mode-editor`, item.value); // for editor save only markup modes
+                Common.Utils.InternalSettings.set(`${this.appPrefix}review-mode-editor`, item.value);
             }
             Common.NotificationCenter.trigger('edit:complete', this.view);
         },
 
         onCompareClick: function(item) {
             if (this.api) {
-                var me = this;
                 if (!this._state.compareSettings) {
                     this._state.compareSettings = new AscCommonWord.ComparisonOptions();
                     this._state.compareSettings.putWords(!Common.localStorage.getBool("de-compare-char"));
                 }
                 if (item === 'file') {
                     if (this.api)
-                        setTimeout(function() {me.api.asc_CompareDocumentFile(me._state.compareSettings);}, 1);
+                        setTimeout(() => {this.api.asc_CompareDocumentFile(this._state.compareSettings);}, 1);
                     Common.NotificationCenter.trigger('edit:complete', this.view);
                 } else if (item === 'url') {
                     (new Common.Views.ImageFromUrlDialog({
-                        label: me.textUrl,
-                        handler: function(result, value) {
-                            if (result == 'ok') {
-                                if (me.api) {
-                                    var checkUrl = value.replace(/ /g, '');
+                        label: this.textUrl,
+                        handler: (result, value) => {
+                            if (result === 'ok') {
+                                if (this.api) {
+                                    const checkUrl = value.replace(/ /g, '');
                                     if (!_.isEmpty(checkUrl)) {
-                                        me.api.asc_CompareDocumentUrl(checkUrl, me._state.compareSettings);
+                                        this.api.asc_CompareDocumentUrl(checkUrl, this._state.compareSettings);
                                     }
                                 }
-                                Common.NotificationCenter.trigger('edit:complete', me.view);
+                                Common.NotificationCenter.trigger('edit:complete', this.view);
                             }
                         }
                     })).show();
                 } else if (item === 'storage') {
                     Common.NotificationCenter.trigger('storage:document-load', 'compare');
                 } else if (item === 'settings') {
-                    me.onCompareSettings();
+                    this.onCompareSettings();
                 }
             }
             Common.NotificationCenter.trigger('edit:complete', this.view);
@@ -718,54 +718,52 @@ define([
 
         onCombineClick: function(item) {
             if(this.api) {
-                var me = this;
                 if (!this._state.compareSettings) {
                     this._state.compareSettings = new AscCommonWord.ComparisonOptions();
                     this._state.compareSettings.putWords(!Common.localStorage.getBool("de-compare-char"));
                 }
                 if (item === 'file') {
-                    setTimeout(function() {me.api.asc_MergeDocumentFile(me._state.compareSettings);}, 1);
+                    setTimeout(() => {this.api.asc_MergeDocumentFile(this._state.compareSettings);}, 1);
                     Common.NotificationCenter.trigger('edit:complete', this.view);
                 } else if (item === 'url') {
                     (new Common.Views.ImageFromUrlDialog({
-                        label: me.textUrl,
-                        handler: function(result, value) {
-                            if (result == 'ok') {
-                                if (me.api) {
-                                    var checkUrl = value.replace(/ /g, '');
+                        label: this.textUrl,
+                        handler: (result, value) => {
+                            if (result === 'ok') {
+                                if (this.api) {
+                                    const checkUrl = value.replace(/ /g, '');
                                     if (!_.isEmpty(checkUrl)) {
-                                        me.api.asc_MergeDocumentUrl(checkUrl, me._state.compareSettings);
+                                        this.api.asc_MergeDocumentUrl(checkUrl, this._state.compareSettings);
                                     }
                                 }
-                                Common.NotificationCenter.trigger('edit:complete', me.view);
+                                Common.NotificationCenter.trigger('edit:complete', this.view);
                             }
                         }
                     })).show();
                 } else if (item === 'storage') {
                     Common.NotificationCenter.trigger('storage:document-load', 'combine');
                 } else if (item === 'settings') {
-                    me.onCompareSettings();
+                    this.onCompareSettings();
                 }
             }
             Common.NotificationCenter.trigger('edit:complete', this.view);
         },
 
         onCompareSettings: function() {
-            var me = this,
-                value = me._state.compareSettings ? me._state.compareSettings.getWords() : true;
+            const value = this._state.compareSettings ? this._state.compareSettings.getWords() : true;
             (new Common.Views.OptionsDialog({
-                title: me.textTitleComparison,
+                title: this.textTitleComparison,
                 items: [
-                    {caption: me.textChar, value: false, checked: (value===false)},
-                    {caption: me.textWord, value: true, checked: (value!==false)}
+                    {caption: this.textChar, value: false, checked: (value===false)},
+                    {caption: this.textWord, value: true, checked: (value!==false)}
                 ],
-                label: me.textShow,
-                handler: function (dlg, result) {
-                    if (result=='ok') {
-                        me._state.compareSettings = new AscCommonWord.ComparisonOptions();
-                        me._state.compareSettings.putWords(dlg.getSettings());
+                label: this.textShow,
+                handler: (dlg, result) => {
+                    if (result==='ok') {
+                        this._state.compareSettings = new AscCommonWord.ComparisonOptions();
+                        this._state.compareSettings.putWords(dlg.getSettings());
                     }
-                    Common.NotificationCenter.trigger('edit:complete', me.toolbar);
+                    Common.NotificationCenter.trigger('edit:complete', this.toolbar);
                 }
             })).show();
         },
@@ -776,15 +774,14 @@ define([
         },
 
         onAcceptChangesBeforeCompare: function(callback) {
-            var me = this;
             Common.UI.warning({
                 width: 550,
                 msg: this.textAcceptBeforeCompare,
                 buttons: ['yes', 'no'],
                 primary: 'yes',
                 callback: function(result) {
-                    _.defer(function() {
-                        if (callback) callback(result=='yes');
+                    _.defer(() => {
+                        if (callback) callback(result==='yes');
                     });
                     Common.NotificationCenter.trigger('edit:complete', this.view);
                 }
@@ -792,7 +789,6 @@ define([
         },
 
         openDocumentFromStorage: function(type) {
-            var me = this;
             if (this.appConfig.canRequestSelectDocument) {
                 Common.Gateway.requestSelectDocument(type);
             } else if (this.appConfig.canRequestCompareFile) {
@@ -801,19 +797,19 @@ define([
             } else {
                 (new Common.Views.SelectFileDlg({
                     fileChoiceUrl: this.appConfig.fileChoiceUrl.replace("{fileExt}", "").replace("{documentType}", "DocumentsOnly")
-                })).on('selectfile', function(obj, file){
+                })).on('selectfile', (obj, file)=> {
                     file && (file.c = type);
-                    me.setRequestedDocument(file);
+                    this.setRequestedDocument(file);
                 }).show();
             }
         },
 
-        setRequestedDocument: function(data) { // gateway
+        setRequestedDocument: (data) => { // gateway
             Common.NotificationCenter.trigger('storage:document-insert', data);
         },
 
         insertDocumentFromStorage: function(data) {
-            if (data && data.url && (data.c==='compare' || data.c==='combine' || data.c==='insert-text')) {
+            if (data?.url && (data.c==='compare' || data.c==='combine' || data.c==='insert-text')) {
                 if (!this._state.compareSettings) {
                     this._state.compareSettings = new AscCommonWord.ComparisonOptions();
                     this._state.compareSettings.putWords(!Common.localStorage.getBool("de-compare-char"));
@@ -826,7 +822,7 @@ define([
 
         turnDisplayMode: function(mode) {
             if (this.api) {
-                var type = Asc.c_oAscDisplayModeInReview.Edit;
+                let type = Asc.c_oAscDisplayModeInReview.Edit;
                 switch (mode) {
                     case 'final':
                         type = Asc.c_oAscDisplayModeInReview.Final;
@@ -841,14 +837,14 @@ define([
                 this._state.displayMode = type;
                 this.api.asc_SetDisplayModeInReview(type);
             }
-            this.disableEditing(mode == 'final' || mode == 'original');
-            this._state.previewMode = (mode == 'final' || mode == 'original');
+            this.disableEditing(mode === 'final' || mode === 'original');
+            this._state.previewMode = (mode === 'final' || mode === 'original');
         },
 
         onChangeDisplayModeInReview: function(type) {
             this.disableEditing(type===Asc.c_oAscDisplayModeInReview.Final || type===Asc.c_oAscDisplayModeInReview.Original);
             this._state.displayMode = type;
-            var mode = 'markup';
+            let mode = 'markup';
             switch (type) {
                 case Asc.c_oAscDisplayModeInReview.Final:
                     mode = 'final';
@@ -860,7 +856,7 @@ define([
                     mode = 'simple';
                     break;
             }
-            this.view && this.view.turnDisplayMode(mode);
+            this.view?.turnDisplayMode(mode);
             this._state.previewMode = (type===Asc.c_oAscDisplayModeInReview.Final || type===Asc.c_oAscDisplayModeInReview.Original);
         },
 
@@ -869,35 +865,35 @@ define([
         },
 
         onCoAuthMode: function(menu, item, e) {
-            Common.localStorage.setItem(this.appPrefix + "settings-coauthmode", item.value);
-            Common.Utils.InternalSettings.set(this.appPrefix + "settings-coauthmode", item.value);
+            Common.localStorage.setItem(`${this.appPrefix}settings-coauthmode`, item.value);
+            Common.Utils.InternalSettings.set(`${this.appPrefix}settings-coauthmode`, item.value);
 
             if (this.api) {
-                this.api.asc_SetFastCollaborative(item.value==1);
+                this.api.asc_SetFastCollaborative(item.value===1);
 
                 if (this.api.SetCollaborativeMarksShowType) {
-                    var value = Common.localStorage.getItem(item.value ? this.appPrefix + "settings-showchanges-fast" : this.appPrefix + "settings-showchanges-strict");
+                    const value = Common.localStorage.getItem(item.value ? `${this.appPrefix}settings-showchanges-fast` : `${this.appPrefix}settings-showchanges-strict`);
                     if (value !== null)
-                        this.api.SetCollaborativeMarksShowType(value == 'all' ? Asc.c_oAscCollaborativeMarksShowType.All :
-                            value == 'none' ? Asc.c_oAscCollaborativeMarksShowType.None : Asc.c_oAscCollaborativeMarksShowType.LastChanges);
+                        this.api.SetCollaborativeMarksShowType(value === 'all' ? Asc.c_oAscCollaborativeMarksShowType.All :
+                            value === 'none' ? Asc.c_oAscCollaborativeMarksShowType.None : Asc.c_oAscCollaborativeMarksShowType.LastChanges);
                     else
                         this.api.SetCollaborativeMarksShowType(item.value ? Asc.c_oAscCollaborativeMarksShowType.None : Asc.c_oAscCollaborativeMarksShowType.LastChanges);
                 }
 
-                value = Common.localStorage.getItem(this.appPrefix + "settings-autosave");
+                value = Common.localStorage.getItem(`${this.appPrefix}settings-autosave`);
                 if (value===null && this.appConfig.customization && this.appConfig.customization.autosave===false)
                     value = 0;
-                value = (!item.value && value!==null) ? parseInt(value) : 1;
+                value = (!item.value && value!==null) ? Number.parseInt(value) : 1;
 
-                Common.localStorage.setItem(this.appPrefix + "settings-autosave", value);
-                Common.Utils.InternalSettings.set(this.appPrefix + "settings-autosave", value);
+                Common.localStorage.setItem(`${this.appPrefix}settings-autosave`, value);
+                Common.Utils.InternalSettings.set(`${this.appPrefix}settings-autosave`, value);
                 this.api.asc_setAutoSaveGap(value);
             }
             Common.NotificationCenter.trigger('edit:complete', this.view);
             this.view.fireEvent('settings:apply', [this]);
         },
 
-        disableEditing: function(disable) {
+        disableEditing: (disable) => {
             Common.NotificationCenter.trigger('editing:disable', disable, {
                 viewMode: false,
                 reviewMode: true,
@@ -934,10 +930,9 @@ define([
         },
 
         onAppReady: function (config) {
-            var me = this;
-            (new Promise(function (resolve) {
+            (new Promise((resolve) => {
                 resolve();
-            })).then(function () {
+            })).then(() => {
                 if ( config.canReview ) {
                     // function _setReviewStatus(state, global) {
                     //     me.view.turnChanges(state, global);
@@ -945,89 +940,89 @@ define([
                     //     Common.Utils.InternalSettings.set(me.appPrefix + "track-changes", (state ? 0 : 1) + (global ? 2 : 0));
                     // };
 
-                    var trackChanges = me.appConfig.customization && me.appConfig.customization.review ? me.appConfig.customization.review.trackChanges : undefined;
-                    (trackChanges===undefined) && (trackChanges = me.appConfig.customization ? me.appConfig.customization.trackChanges : undefined);
+                    let trackChanges = this.appConfig.customization?.review ? this.appConfig.customization.review.trackChanges : undefined;
+                    (trackChanges===undefined) && (trackChanges = this.appConfig.customization ? this.appConfig.customization.trackChanges : undefined);
 
                     if (config.isReviewOnly || trackChanges!==undefined)
-                        me.api.asc_SetLocalTrackRevisions(config.isReviewOnly || trackChanges===true);
+                        this.api.asc_SetLocalTrackRevisions(config.isReviewOnly || trackChanges===true);
                     else
-                        me.onApiTrackRevisionsChange(me.api.asc_GetLocalTrackRevisions(), me.api.asc_GetGlobalTrackRevisions());
-                    me.api.asc_HaveRevisionsChanges() && me.view.markChanges(true);
+                        this.onApiTrackRevisionsChange(this.api.asc_GetLocalTrackRevisions(), this.api.asc_GetGlobalTrackRevisions());
+                    this.api.asc_HaveRevisionsChanges() && this.view.markChanges(true);
 
-                    var val = Common.localStorage.getItem(me.appPrefix + "review-mode-editor");
+                    let val = Common.localStorage.getItem(`${this.appPrefix}review-mode-editor`);
                     if (val===null) {
-                        val = me.appConfig.customization && me.appConfig.customization.review ? me.appConfig.customization.review.reviewDisplay : undefined;
-                        !val && (val = me.appConfig.customization ? me.appConfig.customization.reviewDisplay : undefined);
+                        val = this.appConfig.customization?.review ? this.appConfig.customization.review.reviewDisplay : undefined;
+                        !val && (val = this.appConfig.customization ? this.appConfig.customization.reviewDisplay : undefined);
                         val = /^(original|final|markup|simple)$/i.test(val) ? val.toLocaleLowerCase() : 'markup';
                     }
-                    Common.Utils.InternalSettings.set(me.appPrefix + "review-mode-editor", val);
-                    me.turnDisplayMode(val); // load display mode for all modes (viewer or editor)
-                    me.view.turnDisplayMode(val);
+                    Common.Utils.InternalSettings.set(`${this.appPrefix}review-mode-editor`, val);
+                    this.turnDisplayMode(val); // load display mode for all modes (viewer or editor)
+                    this.view.turnDisplayMode(val);
 
-                    if ( typeof (me.appConfig.customization) == 'object' && (me.appConfig.customization.review && me.appConfig.customization.review.showReviewChanges==true ||
-                        (!me.appConfig.customization.review || me.appConfig.customization.review.showReviewChanges===undefined) && me.appConfig.customization.showReviewChanges==true) ) {
-                        me.dlgChanges = (new Common.Views.ReviewChangesDialog({
-                            popoverChanges  : me.popoverChanges,
-                            mode            : me.appConfig,
-                            docProtection   : me._state.docProtection
+                    if ( typeof (this.appConfig.customization) === 'object' && (this.appConfig.customization.review && this.appConfig.customization.review.showReviewChanges===true ||
+                        (!this.appConfig.customization.review || this.appConfig.customization.review.showReviewChanges===undefined) && this.appConfig.customization.showReviewChanges===true) ) {
+                        this.dlgChanges = (new Common.Views.ReviewChangesDialog({
+                            popoverChanges  : this.popoverChanges,
+                            mode            : this.appConfig,
+                            docProtection   : this._state.docProtection
                         }));
-                        var sdk = $('#editor_sdk'),
-                            offset = Common.Utils.getOffset(sdk);
-                        me.dlgChanges.show(Math.max(10, offset.left + sdk.width() - 300), Math.max(10, offset.top + sdk.height() - 150));
+                        const sdk = $('#editor_sdk');
+                        const offset = Common.Utils.getOffset(sdk);
+                        this.dlgChanges.show(Math.max(10, offset.left + sdk.width() - 300), Math.max(10, offset.top + sdk.height() - 150));
                     }
                 } else if (config.canViewReview) {
-                    config.canViewReview = (config.isEdit || me.api.asc_HaveRevisionsChanges(true)); // check revisions from all users
+                    config.canViewReview = (config.isEdit || this.api.asc_HaveRevisionsChanges(true)); // check revisions from all users
                     if (config.canViewReview) {
-                        var val = Common.localStorage.getItem(me.appPrefix + (config.isEdit || config.isRestrictedEdit ? "review-mode-editor" : "review-mode"));
+                        let val = Common.localStorage.getItem(this.appPrefix + (config.isEdit || config.isRestrictedEdit ? "review-mode-editor" : "review-mode"));
                         if (val===null) {
-                            val = me.appConfig.customization && me.appConfig.customization.review ? me.appConfig.customization.review.reviewDisplay : undefined;
-                            !val && (val = me.appConfig.customization ? me.appConfig.customization.reviewDisplay : undefined);
+                            val = this.appConfig.customization?.review ? this.appConfig.customization.review.reviewDisplay : undefined;
+                            !val && (val = this.appConfig.customization ? this.appConfig.customization.reviewDisplay : undefined);
                             val = /^(original|final|markup|simple)$/i.test(val) ? val.toLocaleLowerCase() : (config.isEdit || config.isRestrictedEdit ? 'markup' : 'original');
                         }
-                        me.turnDisplayMode(val);
-                        me.view.turnDisplayMode(val);
+                        this.turnDisplayMode(val);
+                        this.view.turnDisplayMode(val);
                     }
                 }
 
-                if (me.view && me.view.btnChat) {
-                    me.getApplication().getController('LeftMenu').leftMenu.btnChat.on('toggle', function(btn, state){
-                        if (state !== me.view.btnChat.pressed)
-                            me.view.turnChat(state);
+                if (this.view?.btnChat) {
+                    this.getApplication().getController('LeftMenu').leftMenu.btnChat.on('toggle', (btn, state)=> {
+                        if (state !== this.view.btnChat.pressed)
+                            this.view.turnChat(state);
                     });
                 }
-                me.onChangeProtectSheet();
-                if (me.view) {
-                    me.lockToolbar(Common.enumLock.hideComments, !Common.localStorage.getBool(me.appPrefix + "settings-livecomment", true), {array: [me.view.btnCommentRemove, me.view.btnCommentResolve]});
-                    me.lockToolbar(Common.enumLock['Objects'], !!me._state.wsProps['Objects'], {array: [me.view.btnCommentRemove, me.view.btnCommentResolve]});
+                this.onChangeProtectSheet();
+                if (this.view) {
+                    this.lockToolbar(Common.enumLock.hideComments, !Common.localStorage.getBool(`${this.appPrefix}settings-livecomment`, true), {array: [this.view.btnCommentRemove, this.view.btnCommentResolve]});
+                    this.lockToolbar(Common.enumLock.Objects, !!this._state.wsProps.Objects, {array: [this.view.btnCommentRemove, this.view.btnCommentResolve]});
                 }
 
-                var val = Common.localStorage.getItem(me.appPrefix + "settings-review-hover-mode");
+                let val = Common.localStorage.getItem(`${this.appPrefix}settings-review-hover-mode`);
                 if (val === null) {
-                    val = me.appConfig.customization && me.appConfig.customization.review ? !!me.appConfig.customization.review.hoverMode : false;
+                    val = this.appConfig.customization?.review ? !!this.appConfig.customization.review.hoverMode : false;
                 } else
-                    val = !!parseInt(val);
-                Common.Utils.InternalSettings.set(me.appPrefix + "settings-review-hover-mode", val);
-                me.appConfig.reviewHoverMode = val;
+                    val = !!Number.parseInt(val);
+                Common.Utils.InternalSettings.set(`${this.appPrefix}settings-review-hover-mode`, val);
+                this.appConfig.reviewHoverMode = val;
 
-                if (me.view && me.view.btnMailRecepients) {
-                    Common.Utils.lockControls(Common.enumLock.mmergeLock, !!me._state.mmdisable, {array: [me.view.btnMailRecepients]});
-                    me.view.mnuMailRecepients.items[2].setVisible(me.appConfig.fileChoiceUrl || me.appConfig.canRequestSelectSpreadsheet || me.appConfig.canRequestMailMergeRecipients);
+                if (this.view?.btnMailRecepients) {
+                    Common.Utils.lockControls(Common.enumLock.mmergeLock, !!this._state.mmdisable, {array: [this.view.btnMailRecepients]});
+                    this.view.mnuMailRecepients.items[2].setVisible(this.appConfig.fileChoiceUrl || this.appConfig.canRequestSelectSpreadsheet || this.appConfig.canRequestMailMergeRecipients);
                 }
 
-                me.view && me.view.onAppReady(config);
-                me._state.sdkchange && me.onApiShowChange(me._state.sdkchange, true);
+                this.view?.onAppReady(config);
+                this._state.sdkchange && this.onApiShowChange(this._state.sdkchange, true);
             });
         },
 
         applySettings: function(menu) {
-            this.view && this.view.turnSpelling( Common.localStorage.getBool(this.appPrefix + "settings-spellcheck", true) );
-            this.view && this.view.turnCoAuthMode( Common.localStorage.getBool(this.appPrefix + "settings-coauthmode", true) );
+            this.view?.turnSpelling( Common.localStorage.getBool(`${this.appPrefix}settings-spellcheck`, true) );
+            this.view?.turnCoAuthMode( Common.localStorage.getBool(`${this.appPrefix}settings-coauthmode`, true) );
             if ((this.appConfig.canReview || this.appConfig.canViewReview) && this.appConfig.reviewHoverMode)
                 this.onApiShowChange();
         },
 
         synchronizeChanges: function() {
-            if ( this.appConfig && this.appConfig.canReview ) {
+            if ( this.appConfig?.canReview ) {
                 this.view.markChanges( this.api.asc_HaveRevisionsChanges() );
             }
         },
@@ -1038,14 +1033,13 @@ define([
         },
 
         onDocLanguage: function() {
-            var me = this;
             (new Common.Views.LanguageDialog({
-                languages: me.langs,
-                current: me.api.asc_getDefaultLanguage(),
-                handler: function(result, value) {
-                    if (result=='ok') {
-                        var record = _.findWhere(me.langs, {'value':value});
-                        record && me.api.asc_setDefaultLanguage(record.code);
+                languages: this.langs,
+                current: this.api.asc_getDefaultLanguage(),
+                handler: (result, value) => {
+                    if (result==='ok') {
+                        const record = _.findWhere(this.langs, {'value':value});
+                        record && this.api.asc_setDefaultLanguage(record.code);
                     }
                 }
             })).show();
@@ -1053,7 +1047,7 @@ define([
 
         onLostEditRights: function() {
             this._readonlyRights = true;
-            this.view && this.view.onLostEditRights();
+            this.view?.onLostEditRights();
             this.view && this.lockToolbar(Common.enumLock.cantShare, true, {array: [this.view.btnSharing]});
         },
 
@@ -1063,17 +1057,16 @@ define([
             if (this.appConfig.canRequestSharingSettings) {
                 Common.Gateway.requestSharingSettings();
             } else {
-                var me = this;
-                me._docAccessDlg = new Common.Views.DocumentAccessDialog({
+                this._docAccessDlg = new Common.Views.DocumentAccessDialog({
                     settingsurl: this.appConfig.sharingSettingsUrl
                 });
-                me._docAccessDlg.on('accessrights', function(obj, rights){
-                    me.setSharingSettings({sharingSettings: rights});
-                }).on('close', function(obj){
-                    me._docAccessDlg = undefined;
+                this._docAccessDlg.on('accessrights', (obj, rights)=> {
+                    this.setSharingSettings({sharingSettings: rights});
+                }).on('close', (obj)=> {
+                    this._docAccessDlg = undefined;
                 });
 
-                me._docAccessDlg.show();
+                this._docAccessDlg.show();
             }
         },
 
@@ -1092,27 +1085,27 @@ define([
         },
 
         onUpdateUsers: function() {
-            var users = this.userCollection;
-            this.popoverChanges && this.popoverChanges.each(function (model) {
-                var user = users.findOriginalUser(model.get('userid'));
+            const users = this.userCollection;
+            this.popoverChanges?.each((model) => {
+                const user = users.findOriginalUser(model.get('userid'));
                 model.set('usercolor', (user) ? user.get('color') : Common.UI.ExternalUsers.getColor(model.get('userid') || model.get('username')));
-                user && user.get('avatar') && model.set('avatar', user.get('avatar'));
+                user?.get('avatar') && model.set('avatar', user.get('avatar'));
             });
         },
 
         avatarsUpdate: function(type, users) {
             if (type!=='info') return;
 
-            this.popoverChanges && this.popoverChanges.each(function (model) {
-                var user = _.findWhere(users, {id: model.get('userid')})
+            this.popoverChanges?.each((model) => {
+                const user = _.findWhere(users, {id: model.get('userid')})
                 user && (user.image!==undefined) && model.set('avatar', user.image);
             });
         },
 
         onAuthParticipantsChanged: function(users) {
-            if (this.view && this.view.btnCompare) {
-                var length = 0;
-                _.each(users, function(item){
+            if (this.view?.btnCompare) {
+                let length = 0;
+                _.each(users, (item)=> {
                     if (!item.asc_getView())
                         length++;
                 });
@@ -1122,25 +1115,25 @@ define([
 
         commentsShowHide: function(mode) {
             if (!this.view) return;
-            var value = Common.Utils.InternalSettings.get(this.appPrefix + "settings-livecomment");
-            (value!==undefined) && this.lockToolbar(Common.enumLock.hideComments, mode != 'show' && !value, {array: [this.view.btnCommentRemove, this.view.btnCommentResolve]});
+            const value = Common.Utils.InternalSettings.get(`${this.appPrefix}settings-livecomment`);
+            (value!==undefined) && this.lockToolbar(Common.enumLock.hideComments, mode !== 'show' && !value, {array: [this.view.btnCommentRemove, this.view.btnCommentResolve]});
         },
 
         onChangeProtectSheet: function(props) {
             if (!props) {
-                var wbprotect = this.getApplication().getController('WBProtection');
+                const wbprotect = this.getApplication().getController('WBProtection');
                 props = wbprotect ? wbprotect.getWSProps() : null;
             }
             this._state.wsProps = props ? props.wsProps : [];
             this._state.wsLock = props ? props.wsLock : false;
 
             if (!this.view) return;
-            this.lockToolbar(Common.enumLock['Objects'], !!this._state.wsProps['Objects'], {array: [this.view.btnCommentRemove, this.view.btnCommentResolve]});
+            this.lockToolbar(Common.enumLock.Objects, !!this._state.wsProps.Objects, {array: [this.view.btnCommentRemove, this.view.btnCommentResolve]});
         },
 
         onChangeProtectDocument: function(props) {
             if (!props) {
-                var docprotect = this.getApplication().getController('DocProtection');
+                const docprotect = this.getApplication().getController('DocProtection');
                 props = docprotect ? docprotect.getDocProps() : null;
             }
             if (props) {
@@ -1172,7 +1165,7 @@ define([
 
         DisableMailMerge: function() {
             this._state.mmdisable = true;
-            this.view && this.view.btnMailRecepients && Common.Utils.lockControls(Common.enumLock.mmergeLock, true, {array: [this.view.btnMailRecepients]});
+            this.view?.btnMailRecepients && Common.Utils.lockControls(Common.enumLock.mmergeLock, true, {array: [this.view.btnMailRecepients]});
         },
 
         onChangeViewMode: function (mode) {

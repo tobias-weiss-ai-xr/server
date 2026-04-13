@@ -30,13 +30,12 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'common/main/lib/component/DataView'
-], function () {
-    'use strict';
+], () => {
 
     Common.UI.ComboDataViewShape = Common.UI.BaseView.extend({
         options : {
@@ -65,8 +64,8 @@ define([
         initialize : function(options) {
             Common.UI.BaseView.prototype.initialize.call(this, options);
 
-            var filter = Common.localStorage.getKeysFilter();
-            this.appPrefix = (filter && filter.length) ? filter.split(',')[0] : '';
+            const filter = Common.localStorage.getKeysFilter();
+            this.appPrefix = (filter?.length) ? filter.split(',')[0] : '';
 
             this.id          = this.options.id || Common.UI.getId();
             this.cls         = this.options.cls;
@@ -115,21 +114,21 @@ define([
         },
 
         fillComboView: function (collection) {
-            var groups = collection.toJSON(),
-                recents = Common.localStorage.getItem(this.appPrefix + 'recent-shapes');
+            const groups = collection.toJSON();
+            let recents = Common.localStorage.getItem(`${this.appPrefix}recent-shapes`);
             recents = recents ? JSON.parse(recents) : [];
 
             // check lang
             if (recents.length > 0) {
-                var isTranslated = _.findWhere(groups, {groupName: recents[0].groupName});
+                const isTranslated = _.findWhere(groups, {groupName: recents[0].groupName});
                 if (!isTranslated) {
-                    for (var r = 0; r < recents.length; r++) {
-                        var type = recents[r].data.shapeType,
-                            record;
-                        for (var g = 0; g < groups.length; g++) {
-                            var store = groups[g].groupStore,
-                                groupName = groups[g].groupName;
-                            for (var i = 0; i < store.length; i++) {
+                    for (let r = 0; r < recents.length; r++) {
+                        const type = recents[r].data.shapeType;
+                        let record;
+                        for (let g = 0; g < groups.length; g++) {
+                            const store = groups[g].groupStore;
+                            const groupName = groups[g].groupName;
+                            for (let i = 0; i < store.length; i++) {
                                 if (store.at(i).get('data').shapeType === type) {
                                     record = store.at(i).toJSON();
                                     recents[r] = {
@@ -148,16 +147,16 @@ define([
                             }
                         }
                     }
-                    Common.localStorage.setItem(this.appPrefix + 'recent-shapes', JSON.stringify(recents));
+                    Common.localStorage.setItem(`${this.appPrefix}recent-shapes`, JSON.stringify(recents));
                 }
             }
 
             if (recents.length < 12) {
-                var count = 12 - recents.length;
+                let count = 12 - recents.length;
 
-                var addItem = function (rec) {
-                    var item = rec.toJSON(),
-                        model = {
+                const addItem = (rec) => {
+                    const item = rec.toJSON();
+                    const model = {
                             data: item.data,
                             tip: item.tip,
                             allowSelected: item.allowSelected,
@@ -166,8 +165,8 @@ define([
                     recents.push(model);
                 };
 
-                for (var j = 0; j < groups.length && count > 0; j++) {
-                    var groupStore = groups[j].groupStore;
+                for (let j = 0; j < groups.length && count > 0; j++) {
+                    const groupStore = groups[j].groupStore;
                     if (j === 0) {
                         addItem(groupStore.at(1));
                         count--;
@@ -200,7 +199,7 @@ define([
                 cls: 'menu-picker',
                 parentMenu: this.openButton.menu,
                 restoreHeight: this.menuMaxHeight,
-                style: 'max-height: '+this.menuMaxHeight+'px;',
+                style: `max-height: ${this.menuMaxHeight}px;`,
                 itemTemplate : _.template('<div class="item-shape" id="<%= id %>"><svg width="20" height="20" class=\"icon uni-scale\"><use xlink:href=\"#svg-icon-<%= data.shapeType %>\"></use></svg></div>'),
                 groups: collection,
                 textRecentlyUsed: text,
@@ -217,59 +216,58 @@ define([
 
         render: function(parentEl) {
             if (!this.rendered) {
-                var me = this;
 
-                me.trigger('render:before', me);
+                this.trigger('render:before', this);
 
-                me.cmpEl = me.$el || $(me.el);
+                this.cmpEl = this.$el || $(this.el);
 
-                var templateEl = me.template({
-                    id      : me.id,
-                    cls     : me.cls,
-                    style   : me.style
+                const templateEl = this.template({
+                    id      : this.id,
+                    cls     : this.cls,
+                    style   : this.style
                 });
 
                 if (parentEl) {
-                    me.setElement(parentEl, false);
+                    this.setElement(parentEl, false);
 
-                    me.cmpEl = $(templateEl);
+                    this.cmpEl = $(templateEl);
 
-                    parentEl.html(me.cmpEl);
+                    parentEl.html(this.cmpEl);
                 } else {
-                    me.cmpEl.html(templateEl);
+                    this.cmpEl.html(templateEl);
                 }
 
-                me.rootWidth  = me.cmpEl.width();
-                me.rootHeight = me.cmpEl.height();
+                this.rootWidth  = this.cmpEl.width();
+                this.rootHeight = this.cmpEl.height();
 
-                me.fieldPicker.render($('.view', me.cmpEl));
-                me.openButton.render($('.button', me.cmpEl));
+                this.fieldPicker.render($('.view', this.cmpEl));
+                this.openButton.render($('.button', this.cmpEl));
                 //me.menuPicker.render($('.menu-picker-container', me.cmpEl));
 
-                if (me.openButton.menu.cmpEl) {
-                    if (me.openButton.menu.cmpEl) {
-                        me.openButton.menu.menuAlignEl = me.cmpEl;
-                        me.openButton.menu.cmpEl.css('min-width', me.itemWidth);
-                        me.openButton.menu.on('show:before',          _.bind(me.onBeforeShowMenu, me));
-                        me.openButton.menu.on('show:after',           _.bind(me.onAfterShowMenu, me));
-                        me.openButton.cmpEl.on('hide.bs.dropdown',    _.bind(me.onBeforeHideMenu, me));
-                        me.openButton.cmpEl.on('hidden.bs.dropdown',  _.bind(me.onAfterHideMenu, me));
+                if (this.openButton.menu.cmpEl) {
+                    if (this.openButton.menu.cmpEl) {
+                        this.openButton.menu.menuAlignEl = this.cmpEl;
+                        this.openButton.menu.cmpEl.css('min-width', this.itemWidth);
+                        this.openButton.menu.on('show:before',          _.bind(this.onBeforeShowMenu, this));
+                        this.openButton.menu.on('show:after',           _.bind(this.onAfterShowMenu, this));
+                        this.openButton.cmpEl.on('hide.bs.dropdown',    _.bind(this.onBeforeHideMenu, this));
+                        this.openButton.cmpEl.on('hidden.bs.dropdown',  _.bind(this.onAfterHideMenu, this));
                     }
                 }
 
-                if (me.options.hint) {
-                    me.cmpEl.attr('data-toggle', 'tooltip');
-                    me.cmpEl.tooltip({
-                        title       : me.options.hint,
-                        placement   : me.options.hintAnchor || 'cursor'
+                if (this.options.hint) {
+                    this.cmpEl.attr('data-toggle', 'tooltip');
+                    this.cmpEl.tooltip({
+                        title       : this.options.hint,
+                        placement   : this.options.hintAnchor || 'cursor'
                     });
                 }
 
                 //me.onResize();
 
-                me.rendered = true;
+                this.rendered = true;
 
-                me.trigger('render:after', me);
+                this.trigger('render:after', this);
             }
             if (this.disabled) {
                 this.setDisabled(!!this.disabled);
@@ -279,10 +277,10 @@ define([
         },
 
         updateComboView: function (record) {
-            var store = this.fieldPicker.store,
-                type = record.get('data').shapeType,
-                model = null;
-            for (var i = 0; i < store.length; i++) {
+            const store = this.fieldPicker.store;
+            const type = record.get('data').shapeType;
+            let model = null;
+            for (let i = 0; i < store.length; i++) {
                 if (store.at(i).get('data').shapeType === type) {
                     model = store.at(i);
                     break;
@@ -295,10 +293,10 @@ define([
         },
 
         activateRecord: function (record) {
-            var type = record.get('data').shapeType;
+            const type = record.get('data').shapeType;
             if (this.isRecordActive)
                 this.deactivateRecords();
-            $(this.cmpEl.find("[data-shape='" + type + "']")).parent().addClass('active');
+            $(this.cmpEl.find(`[data-shape='${type}']`)).parent().addClass('active');
             this.isRecordActive = true;
         },
 
@@ -312,19 +310,18 @@ define([
         },
 
         checkSize: function() {
-            if (this.cmpEl && this.cmpEl.is(':visible')) {
-                var me = this,
-                    width  = this.cmpEl.width(),
-                    height = this.cmpEl.height();
+            if (this.cmpEl?.is(':visible')) {
+                const width  = this.cmpEl.width();
+                const height = this.cmpEl.height();
 
                 if (width < this.minWidth) return;
 
-                if (this.rootWidth != width || this.rootHeight != height) {
+                if (this.rootWidth !== width || this.rootHeight !== height) {
                     this.rootWidth  = width;
                     this.rootHeight = height;
-                    setTimeout(function() {
-                        me.openButton.menu.cmpEl.outerWidth();
-                        me.rootWidth = me.cmpEl.width();
+                    setTimeout(() => {
+                        this.openButton.menu.cmpEl.outerWidth();
+                        this.rootWidth = this.cmpEl.width();
                     }, 10);
                     this.onResize();
                 }
@@ -333,8 +330,8 @@ define([
 
         onResize: function() {
             if (this.openButton) {
-                var button = $('button', this.openButton.cmpEl);
-                var cntButton = $('.button', this.cmpEl);
+                const button = $('button', this.openButton.cmpEl);
+                const cntButton = $('.button', this.cmpEl);
                 button && cntButton.width() > 0 && button.css({
                     height: cntButton.height()
                 });
@@ -355,10 +352,10 @@ define([
         },
 
         onBeforeShowMenu: function(e) {
-            var menu = this.openButton.menu;
+            const menu = this.openButton.menu;
             if (menu.cmpEl) {
                 menu.menuAlignEl = this.cmpEl;
-                var offset = this.cmpEl.width() - this.openButton.$el.width() - this.menuWidth + 1;
+                let offset = this.cmpEl.width() - this.openButton.$el.width() - this.menuWidth + 1;
                 if (Common.UI.isRTL()) {
                     offset = this.openButton.$el.width() - 1;
                 }
@@ -366,7 +363,7 @@ define([
             }
 
             if (this.options.hint) {
-                var tip = this.cmpEl.data('bs.tooltip');
+                const tip = this.cmpEl.data('bs.tooltip');
                 if (tip) {
                     if (tip.dontShow===undefined)
                         tip.dontShow = true;
@@ -386,9 +383,8 @@ define([
         },
 
         onAfterShowMenu: function(e) {
-            var me = this;
-            if (me.menuPicker.scroller) {
-                me.menuPicker.scroller.update({
+            if (this.menuPicker.scroller) {
+                this.menuPicker.scroller.update({
                     includePadding: true,
                     suppressScrollX: true,
                     alwaysVisibleY: true
@@ -402,7 +398,7 @@ define([
             this.trigger('hide:after', this, e, isFromInputControl);
         },
 
-        onFieldPickerSelect: function(picker, item, record) {
+        onFieldPickerSelect: (picker, item, record) => {
             //
         },
 
@@ -418,13 +414,13 @@ define([
         onFieldPickerClick: function(dataView, item, record) {
             if (this.disabled) return;
 
-            var isActive = item.$el.hasClass('active');
+            const isActive = item.$el.hasClass('active');
 
             if (!this.isSuspendEvents)
                 this.trigger('click', this, record, isActive);
 
             if (this.options.hint) {
-                var tip = this.cmpEl.data('bs.tooltip');
+                const tip = this.cmpEl.data('bs.tooltip');
                 if (tip) {
                     if (tip.dontShow===undefined)
                         tip.dontShow = true;

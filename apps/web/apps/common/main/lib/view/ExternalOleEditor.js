@@ -29,34 +29,39 @@
  *
  */
 
-define([
-    'common/main/lib/view/ExternalEditor'
-], function () { 'use strict';
+define(["common/main/lib/view/ExternalEditor"], () => {
+  Common.Views.ExternalOleEditor = Common.Views.ExternalEditor.extend(
+    _.extend(
+      {
+        initialize: function (options) {
+          const _options = {}
+          _.extend(
+            _options,
+            {
+              id: "id-external-ole-editor",
+              title: this.textTitle,
+              storageName: "ole-editor",
+              sdkplaceholder: "id-ole-editor-placeholder",
+              initwidth: 1030,
+              initheight: 700,
+              minwidth: 1030,
+              minheight: 310,
+            },
+            options,
+          )
 
-    Common.Views.ExternalOleEditor = Common.Views.ExternalEditor.extend(_.extend({
-        initialize : function(options) {
-            var _options = {};
-            _.extend(_options,  {
-                id: 'id-external-ole-editor',
-                title: this.textTitle,
-                storageName: 'ole-editor',
-                sdkplaceholder: 'id-ole-editor-placeholder',
-                initwidth: 1030,
-                initheight: 700,
-                minwidth: 1030,
-                minheight: 310
-            }, options);
-
-            this._oleData = null;
-            Common.Views.ExternalEditor.prototype.initialize.call(this, _options);
+          this._oleData = null
+          Common.Views.ExternalEditor.prototype.initialize.call(this, _options)
         },
 
-        setOleData: function(data) {
-            this._oleData = data;
-            if (this._isExternalDocReady)
-                this.fireEvent('setoledata', this);
+        setOleData: function (data) {
+          this._oleData = data
+          if (this._isExternalDocReady) this.fireEvent("setoledata", this)
         },
 
-        textTitle: 'Spreadsheet Editor'
-    }, Common.Views.ExternalOleEditor || {}));
-});
+        textTitle: "Spreadsheet Editor",
+      },
+      Common.Views.ExternalOleEditor || {},
+    ),
+  )
+})

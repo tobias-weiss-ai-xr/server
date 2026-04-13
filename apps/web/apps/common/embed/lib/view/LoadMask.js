@@ -31,62 +31,61 @@
  *
  */
 
-!window.common && (window.common = {});
-!common.view && (common.view = {});
+!window.common && (window.common = {})
+!common.view && (common.view = {})
 
-common.view.LoadMask = function(owner) {
-    var tpl = '<div class="asc-loadmask-body" role="presentation" tabindex="-1">' +
-                '<i id="loadmask-spinner" class="asc-loadmask-image"></i>' +
-                '<div class="asc-loadmask-title"></div>' +
-               '</div>';
-    var ownerEl = owner || $(document.body),
-        loaderEl,
-        maskedEl,
-        title = '',
-        timerId = 0,
-        rendered = false;
-    return {
+common.view.LoadMask = (owner) => {
+  const tpl =
+    '<div class="asc-loadmask-body" role="presentation" tabindex="-1">' +
+    '<i id="loadmask-spinner" class="asc-loadmask-image"></i>' +
+    '<div class="asc-loadmask-title"></div>' +
+    "</div>"
+  const ownerEl = owner || $(document.body)
+  let loaderEl
+  let maskedEl
+  let title = ""
+  let timerId = 0
+  let rendered = false
+  return {
+    show: () => {
+      if (!loaderEl || !maskedEl) {
+        loaderEl = $(tpl)
+        maskedEl = $('<div class="asc-loadmask"></div>')
+      }
 
-        show: function(){
-            if (!loaderEl || !maskedEl) {
-                loaderEl = $(tpl);
-                maskedEl = $('<div class="asc-loadmask"></div>');
-            }
+      $(".asc-loadmask-title", loaderEl).html(title)
 
-            $('.asc-loadmask-title', loaderEl).html(title);
+      // show mask after 500 ms if it wont be hided
+      if (!rendered) {
+        rendered = true
+        timerId = setTimeout(() => {
+          ownerEl.append(maskedEl)
+          ownerEl.append(loaderEl)
 
-            // show mask after 500 ms if it wont be hided
-            if (!rendered) {
-                rendered = true;
-                timerId = setTimeout(function () {
-                    ownerEl.append(maskedEl);
-                    ownerEl.append(loaderEl);
+          loaderEl.css("min-width", $(".asc-loadmask-title", loaderEl).width() + 108)
+        }, 500)
+      }
+    },
 
-                    loaderEl.css('min-width', $('.asc-loadmask-title', loaderEl).width() + 108);
-                },500);
-            }
-        },
+    hide: () => {
+      if (timerId) {
+        clearTimeout(timerId)
+        timerId = 0
+      }
+      maskedEl?.remove()
+      loaderEl?.remove()
+      maskedEl = loaderEl = null
+      rendered = false
+    },
 
-        hide: function() {
-            if (timerId) {
-                clearTimeout(timerId);
-                timerId = 0;
-            }
-            maskedEl && maskedEl.remove();
-            loaderEl && loaderEl.remove();
-            maskedEl = loaderEl = null;
-            rendered = false;
-        },
+    setTitle: (text) => {
+      title = text
 
-        setTitle: function(text) {
-            title = text;
-
-            if (ownerEl && loaderEl){
-                var el = $('.asc-loadmask-title', loaderEl);
-                el.html(title);
-                loaderEl.css('min-width', el.width() + 108);
-            }
-        }
-    }
-};
-
+      if (ownerEl && loaderEl) {
+        const el = $(".asc-loadmask-title", loaderEl)
+        el.html(title)
+        loaderEl.css("min-width", el.width() + 108)
+      }
+    },
+  }
+}

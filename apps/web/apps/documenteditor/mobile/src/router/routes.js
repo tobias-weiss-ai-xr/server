@@ -1,10 +1,10 @@
-import MainPage from '../page/main';
+import MainPage from "../page/main"
 
-var routes = [
+const routes = [
   {
-    path: '/',
+    path: "/",
     component: MainPage,
-  }
-];
+  },
+]
 
-export default routes;
+export default routes

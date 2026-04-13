@@ -31,12 +31,12 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'documenteditor/main/app/view/ListTypesAdvanced'
-], function () { 'use strict';
-    var nMaxRecent = 5;
+], () => { 
+    const nMaxRecent = 5;
 
     DE.Views.ListSettingsDialog = Common.UI.Window.extend(_.extend({
         options: {
@@ -66,11 +66,11 @@ define([
                     '<table style="width: 100%;">',
                         '<tr>',
                             '<td class="padding-right-5" style="width: 100%;">',
-                                '<label class="input-label">' + this.txtType + '</label>',
+                                `<label class="input-label">${this.txtType}</label>`,
                                 '<div id="id-dlg-numbering-format" class="input-group-nr" style="width: 100%;margin-bottom: 10px;"></div>',
                             '</td>',
                             '<td class="padding-left-5">',
-                                '<label class="input-label">' + this.txtSize + '</label>',
+                                `<label class="input-label">${this.txtSize}</label>`,
                                 '<div id="id-dlg-bullet-size" class="input-group-nr" style="width: 115px;margin-bottom: 10px;"></div>',
                             '</td>',
                             '</td>',
@@ -91,7 +91,7 @@ define([
                     '<table style="width: 100%;">',
                         '<tr>',
                             '<td class="padding-right-5" style="width: 100%;">',
-                                '<label class="input-label">' + this.txtNumFormatString + '</label>',
+                                `<label class="input-label">${this.txtNumFormatString}</label>`,
                                 '<div id="id-dlg-numbering-format-str" style="width: 100%;margin-bottom: 10px;"></div>',
                             '</td>',
                             '<td class="padding-left-5">',
@@ -104,17 +104,17 @@ define([
                     '<table cols="2" style="width: 100%;">',
                         '<tr>',
                             '<td class="padding-right-5">',
-                                '<label class="input-label">' + this.txtType + '</label>',
+                                `<label class="input-label">${this.txtType}</label>`,
                                 '<div id="id-dlg-numbering-format" class="input-group-nr" style="width: 100%;margin-bottom: 10px;"></div>',
                             '</td>',
                             '<td class="padding-left-5">',
-                                '<label class="input-label">' + this.txtAlign + '</label>',
+                                `<label class="input-label">${this.txtAlign}</label>`,
                                 '<div id="id-dlg-bullet-align" class="input-group-nr" style="width: 100%;margin-bottom: 10px;"></div>',
                             '</td>',
                         '</tr>',
                         '<tr>',
                             '<td colspan="2">',
-                                '<label class="input-label" style="display: block;">' + this.txtSize + '</label>',
+                                `<label class="input-label" style="display: block;">${this.txtSize}</label>`,
                                 '<div id="id-dlg-bullet-size" class="input-group-nr" style="width: 139px;display: inline-block;margin-bottom: 10px;vertical-align: middle;"></div>',
                                 '<div id="id-dlg-numbering-bold" class="margin-left-4" style="display: inline-block;margin-bottom: 10px;vertical-align: middle;"></div>',
                                 '<div id="id-dlg-numbering-italic" class="margin-left-4" style="display: inline-block;margin-bottom: 10px;vertical-align: middle;"></div>',
@@ -126,17 +126,17 @@ define([
                     '<table cols="2" style="width: 100%;">',
                         '<tr>',
                             '<td class="padding-right-5">',
-                                '<label class="input-label">' + this.txtType + '</label>',
+                                `<label class="input-label">${this.txtType}</label>`,
                                 '<div id="id-dlg-numbering-format" class="input-group-nr" style="width: 100%;margin-bottom: 10px;"></div>',
                             '</td>',
                             '<td class="padding-left-5">',
-                                '<label class="input-label">' + this.txtAlign + '</label>',
+                                `<label class="input-label">${this.txtAlign}</label>`,
                                 '<div id="id-dlg-bullet-align" class="input-group-nr" style="width: 100%;margin-bottom: 10px;"></div>',
                             '</td>',
                         '</tr>',
                         '<tr>',
                             '<td colspan="2" style="width: 100%;">',
-                                '<label class="input-label">' + this.txtNumFormatString + '</label>',
+                                `<label class="input-label">${this.txtNumFormatString}</label>`,
                                 '<div id="id-dlg-numbering-format-str" style="width: 100%;margin-bottom: 10px;"></div>',
                             '</td>',
                         '</tr>',
@@ -144,14 +144,14 @@ define([
                     '<table cols="2" style="width: 100%;">',
                         '<tr>',
                             '<td class="padding-right-5">',
-                                '<label class="input-label" style="display: block;">' + this.txtFontName + '</label>',
+                                `<label class="input-label" style="display: block;">${this.txtFontName}</label>`,
                                 '<div id="id-dlg-numbering-font-name" style="display: inline-block;width: 90px;margin-bottom: 10px;vertical-align: middle;"></div>',
                                 '<div id="id-dlg-numbering-bold" class="margin-left-4" style="display: inline-block;margin-bottom: 10px;vertical-align: middle;"></div>',
                                 '<div id="id-dlg-numbering-italic" class="margin-left-4" style="display: inline-block;margin-bottom: 10px;vertical-align: middle;"></div>',
                                 '<div id="id-dlg-bullet-color" class="margin-left-4" style="display: inline-block;margin-bottom: 10px;vertical-align: middle;"></div>',
                             '</td>',
                             '<td class="padding-left-5">',
-                                '<label class="input-label">' + this.txtSize + '</label>',
+                                `<label class="input-label">${this.txtSize}</label>`,
                                 '<div id="id-dlg-bullet-size" class="input-group-nr" style="width: 85px;margin-bottom: 10px;"></div>',
                             '</td>',
                         '</tr>',
@@ -160,7 +160,7 @@ define([
                 '<table cols="2" style="width: 100%;">',
                         '<tr>',
                             '<td colspan="2">',
-                                '<label>' + (this.type === 2 ? this.textSelectLevel : this.textPreview) + '</label>',
+                                `<label>${this.type === 2 ? this.textSelectLevel : this.textPreview}</label>`,
                             '</td>',
                         '</tr>',
                         '<tr>',
@@ -168,35 +168,35 @@ define([
                                 '<div id="levels-list" class="no-borders" style="width:100%; height:235px;"></div>',
                             '</td>',
                             '<td>',
-                                '<div id="bulleted-list-preview" style="height:' + (this.type === 2 ? 235 : 208) + 'px;"></div>',
+                                `<div id="bulleted-list-preview" style="height:${this.type === 2 ? 235 : 208}px;"></div>`,
                             '</td>',
                         '</tr>',
                     '</table>',
                 '</div>',
                 '<div class="footer center">',
-                    '<button class="btn normal dlg-btn primary" result="ok" style="width: 86px;">' + this.okButtonText + '</button>',
-                    '<button class="btn normal dlg-btn" result="cancel" style="width: 86px;">' + this.cancelButtonText + '</button>',
+                    `<button class="btn normal dlg-btn primary" result="ok" style="width: 86px;">${this.okButtonText}</button>`,
+                    `<button class="btn normal dlg-btn" result="cancel" style="width: 86px;">${this.cancelButtonText}</button>`,
                 '</div>',
                 '</td>',
                 '<% if (type == 2) { %>',
-                '<td style="width: ' + this.rightPanelWidth + 'px;vertical-align: top;">',
-                    '<div id="id-dlg-panel-more-settings" class="padding-left-5 padding-right-15" style="width: ' + this.rightPanelWidth + 'px;">',
+                `<td style="width: ${this.rightPanelWidth}px;vertical-align: top;">`,
+                    `<div id="id-dlg-panel-more-settings" class="padding-left-5 padding-right-15" style="width: ${this.rightPanelWidth}px;">`,
                     '<table cols="2" style="width: 100%;">',
                         '<tr>',
                             '<td colspan="2">',
-                                '<label class="input-label" style="display: block;">' + this.txtFontName + '</label>',
+                                `<label class="input-label" style="display: block;">${this.txtFontName}</label>`,
                                 '<div id="id-dlg-numbering-font-name" style="display: inline-block;width: 100%;margin-bottom: 10px;"></div>',
                             '</td>',
                         '</tr>',
                         '<tr>',
                             '<td colspan="2">',
-                                '<label class="input-label">' + this.txtInclcudeLevel + '</label>',
+                                `<label class="input-label">${this.txtInclcudeLevel}</label>`,
                                 '<div id="id-dlg-numbering-format-lvl" class="input-group-nr" style="width: 100%;margin-bottom: 10px;"></div>',
                             '</td>',
                         '</tr>',
                         '<tr>',
                             '<td colspan="2">',
-                                '<label class="input-label">' + this.txtStart + '</label>',
+                                `<label class="input-label">${this.txtStart}</label>`,
                                 '<div id="id-dlg-numbering-spin-start" style="width: 100%;margin-bottom: 5px;"></div>',
                             '</td>',
                         '</tr>',
@@ -207,10 +207,10 @@ define([
                         '</tr>',
                         '<tr>',
                             '<td>',
-                                '<label class="input-label">' + this.txtAlign + '</label>',
+                                `<label class="input-label">${this.txtAlign}</label>`,
                             '</td>',
                             '<td class="padding-left-5" style="vertical-align:bottom;">',
-                                '<label class="input-label">' + this.txtAlignAt + '</label>',
+                                `<label class="input-label">${this.txtAlignAt}</label>`,
                             '</td>',
                         '</tr>',
                         '<tr>',
@@ -223,13 +223,13 @@ define([
                         '</tr>',
                         '<tr>',
                             '<td colspan="2">',
-                                '<label class="input-label">' + this.txtIndent + '</label>',
+                                `<label class="input-label">${this.txtIndent}</label>`,
                                 '<div id="id-dlg-numbering-indent" style="width: 100%;margin-bottom: 10px;"></div>',
                             '</td>',
                         '</tr>',
                         '<tr>',
                             '<td colspan="2">',
-                                '<label class="input-label">' + this.txtFollow + '</label>',
+                                `<label class="input-label">${this.txtFollow}</label>`,
                                 '<div id="id-dlg-numbering-follow" class="input-group-nr" style="width: 100%;margin-bottom: 10px;"></div>',
                             '</td>',
                         '</tr>',
@@ -274,8 +274,8 @@ define([
         render: function() {
             Common.UI.Window.prototype.render.call(this);
 
-            var me = this,
-                $window = this.getChild();
+            const me = this;
+            const $window = this.getChild();
             $window.find('.dlg-btn').on('click', _.bind(this.onBtnClick, this));
 
             this.btnColor = new Common.UI.ButtonColored({
@@ -308,7 +308,7 @@ define([
             this.btnColor.menu.items[1].on('toggle', _.bind(this.onAutoColor, this));
             this.colors = this.btnColor.getPicker();
 
-            var itemsTemplate =
+            const itemsTemplate =
                 [
                     '<% _.each(items, function(item) { %>',
                     '<li id="<%= item.id %>" data-value="<%= item.value %>"><a tabindex="-1" type="menuitem">',
@@ -316,7 +316,7 @@ define([
                     '</a></li>',
                     '<% }); %>'
                 ];
-            var template = [
+            const template = [
                 '<div class="input-group combobox input-group-nr <%= cls %>" id="<%= id %>" style="<%= style %>">',
                 '<div class="form-control" style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-top:3px; line-height: 14px; cursor: pointer; <%= style %>"></div>',
                 '<div style="display: table-cell;"></div>',
@@ -339,14 +339,14 @@ define([
                 ]);
             }
             this._arrBullets = [
-                { displayValue: this.txtSymbol + ': ', value: Asc.c_oAscNumberingFormat.Bullet, symbol: "·", font: 'Symbol' },
-                { displayValue: this.txtSymbol + ': ', value: Asc.c_oAscNumberingFormat.Bullet, symbol: "o", font: 'Courier New' },
-                { displayValue: this.txtSymbol + ': ', value: Asc.c_oAscNumberingFormat.Bullet, symbol: "§", font: 'Wingdings' },
-                { displayValue: this.txtSymbol + ': ', value: Asc.c_oAscNumberingFormat.Bullet, symbol: "v", font: 'Wingdings' },
-                { displayValue: this.txtSymbol + ': ', value: Asc.c_oAscNumberingFormat.Bullet, symbol: "Ø", font: 'Wingdings' },
-                { displayValue: this.txtSymbol + ': ', value: Asc.c_oAscNumberingFormat.Bullet, symbol: "ü", font: 'Wingdings' },
-                { displayValue: this.txtSymbol + ': ', value: Asc.c_oAscNumberingFormat.Bullet, symbol: "¨", font: 'Symbol' },
-                { displayValue: this.txtSymbol + ': ', value: Asc.c_oAscNumberingFormat.Bullet, symbol: "–", font: 'Arial' }
+                { displayValue: `${this.txtSymbol}: `, value: Asc.c_oAscNumberingFormat.Bullet, symbol: "·", font: 'Symbol' },
+                { displayValue: `${this.txtSymbol}: `, value: Asc.c_oAscNumberingFormat.Bullet, symbol: "o", font: 'Courier New' },
+                { displayValue: `${this.txtSymbol}: `, value: Asc.c_oAscNumberingFormat.Bullet, symbol: "§", font: 'Wingdings' },
+                { displayValue: `${this.txtSymbol}: `, value: Asc.c_oAscNumberingFormat.Bullet, symbol: "v", font: 'Wingdings' },
+                { displayValue: `${this.txtSymbol}: `, value: Asc.c_oAscNumberingFormat.Bullet, symbol: "Ø", font: 'Wingdings' },
+                { displayValue: `${this.txtSymbol}: `, value: Asc.c_oAscNumberingFormat.Bullet, symbol: "ü", font: 'Wingdings' },
+                { displayValue: `${this.txtSymbol}: `, value: Asc.c_oAscNumberingFormat.Bullet, symbol: "¨", font: 'Symbol' },
+                { displayValue: `${this.txtSymbol}: `, value: Asc.c_oAscNumberingFormat.Bullet, symbol: "–", font: 'Arial' }
             ];
             this._itemNoneBullet = { displayValue: this.txtNone, value: Asc.c_oAscNumberingFormat.None };
             this._itemNewBullet = { displayValue: this.txtNewBullet, value: -1 };
@@ -362,10 +362,10 @@ define([
                 takeFocusOnClose: true,
                 data        : [],
                 updateFormControl: function(record, defValue) {
-                    var formcontrol = $(this.el).find('.form-control');
+                    const formcontrol = $(this.el).find('.form-control');
                     if (record) {
-                        if (record.get('value')==Asc.c_oAscNumberingFormat.Bullet)
-                            formcontrol[0].innerHTML = record.get('displayValue') + '<span style="font-family:' + (Common.Utils.String.htmlEncode(record.get('font')) || 'Arial') + '">' + record.get('symbol') + '</span>';
+                        if (record.get('value')===Asc.c_oAscNumberingFormat.Bullet)
+                            formcontrol[0].innerHTML = `${record.get('displayValue')}<span style="font-family:${Common.Utils.String.htmlEncode(record.get('font')) || 'Arial'}">${record.get('symbol')}</span>`;
                         else
                             formcontrol[0].innerHTML = record.get('displayValue');
                     } else
@@ -374,35 +374,35 @@ define([
             });
             this.cmbFormat.on('selected', _.bind(function (combo, record) {
                 if (this._changedProps) {
-                    if (record.value == -1) {
-                        var callback = function(result) {
+                    if (record.value === -1) {
+                        const callback = (result) => {
                             me.fillLevelProps(me.levels[me.level]);
                         };
                         this.addNewBullet(callback);
-                    } else if (record.value == -2) {
-                        var callback = function(result) {
+                    } else if (record.value === -2) {
+                        const callback = (result) => {
                             me.fillLevelProps(me.levels[me.level]);
                         };
                         this.addNewListType(callback);
                     } else {
-                        var oldformat = this._changedProps.get_Format();
+                        const oldformat = this._changedProps.get_Format();
                         this._changedProps.put_Format(record.value);
-                        if (record.value == Asc.c_oAscNumberingFormat.Bullet) {
+                        if (record.value === Asc.c_oAscNumberingFormat.Bullet) {
                             this.bulletProps.font = record.font ? record.font : undefined;
                             this.bulletProps.symbol = record.symbol;
                             this._changedProps.put_FontFamily(this.bulletProps.font);
 
                             this._changedProps.put_Text([new Asc.CAscNumberingLvlText()]);
                             this._changedProps.get_Text()[0].put_Value(this.bulletProps.symbol);
-                        } else if (oldformat == Asc.c_oAscNumberingFormat.Bullet) {
+                        } else if (oldformat === Asc.c_oAscNumberingFormat.Bullet) {
                             this._changedProps.put_FontFamily(undefined);
 
                             this._changedProps.put_Text([new Asc.CAscNumberingLvlText()]);
                             this._changedProps.get_Text()[0].put_Type(Asc.c_oAscNumberingLvlTextType.Num);
                             this._changedProps.get_Text()[0].put_Value(this.level);
-                        } else if (oldformat == Asc.c_oAscNumberingFormat.None) {
+                        } else if (oldformat === Asc.c_oAscNumberingFormat.None) {
                             if (!this.formatString.lvlIndexes[this.level][this.level]) {
-                                var selectionStart = this.txtNumFormat.$el.find('input')[0].selectionStart;
+                                const selectionStart = this.txtNumFormat.$el.find('input')[0].selectionStart;
                                 this._changedProps.get_Text().splice(selectionStart, 0, new Asc.CAscNumberingLvlText(Asc.c_oAscNumberingLvlTextType.Num, this.level));
                             }
                         }
@@ -410,7 +410,7 @@ define([
                     }
                 }
                 if (this.api) {
-                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                 }
             }, this));
 
@@ -430,7 +430,7 @@ define([
                 if (this._changedProps)
                     this._changedProps.put_Align(record.value);
                 if (this.api) {
-                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                 }
             }, this));
 
@@ -466,12 +466,12 @@ define([
                     this._changedProps.put_FontSize((record.value>0) ? record.value : undefined);
                 }
                 if (this.api) {
-                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                 }
             }, this));
 
-            var levels = [];
-            for (var i=0; i<9; i++)
+            const levels = [];
+            for (let i=0; i<9; i++)
                 levels.push({value: i});
             this.levelsList = new Common.UI.ListView({
                 el: $('#levels-list', this.$window),
@@ -486,20 +486,20 @@ define([
                 allowBlank  : true,
                 value       : ''
             });
-            var $formatInput = this.txtNumFormat.$el.find('input');
+            const $formatInput = this.txtNumFormat.$el.find('input');
             $formatInput.on('keydown', _.bind(this.onKeyDown, this));
             $formatInput.on('keyup', _.bind(this.onKeyUp, this));
             $formatInput.on('input', _.bind(this.onFormatInput, this));
 
-            var onMouseUp = function (e) {
+            const onMouseUp = (e) => {
                 me.checkMousePosition($formatInput[0]);
                 $(document).off('mouseup',   onMouseUp);
             };
-            var onMouseDown = function (e) {
+            const onMouseDown = (e) => {
                 $(document).on('mouseup',   onMouseUp);
             };
             $formatInput.on('mousedown', _.bind(onMouseDown, this));
-            $formatInput.on('contextmenu', function(e) {
+            $formatInput.on('contextmenu', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 return false;
@@ -532,7 +532,7 @@ define([
                     this.makeFormatStr(this._changedProps);
                 }
                 if (this.api) {
-                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                 }
             }, this));
 
@@ -584,7 +584,7 @@ define([
                     this.spnTabStop.setValue(this.spnTabStop.getValue(), true);
                 }
                 if (this.api) {
-                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                 }
             }, this));
 
@@ -604,7 +604,7 @@ define([
                     this._changedProps.put_IndentSize(Common.Utils.Metric.fnRecalcToMM(field.getNumberValue()));
                 }
                 if (this.api) {
-                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                 }
             }, this));
 
@@ -626,7 +626,7 @@ define([
                 this.chTabStop.setDisabled(record.value!==Asc.c_oAscNumberingSuff.Tab);
                 this.spnTabStop.setDisabled(record.value!==Asc.c_oAscNumberingSuff.Tab || this.chTabStop.getValue()!=='checked');
                 if (this.api) {
-                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                 }
             }, this));
 
@@ -636,7 +636,7 @@ define([
             });
             this.chRestart.on('change', _.bind(function(field, newValue, oldValue, eOpts){
                 if (this._changedProps) {
-                    this._changedProps.put_Restart(field.getValue()=='checked' ? -1 : 0);
+                    this._changedProps.put_Restart(field.getValue()==='checked' ? -1 : 0);
                 }
             }, this));
 
@@ -650,7 +650,7 @@ define([
                     this.spnTabStop.setDisabled(field.getValue()!=='checked' || this.cmbFollow.getValue()!==Asc.c_oAscNumberingSuff.Tab);
                 }
                 if (this.api) {
-                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                 }
             }, this));
 
@@ -670,7 +670,7 @@ define([
                     this._changedProps.put_StopTab(Common.Utils.Metric.fnRecalcToMM(field.getNumberValue()));
                 }
                 if (this.api) {
-                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                 }
             }, this));
 
@@ -686,7 +686,7 @@ define([
             this.btnMore.on('click', _.bind(this.onMoreClick, this));
             this.on('animate:after', _.bind(this.onAnimateAfter, this));
 
-            if (this.type == 2 && Common.localStorage.getBool("de-hide-multilevel-settings", true))
+            if (this.type === 2 && Common.localStorage.getBool("de-hide-multilevel-settings", true))
                 this.onMoreClick(this.btnMore);
 
             this.afterRender();
@@ -711,7 +711,7 @@ define([
 
         onAnimateAfter: function() {
             if (this.api) {
-                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
             }
         },
 
@@ -722,22 +722,21 @@ define([
             this.updateMetricUnit();
             this.updateThemeColors();
             this._setDefaults(this.props);
-            var me = this;
-            var onApiLevelChange = function(level) {
-                me.levelsList.selectByIndex(level);
+            const onApiLevelChange = (level) => {
+                this.levelsList.selectByIndex(level);
             };
             this.api.asc_registerCallback('asc_onPreviewLevelChange', onApiLevelChange);
-            this.on('close', function(obj){
-                me.api.asc_unregisterCallback('asc_onPreviewLevelChange', onApiLevelChange);
+            this.on('close', (obj)=> {
+                this.api.asc_unregisterCallback('asc_onPreviewLevelChange', onApiLevelChange);
             });
         },
 
         updateMetricUnit: function() {
             if (this.spinners) {
-                for (var i=0; i<this.spinners.length; i++) {
-                    var spinner = this.spinners[i];
+                for (let i=0; i<this.spinners.length; i++) {
+                    const spinner = this.spinners[i];
                     spinner.setDefaultUnit(Common.Utils.Metric.getCurrentMetricName());
-                    spinner.setStep(Common.Utils.Metric.getCurrentMetric()==Common.Utils.Metric.c_MetricUnits.pt ? 1 : 0.1);
+                    spinner.setStep(Common.Utils.Metric.getCurrentMetric()===Common.Utils.Metric.c_MetricUnits.pt ? 1 : 0.1);
                 }
             }
         },
@@ -747,31 +746,31 @@ define([
         },
 
         onAutoColor: function(item, state) {
-            if (!!state) {
-                var color = Common.Utils.ThemeColor.getHexColor(0, 0, 0);
+            if (state) {
+                const color = Common.Utils.ThemeColor.getHexColor(0, 0, 0);
                 this.btnColor.setColor(color);
                 this.colors.clearSelection();
                 if (this._changedProps) {
-                    var color = new Asc.asc_CColor();
+                    const color = new Asc.asc_CColor();
                     color.put_auto(true);
                     this._changedProps.put_Color(color);
                 }
                 if (this.api) {
-                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                 }
             }
         },
 
         onLikeTextColor: function(item, state) {
-            if (!!state) {
-                var color = Common.Utils.ThemeColor.getHexColor(0, 0, 0);
+            if (state) {
+                const color = Common.Utils.ThemeColor.getHexColor(0, 0, 0);
                 this.btnColor.setColor(color);
                 this.colors.clearSelection();
                 if (this._changedProps) {
                     this._changedProps.put_Color(undefined);
                 }
                 if (this.api) {
-                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                 }
             }
         },
@@ -783,91 +782,90 @@ define([
             this.btnColor.menu.items[0].setChecked(false, true);
             this.btnColor.menu.items[1].setChecked(false, true);
             if (this.api) {
-                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
             }
         },
 
         addNewBullet: function(callback) {
-            var me = this,
-                props = me.bulletProps,
-                btn,
-                handler = function(dlg, result, settings) {
+            const props = this.bulletProps;
+            let btn;
+            const handler = (dlg, result, settings) => {
                     btn = result;
-                    if (result == 'ok') {
+                    if (result === 'ok') {
                         props.changed = true;
                         props.code = settings.code;
                         props.font = settings.font;
                         props.symbol = settings.symbol;
-                        if (me._changedProps) {
-                            me._changedProps.put_Format(Asc.c_oAscNumberingFormat.Bullet);
-                            me._changedProps.put_FontFamily(props.font);
+                        if (this._changedProps) {
+                            this._changedProps.put_Format(Asc.c_oAscNumberingFormat.Bullet);
+                            this._changedProps.put_FontFamily(props.font);
 
-                            me._changedProps.put_Text([new Asc.CAscNumberingLvlText()]);
-                            me._changedProps.get_Text()[0].put_Value(props.symbol);
-                            if (me.api) {
-                                me.api.SetDrawImagePreviewBullet('bulleted-list-preview', me.props, me.level, me.type==2);
+                            this._changedProps.put_Text([new Asc.CAscNumberingLvlText()]);
+                            this._changedProps.get_Text()[0].put_Value(props.symbol);
+                            if (this.api) {
+                                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                             }
                         }
                     }
-                    callback && callback.call(me, result);
-                },
-                win = new Common.Views.SymbolTableDialog({
-                    api: me.options.api,
-                    lang: me.options.interfaceLang,
+                    callback?.call(this, result);
+                };
+            const win = new Common.Views.SymbolTableDialog({
+                    api: this.options.api,
+                    lang: this.options.interfaceLang,
                     modal: true,
                     type: 0,
                     font: props.font,
                     symbol: props.symbol,
                     handler: handler
-                }).on('close', function(obj){
-                    (btn===undefined) && callback && callback.call(me);
-                    setTimeout(function(){me.cmbFormat.focus();}, 1);
+                }).on('close', (obj)=> {
+                    (btn===undefined) && callback && callback.call(this);
+                    setTimeout(()=> {this.cmbFormat.focus();}, 1);
                 });
             win.show();
             win.on('symbol:dblclick', handler);
         },
 
         addNewListType: function(callback) {
-            var me = this,
-                btn,
-                handler = function(result, value) {
+            let btn;
+            const handler = (result, value) => {
                     btn = result;
-                    if (result == 'ok') {
-                        if (me._changedProps) {
-                            me._changedProps.put_Format(value);
-                            if (me.api) {
-                                me.api.SetDrawImagePreviewBullet('bulleted-list-preview', me.props, me.level, me.type==2);
+                    if (result === 'ok') {
+                        if (this._changedProps) {
+                            this._changedProps.put_Format(value);
+                            if (this.api) {
+                                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                             }
                         }
                     }
-                    callback && callback.call(me, result);
-                },
-                win = new DE.Views.ListTypesAdvanced({
+                    callback?.call(this, result);
+                };
+            const win = new DE.Views.ListTypesAdvanced({
                     modal: true,
-                    lang: me.lang,
+                    lang: this.lang,
                     handler: handler
-                }).on('close', function(obj){
-                    (btn===undefined) && callback && callback.call(me);
-                    setTimeout(function(){me.cmbFormat.focus();}, 1);
+                }).on('close', (obj)=> {
+                    (btn===undefined) && callback && callback.call(this);
+                    setTimeout(()=> {this.cmbFormat.focus();}, 1);
                 });
             win.show();
         },
 
         _handleInput: function(state) {
             if (this.options.handler) {
-                var props = [], lvlnum = [];
-                for (var i=0; i<9; i++) {
+                const props = [];
+                const lvlnum = [];
+                for (let i=0; i<9; i++) {
                     if (!this.levels[i]) continue;
                     props.push(this.levels[i]);
                     lvlnum.push(i);
                 }
-                this.options.handler.call(this, state, {props: (props.length==1) ? props[0] : props, num: (lvlnum.length==1) ? lvlnum[0] : lvlnum});
+                this.options.handler.call(this, state, {props: (props.length===1) ? props[0] : props, num: (lvlnum.length===1) ? lvlnum[0] : lvlnum});
             }
             this.close();
         },
 
         onBtnClick: function(event) {
-            this._handleInput(event.currentTarget.attributes['result'].value);
+            this._handleInput(event.currentTarget.attributes.result.value);
         },
 
         onPrimary: function(event) {
@@ -878,11 +876,11 @@ define([
         _setDefaults: function (props) {
             this.bulletProps = {};
             if (props) {
-                var levelProps = props.get_Lvl(this.level);
+                const levelProps = props.get_Lvl(this.level);
                 (this.level<0) && (this.level = 0);
                 this.levels[this.level] = levelProps || new Asc.CAscNumberingLvl(this.level);
 
-                if (this.type==2) {
+                if (this.type===2) {
                     this.levelsList.selectByIndex(this.level);
                 } else
                     this.fillLevelProps(this.levels[this.level]);
@@ -896,26 +894,24 @@ define([
                 this.levels[this.level] = this.props.get_Lvl(this.level);
             this.fillLevelProps(this.levels[this.level]);
             this._changedProps = this.levels[this.level];
-            this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+            this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
         },
 
         fillLevelProps: function(levelProps) {
             if (!levelProps) return;
 
-            var me = this;
-
             this.cmbAlign.setValue((levelProps.get_Align()!==undefined) ? levelProps.get_Align() : '');
-            var format = levelProps.get_Format(),
-                text = levelProps.get_Text();
-            if (text && text.length && format == Asc.c_oAscNumberingFormat.Bullet) {
+            const format = levelProps.get_Format();
+            const text = levelProps.get_Text();
+            if (text?.length && format === Asc.c_oAscNumberingFormat.Bullet) {
                 this.bulletProps.symbol = text[0].get_Value();
             }
 
             this.cmbSize.setValue(levelProps.get_FontSize() || -1);
 
-            var font = levelProps.get_FontFamily();
+            const font = levelProps.get_FontFamily();
             if (font) {
-                var rec = this.cmbFonts.store.findWhere({name: font});
+                const rec = this.cmbFonts.store.findWhere({name: font});
                 this.fontName = (rec) ? rec.get('name') : font;
                 this.cmbFonts.setValue(this.fontName);
             } else
@@ -925,12 +921,12 @@ define([
             this.btnBold.toggle(levelProps.get_Bold() === true, true);
             this.btnItalic.toggle(levelProps.get_Italic() === true, true);
 
-            var color = levelProps.get_Color();
+            let color = levelProps.get_Color();
             this.btnColor.menu.items[0].setChecked(color===undefined, true);
             this.btnColor.menu.items[1].setChecked(!!color && color.get_auto(), true);
             if (color && !color.get_auto()) {
                 Common.Utils.ThemeColor.selectPickerColorByEffect(color, this.colors);
-                ( typeof(color) == 'object' ) && (color = Common.Utils.ThemeColor.getHexColor(color.get_r(), color.get_g(), color.get_b()));
+                ( typeof(color) === 'object' ) && (color = Common.Utils.ThemeColor.getHexColor(color.get_r(), color.get_g(), color.get_b()));
             } else {
                 this.colors.clearSelection();
                 color = '000000';
@@ -941,11 +937,11 @@ define([
                 if (format !== Asc.c_oAscNumberingFormat.None || this.cmbFormat.store.length<1) {
                     this.checkRecentNum(format);
                 }
-                var store = [this._itemNoneBullet].concat(this._arrNumbers);
-                this.recentNumTypes.forEach(function(item) {
+                const store = [this._itemNoneBullet].concat(this._arrNumbers);
+                this.recentNumTypes.forEach((item) => {
                     if (item!==null && item!==undefined) {
-                        item = parseInt(item);
-                        store.push({ displayValue: AscCommon.IntToNumberFormat(1, item, me.lang) + ', ' + AscCommon.IntToNumberFormat(2, item, me.lang) + ', ' + AscCommon.IntToNumberFormat(3, item, me.lang) + ',...', value: item });
+                        item = Number.parseInt(item);
+                        store.push({ displayValue: `${AscCommon.IntToNumberFormat(1, item, this.lang)}, ${AscCommon.IntToNumberFormat(2, item, this.lang)}, ${AscCommon.IntToNumberFormat(3, item, this.lang)},...`, value: item });
                     }
                 });
                 store.push(this._itemMoreTypes);
@@ -960,18 +956,18 @@ define([
                         this.checkRecent(this.bulletProps.symbol, this.bulletProps.font);
                     else if (format !== Asc.c_oAscNumberingFormat.None)
                         this.checkRecentNum(format);
-                    var store = (this.type===2) ? [this._itemNoneBullet].concat(this._arrNumbers) : [];
+                    let store = (this.type===2) ? [this._itemNoneBullet].concat(this._arrNumbers) : [];
                     if (this.type===2) {
-                        this.recentNumTypes.forEach(function(item) {
+                        this.recentNumTypes.forEach((item) => {
                             if (item!==null && item!==undefined) {
-                                item = parseInt(item);
-                                store.push({ displayValue: AscCommon.IntToNumberFormat(1, item, me.lang) + ', ' + AscCommon.IntToNumberFormat(2, item, me.lang) + ', ' + AscCommon.IntToNumberFormat(3, item, me.lang) + ',...', value: item });
+                                item = Number.parseInt(item);
+                                store.push({ displayValue: `${AscCommon.IntToNumberFormat(1, item, this.lang)}, ${AscCommon.IntToNumberFormat(2, item, this.lang)}, ${AscCommon.IntToNumberFormat(3, item, this.lang)},...`, value: item });
                             }
                         });
                     }
                     store = store.concat(this._arrBullets);
-                    this.recentBullets.forEach(function(item) {
-                        store.push({ displayValue: me.txtSymbol + ': ', value: Asc.c_oAscNumberingFormat.Bullet, symbol: item.symbol, font: item.font });
+                    this.recentBullets.forEach((item) => {
+                        store.push({ displayValue: `${this.txtSymbol}: `, value: Asc.c_oAscNumberingFormat.Bullet, symbol: item.symbol, font: item.font });
                     });
                     (this.type===2) && store.push(this._itemMoreTypes);
                     store.push(this._itemNewBullet);
@@ -998,50 +994,48 @@ define([
                 this.spnTabStop.setMinValue(this.spnAlign.getNumberValue());
                 this.spnTabStop.setValue(levelProps.get_StopTab()!==null ? Common.Utils.Metric.fnRecalcFromMM(levelProps.get_StopTab()) : this.spnIndents.getNumberValue(), true);
 
-                this.txtNumFormat.setDisabled(format == Asc.c_oAscNumberingFormat.Bullet);
-                this.spnStart.setDisabled(format == Asc.c_oAscNumberingFormat.Bullet);
+                this.txtNumFormat.setDisabled(format === Asc.c_oAscNumberingFormat.Bullet);
+                this.spnStart.setDisabled(format === Asc.c_oAscNumberingFormat.Bullet);
                 this.chRestart.setDisabled(this.level===0);
                 this.chTabStop.setDisabled(levelProps.get_Suff()!==Asc.c_oAscNumberingSuff.Tab);
                 this.spnTabStop.setDisabled(levelProps.get_StopTab()===null || levelProps.get_Suff()!==Asc.c_oAscNumberingSuff.Tab);
 
-                var arr = [];
-                var me = this;
-                for (var lvl=0; lvl<this.level; lvl++) {
-                    var frmt = this.props.get_Lvl(lvl).get_Format();
+                const arr = [];
+                for (let lvl=0; lvl<this.level; lvl++) {
+                    const frmt = this.props.get_Lvl(lvl).get_Format();
                     if (frmt !== Asc.c_oAscNumberingFormat.None && frmt !== Asc.c_oAscNumberingFormat.Bullet) {
-                        arr.push({ displayValue: me.textLevel + ' ' + (lvl+1),  value: lvl });
+                        arr.push({ displayValue: `${this.textLevel} ${lvl+1}`,  value: lvl });
                     }
                 }
                 this.cmbLevel.setData(arr);
                 this.cmbLevel.setValue('');
-                this.cmbLevel.setDisabled(format == Asc.c_oAscNumberingFormat.Bullet || this.level===0 || arr.length<1);
+                this.cmbLevel.setDisabled(format === Asc.c_oAscNumberingFormat.Bullet || this.level===0 || arr.length<1);
                 this.makeFormatStr(levelProps);
             }
         },
 
         makeFormatStr: function(props) {
-            var formatStr = '';
+            let formatStr = '';
             this.formatString.lvlIndexes[this.level] = [];
             if (props) {
                 if (props.get_Format() !== Asc.c_oAscNumberingFormat.Bullet) {
-                    var text = props.get_Text();
-                    var me = this;
-                    var arr = this.formatString.lvlIndexes[this.level],
-                        isLgl = this.props.get_Lvl(this.level).get_IsLgl();
-                    text.forEach(function (item, index) {
+                    const text = props.get_Text();
+                    const arr = this.formatString.lvlIndexes[this.level];
+                    const isLgl = this.props.get_Lvl(this.level).get_IsLgl();
+                    text.forEach((item, index) => {
                         if (item.get_Type() === Asc.c_oAscNumberingLvlTextType.Text) {
                             formatStr += item.get_Value().toString();
                         } else if (item.get_Type() === Asc.c_oAscNumberingLvlTextType.Num) {
-                            var num = item.get_Value();
-                            if (me.levels[num] === undefined)
-                                me.levels[num] = me.props.get_Lvl(num);
+                            const num = item.get_Value();
+                            if (this.levels[num] === undefined)
+                                this.levels[num] = this.props.get_Lvl(num);
                             arr[num] = {start: formatStr.length, index: index};
-                            var lvl = me.levels[num],
-                                fmt = lvl.get_Format();
+                            const lvl = this.levels[num];
+                            let fmt = lvl.get_Format();
                             if (isLgl && fmt !== Asc.c_oAscNumberingFormat.Decimal && fmt !== Asc.c_oAscNumberingFormat.DecimalZero) {
                                 fmt = Asc.c_oAscNumberingFormat.Decimal;
                             }
-                            formatStr += AscCommon.IntToNumberFormat(lvl.get_Start(), fmt, me.lang);
+                            formatStr += AscCommon.IntToNumberFormat(lvl.get_Start(), fmt, this.lang);
                             arr[num].end = formatStr.length;
                         }
                     });
@@ -1056,15 +1050,15 @@ define([
         },
 
         onIncludeLevelSelected: function (combo, record) {
-            var $txt = this.txtNumFormat.$el.find('input'),
-                selectionStart = $txt[0].selectionStart;
+            const $txt = this.txtNumFormat.$el.find('input');
+            let selectionStart = $txt[0].selectionStart;
 
             if (this._changedProps) {
-                var text = this._changedProps.get_Text(),
-                    arr = this.formatString.lvlIndexes[this.level];
-                for (var i=0; i<arr.length; i++) {
+                const text = this._changedProps.get_Text();
+                const arr = this.formatString.lvlIndexes[this.level];
+                for (let i=0; i<arr.length; i++) {
                     if (arr[i]) {
-                        var item = arr[i];
+                        const item = arr[i];
                         if (i===record.value) {
                             text.splice(item.index, 1);
                             if (item.end<selectionStart)
@@ -1081,16 +1075,16 @@ define([
                 this.cmbLevel.setValue('');
             }
             if (this.api) {
-                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
             }
         },
 
         posToIndex: function (position) {
             if (this._changedProps) {
-                var arr = this.formatString.lvlIndexes[this.level];
-                for (var i = 0; i < arr.length; i++) {
+                const arr = this.formatString.lvlIndexes[this.level];
+                for (let i = 0; i < arr.length; i++) {
                     if (arr[i]) {
-                        var item = arr[i];
+                        const item = arr[i];
                         if (item.end < position)
                             position -= (item.end - item.start - 1);
                     }
@@ -1101,10 +1095,10 @@ define([
 
         isPosInRange: function (position, toEnd) {
             if (this._changedProps) {
-                var arr = this.formatString.lvlIndexes[this.level];
-                for (var i = 0; i < arr.length; i++) {
+                const arr = this.formatString.lvlIndexes[this.level];
+                for (let i = 0; i < arr.length; i++) {
                     if (arr[i]) {
-                        var item = arr[i];
+                        const item = arr[i];
                         if (position > item.start && position < item.end)
                             return toEnd ? item.end : item.start;
                     }
@@ -1113,41 +1107,40 @@ define([
         },
 
         checkMousePosition: function(target) {
-            var me = this;
-            setTimeout(function () {
+            setTimeout(() => {
                 if (target.selectionStart===target.selectionEnd) {
-                    var res = me.isPosInRange(target.selectionStart);
+                    const res = this.isPosInRange(target.selectionStart);
                     if (res !== undefined)
                         target.selectionStart = target.selectionEnd = res;
                 } else {
-                    var res = me.isPosInRange(target.selectionStart);
+                    let res = this.isPosInRange(target.selectionStart);
                     if (res !== undefined)
                         target.selectionStart = res;
-                    res = me.isPosInRange(target.selectionEnd, true);
+                    res = this.isPosInRange(target.selectionEnd, true);
                     if (res !== undefined)
                         target.selectionEnd = res;
                 }
-                me.formatString.selectionStart = target.selectionStart;
-                me.formatString.selectionEnd = target.selectionEnd;
+                this.formatString.selectionStart = target.selectionStart;
+                this.formatString.selectionEnd = target.selectionEnd;
             }, 0);
         },
 
         onFormatInput: function(e) {
-            var newValue = $(e.target).val(),
-                oldStr = this.formatString.text,
-                newStr = newValue.slice(this.formatString.selectionStart, newValue.length - (oldStr.length - this.formatString.selectionEnd)),
-                startIdx = this.posToIndex(this.formatString.selectionStart),
-                endIdx = this.posToIndex(this.formatString.selectionEnd);
+            const newValue = $(e.target).val();
+            const oldStr = this.formatString.text;
+            const newStr = newValue.slice(this.formatString.selectionStart, newValue.length - (oldStr.length - this.formatString.selectionEnd));
+            const startIdx = this.posToIndex(this.formatString.selectionStart);
+            const endIdx = this.posToIndex(this.formatString.selectionEnd);
             if (this._changedProps) {
-                var text = this._changedProps.get_Text();
-                var arr = text.slice(0, startIdx);
-                newStr.split('').forEach(function(str){
+                const text = this._changedProps.get_Text();
+                let arr = text.slice(0, startIdx);
+                newStr.split('').forEach((str)=> {
                     arr.push(new Asc.CAscNumberingLvlText(Asc.c_oAscNumberingLvlTextType.Text, str));
                 });
                 arr = arr.concat(text.slice(endIdx, text.length));
                 this._changedProps.put_Text(arr);
                 if (this.api) {
-                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                    this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
                 }
                 this.makeFormatStr(this._changedProps);
                 if (!this.formatString.lvlIndexes[this.level][this.level]) {
@@ -1160,26 +1153,25 @@ define([
         },
 
         onKeyDown: function(event) {
-            var me = this,
-                key = event.keyCode,
-                shift = event.shiftKey;
+            const key = event.keyCode;
+            const shift = event.shiftKey;
             if (key === Common.UI.Keys.LEFT) {
-                var res = me.isPosInRange(event.target.selectionStart-1);
+                const res = this.isPosInRange(event.target.selectionStart-1);
                 if (res !== undefined)
-                    setTimeout(function () {
+                    setTimeout(() => {
                         event.target.selectionStart = res;
                         !shift && (event.target.selectionEnd = res);
-                        me.formatString.selectionStart = event.target.selectionStart;
-                        me.formatString.selectionEnd = event.target.selectionEnd;
+                        this.formatString.selectionStart = event.target.selectionStart;
+                        this.formatString.selectionEnd = event.target.selectionEnd;
                     }, 0);
             } else if (key === Common.UI.Keys.RIGHT) {
-                res = me.isPosInRange(event.target.selectionEnd+1, true);
+                res = this.isPosInRange(event.target.selectionEnd+1, true);
                 if (res !== undefined)
-                    setTimeout(function () {
+                    setTimeout(() => {
                         event.target.selectionEnd = res;
                         !shift && (event.target.selectionStart = res);
-                        me.formatString.selectionStart = event.target.selectionStart;
-                        me.formatString.selectionEnd = event.target.selectionEnd;
+                        this.formatString.selectionStart = event.target.selectionStart;
+                        this.formatString.selectionEnd = event.target.selectionEnd;
                     }, 0);
             } else if (key === Common.UI.Keys.BACKSPACE) {
                 if (event.target.selectionStart === event.target.selectionEnd) {
@@ -1207,7 +1199,7 @@ define([
                 }
             }
             if (this.api) {
-                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
             }
         },
 
@@ -1216,7 +1208,7 @@ define([
                 this._changedProps.put_Bold(this.btnBold.isActive());
             }
             if (this.api) {
-                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
             }
         },
 
@@ -1225,18 +1217,18 @@ define([
                 this._changedProps.put_Italic(this.btnItalic.isActive());
             }
             if (this.api) {
-                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type==2);
+                this.api.SetDrawImagePreviewBullet('bulleted-list-preview', this.props, this.level, this.type===2);
             }
         },
 
         loadRecent: function(){
-            var sRecents = Common.localStorage.getItem('de-recent-list-bullets');
+            let sRecents = Common.localStorage.getItem('de-recent-list-bullets');
             if(sRecents !== ''){
                 sRecents = JSON.parse(sRecents);
             }
             if(_.isArray(sRecents)){
                 this.recentBullets = sRecents;
-                for (var i = 0; i < this.recentBullets.length; ++i){
+                for (let i = 0; i < this.recentBullets.length; ++i){
                     if(!this.recentBullets[i].symbol){
                         this.recentBullets.splice(i, 1);
                         i--;
@@ -1254,12 +1246,12 @@ define([
         },
 
         saveRecent: function(){
-            var sJSON = JSON.stringify(this.recentBullets);
+            const sJSON = JSON.stringify(this.recentBullets);
             Common.localStorage.setItem('de-recent-list-bullets', sJSON);
         },
 
         saveRecentNum: function(){
-            var sJSON = JSON.stringify(this.recentNumTypes);
+            const sJSON = JSON.stringify(this.recentNumTypes);
             Common.localStorage.setItem('de-recent-list-formats', sJSON);
         },
 
@@ -1267,7 +1259,7 @@ define([
             if (!sSymbol) return;
             sFont = sFont || '';
 
-            for(var i = 0; i < this._arrBullets.length; ++i){
+            for(let i = 0; i < this._arrBullets.length; ++i){
                 if(this._arrBullets[i].symbol === sSymbol && this._arrBullets[i].font === sFont){
                     return;
                 }
@@ -1277,7 +1269,7 @@ define([
                 this.saveRecent();
                 return;
             }
-            for (var i = 0; i < this.recentBullets.length; ++i){
+            for (let i = 0; i < this.recentBullets.length; ++i){
                 if(this.recentBullets[i].symbol === sSymbol && this.recentBullets[i].font === sFont){
                     this.recentBullets.splice(i, 1);
                     break;
@@ -1293,7 +1285,7 @@ define([
         checkRecentNum: function(format){
             if (format===null || format===undefined) return;
 
-            for(var i = 0; i < this._arrNumbers.length; ++i){
+            for(let i = 0; i < this._arrNumbers.length; ++i){
                 if(this._arrNumbers[i].value === format){
                     return;
                 }
@@ -1303,7 +1295,7 @@ define([
                 this.saveRecentNum();
                 return;
             }
-            for (var i = 0; i < this.recentNumTypes.length; ++i){
+            for (let i = 0; i < this.recentNumTypes.length; ++i){
                 if(this.recentNumTypes[i] === format){
                     this.recentNumTypes.splice(i, 1);
                     break;

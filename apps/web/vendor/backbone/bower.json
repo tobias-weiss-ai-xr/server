@@ -1,8 +1,20 @@
 {
-  "name"          : "backbone",
-  "main"          : "backbone.js",
-  "dependencies"  : {
-    "underscore"  : ">=1.8.3"
+  "name": "backbone",
+  "main": "backbone.js",
+  "dependencies": {
+    "underscore": ">=1.8.3"
   },
-  "ignore"        : ["docs", "examples", "test", "*.yml", "*.html", "*.ico", "*.md", "CNAME", ".*", "karma.*", "package.json"]
+  "ignore": [
+    "docs",
+    "examples",
+    "test",
+    "*.yml",
+    "*.html",
+    "*.ico",
+    "*.md",
+    "CNAME",
+    ".*",
+    "karma.*",
+    "package.json"
+  ]
 }

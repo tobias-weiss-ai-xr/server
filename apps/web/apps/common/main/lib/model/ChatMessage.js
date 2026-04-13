@@ -31,19 +31,15 @@
  *
  */
 
-define([
-    'backbone'
-], function(Backbone){
-    'use strict';
+define(["backbone"], (Backbone) => {
+  Common.Models = Common.Models || {}
 
-    Common.Models = Common.Models || {};
-
-    Common.Models.ChatMessage = Backbone.Model.extend({
-        defaults: {
-            type        : 0,
-            userid      : null,
-            username    : '',
-            message     : ''
-        }
-    });
-});
+  Common.Models.ChatMessage = Backbone.Model.extend({
+    defaults: {
+      type: 0,
+      userid: null,
+      username: "",
+      message: "",
+    },
+  })
+})

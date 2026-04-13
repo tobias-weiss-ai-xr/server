@@ -1,16 +1,16 @@
-import {action, observable, makeObservable} from 'mobx';
+import { action, makeObservable, observable } from "mobx"
 
 export class storePalette {
-    constructor() {
-        makeObservable(this, {
-            customColors: observable,
-            changeCustomColors: action
-        });
-    }
+  constructor() {
+    makeObservable(this, {
+      customColors: observable,
+      changeCustomColors: action,
+    })
+  }
 
-    customColors = [];
+  customColors = []
 
-    changeCustomColors (colors) {
-        this.customColors = colors;
-    }
+  changeCustomColors(colors) {
+    this.customColors = colors
+  }
 }

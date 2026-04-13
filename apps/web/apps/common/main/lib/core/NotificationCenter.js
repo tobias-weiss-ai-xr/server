@@ -45,20 +45,19 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'backbone',
     'underscore',
-], function (Backbone, _) {
-    'use strict';
+], (Backbone, _) => {
 
-    var NotificationCenter = function(){};
+    const NotificationCenter = ()=> {};
 
     // Copy the basic Backbone.Events on to the event aggregator
     _.extend(NotificationCenter.prototype, Backbone.Events);
 
-    if(typeof Common.NotificationCenter == 'undefined') {
+    if(typeof Common.NotificationCenter === 'undefined') {
         // Method to create new Common.NotificationCenter class
         NotificationCenter.extend = Backbone.Model.extend;
 

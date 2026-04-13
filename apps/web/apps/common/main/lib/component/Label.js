@@ -30,13 +30,12 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/BaseView',
     'underscore'
-], function (base, _) {
-    'use strict';
+], (base, _) => {
 
     Common.UI.Label = Common.UI.BaseView.extend({
 
@@ -73,23 +72,22 @@ define([
         },
 
         render: function (parentEl) {
-            var me = this;
-            if (!me.rendered) {
-                var elem = this.template({
-                    id           : me.id,
-                    cls          : me.cls,
-                    iconCls      : me.iconCls,
-                    style        : me.style,
-                    caption      : me.caption
+            if (!this.rendered) {
+                const elem = this.template({
+                    id           : this.id,
+                    cls          : this.cls,
+                    iconCls      : this.iconCls,
+                    style        : this.style,
+                    caption      : this.caption
                 });
                 if (parentEl) {
                     this.setElement(parentEl, false);
                     parentEl.html(elem);
                 } else {
-                    me.$el.html(elem);
+                    this.$el.html(elem);
                 }
 
-                this.$label = me.$el.find('.label-cmp');
+                this.$label = this.$el.find('.label-cmp');
                 this.rendered = true;
             }
 
@@ -100,9 +98,9 @@ define([
                 this.$label.attr('ratio', 'ratio');
                 this.applyScaling(Common.UI.Scaling.currentRatio());
 
-                this.$label.on('app:scaling', function (e, info) {
-                    if (me.options.scaling != info.ratio) {
-                        me.applyScaling(info.ratio);
+                this.$label.on('app:scaling', (e, info) => {
+                    if (this.options.scaling !== info.ratio) {
+                        this.applyScaling(info.ratio);
                     }
                 });
             }
@@ -126,15 +124,15 @@ define([
         },
 
         applyScaling: function (ratio) {
-            if (this.options.scaling != ratio) {
+            if (this.options.scaling !== ratio) {
                 this.options.scaling = ratio;
 
                 if (ratio > 2) {
                     if (!this.$label.find('svg.icon').length) {
-                        var iconCls = this.iconCls,
-                            re_icon_name = /btn-[^\s]+/.exec(iconCls),
-                            icon_name = re_icon_name ? re_icon_name[0] : "null",
-                            svg_icon = '<svg class="icon uni-scale"><use href="#%iconname"></use></svg>'.replace('%iconname', icon_name);
+                        const iconCls = this.iconCls;
+                        const re_icon_name = /btn-[^\s]+/.exec(iconCls);
+                        const icon_name = re_icon_name ? re_icon_name[0] : "null";
+                        const svg_icon = '<svg class="icon uni-scale"><use href="#%iconname"></use></svg>'.replace('%iconname', icon_name);
 
                         this.$label.find('i.icon').after(svg_icon);
                     }

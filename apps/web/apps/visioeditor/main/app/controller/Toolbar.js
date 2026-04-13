@@ -31,349 +31,440 @@
  *
  */
 
-define([
-    'core',
-    'common/main/lib/component/Window',
-    'visioeditor/main/app/view/Toolbar'
-], function () {
-    'use strict';
-
-    VE.Controllers.Toolbar = Backbone.Controller.extend(_.extend({
+define(["core", "common/main/lib/component/Window", "visioeditor/main/app/view/Toolbar"], () => {
+  VE.Controllers.Toolbar = Backbone.Controller.extend(
+    _.extend(
+      {
         models: [],
         collections: [],
         controllers: [],
-        views: [
-            'Toolbar'
-        ],
+        views: ["Toolbar"],
 
-        initialize: function() {
-            this._state = {
-                activated: false,
-                initEditing: true
-            };
-            this.editMode = true;
-            this.binding = {};
+        initialize: function () {
+          this._state = {
+            activated: false,
+            initEditing: true,
+          }
+          this.editMode = true
+          this.binding = {}
 
-            this.addListeners({
-                'Toolbar': {
-                    'change:compact'    : this.onClickChangeCompact,
-                    'tab:collapse'      : this.onTabCollapse
-                },
-                'FileMenu': {
-                    'menu:hide': this.onFileMenu.bind(this, 'hide'),
-                    'menu:show': this.onFileMenu.bind(this, 'show'),
-                },
-                'Common.Views.Header': {
-                    'print': function (opts) {
-                        var _main = this.getApplication().getController('Main');
-                        _main.onPrint();
-                    },
-                    'print-quick': function (opts) {
-                        var _main = this.getApplication().getController('Main');
-                        _main.onPrintQuick();
-                    },
-                    'downloadas': function (opts) {
-                        var _main = this.getApplication().getController('Main');
-                        var _file_type = _main.document.fileType,
-                            _format;
-                        if ( !!_file_type ) {
-                            _format = Asc.c_oAscFileType[ _file_type.toUpperCase() ];
-                        }
-
-                        var _supported = [
-                            Asc.c_oAscFileType.VSDX,
-                            Asc.c_oAscFileType.PDFA,
-                            Asc.c_oAscFileType.PNG,
-                            Asc.c_oAscFileType.JPG
-                        ];
-
-                        if ( !_format || _supported.indexOf(_format) < 0 )
-                            _format = Asc.c_oAscFileType.PDF;
-
-                        _main.api.asc_DownloadAs(new Asc.asc_CDownloadOptions(_format));
-                    },
-                    'go:editor': function() {
-                        // Common.Gateway.requestEditRights();
-                    }
-                },
-                'ViewTab': {
-                    'toolbar:setcompact': this.onChangeCompactView.bind(this)
+          this.addListeners({
+            Toolbar: {
+              "change:compact": this.onClickChangeCompact,
+              "tab:collapse": this.onTabCollapse,
+            },
+            FileMenu: {
+              "menu:hide": this.onFileMenu.bind(this, "hide"),
+              "menu:show": this.onFileMenu.bind(this, "show"),
+            },
+            "Common.Views.Header": {
+              print: function (opts) {
+                const _main = this.getApplication().getController("Main")
+                _main.onPrint()
+              },
+              "print-quick": function (opts) {
+                const _main = this.getApplication().getController("Main")
+                _main.onPrintQuick()
+              },
+              downloadas: function (opts) {
+                const _main = this.getApplication().getController("Main")
+                const _file_type = _main.document.fileType
+                let _format
+                if (_file_type) {
+                  _format = Asc.c_oAscFileType[_file_type.toUpperCase()]
                 }
-            });
 
-            Common.NotificationCenter.on('toolbar:collapse', _.bind(function () {
-                this.toolbar.collapse();
-            }, this));
-            Common.NotificationCenter.on('tab:set-active', _.bind(function(action){
-                this.toolbar.setTab(action);
-                this.onChangeCompactView(null, false, true);
-            }, this));
+                const _supported = [
+                  Asc.c_oAscFileType.VSDX,
+                  Asc.c_oAscFileType.PDFA,
+                  Asc.c_oAscFileType.PNG,
+                  Asc.c_oAscFileType.JPG,
+                ]
+
+                if (!_format || _supported.indexOf(_format) < 0) _format = Asc.c_oAscFileType.PDF
+
+                _main.api.asc_DownloadAs(new Asc.asc_CDownloadOptions(_format))
+              },
+              "go:editor": () => {
+                // Common.Gateway.requestEditRights();
+              },
+            },
+            ViewTab: {
+              "toolbar:setcompact": this.onChangeCompactView.bind(this),
+            },
+          })
+
+          Common.NotificationCenter.on(
+            "toolbar:collapse",
+            _.bind(function () {
+              this.toolbar.collapse()
+            }, this),
+          )
+          Common.NotificationCenter.on(
+            "tab:set-active",
+            _.bind(function (action) {
+              this.toolbar.setTab(action)
+              this.onChangeCompactView(null, false, true)
+            }, this),
+          )
         },
 
-        onLaunch: function() {
-            // Create toolbar view
-            this.toolbar = this.createView('Toolbar');
-            this.toolbar.on('render:before', function (cmp) {
-            });
+        onLaunch: function () {
+          // Create toolbar view
+          this.toolbar = this.createView("Toolbar")
+          this.toolbar.on("render:before", (cmp) => {})
 
-            Common.NotificationCenter.on('app:ready', this.onAppReady.bind(this));
-            Common.NotificationCenter.on('app:face', this.onAppShowed.bind(this));
+          Common.NotificationCenter.on("app:ready", this.onAppReady.bind(this))
+          Common.NotificationCenter.on("app:face", this.onAppShowed.bind(this))
         },
 
-        setMode: function(mode) {
-            var _main = this.getApplication().getController('Main');
-            this.mode = mode;
-            this.toolbar.applyLayout(mode);
-            Common.UI.TooltipManager.addTips({
-                'refreshFile' : {text: _main.textUpdateVersion, header: _main.textUpdating, target: '#toolbar', maxwidth: 'none', showButton: false, automove: true, noHighlight: true, noArrow: true, multiple: true},
-                'disconnect' : {text: _main.textConnectionLost, header: _main.textDisconnect, target: '#toolbar', maxwidth: 'none', showButton: false, automove: true, noHighlight: true, noArrow: true, multiple: true},
-                'updateVersion' : {text: _main.errorUpdateVersionOnDisconnect, header: _main.titleUpdateVersion, target: '#toolbar', maxwidth: 600, showButton: false, automove: true, noHighlight: true, noArrow: true, multiple: true},
-                'sessionIdle' : {text: _main.errorSessionIdle, target: '#toolbar', maxwidth: 600, showButton: false, automove: true, noHighlight: true, noArrow: true, multiple: true},
-                'sessionToken' : {text: _main.errorSessionToken, target: '#toolbar', maxwidth: 600, showButton: false, automove: true, noHighlight: true, noArrow: true, multiple: true}
-            });
+        setMode: function (mode) {
+          const _main = this.getApplication().getController("Main")
+          this.mode = mode
+          this.toolbar.applyLayout(mode)
+          Common.UI.TooltipManager.addTips({
+            refreshFile: {
+              text: _main.textUpdateVersion,
+              header: _main.textUpdating,
+              target: "#toolbar",
+              maxwidth: "none",
+              showButton: false,
+              automove: true,
+              noHighlight: true,
+              noArrow: true,
+              multiple: true,
+            },
+            disconnect: {
+              text: _main.textConnectionLost,
+              header: _main.textDisconnect,
+              target: "#toolbar",
+              maxwidth: "none",
+              showButton: false,
+              automove: true,
+              noHighlight: true,
+              noArrow: true,
+              multiple: true,
+            },
+            updateVersion: {
+              text: _main.errorUpdateVersionOnDisconnect,
+              header: _main.titleUpdateVersion,
+              target: "#toolbar",
+              maxwidth: 600,
+              showButton: false,
+              automove: true,
+              noHighlight: true,
+              noArrow: true,
+              multiple: true,
+            },
+            sessionIdle: {
+              text: _main.errorSessionIdle,
+              target: "#toolbar",
+              maxwidth: 600,
+              showButton: false,
+              automove: true,
+              noHighlight: true,
+              noArrow: true,
+              multiple: true,
+            },
+            sessionToken: {
+              text: _main.errorSessionToken,
+              target: "#toolbar",
+              maxwidth: 600,
+              showButton: false,
+              automove: true,
+              noHighlight: true,
+              noArrow: true,
+              multiple: true,
+            },
+          })
         },
 
-        attachCommonUIEvents: function(toolbar) {
+        attachCommonUIEvents: (toolbar) => {},
+
+        attachEditUIEvents: function (toolbar) {
+          if (!this.mode || !this.mode.isEdit) return
         },
 
-        attachEditUIEvents: function(toolbar) {
-            if (!this.mode || !this.mode.isEdit) return;
+        attachUIEvents: function (toolbar) {
+          /**
+           * UI Events
+           */
+          this.attachCommonUIEvents(toolbar)
+          if (this.mode.isEdit) {
+            this.attachEditUIEvents(toolbar)
+          }
         },
 
-        attachUIEvents: function(toolbar) {
-            /**
-             * UI Events
-             */
-            this.attachCommonUIEvents(toolbar);
-            if (this.mode.isEdit) {
-                this.attachEditUIEvents(toolbar);
-            }
+        attachCommonApiEvents: function () {
+          this.api.asc_registerCallback("asc_onDownloadUrl", _.bind(this.onDownloadUrl, this))
+          this.api.asc_registerCallback(
+            "onPluginToolbarMenu",
+            _.bind(this.onPluginToolbarMenu, this),
+          )
+          this.api.asc_registerCallback(
+            "onPluginToolbarCustomMenuItems",
+            _.bind(this.onPluginToolbarCustomMenuItems, this),
+          )
+          this.api.asc_registerCallback(
+            "onPluginUpdateToolbarMenu",
+            _.bind(this.onPluginUpdateToolbarMenu, this),
+          )
+          Common.NotificationCenter.on("document:ready", _.bind(this.onDocumentReady, this))
         },
 
-        attachCommonApiEvents: function() {
-            this.api.asc_registerCallback('asc_onDownloadUrl',  _.bind(this.onDownloadUrl, this));
-            this.api.asc_registerCallback('onPluginToolbarMenu', _.bind(this.onPluginToolbarMenu, this));
-            this.api.asc_registerCallback('onPluginToolbarCustomMenuItems', _.bind(this.onPluginToolbarCustomMenuItems, this));
-            this.api.asc_registerCallback('onPluginUpdateToolbarMenu', _.bind(this.onPluginUpdateToolbarMenu, this));
-            Common.NotificationCenter.on('document:ready', _.bind(this.onDocumentReady, this));
+        attachEditApiEvents: function () {
+          if (!this.mode.isEdit) return
+
+          // this.api.asc_registerCallback('asc_onFocusObject',          _.bind(this.onApiFocusObject, this));
         },
 
-        attachEditApiEvents: function() {
-            if (!this.mode.isEdit) return;
+        setApi: function (api) {
+          this.api = api
+          this.attachCommonApiEvents()
 
-            // this.api.asc_registerCallback('asc_onFocusObject',          _.bind(this.onApiFocusObject, this));
+          if (this.mode.isEdit) {
+            this.attachEditApiEvents()
+          }
         },
 
-        setApi: function(api) {
-            this.api = api;
-            this.attachCommonApiEvents();
+        onChangeCompactView: function (view, compact, suppressSave) {
+          this.toolbar.setFolded(compact)
+          this.toolbar.fireEvent("view:compact", [this, compact])
 
-            if (this.mode.isEdit) {
-                this.attachEditApiEvents();
-            }
-        },
+          compact && this.onTabCollapse()
 
-        onChangeCompactView: function(view, compact, suppressSave) {
-            this.toolbar.setFolded(compact);
-            this.toolbar.fireEvent('view:compact', [this, compact]);
+          !suppressSave &&
+            Common.localStorage.setBool(
+              this.mode.isEdit ? "ve-compact-toolbar" : "ve-view-compact-toolbar",
+              compact,
+            )
 
-            compact && this.onTabCollapse();
-
-            !suppressSave && Common.localStorage.setBool(this.mode.isEdit ? "ve-compact-toolbar" : "ve-view-compact-toolbar", compact);
-
-            Common.NotificationCenter.trigger('layout:changed', 'toolbar');
-            Common.NotificationCenter.trigger('edit:complete', this.toolbar);
+          Common.NotificationCenter.trigger("layout:changed", "toolbar")
+          Common.NotificationCenter.trigger("edit:complete", this.toolbar)
         },
 
         onClickChangeCompact: function (from) {
-            if ( from != 'file' ) {
-                var me = this;
-                setTimeout(function () {
-                    me.onChangeCompactView(null, !me.toolbar.isCompact());
-                }, 0);
-            }
+          if (from !== "file") {
+            setTimeout(() => {
+              this.onChangeCompactView(null, !this.toolbar.isCompact())
+            }, 0)
+          }
         },
 
-        onNewDocument: function(btn, e) {
-            if (this.api)
-                this.api.OpenNewDocument();
+        onNewDocument: function (btn, e) {
+          if (this.api) this.api.OpenNewDocument()
 
-            Common.NotificationCenter.trigger('edit:complete', this.toolbar);
-            Common.component.Analytics.trackEvent('ToolBar', 'New Document');
+          Common.NotificationCenter.trigger("edit:complete", this.toolbar)
+          Common.component.Analytics.trackEvent("ToolBar", "New Document")
         },
 
-        onOpenDocument: function(btn, e) {
-            if (this.api)
-                this.api.LoadDocumentFromDisk();
+        onOpenDocument: function (btn, e) {
+          if (this.api) this.api.LoadDocumentFromDisk()
 
-            Common.NotificationCenter.trigger('edit:complete', this.toolbar);
-            Common.component.Analytics.trackEvent('ToolBar', 'Open Document');
+          Common.NotificationCenter.trigger("edit:complete", this.toolbar)
+          Common.component.Analytics.trackEvent("ToolBar", "Open Document")
         },
 
-        onDownloadUrl: function(url, fileType) {
-            if (this._state.isFromToolbarDownloadAs) {
-                var me = this,
-                    defFileName = this.getApplication().getController('Viewport').getView('Common.Views.Header').getDocumentCaption();
-                !defFileName && (defFileName = me.txtUntitled);
+        onDownloadUrl: function (url, fileType) {
+          if (this._state.isFromToolbarDownloadAs) {
+            let defFileName = this.getApplication()
+              .getController("Viewport")
+              .getView("Common.Views.Header")
+              .getDocumentCaption()
+            !defFileName && (defFileName = this.txtUntitled)
 
-                if (me.toolbar.mode.canRequestSaveAs) {
-                    Common.Gateway.requestSaveAs(url, defFileName, fileType);
-                } else {
-                    me._saveCopyDlg = new Common.Views.SaveAsDlg({
-                        saveFolderUrl: me.toolbar.mode.saveAsUrl,
-                        saveFileUrl: url,
-                        defFileName: defFileName
-                    });
-                    me._saveCopyDlg.on('saveaserror', function(obj, err){
-                        Common.UI.warning({
-                            closable: false,
-                            msg: err,
-                            callback: function(btn){
-                                Common.NotificationCenter.trigger('edit:complete', me);
-                            }
-                        });
-                    }).on('close', function(obj){
-                        me._saveCopyDlg = undefined;
-                    });
-                    me._saveCopyDlg.show();
-                }
-            }
-            this._state.isFromToolbarDownloadAs = false;
-        },
-
-        activateControls: function() {
-            this.toolbar.lockToolbar(Common.enumLock.disableOnStart, false);
-            this._state.activated = true;
-        },
-
-        onHideMenus: function(e){
-            Common.NotificationCenter.trigger('edit:complete', this.toolbar);
-        },
-
-        onApiCoAuthoringDisconnect: function(enableDownload) {
-            (this.mode.isEdit) && this.toolbar.setMode({isDisconnected:true, enableDownload: !!enableDownload});
-            this.editMode = false;
-            this.DisableToolbar(true, true);
-        },
-
-        DisableToolbar: function(disable, viewMode) {
-            if (viewMode!==undefined) this.editMode = !viewMode;
-            disable = disable || !this.editMode;
-
-            var mask = $('.toolbar-mask');
-            if (disable && mask.length>0 || !disable && mask.length==0) return;
-
-            var toolbar = this.toolbar;
-            toolbar.hideMoreBtns();
-            toolbar.$el.find('.toolbar').toggleClass('masked', disable);
-
-            if(disable) {
-                mask = $("<div class='toolbar-mask'>").appendTo(toolbar.$el.find('.toolbar'));
+            if (this.toolbar.mode.canRequestSaveAs) {
+              Common.Gateway.requestSaveAs(url, defFileName, fileType)
             } else {
-                mask.remove();
+              this._saveCopyDlg = new Common.Views.SaveAsDlg({
+                saveFolderUrl: this.toolbar.mode.saveAsUrl,
+                saveFileUrl: url,
+                defFileName: defFileName,
+              })
+              this._saveCopyDlg
+                .on("saveaserror", (obj, err) => {
+                  Common.UI.warning({
+                    closable: false,
+                    msg: err,
+                    callback: (btn) => {
+                      Common.NotificationCenter.trigger("edit:complete", this)
+                    },
+                  })
+                })
+                .on("close", (obj) => {
+                  this._saveCopyDlg = undefined
+                })
+              this._saveCopyDlg.show()
             }
+          }
+          this._state.isFromToolbarDownloadAs = false
         },
 
-        createDelayedElements: function() {
-            this.toolbar.createDelayedElements();
-            this.attachUIEvents(this.toolbar);
-            Common.Utils.injectSvgIcons();
+        activateControls: function () {
+          this.toolbar.lockToolbar(Common.enumLock.disableOnStart, false)
+          this._state.activated = true
+        },
+
+        onHideMenus: function (e) {
+          Common.NotificationCenter.trigger("edit:complete", this.toolbar)
+        },
+
+        onApiCoAuthoringDisconnect: function (enableDownload) {
+          this.mode.isEdit &&
+            this.toolbar.setMode({ isDisconnected: true, enableDownload: !!enableDownload })
+          this.editMode = false
+          this.DisableToolbar(true, true)
+        },
+
+        DisableToolbar: function (disable, viewMode) {
+          if (viewMode !== undefined) this.editMode = !viewMode
+          disable = disable || !this.editMode
+
+          let mask = $(".toolbar-mask")
+          if ((disable && mask.length > 0) || (!disable && mask.length === 0)) return
+
+          const toolbar = this.toolbar
+          toolbar.hideMoreBtns()
+          toolbar.$el.find(".toolbar").toggleClass("masked", disable)
+
+          if (disable) {
+            mask = $("<div class='toolbar-mask'>").appendTo(toolbar.$el.find(".toolbar"))
+          } else {
+            mask.remove()
+          }
+        },
+
+        createDelayedElements: function () {
+          this.toolbar.createDelayedElements()
+          this.attachUIEvents(this.toolbar)
+          Common.Utils.injectSvgIcons()
         },
 
         onAppShowed: function (config) {
-            var me = this;
+          const editmode = config.isEdit
+          let compactview = !editmode
+          if (
+            Common.localStorage.itemExists(
+              editmode ? "ve-compact-toolbar" : "ve-view-compact-toolbar",
+            )
+          ) {
+            compactview = Common.localStorage.getBool(
+              editmode ? "ve-compact-toolbar" : "ve-view-compact-toolbar",
+            )
+          } else if (config.customization) {
+            compactview = editmode
+              ? !!config.customization.compactToolbar
+              : config.customization.compactToolbar !== false
+          }
+          Common.Utils.InternalSettings.set("toolbar-active-tab", !editmode && !compactview)
 
-            var editmode = config.isEdit,
-                compactview = !editmode;
-            if ( Common.localStorage.itemExists(editmode ? "ve-compact-toolbar" : "ve-view-compact-toolbar") ) {
-                compactview = Common.localStorage.getBool(editmode ? "ve-compact-toolbar" : "ve-view-compact-toolbar");
-            } else if (config.customization) {
-                compactview = editmode ? !!config.customization.compactToolbar : config.customization.compactToolbar!==false;
-            }
-            Common.Utils.InternalSettings.set('toolbar-active-tab', !editmode && !compactview);
+          this.toolbar.render(_.extend({ compactview: editmode ? compactview : true }, config))
 
-            me.toolbar.render(_.extend({compactview: editmode ? compactview : true}, config));
-
-            if ( config.isEdit) {
-                me.toolbar.setMode(config);
-                if (!config.compactHeader) {
-                    me.toolbar.processPanelVisible(null, true);
-                }
+          if (config.isEdit) {
+            this.toolbar.setMode(config)
+            if (!config.compactHeader) {
+              this.toolbar.processPanelVisible(null, true)
             }
-            var tab = {caption: me.toolbar.textTabView, action: 'view', extcls: config.isEdit ? 'canedit' : '', layoutname: 'toolbar-view', dataHintTitle: 'W'};
-            var viewtab = me.getApplication().getController('ViewTab');
-            viewtab.setApi(me.api).setConfig({toolbar: me, mode: config});
-            var $panel = viewtab.createToolbarPanel();
-            if ($panel) {
-                var visible = Common.UI.LayoutManager.isElementVisible('toolbar-view');
-                me.toolbar.addTab(tab, $panel, 8);
-                me.toolbar.setVisible('view', visible);
-                !editmode && !compactview && visible && Common.Utils.InternalSettings.set('toolbar-active-tab', 'view'); // need to activate later
-            }
+          }
+          const tab = {
+            caption: this.toolbar.textTabView,
+            action: "view",
+            extcls: config.isEdit ? "canedit" : "",
+            layoutname: "toolbar-view",
+            dataHintTitle: "W",
+          }
+          const viewtab = this.getApplication().getController("ViewTab")
+          viewtab.setApi(this.api).setConfig({ toolbar: this, mode: config })
+          const $panel = viewtab.createToolbarPanel()
+          if ($panel) {
+            const visible = Common.UI.LayoutManager.isElementVisible("toolbar-view")
+            this.toolbar.addTab(tab, $panel, 8)
+            this.toolbar.setVisible("view", visible)
+            !editmode &&
+              !compactview &&
+              visible &&
+              Common.Utils.InternalSettings.set("toolbar-active-tab", "view") // need to activate later
+          }
         },
 
         onAppReady: function (config) {
-            var me = this;
-            me.appOptions = config;
+          this.appOptions = config
 
-            (new Promise(function(accept) {
-                accept();
-            })).then(function () {
-            });
+          new Promise((accept) => {
+            accept()
+          }).then(() => {})
         },
 
         getView: function (name) {
-            return !name ? this.toolbar : Backbone.Controller.prototype.getView.apply(this, arguments);
+          return !name ? this.toolbar : Backbone.Controller.prototype.getView.apply(this, arguments)
         },
 
         onFileMenu: function (opts) {
-            if ( opts == 'show' ) {
-                if ( !this.toolbar.isTabActive('file') )
-                    this.toolbar.setTab('file');
-            } else {
-                if ( this.toolbar.isTabActive('file') )
-                    this.toolbar.setTab();
-            }
+          if (opts === "show") {
+            if (!this.toolbar.isTabActive("file")) this.toolbar.setTab("file")
+          } else {
+            if (this.toolbar.isTabActive("file")) this.toolbar.setTab()
+          }
         },
 
-        onTabCollapse: function(tab) {
+        onTabCollapse: (tab) => {},
+
+        onPluginToolbarMenu: function (data) {
+          const api = this.api
+          this.toolbar &&
+            Array.prototype.push.apply(
+              this.toolbar.lockControls,
+              Common.UI.LayoutManager.addCustomControls(
+                this.toolbar,
+                data,
+                (guid, value, pressed) => {
+                  api?.onPluginToolbarMenuItemClick(guid, value, pressed)
+                },
+              ),
+            )
         },
 
-        onPluginToolbarMenu: function(data) {
-            var api = this.api;
-            this.toolbar && Array.prototype.push.apply(this.toolbar.lockControls, Common.UI.LayoutManager.addCustomControls(this.toolbar, data, function(guid, value, pressed) {
-                api && api.onPluginToolbarMenuItemClick(guid, value, pressed);
-            }));
+        onPluginToolbarCustomMenuItems: function (action, data) {
+          if (!this._isDocReady) {
+            this._state.customPluginData = (this._state.customPluginData || []).concat([
+              { action: action, data: data },
+            ])
+            return
+          }
+          const api = this.api
+          this.toolbar &&
+            Common.UI.LayoutManager.addCustomMenuItems(action, data, (guid, value) => {
+              api?.onPluginContextMenuItemClick(guid, value)
+            })
         },
 
-        onPluginToolbarCustomMenuItems: function(action, data) {
-            if (!this._isDocReady) {
-                this._state.customPluginData = (this._state.customPluginData || []).concat([{action: action, data: data}]);
-                return;
-            }
-            var api = this.api;
-            this.toolbar && Common.UI.LayoutManager.addCustomMenuItems(action, data, function(guid, value) {
-                api && api.onPluginContextMenuItemClick(guid, value);
-            });
+        onPluginUpdateToolbarMenu: function (data) {
+          const api = this.api
+          this.toolbar &&
+            Array.prototype.push.apply(
+              this.toolbar.lockControls,
+              Common.UI.LayoutManager.addCustomControls(
+                this.toolbar,
+                data,
+                (guid, value, pressed) => {
+                  api?.onPluginToolbarMenuItemClick(guid, value, pressed)
+                },
+                true,
+              ),
+            )
         },
 
-        onPluginUpdateToolbarMenu: function(data) {
-            var api = this.api;
-            this.toolbar && Array.prototype.push.apply(this.toolbar.lockControls, Common.UI.LayoutManager.addCustomControls(this.toolbar, data, function(guid, value, pressed) {
-                api && api.onPluginToolbarMenuItemClick(guid, value, pressed);
-            }, true));
+        onDocumentReady: function () {
+          this._isDocReady = true
+          this._state.customPluginData?.forEach((plugin) => {
+            this.onPluginToolbarCustomMenuItems(plugin.action, plugin.data)
+          })
+          this._state.customPluginData = null
         },
 
-        onDocumentReady: function() {
-            this._isDocReady = true;
-            var me = this;
-            this._state.customPluginData && this._state.customPluginData.forEach(function(plugin) {
-                me.onPluginToolbarCustomMenuItems(plugin.action, plugin.data);
-            });
-            this._state.customPluginData = null;
-        },
-
-        txtUntitled: 'Untitled'
-
-    }, VE.Controllers.Toolbar || {}));
-});
+        txtUntitled: "Untitled",
+      },
+      VE.Controllers.Toolbar || {},
+    ),
+  )
+})

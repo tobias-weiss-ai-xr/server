@@ -26,100 +26,102 @@
  * Date: 09.02.15
  */
 
-define([], function () { 'use strict';
+define([], () => {
+  Common.Views.SelectFileDlg = Common.UI.Window.extend(
+    _.extend(
+      {
+        initialize: function (options) {
+          const _options = {}
+          _.extend(
+            _options,
+            {
+              title: this.textTitle,
+              width: 1024,
+              header: true,
+            },
+            options,
+          )
 
-    Common.Views.SelectFileDlg = Common.UI.Window.extend(_.extend({
-        initialize : function(options) {
-            var _options = {};
-            _.extend(_options,  {
-                title: this.textTitle,
-                width: 1024,
-                header: true
-            }, options);
+          this.template = ['<div id="id-select-file-placeholder"></div>'].join("")
 
-            this.template = [
-                '<div id="id-select-file-placeholder"></div>'
-            ].join('');
+          _options.tpl = _.template(this.template)(_options)
 
-            _options.tpl = _.template(this.template)(_options);
-
-            this.fileChoiceUrl = options.fileChoiceUrl || '';
-            Common.UI.Window.prototype.initialize.call(this, _options);
+          this.fileChoiceUrl = options.fileChoiceUrl || ""
+          Common.UI.Window.prototype.initialize.call(this, _options)
         },
 
-        render: function() {
-            Common.UI.Window.prototype.render.call(this);
-            this.$window.find('> .body').css({height: 'auto', overflow: 'hidden'});
+        render: function () {
+          Common.UI.Window.prototype.render.call(this)
+          this.$window.find("> .body").css({ height: "auto", overflow: "hidden" })
 
-            var iframe = document.createElement("iframe");
-            iframe.width        = '100%';
-            iframe.height       = 585;
-            iframe.align        = "top";
-            iframe.frameBorder  = 0;
-            iframe.scrolling    = "no";
-            iframe.onload       = _.bind(this._onLoad,this);
-            $('#id-select-file-placeholder').append(iframe);
+          const iframe = document.createElement("iframe")
+          iframe.width = "100%"
+          iframe.height = 585
+          iframe.align = "top"
+          iframe.frameBorder = 0
+          iframe.scrolling = "no"
+          iframe.onload = _.bind(this._onLoad, this)
+          $("#id-select-file-placeholder").append(iframe)
 
-            this.loadMask = new Common.UI.LoadMask({owner: $('#id-select-file-placeholder')});
-            this.loadMask.setTitle(this.textLoading);
-            this.loadMask.show();
+          this.loadMask = new Common.UI.LoadMask({ owner: $("#id-select-file-placeholder") })
+          this.loadMask.setTitle(this.textLoading)
+          this.loadMask.show()
 
-            iframe.src = this.fileChoiceUrl;
+          iframe.src = this.fileChoiceUrl
+          this._eventfunc = (msg) => {
+            this._onWindowMessage(msg)
+          }
+          this._bindWindowEvents.call(this)
 
-            var me = this;
-            this._eventfunc = function(msg) {
-                me._onWindowMessage(msg);
-            };
-            this._bindWindowEvents.call(this);
-
-            this.on('close', function(obj){
-                me._unbindWindowEvents();
-            });
+          this.on("close", (obj) => {
+            this._unbindWindowEvents()
+          })
         },
 
-        _bindWindowEvents: function() {
-            if (window.addEventListener) {
-                window.addEventListener("message", this._eventfunc, false)
-            } else if (window.attachEvent) {
-                window.attachEvent("onmessage", this._eventfunc);
-            }
+        _bindWindowEvents: function () {
+          if (window.addEventListener) {
+            window.addEventListener("message", this._eventfunc, false)
+          } else if (window.attachEvent) {
+            window.attachEvent("onmessage", this._eventfunc)
+          }
         },
 
-        _unbindWindowEvents: function() {
-            if (window.removeEventListener) {
-                window.removeEventListener("message", this._eventfunc)
-            } else if (window.detachEvent) {
-                window.detachEvent("onmessage", this._eventfunc);
-            }
+        _unbindWindowEvents: function () {
+          if (window.removeEventListener) {
+            window.removeEventListener("message", this._eventfunc)
+          } else if (window.detachEvent) {
+            window.detachEvent("onmessage", this._eventfunc)
+          }
         },
 
-        _onWindowMessage: function(msg) {
-            // TODO: check message origin
-            if (msg && window.JSON) {
-                try {
-                    this._onMessage.call(this, window.JSON.parse(msg.data));
-                } catch(e) {}
-            }
+        _onWindowMessage: function (msg) {
+          // TODO: check message origin
+          if (msg && window.JSON) {
+            try {
+              this._onMessage.call(this, window.JSON.parse(msg.data))
+            } catch (e) {}
+          }
         },
 
-        _onMessage: function(msg) {
-            if (msg && msg.Referer == "Word Office" && msg.file !== undefined) {
-                Common.NotificationCenter.trigger('window:close', this);
-                var me = this;
-                setTimeout(function() {
-                    if ( !_.isEmpty(msg.file) ) {
-                        me.trigger('selectfile', me, msg.file);
-                    }
-                }, 50);
-            }
+        _onMessage: function (msg) {
+          if (msg && msg.Referer === "Word Office" && msg.file !== undefined) {
+            Common.NotificationCenter.trigger("window:close", this)
+            setTimeout(() => {
+              if (!_.isEmpty(msg.file)) {
+                this.trigger("selectfile", this, msg.file)
+              }
+            }, 50)
+          }
         },
 
-        _onLoad: function() {
-            if (this.loadMask)
-                this.loadMask.hide();
+        _onLoad: function () {
+          if (this.loadMask) this.loadMask.hide()
         },
 
-        textTitle   : 'Select Data Source',
-        textLoading : 'Loading'
-    }, Common.Views.SelectFileDlg || {}));
-});
+        textTitle: "Select Data Source",
+        textLoading: "Loading",
+      },
+      Common.Views.SelectFileDlg || {},
+    ),
+  )
+})

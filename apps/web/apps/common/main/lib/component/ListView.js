@@ -30,15 +30,13 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 define([
     'common/main/lib/component/DataView'
-], function () {
-    'use strict';
+], () => {
 
-    Common.UI.ListView = Common.UI.DataView.extend((function() {
-        return {
+    Common.UI.ListView = Common.UI.DataView.extend((() => ({
             options: {
                 handleSelect: true,
                 enableKeyEvents: true,
@@ -73,7 +71,7 @@ define([
             },
 
             insertHeaders: function() {                
-                var template = _.template([
+                const template = _.template([
                     '<div class="listview-table-header-wrapper">',
                         '<div class="listview-table-header">',
                             '<% _.each(headers, function(header){ %>',
@@ -98,24 +96,22 @@ define([
                     sortDirection: this.options.initSort ? this.options.initSort.direction : null,
                 });
                 this.$el.before(template);
-
-                var me = this,
-                    headerEl = this.$el.prev().children();
+                const headerEl = this.$el.prev().children();
                 
                 //Calculating the width of a multiline label in sort header
-                for(var i = 0, sortHeaderIndex = 0; i < this.options.headers.length; i++){
-                    var header = this.options.headers[i];
+                for(let i = 0, sortHeaderIndex = 0; i < this.options.headers.length; i++){
+                    const header = this.options.headers[i];
                     if(header.sortType){
-                        var headerWords = header.name.split(' '),
-                            labelEl = $(headerEl.find('.table-header-item .header-sorted label')[sortHeaderIndex]),
-                            tempEl = $('<label>A</label>');
+                        const headerWords = header.name.split(' ');
+                        const labelEl = $(headerEl.find('.table-header-item .header-sorted label')[sortHeaderIndex]);
+                        const tempEl = $('<label>A</label>');
 
-                        me.$el.before(tempEl);
+                        this.$el.before(tempEl);
 
                         if(headerWords.length > 1 && labelEl.height() > Math.ceil(tempEl.height())) {
-                            var maxWidthWord = 0;
+                            let maxWidthWord = 0;
 
-                            headerWords.forEach(function(word) {
+                            headerWords.forEach((word) => {
                                 tempEl.text(word);
                                 (tempEl.width() > maxWidthWord) && (maxWidthWord = tempEl.width());
                             });
@@ -126,41 +122,41 @@ define([
                     }
                 };
 
-                headerEl.find('.table-header-item .header-sorted').on('click', function(e) {
-                    var selectedSortType = $(e.currentTarget).parent().parent().attr('sort-type'),
-                        curCaretEl = $(e.currentTarget).find('.caret');
+                headerEl.find('.table-header-item .header-sorted').on('click', (e) => {
+                    const selectedSortType = $(e.currentTarget).parent().parent().attr('sort-type');
+                    const curCaretEl = $(e.currentTarget).find('.caret');
 
-                    if(me.activeSortType === selectedSortType){
-                        me.sortDirection = -me.sortDirection
+                    if(this.activeSortType === selectedSortType){
+                        this.sortDirection = -this.sortDirection
                     }
                     else {
-                        me.activeSortType = selectedSortType;
-                        me.sortDirection = 1;
+                        this.activeSortType = selectedSortType;
+                        this.sortDirection = 1;
                     }
 
                     headerEl.find('.caret').addClass('caret-hidden');
 
                     if(curCaretEl.removeClass('caret-hidden'));
-                    if(me.sortDirection == -1) 
+                    if(this.sortDirection === -1) 
                         curCaretEl.addClass('sort-desc');
                     else 
                         curCaretEl.removeClass('sort-desc');
                     
 
-                    me.trigger('header:click', me.activeSortType, me.sortDirection);
+                    this.trigger('header:click', this.activeSortType, this.sortDirection);
                 });
 
-                if(this.tabindex != 0 && this.handleSelect){
-                    headerEl.on('click', function(e) {
-                        me.focus();
+                if(this.tabindex !== 0 && this.handleSelect){
+                    headerEl.on('click', (e) => {
+                        this.focus();
                     });
-                    var onMouseDown = function (e) {
-                        me.$el.find('.inner').addClass('focused');
+                    const onMouseDown = (e) => {
+                        this.$el.find('.inner').addClass('focused');
                         $(document).on('mouseup',   onMouseUp);
                     };
-                    var onMouseUp = function (e) {
-                        me.focus();
-                        me.$el.find('.inner').removeClass('focused');
+                    const onMouseUp = (e) => {
+                        this.focus();
+                        this.$el.find('.inner').removeClass('focused');
                         $(document).off('mouseup',   onMouseUp);
                     };
                     headerEl.on('mousedown', onMouseDown);
@@ -173,7 +169,7 @@ define([
             setHeaderName: function(index, name) {
                 if(index < 0 || index > this.options.headers.length - 1 || !this.headerEl) return;
 
-                var labelEl = $(this.headerEl.find('.table-header-item')[index]);
+                let labelEl = $(this.headerEl.find('.table-header-item')[index]);
                 if(labelEl.attr('sort-type')) {
                     labelEl = labelEl.find('label')[0];
                 }
@@ -185,7 +181,7 @@ define([
             setHeaderWidth: function(index, width, innerLabel) {
                 if(index < 0 || index > this.options.headers.length - 1 || !this.headerEl) return;
 
-                var labelEl = $(this.headerEl.find('.table-header-item')[index]);
+                let labelEl = $(this.headerEl.find('.table-header-item')[index]);
                 if(labelEl.attr('sort-type') && innerLabel) {
                     labelEl = labelEl.find('label')[0];
                 }
@@ -196,9 +192,9 @@ define([
 
             calcOffsetFromHeader: function() {
                 if(!this.headerEl) return;
-                var headerHeight = Math.floor(this.headerEl.outerHeight());
+                const headerHeight = Math.floor(this.headerEl.outerHeight());
                 this.headerHeight = headerHeight;
-                this.scrollYStyle = _.extend({}, this.scrollYStyle, {'margin-top': headerHeight+1 + 'px'});
+                this.scrollYStyle = _.extend({}, this.scrollYStyle, {'margin-top': `${headerHeight+1}px`});
             },
 
             setOffsetFromHeader: function(isCalcNewHeaderHeight) {
@@ -207,8 +203,8 @@ define([
                 if(isCalcNewHeaderHeight === true){
                     this.calcOffsetFromHeader();
                 }
-                this.$el.find('.listview').css({'padding-top': this.headerHeight + 'px'});
-                this.scroller && this.scroller.update(isCalcNewHeaderHeight ? {scrollYStyle: this.scrollYStyle} : undefined);
+                this.$el.find('.listview').css({'padding-top': `${this.headerHeight}px`});
+                this.scroller?.update(isCalcNewHeaderHeight ? {scrollYStyle: this.scrollYStyle} : undefined);
             },
 
             onResetItems : function() {
@@ -229,7 +225,7 @@ define([
             },
 
             onAddItem: function(record, store, opts) {
-                var view = this.createNewItem(record);
+                const view = this.createNewItem(record);
 
                 if (!this.innerEl)
                     this.innerEl = $(this.el).find('.inner');
@@ -240,8 +236,8 @@ define([
                         this.innerEl.append(view.render().el);
                         this.dataViewItems.push(view);
                     } else {
-                        var idx = _.indexOf(this.store.models, record);
-                        var innerDivs = this.innerEl.find('> .item');
+                        const idx = _.indexOf(this.store.models, record);
+                        const innerDivs = this.innerEl.find('> .item');
 
                         if (idx > 0)
                             $(innerDivs.get(idx - 1)).after(view.render().el);
@@ -259,7 +255,7 @@ define([
                     this.listenTo(view, 'contextmenu', this.onContextMenuItem);
 
                     if (record.get('tip')) {
-                        var view_el = $(view.el);
+                        const view_el = $(view.el);
                         view_el.attr('data-toggle', 'tooltip');
                         view_el.tooltip({
                             title       : record.get('tip'),
@@ -274,7 +270,7 @@ define([
             },
 
             focus: function() {
-                this.cmpEl && this.cmpEl.find('.listview').focus();
+                this.cmpEl?.find('.listview').focus();
             },
 
             scrollToRecord: function (record, force) {
@@ -284,17 +280,17 @@ define([
                 }
 
                 if (!record) return;
-                var innerEl = $(this.el).find('.inner'),
-                    innerHeight = innerEl.innerHeight(),
-                    idx = _.indexOf(this.store.models, record),
-                    div = (idx>=0 && this.dataViewItems.length>idx) ? $(this.dataViewItems[idx].el) : innerEl.find('#' + record.get('id'));
+                const innerEl = $(this.el).find('.inner');
+                const innerHeight = innerEl.innerHeight();
+                const idx = _.indexOf(this.store.models, record);
+                const div = (idx>=0 && this.dataViewItems.length>idx) ? $(this.dataViewItems[idx].el) : innerEl.find(`#${record.get('id')}`);
                 if (div.length<=0) return;
 
-                var div_top = Common.Utils.getPosition(div).top,
-                    div_height = div.outerHeight(),
-                    div_first = this.dataViewItems[0].el,
-                    div_first_top = div_first ? div_first.offsetTop : 0,
-                    newpos;
+                const div_top = Common.Utils.getPosition(div).top;
+                const div_height = div.outerHeight();
+                const div_first = this.dataViewItems[0].el;
+                const div_first_top = div_first ? div_first.offsetTop : 0;
+                let newpos;
 
                 if (force || div_top<div_first_top)
                     newpos = innerEl.scrollTop() + div_top - div_first_top;
@@ -311,9 +307,9 @@ define([
             },
 
             onChangeTip: function(item) {
-                var el = item.$el || $(item.el),
-                    tip = el.data('bs.tooltip'),
-                    record = item.model;
+                const el = item.$el || $(item.el);
+                const tip = el.data('bs.tooltip');
+                const record = item.model;
                 if (tip)
                     tip.updateTitle(record.get('tip') || '');
                 else if (record.get('tip')) {
@@ -325,6 +321,5 @@ define([
                     });
                 }
             }
-        }
-    })());
+        }))());
 });

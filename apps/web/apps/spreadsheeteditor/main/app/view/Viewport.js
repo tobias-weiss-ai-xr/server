@@ -32,184 +32,199 @@
  */
 
 define([
-    'text!spreadsheeteditor/main/app/template/Viewport.template',
-    'jquery',
-    'underscore',
-    'backbone',
-    'common/main/lib/component/BaseView',
-    'common/main/lib/component/Layout'
-], function (viewportTemplate, $, _, Backbone) {
-    'use strict';
+  "text!spreadsheeteditor/main/app/template/Viewport.template",
+  "jquery",
+  "underscore",
+  "backbone",
+  "common/main/lib/component/BaseView",
+  "common/main/lib/component/Layout",
+], (viewportTemplate, $, _, Backbone) => {
+  SSE.Views.Viewport = Backbone.View.extend({
+    el: "#viewport",
 
-    SSE.Views.Viewport = Backbone.View.extend({
-        el: '#viewport',
+    // Compile our stats template
+    template: _.template(viewportTemplate),
 
-        // Compile our stats template
-        template: _.template(viewportTemplate),
+    // Delegated events for creating new items, and clearing completed ones.
+    events: {},
 
-        // Delegated events for creating new items, and clearing completed ones.
-        events: {
+    // Set innerHTML and get the references to the DOM elements
+    initialize: () => {
+      //
+    },
+
+    // Render layout
+    render: function () {
+      const el = $(this.el)
+      el.html(this.template({}))
+
+      // Workaround Safari's scrolling problem
+      if (Common.Utils.isSafari) {
+        $("body").addClass("safari")
+        $("body").mousewheel((e) => {
+          e.preventDefault()
+          e.stopPropagation()
+        })
+      } else if (Common.Utils.isChrome) {
+        $("body").addClass("chrome")
+      }
+
+      let $container = $("#viewport-vbox-layout", el)
+      let items = $container.find(" > .layout-item")
+      this.vlayout = new Common.UI.VBoxLayout({
+        box: $container,
+        items: [
+          {
+            el: $container.find("> .layout-item#app-title").hide(),
+            alias: "title",
+            height: Common.Utils.InternalSettings.get("document-title-height"),
+          },
+          {
+            el: items[1],
+            alias: "toolbar",
+            height: Common.localStorage.getBool("sse-compact-toolbar")
+              ? Common.Utils.InternalSettings.get("toolbar-height-compact")
+              : Common.Utils.InternalSettings.get("toolbar-height-normal"),
+          },
+          {
+            el: items[2],
+            stretch: true,
+          },
+          {
+            el: items[3],
+            alias: "statusbar",
+            height: (() => {
+              const h = Number.parseInt(
+                getComputedStyle(document.body).getPropertyValue("--statusbar-height") || 25,
+              )
+              return Common.localStorage.getBool("sse-compact-statusbar", true) ? h : h * 2
+            })(),
+          },
+        ],
+      })
+
+      $container = $("#viewport-hbox-layout", el)
+      items = $container.find(" > .layout-item")
+
+      const iarray = [
+        {
+          el: items[0],
+          rely: true,
+          alias: "left",
+          resize: {
+            hidden: true,
+            autohide: false,
+            min: 300,
+            max: 600,
+            offset: 4,
+          },
         },
-
-        // Set innerHTML and get the references to the DOM elements
-        initialize: function() {
-            //
+        {
+          // history versions
+          el: items[3],
+          rely: true,
+          alias: "history",
+          resize: {
+            hidden: true,
+            autohide: false,
+            min: 300,
+            max: 600,
+          },
         },
-
-        // Render layout
-        render: function() {
-            var el = $(this.el);
-            el.html(this.template({}));
-
-            // Workaround Safari's scrolling problem
-            if (Common.Utils.isSafari) {
-                $('body').addClass('safari');
-                $('body').mousewheel(function(e){
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-            } else if (Common.Utils.isChrome) {
-                $('body').addClass('chrome');
-            }
-
-            var $container = $('#viewport-vbox-layout', el);
-            var items = $container.find(' > .layout-item');
-            this.vlayout = new Common.UI.VBoxLayout({
-                box: $container,
-                items: [{
-                    el: $container.find('> .layout-item#app-title').hide(),
-                    alias: 'title',
-                    height: Common.Utils.InternalSettings.get('document-title-height')
-                },{
-                    el: items[1],
-                    alias: 'toolbar',
-                    height: Common.localStorage.getBool('sse-compact-toolbar') ?
-                        Common.Utils.InternalSettings.get('toolbar-height-compact') : Common.Utils.InternalSettings.get('toolbar-height-normal')
-                }, {
-                    el: items[2],
-                    stretch: true
-                }, {
-                    el: items[3],
-                    alias: 'statusbar',
-                    height: (function () {
-                        var h = parseInt(getComputedStyle(document.body).getPropertyValue('--statusbar-height') || 25);
-                        return Common.localStorage.getBool('sse-compact-statusbar', true) ? h : h * 2;
-                    })()
-                }]
-            });
-
-            $container = $('#viewport-hbox-layout', el);
-            items = $container.find(' > .layout-item');
-
-            let iarray = [{
-                el: items[0],
-                rely: true,
-                alias: 'left',
-                resize: {
-                    hidden: true,
-                    autohide: false,
-                    min: 300,
-                    max: 600,
-                    offset: 4
-                }
-            }, { // history versions
-                el: items[3],
-                rely: true,
-                alias: 'history',
-                resize: {
-                    hidden: true,
-                    autohide: false,
-                    min: 300,
-                    max: 600
-                }
-            }, {
-                el: items[1],
-                stretch: true
-            }, {
-                el: $(items[2]).hide(),
-                rely: true,
-                alias: 'right',
-                resize: {
-                    hidden: false,
-                    autohide: false,
-                    min: -600,
-                    max: -260
-                }
-            }];
-
-            if ( Common.UI.isRTL() ) {
-                [iarray[0].resize.min, iarray[0].resize.max] = [-600, -300];
-                [iarray[1].resize.min, iarray[1].resize.max] = [-600, -300];
-                [iarray[3].resize.min, iarray[3].resize.max] = [260, 600];
-
-                [iarray[0], iarray[3]] = [iarray[3], iarray[0]];
-                [iarray[1], iarray[2]] = [iarray[2], iarray[1]];
-            }
-
-            this.hlayout = new Common.UI.HBoxLayout({
-                box: $container,
-                items: iarray
-            });
-
-            $container = $container.find('.layout-ct.vbox');
-            items = $container.find(' > .layout-item');
-            this.celayout = new Common.UI.VBoxLayout({
-                box: $container,
-                items: [{
-                    el: items[0],
-                    rely: true,
-                    alias: 'celleditor',
-                    resize: this.getCelleditorResizeOptions()
-                }, {
-                    el: items[1],
-                    stretch: true
-                }]
-            });
-
-            return this;
+        {
+          el: items[1],
+          stretch: true,
         },
-
-        getCelleditorResizeOptions: function() {
-            var computedStyle = window.getComputedStyle(document.body);
-            var resizeOptions = {
-                min: (parseFloat(computedStyle.getPropertyValue("--celleditor-height")) || 20) - 1,
-                max: -100,
-                multiply: {}
-            }; 
-            resizeOptions.multiply.koeff = parseFloat(computedStyle.getPropertyValue("--celleditor-line-height")) || 18;
-            resizeOptions.multiply.offset = (parseInt(computedStyle.getPropertyValue("--celleditor-height")) || 20) - resizeOptions.multiply.koeff;
-            return resizeOptions;
+        {
+          el: $(items[2]).hide(),
+          rely: true,
+          alias: "right",
+          resize: {
+            hidden: false,
+            autohide: false,
+            min: -600,
+            max: -260,
+          },
         },
+      ]
 
-        applyEditorMode: function() {
-            var me              = this,
-                rightMenuView   = SSE.getController('RightMenu').getView('RightMenu');
+      if (Common.UI.isRTL()) {
+        ;[iarray[0].resize.min, iarray[0].resize.max] = [-600, -300]
+        ;[iarray[1].resize.min, iarray[1].resize.max] = [-600, -300]
+        ;[iarray[3].resize.min, iarray[3].resize.max] = [260, 600]
+        ;[iarray[0], iarray[3]] = [iarray[3], iarray[0]]
+        ;[iarray[1], iarray[2]] = [iarray[2], iarray[1]]
+      }
 
-            me._rightMenu   = rightMenuView.render(this.mode);
-            var value = Common.UI.LayoutManager.getInitValue('rightMenu');
-            value = (value!==undefined) ? !value : false;
-            Common.localStorage.getBool("sse-hidden-rightmenu", value) && me._rightMenu.hide();
-        },
+      this.hlayout = new Common.UI.HBoxLayout({
+        box: $container,
+        items: iarray,
+      })
 
-        applyCommonMode: function() {
-            var value = Common.UI.LayoutManager.getInitValue('leftMenu');
-            value = (value!==undefined) ? !value : false;
-            Common.localStorage.getBool("sse-hidden-leftmenu", value) && SSE.getController('LeftMenu').getView('LeftMenu').hide();
-        },
+      $container = $container.find(".layout-ct.vbox")
+      items = $container.find(" > .layout-item")
+      this.celayout = new Common.UI.VBoxLayout({
+        box: $container,
+        items: [
+          {
+            el: items[0],
+            rely: true,
+            alias: "celleditor",
+            resize: this.getCelleditorResizeOptions(),
+          },
+          {
+            el: items[1],
+            stretch: true,
+          },
+        ],
+      })
 
-        setMode: function(mode, delay) {
-            if (mode.isDisconnected) {
-                /** coauthoring begin **/
-                if (_.isUndefined(this.mode))
-                    this.mode = {};
+      return this
+    },
 
-                this.mode.canCoAuthoring = false;
-                /** coauthoring end **/
-            } else {
-                this.mode = mode;
-                if (this.vlayout && mode.isDesktopApp && !mode.isEdit)
-                    this.vlayout.items[1].el.css('display', 'block');
-            }
-        }
-    });
-});
+    getCelleditorResizeOptions: () => {
+      const computedStyle = window.getComputedStyle(document.body)
+      const resizeOptions = {
+        min: (Number.parseFloat(computedStyle.getPropertyValue("--celleditor-height")) || 20) - 1,
+        max: -100,
+        multiply: {},
+      }
+      resizeOptions.multiply.koeff =
+        Number.parseFloat(computedStyle.getPropertyValue("--celleditor-line-height")) || 18
+      resizeOptions.multiply.offset =
+        (Number.parseInt(computedStyle.getPropertyValue("--celleditor-height")) || 20) -
+        resizeOptions.multiply.koeff
+      return resizeOptions
+    },
+
+    applyEditorMode: function () {
+      const rightMenuView = SSE.getController("RightMenu").getView("RightMenu")
+
+      this._rightMenu = rightMenuView.render(this.mode)
+      let value = Common.UI.LayoutManager.getInitValue("rightMenu")
+      value = value !== undefined ? !value : false
+      Common.localStorage.getBool("sse-hidden-rightmenu", value) && this._rightMenu.hide()
+    },
+
+    applyCommonMode: () => {
+      let value = Common.UI.LayoutManager.getInitValue("leftMenu")
+      value = value !== undefined ? !value : false
+      Common.localStorage.getBool("sse-hidden-leftmenu", value) &&
+        SSE.getController("LeftMenu").getView("LeftMenu").hide()
+    },
+
+    setMode: function (mode, delay) {
+      if (mode.isDisconnected) {
+        /** coauthoring begin **/
+        if (_.isUndefined(this.mode)) this.mode = {}
+
+        this.mode.canCoAuthoring = false
+        /** coauthoring end **/
+      } else {
+        this.mode = mode
+        if (this.vlayout && mode.isDesktopApp && !mode.isEdit)
+          this.vlayout.items[1].el.css("display", "block")
+      }
+    },
+  })
+})

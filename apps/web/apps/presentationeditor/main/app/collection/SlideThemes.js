@@ -29,12 +29,8 @@
  *
  */
 
-define([
-    'backbone'
-], function(Backbone){ 'use strict';
+define(["backbone"], (Backbone) => {
+  PE.Collections = PE.Collections || {}
 
-    PE.Collections = PE.Collections || {};
-
-    PE.Collections.SlideThemes = Backbone.Collection.extend({
-    });
-});
+  PE.Collections.SlideThemes = Backbone.Collection.extend({})
+})

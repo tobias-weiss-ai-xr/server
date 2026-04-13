@@ -1,10 +1,21 @@
-ace.define("ace/ext/searchbox",["require","exports","module","ace/lib/dom","ace/lib/lang","ace/lib/event","ace/keyboard/hash_handler","ace/lib/keys"], function(require, exports, module) {
-"use strict";
-
-var dom = require("../lib/dom");
-var lang = require("../lib/lang");
-var event = require("../lib/event");
-var searchboxCss = "\
+ace.define(
+  "ace/ext/searchbox",
+  [
+    "require",
+    "exports",
+    "module",
+    "ace/lib/dom",
+    "ace/lib/lang",
+    "ace/lib/event",
+    "ace/keyboard/hash_handler",
+    "ace/lib/keys",
+  ],
+  (require, exports, module) => {
+    const dom = require("../lib/dom")
+    const lang = require("../lib/lang")
+    const event = require("../lib/event")
+    const searchboxCss =
+      "\
 .ace_search {\
 background-color: #ddd;\
 border: 1px solid #cbcbcb;\
@@ -146,13 +157,13 @@ text-align: right;\
 -o-user-select: none;\
 -ms-user-select: none;\
 user-select: none;\
-}";
-var HashHandler = require("../keyboard/hash_handler").HashHandler;
-var keyUtil = require("../lib/keys");
+}"
+    const HashHandler = require("../keyboard/hash_handler").HashHandler
+    const keyUtil = require("../lib/keys")
 
-dom.importCssString(searchboxCss, "ace_searchbox");
+    dom.importCssString(searchboxCss, "ace_searchbox")
 
-var html = '<div class="ace_search right">\
+    const html = '<div class="ace_search right">\
     <button type="button" action="hide" class="ace_searchbtn_close"></button>\
     <div class="ace_search_form">\
         <input class="ace_search_field" placeholder="Search for" spellcheck="false"></input>\
@@ -170,333 +181,331 @@ var html = '<div class="ace_search right">\
         <span action="toggleCaseSensitive" class="ace_button" title="CaseSensitive Search">Aa</span>\
         <span action="toggleWholeWords" class="ace_button" title="Whole Word Search">\\b</span>\
     </div>\
-</div>'.replace(/>\s+/g, ">");
+</div>'.replace(/>\s+/g, ">")
 
-var SearchBox = function(editor, range, showReplaceForm) {
-    var div = dom.createElement("div");
-    div.innerHTML = html;
-    this.element = div.firstChild;
+    const SearchBox = function (editor, range, showReplaceForm) {
+      const div = dom.createElement("div")
+      div.innerHTML = html
+      this.element = div.firstChild
 
-    this.$init();
-    this.setEditor(editor);
-};
-
-(function() {
-    this.setEditor = function(editor) {
-        editor.searchBox = this;
-        editor.container.appendChild(this.element);
-        this.editor = editor;
-    };
-
-    this.$initElements = function(sb) {
-        this.searchBox = sb.querySelector(".ace_search_form");
-        this.replaceBox = sb.querySelector(".ace_replace_form");
-        this.searchOptions = sb.querySelector(".ace_search_options");
-        this.regExpOption = sb.querySelector("[action=toggleRegexpMode]");
-        this.caseSensitiveOption = sb.querySelector("[action=toggleCaseSensitive]");
-        this.wholeWordOption = sb.querySelector("[action=toggleWholeWords]");
-        this.searchInput = this.searchBox.querySelector(".ace_search_field");
-        this.replaceInput = this.replaceBox.querySelector(".ace_search_field");
-    };
-    
-    this.$init = function() {
-        var sb = this.element;
-        
-        this.$initElements(sb);
-        
-        var _this = this;
-        event.addListener(sb, "mousedown", function(e) {
-            setTimeout(function(){
-                _this.activeInput.focus();
-            }, 0);
-            event.stopPropagation(e);
-        });
-        event.addListener(sb, "click", function(e) {
-            var t = e.target || e.srcElement;
-            var action = t.getAttribute("action");
-            if (action && _this[action])
-                _this[action]();
-            else if (_this.$searchBarKb.commands[action])
-                _this.$searchBarKb.commands[action].exec(_this);
-            event.stopPropagation(e);
-        });
-
-        event.addCommandKeyListener(sb, function(e, hashId, keyCode) {
-            var keyString = keyUtil.keyCodeToString(keyCode);
-            var command = _this.$searchBarKb.findKeyCommand(hashId, keyString);
-            if (command && command.exec) {
-                command.exec(_this);
-                event.stopEvent(e);
-            }
-        });
-
-        this.$onChange = lang.delayedCall(function() {
-            _this.find(false, false);
-        });
-
-        event.addListener(this.searchInput, "input", function() {
-            _this.$onChange.schedule(20);
-        });
-        event.addListener(this.searchInput, "focus", function() {
-            _this.activeInput = _this.searchInput;
-            _this.searchInput.value && _this.highlight();
-        });
-        event.addListener(this.replaceInput, "focus", function() {
-            _this.activeInput = _this.replaceInput;
-            _this.searchInput.value && _this.highlight();
-        });
-    };
-    this.$closeSearchBarKb = new HashHandler([{
-        bindKey: "Esc",
-        name: "closeSearchBar",
-        exec: function(editor) {
-            editor.searchBox.hide();
-        }
-    }]);
-    this.$searchBarKb = new HashHandler();
-    this.$searchBarKb.bindKeys({
-        "Ctrl-f|Command-f": function(sb) {
-            var isReplace = sb.isReplace = !sb.isReplace;
-            sb.replaceBox.style.display = isReplace ? "" : "none";
-            sb.searchInput.focus();
-        },
-        "Ctrl-H|Command-Option-F": function(sb) {
-            sb.replaceBox.style.display = "";
-            sb.replaceInput.focus();
-        },
-        "Ctrl-G|Command-G": function(sb) {
-            sb.findNext();
-        },
-        "Ctrl-Shift-G|Command-Shift-G": function(sb) {
-            sb.findPrev();
-        },
-        "esc": function(sb) {
-            setTimeout(function() { sb.hide();});
-        },
-        "Return": function(sb) {
-            if (sb.activeInput == sb.replaceInput)
-                sb.replace();
-            sb.findNext();
-        },
-        "Shift-Return": function(sb) {
-            if (sb.activeInput == sb.replaceInput)
-                sb.replace();
-            sb.findPrev();
-        },
-        "Alt-Return": function(sb) {
-            if (sb.activeInput == sb.replaceInput)
-                sb.replaceAll();
-            sb.findAll();
-        },
-        "Tab": function(sb) {
-            (sb.activeInput == sb.replaceInput ? sb.searchInput : sb.replaceInput).focus();
-        }
-    });
-
-    this.$searchBarKb.addCommands([{
-        name: "toggleRegexpMode",
-        bindKey: {win: "Alt-R|Alt-/", mac: "Ctrl-Alt-R|Ctrl-Alt-/"},
-        exec: function(sb) {
-            sb.regExpOption.checked = !sb.regExpOption.checked;
-            sb.$syncOptions();
-        }
-    }, {
-        name: "toggleCaseSensitive",
-        bindKey: {win: "Alt-C|Alt-I", mac: "Ctrl-Alt-R|Ctrl-Alt-I"},
-        exec: function(sb) {
-            sb.caseSensitiveOption.checked = !sb.caseSensitiveOption.checked;
-            sb.$syncOptions();
-        }
-    }, {
-        name: "toggleWholeWords",
-        bindKey: {win: "Alt-B|Alt-W", mac: "Ctrl-Alt-B|Ctrl-Alt-W"},
-        exec: function(sb) {
-            sb.wholeWordOption.checked = !sb.wholeWordOption.checked;
-            sb.$syncOptions();
-        }
-    }]);
-
-    this.$syncOptions = function() {
-        dom.setCssClass(this.regExpOption, "checked", this.regExpOption.checked);
-        dom.setCssClass(this.wholeWordOption, "checked", this.wholeWordOption.checked);
-        dom.setCssClass(this.caseSensitiveOption, "checked", this.caseSensitiveOption.checked);
-        this.find(false, false);
-    };
-
-    this.highlight = function(re) {
-        this.editor.session.highlight(re || this.editor.$search.$options.re);
-        this.editor.renderer.updateBackMarkers()
-    };
-    this.find = function(skipCurrent, backwards, preventScroll) {
-        var range = this.editor.find(this.searchInput.value, {
-            skipCurrent: skipCurrent,
-            backwards: backwards,
-            wrap: true,
-            regExp: this.regExpOption.checked,
-            caseSensitive: this.caseSensitiveOption.checked,
-            wholeWord: this.wholeWordOption.checked,
-            preventScroll: preventScroll
-        });
-        var noMatch = !range && this.searchInput.value;
-        dom.setCssClass(this.searchBox, "ace_nomatch", noMatch);
-        this.editor._emit("findSearchBox", { match: !noMatch });
-        this.highlight();
-    };
-    this.findNext = function() {
-        this.find(true, false);
-    };
-    this.findPrev = function() {
-        this.find(true, true);
-    };
-    this.findAll = function(){
-        var range = this.editor.findAll(this.searchInput.value, {            
-            regExp: this.regExpOption.checked,
-            caseSensitive: this.caseSensitiveOption.checked,
-            wholeWord: this.wholeWordOption.checked
-        });
-        var noMatch = !range && this.searchInput.value;
-        dom.setCssClass(this.searchBox, "ace_nomatch", noMatch);
-        this.editor._emit("findSearchBox", { match: !noMatch });
-        this.highlight();
-        this.hide();
-    };
-    this.replace = function() {
-        if (!this.editor.getReadOnly())
-            this.editor.replace(this.replaceInput.value);
-    };    
-    this.replaceAndFindNext = function() {
-        if (!this.editor.getReadOnly()) {
-            this.editor.replace(this.replaceInput.value);
-            this.findNext()
-        }
-    };
-    this.replaceAll = function() {
-        if (!this.editor.getReadOnly())
-            this.editor.replaceAll(this.replaceInput.value);
-    };
-
-    this.hide = function() {
-        this.element.style.display = "none";
-        this.editor.keyBinding.removeKeyboardHandler(this.$closeSearchBarKb);
-        this.editor.focus();
-    };
-    this.show = function(value, isReplace) {
-        this.element.style.display = "";
-        this.replaceBox.style.display = isReplace ? "" : "none";
-
-        this.isReplace = isReplace;
-
-        if (value)
-            this.searchInput.value = value;
-        
-        this.find(false, false, true);
-        
-        this.searchInput.focus();
-        this.searchInput.select();
-
-        this.editor.keyBinding.addKeyboardHandler(this.$closeSearchBarKb);
-    };
-
-    this.isFocused = function() {
-        var el = document.activeElement;
-        return el == this.searchInput || el == this.replaceInput;
+      this.$init()
+      this.setEditor(editor)
     }
-}).call(SearchBox.prototype);
+    ;(function () {
+      this.setEditor = function (editor) {
+        editor.searchBox = this
+        editor.container.appendChild(this.element)
+        this.editor = editor
+      }
 
-exports.SearchBox = SearchBox;
+      this.$initElements = function (sb) {
+        this.searchBox = sb.querySelector(".ace_search_form")
+        this.replaceBox = sb.querySelector(".ace_replace_form")
+        this.searchOptions = sb.querySelector(".ace_search_options")
+        this.regExpOption = sb.querySelector("[action=toggleRegexpMode]")
+        this.caseSensitiveOption = sb.querySelector("[action=toggleCaseSensitive]")
+        this.wholeWordOption = sb.querySelector("[action=toggleWholeWords]")
+        this.searchInput = this.searchBox.querySelector(".ace_search_field")
+        this.replaceInput = this.replaceBox.querySelector(".ace_search_field")
+      }
 
-exports.Search = function(editor, isReplace) {
-    var sb = editor.searchBox || new SearchBox(editor);
-    sb.show(editor.session.getTextRange(), isReplace);
-};
+      this.$init = function () {
+        const sb = this.element
 
-});
+        this.$initElements(sb)
+        event.addListener(sb, "mousedown", (e) => {
+          setTimeout(() => {
+            this.activeInput.focus()
+          }, 0)
+          event.stopPropagation(e)
+        })
+        event.addListener(sb, "click", (e) => {
+          const t = e.target || e.srcElement
+          const action = t.getAttribute("action")
+          if (action && this[action]) this[action]()
+          else if (this.$searchBarKb.commands[action]) this.$searchBarKb.commands[action].exec(this)
+          event.stopPropagation(e)
+        })
 
-ace.define("ace/ext/old_ie",["require","exports","module","ace/lib/useragent","ace/tokenizer","ace/ext/searchbox","ace/mode/text"], function(require, exports, module) {
-"use strict";
-var MAX_TOKEN_COUNT = 1000;
-var useragent = require("../lib/useragent");
-var TokenizerModule = require("../tokenizer");
+        event.addCommandKeyListener(sb, (e, hashId, keyCode) => {
+          const keyString = keyUtil.keyCodeToString(keyCode)
+          const command = this.$searchBarKb.findKeyCommand(hashId, keyString)
+          if (command?.exec) {
+            command.exec(this)
+            event.stopEvent(e)
+          }
+        })
 
-function patch(obj, name, regexp, replacement) {
-    eval("obj['" + name + "']=" + obj[name].toString().replace(
-        regexp, replacement
-    ));
-}
+        this.$onChange = lang.delayedCall(() => {
+          this.find(false, false)
+        })
 
-if (useragent.isIE && useragent.isIE < 10 && window.top.document.compatMode === "BackCompat")
-    useragent.isOldIE = true;
+        event.addListener(this.searchInput, "input", () => {
+          this.$onChange.schedule(20)
+        })
+        event.addListener(this.searchInput, "focus", () => {
+          this.activeInput = this.searchInput
+          this.searchInput.value && this.highlight()
+        })
+        event.addListener(this.replaceInput, "focus", () => {
+          this.activeInput = this.replaceInput
+          this.searchInput.value && this.highlight()
+        })
+      }
+      this.$closeSearchBarKb = new HashHandler([
+        {
+          bindKey: "Esc",
+          name: "closeSearchBar",
+          exec: (editor) => {
+            editor.searchBox.hide()
+          },
+        },
+      ])
+      this.$searchBarKb = new HashHandler()
+      this.$searchBarKb.bindKeys({
+        "Ctrl-f|Command-f": (sb) => {
+          const isReplace = (sb.isReplace = !sb.isReplace)
+          sb.replaceBox.style.display = isReplace ? "" : "none"
+          sb.searchInput.focus()
+        },
+        "Ctrl-H|Command-Option-F": (sb) => {
+          sb.replaceBox.style.display = ""
+          sb.replaceInput.focus()
+        },
+        "Ctrl-G|Command-G": (sb) => {
+          sb.findNext()
+        },
+        "Ctrl-Shift-G|Command-Shift-G": (sb) => {
+          sb.findPrev()
+        },
+        esc: (sb) => {
+          setTimeout(() => {
+            sb.hide()
+          })
+        },
+        Return: (sb) => {
+          if (sb.activeInput === sb.replaceInput) sb.replace()
+          sb.findNext()
+        },
+        "Shift-Return": (sb) => {
+          if (sb.activeInput === sb.replaceInput) sb.replace()
+          sb.findPrev()
+        },
+        "Alt-Return": (sb) => {
+          if (sb.activeInput === sb.replaceInput) sb.replaceAll()
+          sb.findAll()
+        },
+        Tab: (sb) => {
+          ;(sb.activeInput === sb.replaceInput ? sb.searchInput : sb.replaceInput).focus()
+        },
+      })
 
-if (typeof document != "undefined" && !document.documentElement.querySelector) {    
-    useragent.isOldIE = true;
-    var qs = function(el, selector) {
-        if (selector.charAt(0) == ".") {
-            var classNeme = selector.slice(1);
+      this.$searchBarKb.addCommands([
+        {
+          name: "toggleRegexpMode",
+          bindKey: { win: "Alt-R|Alt-/", mac: "Ctrl-Alt-R|Ctrl-Alt-/" },
+          exec: (sb) => {
+            sb.regExpOption.checked = !sb.regExpOption.checked
+            sb.$syncOptions()
+          },
+        },
+        {
+          name: "toggleCaseSensitive",
+          bindKey: { win: "Alt-C|Alt-I", mac: "Ctrl-Alt-R|Ctrl-Alt-I" },
+          exec: (sb) => {
+            sb.caseSensitiveOption.checked = !sb.caseSensitiveOption.checked
+            sb.$syncOptions()
+          },
+        },
+        {
+          name: "toggleWholeWords",
+          bindKey: { win: "Alt-B|Alt-W", mac: "Ctrl-Alt-B|Ctrl-Alt-W" },
+          exec: (sb) => {
+            sb.wholeWordOption.checked = !sb.wholeWordOption.checked
+            sb.$syncOptions()
+          },
+        },
+      ])
+
+      this.$syncOptions = function () {
+        dom.setCssClass(this.regExpOption, "checked", this.regExpOption.checked)
+        dom.setCssClass(this.wholeWordOption, "checked", this.wholeWordOption.checked)
+        dom.setCssClass(this.caseSensitiveOption, "checked", this.caseSensitiveOption.checked)
+        this.find(false, false)
+      }
+
+      this.highlight = function (re) {
+        this.editor.session.highlight(re || this.editor.$search.$options.re)
+        this.editor.renderer.updateBackMarkers()
+      }
+      this.find = function (skipCurrent, backwards, preventScroll) {
+        const range = this.editor.find(this.searchInput.value, {
+          skipCurrent: skipCurrent,
+          backwards: backwards,
+          wrap: true,
+          regExp: this.regExpOption.checked,
+          caseSensitive: this.caseSensitiveOption.checked,
+          wholeWord: this.wholeWordOption.checked,
+          preventScroll: preventScroll,
+        })
+        const noMatch = !range && this.searchInput.value
+        dom.setCssClass(this.searchBox, "ace_nomatch", noMatch)
+        this.editor._emit("findSearchBox", { match: !noMatch })
+        this.highlight()
+      }
+      this.findNext = function () {
+        this.find(true, false)
+      }
+      this.findPrev = function () {
+        this.find(true, true)
+      }
+      this.findAll = function () {
+        const range = this.editor.findAll(this.searchInput.value, {
+          regExp: this.regExpOption.checked,
+          caseSensitive: this.caseSensitiveOption.checked,
+          wholeWord: this.wholeWordOption.checked,
+        })
+        const noMatch = !range && this.searchInput.value
+        dom.setCssClass(this.searchBox, "ace_nomatch", noMatch)
+        this.editor._emit("findSearchBox", { match: !noMatch })
+        this.highlight()
+        this.hide()
+      }
+      this.replace = function () {
+        if (!this.editor.getReadOnly()) this.editor.replace(this.replaceInput.value)
+      }
+      this.replaceAndFindNext = function () {
+        if (!this.editor.getReadOnly()) {
+          this.editor.replace(this.replaceInput.value)
+          this.findNext()
+        }
+      }
+      this.replaceAll = function () {
+        if (!this.editor.getReadOnly()) this.editor.replaceAll(this.replaceInput.value)
+      }
+
+      this.hide = function () {
+        this.element.style.display = "none"
+        this.editor.keyBinding.removeKeyboardHandler(this.$closeSearchBarKb)
+        this.editor.focus()
+      }
+      this.show = function (value, isReplace) {
+        this.element.style.display = ""
+        this.replaceBox.style.display = isReplace ? "" : "none"
+
+        this.isReplace = isReplace
+
+        if (value) this.searchInput.value = value
+
+        this.find(false, false, true)
+
+        this.searchInput.focus()
+        this.searchInput.select()
+
+        this.editor.keyBinding.addKeyboardHandler(this.$closeSearchBarKb)
+      }
+
+      this.isFocused = function () {
+        const el = document.activeElement
+        return el === this.searchInput || el === this.replaceInput
+      }
+    }).call(SearchBox.prototype)
+
+    exports.SearchBox = SearchBox
+
+    exports.Search = (editor, isReplace) => {
+      const sb = editor.searchBox || new SearchBox(editor)
+      sb.show(editor.session.getTextRange(), isReplace)
+    }
+  },
+)
+
+ace.define(
+  "ace/ext/old_ie",
+  [
+    "require",
+    "exports",
+    "module",
+    "ace/lib/useragent",
+    "ace/tokenizer",
+    "ace/ext/searchbox",
+    "ace/mode/text",
+  ],
+  (require, exports, module) => {
+    const MAX_TOKEN_COUNT = 1000
+    const useragent = require("../lib/useragent")
+    const TokenizerModule = require("../tokenizer")
+
+    function patch(obj, name, regexp, replacement) {
+      eval(`obj['${name}']=${obj[name].toString().replace(regexp, replacement)}`)
+    }
+
+    if (useragent.isIE && useragent.isIE < 10 && window.top.document.compatMode === "BackCompat")
+      useragent.isOldIE = true
+
+    if (typeof document !== "undefined" && !document.documentElement.querySelector) {
+      useragent.isOldIE = true
+      const qs = (el, selector) => {
+        if (selector.charAt(0) === ".") {
+          const classNeme = selector.slice(1)
         } else {
-            var m = selector.match(/(\w+)=(\w+)/);
-            var attr = m && m[1];
-            var attrVal = m && m[2];
+          const m = selector.match(/(\w+)=(\w+)/)
+          const attr = m?.[1]
+          const attrVal = m?.[2]
         }
-        for (var i = 0; i < el.all.length; i++) {
-            var ch = el.all[i];
-            if (classNeme) {
-                if (ch.className.indexOf(classNeme) != -1)
-                    return ch;
-            } else if (attr) {
-                if (ch.getAttribute(attr) == attrVal)
-                    return ch;
-            }
+        for (let i = 0; i < el.all.length; i++) {
+          const ch = el.all[i]
+          if (classNeme) {
+            if (ch.className.indexOf(classNeme) !== -1) return ch
+          } else if (attr) {
+            if (ch.getAttribute(attr) === attrVal) return ch
+          }
         }
-    };
-    var sb = require("./searchbox").SearchBox.prototype;
-    patch(
-        sb, "$initElements",
-        /([^\s=]*).querySelector\((".*?")\)/g, 
-        "qs($1, $2)"
-    );
-}
-    
-var compliantExecNpcg = /()??/.exec("")[1] === undefined;
-if (compliantExecNpcg)
-    return;
-var proto = TokenizerModule.Tokenizer.prototype;
-TokenizerModule.Tokenizer_orig = TokenizerModule.Tokenizer;
-proto.getLineTokens_orig = proto.getLineTokens;
+      }
+      const sb = require("./searchbox").SearchBox.prototype
+      patch(sb, "$initElements", /([^\s=]*).querySelector\((".*?")\)/g, "qs($1, $2)")
+    }
 
-patch(
-    TokenizerModule, "Tokenizer",
-    "ruleRegExps.push(adjustedregex);\n", 
-    function(m) {
-        return m + '\
+    const compliantExecNpcg = /()??/.exec("")[1] === undefined
+    if (compliantExecNpcg) return
+    const proto = TokenizerModule.Tokenizer.prototype
+    TokenizerModule.Tokenizer_orig = TokenizerModule.Tokenizer
+    proto.getLineTokens_orig = proto.getLineTokens
+
+    patch(
+      TokenizerModule,
+      "Tokenizer",
+      "ruleRegExps.push(adjustedregex);\n",
+      (m) => `${m}\
         if (state[i].next && RegExp(adjustedregex).test(""))\n\
             rule._qre = RegExp(adjustedregex, "g");\n\
-        ';
-    }
-);
-TokenizerModule.Tokenizer.prototype = proto;
-patch(
-    proto, "getLineTokens",
-    /if \(match\[i \+ 1\] === undefined\)\s*continue;/, 
-    "if (!match[i + 1]) {\n\
+        `,
+    )
+    TokenizerModule.Tokenizer.prototype = proto
+    patch(
+      proto,
+      "getLineTokens",
+      /if \(match\[i \+ 1\] === undefined\)\s*continue;/,
+      "if (!match[i + 1]) {\n\
         if (value)continue;\n\
         var qre = state[mapping[i]]._qre;\n\
         if (!qre) continue;\n\
         qre.lastIndex = lastIndex;\n\
         if (!qre.exec(line) || qre.lastIndex != lastIndex)\n\
             continue;\n\
-    }"
-);
+    }",
+    )
 
-patch(
-    require("../mode/text").Mode.prototype, "getTokenizer",
-    /Tokenizer/,
-    "TokenizerModule.Tokenizer"
-);
+    patch(
+      require("../mode/text").Mode.prototype,
+      "getTokenizer",
+      /Tokenizer/,
+      "TokenizerModule.Tokenizer",
+    )
 
-useragent.isOldIE = true;
-
-});
-                (function() {
-                    ace.require(["ace/ext/old_ie"], function() {});
-                })();
-            
+    useragent.isOldIE = true
+  },
+)
+;(() => {
+  ace.require(["ace/ext/old_ie"], () => {})
+})()

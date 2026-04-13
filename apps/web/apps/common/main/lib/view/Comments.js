@@ -32,7 +32,7 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
 Common.Views = Common.Views || {};
 
@@ -45,13 +45,12 @@ define([
     'common/main/lib/component/DataView',
     'common/main/lib/component/Layout',
     'common/main/lib/component/Window'
-], function (commentsTemplate, panelTemplate) {
-    'use strict';
+], (commentsTemplate, panelTemplate) => {
 
     function replaceWords (template, words) {
-        var word,
-            value,
-            tpl = template;
+        let word;
+        let value;
+        let tpl = template;
 
         for (word in words) {
             if (undefined !== word) {
@@ -63,8 +62,7 @@ define([
         return tpl;
     }
 
-    var CommentsPanelDataView = Common.UI.DataView.extend((function() {
-        return {
+    const CommentsPanelDataView = Common.UI.DataView.extend((() => ({
             options : {
                 handleSelect: false,
                 scrollable: true,
@@ -73,24 +71,24 @@ define([
             },
 
             getTextBox: function () {
-                var text = $(this.el).find('textarea');
-                return (text && text.length) ? text : undefined;
+                const text = $(this.el).find('textarea');
+                return (text?.length) ? text : undefined;
             },
             setFocusToTextBox: function () {
-                var text = $(this.el).find('textarea');
-                if (text && text.length) {
-                    var val = text.val();
+                const text = $(this.el).find('textarea');
+                if (text?.length) {
+                    const val = text.val();
                     text.focus();
                     text.val('');
                     text.val(val);
                 }
             },
             getActiveTextBoxVal: function () {
-                var text = $(this.el).find('textarea');
-                return (text && text.length) ? text.val().trim() : '';
+                const text = $(this.el).find('textarea');
+                return (text?.length) ? text.val().trim() : '';
             },
-            disableTextBoxButton: function(textboxEl) {
-                var button = $(textboxEl.siblings('#id-comments-change')[0]);
+            disableTextBoxButton: (textboxEl) => {
+                const button = $(textboxEl.siblings('#id-comments-change')[0]);
 
                 if(textboxEl.val().trim().length > 0) {
                     button.removeAttr('disabled');
@@ -101,27 +99,27 @@ define([
                 }
             },
             autoHeightTextBox: function () {
-                var view = this,
-                    textBox = $(this.el).find('textarea'),
-                    domTextBox = null,
-                    minHeight = 55,
-                    lineHeight = 0,
-                    scrollPos = 0,
-                    oldHeight = 0,
-                    newHeight = 0;
+                const view = this;
+                const textBox = $(this.el).find('textarea');
+                let domTextBox = null;
+                const minHeight = 55;
+                let lineHeight = 0;
+                const scrollPos = 0;
+                let oldHeight = 0;
+                let newHeight = 0;
 
                 function updateTextBoxHeight() {
                     if (domTextBox.scrollHeight > domTextBox.clientHeight) {
-                        textBox.css({height: (domTextBox.scrollHeight + lineHeight) + 'px'});
+                        textBox.css({height: `${domTextBox.scrollHeight + lineHeight}px`});
                     } else {
                         oldHeight = domTextBox.clientHeight;
                         if (oldHeight >= minHeight) {
 
-                            textBox.css({height: minHeight + 'px'});
+                            textBox.css({height: `${minHeight}px`});
 
                             if (domTextBox.scrollHeight > domTextBox.clientHeight) {
                                 newHeight = Math.max(domTextBox.scrollHeight + lineHeight, minHeight);
-                                textBox.css({height: newHeight + 'px'});
+                                textBox.css({height: `${newHeight}px`});
                             }
                         }
                     }
@@ -134,12 +132,12 @@ define([
                     view.disableTextBoxButton($(event.target));
                 }
 
-                if (textBox && textBox.length) {
+                if (textBox?.length) {
                     domTextBox = textBox.get(0);
 
                     view.disableTextBoxButton(textBox);
                     if (domTextBox) {
-                        lineHeight = parseInt(textBox.css('lineHeight'), 10) * 0.25;
+                        lineHeight = Number.parseInt(textBox.css('lineHeight'), 10) * 0.25;
                         updateTextBoxHeight();
                         textBox.bind('input propertychange', onTextareaInput)
                     }
@@ -154,11 +152,11 @@ define([
                 }
             },
             autoScrollToEditButtons: function () {
-                var button = $('#id-comments-change'),  // TODO: add to cache
-                    btnBounds = null,
-                    contentBounds = Common.Utils.getBoundingClientRect(this.el),
-                    moveY = 0,
-                    padding = 7;
+                const button = $('#id-comments-change');  // TODO: add to cache
+                let btnBounds = null;
+                const contentBounds = Common.Utils.getBoundingClientRect(this.el);
+                let moveY = 0;
+                const padding = 7;
 
                 if (button.length) {
                     btnBounds = Common.Utils.getBoundingClientRect(button.get(0));
@@ -171,10 +169,9 @@ define([
                 }
             },
             clearActive: function() {
-                this.cmpEl && this.cmpEl.find('.item.active').removeClass('active');
+                this.cmpEl?.find('.item.active').removeClass('active');
             }
-        }
-    })());
+        }))());
 
     Common.Views.Comments = Common.UI.BaseView.extend(_.extend({
         el: '#left-panel-comments',
@@ -186,15 +183,20 @@ define([
         viewmode: false,
 
         _commentsViewOnItemClick: function (picker, item, record, e) {
-            var me = this;
-            var btn, showEditBox, showReplyBox, commentId, replyId, hideAddReply;
+            const me = this;
+            let btn;
+            let showEditBox;
+            let showReplyBox;
+            let commentId;
+            let replyId;
+            let hideAddReply;
 
             function readdresolves() {
                 me.update();
             }
 
             picker.clearActive();
-            item.$el && item.$el.addClass('active');
+            item.$el?.addClass('active');
 
             btn = $(e.target);
             if (btn) {
@@ -286,7 +288,7 @@ define([
                     readdresolves();
                     me.fireEvent('comment:show', [commentId, false]);
                 } else if (btn.hasClass('btn-resolve', false)) {
-                    var tip = btn.data('bs.tooltip');
+                    const tip = btn.data('bs.tooltip');
                     if (tip) tip.dontShow = true;
 
                     me.fireEvent('comment:resolve', [commentId]);
@@ -295,10 +297,10 @@ define([
                     me.fireEvent('comment:show', [commentId, false]);
                 } else if (!btn.hasClass('msg-reply') &&
                     !btn.hasClass('btn-resolve')) {
-                    var isTextSelected = false;
+                    let isTextSelected = false;
                     if (btn.hasClass('user-message')) {
                         if (window.getSelection) {
-                            var selection = window.getSelection();
+                            const selection = window.getSelection();
                             isTextSelected = (selection.toString()!=='')
                         } else if (document.selection) {
                             isTextSelected = document.selection;
@@ -316,15 +318,15 @@ define([
             this.store = this.options.store;
             this.hasFilters = false;
 
-            var filter = Common.localStorage.getKeysFilter();
-            this.appPrefix = (filter && filter.length) ? filter.split(',')[0] : '';
+            const filter = Common.localStorage.getKeysFilter();
+            this.appPrefix = (filter?.length) ? filter.split(',')[0] : '';
 
             this.showCommentToDocAtBottom = false;
             !this.showCommentToDocAtBottom && (this.addCommentHeight = 0);
         },
 
         render: function () {
-            var me = this;
+            const me = this;
 
             if (!this.rendered) {
                 this.$el.html(this.template({
@@ -361,28 +363,28 @@ define([
                                 caption: this.mniDateDesc,
                                 value: 'date-desc',
                                 checkable: true,
-                                checked: (Common.localStorage.getItem(this.appPrefix + "comments-sort") || 'date-desc') === 'date-desc',
+                                checked: (Common.localStorage.getItem(`${this.appPrefix}comments-sort`) || 'date-desc') === 'date-desc',
                                 toggleGroup: 'sortcomments'
                             },
                             {
                                 caption: this.mniDateAsc,
                                 value: 'date-asc',
                                 checkable: true,
-                                checked: (Common.localStorage.getItem(this.appPrefix + "comments-sort") || 'date-desc') === 'date-asc',
+                                checked: (Common.localStorage.getItem(`${this.appPrefix}comments-sort`) || 'date-desc') === 'date-asc',
                                 toggleGroup: 'sortcomments'
                             },
                             {
                                 caption: this.mniAuthorAsc,
                                 value: 'author-asc',
                                 checkable: true,
-                                checked: Common.localStorage.getItem(this.appPrefix + "comments-sort") === 'author-asc',
+                                checked: Common.localStorage.getItem(`${this.appPrefix}comments-sort`) === 'author-asc',
                                 toggleGroup: 'sortcomments'
                             },
                             {
                                 caption: this.mniAuthorDesc,
                                 value: 'author-desc',
                                 checkable: true,
-                                checked: Common.localStorage.getItem(this.appPrefix + "comments-sort") === 'author-desc',
+                                checked: Common.localStorage.getItem(`${this.appPrefix}comments-sort`) === 'author-desc',
                                 toggleGroup: 'sortcomments'
                             },
                             {
@@ -390,7 +392,7 @@ define([
                                 value: 'position-asc',
                                 checkable: true,
                                 visible: this.appPrefix==='de-',
-                                checked: Common.localStorage.getItem(this.appPrefix + "comments-sort") === 'position-asc',
+                                checked: Common.localStorage.getItem(`${this.appPrefix}comments-sort`) === 'position-asc',
                                 toggleGroup: 'sortcomments'
                             },
                             {
@@ -398,7 +400,7 @@ define([
                                 value: 'position-desc',
                                 checkable: true,
                                 visible: this.appPrefix==='de-',
-                                checked: Common.localStorage.getItem(this.appPrefix + "comments-sort") === 'position-desc',
+                                checked: Common.localStorage.getItem(`${this.appPrefix}comments-sort`) === 'position-desc',
                                 toggleGroup: 'sortcomments'
                             },
                             {
@@ -488,15 +490,17 @@ define([
                 this.scrollerNewCommet = new Common.UI.Scroller({el: $('.new-comment-ct') });
 
                 this.txtComment.keydown(function (event) {
-                    if ((event.ctrlKey || event.metaKey) && !event.altKey && event.keyCode == Common.UI.Keys.RETURN) {
+                    if ((event.ctrlKey || event.metaKey) && !event.altKey && event.keyCode === Common.UI.Keys.RETURN) {
                         me.onClickAddDocumentComment();
                         event.stopImmediatePropagation();
                     } else if (event.keyCode === Common.UI.Keys.TAB) {
-                        var $this, end, start;
+                        let $this;
+                        let end;
+                        let start;
                         start = this.selectionStart;
                         end = this.selectionEnd;
                         $this = $(this);
-                        $this.val($this.val().substring(0, start) + '\t' + $this.val().substring(end));
+                        $this.val(`${$this.val().substring(0, start)}\t${$this.val().substring(end)}`);
                         this.selectionStart = this.selectionEnd = start + 1;
 
                         event.stopImmediatePropagation();
@@ -524,27 +528,27 @@ define([
                     emptyText: me.txtEmpty
                 });
 
-                var addtooltip = function (dataview, view, record) {
+                const addtooltip = (dataview, view, record) => {
                     if (view.tipsArray) {
-                        view.tipsArray.forEach(function(item){
+                        view.tipsArray.forEach((item)=> {
                             item.remove();
                         });
                     }
 
-                    var arr = [],
-                        btns = $(view.el).find('.btn-resolve:not(.comment-resolved)');
+                    const arr = [];
+                    let btns = $(view.el).find('.btn-resolve:not(.comment-resolved)');
                     btns.tooltip({title: me.textResolve, placement: 'cursor'});
-                    btns.each(function(idx, item){
+                    btns.each((idx, item)=> {
                         arr.push($(item).data('bs.tooltip').tip());
                     });
                     btns = $(view.el).find('.comment-resolved');
                     btns.tooltip({title: me.textOpenAgain, placement: 'cursor'});
-                    btns.each(function(idx, item){
+                    btns.each((idx, item)=> {
                         arr.push($(item).data('bs.tooltip').tip());
                     });
                     btns = $(view.el).find('.i-comment-resolved');
                     btns.tooltip({title: me.textViewResolved, placement: 'cursor'});
-                    btns.each(function(idx, item){
+                    btns.each((idx, item)=> {
                         arr.push($(item).data('bs.tooltip').tip());
                     });
                     view.tipsArray = arr;
@@ -569,16 +573,16 @@ define([
             this.updateScrolls();
         },
         updateScrolls: function () {
-            if (this.commentsView && this.commentsView.scroller) {
+            if (this.commentsView?.scroller) {
                 this.commentsView.scroller.update({minScrollbarLength: this.commentsView.minScrollbarLength, alwaysVisibleY: true});
             }
         },
 
         showEditContainer: function (show) {
-            var addCommentLink  = $('.add-link-ct', this.el),
-                newCommentBlock = $('.new-comment-ct', this.el),
-                commentMsgBlock = $('.messages-ct', this.el),
-                container = $('#comments-box', this.el);
+            const addCommentLink  = $('.add-link-ct', this.el);
+            const newCommentBlock = $('.new-comment-ct', this.el);
+            const commentMsgBlock = $('.messages-ct', this.el);
+            const container = $('#comments-box', this.el);
 
             this.layout.freezePanels(!show);
 
@@ -592,8 +596,7 @@ define([
                 commentMsgBlock.toggleClass('stretch', false);
 
                 this.txtComment.val('');
-                var me = this;
-                setTimeout(function() { me.txtComment.focus();}, 10);
+                setTimeout(() => { this.txtComment.focus();}, 10);
 
                 this.textBoxAutoSizeLocked = undefined;
             }
@@ -614,7 +617,7 @@ define([
             this.showEditContainer(false);
         },
 
-        onClickAddNewComment: function () {
+        onClickAddNewComment: () => {
             Common.NotificationCenter.trigger('app:comment:add');
         },
 
@@ -630,29 +633,30 @@ define([
         },
         loadText: function () {
             if (this.textVal && this.commentsView) {
-                var textBox = this.commentsView.getTextBox();
-                textBox && textBox.val(this.textVal);
+                const textBox = this.commentsView.getTextBox();
+                textBox?.val(this.textVal);
             }
         },
 
         hookTextBox: function () {
-            var me = this,
-                textBox = this.commentsView.getTextBox();
+            const textBox = this.commentsView.getTextBox();
 
-            textBox && textBox.keydown(function (event) {
-                if ((event.ctrlKey || event.metaKey) && !event.altKey && event.keyCode == Common.UI.Keys.RETURN) {
-                    var buttonChangeComment = $('#id-comments-change');
-                    if (buttonChangeComment && buttonChangeComment.length) {
+            textBox?.keydown(function (event) {
+                if ((event.ctrlKey || event.metaKey) && !event.altKey && event.keyCode === Common.UI.Keys.RETURN) {
+                    const buttonChangeComment = $('#id-comments-change');
+                    if (buttonChangeComment?.length) {
                         buttonChangeComment.click();
                     }
 
                     event.stopImmediatePropagation();
                 } else if (event.keyCode === Common.UI.Keys.TAB) {
-                    var $this, end, start;
+                    let $this;
+                    let end;
+                    let start;
                     start = this.selectionStart;
                     end = this.selectionEnd;
                     $this = $(this);
-                    $this.val($this.val().substring(0, start) + '\t' + $this.val().substring(end));
+                    $this.val(`${$this.val().substring(0, start)}\t${$this.val().substring(end)}`);
                     this.selectionStart = this.selectionEnd = start + 1;
 
                     event.stopImmediatePropagation();
@@ -662,14 +666,14 @@ define([
         },
 
         setupLayout: function () {
-            var me = this, parent = me.$el;
+            const parent = this.$el;
 
-            var add = $('.new-comment-ct', me.el),
-                to = $('.add-link-ct', me.el),
-                container = $('#comments-box', me.el),
-                items = container.find(' > .layout-item');
+            const add = $('.new-comment-ct', this.el);
+            const to = $('.add-link-ct', this.el);
+            const container = $('#comments-box', this.el);
+            const items = container.find(' > .layout-item');
 
-            me.layout = new Common.UI.VBoxLayout({
+            this.layout = new Common.UI.VBoxLayout({
                 box: container,
                 freeze: true,
                 items: [
@@ -677,53 +681,53 @@ define([
                         resize: {
                             hidden: false,
                             autohide: false,
-                            fmin: (function () {
+                            fmin: (() => {
 
-                                var height = container.height();
+                                const height = container.height();
 
                                 if (add.css('display') !== 'none') {
-                                    if (height * 0.5 < me.newCommentHeight)
-                                        return height - me.newCommentHeight;
+                                    if (height * 0.5 < this.newCommentHeight)
+                                        return height - this.newCommentHeight;
                                 }
 
                                 return height * 0.5;
                             }),
-                            fmax: (function () {
+                            fmax: (() => {
 
                                 if (add.css('display') !== 'none')
-                                    return container.height() - me.newCommentHeight;
+                                    return container.height() - this.newCommentHeight;
 
-                                return container.height() - me.addCommentHeight;
+                                return container.height() - this.addCommentHeight;
                             })
                         }},
                     {el: items[1], stretch: true},
                     {el: items[2], stretch: true}
                 ]
             });
-            me.layout.on('layout:resizedrag', function() {
-                me.updateScrolls();
-                me.textBoxAutoSizeLocked = true;
+            this.layout.on('layout:resizedrag', () => {
+                this.updateScrolls();
+                this.textBoxAutoSizeLocked = true;
             }, this);
 
-            $(window).on('resize', function() {
+            $(window).on('resize', () => {
                 if (parent.css('display') !== 'none') {
 
-                   var height = $('#comments-box', me.el).height();
-                   var addcmt = $('.new-comment-ct', me.el);
-                   var tocmt = $('.add-link-ct', me.el);
+                   const height = $('#comments-box', this.el).height();
+                   const addcmt = $('.new-comment-ct', this.el);
+                   const tocmt = $('.add-link-ct', this.el);
 
                    if (addcmt.css('display') !== 'none') {
-                        me.layout.setResizeValue(0,
-                            Math.max(-me.newCommentHeight,
-                                Math.min(height - ((addcmt.height() || 0) + 4), height - me.newCommentHeight)));
+                        this.layout.setResizeValue(0,
+                            Math.max(-this.newCommentHeight,
+                                Math.min(height - ((addcmt.height() || 0) + 4), height - this.newCommentHeight)));
                     }
                     else {
-                        me.layout.setResizeValue(0,
-                            Math.max(-me.addCommentHeight,
-                                Math.min(height - (tocmt.height() || 0), height - me.addCommentHeight)));
+                        this.layout.setResizeValue(0,
+                            Math.max(-this.addCommentHeight,
+                                Math.min(height - (tocmt.height() || 0), height - this.addCommentHeight)));
                     }
 
-                    me.updateScrolls();
+                    this.updateScrolls();
                 }
             });
 
@@ -732,15 +736,13 @@ define([
 
         changeLayout: function(mode) {
             this.mode = mode;
-
-            var me = this,
-                add = $('.new-comment-ct', this.el),
-                to = $('.add-link-ct', this.el),
-                msgs = $('.messages-ct', this.el);
+            const add = $('.new-comment-ct', this.el);
+            const to = $('.add-link-ct', this.el);
+            const msgs = $('.messages-ct', this.el);
             msgs.toggleClass('stretch', !mode.canComments || mode.compatibleFeatures || !this.showCommentToDocAtBottom);
             this.buttonAddNew.setVisible(mode.canComments);
-            if (this.buttonSort && this.buttonSort.menu) {
-                var menu = this.buttonSort.menu;
+            if (this.buttonSort?.menu) {
+                const menu = this.buttonSort.menu;
                 menu.items[menu.items.length-1].setVisible(mode.canComments && !mode.compatibleFeatures);
                 menu.items[menu.items.length-2].setVisible(mode.canComments && !mode.compatibleFeatures);
                 this.buttonSort.updateHint(mode.canComments && !mode.compatibleFeatures ? (this.hasFilters ? this.textSortFilterMore : this.textSortMore) : (this.hasFilters ? this.textSortFilter : this.textSort));
@@ -753,39 +755,40 @@ define([
                 }
                 this.layout.changeLayout([{el: msgs[0], rely: false, stretch: true}]);
             } else {
-                var container = $('#comments-box', this.el);
+                const container = $('#comments-box', this.el);
                 this.showCommentToDocAtBottom ? to.show() : to.remove();
                 this.layout.changeLayout([{el: msgs[0], rely: true,
                     resize: {
                         hidden: false,
                         autohide: false,
-                        fmin: (function () {
-                            var height = container.height();
+                        fmin: (() => {
+                            const height = container.height();
                             if (add.css('display') !== 'none') {
-                                if (height * 0.5 < me.newCommentHeight)
-                                    return height - me.newCommentHeight;
+                                if (height * 0.5 < this.newCommentHeight)
+                                    return height - this.newCommentHeight;
                             }
                             return height * 0.5;
                         }),
-                        fmax: (function () {
+                        fmax: (() => {
                             if (add.css('display') !== 'none')
-                                return container.height() - me.newCommentHeight;
-                            return container.height() - me.addCommentHeight;
+                                return container.height() - this.newCommentHeight;
+                            return container.height() - this.addCommentHeight;
                         })
                 }}].concat(this.showCommentToDocAtBottom ? [{el: to[0], stretch: true}] : []).concat([{el: add[0], stretch: true}]));
             }
         },
 
         updateLayout: function () {
-            var container = $('#comments-box', this.el), add = $('.new-comment-ct', this.el);
+            const container = $('#comments-box', this.el);
+            const add = $('.new-comment-ct', this.el);
             if (add.css('display') !== 'none') {
                 this.layout.setResizeValue(0, container.height() - this.newCommentHeight);
             } else {
                 this.layout.setResizeValue(0, container.height() - this.addCommentHeight);
             }
         },
-        disableTextBoxButton: function(textboxEl) {
-            var button = $(textboxEl.parent().siblings('.add')[0]);
+        disableTextBoxButton: (textboxEl) => {
+            const button = $(textboxEl.parent().siblings('.add')[0]);
 
             if(textboxEl.val().trim().length > 0) {
                 button.removeAttr('disabled');
@@ -796,19 +799,26 @@ define([
             }
         },
         autoHeightTextBox: function () {
-            var me = this, domTextBox = null, lineHeight = 0, minHeight = 44;
-            var textBox = $('#comment-msg-new', this.el);
+            const me = this;
+            const domTextBox = null;
+            let lineHeight = 0;
+            const minHeight = 44;
+            const textBox = $('#comment-msg-new', this.el);
             if (textBox.length<1) return;
 
             function updateTextBoxHeight() {
 
-                var textBox, controlHeight, contentHeight, height, oldHeight,
-                    textBoxMinHeightIndent = 44 + 4;    // 4px - autosize line height + big around border
+                let textBox;
+                let controlHeight;
+                let contentHeight;
+                let height;
+                let oldHeight;
+                const textBoxMinHeightIndent = 44 + 4;    // 4px - autosize line height + big around border
 
                 textBox = $('#comment-msg-new', me.el);
                 height = $('#comments-box', me.el).height();
 
-                if (0 == textBox.val().length) {
+                if (0 === textBox.val().length) {
                     me.layout.setResizeValue(0, Math.max(-me.newCommentHeight, height - me.newCommentHeight));
                     me.textBoxAutoSizeLocked = undefined;
                     return;
@@ -822,7 +832,7 @@ define([
 
                 // calculate text content height
 
-                textBox.css({height: minHeight + 'px'});
+                textBox.css({height: `${minHeight}px`});
 
                 controlHeight = textBox.height();
                 contentHeight = Math.max(textBox.get(0).scrollHeight + lineHeight, textBoxMinHeightIndent);
@@ -842,68 +852,60 @@ define([
             }
 
             me.disableTextBoxButton(textBox);
-            lineHeight = parseInt(textBox.css('lineHeight'), 10) * 0.25;
+            lineHeight = Number.parseInt(textBox.css('lineHeight'), 10) * 0.25;
             updateTextBoxHeight();
             textBox.bind('input propertychange', onTextareaInput);
 
             this.textBox = textBox;
         },
 
-        getFixedQuote: function (quote) {
-            return Common.Utils.String.ellipsis(Common.Utils.String.htmlEncode(quote), 120, true);
-        },
-        getUserName: function (username) {
-            return Common.Utils.String.htmlEncode(AscCommon.UserInfoParser.getParsedName(username));
-        },
-        getEncodedName: function (username) {
-            return Common.Utils.String.htmlEncode(username);
-        },
+        getFixedQuote: (quote) => Common.Utils.String.ellipsis(Common.Utils.String.htmlEncode(quote), 120, true),
+        getUserName: (username) => Common.Utils.String.htmlEncode(AscCommon.UserInfoParser.getParsedName(username)),
+        getEncodedName: (username) => Common.Utils.String.htmlEncode(username),
 
-        pickLink: function (message) {
-            var arr = [], offset, len;
-            message.replace(Common.Utils.ipStrongRe, function(subStr) {
-                var result = /[\.,\?\+;:=!\(\)]+$/.exec(subStr);
+        pickLink: (message) => {
+            let arr = [];
+            let offset;
+            let len;
+            message.replace(Common.Utils.ipStrongRe, (subStr) => {
+                const result = /[\.,\?\+;:=!\(\)]+$/.exec(subStr);
                 if (result)
                     subStr = subStr.substring(0, result.index);
                 offset = arguments[arguments.length-2];
-                arr.push({start: offset, end: subStr.length+offset, str: '<a href="' + subStr + '" target="_blank" data-can-copy="true">' + subStr + '</a>'});
+                arr.push({start: offset, end: subStr.length+offset, str: `<a href="${subStr}" target="_blank" data-can-copy="true">${subStr}</a>`});
                 return '';
             });
 
             if (message.length<1000 || message.search(/\S{255,}/)<0)
-                message.replace(Common.Utils.hostnameStrongRe, function(subStr) {
-                    var result = /[\.,\?\+;:=!\(\)]+$/.exec(subStr);
+                message.replace(Common.Utils.hostnameStrongRe, (subStr) => {
+                    const result = /[\.,\?\+;:=!\(\)]+$/.exec(subStr);
                     if (result)
                         subStr = subStr.substring(0, result.index);
-                    var ref = (! /(((^https?)|(^ftp)):\/\/)/i.test(subStr) ) ? ('http://' + subStr) : subStr;
+                    const ref = (! /(((^https?)|(^ftp)):\/\/)/i.test(subStr) ) ? (`http://${subStr}`) : subStr;
                     offset = arguments[arguments.length-2];
                     len = subStr.length;
-                    var elem = _.find(arr, function(item){
-                        return ( (offset>=item.start) && (offset<item.end) ||
-                            (offset<=item.start) && (offset+len>item.start));
-                    });
+                    const elem = _.find(arr, (item)=> ( (offset>=item.start) && (offset<item.end) ||
+                            (offset<=item.start) && (offset+len>item.start)));
                     if (!elem)
-                        arr.push({start: offset, end: len+offset, str: '<a href="' + ref + '" target="_blank" data-can-copy="true">' + subStr + '</a>'});
+                        arr.push({start: offset, end: len+offset, str: `<a href="${ref}" target="_blank" data-can-copy="true">${subStr}</a>`});
                     return '';
                 });
 
-            message.replace(Common.Utils.emailStrongRe, function(subStr) {
-                var ref = (! /((^mailto:)\/\/)/i.test(subStr) ) ? ('mailto:' + subStr) : subStr;
+            message.replace(Common.Utils.emailStrongRe, (subStr) => {
+                const ref = (! /((^mailto:)\/\/)/i.test(subStr) ) ? (`mailto:${subStr}`) : subStr;
                 offset = arguments[arguments.length-2];
                 len = subStr.length;
-                var elem = _.find(arr, function(item){
-                    return ( (offset>=item.start) && (offset<item.end) ||
-                             (offset<=item.start) && (offset+len>item.start));
-                });
+                const elem = _.find(arr, (item)=> ( (offset>=item.start) && (offset<item.end) ||
+                             (offset<=item.start) && (offset+len>item.start)));
                 if (!elem)
-                    arr.push({start: offset, end: len+offset, str: '<a href="' + ref + '">' + subStr + '</a>'});
+                    arr.push({start: offset, end: len+offset, str: `<a href="${ref}">${subStr}</a>`});
                 return '';
             });
 
-            arr = _.sortBy(arr, function(item){ return item.start; });
+            arr = _.sortBy(arr, (item)=> item.start);
 
-            var str_res = (arr.length>0) ? ( Common.Utils.String.htmlEncode(message.substring(0, arr[0].start)) + arr[0].str) : Common.Utils.String.htmlEncode(message);
-            for (var i=1; i<arr.length; i++) {
+            let str_res = (arr.length>0) ? ( Common.Utils.String.htmlEncode(message.substring(0, arr[0].start)) + arr[0].str) : Common.Utils.String.htmlEncode(message);
+            for (let i=1; i<arr.length; i++) {
                 str_res += (Common.Utils.String.htmlEncode(message.substring(arr[i-1].end, arr[i].start)) + arr[i].str);
             }
             if (arr.length>0) {
@@ -912,18 +914,14 @@ define([
             return str_res;
         },
 
-        pickEMail: function (commentId, message, oldMessage) {
-            var old_arr = [];
+        pickEMail: (commentId, message, oldMessage) => {
+            let old_arr = [];
             if (oldMessage) {
                 old_arr = Common.Utils.String.htmlEncode(oldMessage).match(/\B[@+][A-Z0-9._%+-]+@[A-Z0-9._-]+\.[A-Z]+\b/gi);
-                old_arr = _.map(old_arr, function(str){
-                    return str.slice(1, str.length);
-                });
+                old_arr = _.map(old_arr, (str)=> str.slice(1, str.length));
             }
-            var arr = Common.Utils.String.htmlEncode(message).match(/\B[@+][A-Z0-9._%+-]+@[A-Z0-9._-]+\.[A-Z]+\b/gi);
-            arr = _.map(arr, function(str){
-                return str.slice(1, str.length);
-            });
+            let arr = Common.Utils.String.htmlEncode(message).match(/\B[@+][A-Z0-9._%+-]+@[A-Z0-9._-]+\.[A-Z]+\b/gi);
+            arr = _.map(arr, (str)=> str.slice(1, str.length));
             arr = _.difference(arr, old_arr);
             (arr.length>0) && Common.Gateway.requestSendNotify({
                 emails: arr,
@@ -942,7 +940,7 @@ define([
             state && this.fireEvent('comment:sort', [item.value]);
         },
 
-        onShowBeforeSortButtonMenu: function(menu, item, state) {
+        onShowBeforeSortButtonMenu: (menu, item, state) => {
             Common.UI.TooltipManager.closeTip('commentFilter');
         },
 
@@ -954,7 +952,7 @@ define([
             state && this.fireEvent('comment:filtercomments', [item.value]);
         },
 
-        onClickClosePanel: function() {
+        onClickClosePanel: () => {
             Common.NotificationCenter.trigger('leftmenu:change', 'hide');
         },
 

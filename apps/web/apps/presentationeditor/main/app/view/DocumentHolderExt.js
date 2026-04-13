@@ -23,2438 +23,2581 @@
  *
  */
 
-define([], function () {
-    'use strict';
+define([], () => {
+  if (window.PE?.Views?.DocumentHolder) {
+    const dh = window.PE.Views.DocumentHolder.prototype
+
+    dh.createDelayedElementsViewer = function () {
+      if (this.menuViewCopy) return // menu is already inited
+
+      this.menuViewCopy = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-copy",
+        caption: this.textCopy,
+        value: "copy",
+      })
+
+      this.menuViewUndo = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-undo icon-rtl",
+        caption: this.textUndo,
+      })
+
+      const menuViewCopySeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      this.menuViewAddComment = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-add-comment",
+        caption: this.addCommentText,
+      })
+
+      this.viewModeMenu = new Common.UI.Menu({
+        cls: "shifted-right",
+        initMenu: (value) => {
+          this.menuViewUndo.setVisible(
+            this.mode.canCoAuthoring && this.mode.canComments && !this._isDisabled,
+          )
+          this.menuViewUndo.setDisabled(!this.api.asc_getCanUndo())
+          menuViewCopySeparator.setVisible(
+            !value.isChart &&
+              this.api.can_AddQuotedComment() !== false &&
+              this.mode.canCoAuthoring &&
+              this.mode.canComments &&
+              !this._isDisabled,
+          )
+          this.menuViewAddComment.setVisible(
+            !value.isChart &&
+              this.api.can_AddQuotedComment() !== false &&
+              this.mode.canCoAuthoring &&
+              this.mode.canComments &&
+              !this._isDisabled,
+          )
+          this.menuViewAddComment.setDisabled(value.locked)
+          const cancopy = this.api?.can_CopyCut()
+          this.menuViewCopy.setDisabled(!cancopy)
+        },
+        items: [
+          this.menuViewCopy,
+          this.menuViewUndo,
+          menuViewCopySeparator,
+          this.menuViewAddComment,
+        ],
+      }).on("hide:after", (menu, e, isFromInputControl) => {
+        this.clearCustomItems(menu)
+        this.currentMenu = null
+        if (this.suppressEditComplete) {
+          this.suppressEditComplete = false
+          return
+        }
+
+        if (!isFromInputControl) this.fireEvent("editcomplete", this)
+      })
+
+      this.mnuPreview = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-preview",
+        caption: this.txtPreview,
+      })
+
+      this.mnuSelectAll = new Common.UI.MenuItem({
+        caption: this.txtSelectAll,
+      })
+
+      this.mnuPrintSelection = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-print",
+        caption: this.txtPrintSelection,
+      })
+
+      this.viewModeMenuSlide = new Common.UI.Menu({
+        cls: "shifted-right",
+        initMenu: (value) => {
+          this.mnuSelectAll.setDisabled(this.slidesCount < 2)
+          this.mnuPrintSelection.setVisible(this.mode.canPrint && value.fromThumbs === true)
+          this.mnuPrintSelection.setDisabled(this.slidesCount < 1)
+          this.mnuPreview.setDisabled(this.slidesCount < 1)
+        },
+        items: [this.mnuSelectAll, this.mnuPrintSelection, { caption: "--" }, this.mnuPreview],
+      }).on("hide:after", (menu, e, isFromInputControl) => {
+        this.clearCustomItems(menu)
+        this.currentMenu = null
+        if (this.suppressEditComplete) {
+          this.suppressEditComplete = false
+          return
+        }
+
+        if (!isFromInputControl) this.fireEvent("editcomplete", this)
+      })
 
-    if (window.PE && window.PE.Views && window.PE.Views.DocumentHolder) {
-        let dh = window.PE.Views.DocumentHolder.prototype;
-
-        dh.createDelayedElementsViewer = function() {
-            var me = this;
-
-            if (me.menuViewCopy) return; // menu is already inited
-
-            me.menuViewCopy = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-copy',
-                caption: me.textCopy,
-                value: 'copy'
-            });
-
-            me.menuViewUndo = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-undo icon-rtl',
-                caption: me.textUndo
-            });
-
-            var menuViewCopySeparator = new Common.UI.MenuItem({
-                caption: '--'
-            });
-
-            me.menuViewAddComment = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-add-comment',
-                caption: me.addCommentText
-            });
-
-            this.viewModeMenu = new Common.UI.Menu({
-                cls: 'shifted-right',
-                initMenu: function (value) {
-                    me.menuViewUndo.setVisible(me.mode.canCoAuthoring && me.mode.canComments && !me._isDisabled);
-                    me.menuViewUndo.setDisabled(!me.api.asc_getCanUndo());
-                    menuViewCopySeparator.setVisible(!value.isChart && me.api.can_AddQuotedComment() !== false && me.mode.canCoAuthoring && me.mode.canComments && !me._isDisabled);
-                    me.menuViewAddComment.setVisible(!value.isChart && me.api.can_AddQuotedComment() !== false && me.mode.canCoAuthoring && me.mode.canComments && !me._isDisabled);
-                    me.menuViewAddComment.setDisabled(value.locked);
-                    var cancopy = me.api && me.api.can_CopyCut();
-                    me.menuViewCopy.setDisabled(!cancopy);
-                },
-                items: [
-                    me.menuViewCopy,
-                    me.menuViewUndo,
-                    menuViewCopySeparator,
-                    me.menuViewAddComment
-                ]
-            }).on('hide:after', function (menu, e, isFromInputControl) {
-                me.clearCustomItems(menu);
-                me.currentMenu = null;
-                if (me.suppressEditComplete) {
-                    me.suppressEditComplete = false;
-                    return;
-                }
-
-                if (!isFromInputControl) me.fireEvent('editcomplete', me);
-            });
-
-            me.mnuPreview = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-preview',
-                caption : me.txtPreview
-            });
-
-            me.mnuSelectAll = new Common.UI.MenuItem({
-                caption : me.txtSelectAll
-            });
-
-            me.mnuPrintSelection = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-print',
-                caption : me.txtPrintSelection
-            });
-
-            this.viewModeMenuSlide = new Common.UI.Menu({
-                cls: 'shifted-right',
-                initMenu: function (value) {
-                    me.mnuSelectAll.setDisabled(me.slidesCount<2);
-                    me.mnuPrintSelection.setVisible(me.mode.canPrint && value.fromThumbs===true);
-                    me.mnuPrintSelection.setDisabled(me.slidesCount<1);
-                    me.mnuPreview.setDisabled(me.slidesCount<1);
-                },
-                items: [
-                    me.mnuSelectAll,
-                    me.mnuPrintSelection,
-                    {caption: '--'},
-                    me.mnuPreview
-                ]
-            }).on('hide:after', function (menu, e, isFromInputControl) {
-                me.clearCustomItems(menu);
-                me.currentMenu = null;
-                if (me.suppressEditComplete) {
-                    me.suppressEditComplete = false;
-                    return;
-                }
-
-                if (!isFromInputControl) me.fireEvent('editcomplete', me);
-            });
-
-            this.fireEvent('createdelayedelements', [this, 'view']);
-        };
-
-        dh.createDelayedElements = function(){
-            var me = this;
-
-            if (me.mnuDeleteSlide || !window.styles_loaded) return; // menu is already inited or editor styles are not loaded
-
-            me.mnuDeleteSlide = new Common.UI.MenuItem({
-                caption     : me.txtDeleteSlide
-            });
-
-            me.mnuChangeSlide = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-changeslide',
-                caption     : me.txtChangeLayout,
-                menu        : new Common.UI.Menu({
-                    menuAlign: 'tl-tr',
-                    items: [
-                        { template: _.template('<div id="id-docholder-menu-changeslide" class="menu-layouts" style="width: 302px; margin: 0 4px;"></div>') }
-                    ]
-                })
-            });
-
-            me.mnuResetSlide = new Common.UI.MenuItem({
-                caption     : me.txtResetLayout
-            });
-
-            me.mnuNewSlide = new Common.UI.MenuItem({
-                caption     : me.txtNewSlide
-            });
-
-            me.mnuDuplicateSlide = new Common.UI.MenuItem({
-                caption     : me.txtDuplicateSlide
-            });
-
-            var mnuChangeTheme = new Common.UI.MenuItem({
-                caption     : me.txtChangeTheme,
-                menu        : new Common.UI.Menu({
-                    menuAlign: 'tl-tr',
-                    items: [
-                        { template: _.template('<div id="id-docholder-menu-changetheme" style="width: 289px; margin: 0 4px;"></div>') }
-                    ]
-                })
-            });
-
-            me.mnuPreview = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-preview',
-                caption : me.txtPreview
-            });
-
-            me.mnuSelectAll = new Common.UI.MenuItem({
-                caption : me.txtSelectAll
-            });
-
-            me.mnuPrintSelection = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-print',
-                caption : me.txtPrintSelection
-            });
-
-            me.mnuMoveSlideToStart = new  Common.UI.MenuItem({
-                caption: me.txtMoveSlidesToStart
-            });
-
-            me.mnuMoveSlideToEnd = new  Common.UI.MenuItem({
-                caption: me.txtMoveSlidesToEnd
-            });
-
-            me.menuSlidePaste = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-paste',
-                caption : me.textPaste,
-                value : 'paste'
-            });
-
-            me.menuSlideSettings = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-menu-slide',
-                caption : me.textSlideSettings,
-                value : null
-            });
-
-            me.mnuSlideHide = new Common.UI.MenuItem({
-                caption : me.txtSlideHide,
-                checkable: true,
-                checked: false
-            });
-
-            me.mnuGuides = new Common.UI.MenuItem({
-                caption     : me.textGuides,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        { caption: me.textShowGuides, value: 'show', checkable: true },
-                        { caption: '--'},
-                        { caption: me.textAddVGuides, iconCls: 'menu__icon btn-vertical-guide', value: 'add-vert' },
-                        { caption: me.textAddHGuides, iconCls: 'menu__icon btn-horizontal-guide', value: 'add-hor' },
-                        { caption: me.textDeleteGuide, value: 'del-guide' },
-                        { caption: '--'},
-                        { caption: me.textSmartGuides, value: 'smart', checkable: true },
-                        { caption: me.textClearGuides, value: 'clear' }
-                    ]
-                })
-            });
-            me.mnuGridlines = new Common.UI.MenuItem({
-                caption     : me.textGridlines,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        { caption: me.textShowGridlines, value: 'show', checkable: true },
-                        { caption: me.textSnapObjects, value: 'snap', checkable: true },
-                        { caption: '--'},
-                        { caption: '--'},
-                        { caption: me.textCustom, value: 'custom' }
-                    ]
-                })
-            });
-            me.mnuRulers = new Common.UI.MenuItem({
-                caption : me.textRulers,
-                checkable: true
-            });
-
-            me.slideMenu = new Common.UI.Menu({
-                cls: 'shifted-right',
-                restoreHeightAndTop: true,
-                scrollToCheckedItem: false,
-                initMenu: function(value) {
-                    var selectedLast = me.api.asc_IsLastSlideSelected(),
-                        selectedFirst = me.api.asc_IsFirstSlideSelected();
-                    me.slideMenu.options.fromThumbs = value.fromThumbs;
-                    me.menuSlidePaste.setVisible(value.fromThumbs!==true);
-                    me.mnuNewSlide.setVisible(value.fromThumbs===true); // New Slide
-                    me.mnuDuplicateSlide.setVisible(value.isSlideSelect===true); // Duplicate Slide
-                    me.mnuDeleteSlide.setVisible(value.isSlideSelect===true);
-                    me.mnuSlideHide.setVisible(value.isSlideSelect===true);
-                    me.mnuSlideHide.setChecked(value.isSlideHidden===true);
-                    me.slideMenu.items[5].setVisible(value.isSlideSelect===true || value.fromThumbs!==true);
-                    me.mnuChangeSlide.setVisible(!me.api.asc_IsMasterMode() && (value.isSlideSelect===true || value.fromThumbs!==true));
-                    me.mnuResetSlide.setVisible(!me.api.asc_IsMasterMode() && (value.isSlideSelect===true || value.fromThumbs!==true));
-                    mnuChangeTheme.setVisible(value.isSlideSelect===true || value.fromThumbs!==true);
-                    me.menuSlideSettings.setVisible(value.isSlideSelect===true || value.fromThumbs!==true);
-                    me.menuSlideSettings.options.value = null;
-
-                    me.slideMenu.items[10].setVisible(!value.fromThumbs); // guides separator
-                    me.mnuGuides.setVisible(!value.fromThumbs);
-                    me.mnuGridlines.setVisible(!value.fromThumbs);
-                    me.mnuRulers.setVisible(!value.fromThumbs);
-                    me.slideMenu.items[14].setVisible(value.fromThumbs===true);
-                    me.mnuSelectAll.setVisible(value.fromThumbs===true);
-
-                    me.mnuPrintSelection.setVisible(me.mode.canPrint && value.fromThumbs===true);
-                    me.slideMenu.items[17].setVisible((!selectedLast || !selectedFirst) && value.isSlideSelect===true);
-                    me.mnuMoveSlideToEnd.setVisible(!selectedLast && value.isSlideSelect===true);
-                    me.mnuMoveSlideToStart.setVisible(!selectedFirst && value.isSlideSelect===true);
-                    me.slideMenu.items[20].setVisible(value.fromThumbs===true);
-                    me.mnuPreview.setVisible(value.fromThumbs===true);
-
-                    if (!value.fromThumbs) {
-                        me.mnuGuides.menu.items[0].setChecked(me.api.asc_getShowGuides(), true);
-                        if (value.guide) { // change visibility only on asc_onContextMenu event
-                            me.mnuGuides.menu.items[4].setVisible(!!value.guide.guideId);
-                            me.mnuGuides.menu.items[4].options.guideId = value.guide.guideId;
-                        }
-                        me.mnuGuides.menu.items[6].setChecked(me.api.asc_getShowSmartGuides(), true);
-
-                        var viewPropsLock = !!Common.Utils.InternalSettings.get("pe-lock-view-props");
-                        me.mnuGuides.menu.items[2].setDisabled(viewPropsLock);
-                        me.mnuGuides.menu.items[3].setDisabled(viewPropsLock);
-                        me.mnuGuides.menu.items[4].setDisabled(viewPropsLock);
-                        me.mnuGuides.menu.items[7].setDisabled(viewPropsLock || !me.api.asc_canClearGuides());
-
-                        me.mnuGridlines.menu.items[0].setChecked(me.api.asc_getShowGridlines(), true);
-                        me.mnuGridlines.menu.items[1].setChecked(me.api.asc_getSnapToGrid(), true);
-
-                        var spacing = Common.Utils.Metric.fnRecalcFromMM(me.api.asc_getGridSpacing()/36000),
-                            items = me.mnuGridlines.menu.items;
-                        if (me._state.unitsChanged) {
-                            for (var i = 3; i < items.length-2; i++) {
-                                me.mnuGridlines.menu.removeItem(items[i]);
-                                i--;
-                            }
-                            var arr = Common.define.gridlineData.getGridlineData(Common.Utils.Metric.getCurrentMetric());
-                            for (var i = 0; i < arr.length; i++) {
-                                var menuItem = new Common.UI.MenuItem({
-                                    caption: arr[i].caption,
-                                    value: arr[i].value,
-                                    checkable: true,
-                                    toggleGroup: 'mnu-gridlines'
-                                });
-                                me.mnuGridlines.menu.insertItem(3+i, menuItem);
-                            }
-                            me._state.unitsChanged = false;
-                        }
-
-                        for (var i=3; i<items.length-2; i++) {
-                            var item = items[i];
-                            if (item.value<1 && Math.abs(item.value - spacing)<0.005)
-                                item.setChecked(true);
-                            else if (item.value>=1 && Math.abs(item.value - spacing)<0.001)
-                                item.setChecked(true);
-                            else
-                                item.setChecked(false);
-                            item.setDisabled(viewPropsLock);
-                        }
-                        me.mnuGridlines.menu.items[1].setDisabled(viewPropsLock);
-                        me.mnuGridlines.menu.items[items.length-1].setDisabled(viewPropsLock);
-                        me.mnuRulers.setChecked(!Common.Utils.InternalSettings.get("pe-hidden-rulers"));
-                    }
-
-                    var selectedElements = me.api.getSelectedElements(),
-                        locked           = false,
-                        lockedDeleted    = false,
-                        lockedLayout     = false;
-                    if (selectedElements && _.isArray(selectedElements)){
-                        _.each(selectedElements, function(element, index) {
-                            if (Asc.c_oAscTypeSelectElement.Slide == element.get_ObjectType()) {
-                                var elValue         = element.get_ObjectValue();
-                                locked          = elValue.get_LockDelete();
-                                lockedDeleted   = elValue.get_LockRemove();
-                                lockedLayout    = elValue.get_LockLayout();
-                                me.menuSlideSettings.options.value = element;
-                                me.slideLayoutMenu.options.layout_index = elValue.get_LayoutIndex();
-                                return false;
-                            }
-                        });
-                    }
-                    for (var i = 0; i < 3; i++) {
-                        me.slideMenu.items[i].setDisabled(locked);
-                    }
-                    me.mnuPreview.setDisabled(me.slidesCount<1);
-                    me.mnuSelectAll.setDisabled(me.slidesCount<2);
-                    me.mnuDeleteSlide.setDisabled(lockedDeleted || locked);
-                    me.mnuChangeSlide.setDisabled(lockedLayout || locked);
-                    me.mnuResetSlide.setDisabled(lockedLayout || locked);
-                    mnuChangeTheme.setDisabled(me._state.themeLock || locked );
-                    me.mnuSlideHide.setDisabled(lockedLayout || locked);
-                    me.mnuPrintSelection.setDisabled(me.slidesCount<1);
-                },
-                items: [
-                    me.menuSlidePaste,
-                    me.mnuNewSlide,
-                    me.mnuDuplicateSlide,
-                    me.mnuDeleteSlide,
-                    me.mnuSlideHide,
-                    {caption: '--'},
-                    me.mnuChangeSlide,
-                    me.mnuResetSlide,
-                    mnuChangeTheme,
-                    me.menuSlideSettings,
-                    {caption: '--'},
-                    me.mnuGuides,
-                    me.mnuGridlines,
-                    me.mnuRulers,
-                    {caption: '--'},
-                    me.mnuSelectAll,
-                    me.mnuPrintSelection,
-                    {caption: '--'},
-                    me.mnuMoveSlideToStart,
-                    me.mnuMoveSlideToEnd,
-                    {caption: '--'},
-                    me.mnuPreview
-                ]
-            }).on('hide:after', function(menu, e, isFromInputControl) {
-                me.clearCustomItems(menu);
-                me.currentMenu = null;
-                if (me.suppressEditComplete) {
-                    me.suppressEditComplete = false;
-                    return;
-                }
-
-                if (!isFromInputControl) me.fireEvent('editcomplete', me);
-            }).on('render:after', function(cmp) {
-                me.slideLayoutMenu = new Common.UI.DataView({
-                    el          : $('#id-docholder-menu-changeslide'),
-                    parentMenu  : me.mnuChangeSlide.menu,
-                    style: 'max-height: 300px;',
-                    restoreWidth: 302,
-                    store       : PE.getCollection('SlideLayouts'),
-                    itemTemplate: _.template([
-                        '<div class="layout" id="<%= id %>" style="width: <%= itemWidth %>px;">',
-                        '<div style="background-image: url(<%= imageUrl %>); width: <%= itemWidth %>px; height: <%= itemHeight %>px;background-size: contain;"></div>',
-                        '<div class="title"><%- title %></div> ',
-                        '</div>'
-                    ].join(''))
-                }).on('item:click', function(picker, item, record, e) {
-                    if (e.type !== 'click')
-                        me.slideMenu.hide();
-                    me.fireEvent('layout:change', [record]);
-                });
-
-                if (me.slideMenu) {
-                    me.mnuChangeSlide.menu.on('show:after', function (menu) {
-                        me.onSlidePickerShowAfter(me.slideLayoutMenu);
-                        me.slideLayoutMenu.scroller.update({alwaysVisibleY: true});
-
-                        var record = me.slideLayoutMenu.store.findLayoutByIndex(me.slideLayoutMenu.options.layout_index);
-                        if (record) {
-                            me.slideLayoutMenu.selectRecord(record, true);
-                            me.slideLayoutMenu.scrollToRecord(record);
-                        }
-                    });
-                }
-                me.slideLayoutMenu._needRecalcSlideLayout = true;
-                me.listenTo(PE.getCollection('SlideLayouts'), 'reset',  function() {
-                    me.slideLayoutMenu._needRecalcSlideLayout = true;
-                });
-
-                me.slideThemeMenu = new Common.UI.DataView({
-                    el          : $('#id-docholder-menu-changetheme'),
-                    parentMenu  : mnuChangeTheme.menu,
-                    // restoreHeight: 300,
-                    style: 'max-height: 300px;',
-                    store       : PE.getCollection('SlideThemes'),
-                    itemTemplate: _.template([
-                        '<div class="style" id="<%= id %>"">',
-                        '<div class="item-theme" style="' + '<% if (typeof imageUrl !== "undefined") { %>' + 'background-image: url(<%= imageUrl %>);' + '<% } %> background-position: 0 -<%= offsety %>px;"></div>',
-                        '</div>'
-                    ].join(''))
-                }).on('item:click', function(picker, item, record, e) {
-                    if (e.type !== 'click')
-                        me.slideMenu.hide();
-                    me.fireEvent('theme:change', [record]);
-                });
-
-                if (me.slideMenu) {
-                    mnuChangeTheme.menu.on('show:after', function (menu) {
-                        var record = me.slideThemeMenu.store.findWhere({themeId: me._state.themeId});
-                        me.slideThemeMenu.selectRecord(record, true);
-
-                        me.slideThemeMenu.scroller.update({alwaysVisibleY: true});
-                        me.slideThemeMenu.scroller.scrollTop(0);
-                    });
-                }
-            });
-
-            me.mnuInsertMaster = new Common.UI.MenuItem({
-                caption : me.textInsertSlideMaster,
-                value : 'ins-master'
-            });
-
-            me.mnuInsertLayout = new Common.UI.MenuItem({
-                caption : me.textInsertLayout,
-                value : 'ins-layout'
-            });
-
-            me.mnuDuplicateMaster = new Common.UI.MenuItem({
-                caption : me.textDuplicateSlideMaster,
-                value : 'duplicate-master'
-            });
-
-            me.mnuPreserveMaster = new Common.UI.MenuItem({
-                caption : me.textPreserveSlideMaster,
-                value : 'preserve-master',
-                checkable: true,
-            });
-
-            me.mnuDeleteMaster = new Common.UI.MenuItem({
-                caption : me.textDeleteMaster,
-                value : 'delete-master'
-            });
-
-            me.mnuDuplicateLayout = new Common.UI.MenuItem({
-                caption : me.textDuplicateLayout,
-                value : 'duplicate-master'
-            });
-
-            me.mnuDeleteLayout = new Common.UI.MenuItem({
-                caption : me.textDeleteLayout,
-                value : 'delete-layout'
-            });
-
-            me.mnuRenameMaster = new Common.UI.MenuItem({
-                caption : me.textRenameMaster,
-                value : 'Rename-master'
-            });
-
-            me.mnuRenameLayout = new Common.UI.MenuItem({
-                caption : me.textRenameLayout,
-                value : 'Rename-layout'
-            });
-
-            me.slideMasterMenu = new Common.UI.Menu({
-                //cls: 'shifted-right',
-                restoreHeightAndTop: true,
-                scrollToCheckedItem: false,
-                initMenu: function(value) {
-                    var isMaster = value.isMaster;
-                    var currentName = ''; 
-
-                    var selectedElements = me.api.getSelectedElements();
-                    if (selectedElements && _.isArray(selectedElements)) {
-                        _.each(selectedElements, function(element) {
-                            if (Asc.c_oAscTypeSelectElement.Slide == element.get_ObjectType()) {
-                                var elValue = element.get_ObjectValue();
-                                currentName = isMaster ? elValue.get_MasterName() : elValue.get_LayoutName();
-                            }
-                        });
-                    }
-                    
-                    me.mnuRenameMaster.setDisabled(currentName === undefined);
-                    me.mnuRenameLayout.setDisabled(currentName === undefined);
-
-                    me.mnuDuplicateMaster.setVisible(isMaster);
-                    me.mnuPreserveMaster.setVisible(isMaster);
-                    me.mnuPreserveMaster.setChecked(value.isPreserve, true);
-                    me.mnuDeleteMaster.setVisible(isMaster);
-                    me.mnuRenameMaster.setVisible(isMaster);
-                    me.mnuDuplicateLayout.setVisible(!isMaster);
-                    me.mnuDeleteLayout.setVisible(!isMaster);
-                    me.mnuRenameLayout.setVisible(!isMaster);
-
-                    isMaster && me.mnuDeleteMaster.setDisabled(!me.api.asc_CanDeleteMaster());
-                    !isMaster && me.mnuDeleteLayout.setDisabled(!me.api.asc_CanDeleteLayout());
-                },
-                items: [
-                    me.mnuInsertMaster,
-                    me.mnuInsertLayout,
-                    me.mnuDuplicateMaster,
-                    me.mnuPreserveMaster,
-                    me.mnuDuplicateLayout,
-                    {caption: '--'},
-                    me.mnuDeleteMaster,
-                    me.mnuRenameMaster,
-                    me.mnuDeleteLayout,
-                    me.mnuRenameLayout
-                ]
-            });
-
-            me.mnuTableMerge = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-merge-cells',
-                caption     : me.mergeCellsText
-            });
-
-            me.mnuTableSplit = new Common.UI.MenuItem({
-                caption     : me.splitCellsText
-            });
-
-            me.menuTableCellAlign = new Common.UI.MenuItem({
-                caption  : me.AlignText,
-                menu    : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        me.menuTableCellTop = new Common.UI.MenuItem({
-                            iconCls: 'menu__icon btn-align-top',
-                            caption     : me.AlignTop,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popuptablecellalign',
-                            value       : Asc.c_oAscVertAlignJc.Top
-                        }),
-                        me.menuTableCellCenter = new Common.UI.MenuItem({
-                            iconCls: 'menu__icon btn-align-middle',
-                            caption     : me.AlignMiddle,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popuptablecellalign',
-                            value       : Asc.c_oAscVertAlignJc.Center
-                        }),
-                        me.menuTableCellBottom = new Common.UI.MenuItem({
-                            iconCls: 'menu__icon btn-align-bottom',
-                            caption     : me.AlignBottom,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popuptablecellalign',
-                            value       : Asc.c_oAscVertAlignJc.Bottom
-                        }),
-                        { caption: '--' },
-                        me.menuTableCellLeft = new Common.UI.MenuItem({
-                            iconCls     : 'menu__icon btn-align-left',
-                            caption     : me.AlignLeft,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popuptablecellhalign',
-                            halign      : 1 
-                        }),
-                        me.menuTableCellHCenter = new Common.UI.MenuItem({
-                            iconCls     : 'menu__icon btn-align-center',
-                            caption     : me.AlignCenter,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popuptablecellhalign',
-                            halign      : 2 
-                        }),
-                        me.menuTableCellRight = new Common.UI.MenuItem({
-                            iconCls     : 'menu__icon btn-align-right',
-                            caption     : me.AlignRight,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popuptablecellhalign',
-                            halign      : 0 
-                        }),
-                        me.menuTableCellJust = new Common.UI.MenuItem({
-                            iconCls     : 'menu__icon btn-align-just',
-                            caption     : me.AlignJust,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popuptablecellhalign',
-                            halign      : 3 
-                        })
-                    ]
-                })
-            });
-
-            me.menuTableSaveAsPicture = new Common.UI.MenuItem({
-                caption     : me.textSaveAsPicture
-            });
-
-            var menuTableSaveAsPictureSeparator = new Common.UI.MenuItem({
-                caption     : '--'
-            });
-
-            me.menuTableDistRows = new Common.UI.MenuItem({
-                caption : me.textDistributeRows
-            });
-
-            me.menuTableDistCols = new Common.UI.MenuItem({
-                caption : me.textDistributeCols
-            });
-
-            me.menuTableDirection = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-text-orient-hor',
-                caption     : me.directionText,
-                menu        : new Common.UI.Menu({
-                    cls: 'ppm-toolbar shifted-right',
-                    menuAlign: 'tl-tr',
-                    items   : [
-                        me.menuTableDirectH = new Common.UI.MenuItem({
-                            caption     : me.directHText,
-                            iconCls     : 'menu__icon btn-text-orient-hor',
-                            checkable   : true,
-                            checkmark   : false,
-                            checked     : false,
-                            toggleGroup : 'popuptabledirect',
-                            direction      : Asc.c_oAscCellTextDirection.LRTB
-                        }),
-                        me.menuTableDirect90 = new Common.UI.MenuItem({
-                            caption     : me.direct90Text,
-                            iconCls     : 'menu__icon btn-text-orient-rdown',
-                            checkable   : true,
-                            checkmark   : false,
-                            checked     : false,
-                            toggleGroup : 'popuptabledirect',
-                            direction      : Asc.c_oAscCellTextDirection.TBRL
-                        }),
-                        me.menuTableDirect270 = new Common.UI.MenuItem({
-                            caption     : me.direct270Text,
-                            iconCls     : 'menu__icon btn-text-orient-rup',
-                            checkable   : true,
-                            checkmark   : false,
-                            checked     : false,
-                            toggleGroup : 'popuptabledirect',
-                            direction      : Asc.c_oAscCellTextDirection.BTLR
-                        })
-                    ]
-                })
-            });
-
-            me.menuTableSelectText = new Common.UI.MenuItem({
-                caption     : me.selectText,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        new Common.UI.MenuItem({
-                            caption     : me.rowText,
-                            value: 0
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : me.columnText,
-                            value: 1
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : me.cellText,
-                            value: 2
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : me.tableText,
-                            value: 3
-                        })
-                    ]
-                })
-            });
-
-            me.menuTableInsertText = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-addcell',
-                caption     : me.insertText,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    style   : 'width: 100px',
-                    items   : [
-                        new Common.UI.MenuItem({
-                            caption: me.insertColumnLeftText,
-                            value: 0
-                        }),
-                        new Common.UI.MenuItem({
-                            caption: me.insertColumnRightText,
-                            value: 1
-                        }),
-                        new Common.UI.MenuItem({
-                            caption: me.insertRowAboveText,
-                            value: 2
-                        }),
-                        new Common.UI.MenuItem({
-                            caption: me.insertRowBelowText,
-                            value: 3
-                        })
-                    ]
-                })
-            });
-
-            me.menuTableDeleteText = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-delcell',
-                caption     : me.deleteText,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        new Common.UI.MenuItem({
-                            caption     : me.rowText,
-                            value: 0
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : me.columnText,
-                            value: 1
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : me.tableText,
-                            value: 2
-                        })
-                    ]
-                })
-            });
-
-            me.menuSpellTable = new Common.UI.MenuItem({
-                caption     : me.loadSpellText,
-                disabled    : true
-            });
-
-            me.menuSpellMoreTable = new Common.UI.MenuItem({
-                caption     : me.moreText,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    restoreHeight: true,
-                    items   : []
-                })
-            });
-
-            var langTemplate = _.template([
-                '<a id="<%= id %>" tabindex="-1" type="menuitem" langval="<%= value %>" class="<% if (checked) { %> checked <% } %>">',
-                    '<div>',
-                        '<i class="icon <% if (spellcheck) { %> toolbar__icon btn-ic-docspell spellcheck-lang <% } %>"></i>',
-                        '<%= caption %>',
-                    '</div>',
-                    '<label style="opacity: 0.6"><%= captionEn %></label>',
-                '</a>'
-            ].join(''));
-
-            me.langTableMenu = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-ic-doclang',
-                caption     : me.langText,
-                menu        : new Common.UI.MenuSimple({
-                    cls: 'lang-menu shifted-right',
-                    menuAlign: 'tl-tr',
-                    restoreHeight: 285,
-                    items   : [],
-                    itemTemplate: langTemplate,
-                    search: true,
-                    searchFields: ['caption', 'captionEn'],
-                    focusToCheckedItem: true
-                })
-            });
-
-            me.menuIgnoreSpellTable = new Common.UI.MenuItem({
-                caption     : me.ignoreSpellText,
-                value: false
-            });
-
-            me.menuIgnoreAllSpellTable = new Common.UI.MenuItem({
-                caption     : me.ignoreAllSpellText,
-                value: true
-            });
-
-            me.menuToDictionaryTable = new Common.UI.MenuItem({
-                caption     : me.toDictionaryText
-            });
-
-            var menuIgnoreSpellTableSeparator = new Common.UI.MenuItem({
-                caption     : '--'
-            });
-
-            var menuSpellcheckTableSeparator = new Common.UI.MenuItem({
-                caption     : '--'
-            });
-
-            me.menuSpellCheckTable = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-ic-docspell',
-                caption     : me.spellcheckText,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items   : [
-                        me.menuSpellTable,
-                        me.menuSpellMoreTable,
-                        menuIgnoreSpellTableSeparator,
-                        me.menuIgnoreSpellTable,
-                        me.menuIgnoreAllSpellTable,
-                        me.menuToDictionaryTable,
-                        { caption: '--' },
-                        me.langTableMenu
-                    ]
-                })
-            });
-
-            me.menuSpellPara = new Common.UI.MenuItem({
-                caption     : me.loadSpellText,
-                disabled    : true
-            });
-
-            me.menuSpellMorePara = new Common.UI.MenuItem({
-                caption     : me.moreText,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    restoreHeight: true,
-                    items: []
-                })
-            });
-
-            me.langParaMenu = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-ic-doclang',
-                caption     : me.langText,
-                menu        : new Common.UI.MenuSimple({
-                    cls: 'lang-menu shifted-right',
-                    menuAlign: 'tl-tr',
-                    restoreHeight: 285,
-                    items   : [],
-                    itemTemplate: langTemplate,
-                    search: true,
-                    searchFields: ['caption', 'captionEn'],
-                    focusToCheckedItem: true
-                })
-            });
-
-            me.menuIgnoreSpellPara = new Common.UI.MenuItem({
-                caption     : me.ignoreSpellText,
-                value: false
-            });
-
-            me.menuIgnoreAllSpellPara = new Common.UI.MenuItem({
-                caption     : me.ignoreAllSpellText,
-                value: true
-            });
-
-            me.menuToDictionaryPara = new Common.UI.MenuItem({
-                caption     : me.toDictionaryText
-            });
-
-            var menuIgnoreSpellParaSeparator = new Common.UI.MenuItem({
-                caption     : '--'
-            });
-
-            var menuSpellcheckParaSeparator = new Common.UI.MenuItem({
-                caption     : '--'
-            });
-
-            me.menuTableAdvanced = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-menu-table',
-                caption     : me.advancedTableText
-            });
-
-            var menuTableSettingsSeparator = new Common.UI.MenuItem({
-                caption : '--'
-            });
-
-            me.menuImageAdvanced = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-menu-image',
-                caption     : me.advancedImageText
-            });
-
-            me.menuShapeAdvanced = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-menu-shape',
-                caption     : me.advancedShapeText
-            });
-
-            me.menuParagraphAdvanced = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-paragraph',
-                caption     : me.advancedParagraphText
-            });
-
-            me.menuChartAdvanced = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-menu-chart',
-                caption     : me.advancedChartText
-            });
-
-            var menuAdvancedSettingsSeparator = new Common.UI.MenuItem({
-                caption : '--'
-            });
-
-            var menuCommentParaSeparator = new Common.UI.MenuItem({
-                caption : '--'
-            });
-
-            me.menuAddHyperlinkPara = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-inserthyperlink',
-                caption : me.hyperlinkText
-            });
-
-            me.menuEditHyperlinkPara = new Common.UI.MenuItem({
-                caption : me.editHyperlinkText
-            });
-
-            me.menuRemoveHyperlinkPara = new Common.UI.MenuItem({
-                caption : me.removeHyperlinkText
-            });
-
-            var menuHyperlinkPara = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-inserthyperlink',
-                caption     : me.hyperlinkText,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        me.menuEditHyperlinkPara,
-                        me.menuRemoveHyperlinkPara
-                    ]
-                })
-            });
-
-            me.menuAddHyperlinkTable = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-inserthyperlink',
-                caption     : me.hyperlinkText
-            });
-
-            me.menuEditHyperlinkTable = new Common.UI.MenuItem({
-                caption     : me.editHyperlinkText
-            });
-
-            me.menuRemoveHyperlinkTable = new Common.UI.MenuItem({
-                caption     : me.removeHyperlinkText
-            });
-
-            var menuHyperlinkTable = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-inserthyperlink',
-                caption     : me.hyperlinkText,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        me.menuEditHyperlinkTable,
-                        me.menuRemoveHyperlinkTable
-                    ]
-                })
-            });
-
-            me.mnuGroupImg = new Common.UI.MenuItem({
-                caption     : this.txtGroup,
-                iconCls     : 'menu__icon btn-shape-group'
-            });
-
-            me.mnuUnGroupImg = new Common.UI.MenuItem({
-                caption     : this.txtUngroup,
-                iconCls     : 'menu__icon btn-shape-ungroup'
-            });
-
-            me.mnuArrangeFront = new Common.UI.MenuItem({
-                caption     : this.textArrangeFront,
-                iconCls     : 'menu__icon btn-arrange-front'
-            });
-
-            me.mnuArrangeBack = new Common.UI.MenuItem({
-                caption     : this.textArrangeBack,
-                iconCls     : 'menu__icon btn-arrange-back'
-            });
-
-            me.mnuArrangeForward = new Common.UI.MenuItem({
-                caption     : this.textArrangeForward,
-                iconCls     : 'menu__icon btn-arrange-forward'
-            });
-
-            me.mnuArrangeBackward = new Common.UI.MenuItem({
-                caption     : this.textArrangeBackward,
-                iconCls     : 'menu__icon btn-arrange-backward'
-            });
-
-            var menuImgShapeArrange = new Common.UI.MenuItem({
-                caption     : me.txtArrange,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        me.mnuArrangeFront,
-                        me.mnuArrangeBack,
-                        me.mnuArrangeForward,
-                        me.mnuArrangeBackward,
-                        {caption: '--'},
-                        me.mnuGroupImg,
-                        me.mnuUnGroupImg
-                    ]
-                })
-            });
-
-            me.menuImgShapeAlign = new Common.UI.MenuItem({
-                caption     : me.txtAlign,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        new Common.UI.MenuItem({
-                            caption     : me.textShapeAlignLeft,
-                            iconCls     : 'menu__icon btn-shape-align-left',
-                            value       : Asc.c_oAscAlignShapeType.ALIGN_LEFT
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : me.textShapeAlignCenter,
-                            iconCls     : 'menu__icon btn-shape-align-center',
-                            value       : Asc.c_oAscAlignShapeType.ALIGN_CENTER
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : me.textShapeAlignRight,
-                            iconCls     : 'menu__icon btn-shape-align-right',
-                            value       : Asc.c_oAscAlignShapeType.ALIGN_RIGHT
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : me.textShapeAlignTop,
-                            iconCls     : 'menu__icon btn-shape-align-top',
-                            value       : Asc.c_oAscAlignShapeType.ALIGN_TOP
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : me.textShapeAlignMiddle,
-                            iconCls     : 'menu__icon btn-shape-align-middle',
-                            value       : Asc.c_oAscAlignShapeType.ALIGN_MIDDLE
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : me.textShapeAlignBottom,
-                            iconCls     : 'menu__icon btn-shape-align-bottom',
-                            value       : Asc.c_oAscAlignShapeType.ALIGN_BOTTOM
-                        }),
-                        {caption    : '--'},
-                        new Common.UI.MenuItem({
-                            caption     : me.txtDistribHor,
-                            iconCls     : 'menu__icon btn-shape-distribute-hor',
-                            value       : 6
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : me.txtDistribVert,
-                            iconCls     : 'menu__icon btn-shape-distribute-vert',
-                            value       : 7
-                        })
-                    ]
-                })
-            });
-
-            var _toolbar_view = PE.getController('Toolbar').getView('Toolbar');
-            me.menuShapesMerge = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-combine-shapes',
-                caption     : me.textShapesMerge,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        new Common.UI.MenuItem({
-                            caption : _toolbar_view.textShapesUnion, 
-                            iconCls : 'menu__icon btn-union-shapes',
-                            value   : 'unite',
-                        }),
-                        new Common.UI.MenuItem({
-                            caption : _toolbar_view.textShapesCombine, 
-                            iconCls : 'menu__icon btn-combine-shapes',
-                            value   : 'exclude',
-                        }),
-                        new Common.UI.MenuItem({
-                            caption : _toolbar_view.textShapesFragment, 
-                            iconCls : 'menu__icon btn-fragment-shapes',
-                            value   : 'divide',
-                        }),
-                        new Common.UI.MenuItem({
-                            caption : _toolbar_view.textShapesIntersect, 
-                            iconCls : 'menu__icon btn-intersect-shapes',
-                            value   : 'intersect',
-                        }),
-                        new Common.UI.MenuItem({
-                            caption : _toolbar_view.textShapesSubstract, 
-                            iconCls : 'menu__icon btn-substract-shapes',
-                            value   : 'subtract',
-                        })
-                    ]
-                })
-            });
-
-            me.menuChartElement = new Common.UI.MenuItem({
-                menu: new Common.UI.Menu({
-                    items: [
-                        { 
-                            caption: me.textAxes, 
-                            value: 'axes',
-                            disabled: false,
-                            menu: new Common.UI.Menu({
-                                cls: 'shifted-right',  
-                                menuAlign: 'tl-tr',
-                                items: [
-                                    { 
-                                        caption: me.textHorAxis, 
-                                        value: 'bShowHorAxis',
-                                        stopPropagation: true, 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textVertAxis, 
-                                        value: 'bShowVertAxis',
-                                        stopPropagation: true, 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textHorAxisSec, 
-                                        value: 'bShowHorAxSec',
-                                        stopPropagation: true, 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textVertAxisSec, 
-                                        value: 'bShowVertAxSec',
-                                        stopPropagation: true, 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.DepthAxis, 
-                                        value: 'bShowDepthAxes',
-                                        stopPropagation: true, 
-                                        checkable: true
-                                    }
-                                ]
-                            })
-                        },
-                        { 
-                            caption: me.textAxisTitles, 
-                            value: 'axisTitles', 
-                            disabled: false,
-                            menu: new Common.UI.Menu({
-                                cls: 'shifted-right',  
-                                menuAlign: 'tl-tr',
-                                items: [
-                                    { 
-                                        caption: me.textHorAxis, 
-                                        value: 'bShowHorAxTitle',
-                                        stopPropagation: true, 
-                                        checkable: true                                   
-                                    },
-                                    { 
-                                        caption: me.textVertAxis, 
-                                        value: 'bShowVertAxTitle', 
-                                        stopPropagation: true,
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption:  me.textHorAxisSec, 
-                                        value: 'bShowHorAxTitleSec',
-                                        stopPropagation: true, 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textVertAxisSec, 
-                                        value: 'bShowVertAxisTitleSec',
-                                        stopPropagation: true, 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.DepthAxis, 
-                                        value: 'bShowDepthAxesTitle',
-                                        stopPropagation: true, 
-                                        checkable: true
-                                    }
-                                ]
-                            })
-                        },
-                        { 
-                            caption: me.textChartTitle, 
-                            value: 'chartTitle',
-                            disabled: false,
-                            menu: new Common.UI.Menu({
-                                cls: 'shifted-right',  
-                                menuAlign: 'tl-tr',
-                                items: [
-                                    { 
-                                        caption: me.textNone, 
-                                        value: 'bShowChartTitleNone',
-                                        stopPropagation: true,
-                                        toggleGroup: 'chartTitle',  
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textNoOverlay, 
-                                        value: 'bShowChartTitle',
-                                        stopPropagation: true,
-                                        toggleGroup: 'chartTitle',  
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textOverlay, 
-                                        value: 'bOverlayTitle',
-                                        stopPropagation: true,
-                                        toggleGroup: 'chartTitle',  
-                                        checkable: true
-                                    }
-                                ]
-                            })
-                        },
-                        { 
-                            caption: me.textDataLabels, 
-                            value: 'dataLabels', 
-                            disabled: false,
-                            menu: new Common.UI.Menu({
-                                cls: 'shifted-right',  
-                                menuAlign: 'tl-tr',
-                                items: [
-                                    { 
-                                        caption: me.textNone, 
-                                        value: 'bShowDataLabels',
-                                        stopPropagation: true,
-                                        toggleGroup: 'dataLabels',  
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textCenter, 
-                                        value: 'CenterData', 
-                                        stopPropagation: true,
-                                        toggleGroup: 'dataLabels', 
-                                        checkable: true
-                                    },
-                                    {   
-                                        caption: me.textInnerBottom, 
-                                        value: 'InnerBottomData',
-                                        stopPropagation: true,
-                                        toggleGroup: 'dataLabels',  
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textInnerTop, 
-                                        value: 'InnerTopData', 
-                                        stopPropagation: true,
-                                        toggleGroup: 'dataLabels', 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textOuterTop, 
-                                        value: 'OuterTopData', 
-                                        stopPropagation: true,
-                                        toggleGroup: 'dataLabels', 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textTop, 
-                                        value: 'TopData', 
-                                        stopPropagation: true,
-                                        toggleGroup: 'dataLabels', 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textLeft, 
-                                        value: 'LeftData', 
-                                        stopPropagation: true,
-                                        toggleGroup: 'dataLabels', 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textRight, 
-                                        value: 'RightData', 
-                                        stopPropagation: true,
-                                        toggleGroup: 'dataLabels', 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textBottom, 
-                                        value: 'BottomData', 
-                                        stopPropagation: true,
-                                        toggleGroup: 'dataLabels', 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textFit, 
-                                        value: 'FitWidthData', 
-                                        stopPropagation: true,
-                                        toggleGroup: 'dataLabels', 
-                                        checkable: true
-                                    }                   
-                                ]
-                            })
-                        },
-                        // { 
-                        //     caption: me.textDataTable, 
-                        //     value: 'dataTable', 
-                        //     disabled: false,
-                        //     menu: new Common.UI.Menu({
-                        //         cls: 'shifted-right',  
-                        //         menuAlign: 'tl-tr',
-                        //         items: [
-                        //             { 
-                        //                 caption: me.textNone, 
-                        //                 value: 'bShowDataNone'
-                        //             },
-                        //             { 
-                        //                 caption: me.textShowDataTable, 
-                        //                 value: 'bShowDataTable'
-                        //             },
-                        //             { 
-                        //                 caption: me.textShowLegendKeys, 
-                        //                 value: 'bShowLegendKeys' 
-                        //             }
-                        //         ]
-                        //     })
-                        // },
-                        {
-                            caption: me.textErrorBars,
-                            value: 'errorBars',
-                            disabled: false,
-                            menu: new Common.UI.Menu({
-                                cls: 'shifted-right',  
-                                menuAlign: 'tl-tr',
-                                items: [
-                                    { 
-                                        caption: me.textNone, 
-                                        value: 'noneError',
-                                        stopPropagation: true, 
-                                        disabled: false
-                                    },
-                                    {
-                                        caption: me.textStandardError,
-                                        value: 'standardError',
-                                        stopPropagation: true, 
-                                        disabled: false
-                                    },
-                                    {
-                                        caption: me.txtPercentage,
-                                        value: 'percentage',
-                                        stopPropagation: true, 
-                                        disabled: false
-                                    },
-                                    {
-                                        caption: me.textStandardDeviation,
-                                        value: 'standardDeviation',
-                                        stopPropagation: true, 
-                                        disabled: false
-                                    }
-                                ]
-                            })
-                        },
-                        { 
-                            caption: me.textGridLines, 
-                            value: 'gridLines', 
-                            disabled: false,
-                            menu: new Common.UI.Menu({
-                                cls: 'shifted-right',  
-                                menuAlign: 'tl-tr',
-                                items: [
-                                    { 
-                                        caption: me.textHorizontalMajor, 
-                                        value: 'bShowHorMajor',
-                                        stopPropagation: true,  
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textVerticalMajor, 
-                                        value: 'bShowVerMajor',
-                                        stopPropagation: true,  
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textHorizontalMinor, 
-                                        value: 'bShowHorMinor',
-                                        stopPropagation: true,  
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textVerticalMinor, 
-                                        value: 'bShowVerMinor', 
-                                        stopPropagation: true, 
-                                        checkable: true
-                                    }
-                                ]
-                            })
-                        },
-                        { 
-                            caption: me.textLegendPos, 
-                            value: 'legend', 
-                            disabled: false,
-                            menu: new Common.UI.Menu({
-                                cls: 'shifted-right',  
-                                menuAlign: 'tl-tr',
-                                items: [
-                                    { 
-                                        caption: me.textNone, 
-                                        value: 'NoneLegend',
-                                        stopPropagation: true,
-                                        toggleGroup: 'legend',  
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textTop, 
-                                        value: 'TopLegend',
-                                        stopPropagation: true,
-                                        toggleGroup: 'legend',  
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textLeft, 
-                                        value: 'LeftLegend', 
-                                        stopPropagation: true,
-                                        toggleGroup: 'legend', 
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textRight, 
-                                        value: 'RightLegend',
-                                        stopPropagation: true,
-                                        toggleGroup: 'legend',  
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textBottom, 
-                                        value: 'BottomLegend', 
-                                        stopPropagation: true,
-                                        toggleGroup: 'legend', 
-                                        checkable: true
-                                    },   
-                                    { 
-                                        caption: me.textLeftOverlay, 
-                                        value: 'LeftOverlay',
-                                        stopPropagation: true,
-                                        toggleGroup: 'legend',  
-                                        checkable: true
-                                    },
-                                    { 
-                                        caption: me.textRightOverlay, 
-                                        value: 'RightOverlay', 
-                                        stopPropagation: true,
-                                        toggleGroup: 'legend', 
-                                        checkable: true
-                                    }
-                                ]
-                            })
-                        },
-                        {
-                            caption: me.textTrendline,
-                            value: 'trendLines',
-                            disabled: false,
-                            menu: new Common.UI.Menu({
-                                cls: 'shifted-right',  
-                                menuAlign: 'tl-tr',
-                                items: [
-                                    {
-                                        caption: me.textNone, 
-                                        stopPropagation: true, 
-                                        value: 'trendLineNone'
-                                    },
-                                    {
-                                        caption: me.textLinear,
-                                        stopPropagation: true, 
-                                        value: 'trendLineLinear'
-                                    },
-                                    {
-                                        caption: me.textExponential, 
-                                        stopPropagation: true, 
-                                        value: 'trendLineExponential'
-                                    },
-                                    {
-                                        caption: me.textLinearForecast,
-                                        stopPropagation: true, 
-                                        value: 'trendLineForecast'
-                                    },
-                                    {
-                                        caption: me.textMovingAverage, 
-                                        stopPropagation: true, 
-                                        value: 'trendLineMovingAverage'
-                                    }
-                                ]
-                            })
-                        },
-                        { 
-                            caption: me.textUpDownBars, 
-                            value: 'upDownBars', 
-                            disabled: false,
-                            menu: new Common.UI.Menu({
-                                cls: 'shifted-right',  
-                                menuAlign: 'tl-tr',
-                                items: [
-                                    { 
-                                        caption: me.textNone, 
-                                        stopPropagation: true, 
-                                        value: 'bShowUpDownNone'
-                                    },
-                                    { 
-                                        caption: me.textShowUpDown, 
-                                        stopPropagation: true, 
-                                        value: 'bShowUpDownBars'
-                                    }
-                                ]
-                            })
-                        }
-                    ]
-                })
-            });
-
-            me.menuChartEdit = new Common.UI.MenuItem({
-                caption     : me.editChartText
-            });
-
-            me.menuParagraphVAlign = new Common.UI.MenuItem({
-                caption     : me.AlignText,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        me.menuParagraphTop = new Common.UI.MenuItem({
-                            iconCls: 'menu__icon btn-align-top',
-                            caption     : me.AlignTop,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popupparagraphvalign',
-                            value       : Asc.c_oAscVAlign.Top
-                        }),
-                        me.menuParagraphCenter = new Common.UI.MenuItem({
-                            iconCls: 'menu__icon btn-align-middle',
-                            caption     : me.AlignMiddle,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popupparagraphvalign',
-                            value       : Asc.c_oAscVAlign.Center
-                        }),
-                        me.menuParagraphBottom = new Common.UI.MenuItem({
-                            iconCls: 'menu__icon btn-align-bottom',
-                            caption     : me.AlignBottom,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popupparagraphvalign',
-                            value       : Asc.c_oAscVAlign.Bottom
-                        }),
-                        { caption: '--' },
-                        me.menuParagraphLeft = new Common.UI.MenuItem({
-                            iconCls     : 'menu__icon btn-align-left',
-                            caption     : me.AlignLeft,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popupparagraphhalign',
-                            halign      : 1 
-                        }),
-                        me.menuParagraphHCenter = new Common.UI.MenuItem({
-                            iconCls     : 'menu__icon btn-align-center',
-                            caption     : me.AlignCenter,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popupparagraphhalign',
-                            halign      : 2 
-                        }),
-                        me.menuParagraphRight = new Common.UI.MenuItem({
-                            iconCls     : 'menu__icon btn-align-right',
-                            caption     : me.AlignRight,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popupparagraphhalign',
-                            halign      : 0 
-                        }),
-                        me.menuParagraphJust = new Common.UI.MenuItem({
-                            iconCls     : 'menu__icon btn-align-just',
-                            caption     : me.AlignJust,
-                            checkable   : true,
-                            checkmark   : false,
-                            toggleGroup : 'popupparagraphhalign',
-                            halign      : 3 
-                        })
-                    ]
-                })
-            });
-
-            me.menuParagraphDirection = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-text-orient-hor',
-                caption     : me.directionText,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items   : [
-                        me.menuParagraphDirectH = new Common.UI.MenuItem({
-                            caption     : me.directHText,
-                            iconCls     : 'menu__icon btn-text-orient-hor',
-                            checkable   : true,
-                            checkmark   : false,
-                            checked     : false,
-                            toggleGroup : 'popupparagraphdirect',
-                            direction      : Asc.c_oAscVertDrawingText.normal
-                        }),
-                        me.menuParagraphDirect90 = new Common.UI.MenuItem({
-                            caption     : me.direct90Text,
-                            iconCls     : 'menu__icon btn-text-orient-rdown',
-                            checkable   : true,
-                            checkmark   : false,
-                            checked     : false,
-                            toggleGroup : 'popupparagraphdirect',
-                            direction      : Asc.c_oAscVertDrawingText.vert
-                        }),
-                        me.menuParagraphDirect270 = new Common.UI.MenuItem({
-                            caption     : me.direct270Text,
-                            iconCls     : 'menu__icon btn-text-orient-rup',
-                            checkable   : true,
-                            checkmark   : false,
-                            checked     : false,
-                            toggleGroup : 'popupparagraphdirect',
-                            direction      : Asc.c_oAscVertDrawingText.vert270
-                        })
-                    ]
-                })
-            });
-
-            var menuImgShapeSeparator = new Common.UI.MenuItem({
-                caption     : '--'
-            });
-
-            me.menuImgOriginalSize = new Common.UI.MenuItem({
-                caption     : me.originalSizeText
-            });
-
-            me.menuImgReplace = new Common.UI.MenuItem({
-                caption     : me.textReplace,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        new Common.UI.MenuItem({
-                            caption     : this.textFromFile,
-                            value: 0
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : this.textFromUrl,
-                            value: 1
-                        }),
-                        new Common.UI.MenuItem({
-                            caption     : this.textFromStorage,
-                            value: 2
-                        })
-                    ]
-                })
-            });
-
-            me.menuImgShapeRotate = new Common.UI.MenuItem({
-                caption     : me.textRotate,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        new Common.UI.MenuItem({
-                            iconCls: 'menu__icon btn-rotate-90',
-                            caption: me.textRotate90,
-                            value  : 1
-                        }),
-                        new Common.UI.MenuItem({
-                            iconCls: 'menu__icon btn-rotate-270',
-                            caption: me.textRotate270,
-                            value  : 0
-                        }),
-                        { caption: '--' },
-                        new Common.UI.MenuItem({
-                            iconCls: 'menu__icon btn-flip-hor',
-                            caption: me.textFlipH,
-                            value  : 1
-                        }),
-                        new Common.UI.MenuItem({
-                            iconCls: 'menu__icon btn-flip-vert',
-                            caption: me.textFlipV,
-                            value  : 0
-                        })
-                    ]
-                })
-            });
-
-            me.menuImgCrop = new Common.UI.MenuItem({
-                caption     : me.textCrop,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items: [
-                        new Common.UI.MenuItem({
-                            caption: me.textCrop,
-                            checkable: true,
-                            allowDepress: true,
-                            value  : 0
-                        }),
-                        new Common.UI.MenuItem({
-                            caption: me.textCropFill,
-                            value  : 1
-                        }),
-                        new Common.UI.MenuItem({
-                            caption: me.textCropFit,
-                            value  : 2
-                        })
-                    ]
-                })
-            });
-
-            me.menuImgResetCrop = new Common.UI.MenuItem({
-                caption: me.textResetCrop,
-                iconCls: 'menu__icon btn-reset',
-            });
-            
-            me.menuImgSaveAsPicture = new Common.UI.MenuItem({
-                caption     : me.textSaveAsPicture
-            });
-
-            var menuImgSaveAsPictureSeparator = new Common.UI.MenuItem({
-                caption     : '--'
-            });
-
-            /** coauthoring begin **/
-            me.menuAddCommentPara = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-add-comment',
-                caption     : me.addCommentText
-            });
-            me.menuAddCommentPara.hide();
-
-            me.menuAddCommentTable = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-add-comment',
-                caption     : me.addCommentText
-            });
-            me.menuAddCommentTable.hide();
-
-            me.menuAddCommentImg = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-add-comment',
-                caption     : me.addCommentText
-            });
-            me.menuAddCommentImg.hide();
-            /** coauthoring end **/
-
-            me.menuParaCopy = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-copy',
-                caption : me.textCopy,
-                value : 'copy'
-            });
-
-            me.menuParaPaste = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-paste',
-                caption : me.textPaste,
-                value : 'paste'
-            });
-
-            me.menuParaCut = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-cut',
-                caption : me.textCut,
-                value : 'cut'
-            });
-
-            me.menuImgCopy = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-copy',
-                caption : me.textCopy,
-                value : 'copy'
-            });
-
-            me.menuImgPaste = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-paste',
-                caption : me.textPaste,
-                value : 'paste'
-            });
-
-            me.menuImgCut = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-cut',
-                caption : me.textCut,
-                value : 'cut'
-            });
-
-            me.menuTableCopy = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-copy',
-                caption : me.textCopy,
-                value : 'copy'
-            });
-
-            me.menuTablePaste = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-paste',
-                caption : me.textPaste,
-                value : 'paste'
-            });
-
-            me.menuTableCut = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-cut',
-                caption : me.textCut,
-                value : 'cut'
-            });
-
-            var menuEquationSeparator = new Common.UI.MenuItem({
-                caption     : '--'
-            });
-
-            var menuTableEquationSeparator = new Common.UI.MenuItem({
-                caption     : '--'
-            });
-
-            var menuTableEquationSettingsSeparator = new Common.UI.MenuItem({
-                caption     : '--'
-            });
-
-            me.menuParagraphEquation = new Common.UI.MenuItem({
-                caption     : me.advancedEquationText,
-                iconCls     : 'menu__icon btn-equation',
-                menu        : me.createEquationMenu('popupparaeqinput', 'tl-tr')
-            });
-
-            me.menuTableEquationSettings = new Common.UI.MenuItem({
-                caption     : me.advancedEquationText,
-                iconCls     : 'menu__icon btn-equation',
-                menu        : me.createEquationMenu('popuptableeqinput', 'tl-tr')
-            });
-
-            me.menuImgEditPoints = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-edit-points',
-                caption: me.textEditPoints
-            });
-
-            me.textMenu = new Common.UI.Menu({
-                cls: 'shifted-right',
-                scrollToCheckedItem: false,
-                initMenu: function(value){
-                    var isInShape = (value.shapeProps && !_.isNull(value.shapeProps.value));
-                    var isInChart = (value.chartProps && !_.isNull(value.chartProps.value));
-
-                    var disabled = (value.paraProps!==undefined  && value.paraProps.locked) ||
-                        (value.slideProps!==undefined && value.slideProps.locked) ||
-                        (isInShape && value.shapeProps.locked);
-                    var isEquation= (value.mathProps && value.mathProps.value);
-                    me._currentParaObjDisabled = disabled;
-
-                    me.menuParagraphVAlign.setVisible(isInShape && !isInChart && !isEquation); // после того, как заголовок можно будет растягивать по вертикали, вернуть "|| isInChart" !!
-                    me.menuParagraphDirection.setVisible(isInShape && !isInChart && !isEquation); // после того, как заголовок можно будет растягивать по вертикали, вернуть "|| isInChart" !!
-                    if (isInShape || isInChart) {
-                        var align = value.shapeProps.value.get_VerticalTextAlign();
-                        var halign = value.paraProps.value.get_Jc();
-                        me.menuParagraphTop.setChecked(align == Asc.c_oAscVAlign.Top);
-                        me.menuParagraphCenter.setChecked(align == Asc.c_oAscVAlign.Center);
-                        me.menuParagraphBottom.setChecked(align == Asc.c_oAscVAlign.Bottom);
-                        me.menuParagraphLeft.setChecked(halign == 1);
-                        me.menuParagraphHCenter.setChecked(halign == 2);
-                        me.menuParagraphRight.setChecked(halign == 0);
-                        me.menuParagraphJust.setChecked(halign == 3);
-
-                        var dir = value.shapeProps.value.get_Vert();
-                        var cls = '';
-                        switch (dir) {
-                            case Asc.c_oAscVertDrawingText.normal:
-                                cls = 'menu__icon btn-text-orient-hor';
-                                break;
-                            case Asc.c_oAscVertDrawingText.vert:
-                                cls = 'menu__icon btn-text-orient-rdown';
-                                break;
-                            case Asc.c_oAscVertDrawingText.vert270:
-                                cls = 'menu__icon btn-text-orient-rup';
-                                break;
-                        }
-                        me.menuParagraphDirection.setIconCls(cls);
-                        me.menuParagraphDirectH.setChecked(dir == Asc.c_oAscVertDrawingText.normal);
-                        me.menuParagraphDirect90.setChecked(dir == Asc.c_oAscVertDrawingText.vert);
-                        me.menuParagraphDirect270.setChecked(dir == Asc.c_oAscVertDrawingText.vert270);
-                    } else {
-                        me.menuParagraphVAlign.setIconCls('');
-                        me.menuParagraphDirection.setIconCls('');
-                    }
-                    me.menuParagraphVAlign.setDisabled(disabled);
-                    me.menuParagraphDirection.setDisabled(disabled);
-
-                    var text = null;
-
-                    if (me.api) {
-                        text = me.api.can_AddHyperlink();
-                    }
-
-                    me.menuAddHyperlinkPara.setVisible(value.hyperProps===undefined && text!==false);
-                    menuHyperlinkPara.setVisible(value.hyperProps!==undefined);
-
-                    me.menuEditHyperlinkPara.hyperProps = value.hyperProps;
-
-                    if (text!==false) {
-                        me.menuAddHyperlinkPara.hyperProps = {};
-                        me.menuAddHyperlinkPara.hyperProps.value = new Asc.CHyperlinkProperty();
-                        me.menuAddHyperlinkPara.hyperProps.value.put_Text(text);
-                    }
-
-                    /** coauthoring begin **/
-                    me.menuAddCommentPara.setVisible(!isInChart && isInShape && me.api.can_AddQuotedComment()!==false && me.mode.canCoAuthoring && me.mode.canComments);
-                    /** coauthoring end **/
-
-                    menuCommentParaSeparator.setVisible(/** coauthoring begin **/ me.menuAddCommentPara.isVisible() || /** coauthoring end **/ me.menuAddHyperlinkPara.isVisible() || menuHyperlinkPara.isVisible());
-                    me.menuAddHyperlinkPara.setDisabled(disabled);
-                    menuHyperlinkPara.setDisabled(disabled);
-
-                    /** coauthoring begin **/
-                    me.menuAddCommentPara.setDisabled(disabled);
-                    /** coauthoring end **/
-
-                    me.menuParagraphAdvanced.setDisabled(disabled);
-                    var cancopy = me.api && me.api.can_CopyCut();
-                    me.menuParaCopy.setDisabled(!cancopy);
-                    me.menuParaCut.setDisabled(disabled || !cancopy);
-                    me.menuParaPaste.setDisabled(disabled);
-
-                    // spellCheck
-                    var spell = (value.spellProps!==undefined && value.spellProps.value.get_Checked()===false);
-                    me.menuSpellPara.setVisible(spell);
-                    menuSpellcheckParaSeparator.setVisible(spell);
-                    me.menuIgnoreSpellPara.setVisible(spell);
-                    me.menuIgnoreAllSpellPara.setVisible(spell);
-                    me.menuToDictionaryPara.setVisible(spell && me.mode.isDesktopApp);
-                    me.langParaMenu.setVisible(spell);
-                    me.langParaMenu.setDisabled(disabled);
-                    menuIgnoreSpellParaSeparator.setVisible(spell);
-
-                    if (spell && value.spellProps.value.get_Variants() !== null && value.spellProps.value.get_Variants() !== undefined) {
-                        me.addWordVariants(true);
-                    } else {
-                        me.menuSpellPara.setCaption(me.loadSpellText);
-                        me.clearWordVariants(true);
-                        me.menuSpellMorePara.setVisible(false);
-                    }
-                    if (me.langParaMenu.isVisible() && me._currLang.id !== me._currLang.paraid) {
-                        me.changeLanguageMenu(me.langParaMenu.menu);
-                        me._currLang.paraid = me._currLang.id;
-                    }
-
-                    //equation menu
-                    var eqlen = 0;
-                    if (isEquation) {
-                        eqlen = me.addEquationMenu(me.textMenu, 12);
-                    } else
-                        me.clearEquationMenu(me.textMenu, 12);
-                    menuEquationSeparator.setVisible(isEquation && eqlen>0);
-
-                    me.menuParagraphEquation.setVisible(isEquation);
-                    me.menuParagraphEquation.setDisabled(disabled);
-                    if (isEquation) {
-                        var eq = me.api.asc_GetMathInputType(),
-                            isEqToolbarHide = Common.Utils.InternalSettings.get('pe-equation-toolbar-hide');
-
-                        me.menuParagraphEquation.menu.items[5].setChecked(eq===Asc.c_oAscMathInputType.Unicode);
-                        me.menuParagraphEquation.menu.items[6].setChecked(eq===Asc.c_oAscMathInputType.LaTeX);
-                        me.menuParagraphEquation.menu.items[8].options.isToolbarHide = isEqToolbarHide;
-                        me.menuParagraphEquation.menu.items[8].setCaption(isEqToolbarHide ? me.showEqToolbar : me.hideEqToolbar);
-                    }
-                },
-                items: [
-                    me.menuSpellPara,
-                    me.menuSpellMorePara,
-                    menuSpellcheckParaSeparator,
-                    me.menuIgnoreSpellPara,
-                    me.menuIgnoreAllSpellPara,
-                    me.menuToDictionaryPara,
-                    me.langParaMenu,
-                    menuIgnoreSpellParaSeparator,
-                    me.menuParaCut,
-                    me.menuParaCopy,
-                    me.menuParaPaste,
-                    menuEquationSeparator,
-                    { caption: '--' },
-                    me.menuParagraphVAlign,
-                    me.menuParagraphDirection,
-                    me.menuParagraphAdvanced,
-                    me.menuParagraphEquation,
-                    menuCommentParaSeparator,
-                    /** coauthoring begin **/
-                    me.menuAddCommentPara,
-                    /** coauthoring end **/
-                    me.menuAddHyperlinkPara,
-                    menuHyperlinkPara
-                ]
-            }).on('hide:after', function(menu, e, isFromInputControl) {
-                me.clearCustomItems(menu);
-                me.currentMenu = null;
-                if (me.suppressEditComplete) {
-                    me.suppressEditComplete = false;
-                    return;
-                }
-
-                if (!isFromInputControl) me.fireEvent('editcomplete', me);
-            });
-
-            me.tableMenu = new Common.UI.Menu({
-                cls: 'shifted-right',
-                restoreHeightAndTop: true,
-                scrollToCheckedItem: false,
-                initMenu: function(value){
-                    // table properties
-                    if (_.isUndefined(value.tableProps))
-                        return;
-
-                    var isEquation= (value.mathProps && value.mathProps.value);
-                    for (var i = 6; i < 19; i++) {
-                        me.tableMenu.items[i].setVisible(!isEquation);
-                    }
-
-                    var disabled = (value.slideProps!==undefined && value.slideProps.locked);
-
-                    var align = value.tableProps.value.get_CellsVAlign();
-                    var halign = value.paraProps.value.get_Jc();
-                    me.menuTableCellTop.setChecked(align == Asc.c_oAscVertAlignJc.Top);
-                    me.menuTableCellCenter.setChecked(align == Asc.c_oAscVertAlignJc.Center);
-                    me.menuTableCellBottom.setChecked(align == Asc.c_oAscVertAlignJc.Bottom);
-                    me.menuTableCellLeft.setChecked(halign == 1);
-                    me.menuTableCellHCenter.setChecked(halign == 2);
-                    me.menuTableCellRight.setChecked(halign == 0);
-                    me.menuTableCellJust.setChecked(halign == 3); 
-
-                    var dir = value.tableProps.value.get_CellsTextDirection();
-                    var cls = '';
-                    switch (dir) {
-                        case Asc.c_oAscCellTextDirection.LRTB:
-                            cls = 'menu__icon btn-text-orient-hor';
-                            break;
-                        case Asc.c_oAscCellTextDirection.TBRL:
-                            cls = 'menu__icon btn-text-orient-rdown';
-                            break;
-                        case Asc.c_oAscCellTextDirection.BTLR:
-                            cls = 'menu__icon btn-text-orient-rup';
-                            break;
-                    }
-                    me.menuTableDirection.setIconCls(cls);
-                    me.menuTableDirectH.setChecked(dir == Asc.c_oAscCellTextDirection.LRTB);
-                    me.menuTableDirect90.setChecked(dir == Asc.c_oAscCellTextDirection.TBRL);
-                    me.menuTableDirect270.setChecked(dir == Asc.c_oAscCellTextDirection.BTLR);
-
-                    if (me.api) {
-                        me.mnuTableMerge.setDisabled(value.tableProps.locked || disabled || !me.api.CheckBeforeMergeCells());
-                        me.mnuTableSplit.setDisabled(value.tableProps.locked || disabled || !me.api.CheckBeforeSplitCells());
-                    }
-                    
-                    me.menuTableDistRows.setDisabled(value.tableProps.locked || disabled);
-                    me.menuTableDistCols.setDisabled(value.tableProps.locked || disabled);
-
-                    me.menuTableInsertText.setDisabled(value.tableProps.locked || disabled);
-                    me.menuTableDeleteText.setDisabled(value.tableProps.locked || disabled);
-                    me.menuTableDirection.setDisabled(value.tableProps.locked || disabled);
-
-                    me.menuTableCellAlign.setDisabled(value.tableProps.locked || disabled);
-
-                    me.menuTableSaveAsPicture.setVisible(!isEquation);
-                    menuTableSaveAsPictureSeparator.setVisible(!isEquation);
-
-                    me.menuTableAdvanced.setVisible(!isEquation);
-                    me.menuTableAdvanced.setDisabled(value.tableProps.locked || disabled);
-                    menuTableSettingsSeparator.setVisible(me.menuTableAdvanced.isVisible());
-
-                    var cancopy = me.api && me.api.can_CopyCut();
-                    me.menuTableCopy.setDisabled(!cancopy);
-                    me.menuTableCut.setDisabled(value.tableProps.locked || disabled || !cancopy);
-                    me.menuTablePaste.setDisabled(value.tableProps.locked || disabled);
-
-                    // hyperlink properties
-                    var text = null;
-
-                    if (me.api) {
-                        text = me.api.can_AddHyperlink();
-                    }
-
-                    me.menuAddHyperlinkTable.setVisible(!_.isUndefined(value.paraProps) && _.isUndefined(value.hyperProps) && text!==false);
-                    menuHyperlinkTable.setVisible(!_.isUndefined(value.paraProps) && !_.isUndefined(value.hyperProps));
-
-                    me.menuEditHyperlinkTable.hyperProps = value.hyperProps;
-
-                    if (text!==false) {
-                        me.menuAddHyperlinkTable.hyperProps = {};
-                        me.menuAddHyperlinkTable.hyperProps.value = new Asc.CHyperlinkProperty();
-                        me.menuAddHyperlinkTable.hyperProps.value.put_Text(text);
-                    }
-                    if (!_.isUndefined(value.paraProps)) {
-                        me.menuAddHyperlinkTable.setDisabled(value.paraProps.locked || disabled);
-                        menuHyperlinkTable.setDisabled(value.paraProps.locked || disabled);
-                        me._currentParaObjDisabled = value.paraProps.locked || disabled;
-                    }
-
-                    /** coauthoring begin **/
-                    me.menuAddCommentTable.setVisible(me.api.can_AddQuotedComment()!==false && me.mode.canCoAuthoring && me.mode.canComments);
-                    me.menuAddCommentTable.setDisabled(!_.isUndefined(value.paraProps) && value.paraProps.locked || disabled);
-                    /** coauthoring end **/
-
-                    me.menuSpellCheckTable.setVisible(value.spellProps!==undefined && value.spellProps.value.get_Checked()===false);
-                    me.menuToDictionaryTable.setVisible(me.mode.isDesktopApp);
-                    menuSpellcheckTableSeparator.setVisible(value.spellProps!==undefined && value.spellProps.value.get_Checked()===false);
-
-                    me.langTableMenu.setDisabled(disabled);
-                    if (value.spellProps!==undefined && value.spellProps.value.get_Checked()===false && value.spellProps.value.get_Variants() !== null && value.spellProps.value.get_Variants() !== undefined) {
-                        me.addWordVariants(false);
-                    } else {
-                        me.menuSpellTable.setCaption(me.loadSpellText);
-                        me.clearWordVariants(false);
-                        me.menuSpellMoreTable.setVisible(false);
-                    }
-
-                    if (me.menuSpellCheckTable.isVisible() && me._currLang.id !== me._currLang.tableid) {
-                        me.changeLanguageMenu(me.langTableMenu.menu);
-                        me._currLang.tableid = me._currLang.id;
-                    }
-
-                    //equation menu
-                    var eqlen = 0;
-                    if (isEquation) {
-                        eqlen = me.addEquationMenu(me.tableMenu, 6);
-                    } else
-                        me.clearEquationMenu(me.tableMenu, 6);
-
-                    menuTableEquationSeparator.setVisible(eqlen>0);
-                    me.menuTableEquationSettings.setVisible(isEquation);
-                    menuTableEquationSettingsSeparator.setVisible(isEquation);
-                    me.menuTableEquationSettings.setDisabled(disabled);
-                    if (isEquation) {
-                        var eq = me.api.asc_GetMathInputType(),
-                            isEqToolbarHide = Common.Utils.InternalSettings.get('pe-equation-toolbar-hide');
-
-                        me.menuTableEquationSettings.menu.items[5].setChecked(eq===Asc.c_oAscMathInputType.Unicode);
-                        me.menuTableEquationSettings.menu.items[6].setChecked(eq===Asc.c_oAscMathInputType.LaTeX);
-                        me.menuTableEquationSettings.menu.items[8].options.isToolbarHide = isEqToolbarHide;
-                        me.menuTableEquationSettings.menu.items[8].setCaption(isEqToolbarHide ? me.showEqToolbar : me.hideEqToolbar);
-                    }
-                },
-                items: [
-                    me.menuSpellCheckTable,         //0
-                    menuSpellcheckTableSeparator,   //1
-                    me.menuTableCut,                //2
-                    me.menuTableCopy,               //3
-                    me.menuTablePaste,              //4
-                    { caption: '--' },              //5
-                    me.menuTableSelectText,         //6
-                    me.menuTableInsertText,         //7
-                    me.menuTableDeleteText,         //8
-                    { caption: '--' },              //9
-                    me.mnuTableMerge,               //10
-                    me.mnuTableSplit,               //11
-                    { caption: '--' },              //12
-                    me.menuTableDistRows,           //13
-                    me.menuTableDistCols,           //14
-                    { caption: '--' },              //15
-                    me.menuTableCellAlign,          //16
-                    me.menuTableDirection,          //17
-                    { caption: '--'},               //18
-                    menuTableEquationSeparator,     //19
-                    me.menuTableSaveAsPicture,      //20
-                    menuTableSaveAsPictureSeparator,//21
-                    me.menuTableAdvanced,           //22
-                    menuTableSettingsSeparator,     //23
-                    me.menuTableEquationSettings,           //24
-                    menuTableEquationSettingsSeparator,     //25
-                    /** coauthoring begin **/
-                    me.menuAddCommentTable,         //26
-                    /** coauthoring end **/
-                    me.menuAddHyperlinkTable,       //27
-                    menuHyperlinkTable             //28
-                ]
-            }).on('hide:after', function(menu, e, isFromInputControl) {
-                me.clearCustomItems(menu);
-                me.currentMenu = null;
-                if (me.suppressEditComplete) {
-                    me.suppressEditComplete = false;
-                    return;
-                }
-
-                if (!isFromInputControl) me.fireEvent('editcomplete', me);
-            });
-
-            me.menuEditObjectSeparator = new Common.UI.MenuItem({
-                caption: '--'
-            });
-
-            me.menuEditObject = new Common.UI.MenuItem({
-                caption: me.textEditObject
-            });
-
-            var menuHyperlinkPicSeparator = new Common.UI.MenuItem({
-                caption     : '--'
-            });
-
-            me.menuAddHyperlinkPic = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-inserthyperlink',
-                caption     : me.hyperlinkText
-            });
-
-            me.menuEditHyperlinkPic = new Common.UI.MenuItem({
-                caption     : me.editHyperlinkText
-            });
-
-            me.menuRemoveHyperlinkPic = new Common.UI.MenuItem({
-                caption     : me.removeHyperlinkText
-            });
-
-            var menuHyperlinkPic = new Common.UI.MenuItem({
-                iconCls: 'menu__icon btn-inserthyperlink',
-                caption     : me.hyperlinkText,
-                menu        : new Common.UI.Menu({
-                    cls: 'shifted-right',
-                    menuAlign: 'tl-tr',
-                    items   : [
-                        me.menuEditHyperlinkPic,
-                        me.menuRemoveHyperlinkPic
-                    ]
-                })
-            });
-
-            me.pictureMenu = new Common.UI.Menu({
-                cls: 'shifted-right',
-                restoreHeightAndTop: true,
-                scrollToCheckedItem: false,
-                initMenu: function(value){
-                    if (me.api) {
-                        me.mnuUnGroupImg.setDisabled(!me.api.canUnGroup());
-                        me.mnuGroupImg.setDisabled(!me.api.canGroup());
-                    }
-
-                    var isimage = (_.isUndefined(value.shapeProps) || value.shapeProps.value.get_FromImage()) && _.isUndefined(value.chartProps),
-                        imgdisabled = (value.imgProps!==undefined && value.imgProps.locked),
-                        shapedisabled = (value.shapeProps!==undefined && value.shapeProps.locked),
-                        chartdisabled = (value.chartProps!==undefined && value.chartProps.locked),
-                        disabled = imgdisabled || shapedisabled || chartdisabled || (value.slideProps!==undefined && value.slideProps.locked),
-                        pluginGuid = (value.imgProps) ? value.imgProps.value.asc_getPluginGuid() : null,
-                        inSmartartInternal = value.shapeProps && value.shapeProps.value.get_FromSmartArtInternal();
-
-                    var pluginGuidAvailable = (pluginGuid !== null && pluginGuid !== undefined);
-                    me.menuEditObject.setVisible(pluginGuidAvailable);
-                    me.menuEditObjectSeparator.setVisible(pluginGuidAvailable);
-
-                    if (pluginGuidAvailable) {
-                        var plugin = PE.getCollection('Common.Collections.Plugins').findWhere({guid: pluginGuid});
-                        me.menuEditObject.setDisabled(!me.api.asc_canEditTableOleObject() && (plugin === null || plugin === undefined) || disabled);
-                    }
-
-                    me.mnuArrangeFront.setDisabled(inSmartartInternal);
-                    me.mnuArrangeBack.setDisabled(inSmartartInternal);
-                    me.mnuArrangeForward.setDisabled(inSmartartInternal);
-                    me.mnuArrangeBackward.setDisabled(inSmartartInternal);
-
-                    me.menuImgShapeRotate.setVisible(_.isUndefined(value.chartProps) && (pluginGuid===null || pluginGuid===undefined));
-                    if (me.menuImgShapeRotate.isVisible()) {
-                        me.menuImgShapeRotate.setDisabled(disabled || (value.shapeProps && value.shapeProps.value.get_FromSmartArt()));
-                        me.menuImgShapeRotate.menu.items[3].setDisabled(inSmartartInternal);
-                        me.menuImgShapeRotate.menu.items[4].setDisabled(inSmartartInternal);
-                    }
-
-                    // image properties
-                    me.menuImgOriginalSize.setVisible(isimage);
-                    if (me.menuImgOriginalSize.isVisible())
-                        me.menuImgOriginalSize.setDisabled(disabled || _.isNull(value.imgProps.value.get_ImageUrl()) || _.isUndefined(value.imgProps.value.get_ImageUrl()));
-
-                    me.menuImgReplace.setVisible(isimage && (pluginGuid===null || pluginGuid===undefined));
-                    if (me.menuImgReplace.isVisible())
-                        me.menuImgReplace.setDisabled(disabled || pluginGuid===null);
-                    me.menuImgReplace.menu.items[2].setVisible(me.mode.canRequestInsertImage || me.mode.fileChoiceUrl && me.mode.fileChoiceUrl.indexOf("{documentType}")>-1);
-
-                    me.menuImgCrop.setVisible(me.api.asc_canEditCrop());
-                    if (me.menuImgCrop.isVisible())
-                        me.menuImgCrop.setDisabled(disabled);
-
-                    me.menuImgResetCrop.setVisible(isimage && value.imgProps.value.asc_getIsCrop()); 
-                    if (me.menuImgResetCrop.isVisible()) 
-                        me.menuImgResetCrop.setDisabled(disabled);  
-
-                    var canEditPoints = me.api && me.api.asc_canEditGeometry();
-                    me.menuImgEditPoints.setVisible(canEditPoints);
-                    canEditPoints && me.menuImgEditPoints.setDisabled(disabled);
-
-                    me.menuImageAdvanced.setVisible(isimage);
-                    me.menuShapeAdvanced.setVisible(_.isUndefined(value.imgProps)   && _.isUndefined(value.chartProps));
-                    me.menuChartEdit.setVisible(_.isUndefined(value.imgProps) && !_.isUndefined(value.chartProps) && (_.isUndefined(value.shapeProps) || value.shapeProps.isChart));
-                    me.menuChartAdvanced.setVisible(_.isUndefined(value.imgProps) && !_.isUndefined(value.chartProps) && (_.isUndefined(value.shapeProps) || value.shapeProps.isChart));
-                    menuImgShapeSeparator.setVisible(me.menuImageAdvanced.isVisible() || me.menuShapeAdvanced.isVisible() || me.menuChartEdit.isVisible() || me.menuChartAdvanced.isVisible());
-                    menuAdvancedSettingsSeparator.setVisible(
-                        me.menuImgCrop.isVisible() || me.menuImgOriginalSize.isVisible() ||
-                        me.menuImgReplace.isVisible() || me.menuImageAdvanced.isVisible() ||
-                        me.menuImgEditPoints.isVisible() || me.menuShapeAdvanced.isVisible() ||
-                        me.menuChartEdit.isVisible() || me.menuChartAdvanced.isVisible()
-                    );
-
-                    /** coauthoring begin **/
-                    me.menuAddCommentImg.setVisible(me.api.can_AddQuotedComment()!==false && me.mode.canCoAuthoring && me.mode.canComments);
-                    me.menuAddCommentImg.setDisabled(disabled);
-                    /** coauthoring end **/
-                    me.menuImgShapeAlign.setDisabled(disabled);
-                    if (!disabled) {
-                        var objcount = me.api.asc_getSelectedDrawingObjectsCount(),
-                            slide_checked = Common.Utils.InternalSettings.get("pe-align-to-slide") || false;
-                        me.menuImgShapeAlign.menu.items[7].setDisabled(objcount==2 && !slide_checked);
-                        me.menuImgShapeAlign.menu.items[8].setDisabled(objcount==2 && !slide_checked);
-                    }
-                    me.menuShapesMerge.setDisabled(disabled || !me.api.asc_canMergeSelectedShapes());
-                    if (!me.menuShapesMerge.isDisabled()) {
-                        me.menuShapesMerge.menu.items.forEach(function (item) {
-                            item.setDisabled(!me.api.asc_canMergeSelectedShapes(item.value));
-                        });
-                    }
-                    me.menuImageAdvanced.setDisabled(disabled);
-                    me.menuShapeAdvanced.setDisabled(disabled);
-                    me.menuChartAdvanced.setDisabled(disabled);
-                    if (me.menuChartEdit.isVisible())
-                        me.menuChartEdit.setDisabled(disabled);
-
-
-                    var cancopy = me.api && me.api.can_CopyCut();
-                    me.menuImgCopy.setDisabled(!cancopy);
-                    me.menuImgCut.setDisabled(disabled || !cancopy);
-                    me.menuImgPaste.setDisabled(disabled);
-                    menuImgShapeArrange.setDisabled(disabled);
-
-                    var text = null;
-                    if (me.api) {
-                        text = me.api.can_AddHyperlink();
-                    }
-                    me.menuAddHyperlinkPic.setVisible(value.hyperProps===undefined && text!==false);
-                    menuHyperlinkPic.setVisible(value.hyperProps!==undefined);
-                    menuHyperlinkPicSeparator.setVisible(me.menuAddHyperlinkPic.isVisible() || menuHyperlinkPic.isVisible());
-                    me.menuEditHyperlinkPic.hyperProps = value.hyperProps;
-                    me.menuRemoveHyperlinkPic.hyperProps = value.hyperProps;
-                    if (text !== false) {
-                        me.menuAddHyperlinkPic.hyperProps = {};
-                        me.menuAddHyperlinkPic.hyperProps.value = new Asc.CHyperlinkProperty();
-                        me.menuAddHyperlinkPic.hyperProps.value.put_Text(text);
-                    }
-                    me.menuAddHyperlinkPic.setDisabled(disabled);
-                    menuHyperlinkPic.setDisabled(disabled || (value.hyperProps!==undefined && value.hyperProps.isSeveralLinks===true));
-                },
-                items: [
-                    me.menuImgCut,
-                    me.menuImgCopy,
-                    me.menuImgPaste,
-                    me.menuEditObjectSeparator,
-                    me.menuEditObject,
-                    { caption: '--' },              //Separator
-                    menuImgShapeArrange,
-                    me.menuImgShapeAlign,
-                    me.menuShapesMerge,
-                    me.menuImgShapeRotate,
-                    menuImgShapeSeparator,          //Separator
-                    me.menuImgSaveAsPicture,
-                    menuImgSaveAsPictureSeparator,     //Separator
-                    me.menuAddHyperlinkPic,
-                    menuHyperlinkPic,
-                    menuHyperlinkPicSeparator,
-                    me.menuImgCrop,
-                    me.menuImgResetCrop,
-                    me.menuImgOriginalSize,
-                    me.menuImgReplace,
-                    me.menuImageAdvanced,
-                    me.menuImgEditPoints,
-                    me.menuShapeAdvanced,
-                    me.menuChartEdit,
-                    me.menuChartAdvanced,
-                    menuAdvancedSettingsSeparator,  //Separator
-                    /** coauthoring begin **/
-                    me.menuAddCommentImg
-                ]
-            }).on('hide:after', function(menu, e, isFromInputControl) {
-                me.clearCustomItems(menu);
-                me.currentMenu = null;
-                if (me.suppressEditComplete) {
-                    me.suppressEditComplete = false;
-                    return;
-                }
-
-                if (!isFromInputControl) me.fireEvent('editcomplete', me);
-            });
-
-            me.menuAnimStartOnClick = new Common.UI.MenuItem({
-                caption: me.textStartOnClick,
-                checkable: true,
-                value: AscFormat.NODE_TYPE_CLICKEFFECT
-            });
-
-            me.menuAnimStartWithPrevious = new Common.UI.MenuItem({
-                caption: me.textStartWithPrevious,
-                checkable: true,
-                value: AscFormat.NODE_TYPE_WITHEFFECT
-            });
-
-            me.menuAnimStartAfterPrevious = new Common.UI.MenuItem({
-                caption: me.textStartAfterPrevious,
-                checkable: true,
-                value: AscFormat.NODE_TYPE_AFTEREFFECT
-            });
-
-            me.menuAnimRemove = new Common.UI.MenuItem({
-                caption: me.textRemove,
-                value: 'remove'
-            });
-
-            me.animEffectMenu = new Common.UI.Menu({
-                restoreHeightAndTop: true,
-                scrollToCheckedItem: false,
-                style: 'min-width: auto;',
-                initMenu: function(value){
-                    me.menuAnimStartOnClick.setChecked(value.effect === AscFormat.NODE_TYPE_CLICKEFFECT, true);
-                    me.menuAnimStartWithPrevious.setChecked(value.effect === AscFormat.NODE_TYPE_WITHEFFECT, true);
-                    me.menuAnimStartAfterPrevious.setChecked(value.effect === AscFormat.NODE_TYPE_AFTEREFFECT, true);
-                },
-                items: [
-                    me.menuAnimStartOnClick,
-                    me.menuAnimStartWithPrevious,
-                    me.menuAnimStartAfterPrevious,
-                    {caption: '--'},
-                    me.menuAnimRemove
-                ]
-            }).on('hide:after', function(menu, e, isFromInputControl) {
-                me.clearCustomItems(menu);
-                me.currentMenu = null;
-                if (me.suppressEditComplete) {
-                    me.suppressEditComplete = false;
-                    return;
-                }
-
-                if (!isFromInputControl) me.fireEvent('editcomplete', me);
-            });
-
-            const shortcutHints = {};
-            var nextpage = $('#id_buttonNextPage');
-            nextpage.attr('data-toggle', 'tooltip');
-            shortcutHints.GoToNextSlide = {
-                label: me.textNextPage,
-                applyCallback: function(item, hintText) {
-                    nextpage.tooltip({
-                        title       : hintText,
-                        placement   : 'top-right'
-                    });
-                }
-            };
-
-            var prevpage = $('#id_buttonPrevPage');
-            prevpage.attr('data-toggle', 'tooltip');
-            shortcutHints.GoToPreviousSlide = {
-                label: me.textPrevPage,
-                applyCallback: function(item, hintText) {
-                    nextpage.tooltip({
-                        title       : hintText,
-                        placement   : 'top-right'
-                    });
-                }
-            };
-            PE.getController('Common.Controllers.Shortcuts').updateShortcutHints(shortcutHints);
-
-            this.fireEvent('createdelayedelements', [this, 'edit']);
-        };
+      this.fireEvent("createdelayedelements", [this, "view"])
     }
-});
+
+    dh.createDelayedElements = function () {
+      if (this.mnuDeleteSlide || !window.styles_loaded) return // menu is already inited or editor styles are not loaded
+
+      this.mnuDeleteSlide = new Common.UI.MenuItem({
+        caption: this.txtDeleteSlide,
+      })
+
+      this.mnuChangeSlide = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-changeslide",
+        caption: this.txtChangeLayout,
+        menu: new Common.UI.Menu({
+          menuAlign: "tl-tr",
+          items: [
+            {
+              template: _.template(
+                '<div id="id-docholder-menu-changeslide" class="menu-layouts" style="width: 302px; margin: 0 4px;"></div>',
+              ),
+            },
+          ],
+        }),
+      })
+
+      this.mnuResetSlide = new Common.UI.MenuItem({
+        caption: this.txtResetLayout,
+      })
+
+      this.mnuNewSlide = new Common.UI.MenuItem({
+        caption: this.txtNewSlide,
+      })
+
+      this.mnuDuplicateSlide = new Common.UI.MenuItem({
+        caption: this.txtDuplicateSlide,
+      })
+
+      const mnuChangeTheme = new Common.UI.MenuItem({
+        caption: this.txtChangeTheme,
+        menu: new Common.UI.Menu({
+          menuAlign: "tl-tr",
+          items: [
+            {
+              template: _.template(
+                '<div id="id-docholder-menu-changetheme" style="width: 289px; margin: 0 4px;"></div>',
+              ),
+            },
+          ],
+        }),
+      })
+
+      this.mnuPreview = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-preview",
+        caption: this.txtPreview,
+      })
+
+      this.mnuSelectAll = new Common.UI.MenuItem({
+        caption: this.txtSelectAll,
+      })
+
+      this.mnuPrintSelection = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-print",
+        caption: this.txtPrintSelection,
+      })
+
+      this.mnuMoveSlideToStart = new Common.UI.MenuItem({
+        caption: this.txtMoveSlidesToStart,
+      })
+
+      this.mnuMoveSlideToEnd = new Common.UI.MenuItem({
+        caption: this.txtMoveSlidesToEnd,
+      })
+
+      this.menuSlidePaste = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-paste",
+        caption: this.textPaste,
+        value: "paste",
+      })
+
+      this.menuSlideSettings = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-menu-slide",
+        caption: this.textSlideSettings,
+        value: null,
+      })
+
+      this.mnuSlideHide = new Common.UI.MenuItem({
+        caption: this.txtSlideHide,
+        checkable: true,
+        checked: false,
+      })
+
+      this.mnuGuides = new Common.UI.MenuItem({
+        caption: this.textGuides,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            { caption: this.textShowGuides, value: "show", checkable: true },
+            { caption: "--" },
+            {
+              caption: this.textAddVGuides,
+              iconCls: "menu__icon btn-vertical-guide",
+              value: "add-vert",
+            },
+            {
+              caption: this.textAddHGuides,
+              iconCls: "menu__icon btn-horizontal-guide",
+              value: "add-hor",
+            },
+            { caption: this.textDeleteGuide, value: "del-guide" },
+            { caption: "--" },
+            { caption: this.textSmartGuides, value: "smart", checkable: true },
+            { caption: this.textClearGuides, value: "clear" },
+          ],
+        }),
+      })
+      this.mnuGridlines = new Common.UI.MenuItem({
+        caption: this.textGridlines,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            { caption: this.textShowGridlines, value: "show", checkable: true },
+            { caption: this.textSnapObjects, value: "snap", checkable: true },
+            { caption: "--" },
+            { caption: "--" },
+            { caption: this.textCustom, value: "custom" },
+          ],
+        }),
+      })
+      this.mnuRulers = new Common.UI.MenuItem({
+        caption: this.textRulers,
+        checkable: true,
+      })
+
+      this.slideMenu = new Common.UI.Menu({
+        cls: "shifted-right",
+        restoreHeightAndTop: true,
+        scrollToCheckedItem: false,
+        initMenu: (value) => {
+          const selectedLast = this.api.asc_IsLastSlideSelected()
+          const selectedFirst = this.api.asc_IsFirstSlideSelected()
+          this.slideMenu.options.fromThumbs = value.fromThumbs
+          this.menuSlidePaste.setVisible(value.fromThumbs !== true)
+          this.mnuNewSlide.setVisible(value.fromThumbs === true) // New Slide
+          this.mnuDuplicateSlide.setVisible(value.isSlideSelect === true) // Duplicate Slide
+          this.mnuDeleteSlide.setVisible(value.isSlideSelect === true)
+          this.mnuSlideHide.setVisible(value.isSlideSelect === true)
+          this.mnuSlideHide.setChecked(value.isSlideHidden === true)
+          this.slideMenu.items[5].setVisible(
+            value.isSlideSelect === true || value.fromThumbs !== true,
+          )
+          this.mnuChangeSlide.setVisible(
+            !this.api.asc_IsMasterMode() &&
+              (value.isSlideSelect === true || value.fromThumbs !== true),
+          )
+          this.mnuResetSlide.setVisible(
+            !this.api.asc_IsMasterMode() &&
+              (value.isSlideSelect === true || value.fromThumbs !== true),
+          )
+          mnuChangeTheme.setVisible(value.isSlideSelect === true || value.fromThumbs !== true)
+          this.menuSlideSettings.setVisible(
+            value.isSlideSelect === true || value.fromThumbs !== true,
+          )
+          this.menuSlideSettings.options.value = null
+
+          this.slideMenu.items[10].setVisible(!value.fromThumbs) // guides separator
+          this.mnuGuides.setVisible(!value.fromThumbs)
+          this.mnuGridlines.setVisible(!value.fromThumbs)
+          this.mnuRulers.setVisible(!value.fromThumbs)
+          this.slideMenu.items[14].setVisible(value.fromThumbs === true)
+          this.mnuSelectAll.setVisible(value.fromThumbs === true)
+
+          this.mnuPrintSelection.setVisible(this.mode.canPrint && value.fromThumbs === true)
+          this.slideMenu.items[17].setVisible(
+            (!selectedLast || !selectedFirst) && value.isSlideSelect === true,
+          )
+          this.mnuMoveSlideToEnd.setVisible(!selectedLast && value.isSlideSelect === true)
+          this.mnuMoveSlideToStart.setVisible(!selectedFirst && value.isSlideSelect === true)
+          this.slideMenu.items[20].setVisible(value.fromThumbs === true)
+          this.mnuPreview.setVisible(value.fromThumbs === true)
+
+          if (!value.fromThumbs) {
+            this.mnuGuides.menu.items[0].setChecked(this.api.asc_getShowGuides(), true)
+            if (value.guide) {
+              // change visibility only on asc_onContextMenu event
+              this.mnuGuides.menu.items[4].setVisible(!!value.guide.guideId)
+              this.mnuGuides.menu.items[4].options.guideId = value.guide.guideId
+            }
+            this.mnuGuides.menu.items[6].setChecked(this.api.asc_getShowSmartGuides(), true)
+
+            const viewPropsLock = !!Common.Utils.InternalSettings.get("pe-lock-view-props")
+            this.mnuGuides.menu.items[2].setDisabled(viewPropsLock)
+            this.mnuGuides.menu.items[3].setDisabled(viewPropsLock)
+            this.mnuGuides.menu.items[4].setDisabled(viewPropsLock)
+            this.mnuGuides.menu.items[7].setDisabled(
+              viewPropsLock || !this.api.asc_canClearGuides(),
+            )
+
+            this.mnuGridlines.menu.items[0].setChecked(this.api.asc_getShowGridlines(), true)
+            this.mnuGridlines.menu.items[1].setChecked(this.api.asc_getSnapToGrid(), true)
+
+            const spacing = Common.Utils.Metric.fnRecalcFromMM(
+              this.api.asc_getGridSpacing() / 36000,
+            )
+            const items = this.mnuGridlines.menu.items
+            if (this._state.unitsChanged) {
+              for (let i = 3; i < items.length - 2; i++) {
+                this.mnuGridlines.menu.removeItem(items[i])
+                i--
+              }
+              const arr = Common.define.gridlineData.getGridlineData(
+                Common.Utils.Metric.getCurrentMetric(),
+              )
+              for (let i = 0; i < arr.length; i++) {
+                const menuItem = new Common.UI.MenuItem({
+                  caption: arr[i].caption,
+                  value: arr[i].value,
+                  checkable: true,
+                  toggleGroup: "mnu-gridlines",
+                })
+                this.mnuGridlines.menu.insertItem(3 + i, menuItem)
+              }
+              this._state.unitsChanged = false
+            }
+
+            for (let i = 3; i < items.length - 2; i++) {
+              const item = items[i]
+              if (item.value < 1 && Math.abs(item.value - spacing) < 0.005) item.setChecked(true)
+              else if (item.value >= 1 && Math.abs(item.value - spacing) < 0.001)
+                item.setChecked(true)
+              else item.setChecked(false)
+              item.setDisabled(viewPropsLock)
+            }
+            this.mnuGridlines.menu.items[1].setDisabled(viewPropsLock)
+            this.mnuGridlines.menu.items[items.length - 1].setDisabled(viewPropsLock)
+            this.mnuRulers.setChecked(!Common.Utils.InternalSettings.get("pe-hidden-rulers"))
+          }
+
+          const selectedElements = this.api.getSelectedElements()
+          let locked = false
+          let lockedDeleted = false
+          let lockedLayout = false
+          if (selectedElements && _.isArray(selectedElements)) {
+            _.each(selectedElements, (element, index) => {
+              if (Asc.c_oAscTypeSelectElement.Slide === element.get_ObjectType()) {
+                const elValue = element.get_ObjectValue()
+                locked = elValue.get_LockDelete()
+                lockedDeleted = elValue.get_LockRemove()
+                lockedLayout = elValue.get_LockLayout()
+                this.menuSlideSettings.options.value = element
+                this.slideLayoutMenu.options.layout_index = elValue.get_LayoutIndex()
+                return false
+              }
+            })
+          }
+          for (let i = 0; i < 3; i++) {
+            this.slideMenu.items[i].setDisabled(locked)
+          }
+          this.mnuPreview.setDisabled(this.slidesCount < 1)
+          this.mnuSelectAll.setDisabled(this.slidesCount < 2)
+          this.mnuDeleteSlide.setDisabled(lockedDeleted || locked)
+          this.mnuChangeSlide.setDisabled(lockedLayout || locked)
+          this.mnuResetSlide.setDisabled(lockedLayout || locked)
+          mnuChangeTheme.setDisabled(this._state.themeLock || locked)
+          this.mnuSlideHide.setDisabled(lockedLayout || locked)
+          this.mnuPrintSelection.setDisabled(this.slidesCount < 1)
+        },
+        items: [
+          this.menuSlidePaste,
+          this.mnuNewSlide,
+          this.mnuDuplicateSlide,
+          this.mnuDeleteSlide,
+          this.mnuSlideHide,
+          { caption: "--" },
+          this.mnuChangeSlide,
+          this.mnuResetSlide,
+          mnuChangeTheme,
+          this.menuSlideSettings,
+          { caption: "--" },
+          this.mnuGuides,
+          this.mnuGridlines,
+          this.mnuRulers,
+          { caption: "--" },
+          this.mnuSelectAll,
+          this.mnuPrintSelection,
+          { caption: "--" },
+          this.mnuMoveSlideToStart,
+          this.mnuMoveSlideToEnd,
+          { caption: "--" },
+          this.mnuPreview,
+        ],
+      })
+        .on("hide:after", (menu, e, isFromInputControl) => {
+          this.clearCustomItems(menu)
+          this.currentMenu = null
+          if (this.suppressEditComplete) {
+            this.suppressEditComplete = false
+            return
+          }
+
+          if (!isFromInputControl) this.fireEvent("editcomplete", this)
+        })
+        .on("render:after", (cmp) => {
+          this.slideLayoutMenu = new Common.UI.DataView({
+            el: $("#id-docholder-menu-changeslide"),
+            parentMenu: this.mnuChangeSlide.menu,
+            style: "max-height: 300px;",
+            restoreWidth: 302,
+            store: PE.getCollection("SlideLayouts"),
+            itemTemplate: _.template(
+              [
+                '<div class="layout" id="<%= id %>" style="width: <%= itemWidth %>px;">',
+                '<div style="background-image: url(<%= imageUrl %>); width: <%= itemWidth %>px; height: <%= itemHeight %>px;background-size: contain;"></div>',
+                '<div class="title"><%- title %></div> ',
+                "</div>",
+              ].join(""),
+            ),
+          }).on("item:click", (picker, item, record, e) => {
+            if (e.type !== "click") this.slideMenu.hide()
+            this.fireEvent("layout:change", [record])
+          })
+
+          if (this.slideMenu) {
+            this.mnuChangeSlide.menu.on("show:after", (menu) => {
+              this.onSlidePickerShowAfter(this.slideLayoutMenu)
+              this.slideLayoutMenu.scroller.update({ alwaysVisibleY: true })
+
+              const record = this.slideLayoutMenu.store.findLayoutByIndex(
+                this.slideLayoutMenu.options.layout_index,
+              )
+              if (record) {
+                this.slideLayoutMenu.selectRecord(record, true)
+                this.slideLayoutMenu.scrollToRecord(record)
+              }
+            })
+          }
+          this.slideLayoutMenu._needRecalcSlideLayout = true
+          this.listenTo(PE.getCollection("SlideLayouts"), "reset", () => {
+            this.slideLayoutMenu._needRecalcSlideLayout = true
+          })
+
+          this.slideThemeMenu = new Common.UI.DataView({
+            el: $("#id-docholder-menu-changetheme"),
+            parentMenu: mnuChangeTheme.menu,
+            // restoreHeight: 300,
+            style: "max-height: 300px;",
+            store: PE.getCollection("SlideThemes"),
+            itemTemplate: _.template(
+              [
+                '<div class="style" id="<%= id %>"">',
+                '<div class="item-theme" style="' +
+                  '<% if (typeof imageUrl !== "undefined") { %>' +
+                  "background-image: url(<%= imageUrl %>);" +
+                  '<% } %> background-position: 0 -<%= offsety %>px;"></div>',
+                "</div>",
+              ].join(""),
+            ),
+          }).on("item:click", (picker, item, record, e) => {
+            if (e.type !== "click") this.slideMenu.hide()
+            this.fireEvent("theme:change", [record])
+          })
+
+          if (this.slideMenu) {
+            mnuChangeTheme.menu.on("show:after", (menu) => {
+              const record = this.slideThemeMenu.store.findWhere({ themeId: this._state.themeId })
+              this.slideThemeMenu.selectRecord(record, true)
+
+              this.slideThemeMenu.scroller.update({ alwaysVisibleY: true })
+              this.slideThemeMenu.scroller.scrollTop(0)
+            })
+          }
+        })
+
+      this.mnuInsertMaster = new Common.UI.MenuItem({
+        caption: this.textInsertSlideMaster,
+        value: "ins-master",
+      })
+
+      this.mnuInsertLayout = new Common.UI.MenuItem({
+        caption: this.textInsertLayout,
+        value: "ins-layout",
+      })
+
+      this.mnuDuplicateMaster = new Common.UI.MenuItem({
+        caption: this.textDuplicateSlideMaster,
+        value: "duplicate-master",
+      })
+
+      this.mnuPreserveMaster = new Common.UI.MenuItem({
+        caption: this.textPreserveSlideMaster,
+        value: "preserve-master",
+        checkable: true,
+      })
+
+      this.mnuDeleteMaster = new Common.UI.MenuItem({
+        caption: this.textDeleteMaster,
+        value: "delete-master",
+      })
+
+      this.mnuDuplicateLayout = new Common.UI.MenuItem({
+        caption: this.textDuplicateLayout,
+        value: "duplicate-master",
+      })
+
+      this.mnuDeleteLayout = new Common.UI.MenuItem({
+        caption: this.textDeleteLayout,
+        value: "delete-layout",
+      })
+
+      this.mnuRenameMaster = new Common.UI.MenuItem({
+        caption: this.textRenameMaster,
+        value: "Rename-master",
+      })
+
+      this.mnuRenameLayout = new Common.UI.MenuItem({
+        caption: this.textRenameLayout,
+        value: "Rename-layout",
+      })
+
+      this.slideMasterMenu = new Common.UI.Menu({
+        //cls: 'shifted-right',
+        restoreHeightAndTop: true,
+        scrollToCheckedItem: false,
+        initMenu: (value) => {
+          const isMaster = value.isMaster
+          let currentName = ""
+
+          const selectedElements = this.api.getSelectedElements()
+          if (selectedElements && _.isArray(selectedElements)) {
+            _.each(selectedElements, (element) => {
+              if (Asc.c_oAscTypeSelectElement.Slide === element.get_ObjectType()) {
+                const elValue = element.get_ObjectValue()
+                currentName = isMaster ? elValue.get_MasterName() : elValue.get_LayoutName()
+              }
+            })
+          }
+
+          this.mnuRenameMaster.setDisabled(currentName === undefined)
+          this.mnuRenameLayout.setDisabled(currentName === undefined)
+
+          this.mnuDuplicateMaster.setVisible(isMaster)
+          this.mnuPreserveMaster.setVisible(isMaster)
+          this.mnuPreserveMaster.setChecked(value.isPreserve, true)
+          this.mnuDeleteMaster.setVisible(isMaster)
+          this.mnuRenameMaster.setVisible(isMaster)
+          this.mnuDuplicateLayout.setVisible(!isMaster)
+          this.mnuDeleteLayout.setVisible(!isMaster)
+          this.mnuRenameLayout.setVisible(!isMaster)
+
+          isMaster && this.mnuDeleteMaster.setDisabled(!this.api.asc_CanDeleteMaster())
+          !isMaster && this.mnuDeleteLayout.setDisabled(!this.api.asc_CanDeleteLayout())
+        },
+        items: [
+          this.mnuInsertMaster,
+          this.mnuInsertLayout,
+          this.mnuDuplicateMaster,
+          this.mnuPreserveMaster,
+          this.mnuDuplicateLayout,
+          { caption: "--" },
+          this.mnuDeleteMaster,
+          this.mnuRenameMaster,
+          this.mnuDeleteLayout,
+          this.mnuRenameLayout,
+        ],
+      })
+
+      this.mnuTableMerge = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-merge-cells",
+        caption: this.mergeCellsText,
+      })
+
+      this.mnuTableSplit = new Common.UI.MenuItem({
+        caption: this.splitCellsText,
+      })
+
+      this.menuTableCellAlign = new Common.UI.MenuItem({
+        caption: this.AlignText,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            (this.menuTableCellTop = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-top",
+              caption: this.AlignTop,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popuptablecellalign",
+              value: Asc.c_oAscVertAlignJc.Top,
+            })),
+            (this.menuTableCellCenter = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-middle",
+              caption: this.AlignMiddle,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popuptablecellalign",
+              value: Asc.c_oAscVertAlignJc.Center,
+            })),
+            (this.menuTableCellBottom = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-bottom",
+              caption: this.AlignBottom,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popuptablecellalign",
+              value: Asc.c_oAscVertAlignJc.Bottom,
+            })),
+            { caption: "--" },
+            (this.menuTableCellLeft = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-left",
+              caption: this.AlignLeft,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popuptablecellhalign",
+              halign: 1,
+            })),
+            (this.menuTableCellHCenter = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-center",
+              caption: this.AlignCenter,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popuptablecellhalign",
+              halign: 2,
+            })),
+            (this.menuTableCellRight = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-right",
+              caption: this.AlignRight,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popuptablecellhalign",
+              halign: 0,
+            })),
+            (this.menuTableCellJust = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-just",
+              caption: this.AlignJust,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popuptablecellhalign",
+              halign: 3,
+            })),
+          ],
+        }),
+      })
+
+      this.menuTableSaveAsPicture = new Common.UI.MenuItem({
+        caption: this.textSaveAsPicture,
+      })
+
+      const menuTableSaveAsPictureSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      this.menuTableDistRows = new Common.UI.MenuItem({
+        caption: this.textDistributeRows,
+      })
+
+      this.menuTableDistCols = new Common.UI.MenuItem({
+        caption: this.textDistributeCols,
+      })
+
+      this.menuTableDirection = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-text-orient-hor",
+        caption: this.directionText,
+        menu: new Common.UI.Menu({
+          cls: "ppm-toolbar shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            (this.menuTableDirectH = new Common.UI.MenuItem({
+              caption: this.directHText,
+              iconCls: "menu__icon btn-text-orient-hor",
+              checkable: true,
+              checkmark: false,
+              checked: false,
+              toggleGroup: "popuptabledirect",
+              direction: Asc.c_oAscCellTextDirection.LRTB,
+            })),
+            (this.menuTableDirect90 = new Common.UI.MenuItem({
+              caption: this.direct90Text,
+              iconCls: "menu__icon btn-text-orient-rdown",
+              checkable: true,
+              checkmark: false,
+              checked: false,
+              toggleGroup: "popuptabledirect",
+              direction: Asc.c_oAscCellTextDirection.TBRL,
+            })),
+            (this.menuTableDirect270 = new Common.UI.MenuItem({
+              caption: this.direct270Text,
+              iconCls: "menu__icon btn-text-orient-rup",
+              checkable: true,
+              checkmark: false,
+              checked: false,
+              toggleGroup: "popuptabledirect",
+              direction: Asc.c_oAscCellTextDirection.BTLR,
+            })),
+          ],
+        }),
+      })
+
+      this.menuTableSelectText = new Common.UI.MenuItem({
+        caption: this.selectText,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            new Common.UI.MenuItem({
+              caption: this.rowText,
+              value: 0,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.columnText,
+              value: 1,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.cellText,
+              value: 2,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.tableText,
+              value: 3,
+            }),
+          ],
+        }),
+      })
+
+      this.menuTableInsertText = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-addcell",
+        caption: this.insertText,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          style: "width: 100px",
+          items: [
+            new Common.UI.MenuItem({
+              caption: this.insertColumnLeftText,
+              value: 0,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.insertColumnRightText,
+              value: 1,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.insertRowAboveText,
+              value: 2,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.insertRowBelowText,
+              value: 3,
+            }),
+          ],
+        }),
+      })
+
+      this.menuTableDeleteText = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-delcell",
+        caption: this.deleteText,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            new Common.UI.MenuItem({
+              caption: this.rowText,
+              value: 0,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.columnText,
+              value: 1,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.tableText,
+              value: 2,
+            }),
+          ],
+        }),
+      })
+
+      this.menuSpellTable = new Common.UI.MenuItem({
+        caption: this.loadSpellText,
+        disabled: true,
+      })
+
+      this.menuSpellMoreTable = new Common.UI.MenuItem({
+        caption: this.moreText,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          restoreHeight: true,
+          items: [],
+        }),
+      })
+
+      const langTemplate = _.template(
+        [
+          '<a id="<%= id %>" tabindex="-1" type="menuitem" langval="<%= value %>" class="<% if (checked) { %> checked <% } %>">',
+          "<div>",
+          '<i class="icon <% if (spellcheck) { %> toolbar__icon btn-ic-docspell spellcheck-lang <% } %>"></i>',
+          "<%= caption %>",
+          "</div>",
+          '<label style="opacity: 0.6"><%= captionEn %></label>',
+          "</a>",
+        ].join(""),
+      )
+
+      this.langTableMenu = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-ic-doclang",
+        caption: this.langText,
+        menu: new Common.UI.MenuSimple({
+          cls: "lang-menu shifted-right",
+          menuAlign: "tl-tr",
+          restoreHeight: 285,
+          items: [],
+          itemTemplate: langTemplate,
+          search: true,
+          searchFields: ["caption", "captionEn"],
+          focusToCheckedItem: true,
+        }),
+      })
+
+      this.menuIgnoreSpellTable = new Common.UI.MenuItem({
+        caption: this.ignoreSpellText,
+        value: false,
+      })
+
+      this.menuIgnoreAllSpellTable = new Common.UI.MenuItem({
+        caption: this.ignoreAllSpellText,
+        value: true,
+      })
+
+      this.menuToDictionaryTable = new Common.UI.MenuItem({
+        caption: this.toDictionaryText,
+      })
+
+      const menuIgnoreSpellTableSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      const menuSpellcheckTableSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      this.menuSpellCheckTable = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-ic-docspell",
+        caption: this.spellcheckText,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            this.menuSpellTable,
+            this.menuSpellMoreTable,
+            menuIgnoreSpellTableSeparator,
+            this.menuIgnoreSpellTable,
+            this.menuIgnoreAllSpellTable,
+            this.menuToDictionaryTable,
+            { caption: "--" },
+            this.langTableMenu,
+          ],
+        }),
+      })
+
+      this.menuSpellPara = new Common.UI.MenuItem({
+        caption: this.loadSpellText,
+        disabled: true,
+      })
+
+      this.menuSpellMorePara = new Common.UI.MenuItem({
+        caption: this.moreText,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          restoreHeight: true,
+          items: [],
+        }),
+      })
+
+      this.langParaMenu = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-ic-doclang",
+        caption: this.langText,
+        menu: new Common.UI.MenuSimple({
+          cls: "lang-menu shifted-right",
+          menuAlign: "tl-tr",
+          restoreHeight: 285,
+          items: [],
+          itemTemplate: langTemplate,
+          search: true,
+          searchFields: ["caption", "captionEn"],
+          focusToCheckedItem: true,
+        }),
+      })
+
+      this.menuIgnoreSpellPara = new Common.UI.MenuItem({
+        caption: this.ignoreSpellText,
+        value: false,
+      })
+
+      this.menuIgnoreAllSpellPara = new Common.UI.MenuItem({
+        caption: this.ignoreAllSpellText,
+        value: true,
+      })
+
+      this.menuToDictionaryPara = new Common.UI.MenuItem({
+        caption: this.toDictionaryText,
+      })
+
+      const menuIgnoreSpellParaSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      const menuSpellcheckParaSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      this.menuTableAdvanced = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-menu-table",
+        caption: this.advancedTableText,
+      })
+
+      const menuTableSettingsSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      this.menuImageAdvanced = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-menu-image",
+        caption: this.advancedImageText,
+      })
+
+      this.menuShapeAdvanced = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-menu-shape",
+        caption: this.advancedShapeText,
+      })
+
+      this.menuParagraphAdvanced = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-paragraph",
+        caption: this.advancedParagraphText,
+      })
+
+      this.menuChartAdvanced = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-menu-chart",
+        caption: this.advancedChartText,
+      })
+
+      const menuAdvancedSettingsSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      const menuCommentParaSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      this.menuAddHyperlinkPara = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-inserthyperlink",
+        caption: this.hyperlinkText,
+      })
+
+      this.menuEditHyperlinkPara = new Common.UI.MenuItem({
+        caption: this.editHyperlinkText,
+      })
+
+      this.menuRemoveHyperlinkPara = new Common.UI.MenuItem({
+        caption: this.removeHyperlinkText,
+      })
+
+      const menuHyperlinkPara = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-inserthyperlink",
+        caption: this.hyperlinkText,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [this.menuEditHyperlinkPara, this.menuRemoveHyperlinkPara],
+        }),
+      })
+
+      this.menuAddHyperlinkTable = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-inserthyperlink",
+        caption: this.hyperlinkText,
+      })
+
+      this.menuEditHyperlinkTable = new Common.UI.MenuItem({
+        caption: this.editHyperlinkText,
+      })
+
+      this.menuRemoveHyperlinkTable = new Common.UI.MenuItem({
+        caption: this.removeHyperlinkText,
+      })
+
+      const menuHyperlinkTable = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-inserthyperlink",
+        caption: this.hyperlinkText,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [this.menuEditHyperlinkTable, this.menuRemoveHyperlinkTable],
+        }),
+      })
+
+      this.mnuGroupImg = new Common.UI.MenuItem({
+        caption: this.txtGroup,
+        iconCls: "menu__icon btn-shape-group",
+      })
+
+      this.mnuUnGroupImg = new Common.UI.MenuItem({
+        caption: this.txtUngroup,
+        iconCls: "menu__icon btn-shape-ungroup",
+      })
+
+      this.mnuArrangeFront = new Common.UI.MenuItem({
+        caption: this.textArrangeFront,
+        iconCls: "menu__icon btn-arrange-front",
+      })
+
+      this.mnuArrangeBack = new Common.UI.MenuItem({
+        caption: this.textArrangeBack,
+        iconCls: "menu__icon btn-arrange-back",
+      })
+
+      this.mnuArrangeForward = new Common.UI.MenuItem({
+        caption: this.textArrangeForward,
+        iconCls: "menu__icon btn-arrange-forward",
+      })
+
+      this.mnuArrangeBackward = new Common.UI.MenuItem({
+        caption: this.textArrangeBackward,
+        iconCls: "menu__icon btn-arrange-backward",
+      })
+
+      const menuImgShapeArrange = new Common.UI.MenuItem({
+        caption: this.txtArrange,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            this.mnuArrangeFront,
+            this.mnuArrangeBack,
+            this.mnuArrangeForward,
+            this.mnuArrangeBackward,
+            { caption: "--" },
+            this.mnuGroupImg,
+            this.mnuUnGroupImg,
+          ],
+        }),
+      })
+
+      this.menuImgShapeAlign = new Common.UI.MenuItem({
+        caption: this.txtAlign,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            new Common.UI.MenuItem({
+              caption: this.textShapeAlignLeft,
+              iconCls: "menu__icon btn-shape-align-left",
+              value: Asc.c_oAscAlignShapeType.ALIGN_LEFT,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.textShapeAlignCenter,
+              iconCls: "menu__icon btn-shape-align-center",
+              value: Asc.c_oAscAlignShapeType.ALIGN_CENTER,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.textShapeAlignRight,
+              iconCls: "menu__icon btn-shape-align-right",
+              value: Asc.c_oAscAlignShapeType.ALIGN_RIGHT,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.textShapeAlignTop,
+              iconCls: "menu__icon btn-shape-align-top",
+              value: Asc.c_oAscAlignShapeType.ALIGN_TOP,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.textShapeAlignMiddle,
+              iconCls: "menu__icon btn-shape-align-middle",
+              value: Asc.c_oAscAlignShapeType.ALIGN_MIDDLE,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.textShapeAlignBottom,
+              iconCls: "menu__icon btn-shape-align-bottom",
+              value: Asc.c_oAscAlignShapeType.ALIGN_BOTTOM,
+            }),
+            { caption: "--" },
+            new Common.UI.MenuItem({
+              caption: this.txtDistribHor,
+              iconCls: "menu__icon btn-shape-distribute-hor",
+              value: 6,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.txtDistribVert,
+              iconCls: "menu__icon btn-shape-distribute-vert",
+              value: 7,
+            }),
+          ],
+        }),
+      })
+
+      const _toolbar_view = PE.getController("Toolbar").getView("Toolbar")
+      this.menuShapesMerge = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-combine-shapes",
+        caption: this.textShapesMerge,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            new Common.UI.MenuItem({
+              caption: _toolbar_view.textShapesUnion,
+              iconCls: "menu__icon btn-union-shapes",
+              value: "unite",
+            }),
+            new Common.UI.MenuItem({
+              caption: _toolbar_view.textShapesCombine,
+              iconCls: "menu__icon btn-combine-shapes",
+              value: "exclude",
+            }),
+            new Common.UI.MenuItem({
+              caption: _toolbar_view.textShapesFragment,
+              iconCls: "menu__icon btn-fragment-shapes",
+              value: "divide",
+            }),
+            new Common.UI.MenuItem({
+              caption: _toolbar_view.textShapesIntersect,
+              iconCls: "menu__icon btn-intersect-shapes",
+              value: "intersect",
+            }),
+            new Common.UI.MenuItem({
+              caption: _toolbar_view.textShapesSubstract,
+              iconCls: "menu__icon btn-substract-shapes",
+              value: "subtract",
+            }),
+          ],
+        }),
+      })
+
+      this.menuChartElement = new Common.UI.MenuItem({
+        menu: new Common.UI.Menu({
+          items: [
+            {
+              caption: this.textAxes,
+              value: "axes",
+              disabled: false,
+              menu: new Common.UI.Menu({
+                cls: "shifted-right",
+                menuAlign: "tl-tr",
+                items: [
+                  {
+                    caption: this.textHorAxis,
+                    value: "bShowHorAxis",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textVertAxis,
+                    value: "bShowVertAxis",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textHorAxisSec,
+                    value: "bShowHorAxSec",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textVertAxisSec,
+                    value: "bShowVertAxSec",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                  {
+                    caption: this.DepthAxis,
+                    value: "bShowDepthAxes",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                ],
+              }),
+            },
+            {
+              caption: this.textAxisTitles,
+              value: "axisTitles",
+              disabled: false,
+              menu: new Common.UI.Menu({
+                cls: "shifted-right",
+                menuAlign: "tl-tr",
+                items: [
+                  {
+                    caption: this.textHorAxis,
+                    value: "bShowHorAxTitle",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textVertAxis,
+                    value: "bShowVertAxTitle",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textHorAxisSec,
+                    value: "bShowHorAxTitleSec",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textVertAxisSec,
+                    value: "bShowVertAxisTitleSec",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                  {
+                    caption: this.DepthAxis,
+                    value: "bShowDepthAxesTitle",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                ],
+              }),
+            },
+            {
+              caption: this.textChartTitle,
+              value: "chartTitle",
+              disabled: false,
+              menu: new Common.UI.Menu({
+                cls: "shifted-right",
+                menuAlign: "tl-tr",
+                items: [
+                  {
+                    caption: this.textNone,
+                    value: "bShowChartTitleNone",
+                    stopPropagation: true,
+                    toggleGroup: "chartTitle",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textNoOverlay,
+                    value: "bShowChartTitle",
+                    stopPropagation: true,
+                    toggleGroup: "chartTitle",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textOverlay,
+                    value: "bOverlayTitle",
+                    stopPropagation: true,
+                    toggleGroup: "chartTitle",
+                    checkable: true,
+                  },
+                ],
+              }),
+            },
+            {
+              caption: this.textDataLabels,
+              value: "dataLabels",
+              disabled: false,
+              menu: new Common.UI.Menu({
+                cls: "shifted-right",
+                menuAlign: "tl-tr",
+                items: [
+                  {
+                    caption: this.textNone,
+                    value: "bShowDataLabels",
+                    stopPropagation: true,
+                    toggleGroup: "dataLabels",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textCenter,
+                    value: "CenterData",
+                    stopPropagation: true,
+                    toggleGroup: "dataLabels",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textInnerBottom,
+                    value: "InnerBottomData",
+                    stopPropagation: true,
+                    toggleGroup: "dataLabels",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textInnerTop,
+                    value: "InnerTopData",
+                    stopPropagation: true,
+                    toggleGroup: "dataLabels",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textOuterTop,
+                    value: "OuterTopData",
+                    stopPropagation: true,
+                    toggleGroup: "dataLabels",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textTop,
+                    value: "TopData",
+                    stopPropagation: true,
+                    toggleGroup: "dataLabels",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textLeft,
+                    value: "LeftData",
+                    stopPropagation: true,
+                    toggleGroup: "dataLabels",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textRight,
+                    value: "RightData",
+                    stopPropagation: true,
+                    toggleGroup: "dataLabels",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textBottom,
+                    value: "BottomData",
+                    stopPropagation: true,
+                    toggleGroup: "dataLabels",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textFit,
+                    value: "FitWidthData",
+                    stopPropagation: true,
+                    toggleGroup: "dataLabels",
+                    checkable: true,
+                  },
+                ],
+              }),
+            },
+            // {
+            //     caption: me.textDataTable,
+            //     value: 'dataTable',
+            //     disabled: false,
+            //     menu: new Common.UI.Menu({
+            //         cls: 'shifted-right',
+            //         menuAlign: 'tl-tr',
+            //         items: [
+            //             {
+            //                 caption: me.textNone,
+            //                 value: 'bShowDataNone'
+            //             },
+            //             {
+            //                 caption: me.textShowDataTable,
+            //                 value: 'bShowDataTable'
+            //             },
+            //             {
+            //                 caption: me.textShowLegendKeys,
+            //                 value: 'bShowLegendKeys'
+            //             }
+            //         ]
+            //     })
+            // },
+            {
+              caption: this.textErrorBars,
+              value: "errorBars",
+              disabled: false,
+              menu: new Common.UI.Menu({
+                cls: "shifted-right",
+                menuAlign: "tl-tr",
+                items: [
+                  {
+                    caption: this.textNone,
+                    value: "noneError",
+                    stopPropagation: true,
+                    disabled: false,
+                  },
+                  {
+                    caption: this.textStandardError,
+                    value: "standardError",
+                    stopPropagation: true,
+                    disabled: false,
+                  },
+                  {
+                    caption: this.txtPercentage,
+                    value: "percentage",
+                    stopPropagation: true,
+                    disabled: false,
+                  },
+                  {
+                    caption: this.textStandardDeviation,
+                    value: "standardDeviation",
+                    stopPropagation: true,
+                    disabled: false,
+                  },
+                ],
+              }),
+            },
+            {
+              caption: this.textGridLines,
+              value: "gridLines",
+              disabled: false,
+              menu: new Common.UI.Menu({
+                cls: "shifted-right",
+                menuAlign: "tl-tr",
+                items: [
+                  {
+                    caption: this.textHorizontalMajor,
+                    value: "bShowHorMajor",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textVerticalMajor,
+                    value: "bShowVerMajor",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textHorizontalMinor,
+                    value: "bShowHorMinor",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textVerticalMinor,
+                    value: "bShowVerMinor",
+                    stopPropagation: true,
+                    checkable: true,
+                  },
+                ],
+              }),
+            },
+            {
+              caption: this.textLegendPos,
+              value: "legend",
+              disabled: false,
+              menu: new Common.UI.Menu({
+                cls: "shifted-right",
+                menuAlign: "tl-tr",
+                items: [
+                  {
+                    caption: this.textNone,
+                    value: "NoneLegend",
+                    stopPropagation: true,
+                    toggleGroup: "legend",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textTop,
+                    value: "TopLegend",
+                    stopPropagation: true,
+                    toggleGroup: "legend",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textLeft,
+                    value: "LeftLegend",
+                    stopPropagation: true,
+                    toggleGroup: "legend",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textRight,
+                    value: "RightLegend",
+                    stopPropagation: true,
+                    toggleGroup: "legend",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textBottom,
+                    value: "BottomLegend",
+                    stopPropagation: true,
+                    toggleGroup: "legend",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textLeftOverlay,
+                    value: "LeftOverlay",
+                    stopPropagation: true,
+                    toggleGroup: "legend",
+                    checkable: true,
+                  },
+                  {
+                    caption: this.textRightOverlay,
+                    value: "RightOverlay",
+                    stopPropagation: true,
+                    toggleGroup: "legend",
+                    checkable: true,
+                  },
+                ],
+              }),
+            },
+            {
+              caption: this.textTrendline,
+              value: "trendLines",
+              disabled: false,
+              menu: new Common.UI.Menu({
+                cls: "shifted-right",
+                menuAlign: "tl-tr",
+                items: [
+                  {
+                    caption: this.textNone,
+                    stopPropagation: true,
+                    value: "trendLineNone",
+                  },
+                  {
+                    caption: this.textLinear,
+                    stopPropagation: true,
+                    value: "trendLineLinear",
+                  },
+                  {
+                    caption: this.textExponential,
+                    stopPropagation: true,
+                    value: "trendLineExponential",
+                  },
+                  {
+                    caption: this.textLinearForecast,
+                    stopPropagation: true,
+                    value: "trendLineForecast",
+                  },
+                  {
+                    caption: this.textMovingAverage,
+                    stopPropagation: true,
+                    value: "trendLineMovingAverage",
+                  },
+                ],
+              }),
+            },
+            {
+              caption: this.textUpDownBars,
+              value: "upDownBars",
+              disabled: false,
+              menu: new Common.UI.Menu({
+                cls: "shifted-right",
+                menuAlign: "tl-tr",
+                items: [
+                  {
+                    caption: this.textNone,
+                    stopPropagation: true,
+                    value: "bShowUpDownNone",
+                  },
+                  {
+                    caption: this.textShowUpDown,
+                    stopPropagation: true,
+                    value: "bShowUpDownBars",
+                  },
+                ],
+              }),
+            },
+          ],
+        }),
+      })
+
+      this.menuChartEdit = new Common.UI.MenuItem({
+        caption: this.editChartText,
+      })
+
+      this.menuParagraphVAlign = new Common.UI.MenuItem({
+        caption: this.AlignText,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            (this.menuParagraphTop = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-top",
+              caption: this.AlignTop,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popupparagraphvalign",
+              value: Asc.c_oAscVAlign.Top,
+            })),
+            (this.menuParagraphCenter = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-middle",
+              caption: this.AlignMiddle,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popupparagraphvalign",
+              value: Asc.c_oAscVAlign.Center,
+            })),
+            (this.menuParagraphBottom = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-bottom",
+              caption: this.AlignBottom,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popupparagraphvalign",
+              value: Asc.c_oAscVAlign.Bottom,
+            })),
+            { caption: "--" },
+            (this.menuParagraphLeft = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-left",
+              caption: this.AlignLeft,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popupparagraphhalign",
+              halign: 1,
+            })),
+            (this.menuParagraphHCenter = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-center",
+              caption: this.AlignCenter,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popupparagraphhalign",
+              halign: 2,
+            })),
+            (this.menuParagraphRight = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-right",
+              caption: this.AlignRight,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popupparagraphhalign",
+              halign: 0,
+            })),
+            (this.menuParagraphJust = new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-align-just",
+              caption: this.AlignJust,
+              checkable: true,
+              checkmark: false,
+              toggleGroup: "popupparagraphhalign",
+              halign: 3,
+            })),
+          ],
+        }),
+      })
+
+      this.menuParagraphDirection = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-text-orient-hor",
+        caption: this.directionText,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            (this.menuParagraphDirectH = new Common.UI.MenuItem({
+              caption: this.directHText,
+              iconCls: "menu__icon btn-text-orient-hor",
+              checkable: true,
+              checkmark: false,
+              checked: false,
+              toggleGroup: "popupparagraphdirect",
+              direction: Asc.c_oAscVertDrawingText.normal,
+            })),
+            (this.menuParagraphDirect90 = new Common.UI.MenuItem({
+              caption: this.direct90Text,
+              iconCls: "menu__icon btn-text-orient-rdown",
+              checkable: true,
+              checkmark: false,
+              checked: false,
+              toggleGroup: "popupparagraphdirect",
+              direction: Asc.c_oAscVertDrawingText.vert,
+            })),
+            (this.menuParagraphDirect270 = new Common.UI.MenuItem({
+              caption: this.direct270Text,
+              iconCls: "menu__icon btn-text-orient-rup",
+              checkable: true,
+              checkmark: false,
+              checked: false,
+              toggleGroup: "popupparagraphdirect",
+              direction: Asc.c_oAscVertDrawingText.vert270,
+            })),
+          ],
+        }),
+      })
+
+      const menuImgShapeSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      this.menuImgOriginalSize = new Common.UI.MenuItem({
+        caption: this.originalSizeText,
+      })
+
+      this.menuImgReplace = new Common.UI.MenuItem({
+        caption: this.textReplace,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            new Common.UI.MenuItem({
+              caption: this.textFromFile,
+              value: 0,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.textFromUrl,
+              value: 1,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.textFromStorage,
+              value: 2,
+            }),
+          ],
+        }),
+      })
+
+      this.menuImgShapeRotate = new Common.UI.MenuItem({
+        caption: this.textRotate,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-rotate-90",
+              caption: this.textRotate90,
+              value: 1,
+            }),
+            new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-rotate-270",
+              caption: this.textRotate270,
+              value: 0,
+            }),
+            { caption: "--" },
+            new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-flip-hor",
+              caption: this.textFlipH,
+              value: 1,
+            }),
+            new Common.UI.MenuItem({
+              iconCls: "menu__icon btn-flip-vert",
+              caption: this.textFlipV,
+              value: 0,
+            }),
+          ],
+        }),
+      })
+
+      this.menuImgCrop = new Common.UI.MenuItem({
+        caption: this.textCrop,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [
+            new Common.UI.MenuItem({
+              caption: this.textCrop,
+              checkable: true,
+              allowDepress: true,
+              value: 0,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.textCropFill,
+              value: 1,
+            }),
+            new Common.UI.MenuItem({
+              caption: this.textCropFit,
+              value: 2,
+            }),
+          ],
+        }),
+      })
+
+      this.menuImgResetCrop = new Common.UI.MenuItem({
+        caption: this.textResetCrop,
+        iconCls: "menu__icon btn-reset",
+      })
+
+      this.menuImgSaveAsPicture = new Common.UI.MenuItem({
+        caption: this.textSaveAsPicture,
+      })
+
+      const menuImgSaveAsPictureSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      /** coauthoring begin **/
+      this.menuAddCommentPara = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-add-comment",
+        caption: this.addCommentText,
+      })
+      this.menuAddCommentPara.hide()
+
+      this.menuAddCommentTable = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-add-comment",
+        caption: this.addCommentText,
+      })
+      this.menuAddCommentTable.hide()
+
+      this.menuAddCommentImg = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-add-comment",
+        caption: this.addCommentText,
+      })
+      this.menuAddCommentImg.hide()
+      /** coauthoring end **/
+
+      this.menuParaCopy = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-copy",
+        caption: this.textCopy,
+        value: "copy",
+      })
+
+      this.menuParaPaste = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-paste",
+        caption: this.textPaste,
+        value: "paste",
+      })
+
+      this.menuParaCut = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-cut",
+        caption: this.textCut,
+        value: "cut",
+      })
+
+      this.menuImgCopy = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-copy",
+        caption: this.textCopy,
+        value: "copy",
+      })
+
+      this.menuImgPaste = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-paste",
+        caption: this.textPaste,
+        value: "paste",
+      })
+
+      this.menuImgCut = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-cut",
+        caption: this.textCut,
+        value: "cut",
+      })
+
+      this.menuTableCopy = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-copy",
+        caption: this.textCopy,
+        value: "copy",
+      })
+
+      this.menuTablePaste = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-paste",
+        caption: this.textPaste,
+        value: "paste",
+      })
+
+      this.menuTableCut = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-cut",
+        caption: this.textCut,
+        value: "cut",
+      })
+
+      const menuEquationSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      const menuTableEquationSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      const menuTableEquationSettingsSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      this.menuParagraphEquation = new Common.UI.MenuItem({
+        caption: this.advancedEquationText,
+        iconCls: "menu__icon btn-equation",
+        menu: this.createEquationMenu("popupparaeqinput", "tl-tr"),
+      })
+
+      this.menuTableEquationSettings = new Common.UI.MenuItem({
+        caption: this.advancedEquationText,
+        iconCls: "menu__icon btn-equation",
+        menu: this.createEquationMenu("popuptableeqinput", "tl-tr"),
+      })
+
+      this.menuImgEditPoints = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-edit-points",
+        caption: this.textEditPoints,
+      })
+
+      this.textMenu = new Common.UI.Menu({
+        cls: "shifted-right",
+        scrollToCheckedItem: false,
+        initMenu: (value) => {
+          const isInShape = value.shapeProps && !_.isNull(value.shapeProps.value)
+          const isInChart = value.chartProps && !_.isNull(value.chartProps.value)
+
+          const disabled =
+            value.paraProps?.locked ||
+            value.slideProps?.locked ||
+            (isInShape && value.shapeProps.locked)
+          const isEquation = value.mathProps?.value
+          this._currentParaObjDisabled = disabled
+
+          this.menuParagraphVAlign.setVisible(isInShape && !isInChart && !isEquation) // после того, как заголовок можно будет растягивать по вертикали, вернуть "|| isInChart" !!
+          this.menuParagraphDirection.setVisible(isInShape && !isInChart && !isEquation) // после того, как заголовок можно будет растягивать по вертикали, вернуть "|| isInChart" !!
+          if (isInShape || isInChart) {
+            const align = value.shapeProps.value.get_VerticalTextAlign()
+            const halign = value.paraProps.value.get_Jc()
+            this.menuParagraphTop.setChecked(align === Asc.c_oAscVAlign.Top)
+            this.menuParagraphCenter.setChecked(align === Asc.c_oAscVAlign.Center)
+            this.menuParagraphBottom.setChecked(align === Asc.c_oAscVAlign.Bottom)
+            this.menuParagraphLeft.setChecked(halign === 1)
+            this.menuParagraphHCenter.setChecked(halign === 2)
+            this.menuParagraphRight.setChecked(halign === 0)
+            this.menuParagraphJust.setChecked(halign === 3)
+
+            const dir = value.shapeProps.value.get_Vert()
+            let cls = ""
+            switch (dir) {
+              case Asc.c_oAscVertDrawingText.normal:
+                cls = "menu__icon btn-text-orient-hor"
+                break
+              case Asc.c_oAscVertDrawingText.vert:
+                cls = "menu__icon btn-text-orient-rdown"
+                break
+              case Asc.c_oAscVertDrawingText.vert270:
+                cls = "menu__icon btn-text-orient-rup"
+                break
+            }
+            this.menuParagraphDirection.setIconCls(cls)
+            this.menuParagraphDirectH.setChecked(dir === Asc.c_oAscVertDrawingText.normal)
+            this.menuParagraphDirect90.setChecked(dir === Asc.c_oAscVertDrawingText.vert)
+            this.menuParagraphDirect270.setChecked(dir === Asc.c_oAscVertDrawingText.vert270)
+          } else {
+            this.menuParagraphVAlign.setIconCls("")
+            this.menuParagraphDirection.setIconCls("")
+          }
+          this.menuParagraphVAlign.setDisabled(disabled)
+          this.menuParagraphDirection.setDisabled(disabled)
+
+          let text = null
+
+          if (this.api) {
+            text = this.api.can_AddHyperlink()
+          }
+
+          this.menuAddHyperlinkPara.setVisible(value.hyperProps === undefined && text !== false)
+          menuHyperlinkPara.setVisible(value.hyperProps !== undefined)
+
+          this.menuEditHyperlinkPara.hyperProps = value.hyperProps
+
+          if (text !== false) {
+            this.menuAddHyperlinkPara.hyperProps = {}
+            this.menuAddHyperlinkPara.hyperProps.value = new Asc.CHyperlinkProperty()
+            this.menuAddHyperlinkPara.hyperProps.value.put_Text(text)
+          }
+
+          /** coauthoring begin **/
+          this.menuAddCommentPara.setVisible(
+            !isInChart &&
+              isInShape &&
+              this.api.can_AddQuotedComment() !== false &&
+              this.mode.canCoAuthoring &&
+              this.mode.canComments,
+          )
+          /** coauthoring end **/
+
+          menuCommentParaSeparator.setVisible(
+            /** coauthoring begin **/ this.menuAddCommentPara.isVisible() ||
+              /** coauthoring end **/ this.menuAddHyperlinkPara.isVisible() ||
+              menuHyperlinkPara.isVisible(),
+          )
+          this.menuAddHyperlinkPara.setDisabled(disabled)
+          menuHyperlinkPara.setDisabled(disabled)
+
+          /** coauthoring begin **/
+          this.menuAddCommentPara.setDisabled(disabled)
+          /** coauthoring end **/
+
+          this.menuParagraphAdvanced.setDisabled(disabled)
+          const cancopy = this.api?.can_CopyCut()
+          this.menuParaCopy.setDisabled(!cancopy)
+          this.menuParaCut.setDisabled(disabled || !cancopy)
+          this.menuParaPaste.setDisabled(disabled)
+
+          // spellCheck
+          const spell =
+            value.spellProps !== undefined && value.spellProps.value.get_Checked() === false
+          this.menuSpellPara.setVisible(spell)
+          menuSpellcheckParaSeparator.setVisible(spell)
+          this.menuIgnoreSpellPara.setVisible(spell)
+          this.menuIgnoreAllSpellPara.setVisible(spell)
+          this.menuToDictionaryPara.setVisible(spell && this.mode.isDesktopApp)
+          this.langParaMenu.setVisible(spell)
+          this.langParaMenu.setDisabled(disabled)
+          menuIgnoreSpellParaSeparator.setVisible(spell)
+
+          if (
+            spell &&
+            value.spellProps.value.get_Variants() !== null &&
+            value.spellProps.value.get_Variants() !== undefined
+          ) {
+            this.addWordVariants(true)
+          } else {
+            this.menuSpellPara.setCaption(this.loadSpellText)
+            this.clearWordVariants(true)
+            this.menuSpellMorePara.setVisible(false)
+          }
+          if (this.langParaMenu.isVisible() && this._currLang.id !== this._currLang.paraid) {
+            this.changeLanguageMenu(this.langParaMenu.menu)
+            this._currLang.paraid = this._currLang.id
+          }
+
+          //equation menu
+          let eqlen = 0
+          if (isEquation) {
+            eqlen = this.addEquationMenu(this.textMenu, 12)
+          } else this.clearEquationMenu(this.textMenu, 12)
+          menuEquationSeparator.setVisible(isEquation && eqlen > 0)
+
+          this.menuParagraphEquation.setVisible(isEquation)
+          this.menuParagraphEquation.setDisabled(disabled)
+          if (isEquation) {
+            const eq = this.api.asc_GetMathInputType()
+            const isEqToolbarHide = Common.Utils.InternalSettings.get("pe-equation-toolbar-hide")
+
+            this.menuParagraphEquation.menu.items[5].setChecked(
+              eq === Asc.c_oAscMathInputType.Unicode,
+            )
+            this.menuParagraphEquation.menu.items[6].setChecked(
+              eq === Asc.c_oAscMathInputType.LaTeX,
+            )
+            this.menuParagraphEquation.menu.items[8].options.isToolbarHide = isEqToolbarHide
+            this.menuParagraphEquation.menu.items[8].setCaption(
+              isEqToolbarHide ? this.showEqToolbar : this.hideEqToolbar,
+            )
+          }
+        },
+        items: [
+          this.menuSpellPara,
+          this.menuSpellMorePara,
+          menuSpellcheckParaSeparator,
+          this.menuIgnoreSpellPara,
+          this.menuIgnoreAllSpellPara,
+          this.menuToDictionaryPara,
+          this.langParaMenu,
+          menuIgnoreSpellParaSeparator,
+          this.menuParaCut,
+          this.menuParaCopy,
+          this.menuParaPaste,
+          menuEquationSeparator,
+          { caption: "--" },
+          this.menuParagraphVAlign,
+          this.menuParagraphDirection,
+          this.menuParagraphAdvanced,
+          this.menuParagraphEquation,
+          menuCommentParaSeparator,
+          /** coauthoring begin **/
+          this.menuAddCommentPara,
+          /** coauthoring end **/
+          this.menuAddHyperlinkPara,
+          menuHyperlinkPara,
+        ],
+      }).on("hide:after", (menu, e, isFromInputControl) => {
+        this.clearCustomItems(menu)
+        this.currentMenu = null
+        if (this.suppressEditComplete) {
+          this.suppressEditComplete = false
+          return
+        }
+
+        if (!isFromInputControl) this.fireEvent("editcomplete", this)
+      })
+
+      this.tableMenu = new Common.UI.Menu({
+        cls: "shifted-right",
+        restoreHeightAndTop: true,
+        scrollToCheckedItem: false,
+        initMenu: (value) => {
+          // table properties
+          if (_.isUndefined(value.tableProps)) return
+
+          const isEquation = value.mathProps?.value
+          for (let i = 6; i < 19; i++) {
+            this.tableMenu.items[i].setVisible(!isEquation)
+          }
+
+          const disabled = value.slideProps?.locked
+
+          const align = value.tableProps.value.get_CellsVAlign()
+          const halign = value.paraProps.value.get_Jc()
+          this.menuTableCellTop.setChecked(align === Asc.c_oAscVertAlignJc.Top)
+          this.menuTableCellCenter.setChecked(align === Asc.c_oAscVertAlignJc.Center)
+          this.menuTableCellBottom.setChecked(align === Asc.c_oAscVertAlignJc.Bottom)
+          this.menuTableCellLeft.setChecked(halign === 1)
+          this.menuTableCellHCenter.setChecked(halign === 2)
+          this.menuTableCellRight.setChecked(halign === 0)
+          this.menuTableCellJust.setChecked(halign === 3)
+
+          const dir = value.tableProps.value.get_CellsTextDirection()
+          let cls = ""
+          switch (dir) {
+            case Asc.c_oAscCellTextDirection.LRTB:
+              cls = "menu__icon btn-text-orient-hor"
+              break
+            case Asc.c_oAscCellTextDirection.TBRL:
+              cls = "menu__icon btn-text-orient-rdown"
+              break
+            case Asc.c_oAscCellTextDirection.BTLR:
+              cls = "menu__icon btn-text-orient-rup"
+              break
+          }
+          this.menuTableDirection.setIconCls(cls)
+          this.menuTableDirectH.setChecked(dir === Asc.c_oAscCellTextDirection.LRTB)
+          this.menuTableDirect90.setChecked(dir === Asc.c_oAscCellTextDirection.TBRL)
+          this.menuTableDirect270.setChecked(dir === Asc.c_oAscCellTextDirection.BTLR)
+
+          if (this.api) {
+            this.mnuTableMerge.setDisabled(
+              value.tableProps.locked || disabled || !this.api.CheckBeforeMergeCells(),
+            )
+            this.mnuTableSplit.setDisabled(
+              value.tableProps.locked || disabled || !this.api.CheckBeforeSplitCells(),
+            )
+          }
+
+          this.menuTableDistRows.setDisabled(value.tableProps.locked || disabled)
+          this.menuTableDistCols.setDisabled(value.tableProps.locked || disabled)
+
+          this.menuTableInsertText.setDisabled(value.tableProps.locked || disabled)
+          this.menuTableDeleteText.setDisabled(value.tableProps.locked || disabled)
+          this.menuTableDirection.setDisabled(value.tableProps.locked || disabled)
+
+          this.menuTableCellAlign.setDisabled(value.tableProps.locked || disabled)
+
+          this.menuTableSaveAsPicture.setVisible(!isEquation)
+          menuTableSaveAsPictureSeparator.setVisible(!isEquation)
+
+          this.menuTableAdvanced.setVisible(!isEquation)
+          this.menuTableAdvanced.setDisabled(value.tableProps.locked || disabled)
+          menuTableSettingsSeparator.setVisible(this.menuTableAdvanced.isVisible())
+
+          const cancopy = this.api?.can_CopyCut()
+          this.menuTableCopy.setDisabled(!cancopy)
+          this.menuTableCut.setDisabled(value.tableProps.locked || disabled || !cancopy)
+          this.menuTablePaste.setDisabled(value.tableProps.locked || disabled)
+
+          // hyperlink properties
+          let text = null
+
+          if (this.api) {
+            text = this.api.can_AddHyperlink()
+          }
+
+          this.menuAddHyperlinkTable.setVisible(
+            !_.isUndefined(value.paraProps) && _.isUndefined(value.hyperProps) && text !== false,
+          )
+          menuHyperlinkTable.setVisible(
+            !_.isUndefined(value.paraProps) && !_.isUndefined(value.hyperProps),
+          )
+
+          this.menuEditHyperlinkTable.hyperProps = value.hyperProps
+
+          if (text !== false) {
+            this.menuAddHyperlinkTable.hyperProps = {}
+            this.menuAddHyperlinkTable.hyperProps.value = new Asc.CHyperlinkProperty()
+            this.menuAddHyperlinkTable.hyperProps.value.put_Text(text)
+          }
+          if (!_.isUndefined(value.paraProps)) {
+            this.menuAddHyperlinkTable.setDisabled(value.paraProps.locked || disabled)
+            menuHyperlinkTable.setDisabled(value.paraProps.locked || disabled)
+            this._currentParaObjDisabled = value.paraProps.locked || disabled
+          }
+
+          /** coauthoring begin **/
+          this.menuAddCommentTable.setVisible(
+            this.api.can_AddQuotedComment() !== false &&
+              this.mode.canCoAuthoring &&
+              this.mode.canComments,
+          )
+          this.menuAddCommentTable.setDisabled(
+            (!_.isUndefined(value.paraProps) && value.paraProps.locked) || disabled,
+          )
+          /** coauthoring end **/
+
+          this.menuSpellCheckTable.setVisible(
+            value.spellProps !== undefined && value.spellProps.value.get_Checked() === false,
+          )
+          this.menuToDictionaryTable.setVisible(this.mode.isDesktopApp)
+          menuSpellcheckTableSeparator.setVisible(
+            value.spellProps !== undefined && value.spellProps.value.get_Checked() === false,
+          )
+
+          this.langTableMenu.setDisabled(disabled)
+          if (
+            value.spellProps !== undefined &&
+            value.spellProps.value.get_Checked() === false &&
+            value.spellProps.value.get_Variants() !== null &&
+            value.spellProps.value.get_Variants() !== undefined
+          ) {
+            this.addWordVariants(false)
+          } else {
+            this.menuSpellTable.setCaption(this.loadSpellText)
+            this.clearWordVariants(false)
+            this.menuSpellMoreTable.setVisible(false)
+          }
+
+          if (
+            this.menuSpellCheckTable.isVisible() &&
+            this._currLang.id !== this._currLang.tableid
+          ) {
+            this.changeLanguageMenu(this.langTableMenu.menu)
+            this._currLang.tableid = this._currLang.id
+          }
+
+          //equation menu
+          let eqlen = 0
+          if (isEquation) {
+            eqlen = this.addEquationMenu(this.tableMenu, 6)
+          } else this.clearEquationMenu(this.tableMenu, 6)
+
+          menuTableEquationSeparator.setVisible(eqlen > 0)
+          this.menuTableEquationSettings.setVisible(isEquation)
+          menuTableEquationSettingsSeparator.setVisible(isEquation)
+          this.menuTableEquationSettings.setDisabled(disabled)
+          if (isEquation) {
+            const eq = this.api.asc_GetMathInputType()
+            const isEqToolbarHide = Common.Utils.InternalSettings.get("pe-equation-toolbar-hide")
+
+            this.menuTableEquationSettings.menu.items[5].setChecked(
+              eq === Asc.c_oAscMathInputType.Unicode,
+            )
+            this.menuTableEquationSettings.menu.items[6].setChecked(
+              eq === Asc.c_oAscMathInputType.LaTeX,
+            )
+            this.menuTableEquationSettings.menu.items[8].options.isToolbarHide = isEqToolbarHide
+            this.menuTableEquationSettings.menu.items[8].setCaption(
+              isEqToolbarHide ? this.showEqToolbar : this.hideEqToolbar,
+            )
+          }
+        },
+        items: [
+          this.menuSpellCheckTable, //0
+          menuSpellcheckTableSeparator, //1
+          this.menuTableCut, //2
+          this.menuTableCopy, //3
+          this.menuTablePaste, //4
+          { caption: "--" }, //5
+          this.menuTableSelectText, //6
+          this.menuTableInsertText, //7
+          this.menuTableDeleteText, //8
+          { caption: "--" }, //9
+          this.mnuTableMerge, //10
+          this.mnuTableSplit, //11
+          { caption: "--" }, //12
+          this.menuTableDistRows, //13
+          this.menuTableDistCols, //14
+          { caption: "--" }, //15
+          this.menuTableCellAlign, //16
+          this.menuTableDirection, //17
+          { caption: "--" }, //18
+          menuTableEquationSeparator, //19
+          this.menuTableSaveAsPicture, //20
+          menuTableSaveAsPictureSeparator, //21
+          this.menuTableAdvanced, //22
+          menuTableSettingsSeparator, //23
+          this.menuTableEquationSettings, //24
+          menuTableEquationSettingsSeparator, //25
+          /** coauthoring begin **/
+          this.menuAddCommentTable, //26
+          /** coauthoring end **/
+          this.menuAddHyperlinkTable, //27
+          menuHyperlinkTable, //28
+        ],
+      }).on("hide:after", (menu, e, isFromInputControl) => {
+        this.clearCustomItems(menu)
+        this.currentMenu = null
+        if (this.suppressEditComplete) {
+          this.suppressEditComplete = false
+          return
+        }
+
+        if (!isFromInputControl) this.fireEvent("editcomplete", this)
+      })
+
+      this.menuEditObjectSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      this.menuEditObject = new Common.UI.MenuItem({
+        caption: this.textEditObject,
+      })
+
+      const menuHyperlinkPicSeparator = new Common.UI.MenuItem({
+        caption: "--",
+      })
+
+      this.menuAddHyperlinkPic = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-inserthyperlink",
+        caption: this.hyperlinkText,
+      })
+
+      this.menuEditHyperlinkPic = new Common.UI.MenuItem({
+        caption: this.editHyperlinkText,
+      })
+
+      this.menuRemoveHyperlinkPic = new Common.UI.MenuItem({
+        caption: this.removeHyperlinkText,
+      })
+
+      const menuHyperlinkPic = new Common.UI.MenuItem({
+        iconCls: "menu__icon btn-inserthyperlink",
+        caption: this.hyperlinkText,
+        menu: new Common.UI.Menu({
+          cls: "shifted-right",
+          menuAlign: "tl-tr",
+          items: [this.menuEditHyperlinkPic, this.menuRemoveHyperlinkPic],
+        }),
+      })
+
+      this.pictureMenu = new Common.UI.Menu({
+        cls: "shifted-right",
+        restoreHeightAndTop: true,
+        scrollToCheckedItem: false,
+        initMenu: (value) => {
+          if (this.api) {
+            this.mnuUnGroupImg.setDisabled(!this.api.canUnGroup())
+            this.mnuGroupImg.setDisabled(!this.api.canGroup())
+          }
+
+          const isimage =
+            (_.isUndefined(value.shapeProps) || value.shapeProps.value.get_FromImage()) &&
+            _.isUndefined(value.chartProps)
+          const imgdisabled = value.imgProps?.locked
+          const shapedisabled = value.shapeProps?.locked
+          const chartdisabled = value.chartProps?.locked
+          const disabled = imgdisabled || shapedisabled || chartdisabled || value.slideProps?.locked
+          const pluginGuid = value.imgProps ? value.imgProps.value.asc_getPluginGuid() : null
+          const inSmartartInternal = value.shapeProps?.value.get_FromSmartArtInternal()
+
+          const pluginGuidAvailable = pluginGuid !== null && pluginGuid !== undefined
+          this.menuEditObject.setVisible(pluginGuidAvailable)
+          this.menuEditObjectSeparator.setVisible(pluginGuidAvailable)
+
+          if (pluginGuidAvailable) {
+            const plugin = PE.getCollection("Common.Collections.Plugins").findWhere({
+              guid: pluginGuid,
+            })
+            this.menuEditObject.setDisabled(
+              (!this.api.asc_canEditTableOleObject() &&
+                (plugin === null || plugin === undefined)) ||
+                disabled,
+            )
+          }
+
+          this.mnuArrangeFront.setDisabled(inSmartartInternal)
+          this.mnuArrangeBack.setDisabled(inSmartartInternal)
+          this.mnuArrangeForward.setDisabled(inSmartartInternal)
+          this.mnuArrangeBackward.setDisabled(inSmartartInternal)
+
+          this.menuImgShapeRotate.setVisible(
+            _.isUndefined(value.chartProps) && (pluginGuid === null || pluginGuid === undefined),
+          )
+          if (this.menuImgShapeRotate.isVisible()) {
+            this.menuImgShapeRotate.setDisabled(
+              disabled || value.shapeProps?.value.get_FromSmartArt(),
+            )
+            this.menuImgShapeRotate.menu.items[3].setDisabled(inSmartartInternal)
+            this.menuImgShapeRotate.menu.items[4].setDisabled(inSmartartInternal)
+          }
+
+          // image properties
+          this.menuImgOriginalSize.setVisible(isimage)
+          if (this.menuImgOriginalSize.isVisible())
+            this.menuImgOriginalSize.setDisabled(
+              disabled ||
+                _.isNull(value.imgProps.value.get_ImageUrl()) ||
+                _.isUndefined(value.imgProps.value.get_ImageUrl()),
+            )
+
+          this.menuImgReplace.setVisible(
+            isimage && (pluginGuid === null || pluginGuid === undefined),
+          )
+          if (this.menuImgReplace.isVisible())
+            this.menuImgReplace.setDisabled(disabled || pluginGuid === null)
+          this.menuImgReplace.menu.items[2].setVisible(
+            this.mode.canRequestInsertImage ||
+              (this.mode.fileChoiceUrl && this.mode.fileChoiceUrl.indexOf("{documentType}") > -1),
+          )
+
+          this.menuImgCrop.setVisible(this.api.asc_canEditCrop())
+          if (this.menuImgCrop.isVisible()) this.menuImgCrop.setDisabled(disabled)
+
+          this.menuImgResetCrop.setVisible(isimage && value.imgProps.value.asc_getIsCrop())
+          if (this.menuImgResetCrop.isVisible()) this.menuImgResetCrop.setDisabled(disabled)
+
+          const canEditPoints = this.api?.asc_canEditGeometry()
+          this.menuImgEditPoints.setVisible(canEditPoints)
+          canEditPoints && this.menuImgEditPoints.setDisabled(disabled)
+
+          this.menuImageAdvanced.setVisible(isimage)
+          this.menuShapeAdvanced.setVisible(
+            _.isUndefined(value.imgProps) && _.isUndefined(value.chartProps),
+          )
+          this.menuChartEdit.setVisible(
+            _.isUndefined(value.imgProps) &&
+              !_.isUndefined(value.chartProps) &&
+              (_.isUndefined(value.shapeProps) || value.shapeProps.isChart),
+          )
+          this.menuChartAdvanced.setVisible(
+            _.isUndefined(value.imgProps) &&
+              !_.isUndefined(value.chartProps) &&
+              (_.isUndefined(value.shapeProps) || value.shapeProps.isChart),
+          )
+          menuImgShapeSeparator.setVisible(
+            this.menuImageAdvanced.isVisible() ||
+              this.menuShapeAdvanced.isVisible() ||
+              this.menuChartEdit.isVisible() ||
+              this.menuChartAdvanced.isVisible(),
+          )
+          menuAdvancedSettingsSeparator.setVisible(
+            this.menuImgCrop.isVisible() ||
+              this.menuImgOriginalSize.isVisible() ||
+              this.menuImgReplace.isVisible() ||
+              this.menuImageAdvanced.isVisible() ||
+              this.menuImgEditPoints.isVisible() ||
+              this.menuShapeAdvanced.isVisible() ||
+              this.menuChartEdit.isVisible() ||
+              this.menuChartAdvanced.isVisible(),
+          )
+
+          /** coauthoring begin **/
+          this.menuAddCommentImg.setVisible(
+            this.api.can_AddQuotedComment() !== false &&
+              this.mode.canCoAuthoring &&
+              this.mode.canComments,
+          )
+          this.menuAddCommentImg.setDisabled(disabled)
+          /** coauthoring end **/
+          this.menuImgShapeAlign.setDisabled(disabled)
+          if (!disabled) {
+            const objcount = this.api.asc_getSelectedDrawingObjectsCount()
+            const slide_checked = Common.Utils.InternalSettings.get("pe-align-to-slide") || false
+            this.menuImgShapeAlign.menu.items[7].setDisabled(objcount === 2 && !slide_checked)
+            this.menuImgShapeAlign.menu.items[8].setDisabled(objcount === 2 && !slide_checked)
+          }
+          this.menuShapesMerge.setDisabled(disabled || !this.api.asc_canMergeSelectedShapes())
+          if (!this.menuShapesMerge.isDisabled()) {
+            this.menuShapesMerge.menu.items.forEach((item) => {
+              item.setDisabled(!this.api.asc_canMergeSelectedShapes(item.value))
+            })
+          }
+          this.menuImageAdvanced.setDisabled(disabled)
+          this.menuShapeAdvanced.setDisabled(disabled)
+          this.menuChartAdvanced.setDisabled(disabled)
+          if (this.menuChartEdit.isVisible()) this.menuChartEdit.setDisabled(disabled)
+
+          const cancopy = this.api?.can_CopyCut()
+          this.menuImgCopy.setDisabled(!cancopy)
+          this.menuImgCut.setDisabled(disabled || !cancopy)
+          this.menuImgPaste.setDisabled(disabled)
+          menuImgShapeArrange.setDisabled(disabled)
+
+          let text = null
+          if (this.api) {
+            text = this.api.can_AddHyperlink()
+          }
+          this.menuAddHyperlinkPic.setVisible(value.hyperProps === undefined && text !== false)
+          menuHyperlinkPic.setVisible(value.hyperProps !== undefined)
+          menuHyperlinkPicSeparator.setVisible(
+            this.menuAddHyperlinkPic.isVisible() || menuHyperlinkPic.isVisible(),
+          )
+          this.menuEditHyperlinkPic.hyperProps = value.hyperProps
+          this.menuRemoveHyperlinkPic.hyperProps = value.hyperProps
+          if (text !== false) {
+            this.menuAddHyperlinkPic.hyperProps = {}
+            this.menuAddHyperlinkPic.hyperProps.value = new Asc.CHyperlinkProperty()
+            this.menuAddHyperlinkPic.hyperProps.value.put_Text(text)
+          }
+          this.menuAddHyperlinkPic.setDisabled(disabled)
+          menuHyperlinkPic.setDisabled(
+            disabled ||
+              (value.hyperProps !== undefined && value.hyperProps.isSeveralLinks === true),
+          )
+        },
+        items: [
+          this.menuImgCut,
+          this.menuImgCopy,
+          this.menuImgPaste,
+          this.menuEditObjectSeparator,
+          this.menuEditObject,
+          { caption: "--" }, //Separator
+          menuImgShapeArrange,
+          this.menuImgShapeAlign,
+          this.menuShapesMerge,
+          this.menuImgShapeRotate,
+          menuImgShapeSeparator, //Separator
+          this.menuImgSaveAsPicture,
+          menuImgSaveAsPictureSeparator, //Separator
+          this.menuAddHyperlinkPic,
+          menuHyperlinkPic,
+          menuHyperlinkPicSeparator,
+          this.menuImgCrop,
+          this.menuImgResetCrop,
+          this.menuImgOriginalSize,
+          this.menuImgReplace,
+          this.menuImageAdvanced,
+          this.menuImgEditPoints,
+          this.menuShapeAdvanced,
+          this.menuChartEdit,
+          this.menuChartAdvanced,
+          menuAdvancedSettingsSeparator, //Separator
+          /** coauthoring begin **/
+          this.menuAddCommentImg,
+        ],
+      }).on("hide:after", (menu, e, isFromInputControl) => {
+        this.clearCustomItems(menu)
+        this.currentMenu = null
+        if (this.suppressEditComplete) {
+          this.suppressEditComplete = false
+          return
+        }
+
+        if (!isFromInputControl) this.fireEvent("editcomplete", this)
+      })
+
+      this.menuAnimStartOnClick = new Common.UI.MenuItem({
+        caption: this.textStartOnClick,
+        checkable: true,
+        value: AscFormat.NODE_TYPE_CLICKEFFECT,
+      })
+
+      this.menuAnimStartWithPrevious = new Common.UI.MenuItem({
+        caption: this.textStartWithPrevious,
+        checkable: true,
+        value: AscFormat.NODE_TYPE_WITHEFFECT,
+      })
+
+      this.menuAnimStartAfterPrevious = new Common.UI.MenuItem({
+        caption: this.textStartAfterPrevious,
+        checkable: true,
+        value: AscFormat.NODE_TYPE_AFTEREFFECT,
+      })
+
+      this.menuAnimRemove = new Common.UI.MenuItem({
+        caption: this.textRemove,
+        value: "remove",
+      })
+
+      this.animEffectMenu = new Common.UI.Menu({
+        restoreHeightAndTop: true,
+        scrollToCheckedItem: false,
+        style: "min-width: auto;",
+        initMenu: (value) => {
+          this.menuAnimStartOnClick.setChecked(
+            value.effect === AscFormat.NODE_TYPE_CLICKEFFECT,
+            true,
+          )
+          this.menuAnimStartWithPrevious.setChecked(
+            value.effect === AscFormat.NODE_TYPE_WITHEFFECT,
+            true,
+          )
+          this.menuAnimStartAfterPrevious.setChecked(
+            value.effect === AscFormat.NODE_TYPE_AFTEREFFECT,
+            true,
+          )
+        },
+        items: [
+          this.menuAnimStartOnClick,
+          this.menuAnimStartWithPrevious,
+          this.menuAnimStartAfterPrevious,
+          { caption: "--" },
+          this.menuAnimRemove,
+        ],
+      }).on("hide:after", (menu, e, isFromInputControl) => {
+        this.clearCustomItems(menu)
+        this.currentMenu = null
+        if (this.suppressEditComplete) {
+          this.suppressEditComplete = false
+          return
+        }
+
+        if (!isFromInputControl) this.fireEvent("editcomplete", this)
+      })
+
+      const shortcutHints = {}
+      const nextpage = $("#id_buttonNextPage")
+      nextpage.attr("data-toggle", "tooltip")
+      shortcutHints.GoToNextSlide = {
+        label: this.textNextPage,
+        applyCallback: (item, hintText) => {
+          nextpage.tooltip({
+            title: hintText,
+            placement: "top-right",
+          })
+        },
+      }
+
+      const prevpage = $("#id_buttonPrevPage")
+      prevpage.attr("data-toggle", "tooltip")
+      shortcutHints.GoToPreviousSlide = {
+        label: this.textPrevPage,
+        applyCallback: (item, hintText) => {
+          nextpage.tooltip({
+            title: hintText,
+            placement: "top-right",
+          })
+        },
+      }
+      PE.getController("Common.Controllers.Shortcuts").updateShortcutHints(shortcutHints)
+
+      this.fireEvent("createdelayedelements", [this, "edit"])
+    }
+  }
+})

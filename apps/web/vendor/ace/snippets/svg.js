@@ -1,8 +1,7 @@
-;                (function() {
-                    ace.require(["ace/snippets/svg"], function(m) {
-                        if (typeof module == "object" && typeof exports == "object" && module) {
-                            module.exports = m;
-                        }
-                    });
-                })();
-            
+;(() => {
+  ace.require(["ace/snippets/svg"], (m) => {
+    if (typeof module == "object" && typeof exports == "object" && module) {
+      module.exports = m
+    }
+  })
+})()

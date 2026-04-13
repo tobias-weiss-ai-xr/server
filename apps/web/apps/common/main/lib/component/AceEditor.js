@@ -24,10 +24,9 @@
  */
 
 if (Common === undefined)
-    var Common = {};
+    const Common = {};
 
-define([], function () {
-    'use strict';
+define([], () => {
 
     Common.UI.AceEditor = Common.UI.BaseView.extend({
         initialize : function(options) {
@@ -52,14 +51,12 @@ define([], function () {
             this.loadMask = new Common.UI.LoadMask({owner: this.parentEl});
             this.loadMask.show();
 
-            this.iframe.src = '../../../vendor/ace/component/AceEditor.html?editorType=' + (window.SSE ? 'cell' : window.PE ? 'slide' : 'word');
-
-            var me = this;
-            this._eventfunc = function(msg) {
-                me._onMessage(msg);
+            this.iframe.src = `../../../vendor/ace/component/AceEditor.html?editorType=${window.SSE ? 'cell' : window.PE ? 'slide' : 'word'}`;
+            this._eventfunc = (msg) => {
+                this._onMessage(msg);
             };
-            this._updatebind = function() {
-                me.updateTheme();
+            this._updatebind = () => {
+                this.updateTheme();
             };
             this._bindWindowEvents.call(this);
         },
@@ -82,18 +79,19 @@ define([], function () {
             Common.NotificationCenter.off('uitheme:changed', this._updatebind);
         },
 
-        _postMessage: function(wnd, msg) {
-            if (wnd && wnd.postMessage && window.JSON) {
+        _postMessage: (wnd, msg) => {
+            if (wnd?.postMessage && window.JSON) {
                 wnd.postMessage(window.JSON.stringify(msg), "*");
             }
         },
 
         _onMessage: function(msg) {
-            var data = msg.data;
+            let data = msg.data;
             if (Object.prototype.toString.apply(data) !== '[object String]' || !window.JSON) {
                 return;
             }
-            var cmd, handler;
+            let cmd;
+            let handler;
 
             try {
                 cmd = window.JSON.parse(data)
@@ -101,7 +99,7 @@ define([], function () {
                 cmd = '';
             }
 
-            if (cmd && cmd.referer == "ace-editor") {
+            if (cmd && cmd.referer === "ace-editor") {
                 switch (cmd.command) {
                     case 'changeValue':
                         data = cmd.data || {};

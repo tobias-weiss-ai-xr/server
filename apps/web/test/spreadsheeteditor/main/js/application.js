@@ -22,11 +22,9 @@
  * terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  *
  */
-(function ($) {
-
-    $(function(){
-        SSE.ApplicationView.create();
-        SSE.ApplicationController.create();
-    })
-
-})(window.jQuery);
+;(($) => {
+  $(() => {
+    SSE.ApplicationView.create()
+    SSE.ApplicationController.create()
+  })
+})(window.jQuery)

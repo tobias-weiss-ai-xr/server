@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/artwork/assets/banner.png" alt="World-Office Banner" width="600">
+  <img src="https://codeberg.org/World-Office/artwork/raw/branch/main/assets/banner.png" alt="World-Office Banner" width="600">
 </p>
 
 <h1 align="center">World-Office</h1>
@@ -23,12 +23,12 @@
 
 Based on the [full-rewrite-modernization plan](.sisyphus/plans/full-rewrite-modernization.md) (180 weeks, 11 phases).
 
-**Current phase: 8 of 11 completed (estimated ~55% overall progress).**
+**Current phase: 10 of 11 completed (~90% by phase count).**
 
 | Phase | Description | Weeks | Status |
 |-------|-------------|-------|--------|
 | Phase 0 | Foundation (monorepo, tooling, discovery) | 1-8 | Partial |
-| Phase 1 | Server to microservices (Axum, Rust) | 9-28 | Not started |
+| Phase 1 | Server to microservices (Axum, Rust) | 9-28 | Partial |
 | Phase 2 | Core: Small format parsers (8 crates) | 9-14 | Done |
 | Phase 3 | Core: Medium format parsers (ODF, DOCX renderer) | 15-30 | Done |
 | Phase 4 | Web UI rewrite (React 19 migration) | 25-52 | Done |
@@ -73,10 +73,31 @@ desktop/tauri-poc/     Tauri 2.0 desktop shell
   src-tauri/src/       10 Rust modules (commands, menus, tray, fs, print, updater, keychain, window)
 ```
 
+## Integrations
+
+| Integration | Path | Description |
+|-------------|------|-------------|
+| OpenCloud | `integrations/opencloud/` | Docker-based document server deployment for OpenCloud |
+| Nextcloud | `integrations/nextcloud/` | PHP/JS Nextcloud app (OCA\WorldOffice) |
+| Document Server | `integrations/document-server-integration/` | Integration examples in C#, Go, Java, Node.js, PHP, Python, Ruby |
+
+## Services
+
+| Service | Path | Description |
+|---------|------|-------------|
+| API Gateway | `services/api-gateway/` | Request routing |
+| Co-authoring | `services/coauthoring-service/` | Real-time collaboration |
+| Conversion | `services/conversion-service/` | Format conversion |
+| Identity | `services/identity-service/` | Authentication |
+| Session | `services/session-service/` | Session management |
+| Storage | `services/storage-service/` | File storage |
+| Server | `services/server/` | Main server |
+| Admin | `services/admin-panel/` | Admin UI |
+
 ## Test Coverage
 
 ```
-433+ unit tests across the Rust workspace:
+470+ unit tests across the Rust workspace:
 
 Format parsers:      287 tests (16 crates)
 Rendering engine:     88 tests (wo-renderer)

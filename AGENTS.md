@@ -1,159 +1,144 @@
-# World Office WORKSPACE
+# World-Office WORKSPACE
 
-**Generated:** 2026-03-31
-**Source:** codeberg.org/World-Office (independent rewrite)
-**Repos:** 19 | **Total Files:** ~66k
+**Updated:** 2026-04-13
+**Source:** codeberg.org/World-Office/server (independent project)
+**License:** MIT
+**Crate count:** 25 Rust crates + services + integrations
 
 ## OVERVIEW
 
-World Office — an independent, sovereign document editing suite built from scratch in Rust + TypeScript. Not a fork. Not associated with WORLDOFFICE.
+World-Office — an independent, open-source document editing suite built from scratch in Rust + TypeScript. MIT licensed. The Rust core implements format parsing, rendering, conversion, WOPI/WebDAV protocols, desktop (Tauri), and WASM/browser targets.
 
 ## STRUCTURE
 
 ```
-word-office/
-├── core/                          # C++ core engine (format conversion, rendering)
-├── web-apps/                      # Web UI: editor interface, apps, media (28k files)
-├── desktop-sdk/                   # C++ desktop integration SDK (6.6k files)
-├── desktop-apps/                  # Desktop app resources, localization (2.9k files)
-├── DesktopEditors/                # Desktop editors build config (shallow)
-├── DocumentServer/                # Server deployment configs (Nginx, systemd)
-├── document-server-integration/   # PHP/JS integration API + examples
-├── document-server-package/       # Linux packaging (Inno Setup, Makefile)
-├── document-formats/              # Format documentation (Open XML)
-├── document-templates/            # Office templates (.xlsx, .pptx, .pdf)
-├── server/                        # Node.js docbuilder + Common modules
-├── sdkjs/                         # SDK JS (empty — upstream submodule)
-├── sdkjs-forms/                   # JS form builder
-├── dictionaries/                  # Hunspell dictionaries (103 locales)
-├── core-fonts/                    # Bundled fonts (TTF/OTF)
-├── docker-ci/                     # Docker build images (Ubuntu 24.04, Node 20, JDK 21)
-├── integrations/nextcloud/          # Nextcloud integration (PHP/JS)
-├── plugin-aiautofill/             # AI autofill plugin (JS/JSON)
-├── .github/                       # GitHub/Codeberg CI workflows
-└── nul                            # (junk — safe to delete)
+World-Office/
+├── core/                          # Rust workspace root
+│   └── crates/                    # 25 Rust crates (see below)
+├── desktop/                       # Desktop applications
+│   └── tauri-poc/                 # Tauri 2.0 desktop shell (10 modules)
+├── services/                      # Rust microservices (8 services)
+│   ├── api-gateway/               # Request routing
+│   ├── coauthoring-service/       # Real-time collaboration
+│   ├── conversion-service/        # Format conversion
+│   ├── identity-service/          # Auth (JWT, OAuth2)
+│   ├── session-service/           # Session management
+│   ├── storage-service/           # File storage backend
+│   ├── server/                    # Main document server
+│   └── admin-panel/              # Admin dashboard
+├── integrations/                  # Third-party integrations
+│   ├── opencloud/                 # OpenCloud deployment (Node.js, EJS, Docker)
+│   ├── nextcloud/                 # Nextcloud app (PHP, OCA\WorldOffice namespace)
+│   └── document-server-integration/ # Multi-language examples (C#, Go, Java, Node.js, PHP, Python, Ruby)
+├── apps/                          # React 19 web applications
+├── packages/                      # Shared TypeScript packages
+├── .github/                       # CI workflows (Rust lint/test, TS lint/typecheck/build)
+└── .sisyphus/plans/               # Implementation plans
 ```
 
-## ARCHITECTURE & DEPENDENCIES
+## RUST CRATES (core/crates/)
 
-```
-                    ┌─────────────┐
-                    │ web-apps    │ ← Browser UI
-                    └──────┬──────┘
-                           │
-┌──────────┐        ┌──────┴──────┐        ┌──────────────┐
-│ core     │◄───────│ Document    │───────►│ document-    │
-│ (C++)    │        │ Server      │        │ server-      │
-└────┬─────┘        │ (Nginx+Node)│        │ integration  │
-     │              └──────┬──────┘        └──────────────┘
-     │                     │
-     │              ┌──────┴──────┐
-     │              │ server      │ ← Node.js docbuilder
-     │              └─────────────┘
-     │
-┌────┴─────┐
-│ desktop- │
-│ sdk      │
-└────┬─────┘
-     │
-┌────┴─────────┐
-│ desktop-apps │
-│ DesktopEds   │
-└──────────────┘
-```
+### Format Parsers (16 crates with FormatRoundtrip trait)
+| Crate | Description | Tests |
+|-------|-------------|-------|
+| wo-common | Shared types, errors, test harness | — |
+| wo-txt | Plain text parser | ~5 |
+| wo-unicode | Encoding conversion (ICU wrapper) | 32 |
+| wo-fb2 | FictionBook 2.0 parser → JSON | 13 |
+| wo-html | HTML import/export | 3 |
+| wo-rtf | Rich Text Format parser + serializer | 41 |
+| wo-epub | EPUB parser (ZIP-based) | 11 |
+| wo-hwp | Korean HWP format parser | 12 |
+| wo-djvu | DjVu document parser | 8 |
+| wo-xps | XPS document parser | 14 |
+| wo-ofd | Chinese OFD document parser | 10 |
+| wo-odf | OpenDocument format parser (ZIP+XML) | 15 |
+| wo-pdf | PDF reading/writing | ~8 |
+| wo-msbinary | OLE compound document parser → JSON | 29 |
+| wo-ooxml | OOXML (DOCX/XLSX/PPTX) parser → JSON | 18 |
+| wo-x2t | Format conversion orchestrator | 13 |
 
-**Key dependency flow:** `core` → `DocumentServer` → `web-apps` (server). `core` → `desktop-sdk` → `desktop-apps`.
+### Rendering & Fonts (3 crates)
+| Crate | Description | Tests |
+|-------|-------------|-------|
+| wo-renderer | Canvas rendering engine (text layout, gradients, transforms) | 125 |
+| wo-fonts | Font loading, caching, CSS-compliant matching | 36 |
+| wo-raster | Image encode/decode (PNG, BMP) | 22 |
 
-## WHERE TO LOOK
+### WASM & Web (2 crates)
+| Crate | Description |
+|-------|-------------|
+| wo-x2t-wasm | Format conversion compiled to WASM (wasm-bindgen) |
+| wo-renderer-wasm | Canvas rendering compiled to WASM (Web Canvas bridge) |
 
-| Task | Location | Notes |
-|------|----------|-------|
-| Format conversion logic | `core/X2tConverter/` | C++, DOCX↔PDF↔ODT etc. |
-| Document rendering | `core/DesktopEditor/` | C++, canvas/font engine |
-| Web editor UI | `web-apps/apps/*/main/` | JS, per-app (documenteditor, spreadsheeteditor, etc.) |
-| Server deployment | `DocumentServer/` | Nginx configs, Docker, systemd |
-| Integration examples | `document-server-integration/web/` | PHP, Node.js, Python, Java, etc. |
-| Desktop build | `desktop-apps/`, `desktop-sdk/` | CMake-based |
-| Document builder | `server/DocBuilder/` | Node.js, CLI doc conversion |
-| Branding/theming | `web-apps/build/` | Grunt-based build, license bundling |
+### Desktop (1 crate)
+| Crate | Description |
+|-------|-------------|
+| wo-docx-renderer | DOCX → PDF rendering pipeline |
+
+### Infrastructure (3 crates)
+| Crate | Description |
+|-------|-------------|
+| wo-office-utils | ZIP/archive manipulation, ArchiveWriter |
+| wo-wopi | WOPI protocol server (axum, CheckFileInfo/GetFile/PutFile) |
+| wo-webdav | WebDAV server (axum, PROPFIND/MKCOL/PUT/DELETE/LOCK) |
+
+## TAURI DESKTOP (desktop/tauri-poc/)
+
+10 Rust modules providing native desktop functionality:
+- commands.rs — Document operations (new, open, save, zoom, fullscreen)
+- menu.rs — Application menus (File/Edit/View/Help) using Tauri 2.0
+- tray.rs — System tray with context menu
+- window.rs — Multi-window management
+- state.rs — AppState with recent files, window count
+- filesystem.rs — 13 native filesystem commands (Rust ↔ JS bridge)
+- print.rs — Print support (render, preview, page sizes)
+- updater.rs — Auto-updater (Tauri updater plugin)
+- keychain.rs — Credential storage (keyring crate)
+- window.rs — Window helpers
 
 ## BUILD SYSTEMS
 
-| Repo | Build System | Language | Command |
-|------|-------------|----------|---------|
-| core | CMake | C++ | `cmake -B build && cmake --build build` |
-| web-apps | Makefile + Grunt | JS/HTML | `make` (requires terser, html-minifier) |
-| desktop-sdk | CMake | C++ | `cmake -B build && cmake --build build` |
-| desktop-apps | CMake | C++/resources | `cmake -B build && cmake --build build` |
-| DocumentServer | Shell scripts | Bash | `make` (install deps) |
-| server | npm | JS | `npm install && npm run lint:check` |
-| document-server-integration | Makefile | PHP/JS | `make` |
-| docker-ci | Docker | Dockerfile | `docker build -f docker-ci/ds-base/Dockerfile .` |
-
-## LICENSES
-
-| License | Repos |
-|---------|-------|
-| AGPL-3.0 | core, desktop-apps, document-server-integration, document-templates, plugin-aiautofill, sdkjs-forms, server, web-apps |
-| Apache-2.0 | DesktopEditors, document-formats, document-server-package, integrations/nextcloud |
-| Proprietary | desktop-sdk (freeware) |
-| Fonts | core-fonts (various per-font) |
+| Component | Build | Command |
+|-----------|-------|---------|
+| Rust core | Cargo | `cargo build --workspace` |
+| Rust tests | Cargo | `cargo test --workspace --lib -- --test-threads=1` |
+| Rust lint | Clippy | `cargo clippy --workspace` |
+| Tauri desktop | Cargo + npm | `cd desktop/tauri-poc && cargo tauri dev` |
+| Web frontend | pnpm | `pnpm install && pnpm dev` |
+| CI | GitHub Actions/Forgejo | `.github/workflows/ci.yml` |
 
 ## CODE STYLE
 
-- **server/**: ESLint 9 + Prettier (`.editorconfig`, `.prettierrc` present)
-- **integrations/nextcloud/**: ESLint (`.eslintrc.js` present)
-- **C++ repos**: No standardized clang-format — follow per-repo existing style
-- **PHP repos**: No linter config — follow PSR-12 conventions
-
-## ANTI-PATTERNS
-
-- NEVER push to `main` without testing format conversion via `core/X2tConverter`
-- NEVER modify `web-apps/deploy/` or `web-apps/build/` without running `make` to verify
-- NEVER add new npm dependencies to `server/` without updating `package-lock.json`
-- sdkjs repo is EMPTY (submodule not initialized) — do not attempt to use it directly
-
-## NOTES
-
-- All repos are shallow clones (depth=1). Run `git fetch --unshallow` for full history.
-- The `nul` file at root is a Windows artifact — safe to delete.
-- DesktopEditors contains only CI config (YAML + build script) — actual code is in desktop-apps + desktop-sdk.
-- document-templates contains binary Office files — not code-editable.
-- Docker CI uses Ubuntu 24.04, Node.js 20, JDK 21, Grunt CLI, @yao-pkg/pkg.
+- **Rust**: `cargo fmt` + `cargo clippy` — follow existing patterns
+- **TypeScript**: ESLint 9 + Prettier
+- **Commits**: Conventional commits (feat:, fix:, docs:, test:, refactor:)
+- Tests required for all code changes
 
 ## WINDOWS DEVELOPMENT
 
 ### WSL Workaround for dlltool Issue
 
-Windows builds may fail with `error: error calling dlltool 'dlltool.exe': program not found` when compiling windows-sys crates.
+Windows builds may fail with `error: calling dlltool 'dlltool.exe': program not found` when compiling windows-sys crates.
 
-**Solution:** Use WSL (Windows Subsystem for Linux) to run Rust tests and builds:
+**Solution:** Use WSL to run Rust tests and builds:
 
 ```bash
-# Run tests via WSL
+# Run specific crate tests via WSL
 wsl bash -c "cd /mnt/c/Users/Tobias/git/World-Office && ~/.cargo/bin/cargo test -p wo-html -p wo-rtf"
 
 # Run full workspace tests via WSL
 wsl bash -c "cd /mnt/c/Users/Tobias/git/World-Office && ~/.cargo/bin/cargo test --workspace"
-
-# Build via WSL
-wsl bash -c "cd /mnt/c/Users/Tobias/git/World-Office && ~/.cargo/bin/cargo build --release"
 ```
-
-This bypasses Windows-specific toolchain issues while working on the same codebase.
 
 ### Known Issue: wo-pdf ICE
 
-The wo-pdf crate triggers a Rust compiler ICE (Internal Compiler Error) in rustc 1.94.1:
+The wo-pdf crate triggers a Rust compiler ICE (Internal Compiler Error) in rustc 1.94.1. Skip wo-pdf tests until fixed upstream.
 
-```
-thread 'rustc' panicked at /rustc-dev/.../library/alloc/src/vec/mod.rs:2873:36:
-slice index starts at 12 but ends at 10
-```
+## ANTI-PATTERNS
 
-**Workaround:** Skip wo-pdf tests until the ICE is fixed upstream:
-
-```bash
-# Test all format crates except wo-pdf
-wsl bash -c "cd /mnt/c/Users/Tobias/git/World-Office && ~/.cargo/bin/cargo test -p wo-html -p wo-rtf -p wo-fb2 -p wo-epub -p wo-hwp -p wo-djvu -p wo-xps -p wo-ofd"
-```
+- NEVER push to main without running `cargo test` on changed crates
+- NEVER add new Rust dependencies without checking they compile on Windows (wasm-bindgen crates can be tricky)
+- NEVER modify web-apps/deploy/ without running `pnpm build`
+- The WOPI server (wo-wopi) requires access tokens — don't expose endpoints without auth
+- WASM crates (wo-x2t-wasm, wo-renderer-wasm) cannot be tested with standard `cargo test` — they need wasm-pack or a browser runtime

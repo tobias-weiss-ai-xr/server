@@ -19,80 +19,83 @@
 
 ---
 
-## Implementation Status
+## What Is This
 
-Based on the [full-rewrite-modernization plan](.sisyphus/plans/full-rewrite-modernization.md) (180 weeks, 11 phases).
+World-Office is a full rewrite of a C++ document editing suite into Rust + TypeScript. The repository contains **both** the legacy C++ codebase (reference implementation) and the new Rust crates (the rewrite target). Over time, the C++ code will be removed as Rust reaches parity.
 
-**Current phase: 10 of 11 completed (~90% by phase count).**
+## Rewrite Status
 
-| Phase | Description | Weeks | Status |
-|-------|-------------|-------|--------|
-| Phase 0 | Foundation (monorepo, tooling, discovery) | 1-8 | Partial |
-| Phase 1 | Server to microservices (Axum, Rust) | 9-28 | Partial |
-| Phase 2 | Core: Small format parsers (8 crates) | 9-14 | Done |
-| Phase 3 | Core: Medium format parsers (ODF, DOCX renderer) | 15-30 | Done |
-| Phase 4 | Web UI rewrite (React 19 migration) | 25-52 | Done |
-| Phase 5 | Core: Large format parsers (OOXML, MSBinary, etc.) | 31-60 | Done |
-| Phase 6 | Core: Rendering engine (canvas, fonts, raster) | 61-84 | Done |
-| Phase 7 | Desktop Tauri shell (menus, tray, native bridge) | 69-88 | Done |
-| Phase 8 | WASM + Offline (browser format conversion, rendering) | 89-108 | Done |
-| Phase 9 | Integrations (WOPI, WebDAV) | 109-132 | Done |
-| Phase 10 | Launch preparation (migration guide, beta, v1.0) | 133-180 | Not started |
+**Plan:** [full-rewrite-modernization.md](.sisyphus/plans/full-rewrite-modernization.md) · **10 of 11 phases complete (~90%).**
+
+### ✅ Completed — Rust Replacements
+
+| Legacy C++ | Rust Crate | Status | C++ → Rust |
+|------------|-----------|--------|------------|
+| `TxtFile/` (16 files) | `wo-txt` | ✅ Done | 16 → 1 |
+| `Fb2File/` (7 files) | `wo-fb2` | ✅ Done | 7 → 1 |
+| `HtmlFile/` (3 files) | `wo-html` | ✅ Done | 3 → 1 |
+| `RtfFile/` (168 files) | `wo-rtf` | ✅ Done | 168 → 1 |
+| `EpubFile/` (86 files) | `wo-epub` | ✅ Done | 86 → 1 |
+| `HwpFile/` (165 files) | `wo-hwp` | ✅ Done | 165 → 1 |
+| `DjVuFile/` (117 files) | `wo-djvu` | ✅ Done | 117 → 1 |
+| `XpsFile/` (19 files) | `wo-xps` | ✅ Done | 19 → 1 |
+| `OFDFile/` (58 files) | `wo-ofd` | ✅ Done | 58 → 1 |
+| `PdfFile/` (205 files) | `wo-pdf` | ✅ Done | 205 → 1 |
+| `OdfFile/` (841 files) | `wo-odf` | ✅ Done | 841 → 1 |
+| `OOXML/` (3,387 files) | `wo-ooxml` | ✅ Done | 3,387 → 1 |
+| `MsBinaryFile/` (2,954 files) | `wo-msbinary` | ✅ Done | 2,954 → 1 |
+| `UnicodeConverter/` (937 files) | `wo-unicode` | ✅ Done | 937 → 1 |
+| `OfficeUtils/` (44 files) | `wo-office-utils` | ✅ Done | 44 → 1 |
+| `DocxRenderer/` (46 files) | `wo-docx-renderer` | ✅ Done | 46 → 1 |
+| `X2tConverter/` | `wo-x2t` + `wo-wopi` | ✅ Done | — |
+| — | `wo-renderer` | ✅ New | Canvas engine |
+| — | `wo-fonts` | ✅ New | Font system |
+| — | `wo-raster` | ✅ New | Image I/O |
+| — | `wo-x2t-wasm` | ✅ New | WASM |
+| — | `wo-renderer-wasm` | ✅ New | WASM |
+| — | `wo-webdav` | ✅ New | WebDAV server |
+| — | Tauri desktop shell | ✅ New | 10 modules |
+
+**Total: 9,083 C++ files → 25 Rust crates (470+ tests).**
+
+### 🚧 Still Uses Legacy C++ — Needs Porting
+
+| Legacy C++ | Files | Description | Priority |
+|------------|-------|-------------|----------|
+| `DesktopEditor/` | ~5,000 | **Canvas engine, font engine, document rendering, graphics, XML, rasterizer, 3rd-party libs** — the largest remaining component | **Critical** |
+| `Common/` | ~2,000 | Shared utility code, config system, plugin manager, networking, crypto primitives | High |
+| `Common/3dParty/` | ~3,000 | Vendored C++ dependencies (boost, openssl, freetype, harfbuzz, icu, etc.) | Medium (replace with Rust crates) |
+| `HtmlFile2/` | 22 | Second HTML parser (used for specific import paths) | Low |
+| `OfficeCryptReader/` | 7 | Document encryption/decryption | Medium |
+
+**Total remaining: ~10,000+ C++ files**, primarily the DesktopEditor canvas/rendering engine.
+
+### 📋 Not Started
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| Phase 10 | Launch preparation (migration guide for C++ removal, beta, v1.0) | Not started |
 
 ## Architecture
 
 ```
-core/crates/           Rust workspace (25 crates)
-  wo-common            Shared types, errors, test harness
-  wo-txt               Plain text parser
-  wo-fb2               FictionBook 2.0 parser
-  wo-html              HTML import/export
-  wo-rtf               Rich Text Format parser + serializer
-  wo-epub              EPUB parser (ZIP-based)
-  wo-hwp               Korean HWP format parser
-  wo-djvu              DjVu document parser
-  wo-xps               XPS document parser
-  wo-ofd               Chinese OFD document parser
-  wo-odf               OpenDocument format parser
-  wo-pdf               PDF reading/writing
-  wo-unicode           Encoding conversion (ICU wrapper)
-  wo-msbinary          OLE compound document parser
-  wo-ooxml             OOXML (DOCX/XLSX/PPTX) parser
-  wo-x2t               Format conversion orchestrator
-  wo-docx-renderer     DOCX to PDF rendering pipeline
-  wo-renderer          Canvas rendering engine
-  wo-fonts             Font loading, caching, metrics
-  wo-raster            Image encode/decode (PNG, BMP)
-  wo-office-utils      ZIP/archive manipulation
-  wo-x2t-wasm          Format conversion compiled to WASM
-  wo-renderer-wasm      Canvas rendering compiled to WASM
-  wo-wopi              WOPI protocol server (axum)
-  wo-webdav            WebDAV server (axum)
-
-desktop/tauri-poc/     Tauri 2.0 desktop shell
-  src-tauri/src/       10 Rust modules (commands, menus, tray, fs, print, updater, keychain, window)
+core/
+├── crates/              ← Rust workspace (25 crates, the rewrite)
+│   ├── wo-*             Format parsers, renderer, fonts, WASM, protocols
+│   └── Cargo.toml       Workspace root
+│
+├── DesktopEditor/       ← Legacy C++ (canvas engine, fonts, rendering)
+├── X2tConverter/       ← Legacy C++ (format conversion orchestrator)
+├── Common/              ← Legacy C++ (shared utilities, plugins, networking)
+│   └── 3dParty/         ← Vendored C++ deps (boost, freetype, icu, etc.)
+├── {TxtFile,...}/       ← Legacy C++ format parsers (being replaced)
+│
+├── desktop/tauri-poc/   ← Rust Tauri 2.0 desktop shell (10 modules)
+├── services/             ← Rust microservices (8 stubs, Phase 1 partial)
+├── integrations/         ← OpenCloud, Nextcloud, document-server-integration
+├── apps/                 ← React 19 web applications
+└── packages/             ← Shared TypeScript packages
 ```
-
-## Integrations
-
-| Integration | Path | Description |
-|-------------|------|-------------|
-| OpenCloud | `integrations/opencloud/` | Docker-based document server deployment for OpenCloud |
-| Nextcloud | `integrations/nextcloud/` | PHP/JS Nextcloud app (OCA\WorldOffice) |
-| Document Server | `integrations/document-server-integration/` | Integration examples in C#, Go, Java, Node.js, PHP, Python, Ruby |
-
-## Services
-
-| Service | Path | Description |
-|---------|------|-------------|
-| API Gateway | `services/api-gateway/` | Request routing |
-| Co-authoring | `services/coauthoring-service/` | Real-time collaboration |
-| Conversion | `services/conversion-service/` | Format conversion |
-| Identity | `services/identity-service/` | Authentication |
-| Session | `services/session-service/` | Session management |
-| Storage | `services/storage-service/` | File storage |
-| Server | `services/server/` | Main server |
-| Admin | `services/admin-panel/` | Admin UI |
 
 ## Test Coverage
 
@@ -103,31 +106,52 @@ Format parsers:      287 tests (16 crates)
 Rendering engine:     88 tests (wo-renderer)
 Font system:          36 tests (wo-fonts)
 Raster imaging:       22 tests (wo-raster)
+Rendering pipeline:   25 tests (wo-docx-renderer)
 
 Run:  cargo test --workspace --lib -- --test-threads=1
 ```
 
+## Integrations
+
+| Integration | Path | Description |
+|-------------|------|-------------|
+| OpenCloud | `integrations/opencloud/` | Docker-based document server deployment |
+| Nextcloud | `integrations/nextcloud/` | PHP/JS Nextcloud app (OCA\WorldOffice) |
+| Document Server | `integrations/document-server-integration/` | Examples in C#, Go, Java Spring, Node.js, PHP Laravel, Python, Ruby |
+
+## Services
+
+| Service | Path | Status |
+|---------|------|--------|
+| API Gateway | `services/api-gateway/` | Stub |
+| Co-authoring | `services/coauthoring-service/` | Stub |
+| Conversion | `services/conversion-service/` | Stub |
+| Identity | `services/identity-service/` | Stub |
+| Session | `services/session-service/` | Stub |
+| Storage | `services/storage-service/` | Stub |
+| Server | `services/server/` | Stub |
+| Admin | `services/admin-panel/` | Stub |
+
 ## Quick Start
 
 ```sh
-# Clone
 git clone https://codeberg.org/World-Office/server.git
 cd server
 
-# Build Rust core
+# Build Rust core (the rewrite)
 cargo build --workspace
 
-# Run tests
-cargo test --workspace --lib
+# Run Rust tests
+cargo test --workspace --lib -- --test-threads=1
 
-# Frontend (not yet migrated to workspace)
+# Frontend (React 19)
 pnpm install
 pnpm dev
 ```
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Uses conventional commits, requires tests for all changes.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Uses conventional commits, requires tests for all code changes.
 
 ## Security
 

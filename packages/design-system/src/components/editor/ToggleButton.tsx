@@ -1,10 +1,22 @@
-import { forwardRef, type ButtonHTMLAttributes, type CSSProperties } from "react"
+import { type ButtonHTMLAttributes, type CSSProperties, forwardRef } from "react"
 import { colors, radii, spacing, typography } from "../../tokens"
 
 const sizeStyles: Record<string, CSSProperties> = {
-  sm: { padding: `${spacing[0.5]} ${spacing[1]}`, fontSize: typography.fontSize.xs, gap: spacing[0.5] },
-  md: { padding: `${spacing[0.5]} ${spacing[2]}`, fontSize: typography.fontSize.sm, gap: spacing[1] },
-  lg: { padding: `${spacing[1]} ${spacing[3]}`, fontSize: typography.fontSize.base, gap: spacing[1.5] },
+  sm: {
+    padding: `${spacing[0.5]} ${spacing[1]}`,
+    fontSize: typography.fontSize.xs,
+    gap: spacing[0.5],
+  },
+  md: {
+    padding: `${spacing[0.5]} ${spacing[2]}`,
+    fontSize: typography.fontSize.sm,
+    gap: spacing[1],
+  },
+  lg: {
+    padding: `${spacing[1]} ${spacing[3]}`,
+    fontSize: typography.fontSize.base,
+    gap: spacing[1.5],
+  },
 }
 
 interface ToggleButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

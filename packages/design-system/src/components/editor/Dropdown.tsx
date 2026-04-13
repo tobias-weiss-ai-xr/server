@@ -1,11 +1,4 @@
-import {
-  forwardRef,
-  type ReactNode,
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-} from "react"
+import { type CSSProperties, type ReactNode, forwardRef, useEffect, useRef, useState } from "react"
 import { colors, radii, shadows, spacing } from "../../tokens"
 
 interface DropdownProps {
@@ -41,7 +34,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     return (
       <div
         ref={(node) => {
-          (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node
+          ;(containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node
           if (typeof ref === "function") ref(node)
           else if (ref) ref.current = node
         }}

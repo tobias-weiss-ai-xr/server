@@ -1,6 +1,6 @@
 // EditorStore — root editor state (type, permissions, loading, error)
 
-import { observable, action } from "mobx"
+import { action, observable } from "mobx"
 
 export type EditorType = "document" | "spreadsheet" | "presentation" | "pdf" | "visio"
 

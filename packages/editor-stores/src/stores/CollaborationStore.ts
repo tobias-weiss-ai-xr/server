@@ -1,6 +1,6 @@
 // CollaborationStore — users, comments, chat, co-editing state
 
-import { observable, action } from "mobx"
+import { action, observable } from "mobx"
 
 export interface CollabUser {
   id: string

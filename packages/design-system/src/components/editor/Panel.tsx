@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes, type ReactNode } from "react"
+import { type HTMLAttributes, type ReactNode, forwardRef } from "react"
 import { colors, spacing, typography } from "../../tokens"
 
 interface PanelProps extends HTMLAttributes<HTMLDivElement> {

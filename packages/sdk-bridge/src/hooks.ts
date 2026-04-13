@@ -112,5 +112,11 @@ export function useSdk() {
         canCopyCut,
         canAddComment,
       }
-    : { ready: false as const, api: null, getSelectedElements: () => [], canCopyCut: () => false, canAddComment: () => false }
+    : {
+        ready: false as const,
+        api: null,
+        getSelectedElements: () => [],
+        canCopyCut: () => false,
+        canAddComment: () => false,
+      }
 }

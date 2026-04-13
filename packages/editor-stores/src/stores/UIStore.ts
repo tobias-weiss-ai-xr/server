@@ -1,6 +1,6 @@
 // UIStore — panel visibility, active tabs, toolbar state, modals
 
-import { observable, action } from "mobx"
+import { action, observable } from "mobx"
 
 export type PanelId = "left" | "right" | "search"
 export type LeftPanelTab = "navigation" | "pageThumbnails" | "comments"

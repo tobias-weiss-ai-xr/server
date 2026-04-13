@@ -14,14 +14,11 @@ export class SdkEventEmitter {
   /**
    * Register a callback for an SDK event
    */
-  on<E extends SdkCallbackEvent>(
-    event: E,
-    handler: CallbackHandler<E>,
-  ): () => void {
+  on<E extends SdkCallbackEvent>(event: E, handler: CallbackHandler<E>): () => void {
     if (!this.handlers.has(event)) {
       this.handlers.set(event, new Set())
     }
-    this.handlers.get(event)!.add(handler as (...args: unknown[]) => void)
+    this.handlers.get(event)?.add(handler as (...args: unknown[]) => void)
 
     // Return unsubscribe function
     return () => {
@@ -32,17 +29,17 @@ export class SdkEventEmitter {
   /**
    * Emit an event (called internally by the bridge)
    */
-  emit<E extends SdkCallbackEvent>(
-    event: E,
-    ...args: Parameters<CallbackHandler<E>>
-  ): void {
-    this.handlers.get(event)?.forEach((handler) => {
-      try {
-        ;(handler as (...a: unknown[]) => void)(...args as unknown[])
-      } catch (err) {
-        console.error(`[sdk-bridge] Error in ${event} handler:`, err)
+  emit<E extends SdkCallbackEvent>(event: E, ...args: Parameters<CallbackHandler<E>>): void {
+    const handlers = this.handlers.get(event)
+    if (handlers) {
+      for (const handler of handlers) {
+        try {
+          ;(handler as (...a: unknown[]) => void)(...(args as unknown[]))
+        } catch (err) {
+          console.error(`[sdk-bridge] Error in ${event} handler:`, err)
+        }
       }
-    })
+    }
   }
 
   /**

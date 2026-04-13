@@ -1,20 +1,39 @@
-import React from "react";
-import { colors, radii, shadows, spacing } from "../tokens";
+import type React from "react"
+import { colors, radii, shadows, spacing } from "../tokens"
 
 interface DialogProps {
-  open: boolean;
-  onClose: () => void;
-  title?: string;
-  children: React.ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
+  open: boolean
+  onClose: () => void
+  title?: string
+  children: React.ReactNode
+  className?: string
+  style?: React.CSSProperties
 }
 
 export function Dialog({ open, onClose, title, children, className, style }: DialogProps) {
-  if (!open) return null;
+  if (!open) return null
   return (
-    <div style={{ position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50 }}>
-      <div style={{ position: "absolute", inset: 0, backgroundColor: "rgba(0,0,0,0.5)" }} onClick={onClose} />
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 50,
+      }}
+    >
+      <div
+        style={{ position: "absolute", inset: 0, backgroundColor: "rgba(0,0,0,0.5)" }}
+        onClick={onClose}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            onClose()
+          }
+        }}
+        tabIndex={0}
+        role="button"
+      />
       <div
         className={className}
         style={{
@@ -29,13 +48,33 @@ export function Dialog({ open, onClose, title, children, className, style }: Dia
         }}
       >
         {title && (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: `${spacing[3]} ${spacing[4]}`, borderBottom: `1px solid ${colors.semantic.border}` }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: `${spacing[3]} ${spacing[4]}`,
+              borderBottom: `1px solid ${colors.semantic.border}`,
+            }}
+          >
             <h2 style={{ margin: 0, fontSize: "1.125rem", fontWeight: 600 }}>{title}</h2>
-            <button onClick={onClose} style={{ border: "none", background: "none", fontSize: "1.25rem", cursor: "pointer", color: colors.neutral[500] }}>x</button>
+            <button
+              onClick={onClose}
+              type="button"
+              style={{
+                border: "none",
+                background: "none",
+                fontSize: "1.25rem",
+                cursor: "pointer",
+                color: colors.neutral[500],
+              }}
+            >
+              x
+            </button>
           </div>
         )}
         <div style={{ padding: `${spacing[4]}` }}>{children}</div>
       </div>
     </div>
-  );
+  )
 }

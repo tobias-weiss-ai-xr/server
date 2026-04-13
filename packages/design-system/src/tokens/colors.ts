@@ -50,4 +50,4 @@ export const colors = {
     DEFAULT: "#00d4ff",
     foreground: "#0a0a0a",
   },
-} as const;
+} as const

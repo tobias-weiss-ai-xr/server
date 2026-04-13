@@ -65,10 +65,7 @@ export interface SdkCallbackMap {
 
 /** Core methods exposed by the SDK editor API */
 export interface SdkEditorApi {
-  asc_registerCallback<T extends SdkCallbackEvent>(
-    event: T,
-    handler: SdkCallbackMap[T],
-  ): void
+  asc_registerCallback<T extends SdkCallbackEvent>(event: T, handler: SdkCallbackMap[T]): void
   asc_unregisterCallback(event: SdkCallbackEvent): void
   asc_setParagraphStylesSizes(width: number, height: number): void
   getSelectedElements(): SdkSelectionObject[]

@@ -22,4 +22,4 @@ export const spacing = {
   48: "384px",
   64: "512px",
   96: "768px",
-} as const;
+} as const

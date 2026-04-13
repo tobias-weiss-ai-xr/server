@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes, type ReactNode } from "react"
+import { type HTMLAttributes, type ReactNode, forwardRef } from "react"
 import { colors, radii, spacing, typography } from "../../tokens"
 
 interface MenuItemProps extends HTMLAttributes<HTMLDivElement> {
@@ -30,9 +30,7 @@ export const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
           gap: spacing[1.5],
           padding: `${spacing[0.5]} ${spacing[2]}`,
           fontSize: typography.fontSize.sm,
-          color: disabled
-            ? colors.neutral[400]
-            : colors.semantic.foreground,
+          color: disabled ? colors.neutral[400] : colors.semantic.foreground,
           backgroundColor: active ? colors.neutral[100] : "transparent",
           cursor: disabled ? "default" : "pointer",
           borderRadius: radii.sm,

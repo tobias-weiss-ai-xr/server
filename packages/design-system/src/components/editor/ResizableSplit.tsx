@@ -1,11 +1,4 @@
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-} from "react"
+import { type CSSProperties, forwardRef, useCallback, useEffect, useRef, useState } from "react"
 import { colors, spacing } from "../../tokens"
 
 interface ResizableSplitProps {
@@ -19,14 +12,7 @@ interface ResizableSplitProps {
 
 export const ResizableSplit = forwardRef<HTMLDivElement, ResizableSplitProps>(
   (
-    {
-      children,
-      direction = "horizontal",
-      initialSize = 250,
-      minSize = 100,
-      maxSize = 600,
-      style,
-    },
+    { children, direction = "horizontal", initialSize = 250, minSize = 100, maxSize = 600, style },
     ref,
   ) => {
     const [size, setSize] = useState(initialSize)
@@ -35,8 +21,7 @@ export const ResizableSplit = forwardRef<HTMLDivElement, ResizableSplitProps>(
 
     const handlePointerDown = useCallback(() => {
       dragging.current = true
-      document.body.style.cursor =
-        direction === "horizontal" ? "col-resize" : "row-resize"
+      document.body.style.cursor = direction === "horizontal" ? "col-resize" : "row-resize"
       document.body.style.userSelect = "none"
     }, [direction])
 
@@ -91,7 +76,7 @@ export const ResizableSplit = forwardRef<HTMLDivElement, ResizableSplitProps>(
     return (
       <div
         ref={(node) => {
-          (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node
+          ;(containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node
           if (typeof ref === "function") ref(node)
           else if (ref) ref.current = node
         }}

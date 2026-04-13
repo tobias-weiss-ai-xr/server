@@ -1,13 +1,13 @@
-import type { CSSProperties } from "react";
-import { colors, radii } from "../tokens";
+import type { CSSProperties } from "react"
+import { colors, radii } from "../tokens"
 
 interface AvatarProps {
-  src?: string;
-  alt?: string;
-  fallback?: string;
-  size?: number;
-  className?: string;
-  style?: CSSProperties;
+  src?: string
+  alt?: string
+  fallback?: string
+  size?: number
+  className?: string
+  style?: CSSProperties
 }
 
 export function Avatar({ src, alt = "", fallback, size = 40, className, style }: AvatarProps) {
@@ -18,7 +18,7 @@ export function Avatar({ src, alt = "", fallback, size = 40, className, style }:
         .join("")
         .toUpperCase()
         .slice(0, 2)
-    : "?";
+    : "?"
 
   return (
     <div
@@ -38,7 +38,11 @@ export function Avatar({ src, alt = "", fallback, size = 40, className, style }:
         ...style,
       }}
     >
-      {src ? <img src={src} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : initials}
+      {src ? (
+        <img src={src} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      ) : (
+        initials
+      )}
     </div>
-  );
+  )
 }

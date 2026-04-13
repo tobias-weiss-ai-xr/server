@@ -1,6 +1,6 @@
 // DocumentStore — document state (page, zoom, title, modifications)
 
-import { observable, action } from "mobx"
+import { action, observable } from "mobx"
 
 export class DocumentStore {
   @observable title = "Untitled"

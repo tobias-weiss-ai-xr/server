@@ -1,5 +1,5 @@
-import React from "react";
-import { colors, radii, spacing } from "../tokens";
+import type React from "react"
+import { colors, radii, spacing } from "../tokens"
 
 const variantStyles: Record<string, React.CSSProperties> = {
   default: { backgroundColor: colors.semantic.muted, color: colors.semantic.foreground },
@@ -7,13 +7,13 @@ const variantStyles: Record<string, React.CSSProperties> = {
   warning: { backgroundColor: colors.warning.DEFAULT, color: colors.warning.foreground },
   error: { backgroundColor: colors.error.DEFAULT, color: colors.error.foreground },
   info: { backgroundColor: colors.accent.DEFAULT, color: colors.accent.foreground },
-};
+}
 
 interface BadgeProps {
-  variant?: keyof typeof variantStyles;
-  children: React.ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
+  variant?: keyof typeof variantStyles
+  children: React.ReactNode
+  className?: string
+  style?: React.CSSProperties
 }
 
 export function Badge({ variant = "default", children, className, style }: BadgeProps) {
@@ -33,5 +33,5 @@ export function Badge({ variant = "default", children, className, style }: Badge
     >
       {children}
     </span>
-  );
+  )
 }

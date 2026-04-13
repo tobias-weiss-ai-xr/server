@@ -1,5 +1,6 @@
-import React, { forwardRef, type ButtonHTMLAttributes } from "react";
-import { colors, radii, spacing } from "../tokens";
+import type React from "react"
+import { type ButtonHTMLAttributes, forwardRef } from "react"
+import { colors, radii, spacing } from "../tokens"
 
 const variantStyles: Record<string, React.CSSProperties> = {
   primary: {
@@ -22,20 +23,20 @@ const variantStyles: Record<string, React.CSSProperties> = {
     color: colors.error.foreground,
     border: "none",
   },
-};
+}
 
 const sizeStyles: Record<string, React.CSSProperties> = {
   sm: { padding: `${spacing[0.5]} ${spacing[2]}`, fontSize: "0.875rem" },
   md: { padding: `${spacing[1]} ${spacing[3]}`, fontSize: "1rem" },
   lg: { padding: `${spacing[2]} ${spacing[4]}`, fontSize: "1.125rem" },
-};
+}
 
-type ButtonVariant = keyof typeof variantStyles;
-type ButtonSize = keyof typeof sizeStyles;
+type ButtonVariant = keyof typeof variantStyles
+type ButtonSize = keyof typeof sizeStyles
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
+  variant?: ButtonVariant
+  size?: ButtonSize
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -58,7 +59,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         }}
         {...props}
       />
-    );
-  }
-);
-Button.displayName = "Button";
+    )
+  },
+)
+Button.displayName = "Button"

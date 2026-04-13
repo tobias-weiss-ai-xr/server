@@ -1,4 +1,4 @@
-import { forwardRef, type ButtonHTMLAttributes, type CSSProperties } from "react"
+import { type ButtonHTMLAttributes, type CSSProperties, forwardRef } from "react"
 import { colors, radii, typography } from "../../tokens"
 
 const sizeStyles: Record<string, CSSProperties> = {

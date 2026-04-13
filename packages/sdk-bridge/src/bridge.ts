@@ -1,6 +1,7 @@
 // Core SDK bridge — wraps the global Common.EditorApi singleton
 // Provides type-safe access to the legacy SDK canvas API
 
+import { SdkEventEmitter } from "./events"
 import type {
   AscGlobalNamespace,
   CommonEditorApiStatic,
@@ -8,7 +9,6 @@ import type {
   SdkEditorApi,
   SdkSelectionObject,
 } from "./types"
-import { SdkEventEmitter } from "./events"
 
 /**
  * SDK Bridge provides type-safe access to the World Office canvas SDK.
@@ -153,7 +153,7 @@ export class SdkBridge {
   /** Check if a selection object is locked */
   isLocked(obj: SdkSelectionObject): boolean {
     const val = obj.get_ObjectValue()
-    return val !== null && val.get_Locked()
+    return val?.get_Locked()
   }
 
   /** Get chart properties from a selection object (if chart) */

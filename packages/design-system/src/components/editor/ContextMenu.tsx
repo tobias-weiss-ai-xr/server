@@ -1,10 +1,4 @@
-import {
-  forwardRef,
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-} from "react"
+import { type CSSProperties, forwardRef, useEffect, useRef, useState } from "react"
 import { colors, radii, shadows, spacing, typography } from "../../tokens"
 
 interface ContextMenuItem {
@@ -59,7 +53,7 @@ export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(
     return (
       <div
         ref={(node) => {
-          (menuRef as React.MutableRefObject<HTMLDivElement | null>).current = node
+          ;(menuRef as React.MutableRefObject<HTMLDivElement | null>).current = node
           if (typeof ref === "function") ref(node)
           else if (ref) ref.current = node
         }}
@@ -82,8 +76,10 @@ export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(
           if (item.separator) {
             return (
               <div
+                // biome-ignore lint/suspicious/noArrayIndexKey: separators have no unique identifier
                 key={`sep-${i}`}
                 role="separator"
+                tabIndex={-1}
                 style={{
                   height: 1,
                   backgroundColor: colors.semantic.border,
@@ -94,7 +90,7 @@ export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(
           }
           return (
             <div
-              key={`item-${i}`}
+              key={`menuitem-${i}-${item.label}`}
               role="menuitem"
               aria-disabled={item.disabled}
               tabIndex={item.disabled ? -1 : 0}
@@ -121,7 +117,13 @@ export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(
             >
               <span>{item.label}</span>
               {item.shortcut && (
-                <span style={{ color: colors.neutral[500], fontSize: typography.fontSize.xs, marginLeft: spacing[6] }}>
+                <span
+                  style={{
+                    color: colors.neutral[500],
+                    fontSize: typography.fontSize.xs,
+                    marginLeft: spacing[6],
+                  }}
+                >
                   {item.shortcut}
                 </span>
               )}

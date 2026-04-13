@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from "react"
+import { type HTMLAttributes, forwardRef } from "react"
 import { colors, spacing } from "../../tokens"
 
 type SeparatorOrientation = "vertical" | "horizontal"
@@ -15,6 +15,7 @@ export const Separator = forwardRef<HTMLDivElement, SeparatorProps>(
         ref={ref}
         role="separator"
         aria-orientation={orientation}
+        tabIndex={-1}
         style={{
           backgroundColor: colors.semantic.border,
           flexShrink: 0,

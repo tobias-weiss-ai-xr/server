@@ -1,5 +1,6 @@
-import React, { createContext, useContext, type ReactNode } from "react";
-import { colors, typography, radii, shadows } from "../tokens";
+import type React from "react"
+import { type ReactNode, createContext, useContext } from "react"
+import { colors, radii, shadows, typography } from "../tokens"
 
 const themeVars = {
   "--wo-color-background": colors.semantic.background,
@@ -22,28 +23,26 @@ const themeVars = {
   "--wo-shadow-sm": shadows.sm,
   "--wo-shadow-md": shadows.md,
   "--wo-shadow-lg": shadows.lg,
-} as const;
+} as const
 
 interface ThemeContextValue {
-  vars: typeof themeVars;
+  vars: typeof themeVars
 }
 
-const ThemeContext = createContext<ThemeContextValue>({ vars: themeVars });
+const ThemeContext = createContext<ThemeContextValue>({ vars: themeVars })
 
 export function useTheme() {
-  return useContext(ThemeContext);
+  return useContext(ThemeContext)
 }
 
 interface ThemeProviderProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   return (
     <ThemeContext.Provider value={{ vars: themeVars }}>
-      <div style={themeVars as React.CSSProperties}>
-        {children}
-      </div>
+      <div style={themeVars as React.CSSProperties}>{children}</div>
     </ThemeContext.Provider>
-  );
+  )
 }

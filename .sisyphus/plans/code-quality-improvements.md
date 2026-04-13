@@ -12,7 +12,7 @@
 
 ## word-office-nextcloud
 
-### Task 1: Fix preg_replace missing delimiters in DocumentService.php
+### Task 1: Fix preg_replace missing delimiters in DocumentService.php — N/A (separate repo)
 
 **Files:**
 - Modify: `word-office-nextcloud/lib/DocumentService.php:62`
@@ -44,7 +44,7 @@ breaking revision ID generation for document conversions."
 
 ---
 
-### Task 2: Fix array_map syntax error in EditorController.php
+### Task 2: Fix array_map syntax error in EditorController.php — N/A (separate repo)
 
 **Files:**
 - Modify: `word-office-nextcloud/lib/Controller/EditorController.php:1532`
@@ -77,7 +77,7 @@ callable syntax. Use 'urlencode' string callback instead."
 
 ## document-server-integration
 
-### Task 3: Fix Node.js prototype pollution and CORS in app.js
+### Task 3: Fix Node.js prototype pollution and CORS in app.js ✅ DONE
 
 **Files:**
 - Modify: `document-server-integration/web/documentserver-example/nodejs/app.js`
@@ -137,7 +137,7 @@ git commit -m "fix: remove prototype pollution, add CORS config, TLS warning
 
 ---
 
-### Task 4: Fix Java Spring unsafe enum parsing and parseInt in EditorController.java
+### Task 4: Fix Java Spring unsafe enum parsing and parseInt in EditorController.java ✅ DONE
 
 **Files:**
 - Modify: `document-server-integration/web/documentserver-example/java-spring/src/main/java/com/Word Office/integration/controllers/EditorController.java`
@@ -184,7 +184,7 @@ try/catch to prevent 500 errors from invalid input."
 
 ---
 
-### Task 5: Fix Java Spring printStackTrace in ForgottenController.java
+### Task 5: Fix Java Spring printStackTrace in ForgottenController.java ✅ DONE (already fixed)
 
 **Files:**
 - Modify: `document-server-integration/web/documentserver-example/java-spring/src/main/java/com/Word Office/integration/controllers/ForgottenController.java`
@@ -214,7 +214,7 @@ Use proper structured logging instead of stdout stack traces."
 
 ## core
 
-### Task 6: Fix memory leak in CPPTUserInfo::DecryptStream
+### Task 6: Fix memory leak in CPPTUserInfo::DecryptStream ✅ DONE
 
 **Files:**
 - Modify: `core/MsBinaryFile/PptFile/Reader/PPTDocumentInfoOneUser.cpp`
@@ -250,7 +250,7 @@ for automatic memory management."
 
 ---
 
-### Task 7: Push all changes to Codeberg
+### Task 7: Push all changes to Codeberg — SKIPPED (requires SSH keys)
 
 **Step 1: Push word-office-nextcloud**
 ```bash
@@ -277,15 +277,15 @@ git push ssh main
 
 ## Final Verification Wave
 
-### F1: Verify word-office-nextcloud PHP syntax
+### F1: Verify word-office-nextcloud PHP syntax ✅ N/A (separate repo)
 Run `php -l lib/DocumentService.php lib/Controller/EditorController.php` to confirm no syntax errors.
 
-### F2: Verify document-server-integration changes
+### F2: Verify document-server-integration changes ✅ DONE
 - Node.js: `node -c app.js` to check syntax
 - Java: `javac -d /tmp EditorController.java ForgottenController.java` (or verify via IDE)
 
-### F3: Verify core C++ compiles
+### F3: Verify core C++ compiles ✅ DONE
 Run `cmake --build build` in core directory to confirm no compilation errors.
 
-### F4: Confirm all repos pushed
+### F4: Confirm all repos pushed ✅ SKIPPED (requires SSH)
 Verify all three repos have commits pushed to Codeberg via `git log --oneline -3` on each.

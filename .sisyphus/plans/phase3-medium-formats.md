@@ -65,7 +65,7 @@ cargo test -p wo-txt -p wo-unicode -p wo-fb2 -p wo-html -p wo-epub -p wo-rtf -p 
 
 ## Exit Criteria
 
-- [ ] wo-odf: FormatRoundtrip implemented + tests passing
-- [ ] wo-docx-renderer: FormatRoundtrip implemented + tests passing
-- [ ] All 15 format crates have passing roundtrip tests
-- [ ] Documentation updated with ODF and DOCX rendering patterns
+- [x] wo-odf: FormatRoundtrip implemented + tests passing
+- [x] wo-docx-renderer: FormatRoundtrip implemented + tests passing
+- [x] All 15 format crates have passing roundtrip tests (16/16 have roundtrip.rs; 15/15 pass, wo-pdf excluded due to known rustc ICE)
+- [x] Documentation updated with ODF and DOCX rendering patterns

@@ -140,7 +140,7 @@ Wave FINAL (After ALL tasks — verification):
 
 ## TODOs
 
-- [ ] 1. JWT Validation Tests
+- [x] 1. JWT Validation Tests
 
   **What to do**:
   - Create `tests/e2e/security/jwt.test.js`
@@ -171,7 +171,7 @@ Wave FINAL (After ALL tasks — verification):
   **Commit**: YES
   - Message: `test(security): add JWT validation tests`
 
-- [ ] 2. Input Validation Tests
+- [x] 2. Input Validation Tests
 
   **What to do**:
   - Create `tests/e2e/security/input-validation.test.js`
@@ -202,7 +202,7 @@ Wave FINAL (After ALL tasks — verification):
   **Commit**: YES
   - Message: `test(security): add input validation tests`
 
-- [ ] 3. XSS/CSRF Protection Tests
+- [x] 3. XSS/CSRF Protection Tests
 
   **What to do**:
   - Create `tests/e2e/security/xss-csrf.test.js`
@@ -232,7 +232,7 @@ Wave FINAL (After ALL tasks — verification):
   **Commit**: YES
   - Message: `test(security): add XSS/CSRF protection tests`
 
-- [ ] 4. WOPI CheckFileInfo Tests
+- [x] 4. WOPI CheckFileInfo Tests
 
   **What to do**:
   - Create `tests/e2e/wopi/check-file-info.test.js`
@@ -263,7 +263,7 @@ Wave FINAL (After ALL tasks — verification):
   **Commit**: YES
   - Message: `test(wopi): add CheckFileInfo operation tests`
 
-- [ ] 5. WOPI Lock/Unlock Tests
+- [x] 5. WOPI Lock/Unlock Tests
 
   **What to do**:
   - Create `tests/e2e/wopi/lock-unlock.test.js`
@@ -295,7 +295,7 @@ Wave FINAL (After ALL tasks — verification):
   **Commit**: YES
   - Message: `test(wopi): add Lock/Unlock operation tests`
 
-- [ ] 6. WOPI GetFile/PutFile Tests
+- [x] 6. WOPI GetFile/PutFile Tests
 
   **What to do**:
   - Create `tests/e2e/wopi/file-operations.test.js`
@@ -327,7 +327,7 @@ Wave FINAL (After ALL tasks — verification):
   **Commit**: YES
   - Message: `test(wopi): add GetFile/PutFile operation tests`
 
-- [ ] 7. Playwright Configuration Setup
+- [x] 7. Playwright Configuration Setup
 
   **What to do**:
   - Install Playwright: `npm install -D @playwright/test`
@@ -362,7 +362,7 @@ Wave FINAL (After ALL tasks — verification):
   **Commit**: YES
   - Message: `test(setup): add Playwright configuration`
 
-- [ ] 8. Document Open/Edit/Save Tests (Playwright)
+- [x] 8. Document Open/Edit/Save Tests (Playwright)
 
   **What to do**:
   - Create `tests/e2e/documents/editing.spec.js`
@@ -400,7 +400,7 @@ Wave FINAL (After ALL tasks — verification):
   **Commit**: YES
   - Message: `test(documents): add Playwright document editing tests`
 
-- [ ] 9. Co-editing Tests (Playwright)
+- [x] 9. Co-editing Tests (Playwright)
 
   **What to do**:
   - Create `tests/e2e/documents/coediting.spec.js`
@@ -434,7 +434,7 @@ Wave FINAL (After ALL tasks — verification):
   **Commit**: YES
   - Message: `test(documents): add co-editing tests`
 
-- [ ] 10. Empty/Large File Edge Case Tests
+- [x] 10. Empty/Large File Edge Case Tests
 
   **What to do**:
   - Create `tests/e2e/edge/file-sizes.test.js`
@@ -466,7 +466,7 @@ Wave FINAL (After ALL tasks — verification):
   **Commit**: YES
   - Message: `test(edge): add file size edge case tests`
 
-- [ ] 11. Concurrent Access + Network Failure Tests
+- [x] 11. Concurrent Access + Network Failure Tests
 
   **What to do**:
   - Create `tests/e2e/edge/concurrency.test.js`
@@ -501,19 +501,19 @@ Wave FINAL (After ALL tasks — verification):
 
 ## Final Verification Wave
 
-- [ ] F1. Plan Compliance Audit — `oracle`
+- [x] F1. Plan Compliance Audit — `oracle` ✅ APPROVE
   Read the plan end-to-end. For each "Must Have": verify test exists. For each "Must NOT Have": search for forbidden patterns. Check evidence files exist. Compare deliverables against plan.
   Output: `Must Have [N/N] | Must NOT Have [N/N] | VERDICT: APPROVE/REJECT`
 
-- [ ] F2. Code Quality Review — `unspecified-high`
+- [x] F2. Code Quality Review — `unspecified-high` ✅ APPROVE
   Run `npx playwright test --list` + `npm test`. Review all new test files for: proper assertions, evidence capture, timeout handling. Check for hardcoded secrets.
   Output: `Tests [N pass/N fail] | Files [N clean/N issues] | VERDICT`
 
-- [ ] F3. Real Manual QA — `unspecified-high` (+ `playwright` skill if UI)
+- [x] F3. Real Manual QA — `unspecified-high` (+ `playwright` skill if UI) ✅ APPROVE
   Start from clean state. Execute tests: `npm test && npx playwright test`. Verify Playwright screenshots saved. Test cross-feature integration.
   Output: `Tests [N/N pass] | Screenshots [N captured] | VERDICT`
 
-- [ ] F4. Scope Fidelity Check — `deep`
+- [x] F4. Scope Fidelity Check — `deep` ✅ APPROVE
   For each task: read "What to do", read actual test file. Verify 1:1 — all tests in spec were built, nothing beyond spec. Check "Must NOT do" compliance.
   Output: `Tasks [N/N compliant] | VERDICT`
 

@@ -8,6 +8,7 @@
 
 pub mod canvas;
 pub mod color;
+pub mod fonts;
 pub mod gradient;
 pub mod model;
 pub mod path;
@@ -16,6 +17,7 @@ pub mod transform;
 
 pub use canvas::Canvas;
 pub use color::{Color, Paint, StrokeStyle};
+pub use fonts::FontLibrary;
 pub use gradient::Gradient;
 pub use model::{BlendMode, Page, RenderResult};
 pub use path::{FillRule, PathBuilder};

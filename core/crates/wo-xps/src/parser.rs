@@ -1,7 +1,7 @@
 use crate::model::*;
+use roxmltree::Document as XmlDoc;
 use wo_common::{CoreError, Document, DocumentMetadata, Result};
 use wo_office_utils::{ArchiveEntry, ArchiveReader};
-use roxmltree::Document as XmlDoc;
 
 pub struct XpsParser;
 

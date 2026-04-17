@@ -12,3 +12,6 @@ wo-office-utils = { path = "../wo-office-utils" }
 serde = { workspace = true, features = ["derive"] }
 serde_json = "1"
 roxmltree = "0.20"
+
+[dev-dependencies]
+zip = { workspace = true }

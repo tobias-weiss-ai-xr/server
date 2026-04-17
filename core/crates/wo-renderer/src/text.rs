@@ -1,9 +1,12 @@
 //! Text layout engine.
 //!
 //! Provides text shaping, line breaking, and paragraph layout for the rendering engine.
-//! Uses approximate character metrics since real font loading is not available in tests.
+//! Uses real font metrics from `FontLibrary` (backed by fontdb) when available,
+//! with fallback defaults when no fonts are loaded.
 
 use std::f32;
+
+use crate::fonts::FontLibrary;
 
 /// A single glyph with positioning information.
 #[derive(Debug, Clone, PartialEq)]
@@ -115,41 +118,13 @@ impl TextLayout {
     }
 }
 
-/// Character metrics estimator.
-///
-/// Since we can't load real fonts in tests, we use approximate metrics based on font size.
-struct MetricsEstimator;
-
-impl MetricsEstimator {
-    /// Average character width (approximately 0.6 * font_size).
-    fn avg_char_width(font_size: f32) -> f32 {
-        font_size * 0.6
-    }
-
-    /// Space width (approximately 0.25 * font_size).
-    fn space_width(font_size: f32) -> f32 {
-        font_size * 0.25
-    }
-
-    /// Ascent (approximately 0.8 * font_size).
-    fn ascent(font_size: f32) -> f32 {
-        font_size * 0.8
-    }
-
-    /// Descent (approximately 0.2 * font_size).
-    fn descent(font_size: f32) -> f32 {
-        font_size * 0.2
-    }
-
-    /// Default line height (approximately 1.2 * font_size).
-    fn default_line_height(font_size: f32) -> f32 {
-        font_size * 1.2
-    }
-}
+/// Default line height multiplier (1.2× font size).
+const DEFAULT_LINE_HEIGHT_FACTOR: f32 = 1.2;
 
 /// Text layout engine.
 ///
 /// Provides text shaping, line breaking, and paragraph layout capabilities.
+/// Uses `FontLibrary` for real glyph metrics from fontdb.
 #[derive(Debug, Clone, Default)]
 pub struct TextLayoutEngine;
 
@@ -165,12 +140,19 @@ impl TextLayoutEngine {
     /// * `text` - The text to layout
     /// * `font_size` - Font size in points
     /// * `max_width` - Maximum width for the text
+    /// * `fonts` - Font library for glyph metrics
     ///
     /// # Returns
     /// A `TextLayout` containing the laid-out lines
-    pub fn layout_text(&self, text: &str, font_size: f32, max_width: f32) -> TextLayout {
-        let line_height = MetricsEstimator::default_line_height(font_size);
-        self.layout_paragraph(text, font_size, max_width, line_height)
+    pub fn layout_text(
+        &self,
+        text: &str,
+        font_size: f32,
+        max_width: f32,
+        fonts: &FontLibrary,
+    ) -> TextLayout {
+        let line_height = font_size * DEFAULT_LINE_HEIGHT_FACTOR;
+        self.layout_paragraph(text, font_size, max_width, line_height, fonts)
     }
 
     /// Layout a paragraph with explicit line height.
@@ -179,7 +161,8 @@ impl TextLayoutEngine {
     /// * `text` - The text to layout
     /// * `font_size` - Font size in points
     /// * `max_width` - Maximum width for the text
-    /// * `line_height` - Line height multiplier (applied to font_size)
+    /// * `line_height` - Line height in pixels (absolute, not a multiplier)
+    /// * `fonts` - Font library for glyph metrics
     ///
     /// # Returns
     /// A `TextLayout` containing the laid-out lines
@@ -189,6 +172,7 @@ impl TextLayoutEngine {
         font_size: f32,
         max_width: f32,
         line_height: f32,
+        fonts: &FontLibrary,
     ) -> TextLayout {
         if text.is_empty() {
             return TextLayout {
@@ -198,10 +182,8 @@ impl TextLayoutEngine {
             };
         }
 
-        let avg_char_width = MetricsEstimator::avg_char_width(font_size);
-        let space_width = MetricsEstimator::space_width(font_size);
-        let ascent = MetricsEstimator::ascent(font_size);
-        let descent = MetricsEstimator::descent(font_size);
+        let ascent = fonts.ascent(font_size);
+        let descent = fonts.descent(font_size);
 
         let mut lines = Vec::new();
         let mut current_x = 0.0;
@@ -213,23 +195,25 @@ impl TextLayoutEngine {
         for line_text in text.split('\n') {
             // Process each word in the line
             for word in line_text.split_whitespace() {
-                // Estimate word width
-                let word_width = word.chars().count() as f32 * avg_char_width;
+                // Compute real word width from font metrics
+                let word_width: f32 = word.chars().map(|c| fonts.char_advance(c, font_size)).sum();
 
                 // Check if word fits on current line
                 if current_x + word_width <= max_width || !line_has_content {
                     // Word fits on current line
                     if line_has_content {
                         // Add space before word (if not at start of line)
-                        let space_glyph_id = 1;
-                        line_glyphs.add_glyph(space_glyph_id, 0.0, 0.0, space_width);
-                        current_x += space_width;
+                        let space_glyph_id = fonts.glyph_id(' ');
+                        let space_adv = fonts.space_advance(font_size);
+                        line_glyphs.add_glyph(space_glyph_id, 0.0, 0.0, space_adv);
+                        current_x += space_adv;
                     }
 
-                    // Add word glyphs
+                    // Add word glyphs with real metrics
                     for ch in word.chars() {
-                        let glyph_id = (ch as u32 % 65536) as u16;
-                        line_glyphs.add_glyph(glyph_id, 0.0, 0.0, avg_char_width);
+                        let glyph_id = fonts.glyph_id(ch);
+                        let advance = fonts.char_advance(ch, font_size);
+                        line_glyphs.add_glyph(glyph_id, 0.0, 0.0, advance);
                     }
                     current_x += word_width;
                     line_has_content = true;
@@ -252,8 +236,9 @@ impl TextLayoutEngine {
 
                     // Add word to new line
                     for ch in word.chars() {
-                        let glyph_id = (ch as u32 % 65536) as u16;
-                        line_glyphs.add_glyph(glyph_id, 0.0, 0.0, avg_char_width);
+                        let glyph_id = fonts.glyph_id(ch);
+                        let advance = fonts.char_advance(ch, font_size);
+                        line_glyphs.add_glyph(glyph_id, 0.0, 0.0, advance);
                     }
                     current_x = word_width;
                     line_has_content = true;
@@ -282,10 +267,16 @@ impl TextLayoutEngine {
 mod tests {
     use super::*;
 
+    /// Helper: create an empty font library for tests.
+    fn test_fonts() -> FontLibrary {
+        FontLibrary::empty()
+    }
+
     #[test]
     fn test_layout_empty_string() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_text("", 12.0, 100.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_text("", 12.0, 100.0, &fonts);
 
         assert!(layout.lines.is_empty());
         assert_eq!(layout.total_width, 0.0);
@@ -295,7 +286,8 @@ mod tests {
     #[test]
     fn test_layout_single_word() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_text("hello", 12.0, 100.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_text("hello", 12.0, 100.0, &fonts);
 
         assert_eq!(layout.lines.len(), 1);
         assert_eq!(layout.lines[0].glyphs.glyphs.len(), 5); // "hello" = 5 chars
@@ -306,7 +298,8 @@ mod tests {
     #[test]
     fn test_layout_multiple_words() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_text("hello world", 12.0, 100.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_text("hello world", 12.0, 100.0, &fonts);
 
         assert_eq!(layout.lines.len(), 1);
         // "hello" (5) + space (1) + "world" (5) = 11 glyphs
@@ -316,8 +309,9 @@ mod tests {
     #[test]
     fn test_layout_word_wrapping() {
         let engine = TextLayoutEngine::new();
+        let fonts = test_fonts();
         // Use narrow width to force wrapping
-        let layout = engine.layout_text("hello world test", 12.0, 50.0);
+        let layout = engine.layout_text("hello world test", 12.0, 50.0, &fonts);
 
         assert!(layout.lines.len() > 1);
     }
@@ -325,8 +319,9 @@ mod tests {
     #[test]
     fn test_layout_long_word_no_wrap() {
         let engine = TextLayoutEngine::new();
+        let fonts = test_fonts();
         // Very narrow width but single long word
-        let layout = engine.layout_text("supercalifragilisticexpialidocious", 12.0, 50.0);
+        let layout = engine.layout_text("supercalifragilisticexpialidocious", 12.0, 50.0, &fonts);
 
         // Single long word should not wrap even if it exceeds max_width
         assert_eq!(layout.lines.len(), 1);
@@ -336,7 +331,8 @@ mod tests {
     #[test]
     fn test_layout_multiple_lines() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_text("line one\nline two\nline three", 12.0, 100.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_text("line one\nline two\nline three", 12.0, 100.0, &fonts);
 
         assert_eq!(layout.lines.len(), 3);
     }
@@ -344,7 +340,8 @@ mod tests {
     #[test]
     fn test_layout_newline_handling() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_text("first\n\nthird", 12.0, 100.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_text("first\n\nthird", 12.0, 100.0, &fonts);
 
         // Empty line in the middle should be preserved
         assert_eq!(layout.lines.len(), 2);
@@ -353,7 +350,8 @@ mod tests {
     #[test]
     fn test_layout_very_narrow_width() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_text("a b c d e", 12.0, 20.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_text("a b c d e", 12.0, 20.0, &fonts);
 
         // Each letter on its own line
         assert!(layout.lines.len() > 1);
@@ -362,7 +360,8 @@ mod tests {
     #[test]
     fn test_layout_wide_width_no_wrap() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_text("hello world test", 12.0, 500.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_text("hello world test", 12.0, 500.0, &fonts);
 
         // Wide width should prevent wrapping
         assert_eq!(layout.lines.len(), 1);
@@ -371,7 +370,8 @@ mod tests {
     #[test]
     fn test_layout_unicode_text() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_text("Hello 世界", 12.0, 100.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_text("Hello 世界", 12.0, 100.0, &fonts);
 
         assert_eq!(layout.lines.len(), 1);
         assert!(layout.lines[0].glyphs.glyphs.len() > 5);
@@ -380,7 +380,8 @@ mod tests {
     #[test]
     fn test_layout_empty_lines() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_text("\n\n\n", 12.0, 100.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_text("\n\n\n", 12.0, 100.0, &fonts);
 
         assert_eq!(layout.lines.len(), 0);
     }
@@ -388,7 +389,8 @@ mod tests {
     #[test]
     fn test_layout_leading_trailing_spaces() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_text("  hello  ", 12.0, 100.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_text("  hello  ", 12.0, 100.0, &fonts);
 
         assert_eq!(layout.lines.len(), 1);
         // Leading/trailing spaces should be stripped by split_whitespace
@@ -398,23 +400,25 @@ mod tests {
     #[test]
     fn test_layout_metrics() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_text("hello", 12.0, 100.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_text("hello", 12.0, 100.0, &fonts);
 
         assert_eq!(layout.lines.len(), 1);
         let line = &layout.lines[0];
 
-        // Check ascent and descent
+        // With empty font library, ascent/descent use fallback defaults
         assert!((line.ascent - 12.0 * 0.8).abs() < 0.01);
         assert!((line.descent - 12.0 * 0.2).abs() < 0.01);
 
-        // Check width is approximately 5 * avg_char_width
-        assert!((line.width - 5.0 * 12.0 * 0.6).abs() < 0.01);
+        // With empty font library, char width fallback is font_size * 0.5
+        assert!((line.width - 5.0 * 12.0 * 0.5).abs() < 0.01);
     }
 
     #[test]
     fn test_layout_zero_width() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_text("hello world", 12.0, 0.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_text("hello world", 12.0, 0.0, &fonts);
 
         // Zero width should still layout, but lines may be created
         assert!(!layout.lines.is_empty());
@@ -423,7 +427,8 @@ mod tests {
     #[test]
     fn test_layout_paragraph_line_height() {
         let engine = TextLayoutEngine::new();
-        let layout = engine.layout_paragraph("line one\nline two", 12.0, 100.0, 24.0);
+        let fonts = test_fonts();
+        let layout = engine.layout_paragraph("line one\nline two", 12.0, 100.0, 24.0, &fonts);
 
         assert_eq!(layout.lines.len(), 2);
 

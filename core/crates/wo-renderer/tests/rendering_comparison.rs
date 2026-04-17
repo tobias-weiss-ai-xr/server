@@ -3,7 +3,7 @@
 //! These tests verify that the canvas produces consistent, deterministic output.
 
 use wo_renderer::gradient::GradientStop;
-use wo_renderer::*;
+use wo_renderer::{FontLibrary, *};
 
 // ============================================================================
 // 1. Canvas Determinism Tests
@@ -341,7 +341,8 @@ fn test_radial_gradient_center() {
 #[test]
 fn test_text_layout_empty() {
     let engine = TextLayoutEngine::new();
-    let layout = engine.layout_text("", 12.0, 100.0);
+    let fonts = FontLibrary::empty();
+    let layout = engine.layout_text("", 12.0, 100.0, &fonts);
 
     assert_eq!(layout.lines.len(), 0, "Empty text should produce no lines");
     assert_eq!(layout.total_width, 0.0);
@@ -351,7 +352,8 @@ fn test_text_layout_empty() {
 #[test]
 fn test_text_layout_single_word() {
     let engine = TextLayoutEngine::new();
-    let layout = engine.layout_text("hello", 12.0, 100.0);
+    let fonts = FontLibrary::empty();
+    let layout = engine.layout_text("hello", 12.0, 100.0, &fonts);
 
     assert_eq!(layout.lines.len(), 1, "Single word should produce one line");
     assert_eq!(
@@ -366,8 +368,9 @@ fn test_text_layout_single_word() {
 #[test]
 fn test_text_layout_word_wrap() {
     let engine = TextLayoutEngine::new();
+    let fonts = FontLibrary::empty();
     // Narrow width should force wrapping
-    let layout = engine.layout_text("hello world test", 12.0, 50.0);
+    let layout = engine.layout_text("hello world test", 12.0, 50.0, &fonts);
 
     assert!(layout.lines.len() > 1, "Narrow width should cause wrapping");
 }
@@ -824,7 +827,8 @@ fn test_gradient_single_stop() {
 #[test]
 fn test_text_layout_metrics() {
     let engine = TextLayoutEngine::new();
-    let layout = engine.layout_text("test", 12.0, 100.0);
+    let fonts = FontLibrary::empty();
+    let layout = engine.layout_text("test", 12.0, 100.0, &fonts);
 
     assert_eq!(layout.lines.len(), 1);
     assert!(layout.total_width > 0.0);

@@ -6,9 +6,11 @@
 pub mod model;
 pub mod parser;
 pub mod roundtrip;
+pub mod serializer;
 
 pub use model::OfdDocument;
 pub use parser::OfdParser;
+pub use serializer::OfdSerializer;
 
 pub const FORMAT_NAME: &str = "ofd";
 

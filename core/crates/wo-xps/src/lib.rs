@@ -6,9 +6,11 @@
 pub mod model;
 pub mod parser;
 pub mod roundtrip;
+pub mod serializer;
 
 pub use model::XpsDocument;
 pub use parser::XpsParser;
+pub use serializer::XpsSerializer;
 
 pub const FORMAT_NAME: &str = "xps";
 

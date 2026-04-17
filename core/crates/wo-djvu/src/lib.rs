@@ -6,9 +6,11 @@
 pub mod model;
 pub mod parser;
 pub mod roundtrip;
+pub mod serializer;
 
 pub use model::DjvuDocument;
 pub use parser::DjvuParser;
+pub use serializer::DjvuSerializer;
 
 pub const FORMAT_NAME: &str = "djvu";
 

@@ -1,9 +1,10 @@
 //! Native format converters: RTF↔TXT, RTF↔HTML, HTML↔TXT, TXT↔HTML,
-//! DOCX→TXT, DOCX→HTML, ODT→TXT, ODT→HTML, TXT→RTF, HTML→RTF,
-//! EPUB→TXT, EPUB→HTML, FB2→TXT, HWP→TXT,
+//! DOCX→TXT, DOCX→HTML, DOCX→ODT, ODT→TXT, ODT→HTML, ODT→DOCX,
+//! TXT→RTF, HTML→RTF, RTF→DOCX,
+//! EPUB→TXT, EPUB→HTML, EPUB→DOCX, FB2→TXT, FB2→DOCX, HWP→TXT,
 //! TXT→DOCX, HTML→DOCX, TXT→ODT, HTML→ODT,
 //! XPS→TXT, XPS→HTML, OFD→TXT, OFD→HTML, DJVU→TXT,
-//! TXT→EPUB, HTML→EPUB, TXT→FB2, HTML→FB2.
+//! TXT→EPUB, HTML→EPUB, DOCX→EPUB, TXT→FB2, HTML→FB2.
 //!
 //! Each converter implements the `FormatConverter` trait, going directly
 //! from source native type to target native type (no intermediate document).
@@ -1278,6 +1279,87 @@ impl FormatConverter for HtmlToFb2Converter {
             .serialize(&fb2_doc)
             .map_err(|e| ConversionError::Serialize(e.to_string()))?;
         Ok(xml.into_bytes())
+    }
+}
+
+// ── DOCX → ODT ──────────────────────────────────────────────────────
+
+/// Converts DOCX → ODT (cross-format).
+pub struct DocxToOdtConverter;
+
+impl FormatConverter for DocxToOdtConverter {
+    fn source_format(&self) -> &str {
+        "docx"
+    }
+
+    fn target_format(&self) -> &str {
+        "odt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = OoxmlParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let odf_doc = docx_to_odf(&doc);
+
+        OdfSerializer::new()
+            .serialize(&odf_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+// ── ODT → DOCX ──────────────────────────────────────────────────────
+
+/// Converts ODT → DOCX (cross-format).
+pub struct OdtToDocxConverter;
+
+impl FormatConverter for OdtToDocxConverter {
+    fn source_format(&self) -> &str {
+        "odt"
+    }
+
+    fn target_format(&self) -> &str {
+        "docx"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = OdfParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let ooxml_doc = odf_to_ooxml(&doc);
+
+        OoxmlSerializer::new()
+            .serialize(&ooxml_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+// ── RTF → DOCX ──────────────────────────────────────────────────────
+
+/// Converts RTF → DOCX (cross-format).
+pub struct RtfToDocxConverter;
+
+impl FormatConverter for RtfToDocxConverter {
+    fn source_format(&self) -> &str {
+        "rtf"
+    }
+
+    fn target_format(&self) -> &str {
+        "docx"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let rtf_doc = RtfParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let ooxml_doc = rtf_to_ooxml(&rtf_doc);
+
+        OoxmlSerializer::new()
+            .serialize(&ooxml_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
     }
 }
 
@@ -2951,6 +3033,516 @@ fn docx_body_to_html_blocks(doc: &OoxmlDocument) -> Vec<BlockElement> {
 
 // ── ODF (ODT) "from" helpers ─────────────────────────────────────────
 
+/// Convert an OOXML document to an ODF document (DOCX → ODT).
+fn docx_to_odf(doc: &OoxmlDocument) -> OdfDocument {
+    let mut content: Vec<OdfTextContent> = Vec::new();
+
+    if let Some(body) = &doc.body {
+        for para in &body.paragraphs {
+            let is_heading = para
+                .style_id
+                .as_deref()
+                .is_some_and(|s| s.starts_with("Heading"));
+
+            let level = para
+                .style_id
+                .as_deref()
+                .and_then(|s| s.strip_prefix("Heading"))
+                .and_then(|n| n.parse::<u32>().ok())
+                .unwrap_or(1);
+
+            if is_heading {
+                let text = extract_docx_run_text(&para.runs);
+                content.push(OdfTextContent::Heading(TextHeading {
+                    text,
+                    level,
+                    style_name: None,
+                }));
+            } else {
+                let text = extract_docx_run_text(&para.runs);
+                let spans = docx_runs_to_odf_spans(&para.runs);
+                content.push(OdfTextContent::Paragraph(TextParagraph {
+                    text,
+                    style_name: None,
+                    spans,
+                }));
+            }
+        }
+
+        for table in &body.tables {
+            let odf_rows: Vec<OdfTableRow> = table
+                .rows
+                .iter()
+                .map(|row| OdfTableRow {
+                    cells: row
+                        .cells
+                        .iter()
+                        .map(|c| {
+                            let text = c
+                                .paragraphs
+                                .iter()
+                                .map(|p| extract_docx_run_text(&p.runs))
+                                .collect::<Vec<_>>()
+                                .join(" ");
+                            OdfTableCell {
+                                text,
+                                row_span: c.row_span,
+                                col_span: c.column_span,
+                                cell_type: CellType::String,
+                                value: None,
+                            }
+                        })
+                        .collect(),
+                })
+                .collect();
+            let num_columns = table.rows.first().map(|r| r.cells.len()).unwrap_or(0);
+            content.push(OdfTextContent::Table(OdfTable {
+                name: None,
+                rows: odf_rows,
+                num_columns,
+            }));
+        }
+    }
+
+    OdfDocument {
+        doc_type: OdfType::Text,
+        version: "1.2".to_string(),
+        metadata: OdfMetadata {
+            title: doc.core_properties.title.clone(),
+            creator: doc.core_properties.creator.clone(),
+            subject: doc.core_properties.subject.clone(),
+            description: doc.core_properties.description.clone(),
+            keywords: doc.core_properties.keywords.clone(),
+            language: doc.core_properties.language.clone(),
+            ..Default::default()
+        },
+        content: OdfContent::Text {
+            content,
+            page_layouts: vec![],
+            sections: vec![],
+        },
+        manifest: vec![],
+        fonts: vec![],
+        styles: vec![],
+    }
+}
+
+/// Convert DOCX runs to ODF text spans.
+fn docx_runs_to_odf_spans(runs: &[DocxRun]) -> Vec<TextSpan> {
+    let mut spans = Vec::new();
+    for run in runs {
+        if run.text.is_empty() {
+            continue;
+        }
+        spans.push(TextSpan {
+            text: run.text.clone(),
+            style_name: None,
+            bold: run.bold,
+            italic: run.italic,
+            underline: run.underline.is_some(),
+        });
+    }
+    spans
+}
+
+/// Convert an ODF document to an OOXML document (ODT → DOCX).
+fn odf_to_ooxml(doc: &OdfDocument) -> OoxmlDocument {
+    let mut paragraphs: Vec<DocxParagraph> = Vec::new();
+    let mut tables: Vec<DocxTable> = Vec::new();
+
+    if let OdfContent::Text { content, .. } = &doc.content {
+        for item in content {
+            match item {
+                OdfTextContent::Heading(h) => {
+                    let font_size = 36u32 - (h.level.saturating_sub(1)) * 4;
+                    let font_size = font_size.max(18);
+                    paragraphs.push(DocxParagraph {
+                        style_id: Some(format!("Heading{}", h.level)),
+                        properties: DocxParagraphProperties::default(),
+                        runs: vec![DocxRun {
+                            text: h.text.clone(),
+                            bold: true,
+                            italic: false,
+                            underline: None,
+                            strikethrough: false,
+                            double_strikethrough: false,
+                            font: None,
+                            font_size: Some(font_size),
+                            font_size_cs: None,
+                            color: None,
+                            highlight: None,
+                            vertical_alignment: None,
+                            small_caps: false,
+                            all_caps: false,
+                        }],
+                    });
+                }
+                OdfTextContent::Paragraph(p) => {
+                    if p.spans.is_empty() {
+                        if !p.text.is_empty() {
+                            paragraphs.push(DocxParagraph {
+                                style_id: None,
+                                properties: DocxParagraphProperties::default(),
+                                runs: vec![DocxRun {
+                                    text: p.text.clone(),
+                                    bold: false,
+                                    italic: false,
+                                    underline: None,
+                                    strikethrough: false,
+                                    double_strikethrough: false,
+                                    font: None,
+                                    font_size: None,
+                                    font_size_cs: None,
+                                    color: None,
+                                    highlight: None,
+                                    vertical_alignment: None,
+                                    small_caps: false,
+                                    all_caps: false,
+                                }],
+                            });
+                        }
+                    } else {
+                        let runs: Vec<DocxRun> = p
+                            .spans
+                            .iter()
+                            .map(|span| DocxRun {
+                                text: span.text.clone(),
+                                bold: span.bold,
+                                italic: span.italic,
+                                underline: if span.underline {
+                                    Some(UnderlineType::Single)
+                                } else {
+                                    None
+                                },
+                                strikethrough: false,
+                                double_strikethrough: false,
+                                font: None,
+                                font_size: None,
+                                font_size_cs: None,
+                                color: None,
+                                highlight: None,
+                                vertical_alignment: None,
+                                small_caps: false,
+                                all_caps: false,
+                            })
+                            .collect();
+                        if !runs.is_empty() {
+                            paragraphs.push(DocxParagraph {
+                                style_id: None,
+                                properties: DocxParagraphProperties::default(),
+                                runs,
+                            });
+                        }
+                    }
+                }
+                OdfTextContent::List(list) => {
+                    for (i, list_item) in list.items.iter().enumerate() {
+                        for sub_item in &list_item.content {
+                            if let OdfTextContent::Paragraph(p) = sub_item {
+                                let prefix = match list.list_type {
+                                    OdfListType::Ordered => {
+                                        format!("{}. ", i + 1)
+                                    }
+                                    OdfListType::Unordered => "\u{2022} ".to_string(),
+                                };
+                                paragraphs.push(DocxParagraph {
+                                    style_id: None,
+                                    properties: DocxParagraphProperties {
+                                        indent_left: Some(720),
+                                        ..Default::default()
+                                    },
+                                    runs: vec![DocxRun {
+                                        text: format!("{}{}", prefix, p.text),
+                                        bold: false,
+                                        italic: false,
+                                        underline: None,
+                                        strikethrough: false,
+                                        double_strikethrough: false,
+                                        font: None,
+                                        font_size: None,
+                                        font_size_cs: None,
+                                        color: None,
+                                        highlight: None,
+                                        vertical_alignment: None,
+                                        small_caps: false,
+                                        all_caps: false,
+                                    }],
+                                });
+                            }
+                        }
+                    }
+                }
+                OdfTextContent::Table(table) => {
+                    let docx_rows: Vec<DocxTableRow> = table
+                        .rows
+                        .iter()
+                        .map(|row| DocxTableRow {
+                            cells: row
+                                .cells
+                                .iter()
+                                .map(|c| DocxTableCell {
+                                    paragraphs: vec![DocxParagraph {
+                                        style_id: None,
+                                        properties: DocxParagraphProperties::default(),
+                                        runs: vec![DocxRun {
+                                            text: c.text.clone(),
+                                            bold: false,
+                                            italic: false,
+                                            underline: None,
+                                            strikethrough: false,
+                                            double_strikethrough: false,
+                                            font: None,
+                                            font_size: None,
+                                            font_size_cs: None,
+                                            color: None,
+                                            highlight: None,
+                                            vertical_alignment: None,
+                                            small_caps: false,
+                                            all_caps: false,
+                                        }],
+                                    }],
+                                    column_span: c.col_span,
+                                    row_span: c.row_span,
+                                    width: None,
+                                    shading: None,
+                                })
+                                .collect(),
+                            height: None,
+                            is_header: false,
+                        })
+                        .collect();
+                    tables.push(DocxTable {
+                        rows: docx_rows,
+                        properties: Default::default(),
+                    });
+                }
+                OdfTextContent::Image(_) => {
+                    // Images are not supported in cross-format conversion; skip
+                }
+            }
+        }
+    }
+
+    OoxmlDocument {
+        format: OoxmlFormat::Docx,
+        version: "1.0".to_string(),
+        content_types: vec![],
+        main_part: Some("word/document.xml".to_string()),
+        shared_strings: vec![],
+        part_count: 1,
+        core_properties: CoreProperties {
+            title: doc.metadata.title.clone(),
+            creator: doc.metadata.creator.clone(),
+            subject: doc.metadata.subject.clone(),
+            description: doc.metadata.description.clone(),
+            keywords: doc.metadata.keywords.clone(),
+            language: doc.metadata.language.clone(),
+            ..Default::default()
+        },
+        relationships: vec![],
+        body: Some(DocxBody { paragraphs, tables }),
+    }
+}
+
+/// Convert an RTF document to an OOXML document (RTF → DOCX).
+fn rtf_to_ooxml(rtf_doc: &RtfDocument) -> OoxmlDocument {
+    let mut paragraphs: Vec<DocxParagraph> = Vec::new();
+
+    for block in &rtf_doc.body {
+        match block {
+            RtfBlock::Paragraph { content, .. } => {
+                let runs = rtf_inlines_to_docx_runs(content);
+                if !runs.is_empty() {
+                    paragraphs.push(DocxParagraph {
+                        style_id: None,
+                        properties: DocxParagraphProperties::default(),
+                        runs,
+                    });
+                }
+            }
+            RtfBlock::Table { rows } => {
+                let docx_rows: Vec<DocxTableRow> = rows
+                    .iter()
+                    .map(|row| DocxTableRow {
+                        cells: row
+                            .cells
+                            .iter()
+                            .map(|c| {
+                                let runs = rtf_inlines_to_docx_runs(&c.content);
+                                DocxTableCell {
+                                    paragraphs: if runs.is_empty() {
+                                        vec![]
+                                    } else {
+                                        vec![DocxParagraph {
+                                            style_id: None,
+                                            properties: DocxParagraphProperties::default(),
+                                            runs,
+                                        }]
+                                    },
+                                    column_span: 1,
+                                    row_span: 1,
+                                    width: c.width.map(|w| w as i32),
+                                    shading: None,
+                                }
+                            })
+                            .collect(),
+                        height: None,
+                        is_header: false,
+                    })
+                    .collect();
+                paragraphs.push(DocxParagraph {
+                    style_id: None,
+                    properties: DocxParagraphProperties::default(),
+                    runs: vec![],
+                });
+                // Tables are collected separately
+            }
+        }
+    }
+
+    // Collect tables from RTF body
+    let tables: Vec<DocxTable> = rtf_doc
+        .body
+        .iter()
+        .filter_map(|block| {
+            if let RtfBlock::Table { rows } = block {
+                let docx_rows: Vec<DocxTableRow> = rows
+                    .iter()
+                    .map(|row| DocxTableRow {
+                        cells: row
+                            .cells
+                            .iter()
+                            .map(|c| {
+                                let runs = rtf_inlines_to_docx_runs(&c.content);
+                                DocxTableCell {
+                                    paragraphs: vec![DocxParagraph {
+                                        style_id: None,
+                                        properties: DocxParagraphProperties::default(),
+                                        runs,
+                                    }],
+                                    column_span: 1,
+                                    row_span: 1,
+                                    width: c.width.map(|w| w as i32),
+                                    shading: None,
+                                }
+                            })
+                            .collect(),
+                        height: None,
+                        is_header: false,
+                    })
+                    .collect();
+                Some(DocxTable {
+                    rows: docx_rows,
+                    properties: Default::default(),
+                })
+            } else {
+                None
+            }
+        })
+        .collect();
+
+    // Remove empty paragraphs that were added for table placeholders
+    paragraphs.retain(|p| !p.runs.is_empty());
+
+    OoxmlDocument {
+        format: OoxmlFormat::Docx,
+        version: "1.0".to_string(),
+        content_types: vec![],
+        main_part: Some("word/document.xml".to_string()),
+        shared_strings: vec![],
+        part_count: 1,
+        core_properties: CoreProperties {
+            title: rtf_doc.info.as_ref().and_then(|info| info.title.clone()),
+            ..Default::default()
+        },
+        relationships: vec![],
+        body: Some(DocxBody { paragraphs, tables }),
+    }
+}
+
+/// Convert RTF inline elements to DOCX runs.
+fn rtf_inlines_to_docx_runs(inlines: &[RtfInline]) -> Vec<DocxRun> {
+    let mut runs = Vec::new();
+    for inline in inlines {
+        match inline {
+            RtfInline::Text { text } => {
+                if !text.is_empty() {
+                    runs.push(DocxRun {
+                        text: text.clone(),
+                        bold: false,
+                        italic: false,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    });
+                }
+            }
+            RtfInline::Bold { content } => {
+                for mut run in rtf_inlines_to_docx_runs(content) {
+                    run.bold = true;
+                    runs.push(run);
+                }
+            }
+            RtfInline::Italic { content } => {
+                for mut run in rtf_inlines_to_docx_runs(content) {
+                    run.italic = true;
+                    runs.push(run);
+                }
+            }
+            RtfInline::Underline { content } => {
+                for mut run in rtf_inlines_to_docx_runs(content) {
+                    run.underline = Some(UnderlineType::Single);
+                    runs.push(run);
+                }
+            }
+            RtfInline::Strikethrough { content } => {
+                for mut run in rtf_inlines_to_docx_runs(content) {
+                    run.strikethrough = true;
+                    runs.push(run);
+                }
+            }
+            RtfInline::Superscript { content } => {
+                for mut run in rtf_inlines_to_docx_runs(content) {
+                    run.vertical_alignment = Some(wo_ooxml::model::VerticalAlignment::Superscript);
+                    runs.push(run);
+                }
+            }
+            RtfInline::Subscript { content } => {
+                for mut run in rtf_inlines_to_docx_runs(content) {
+                    run.vertical_alignment = Some(wo_ooxml::model::VerticalAlignment::Subscript);
+                    runs.push(run);
+                }
+            }
+            RtfInline::Font { content, .. } => {
+                runs.extend(rtf_inlines_to_docx_runs(content));
+            }
+            RtfInline::FontSize { content, .. } => {
+                runs.extend(rtf_inlines_to_docx_runs(content));
+            }
+            RtfInline::Color { content, .. } => {
+                runs.extend(rtf_inlines_to_docx_runs(content));
+            }
+            RtfInline::LineBreak => {
+                if let Some(last) = runs.last_mut() {
+                    last.text.push('\n');
+                }
+            }
+            RtfInline::PageBreak | RtfInline::Tab => {}
+        }
+    }
+    runs
+}
+
+// ── ODF (ODT) "from" helpers (existing) ──────────────────────────────
+
 /// Convert ODF content to plain text lines.
 fn odf_content_to_text_lines(content: &OdfContent) -> Vec<String> {
     let mut lines = Vec::new();
@@ -3442,6 +4034,709 @@ fn fb2_section_to_lines(section: &Fb2Section, lines: &mut Vec<String>) {
     // Recurse into nested sections
     for nested in &section.sections {
         fb2_section_to_lines(nested, lines);
+    }
+}
+
+// ── EPUB → DOCX ──────────────────────────────────────────────────────
+
+/// Converts EPUB → DOCX.
+pub struct EpubToDocxConverter;
+
+impl FormatConverter for EpubToDocxConverter {
+    fn source_format(&self) -> &str {
+        "epub"
+    }
+
+    fn target_format(&self) -> &str {
+        "docx"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let epub_doc = EpubParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let ooxml_doc = epub_to_ooxml(&epub_doc);
+
+        OoxmlSerializer::new()
+            .serialize(&ooxml_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Convert an EPUB document to an OOXML DOCX document.
+fn epub_to_ooxml(epub_doc: &EpubDocument) -> OoxmlDocument {
+    let mut paragraphs: Vec<DocxParagraph> = Vec::new();
+
+    // Book title as a large heading
+    if let Some(title) = &epub_doc.metadata.title {
+        paragraphs.push(DocxParagraph {
+            style_id: None,
+            properties: DocxParagraphProperties::default(),
+            runs: vec![DocxRun {
+                text: title.clone(),
+                bold: true,
+                italic: false,
+                underline: None,
+                strikethrough: false,
+                double_strikethrough: false,
+                font: None,
+                font_size: Some(36),
+                font_size_cs: None,
+                color: None,
+                highlight: None,
+                vertical_alignment: None,
+                small_caps: false,
+                all_caps: false,
+            }],
+        });
+    }
+
+    for chapter in &epub_doc.chapters {
+        // Chapter title as a subheading
+        if !chapter.title.is_empty() {
+            paragraphs.push(DocxParagraph {
+                style_id: None,
+                properties: DocxParagraphProperties::default(),
+                runs: vec![DocxRun {
+                    text: chapter.title.clone(),
+                    bold: true,
+                    italic: false,
+                    underline: None,
+                    strikethrough: false,
+                    double_strikethrough: false,
+                    font: None,
+                    font_size: Some(28),
+                    font_size_cs: None,
+                    color: None,
+                    highlight: None,
+                    vertical_alignment: None,
+                    small_caps: false,
+                    all_caps: false,
+                }],
+            });
+        }
+
+        // Chapter content as plain text paragraphs
+        let clean = strip_html_tags(&chapter.content);
+        for line in clean.lines() {
+            if !line.is_empty() {
+                paragraphs.push(DocxParagraph {
+                    style_id: None,
+                    properties: DocxParagraphProperties::default(),
+                    runs: vec![DocxRun {
+                        text: line.to_string(),
+                        bold: false,
+                        italic: false,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    }],
+                });
+            }
+        }
+    }
+
+    OoxmlDocument {
+        format: OoxmlFormat::Docx,
+        version: "1.0".to_string(),
+        content_types: vec![],
+        main_part: Some("word/document.xml".to_string()),
+        shared_strings: vec![],
+        part_count: 1,
+        core_properties: CoreProperties {
+            title: epub_doc.metadata.title.clone(),
+            creator: epub_doc.metadata.creator.first().cloned(),
+            language: epub_doc.metadata.language.clone(),
+            ..Default::default()
+        },
+        relationships: vec![],
+        body: Some(DocxBody {
+            paragraphs,
+            tables: vec![],
+        }),
+    }
+}
+
+// ── FB2 → DOCX ──────────────────────────────────────────────────────
+
+/// Converts FB2 → DOCX.
+pub struct Fb2ToDocxConverter;
+
+impl FormatConverter for Fb2ToDocxConverter {
+    fn source_format(&self) -> &str {
+        "fb2"
+    }
+
+    fn target_format(&self) -> &str {
+        "docx"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let fb2_doc = Fb2Parser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let ooxml_doc = fb2_to_ooxml(&fb2_doc);
+
+        OoxmlSerializer::new()
+            .serialize(&ooxml_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Convert an FB2 document to an OOXML DOCX document.
+fn fb2_to_ooxml(fb2_doc: &Fb2Document) -> OoxmlDocument {
+    let mut paragraphs: Vec<DocxParagraph> = Vec::new();
+
+    // Book title from title_info
+    if let Some(title_info) = &fb2_doc.title_info {
+        if let Some(book_title) = &title_info.book_title {
+            paragraphs.push(DocxParagraph {
+                style_id: None,
+                properties: DocxParagraphProperties::default(),
+                runs: vec![DocxRun {
+                    text: book_title.clone(),
+                    bold: true,
+                    italic: false,
+                    underline: None,
+                    strikethrough: false,
+                    double_strikethrough: false,
+                    font: None,
+                    font_size: Some(36),
+                    font_size_cs: None,
+                    color: None,
+                    highlight: None,
+                    vertical_alignment: None,
+                    small_caps: false,
+                    all_caps: false,
+                }],
+            });
+        }
+    }
+
+    // Extract body content
+    for body in &fb2_doc.bodies {
+        fb2_body_to_docx_paragraphs(body, &mut paragraphs);
+    }
+
+    // Build creator string from authors
+    let creator = fb2_doc
+        .title_info
+        .as_ref()
+        .and_then(|ti| ti.authors.first())
+        .and_then(|author| {
+            let parts: Vec<&str> = [&author.first_name, &author.middle_name, &author.last_name]
+                .iter()
+                .filter_map(|s| s.as_deref())
+                .collect();
+            if parts.is_empty() {
+                author.full_name.clone()
+            } else {
+                Some(parts.join(" "))
+            }
+        });
+
+    let language = fb2_doc.title_info.as_ref().and_then(|ti| ti.lang.clone());
+
+    OoxmlDocument {
+        format: OoxmlFormat::Docx,
+        version: "1.0".to_string(),
+        content_types: vec![],
+        main_part: Some("word/document.xml".to_string()),
+        shared_strings: vec![],
+        part_count: 1,
+        core_properties: CoreProperties {
+            title: fb2_doc
+                .title_info
+                .as_ref()
+                .and_then(|ti| ti.book_title.clone()),
+            creator,
+            language,
+            ..Default::default()
+        },
+        relationships: vec![],
+        body: Some(DocxBody {
+            paragraphs,
+            tables: vec![],
+        }),
+    }
+}
+
+/// Convert FB2 body content to DOCX paragraphs.
+fn fb2_body_to_docx_paragraphs(body: &Body, paragraphs: &mut Vec<DocxParagraph>) {
+    for section in &body.sections {
+        fb2_section_to_docx_paragraphs(section, paragraphs);
+    }
+}
+
+/// Recursively convert FB2 sections to DOCX paragraphs.
+fn fb2_section_to_docx_paragraphs(section: &Section, paragraphs: &mut Vec<DocxParagraph>) {
+    // Section title
+    if !section.title.is_empty() {
+        let title_text: String = section
+            .title
+            .iter()
+            .map(|te| {
+                if te.text.is_empty() {
+                    te.formatting.iter().map(|f| f.text.as_str()).collect()
+                } else {
+                    te.text.clone()
+                }
+            })
+            .collect::<Vec<_>>()
+            .join(" ");
+        let title_text = title_text.trim().to_string();
+        if !title_text.is_empty() {
+            paragraphs.push(DocxParagraph {
+                style_id: None,
+                properties: DocxParagraphProperties::default(),
+                runs: vec![DocxRun {
+                    text: title_text,
+                    bold: true,
+                    italic: false,
+                    underline: None,
+                    strikethrough: false,
+                    double_strikethrough: false,
+                    font: None,
+                    font_size: Some(28),
+                    font_size_cs: None,
+                    color: None,
+                    highlight: None,
+                    vertical_alignment: None,
+                    small_caps: false,
+                    all_caps: false,
+                }],
+            });
+        }
+    }
+
+    for element in &section.elements {
+        match element {
+            ContentElement::Paragraph { content, .. } => {
+                let runs = fb2_formatting_to_docx_runs(content);
+                if !runs.is_empty() {
+                    paragraphs.push(DocxParagraph {
+                        style_id: None,
+                        properties: DocxParagraphProperties::default(),
+                        runs,
+                    });
+                }
+            }
+            ContentElement::EmptyLine => {
+                paragraphs.push(DocxParagraph {
+                    style_id: None,
+                    properties: DocxParagraphProperties::default(),
+                    runs: vec![],
+                });
+            }
+            ContentElement::Subtitle { content } => {
+                let runs = fb2_formatting_to_docx_runs(content);
+                if !runs.is_empty() {
+                    paragraphs.push(DocxParagraph {
+                        style_id: None,
+                        properties: DocxParagraphProperties::default(),
+                        runs,
+                    });
+                }
+            }
+            ContentElement::Cite {
+                paragraphs: cite_paras,
+                ..
+            } => {
+                for para in cite_paras {
+                    let runs = fb2_formatting_to_docx_runs(para);
+                    if !runs.is_empty() {
+                        paragraphs.push(DocxParagraph {
+                            style_id: None,
+                            properties: DocxParagraphProperties {
+                                indent_left: Some(720),
+                                ..Default::default()
+                            },
+                            runs,
+                        });
+                    }
+                }
+            }
+            ContentElement::TextAuthor { content } => {
+                let runs = fb2_formatting_to_docx_runs(content);
+                if !runs.is_empty() {
+                    paragraphs.push(DocxParagraph {
+                        style_id: None,
+                        properties: DocxParagraphProperties {
+                            indent_left: Some(720),
+                            ..Default::default()
+                        },
+                        runs,
+                    });
+                }
+            }
+            ContentElement::Date { value, .. } => {
+                paragraphs.push(DocxParagraph {
+                    style_id: None,
+                    properties: DocxParagraphProperties::default(),
+                    runs: vec![DocxRun {
+                        text: value.clone(),
+                        bold: false,
+                        italic: true,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    }],
+                });
+            }
+            ContentElement::Image { alt, .. } => {
+                if let Some(alt_text) = alt {
+                    if !alt_text.is_empty() {
+                        paragraphs.push(DocxParagraph {
+                            style_id: None,
+                            properties: DocxParagraphProperties::default(),
+                            runs: vec![DocxRun {
+                                text: format!("[image: {}]", alt_text),
+                                bold: false,
+                                italic: true,
+                                underline: None,
+                                strikethrough: false,
+                                double_strikethrough: false,
+                                font: None,
+                                font_size: None,
+                                font_size_cs: None,
+                                color: None,
+                                highlight: None,
+                                vertical_alignment: None,
+                                small_caps: false,
+                                all_caps: false,
+                            }],
+                        });
+                    }
+                }
+            }
+            ContentElement::Poem {
+                title: poem_title,
+                stanzas,
+                ..
+            } => {
+                if !poem_title.is_empty() {
+                    let title_text: String = poem_title.iter().map(|te| te.text.as_str()).collect();
+                    if !title_text.trim().is_empty() {
+                        paragraphs.push(DocxParagraph {
+                            style_id: None,
+                            properties: DocxParagraphProperties {
+                                indent_left: Some(720),
+                                ..Default::default()
+                            },
+                            runs: vec![DocxRun {
+                                text: title_text.trim().to_string(),
+                                bold: true,
+                                italic: false,
+                                underline: None,
+                                strikethrough: false,
+                                double_strikethrough: false,
+                                font: None,
+                                font_size: None,
+                                font_size_cs: None,
+                                color: None,
+                                highlight: None,
+                                vertical_alignment: None,
+                                small_caps: false,
+                                all_caps: false,
+                            }],
+                        });
+                    }
+                }
+                for stanza in stanzas {
+                    for stanza_line in &stanza.lines {
+                        let text: String = stanza_line.iter().map(|f| f.text.as_str()).collect();
+                        if !text.trim().is_empty() {
+                            paragraphs.push(DocxParagraph {
+                                style_id: None,
+                                properties: DocxParagraphProperties {
+                                    indent_left: Some(1080),
+                                    ..Default::default()
+                                },
+                                runs: vec![DocxRun {
+                                    text,
+                                    bold: false,
+                                    italic: true,
+                                    underline: None,
+                                    strikethrough: false,
+                                    double_strikethrough: false,
+                                    font: None,
+                                    font_size: None,
+                                    font_size_cs: None,
+                                    color: None,
+                                    highlight: None,
+                                    vertical_alignment: None,
+                                    small_caps: false,
+                                    all_caps: false,
+                                }],
+                            });
+                        }
+                    }
+                    paragraphs.push(DocxParagraph {
+                        style_id: None,
+                        properties: DocxParagraphProperties::default(),
+                        runs: vec![],
+                    });
+                }
+            }
+        }
+    }
+
+    for nested in &section.sections {
+        fb2_section_to_docx_paragraphs(nested, paragraphs);
+    }
+}
+
+/// Convert FB2 formatting items to DOCX runs.
+fn fb2_formatting_to_docx_runs(formattings: &[Formatting]) -> Vec<DocxRun> {
+    let mut runs = Vec::new();
+    for fmt in formattings {
+        if fmt.text.is_empty() {
+            continue;
+        }
+        let bold = matches!(fmt.style, TextStyle::Strong);
+        let italic = matches!(fmt.style, TextStyle::Emphasis);
+        let strikethrough = matches!(fmt.style, TextStyle::Strikethrough);
+        let vertical_alignment = match fmt.style {
+            TextStyle::Subscript => Some(wo_ooxml::model::VerticalAlignment::Subscript),
+            TextStyle::Superscript => Some(wo_ooxml::model::VerticalAlignment::Superscript),
+            _ => None,
+        };
+
+        runs.push(DocxRun {
+            text: fmt.text.clone(),
+            bold,
+            italic,
+            underline: None,
+            strikethrough,
+            double_strikethrough: false,
+            font: if fmt.style == TextStyle::Code {
+                Some("Courier New".to_string())
+            } else {
+                None
+            },
+            font_size: None,
+            font_size_cs: None,
+            color: None,
+            highlight: None,
+            vertical_alignment,
+            small_caps: false,
+            all_caps: false,
+        });
+    }
+    runs
+}
+
+// ── DOCX → EPUB ──────────────────────────────────────────────────────
+
+/// Converts DOCX → EPUB.
+pub struct DocxToEpubConverter;
+
+impl FormatConverter for DocxToEpubConverter {
+    fn source_format(&self) -> &str {
+        "docx"
+    }
+
+    fn target_format(&self) -> &str {
+        "epub"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = OoxmlParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let epub_doc = docx_to_epub(&doc);
+
+        EpubSerializer::new()
+            .serialize(&epub_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Convert an OOXML DOCX document to an EPUB document.
+fn docx_to_epub(doc: &OoxmlDocument) -> EpubDocument {
+    let book_title = doc
+        .core_properties
+        .title
+        .clone()
+        .unwrap_or_else(|| "Untitled".to_string());
+
+    let body = match &doc.body {
+        Some(b) => b,
+        None => {
+            let chapters = vec![EpubChapter {
+                title: book_title.clone(),
+                content: build_xhtml_content(&book_title, "<p/>"),
+                href: "chapter1.xhtml".to_string(),
+            }];
+            return EpubDocument {
+                version: "3.0".to_string(),
+                metadata: EpubMetadata {
+                    title: Some(book_title.clone()),
+                    language: Some("en".to_string()),
+                    identifier: Some("urn:uuid:wo-x2t-docx-epub".to_string()),
+                    unique_identifier: Some("uid".to_string()),
+                    ..Default::default()
+                },
+                manifest: Vec::new(),
+                spine: vec!["chapter1".to_string()],
+                toc: vec![TocEntry {
+                    title: book_title.clone(),
+                    href: Some("chapter1.xhtml".to_string()),
+                    level: 1,
+                    children: Vec::new(),
+                    play_order: Some(1),
+                }],
+                chapters,
+                cover_image: None,
+                cover_image_type: None,
+            };
+        }
+    };
+
+    let chapters_data = docx_body_to_epub_chapters(body);
+
+    let chapters: Vec<EpubChapter> = chapters_data
+        .iter()
+        .enumerate()
+        .map(|(i, (ch_title, lines))| {
+            let href = format!("chapter{}.xhtml", i + 1);
+            let body_html = lines
+                .iter()
+                .map(|l| format!("<p>{}</p>", escape_xhtml_text(l)))
+                .collect::<Vec<_>>()
+                .join("\n");
+            let content = build_xhtml_content(ch_title, &body_html);
+            EpubChapter {
+                title: ch_title.clone(),
+                content,
+                href,
+            }
+        })
+        .collect();
+
+    let spine: Vec<String> = (1..=chapters.len())
+        .map(|i| format!("chapter{}", i))
+        .collect();
+
+    let toc: Vec<TocEntry> = chapters_data
+        .iter()
+        .enumerate()
+        .map(|(i, (ch_title, _))| TocEntry {
+            title: ch_title.clone(),
+            href: Some(format!("chapter{}.xhtml", i + 1)),
+            level: 1,
+            children: Vec::new(),
+            play_order: Some(i as u32 + 1),
+        })
+        .collect();
+
+    EpubDocument {
+        version: "3.0".to_string(),
+        metadata: EpubMetadata {
+            title: Some(book_title),
+            language: doc
+                .core_properties
+                .language
+                .clone()
+                .or(Some("en".to_string())),
+            identifier: Some(format!(
+                "urn:uuid:wo-x2t-docx-epub-{:016x}",
+                doc.core_properties
+                    .title
+                    .as_deref()
+                    .unwrap_or("untitled")
+                    .len() as u64
+            )),
+            unique_identifier: Some("uid".to_string()),
+            creator: doc
+                .core_properties
+                .creator
+                .as_ref()
+                .map(|c| vec![c.clone()])
+                .unwrap_or_default(),
+            ..Default::default()
+        },
+        manifest: Vec::new(),
+        spine,
+        toc,
+        chapters,
+        cover_image: None,
+        cover_image_type: None,
+    }
+}
+
+/// Split DOCX body into chapters for EPUB conversion.
+fn docx_body_to_epub_chapters(body: &DocxBody) -> Vec<(String, Vec<String>)> {
+    let has_headings = body.paragraphs.iter().any(|p| {
+        p.style_id
+            .as_deref()
+            .is_some_and(|s| s.starts_with("Heading"))
+    });
+
+    if has_headings {
+        let mut chapters = Vec::new();
+        let mut current_title: Option<String> = None;
+        let mut current_lines: Vec<String> = Vec::new();
+
+        for para in &body.paragraphs {
+            if para
+                .style_id
+                .as_deref()
+                .is_some_and(|s| s.starts_with("Heading"))
+            {
+                let title = current_title
+                    .take()
+                    .unwrap_or_else(|| "Untitled".to_string());
+                if !current_lines.is_empty() || chapters.is_empty() {
+                    chapters.push((title, std::mem::take(&mut current_lines)));
+                }
+                current_title = Some(extract_docx_run_text(&para.runs));
+            } else {
+                let text = extract_docx_run_text(&para.runs);
+                if !text.is_empty() {
+                    current_lines.push(text);
+                }
+            }
+        }
+
+        let title = current_title.unwrap_or_else(|| "Untitled".to_string());
+        chapters.push((title, current_lines));
+        chapters
+    } else {
+        let title = body
+            .paragraphs
+            .first()
+            .map(|p| extract_docx_run_text(&p.runs))
+            .filter(|t| !t.is_empty())
+            .unwrap_or_else(|| "Untitled".to_string());
+
+        let lines: Vec<String> = body
+            .paragraphs
+            .iter()
+            .map(|p| extract_docx_run_text(&p.runs))
+            .filter(|t| !t.is_empty())
+            .collect();
+
+        vec![(title, lines)]
     }
 }
 
@@ -5036,5 +6331,516 @@ mod tests {
         let html_fb2 = HtmlToFb2Converter;
         assert_eq!(html_fb2.source_format(), "html");
         assert_eq!(html_fb2.target_format(), "fb2");
+    }
+
+    // ── DocxToOdt ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_docx_to_odt_basic() {
+        let docx = make_minimal_docx();
+        let converter = DocxToOdtConverter;
+        let result = converter.convert(&docx).unwrap();
+        // Verify valid ZIP (PK header)
+        assert!(result.len() > 4);
+        assert_eq!(result[0], 0x50);
+        assert_eq!(result[1], 0x4B);
+        // Verify content in ZIP
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut content_file = archive.by_name("content.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut content_file, &mut content).unwrap();
+        assert!(
+            content.contains("Hello World"),
+            "missing 'Hello World' in ODT content"
+        );
+    }
+
+    #[test]
+    fn test_docx_to_odt_multiple_paragraphs() {
+        let docx = make_docx_with_body(
+            r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p><w:r><w:t>First</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Second</w:t></w:r></w:p>
+  </w:body>
+</w:document>"#,
+        );
+        let converter = DocxToOdtConverter;
+        let result = converter.convert(&docx).unwrap();
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut content_file = archive.by_name("content.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut content_file, &mut content).unwrap();
+        assert!(content.contains("First"), "missing 'First'");
+        assert!(content.contains("Second"), "missing 'Second'");
+    }
+
+    #[test]
+    fn test_docx_to_odt_preserves_heading() {
+        let docx = make_docx_with_body(
+            r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr><w:pStyle val="Heading1"/></w:pPr>
+      <w:r><w:t>Chapter One</w:t></w:r>
+    </w:p>
+  </w:body>
+</w:document>"#,
+        );
+        let converter = DocxToOdtConverter;
+        let result = converter.convert(&docx).unwrap();
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut content_file = archive.by_name("content.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut content_file, &mut content).unwrap();
+        assert!(content.contains("Chapter One"), "missing 'Chapter One'");
+        assert!(
+            content.contains("text:outline-level"),
+            "missing heading level attribute"
+        );
+    }
+
+    #[test]
+    fn test_docx_to_odt_parse_error() {
+        let converter = DocxToOdtConverter;
+        let result = converter.convert(b"not a zip file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    #[test]
+    fn test_docx_to_odt_roundtrip() {
+        // DOCX → ODT → TXT roundtrip to verify content preservation
+        let docx = make_minimal_docx();
+        let docx_to_odt = DocxToOdtConverter;
+        let odt_to_txt = OdtToTxtConverter;
+
+        let odt_bytes = docx_to_odt.convert(&docx).unwrap();
+        let txt_bytes = odt_to_txt.convert(&odt_bytes).unwrap();
+        let text = String::from_utf8(txt_bytes).unwrap();
+        assert!(
+            text.contains("Hello World"),
+            "roundtrip lost content: {:?}",
+            text
+        );
+    }
+
+    // ── OdtToDocx ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_odt_to_docx_basic() {
+        let odt = make_minimal_odt();
+        let converter = OdtToDocxConverter;
+        let result = converter.convert(&odt).unwrap();
+        // Verify valid ZIP (PK header)
+        assert!(result.len() > 4);
+        assert_eq!(result[0], 0x50);
+        assert_eq!(result[1], 0x4B);
+        // Verify content in ZIP
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(
+            content.contains("First paragraph"),
+            "missing 'First paragraph' in DOCX content"
+        );
+    }
+
+    #[test]
+    fn test_odt_to_docx_multiple_paragraphs() {
+        let odt = make_minimal_odt();
+        let converter = OdtToDocxConverter;
+        let result = converter.convert(&odt).unwrap();
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(
+            content.contains("Second paragraph"),
+            "missing 'Second paragraph'"
+        );
+    }
+
+    #[test]
+    fn test_odt_to_docx_preserves_heading() {
+        let odt = make_minimal_odt();
+        let converter = OdtToDocxConverter;
+        let result = converter.convert(&odt).unwrap();
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(content.contains("Chapter One"), "missing 'Chapter One'");
+        assert!(content.contains("<w:b/>"), "heading should be bold");
+    }
+
+    #[test]
+    fn test_odt_to_docx_parse_error() {
+        let converter = OdtToDocxConverter;
+        let result = converter.convert(b"not a zip file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    #[test]
+    fn test_odt_to_docx_roundtrip() {
+        // ODT → DOCX → TXT roundtrip to verify content preservation
+        let odt = make_minimal_odt();
+        let odt_to_docx = OdtToDocxConverter;
+        let docx_to_txt = DocxToTxtConverter;
+
+        let docx_bytes = odt_to_docx.convert(&odt).unwrap();
+        let txt_bytes = docx_to_txt.convert(&docx_bytes).unwrap();
+        let text = String::from_utf8(txt_bytes).unwrap();
+        assert!(
+            text.contains("First paragraph"),
+            "roundtrip lost content: {:?}",
+            text
+        );
+    }
+
+    // ── RtfToDocx ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_rtf_to_docx_basic() {
+        let rtf = r#"{\rtf1\ansi Hello World\par}"#;
+        let converter = RtfToDocxConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        // Verify valid ZIP (PK header)
+        assert!(result.len() > 4);
+        assert_eq!(result[0], 0x50);
+        assert_eq!(result[1], 0x4B);
+        // Verify content in ZIP
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(
+            content.contains("Hello World"),
+            "missing 'Hello World' in DOCX content"
+        );
+    }
+
+    #[test]
+    fn test_rtf_to_docx_multiple_paragraphs() {
+        let rtf = r#"{\rtf1\ansi First\par Second\par Third\par}"#;
+        let converter = RtfToDocxConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(content.contains("First"), "missing 'First'");
+        assert!(content.contains("Second"), "missing 'Second'");
+        assert!(content.contains("Third"), "missing 'Third'");
+    }
+
+    #[test]
+    fn test_rtf_to_docx_preserves_bold() {
+        let rtf = r#"{\rtf1\ansi normal \b bold\b0 rest\par}"#;
+        let converter = RtfToDocxConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(content.contains("<w:b/>"), "missing bold marker");
+        assert!(content.contains("bold"), "missing 'bold' text");
+    }
+
+    #[test]
+    fn test_rtf_to_docx_preserves_italic() {
+        let rtf = r#"{\rtf1\ansi normal \i italic\i0 rest\par}"#;
+        let converter = RtfToDocxConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(content.contains("<w:i/>"), "missing italic marker");
+        assert!(content.contains("italic"), "missing 'italic' text");
+    }
+
+    #[test]
+    fn test_rtf_to_docx_parse_error() {
+        let converter = RtfToDocxConverter;
+        let result = converter.convert(b"not rtf at all");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    #[test]
+    fn test_rtf_to_docx_roundtrip() {
+        // RTF → DOCX → TXT roundtrip to verify content preservation
+        let rtf = r#"{\rtf1\ansi Roundtrip test\par}"#;
+        let rtf_to_docx = RtfToDocxConverter;
+        let docx_to_txt = DocxToTxtConverter;
+
+        let docx_bytes = rtf_to_docx.convert(rtf.as_bytes()).unwrap();
+        let txt_bytes = docx_to_txt.convert(&docx_bytes).unwrap();
+        let text = String::from_utf8(txt_bytes).unwrap();
+        assert!(
+            text.contains("Roundtrip test"),
+            "roundtrip lost content: {:?}",
+            text
+        );
+    }
+
+    // ── Cross-format converter format strings ──────────────────────────
+
+    #[test]
+    fn test_cross_format_converter_format_strings() {
+        let docx_odt = DocxToOdtConverter;
+        assert_eq!(docx_odt.source_format(), "docx");
+        assert_eq!(docx_odt.target_format(), "odt");
+
+        let odt_docx = OdtToDocxConverter;
+        assert_eq!(odt_docx.source_format(), "odt");
+        assert_eq!(odt_docx.target_format(), "docx");
+
+        let rtf_docx = RtfToDocxConverter;
+        assert_eq!(rtf_docx.source_format(), "rtf");
+        assert_eq!(rtf_docx.target_format(), "docx");
+    }
+
+    // ── EpubToDocx ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_epub_to_docx_parse_error() {
+        let converter = EpubToDocxConverter;
+        let result = converter.convert(b"not an epub file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    #[test]
+    fn test_epub_to_docx_format_strings() {
+        let converter = EpubToDocxConverter;
+        assert_eq!(converter.source_format(), "epub");
+        assert_eq!(converter.target_format(), "docx");
+    }
+
+    #[test]
+    fn test_epub_to_docx_basic() {
+        // Create a minimal EPUB, convert it to DOCX, verify output
+        let txt = b"Test Book\nSome content here.";
+        let epub_bytes = TxtToEpubConverter
+            .convert(txt)
+            .expect("TXT→EPUB should succeed");
+
+        let converter = EpubToDocxConverter;
+        let result = converter.convert(&epub_bytes).unwrap();
+
+        // Must be valid ZIP
+        assert!(result.len() > 4);
+        assert_eq!(result[0], 0x50); // P
+        assert_eq!(result[1], 0x4B); // K
+
+        // Verify content in DOCX
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(content.contains("Test Book"), "missing title 'Test Book'");
+        assert!(
+            content.contains("Some content here"),
+            "missing chapter content"
+        );
+    }
+
+    // ── Fb2ToDocx ──────────────────────────────────────────────────────
+
+    #[test]
+    fn test_fb2_to_docx_parse_error() {
+        let converter = Fb2ToDocxConverter;
+        let result = converter.convert(b"not an fb2 file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    #[test]
+    fn test_fb2_to_docx_format_strings() {
+        let converter = Fb2ToDocxConverter;
+        assert_eq!(converter.source_format(), "fb2");
+        assert_eq!(converter.target_format(), "docx");
+    }
+
+    #[test]
+    fn test_fb2_to_docx_basic() {
+        let fb2 = r#"<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0">
+  <description>
+    <title-info>
+      <genre>fiction</genre>
+      <author><first-name>Test</first-name><last-name>Author</last-name></author>
+      <book-title>FB2 to DOCX Test</book-title>
+      <lang>en</lang>
+    </title-info>
+  </description>
+  <body>
+    <section>
+      <title><p>Chapter One</p></title>
+      <p>First paragraph of the book.</p>
+      <p>Second paragraph of the book.</p>
+    </section>
+  </body>
+</FictionBook>"#;
+        let converter = Fb2ToDocxConverter;
+        let result = converter.convert(fb2.as_bytes()).unwrap();
+
+        // Must be valid ZIP
+        assert!(result.len() > 4);
+        assert_eq!(result[0], 0x50);
+        assert_eq!(result[1], 0x4B);
+
+        // Verify content in DOCX
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(content.contains("FB2 to DOCX Test"), "missing book title");
+        assert!(content.contains("Chapter One"), "missing section title");
+        assert!(
+            content.contains("First paragraph of the book"),
+            "missing first paragraph"
+        );
+        assert!(
+            content.contains("Second paragraph of the book"),
+            "missing second paragraph"
+        );
+    }
+
+    // ── DocxToEpub ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_docx_to_epub_parse_error() {
+        let converter = DocxToEpubConverter;
+        let result = converter.convert(b"not a docx file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    #[test]
+    fn test_docx_to_epub_format_strings() {
+        let converter = DocxToEpubConverter;
+        assert_eq!(converter.source_format(), "docx");
+        assert_eq!(converter.target_format(), "epub");
+    }
+
+    #[test]
+    fn test_docx_to_epub_basic() {
+        let docx = make_minimal_docx();
+        let converter = DocxToEpubConverter;
+        let result = converter.convert(&docx).unwrap();
+
+        assert!(is_epub_file(&result), "output should be valid EPUB");
+
+        let parsed = EpubParser::new().parse(&result).unwrap();
+        assert_eq!(parsed.version, "3.0");
+        assert!(
+            !parsed.chapters.is_empty(),
+            "should have at least one chapter"
+        );
+    }
+
+    #[test]
+    fn test_docx_to_epub_preserves_content() {
+        let docx = make_minimal_docx();
+        let converter = DocxToEpubConverter;
+        let epub_bytes = converter.convert(&docx).unwrap();
+
+        let parsed = EpubParser::new().parse(&epub_bytes).unwrap();
+        let chapter_text = strip_html_tags(&parsed.chapters[0].content);
+        assert!(
+            chapter_text.contains("Hello World"),
+            "missing 'Hello World' in EPUB output: {:?}",
+            chapter_text
+        );
+    }
+
+    #[test]
+    fn test_docx_to_epub_with_headings() {
+        let docx = make_docx_with_body(
+            r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p><w:pPr><w:pStyle val="Heading1"/></w:pPr><w:r><w:t>Chapter One</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Content of chapter one.</w:t></w:r></w:p>
+    <w:p><w:pPr><w:pStyle val="Heading1"/></w:pPr><w:r><w:t>Chapter Two</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Content of chapter two.</w:t></w:r></w:p>
+  </w:body>
+</w:document>"#,
+        );
+        let converter = DocxToEpubConverter;
+        let epub_bytes = converter.convert(&docx).unwrap();
+
+        let parsed = EpubParser::new().parse(&epub_bytes).unwrap();
+        assert!(
+            parsed.chapters.len() >= 2,
+            "should have at least 2 chapters from headings, got {}",
+            parsed.chapters.len()
+        );
+    }
+
+    // ── Cross-format converter format strings (new converters) ─────────
+
+    #[test]
+    fn test_new_cross_format_converter_format_strings() {
+        let epub_docx = EpubToDocxConverter;
+        assert_eq!(epub_docx.source_format(), "epub");
+        assert_eq!(epub_docx.target_format(), "docx");
+
+        let fb2_docx = Fb2ToDocxConverter;
+        assert_eq!(fb2_docx.source_format(), "fb2");
+        assert_eq!(fb2_docx.target_format(), "docx");
+
+        let docx_epub = DocxToEpubConverter;
+        assert_eq!(docx_epub.source_format(), "docx");
+        assert_eq!(docx_epub.target_format(), "epub");
     }
 }

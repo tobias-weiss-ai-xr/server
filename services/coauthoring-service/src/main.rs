@@ -2,6 +2,10 @@
 //!
 //! Manages WebSocket connections, operational transforms, and
 //! document lock/sync for multi-user editing sessions.
+//!
+//! Session metadata is persisted to SQLite via `SessionRepository`.
+//! Broadcast channels (tokio::sync::broadcast) are ephemeral and
+//! reconstructed at runtime — they are not persisted.
 
 use axum::{
     extract::{Path, State, WebSocketUpgrade, ws::{Message, WebSocket}},
@@ -11,17 +15,18 @@ use axum::{
 };
 use chrono::Utc;
 use futures_util::{SinkExt, StreamExt};
+use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::{broadcast, Mutex};
 
 /// A connected editor session.
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct EditorSession {
     session_id: String,
     document_id: String,
     created_at: String,
+    last_activity: String,
     participants: Vec<Participant>,
 }
 
@@ -57,12 +62,129 @@ struct EditOperation {
     timestamp: String,
 }
 
+/// SQLite-backed session repository for co-authoring sessions.
+struct SessionRepository {
+    conn: Connection,
+}
+
+impl SessionRepository {
+    /// Create a new repository backed by an in-memory database.
+    fn new_in_memory() -> Result<Self, rusqlite::Error> {
+        let conn = Connection::open_in_memory()?;
+        let repo = Self { conn };
+        repo.init_table()?;
+        Ok(repo)
+    }
+
+    /// Create a new repository backed by a file database.
+    fn new_file(path: &str) -> Result<Self, rusqlite::Error> {
+        let conn = Connection::open(path)?;
+        let repo = Self { conn };
+        repo.init_table()?;
+        Ok(repo)
+    }
+
+    /// Create the editor_sessions table if it does not exist.
+    fn init_table(&self) -> Result<(), rusqlite::Error> {
+        self.conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS editor_sessions (
+                id              TEXT PRIMARY KEY,
+                document_id     TEXT NOT NULL,
+                created_at      TEXT NOT NULL,
+                last_activity   TEXT NOT NULL,
+                participants    TEXT NOT NULL DEFAULT '[]'
+            );",
+        )?;
+        Ok(())
+    }
+
+    /// Insert a new session into the database.
+    fn insert(&self, session: &EditorSession) -> Result<(), rusqlite::Error> {
+        let participants_json = serde_json::to_string(&session.participants)
+            .unwrap_or_else(|_| "[]".to_string());
+        self.conn.execute(
+            "INSERT INTO editor_sessions (id, document_id, created_at, last_activity, participants)
+             VALUES (?1, ?2, ?3, ?4, ?5)",
+            params![
+                session.session_id,
+                session.document_id,
+                session.created_at,
+                session.last_activity,
+                participants_json,
+            ],
+        )?;
+        Ok(())
+    }
+
+    /// Get a session by ID.
+    fn get(&self, id: &str) -> Result<Option<EditorSession>, rusqlite::Error> {
+        let mut stmt = self.conn.prepare(
+            "SELECT id, document_id, created_at, last_activity, participants
+             FROM editor_sessions WHERE id = ?1",
+        )?;
+        let mut rows = stmt.query(params![id])?;
+        match rows.next()? {
+            Some(row) => Ok(Some(Self::row_to_session(row)?)),
+            None => Ok(None),
+        }
+    }
+
+    /// List all sessions.
+    fn get_all(&self) -> Result<Vec<EditorSession>, rusqlite::Error> {
+        let mut stmt = self.conn.prepare(
+            "SELECT id, document_id, created_at, last_activity, participants
+             FROM editor_sessions",
+        )?;
+        let rows = stmt.query_map([], |row| {
+            Ok(Self::row_to_session(row).expect("failed to read session row"))
+        })?;
+        let mut sessions = Vec::new();
+        for row in rows {
+            sessions.push(row?);
+        }
+        Ok(sessions)
+    }
+
+    /// Update a session (e.g., after a participant joins).
+    fn update(&self, session: &EditorSession) -> Result<bool, rusqlite::Error> {
+        let participants_json = serde_json::to_string(&session.participants)
+            .unwrap_or_else(|_| "[]".to_string());
+        let count = self.conn.execute(
+            "UPDATE editor_sessions SET last_activity = ?1, participants = ?2 WHERE id = ?3",
+            params![session.last_activity, participants_json, session.session_id],
+        )?;
+        Ok(count > 0)
+    }
+
+    /// Delete a session by ID.
+    fn delete(&self, id: &str) -> Result<bool, rusqlite::Error> {
+        let count = self.conn.execute(
+            "DELETE FROM editor_sessions WHERE id = ?1",
+            params![id],
+        )?;
+        Ok(count > 0)
+    }
+
+    fn row_to_session(row: &rusqlite::Row<'_>) -> Result<EditorSession, rusqlite::Error> {
+        let participants_str: String = row.get(4)?;
+        let participants: Vec<Participant> =
+            serde_json::from_str(&participants_str).unwrap_or_default();
+        Ok(EditorSession {
+            session_id: row.get(0)?,
+            document_id: row.get(1)?,
+            created_at: row.get(2)?,
+            last_activity: row.get(3)?,
+            participants,
+        })
+    }
+}
+
 /// Application state.
 #[derive(Clone)]
 struct AppState {
-    sessions: Arc<Mutex<HashMap<String, EditorSession>>>,
-    /// Broadcast channels per session for real-time edits.
-    edit_channels: Arc<Mutex<HashMap<String, broadcast::Sender<String>>>>,
+    sessions: Arc<Mutex<SessionRepository>>,
+    /// Broadcast channels per session for real-time edits (ephemeral, not persisted).
+    edit_channels: Arc<Mutex<std::collections::HashMap<String, broadcast::Sender<String>>>>,
 }
 
 /// Health check response.
@@ -131,23 +253,35 @@ async fn create_session(
     }
 
     let session_id = uuid::Uuid::new_v4().to_string();
+    let now = Utc::now().to_rfc3339();
     let session = EditorSession {
         session_id: session_id.clone(),
         document_id: payload.document_id.clone(),
-        created_at: Utc::now().to_rfc3339(),
+        created_at: now.clone(),
+        last_activity: now.clone(),
         participants: Vec::new(),
     };
 
-    // Create broadcast channel for this session
+    // Persist session to SQLite
+    {
+        let repo = state.sessions.lock().await;
+        repo.insert(&session).map_err(|e| {
+            tracing::error!(error = %e, "failed to insert session");
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: "Failed to create session".into(),
+                    code: 500,
+                }),
+            )
+        })?;
+    }
+
+    // Create ephemeral broadcast channel for this session
     let (tx, _) = broadcast::channel::<String>(256);
     {
         let mut channels = state.edit_channels.lock().await;
         channels.insert(session_id.clone(), tx);
-    }
-
-    {
-        let mut sessions = state.sessions.lock().await;
-        sessions.insert(session_id.clone(), session);
     }
 
     tracing::info!(
@@ -169,17 +303,26 @@ async fn join_session(
     Path(session_id): Path<String>,
     Json(payload): Json<JoinSessionRequest>,
 ) -> Result<Json<JoinSessionResponse>, (StatusCode, Json<ErrorResponse>)> {
-    let mut sessions = state.sessions.lock().await;
-
-    let session = sessions
-        .get_mut(&session_id)
+    let mut session = {
+        let repo = state.sessions.lock().await;
+        repo.get(&session_id).map_err(|e| {
+            tracing::error!(error = %e, "database error getting session");
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: "Internal server error".into(),
+                    code: 500,
+                }),
+            )
+        })?
         .ok_or_else(|| (
             StatusCode::NOT_FOUND,
             Json(ErrorResponse {
                 error: format!("Session {} not found", session_id),
                 code: 404,
             }),
-        ))?;
+        ))?
+    };
 
     let color_index = session.participants.len() % EDITOR_COLORS.len();
     let username = payload.username.clone();
@@ -191,7 +334,23 @@ async fn join_session(
     };
 
     session.participants.push(participant.clone());
+    session.last_activity = Utc::now().to_rfc3339();
     let participants = session.participants.clone();
+
+    // Persist updated session
+    {
+        let repo = state.sessions.lock().await;
+        repo.update(&session).map_err(|e| {
+            tracing::error!(error = %e, "failed to update session");
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: "Failed to update session".into(),
+                    code: 500,
+                }),
+            )
+        })?;
+    }
 
     tracing::info!(
         session_id = %session_id,
@@ -211,27 +370,49 @@ async fn get_session(
     State(state): State<Arc<AppState>>,
     Path(session_id): Path<String>,
 ) -> Result<Json<EditorSession>, (StatusCode, Json<ErrorResponse>)> {
-    let sessions = state.sessions.lock().await;
+    let repo = state.sessions.lock().await;
 
-    match sessions.get(&session_id) {
-        Some(session) => Ok(Json(session.clone())),
-        None => Err((
+    match repo.get(&session_id) {
+        Ok(Some(session)) => Ok(Json(session)),
+        Ok(None) => Err((
             StatusCode::NOT_FOUND,
             Json(ErrorResponse {
                 error: format!("Session {} not found", session_id),
                 code: 404,
             }),
         )),
+        Err(e) => {
+            tracing::error!(error = %e, "database error getting session");
+            Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: "Internal server error".into(),
+                    code: 500,
+                }),
+            ))
+        }
     }
 }
 
 /// GET /sessions — list all active sessions.
 async fn list_sessions(
     State(state): State<Arc<AppState>>,
-) -> Json<Vec<EditorSession>> {
-    let sessions = state.sessions.lock().await;
-    let all: Vec<EditorSession> = sessions.values().cloned().collect();
-    Json(all)
+) -> Result<Json<Vec<EditorSession>>, (StatusCode, Json<ErrorResponse>)> {
+    let repo = state.sessions.lock().await;
+
+    match repo.get_all() {
+        Ok(all) => Ok(Json(all)),
+        Err(e) => {
+            tracing::error!(error = %e, "database error listing sessions");
+            Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: "Internal server error".into(),
+                    code: 500,
+                }),
+            ))
+        }
+    }
 }
 
 /// GET /ws/{session_id} — WebSocket upgrade for real-time editing.
@@ -245,7 +426,7 @@ async fn ws_upgrade(
 
 /// Handle an individual WebSocket connection.
 async fn handle_ws(mut socket: WebSocket, state: Arc<AppState>, session_id: String) {
-    // Subscribe to the session's broadcast channel
+    // Subscribe to the session's ephemeral broadcast channel
     let rx = {
         let channels = state.edit_channels.lock().await;
         channels
@@ -317,9 +498,14 @@ fn app(state: Arc<AppState>) -> Router {
 async fn main() {
     tracing_subscriber::fmt::init();
 
+    let db_path = std::env::var("DATABASE_PATH")
+        .unwrap_or_else(|_| "coauthoring_sessions.db".into());
+    let repo = SessionRepository::new_file(&db_path)
+        .expect("failed to open coauthoring database");
+
     let state = Arc::new(AppState {
-        sessions: Arc::new(Mutex::new(HashMap::new())),
-        edit_channels: Arc::new(Mutex::new(HashMap::new())),
+        sessions: Arc::new(Mutex::new(repo)),
+        edit_channels: Arc::new(Mutex::new(std::collections::HashMap::new())),
     });
     let app = app(state);
 
@@ -335,4 +521,167 @@ async fn main() {
         .await
         .expect("failed to bind");
     axum::serve(listener, app).await.expect("server error");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Helper: create a fresh in-memory repository.
+    fn fresh_repo() -> SessionRepository {
+        SessionRepository::new_in_memory().expect("in-memory db")
+    }
+
+    /// Helper: create a sample session.
+    fn sample_session(id: &str) -> EditorSession {
+        EditorSession {
+            session_id: id.to_string(),
+            document_id: "doc-123".to_string(),
+            created_at: "2026-04-17T00:00:00+00:00".to_string(),
+            last_activity: "2026-04-17T00:00:00+00:00".to_string(),
+            participants: vec![
+                Participant {
+                    user_id: "user-1".to_string(),
+                    username: "alice".to_string(),
+                    color: "#E74C3C".to_string(),
+                    cursor_position: None,
+                },
+            ],
+        }
+    }
+
+    #[test]
+    fn test_insert_and_get() {
+        let repo = fresh_repo();
+        let session = sample_session("sess-1");
+
+        repo.insert(&session).expect("insert");
+
+        let fetched = repo.get("sess-1").expect("get").expect("found");
+        assert_eq!(fetched.session_id, "sess-1");
+        assert_eq!(fetched.document_id, "doc-123");
+        assert_eq!(fetched.participants.len(), 1);
+        assert_eq!(fetched.participants[0].username, "alice");
+    }
+
+    #[test]
+    fn test_get_nonexistent() {
+        let repo = fresh_repo();
+        let result = repo.get("nope").expect("get");
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_list_sessions() {
+        let repo = fresh_repo();
+        repo.insert(&sample_session("s1")).unwrap();
+        repo.insert(&sample_session("s2")).unwrap();
+
+        let all = repo.get_all().unwrap();
+        assert_eq!(all.len(), 2);
+    }
+
+    #[test]
+    fn test_delete_session() {
+        let repo = fresh_repo();
+        repo.insert(&sample_session("s1")).unwrap();
+
+        let deleted = repo.delete("s1").unwrap();
+        assert!(deleted);
+
+        let remaining = repo.get_all().unwrap();
+        assert!(remaining.is_empty());
+
+        let deleted_again = repo.delete("s1").unwrap();
+        assert!(!deleted_again);
+    }
+
+    #[test]
+    fn test_update_session() {
+        let repo = fresh_repo();
+        // Insert first, then update
+        repo.insert(&sample_session("s1")).unwrap();
+
+        let mut session = sample_session("s1");
+        session.participants.push(Participant {
+            user_id: "user-2".to_string(),
+            username: "bob".to_string(),
+            color: "#3498DB".to_string(),
+            cursor_position: None,
+        });
+        session.last_activity = "2026-04-17T01:00:00+00:00".to_string();
+
+        let updated = repo.update(&session).unwrap();
+        assert!(updated);
+
+        let fetched = repo.get("s1").unwrap().unwrap();
+        assert_eq!(fetched.participants.len(), 2);
+        assert_eq!(fetched.participants[1].username, "bob");
+        assert_eq!(fetched.last_activity, "2026-04-17T01:00:00+00:00");
+    }
+
+    #[test]
+    fn test_persistence_across_restarts() {
+        // Insert data
+        let repo = fresh_repo();
+        repo.insert(&sample_session("persist-1")).unwrap();
+
+        // Simulate restart: re-init table is idempotent
+        repo.init_table().expect("re-init should be idempotent");
+
+        // Verify data still there
+        let fetched = repo.get("persist-1").unwrap().expect("should still exist");
+        assert_eq!(fetched.document_id, "doc-123");
+        assert_eq!(fetched.participants.len(), 1);
+    }
+
+    #[test]
+    fn test_file_persistence_across_connections() {
+        let dir = tempfile::tempdir().unwrap();
+        let db_path = dir.path().join("test_coauthoring.db");
+        let path_str = db_path.to_str().unwrap();
+
+        // First connection: insert
+        {
+            let repo = SessionRepository::new_file(path_str).unwrap();
+            repo.insert(&sample_session("file-sess")).unwrap();
+        }
+
+        // Second connection (simulating restart): read
+        {
+            let repo = SessionRepository::new_file(path_str).unwrap();
+            let fetched = repo.get("file-sess").unwrap().expect("found after restart");
+            assert_eq!(fetched.session_id, "file-sess");
+            assert_eq!(fetched.document_id, "doc-123");
+            assert_eq!(fetched.participants.len(), 1);
+            assert_eq!(fetched.participants[0].username, "alice");
+        }
+    }
+
+    #[test]
+    fn test_insert_duplicate_id_fails() {
+        let repo = fresh_repo();
+        let session = sample_session("dup-1");
+
+        repo.insert(&session).unwrap();
+        // Inserting same ID again should fail (PRIMARY KEY constraint)
+        let result = repo.insert(&session);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_empty_participants_serialized() {
+        let repo = fresh_repo();
+        let session = EditorSession {
+            session_id: "empty-part".to_string(),
+            document_id: "doc-x".to_string(),
+            created_at: "2026-04-17T00:00:00+00:00".to_string(),
+            last_activity: "2026-04-17T00:00:00+00:00".to_string(),
+            participants: Vec::new(),
+        };
+
+        repo.insert(&session).unwrap();
+        let fetched = repo.get("empty-part").unwrap().unwrap();
+        assert!(fetched.participants.is_empty());
+    }
 }

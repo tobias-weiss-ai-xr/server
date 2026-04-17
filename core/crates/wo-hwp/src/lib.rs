@@ -7,9 +7,11 @@
 pub mod model;
 pub mod parser;
 pub mod roundtrip;
+pub mod serializer;
 
 pub use model::HwpDocument;
 pub use parser::HwpParser;
+pub use serializer::HwpSerializer;
 
 pub const FORMAT_NAME: &str = "hwp";
 

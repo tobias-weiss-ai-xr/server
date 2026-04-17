@@ -13,13 +13,15 @@ use std::time::Instant;
 
 use crate::converter::{error_result, success_result, unsupported_result, ConverterRegistry};
 use crate::converters::{
-    DjvuToTxtConverter, DocxToHtmlConverter, DocxToTxtConverter, EpubToHtmlConverter,
-    EpubToTxtConverter, Fb2ToTxtConverter, HtmlToDocxConverter, HtmlToEpubConverter,
+    DjvuToTxtConverter, DocxToEpubConverter, DocxToHtmlConverter, DocxToOdtConverter,
+    DocxToTxtConverter, EpubToDocxConverter, EpubToHtmlConverter, EpubToTxtConverter,
+    Fb2ToDocxConverter, Fb2ToTxtConverter, HtmlToDocxConverter, HtmlToEpubConverter,
     HtmlToFb2Converter, HtmlToOdtConverter, HtmlToRtfConverter, HtmlToTxtConverter,
-    HwpToTxtConverter, OdtToHtmlConverter, OdtToTxtConverter, OfdToHtmlConverter,
-    OfdToTxtConverter, RtfToHtmlConverter, RtfToTxtConverter, TxtToDocxConverter,
-    TxtToEpubConverter, TxtToFb2Converter, TxtToHtmlConverter, TxtToOdtConverter,
-    TxtToRtfConverter, XpsToHtmlConverter, XpsToTxtConverter,
+    HwpToTxtConverter, OdtToDocxConverter, OdtToHtmlConverter, OdtToTxtConverter,
+    OfdToHtmlConverter, OfdToTxtConverter, RtfToDocxConverter, RtfToHtmlConverter,
+    RtfToTxtConverter, TxtToDocxConverter, TxtToEpubConverter, TxtToFb2Converter,
+    TxtToHtmlConverter, TxtToOdtConverter, TxtToRtfConverter, XpsToHtmlConverter,
+    XpsToTxtConverter,
 };
 use crate::model::{ConversionOutput, ConversionResult, ConversionStatus};
 use crate::FormatConverter;
@@ -74,6 +76,12 @@ impl ConversionRouter {
         registry.register(HtmlToEpubConverter);
         registry.register(TxtToFb2Converter);
         registry.register(HtmlToFb2Converter);
+        registry.register(DocxToOdtConverter);
+        registry.register(OdtToDocxConverter);
+        registry.register(RtfToDocxConverter);
+        registry.register(EpubToDocxConverter);
+        registry.register(Fb2ToDocxConverter);
+        registry.register(DocxToEpubConverter);
         Self { registry }
     }
 
@@ -317,6 +325,14 @@ mod tests {
         assert!(router.is_supported("html", "epub"));
         assert!(router.is_supported("txt", "fb2"));
         assert!(router.is_supported("html", "fb2"));
+        // New cross-format direct converters
+        assert!(router.is_supported("docx", "odt"));
+        assert!(router.is_supported("odt", "docx"));
+        assert!(router.is_supported("rtf", "docx"));
+        // New cross-format direct converters (batch 2)
+        assert!(router.is_supported("epub", "docx"));
+        assert!(router.is_supported("fb2", "docx"));
+        assert!(router.is_supported("docx", "epub"));
         // Pairs with no converter should be false
         assert!(!router.is_supported("docx", "pdf"));
         assert!(!router.is_supported("xlsx", "pdf"));
@@ -435,10 +451,16 @@ mod tests {
         assert!(pairs.contains(&("html", "epub")));
         assert!(pairs.contains(&("txt", "fb2")));
         assert!(pairs.contains(&("html", "fb2")));
+        assert!(pairs.contains(&("docx", "odt")));
+        assert!(pairs.contains(&("odt", "docx")));
+        assert!(pairs.contains(&("rtf", "docx")));
+        assert!(pairs.contains(&("epub", "docx")));
+        assert!(pairs.contains(&("fb2", "docx")));
+        assert!(pairs.contains(&("docx", "epub")));
         assert_eq!(
             pairs.len(),
-            27,
-            "expected 27 registered converters, got {}",
+            33,
+            "expected 33 registered converters, got {}",
             pairs.len()
         );
     }
@@ -453,12 +475,10 @@ mod tests {
         assert_eq!(result.status, ConversionStatus::Success);
         let output = result.output.unwrap();
         assert_eq!(output.format, "docx");
-        // Chain is either rtf→html→docx or rtf→txt→docx (BFS order varies).
-        // Either way, the DOCX output should be valid (non-empty).
+        // Direct converter exists now: rtf→docx
         assert!(!output.data.is_empty());
-        // Verify the conversion path exists with 3 nodes (source → intermediate → target)
         let path = router.conversion_path("rtf", "docx");
-        assert_eq!(path.len(), 3);
+        assert_eq!(path.len(), 2); // direct: rtf → docx
         assert_eq!(path.first().unwrap(), "rtf");
         assert_eq!(path.last().unwrap(), "docx");
     }
@@ -473,9 +493,11 @@ mod tests {
         assert_eq!(result.status, ConversionStatus::Success);
         let output = result.output.unwrap();
         assert_eq!(output.format, "html");
-        // Chain is fb2→txt→html
+        // Chain is fb2→docx→html (direct fb2→docx converter)
         let path = router.conversion_path("fb2", "html");
-        assert_eq!(path, vec!["fb2", "txt", "html"]);
+        assert!(path.len() >= 3);
+        assert_eq!(path.first().unwrap(), "fb2");
+        assert_eq!(path.last().unwrap(), "html");
     }
 
     #[test]
@@ -532,8 +554,11 @@ mod tests {
     #[test]
     fn test_is_supported_chain() {
         let router = ConversionRouter::new();
-        // These pairs have no direct converter but should be reachable via chains
-        assert!(router.is_supported("rtf", "docx")); // rtf→html→docx
+        // Direct converters (new cross-format)
+        assert!(router.is_supported("rtf", "docx")); // direct: rtf→docx
+        assert!(router.is_supported("docx", "odt")); // direct: docx→odt
+        assert!(router.is_supported("odt", "docx")); // direct: odt→docx
+                                                     // Chain converters
         assert!(router.is_supported("rtf", "odt")); // rtf→html→odt
         assert!(router.is_supported("fb2", "html")); // fb2→txt→html
         assert!(router.is_supported("hwp", "html")); // hwp→txt→html
@@ -606,13 +631,11 @@ mod tests {
     #[test]
     fn test_conversion_path_chained() {
         let router = ConversionRouter::new();
-        // RTF→DOCX: 2-step chain via either html or txt (BFS order varies)
+        // RTF→DOCX: now a direct converter exists
         let path = router.conversion_path("rtf", "docx");
-        assert_eq!(path.len(), 3);
+        assert_eq!(path.len(), 2);
         assert_eq!(path.first().unwrap(), "rtf");
         assert_eq!(path.last().unwrap(), "docx");
-        let intermediate = &path[1];
-        assert!(*intermediate == "html" || *intermediate == "txt");
 
         // RTF→ODT: 2-step chain via either html or txt
         let path = router.conversion_path("rtf", "odt");
@@ -620,8 +643,22 @@ mod tests {
         assert_eq!(path.first().unwrap(), "rtf");
         assert_eq!(path.last().unwrap(), "odt");
 
-        // FB2→HTML: fb2→txt→html (only path since fb2 only has fb2→txt edge)
+        // DOCX→ODT: now a direct converter exists
+        let path = router.conversion_path("docx", "odt");
+        assert_eq!(path.len(), 2);
+        assert_eq!(path.first().unwrap(), "docx");
+        assert_eq!(path.last().unwrap(), "odt");
+
+        // ODT→DOCX: now a direct converter exists
+        let path = router.conversion_path("odt", "docx");
+        assert_eq!(path.len(), 2);
+        assert_eq!(path.first().unwrap(), "odt");
+        assert_eq!(path.last().unwrap(), "docx");
+
+        // FB2→HTML: now has a direct path (fb2→docx→html or fb2→txt→html)
         let path = router.conversion_path("fb2", "html");
-        assert_eq!(path, vec!["fb2", "txt", "html"]);
+        assert!(path.len() >= 3);
+        assert_eq!(path.first().unwrap(), "fb2");
+        assert_eq!(path.last().unwrap(), "html");
     }
 }

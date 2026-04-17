@@ -1,5 +1,4 @@
 /// Text encoding types used across format parsers.
-
 /// BOM (Byte Order Mark) detection result.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Bom {
@@ -57,21 +56,15 @@ impl Encoding {
 }
 
 /// Line ending normalization.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LineEnding {
     /// Unix-style: LF (\n)
     Lf,
     /// Windows-style: CRLF (\r\n)
+    #[default]
     Crlf,
     /// Classic Mac-style: CR (\r)
     Cr,
-}
-
-impl Default for LineEnding {
-    fn default() -> Self {
-        // Default to CRLF for compatibility with the C++ writer
-        LineEnding::Crlf
-    }
 }
 
 /// Split a byte slice into lines, handling all three line ending styles.

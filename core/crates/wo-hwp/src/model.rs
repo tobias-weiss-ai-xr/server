@@ -89,47 +89,32 @@ pub struct HwpHeader {
 }
 
 /// Platform the HWP file was created on.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum HwpPlatform {
     Windows,
     Mac,
     Linux,
+    #[default]
     Unknown,
 }
 
-impl Default for HwpPlatform {
-    fn default() -> Self {
-        Self::Unknown
-    }
-}
-
 /// Compression method used in the HWP file.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum HwpCompression {
+    #[default]
     None,
     Hwp5,
     Zip,
     Unknown,
 }
 
-impl Default for HwpCompression {
-    fn default() -> Self {
-        Self::None
-    }
-}
-
 /// Encryption method used in the HWP file.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum HwpEncryption {
+    #[default]
     None,
     Hwp,
     Unknown,
-}
-
-impl Default for HwpEncryption {
-    fn default() -> Self {
-        Self::None
-    }
 }
 
 /// A paragraph in HWP document.

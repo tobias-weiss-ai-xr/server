@@ -129,7 +129,7 @@ impl DjvuParser {
 
             // Advance past chunk data (IFF chunks are padded to even boundaries)
             offset += size as usize;
-            if offset % 2 != 0 {
+            if !offset.is_multiple_of(2) {
                 offset += 1;
             }
         }

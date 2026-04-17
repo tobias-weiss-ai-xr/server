@@ -18,7 +18,7 @@ enum RtfToken {
 }
 
 /// Current character formatting state during parsing.
-#[derive(Debug, Clone)]
+#[derive(Default, Debug, Clone)]
 struct FormatState {
     bold: bool,
     italic: bool,
@@ -29,22 +29,6 @@ struct FormatState {
     font_index: Option<u32>,
     font_size: Option<u32>,
     color_index: Option<u32>,
-}
-
-impl Default for FormatState {
-    fn default() -> Self {
-        Self {
-            bold: false,
-            italic: false,
-            underline: false,
-            strike: false,
-            superscript: false,
-            subscript: false,
-            font_index: None,
-            font_size: None,
-            color_index: None,
-        }
-    }
 }
 
 /// Current paragraph formatting state during parsing.
@@ -263,7 +247,7 @@ impl RtfParser {
     fn flush_control_word_text(
         word: &str,
         param: Option<i32>,
-        state_stack: &mut Vec<FormatState>,
+        state_stack: &mut [FormatState],
         para: &mut ParagraphState,
         current_inlines: &mut Vec<RtfInline>,
         blocks: &mut Vec<RtfBlock>,
@@ -451,13 +435,11 @@ impl RtfParser {
                     }
                     _ => {}
                 },
-                RtfToken::Text(t) => {
-                    if current_font.name.is_empty() {
-                        // First text in a font def is the font name
-                        let name = t.trim_end_matches(';').to_string();
-                        if !name.is_empty() {
-                            current_font.name = name;
-                        }
+                RtfToken::Text(t) if current_font.name.is_empty() => {
+                    // First text in a font def is the font name
+                    let name = t.trim_end_matches(';').to_string();
+                    if !name.is_empty() {
+                        current_font.name = name;
                     }
                 }
                 _ => {}
@@ -495,9 +477,9 @@ impl RtfParser {
                     depth -= 1;
                 }
                 RtfToken::ControlWord { word, param } => match word.as_str() {
-                    "red" => r = param.unwrap_or(0).min(255).max(0) as u8,
-                    "green" => g = param.unwrap_or(0).min(255).max(0) as u8,
-                    "blue" => b = param.unwrap_or(0).min(255).max(0) as u8,
+                    "red" => r = param.unwrap_or(0).clamp(0, 255) as u8,
+                    "green" => g = param.unwrap_or(0).clamp(0, 255) as u8,
+                    "blue" => b = param.unwrap_or(0).clamp(0, 255) as u8,
                     _ => {}
                 },
                 RtfToken::Text(t) if t.contains(';') => {
@@ -572,8 +554,12 @@ impl RtfParser {
 
     fn group_depth(&self, tokens: &[RtfToken], start: usize, end: usize) -> i32 {
         let mut depth = 0i32;
-        for j in start..=end.min(tokens.len() - 1) {
-            match &tokens[j] {
+        for token in tokens
+            .iter()
+            .take(end.min(tokens.len() - 1) + 1)
+            .skip(start)
+        {
+            match token {
                 RtfToken::GroupOpen => depth += 1,
                 RtfToken::GroupClose => depth -= 1,
                 _ => {}

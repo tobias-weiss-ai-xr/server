@@ -60,12 +60,12 @@ impl RtfSerializer {
             if let Some(ref title) = info.title {
                 out.push_str("{\\title ");
                 out.push_str(title);
-                out.push_str("}");
+                out.push('}');
             }
             if let Some(ref author) = info.author {
                 out.push_str("{\\author ");
                 out.push_str(author);
-                out.push_str("}");
+                out.push('}');
             }
             out.push_str("}\n");
         }

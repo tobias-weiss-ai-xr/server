@@ -135,12 +135,14 @@ impl OfdParser {
         let doc_info = root.children().find(|c| c.has_tag_name("DocInfo"));
 
         if let Some(info) = doc_info {
-            let mut body = OfdDocBody::default();
-            body.doc_id = self.child_text(&info, "DocID");
-            body.title = self.child_text(&info, "Title");
-            body.author = self.child_text(&info, "Author");
-            body.creation_date = self.child_text(&info, "CreationDate");
-            body.mod_date = self.child_text(&info, "ModDate");
+            let body = OfdDocBody {
+                doc_id: self.child_text(&info, "DocID"),
+                title: self.child_text(&info, "Title"),
+                author: self.child_text(&info, "Author"),
+                creation_date: self.child_text(&info, "CreationDate"),
+                mod_date: self.child_text(&info, "ModDate"),
+                ..Default::default()
+            };
             Ok(Some(body))
         } else {
             Ok(None)

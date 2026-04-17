@@ -791,10 +791,8 @@ impl OdfParser {
                         OdfTextContent::Heading(h) => {
                             parts.push(format!("{} {}", "#".repeat(h.level as usize), h.text));
                         }
-                        OdfTextContent::Paragraph(p) => {
-                            if !p.text.trim().is_empty() {
-                                parts.push(p.text.clone());
-                            }
+                        OdfTextContent::Paragraph(p) if !p.text.trim().is_empty() => {
+                            parts.push(p.text.clone());
                         }
                         _ => {}
                     }

@@ -60,7 +60,7 @@ impl TxtParser {
 
         let (bom, bom_size) = Bom::detect(data);
         let had_bom = bom_size > 0;
-        let encoding = self.force_encoding.unwrap_or_else(|| match bom {
+        let encoding = self.force_encoding.unwrap_or(match bom {
             Bom::Utf8 => Encoding::Utf8,
             Bom::Utf16Le => Encoding::Utf16Le,
             Bom::Utf16Be => Encoding::Utf16Be,

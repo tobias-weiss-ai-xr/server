@@ -159,7 +159,7 @@ impl HtmlParser {
                 let rest = &html[i + 1..];
                 if rest.starts_with('#')
                     && (rest[1..].starts_with(|c: char| c.is_ascii_digit())
-                        || rest[1..].starts_with(|c: char| c == 'x' || c == 'X'))
+                        || rest[1..].starts_with(|c: char| ['x', 'X'].contains(&c)))
                     && rest.contains(';')
                 {
                     out.push('&');

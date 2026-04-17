@@ -5,7 +5,7 @@ use chrono::{DateTime, Utc};
 use std::path::{Path, PathBuf};
 use tokio::fs;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use sha2::{Digest, Sha256};
+use sha2::Sha256;
 
 /// WebDAV resource information.
 #[derive(Debug, Clone)]
@@ -294,6 +294,7 @@ impl FileSystem {
         }
 
         if full_source.is_dir() {
+            std::fs::create_dir_all(&full_dest)?;
             copy_dir_recursive(&full_source, &full_dest)?;
         } else {
             fs::copy(&full_source, &full_dest).await?;
@@ -344,7 +345,7 @@ impl FileSystem {
 
             if file_type.is_dir() {
                 std::fs::create_dir_all(&dst_path)?;
-                copy_dir_recursive(src, dst)?;
+                copy_dir_recursive(&src_path, &dst_path)?;
             } else {
                 std::fs::copy(&src_path, &dst_path)?;
             }

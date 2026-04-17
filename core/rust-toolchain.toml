@@ -1,0 +1,3 @@
+[toolchain]
+# Nightly required: rustc 1.94.1 (stable) hits ICE on wo-pdf and wo-webdav.
+channel = "nightly"

@@ -284,7 +284,8 @@ async fn main() {
 
     let routes = vec![
         ServiceRoute { path_prefix: "/auth", upstream: identity_url, strip_prefix: false, requires_auth: false },
-        ServiceRoute { path_prefix: "/files", upstream: storage_url, strip_prefix: false, requires_auth: true },
+        ServiceRoute { path_prefix: "/files", upstream: storage_url.clone(), strip_prefix: false, requires_auth: true },
+        ServiceRoute { path_prefix: "/api/storage", upstream: storage_url, strip_prefix: true, requires_auth: true },
         ServiceRoute { path_prefix: "/convert", upstream: conversion_url.clone(), strip_prefix: false, requires_auth: true },
         ServiceRoute { path_prefix: "/jobs", upstream: conversion_url, strip_prefix: false, requires_auth: true },
         ServiceRoute { path_prefix: "/sessions", upstream: coauthoring_url, strip_prefix: false, requires_auth: true },

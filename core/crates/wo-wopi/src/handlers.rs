@@ -209,8 +209,8 @@ pub async fn wopi_operation<S: StorageBackend>(
             unlock_file(State(state), Path(file_id), Query(params), headers, body).await
         }
         Ok(op) => Err(WopiError::InvalidRequest(format!(
-            "Operation {} not yet implemented",
-            format!("{:?}", op)
+            "Operation {:?} not yet implemented",
+            op
         ))),
         Err(e) => Err(WopiError::InvalidRequest(format!("Invalid WOPI override: {}", e))),
     }

@@ -136,10 +136,10 @@ impl FontLoader {
         if data.len() < 4 {
             return false;
         }
-        match &data[..4] {
-            [0x00, 0x01, 0x00, 0x00] | b"true" | b"OTTO" | b"wOFF" | b"wOF2" => true,
-            _ => false,
-        }
+        matches!(
+            &data[..4],
+            [0x00, 0x01, 0x00, 0x00] | b"true" | b"OTTO" | b"wOFF" | b"wOF2"
+        )
     }
 
     /// Detect the font format from magic bytes.

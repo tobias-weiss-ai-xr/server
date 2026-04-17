@@ -33,7 +33,7 @@ pub struct Prop {
 }
 
 /// Represents a resource type (collection or empty for files)
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum ResourceType {
     /// Collection (directory)
     #[serde(rename = "collection")]
@@ -112,6 +112,7 @@ pub struct DavResponse {
 
 /// Represents a WebDAV multistatus response
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename = "multistatus")]
 pub struct MultiStatus {
     /// List of resource responses
     #[serde(rename = "response")]

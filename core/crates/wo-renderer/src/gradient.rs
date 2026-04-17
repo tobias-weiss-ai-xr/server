@@ -172,8 +172,7 @@ impl Gradient {
                 // Project point onto line
                 let px = x - start_x;
                 let py = y - start_y;
-                let t = (px * dx + py * dy) / len_sq;
-                t
+                (px * dx + py * dy) / len_sq
             }
             GradientType::Radial {
                 center_x,

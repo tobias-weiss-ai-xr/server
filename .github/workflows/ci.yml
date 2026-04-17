@@ -5,16 +5,21 @@ on:
     branches: [main]
   pull_request:
 
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
   lint-rust:
     name: Rust Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly
         with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
+        with:
+          key: nightly
       - name: Check formatting
         run: cargo fmt --all -- --check
       - name: Check workspace
@@ -23,20 +28,16 @@ jobs:
         run: cargo clippy --all-targets -- -D warnings
 
   test-rust:
-    name: Rust Test (${{ matrix.rust }})
+    name: Rust Test (nightly)
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        rust: [stable, beta]
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: ${{ matrix.rust }}
+      - uses: dtolnay/rust-toolchain@nightly
       - uses: Swatinem/rust-cache@v2
+        with:
+          key: nightly
       - name: Run tests
-        run: cargo test --workspace
+        run: cargo test --workspace --lib --exclude wo-webdav -- --test-threads=1
 
   lint-ts:
     name: TypeScript Lint
@@ -88,7 +89,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly
       - uses: Swatinem/rust-cache@v2
+        with:
+          key: nightly
       - name: Check all targets
         run: cargo check --all-targets

@@ -76,7 +76,7 @@ impl Page {
 }
 
 /// Result of a rendering operation.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct RenderResult {
     /// Number of pages rendered.
     pub page_count: u32,
@@ -86,17 +86,6 @@ pub struct RenderResult {
     pub warnings: Vec<String>,
     /// Whether the render was fully successful.
     pub success: bool,
-}
-
-impl Default for RenderResult {
-    fn default() -> Self {
-        Self {
-            page_count: 0,
-            duration_ms: 0,
-            warnings: Vec::new(),
-            success: false,
-        }
-    }
 }
 
 impl RenderResult {

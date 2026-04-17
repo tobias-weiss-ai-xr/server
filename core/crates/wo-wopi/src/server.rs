@@ -140,7 +140,7 @@ mod tests {
         let _state = server.state();
 
         // Test state contains access_tokens HashMap
-        let state = Arc::try_unwrap(server.state);
+        let state = Arc::try_unwrap(server.state).ok().expect("Arc should have single owner");
         assert!(state.access_tokens.is_empty());
     }
 }

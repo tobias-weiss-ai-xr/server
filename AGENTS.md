@@ -1,6 +1,6 @@
 # World-Office WORKSPACE
 
-**Updated:** 2026-04-13
+**Updated:** 2026-04-17
 **Source:** codeberg.org/World-Office/server (independent project)
 **License:** MIT
 **Crate count:** 25 Rust crates + services + integrations
@@ -44,19 +44,19 @@ World-Office/
 | wo-common | Shared types, errors, test harness | — |
 | wo-txt | Plain text parser | ~5 |
 | wo-unicode | Encoding conversion (ICU wrapper) | 32 |
-| wo-fb2 | FictionBook 2.0 parser → JSON | 13 |
+| wo-fb2 | FictionBook 2.0 parser + serializer | 27 |
 | wo-html | HTML import/export | 3 |
 | wo-rtf | Rich Text Format parser + serializer | 41 |
-| wo-epub | EPUB parser (ZIP-based) | 11 |
+| wo-epub | EPUB parser + serializer (ZIP-based) | 23 |
 | wo-hwp | Korean HWP format parser | 12 |
 | wo-djvu | DjVu document parser | 8 |
 | wo-xps | XPS document parser | 14 |
 | wo-ofd | Chinese OFD document parser | 10 |
-| wo-odf | OpenDocument format parser (ZIP+XML) | 15 |
+| wo-odf | OpenDocument format parser + serializer (ZIP+XML) | 26 |
 | wo-pdf | PDF reading/writing | ~8 |
 | wo-msbinary | OLE compound document parser → JSON | 29 |
-| wo-ooxml | OOXML (DOCX/XLSX/PPTX) parser → JSON | 18 |
-| wo-x2t | Format conversion orchestrator | 13 |
+| wo-ooxml | OOXML (DOCX/XLSX/PPTX) parser + serializer | 29 |
+| wo-x2t | Format conversion orchestrator (27 native converters, chain support) | 120 |
 
 ### Rendering & Fonts (3 crates)
 | Crate | Description | Tests |

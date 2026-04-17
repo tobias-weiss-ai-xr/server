@@ -11,9 +11,6 @@ use chrono::{DateTime, Utc};
 use std::path::PathBuf;
 use std::sync::Arc;
 
-#[cfg(test)]
-use tempfile;
-
 /// Information about a WebDAV resource
 #[derive(Debug, Clone)]
 pub struct ResourceInfo {
@@ -106,8 +103,6 @@ pub trait WebDavStorage: Send + Sync + Clone {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     // TODO: Implement LocalStorage struct and enable these tests
     /*
     #[tokio::test]

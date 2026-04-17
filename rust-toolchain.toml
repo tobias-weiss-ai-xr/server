@@ -1,0 +1,4 @@
+[toolchain]
+# Nightly required: rustc 1.94.1 (stable) hits ICE on wo-pdf and wo-webdav.
+# Nightly compiles the full workspace cleanly including all 27 crates.
+channel = "nightly"

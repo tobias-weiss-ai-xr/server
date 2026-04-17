@@ -43,6 +43,7 @@ struct CursorPos {
 }
 
 /// An operational transform edit.
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct EditOperation {
     session_id: String,

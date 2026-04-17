@@ -1,7 +1,6 @@
 //! conversion-service — World-Office document conversion microservice binary.
 
-use conversion_service::{app, AppState, ConversionRouter};
-use std::collections::HashMap;
+use conversion_service::{app, AppState, ConversionRouter, JobRepository};
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
@@ -11,7 +10,9 @@ async fn main() {
 
     let router = ConversionRouter::new();
     let state = Arc::new(AppState {
-        jobs: Arc::new(Mutex::new(HashMap::new())),
+        jobs: Arc::new(Mutex::new(
+            JobRepository::new_in_memory().expect("failed to open database"),
+        )),
         router: Arc::new(router),
     });
     let app = app(state);

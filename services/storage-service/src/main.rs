@@ -1,7 +1,6 @@
 //! storage-service — World-Office document storage microservice binary.
 
-use storage_service::{app, AppState};
-use std::collections::HashMap;
+use storage_service::{app, AppState, repository::StorageRepository};
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
@@ -13,8 +12,14 @@ async fn main() {
         .unwrap_or_else(|_| "./data".into())
         .into();
 
+    let db_path = std::env::var("STORAGE_DB_PATH")
+        .unwrap_or_else(|_| "./data/files.db".into());
+
+    let repo = StorageRepository::new(&db_path)
+        .expect("failed to open storage database");
+
     let state = Arc::new(AppState {
-        files: Arc::new(Mutex::new(HashMap::new())),
+        repo: Arc::new(Mutex::new(repo)),
         storage_dir,
     });
 

@@ -3,6 +3,8 @@
 //! Manages document persistence and retrieval backed by local filesystem.
 //! Provides CRUD endpoints for file storage.
 
+pub mod repository;
+
 use axum::{
     body::Bytes,
     extract::{Path, State},
@@ -10,8 +12,8 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
+use repository::StorageRepository;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::fs;
@@ -32,7 +34,7 @@ pub struct StoredFile {
 /// Application state.
 #[derive(Clone)]
 pub struct AppState {
-    pub files: Arc<Mutex<HashMap<String, StoredFile>>>,
+    pub repo: Arc<Mutex<StorageRepository>>,
     pub storage_dir: PathBuf,
 }
 
@@ -77,11 +79,13 @@ pub struct FileListResponse {
     pub count: usize,
 }
 
-/// Create a fresh AppState for testing with a temp directory.
+/// Create a fresh AppState for testing with a temp directory and an in-memory DB.
 pub fn create_test_state() -> Arc<AppState> {
     let dir = std::env::temp_dir().join(format!("wo-storage-test-{}", Uuid::new_v4()));
     Arc::new(AppState {
-        files: Arc::new(Mutex::new(HashMap::new())),
+        repo: Arc::new(Mutex::new(
+            StorageRepository::new_in_memory().expect("failed to open in-memory db"),
+        )),
         storage_dir: dir,
     })
 }
@@ -162,8 +166,16 @@ pub async fn upload_file(
     };
 
     {
-        let mut files = state.files.lock().await;
-        files.insert(file_id.clone(), stored_file.clone());
+        let mut repo = state.repo.lock().await;
+        if let Err(e) = repo.insert(&stored_file) {
+            return Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: format!("Failed to persist file metadata: {}", e),
+                    code: 500,
+                }),
+            ));
+        }
     }
 
     tracing::info!(file_id = %file_id, name = %stored_file.name, size = stored_file.size, "file uploaded");
@@ -174,11 +186,21 @@ pub async fn upload_file(
 /// GET /files — list all files.
 pub async fn list_files(
     State(state): State<Arc<AppState>>,
-) -> Json<FileListResponse> {
-    let files = state.files.lock().await;
-    let all: Vec<StoredFile> = files.values().cloned().collect();
-    let count = all.len();
-    Json(FileListResponse { files: all, count })
+) -> Result<Json<FileListResponse>, (StatusCode, Json<ErrorResponse>)> {
+    let repo = state.repo.lock().await;
+    match repo.list() {
+        Ok(all) => {
+            let count = all.len();
+            Ok(Json(FileListResponse { files: all, count }))
+        }
+        Err(e) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(ErrorResponse {
+                error: format!("Failed to list files: {}", e),
+                code: 500,
+            }),
+        )),
+    }
 }
 
 /// GET /files/{id} — get file metadata.
@@ -186,14 +208,21 @@ pub async fn get_file(
     State(state): State<Arc<AppState>>,
     Path(file_id): Path<String>,
 ) -> Result<Json<StoredFile>, (StatusCode, Json<ErrorResponse>)> {
-    let files = state.files.lock().await;
-    match files.get(&file_id) {
-        Some(file) => Ok(Json(file.clone())),
-        None => Err((
+    let repo = state.repo.lock().await;
+    match repo.get(&file_id) {
+        Ok(Some(file)) => Ok(Json(file)),
+        Ok(None) => Err((
             StatusCode::NOT_FOUND,
             Json(ErrorResponse {
                 error: format!("File {} not found", file_id),
                 code: 404,
+            }),
+        )),
+        Err(e) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(ErrorResponse {
+                error: format!("Failed to get file: {}", e),
+                code: 500,
             }),
         )),
     }
@@ -204,20 +233,30 @@ pub async fn get_file_content(
     State(state): State<Arc<AppState>>,
     Path(file_id): Path<String>,
 ) -> Result<(StatusCode, HeaderMap, Bytes), (StatusCode, Json<ErrorResponse>)> {
-    let files = state.files.lock().await;
-    let file = match files.get(&file_id) {
-        Some(f) => f.clone(),
-        None => {
-            return Err((
-                StatusCode::NOT_FOUND,
-                Json(ErrorResponse {
-                    error: format!("File {} not found", file_id),
-                    code: 404,
-                }),
-            ));
+    let file = {
+        let repo = state.repo.lock().await;
+        match repo.get(&file_id) {
+            Ok(Some(f)) => f,
+            Ok(None) => {
+                return Err((
+                    StatusCode::NOT_FOUND,
+                    Json(ErrorResponse {
+                        error: format!("File {} not found", file_id),
+                        code: 404,
+                    }),
+                ));
+            }
+            Err(e) => {
+                return Err((
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(ErrorResponse {
+                        error: format!("Failed to get file: {}", e),
+                        code: 500,
+                    }),
+                ));
+            }
         }
     };
-    drop(files);
 
     let data = match fs::read(&file.storage_path).await {
         Ok(d) => d,
@@ -245,10 +284,10 @@ pub async fn delete_file(
     Path(file_id): Path<String>,
 ) -> Result<Json<serde_json::Value>, (StatusCode, Json<ErrorResponse>)> {
     let (storage_path, name) = {
-        let mut files = state.files.lock().await;
-        match files.remove(&file_id) {
-            Some(f) => (f.storage_path, f.name),
-            None => {
+        let repo = state.repo.lock().await;
+        match repo.get(&file_id) {
+            Ok(Some(f)) => (f.storage_path, f.name),
+            Ok(None) => {
                 return Err((
                     StatusCode::NOT_FOUND,
                     Json(ErrorResponse {
@@ -257,8 +296,31 @@ pub async fn delete_file(
                     }),
                 ));
             }
+            Err(e) => {
+                return Err((
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(ErrorResponse {
+                        error: format!("Failed to get file: {}", e),
+                        code: 500,
+                    }),
+                ));
+            }
         }
     };
+
+    // Remove from DB
+    {
+        let mut repo = state.repo.lock().await;
+        if let Err(e) = repo.delete(&file_id) {
+            return Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: format!("Failed to delete file metadata: {}", e),
+                    code: 500,
+                }),
+            ));
+        }
+    }
 
     // Best-effort file deletion from disk
     if let Err(e) = fs::remove_file(&storage_path).await {

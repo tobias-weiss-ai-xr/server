@@ -10,8 +10,8 @@ use axum::{
     Json, Router,
 };
 use chrono::Utc;
+use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
@@ -25,7 +25,7 @@ pub enum JobStatus {
     Failed,
 }
 
-/// A conversion job tracked in memory.
+/// A conversion job tracked in SQLite.
 #[derive(Debug, Clone, Serialize)]
 pub struct ConversionJob {
     pub id: String,
@@ -41,10 +41,125 @@ pub struct ConversionJob {
     pub duration_ms: Option<u64>,
 }
 
+/// SQLite-backed job repository.
+pub struct JobRepository {
+    conn: Connection,
+}
+
+impl JobRepository {
+    /// Create a new repository with an in-memory database.
+    pub fn new_in_memory() -> Result<Self, rusqlite::Error> {
+        let conn = Connection::open_in_memory()?;
+        let repo = Self { conn };
+        repo.init_table()?;
+        Ok(repo)
+    }
+
+    /// Create a new repository backed by a file.
+    pub fn new(path: &str) -> Result<Self, rusqlite::Error> {
+        let conn = Connection::open(path)?;
+        let repo = Self { conn };
+        repo.init_table()?;
+        Ok(repo)
+    }
+
+    fn init_table(&self) -> Result<(), rusqlite::Error> {
+        self.conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS conversion_jobs (
+                id TEXT PRIMARY KEY,
+                source_format TEXT NOT NULL,
+                target_format TEXT NOT NULL,
+                status TEXT NOT NULL,
+                input_size INTEGER,
+                output_size INTEGER,
+                created_at TEXT NOT NULL,
+                completed_at TEXT,
+                error TEXT
+            )",
+        )?;
+        Ok(())
+    }
+
+    /// Insert a completed job. `input_size` is the decoded input byte count.
+    pub fn insert(
+        &mut self,
+        job: &ConversionJob,
+        input_size: usize,
+    ) -> Result<(), rusqlite::Error> {
+        self.conn.execute(
+            "INSERT INTO conversion_jobs (id, source_format, target_format, status, input_size, output_size, created_at, completed_at, error)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+            params![
+                job.id,
+                job.input_format,
+                job.output_format,
+                serde_json::to_string(&job.status).unwrap_or_default(),
+                input_size as i64,
+                job.output_size.map(|s| s as i64),
+                job.created_at,
+                job.completed_at,
+                job.error,
+            ],
+        )?;
+        Ok(())
+    }
+
+    /// Get a job by ID.
+    pub fn get(&self, id: &str) -> Result<Option<ConversionJob>, rusqlite::Error> {
+        let mut stmt = self
+            .conn
+            .prepare("SELECT id, source_format, target_format, status, input_size, output_size, created_at, completed_at, error FROM conversion_jobs WHERE id = ?1")?;
+        let mut rows = stmt.query(params![id])?;
+
+        match rows.next()? {
+            Some(row) => Ok(Some(row_to_job(row)?)),
+            None => Ok(None),
+        }
+    }
+
+    /// List all jobs.
+    pub fn list(&self) -> Result<Vec<ConversionJob>, rusqlite::Error> {
+        let mut stmt = self
+            .conn
+            .prepare("SELECT id, source_format, target_format, status, input_size, output_size, created_at, completed_at, error FROM conversion_jobs")?;
+        let rows = stmt.query_map([], row_to_job)?;
+        let mut jobs = Vec::new();
+        for row in rows {
+            jobs.push(row?);
+        }
+        Ok(jobs)
+    }
+
+    /// Delete a job by ID. Returns true if a row was deleted.
+    pub fn delete(&mut self, id: &str) -> Result<bool, rusqlite::Error> {
+        let affected = self
+            .conn
+            .execute("DELETE FROM conversion_jobs WHERE id = ?1", params![id])?;
+        Ok(affected > 0)
+    }
+}
+
+fn row_to_job(row: &rusqlite::Row<'_>) -> Result<ConversionJob, rusqlite::Error> {
+    let status_str: String = row.get(3)?;
+    let status = serde_json::from_str(&status_str).unwrap_or(JobStatus::Failed);
+    Ok(ConversionJob {
+        id: row.get(0)?,
+        input_format: row.get(1)?,
+        output_format: row.get(2)?,
+        status,
+        created_at: row.get(6)?,
+        completed_at: row.get(7)?,
+        error: row.get(8)?,
+        output_data: None,
+        output_size: row.get::<_, Option<i64>>(5)?.map(|s| s as usize),
+        duration_ms: None,
+    })
+}
+
 /// Application state shared across handlers.
 #[derive(Clone)]
 pub struct AppState {
-    pub jobs: Arc<Mutex<HashMap<String, ConversionJob>>>,
+    pub jobs: Arc<Mutex<JobRepository>>,
     pub router: Arc<ConversionRouter>,
 }
 
@@ -91,10 +206,12 @@ pub struct FormatPair {
     pub target: String,
 }
 
-/// Create a fresh AppState for testing.
+/// Create a fresh AppState for testing (in-memory SQLite).
 pub fn create_test_state() -> Arc<AppState> {
     Arc::new(AppState {
-        jobs: Arc::new(Mutex::new(HashMap::new())),
+        jobs: Arc::new(Mutex::new(
+            JobRepository::new_in_memory().expect("in-memory db"),
+        )),
         router: Arc::new(ConversionRouter::new()),
     })
 }
@@ -143,6 +260,7 @@ pub async fn submit_conversion(
 
     let job_id = Uuid::new_v4().to_string();
     let created_at = Utc::now().to_rfc3339();
+    let input_size = file_data.len();
 
     // Perform actual conversion via wo-x2t
     let result = state.router.convert(
@@ -198,8 +316,10 @@ pub async fn submit_conversion(
     };
 
     {
-        let mut jobs = state.jobs.lock().await;
-        jobs.insert(job_id.clone(), job.clone());
+        let mut repo = state.jobs.lock().await;
+        if let Err(e) = repo.insert(&job, input_size) {
+            tracing::error!(job_id = %job_id, error = %e, "failed to persist job");
+        }
     }
 
     tracing::info!(
@@ -219,17 +339,27 @@ pub async fn get_job_status(
     State(state): State<Arc<AppState>>,
     Path(job_id): Path<String>,
 ) -> Result<Json<JobStatusResponse>, (StatusCode, Json<ErrorResponse>)> {
-    let jobs = state.jobs.lock().await;
+    let repo = state.jobs.lock().await;
 
-    match jobs.get(&job_id) {
-        Some(job) => Ok(Json(JobStatusResponse { job: job.clone() })),
-        None => Err((
+    match repo.get(&job_id) {
+        Ok(Some(job)) => Ok(Json(JobStatusResponse { job })),
+        Ok(None) => Err((
             StatusCode::NOT_FOUND,
             Json(ErrorResponse {
                 error: format!("Job {} not found", job_id),
                 code: 404,
             }),
         )),
+        Err(e) => {
+            tracing::error!(job_id = %job_id, error = %e, "database error fetching job");
+            Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: "database error".into(),
+                    code: 500,
+                }),
+            ))
+        }
     }
 }
 
@@ -237,8 +367,8 @@ pub async fn get_job_status(
 pub async fn list_jobs(
     State(state): State<Arc<AppState>>,
 ) -> Json<Vec<ConversionJob>> {
-    let jobs = state.jobs.lock().await;
-    let all: Vec<ConversionJob> = jobs.values().cloned().collect();
+    let repo = state.jobs.lock().await;
+    let all = repo.list().unwrap_or_default();
     Json(all)
 }
 
@@ -277,4 +407,113 @@ pub fn app(state: Arc<AppState>) -> Router {
         .route("/jobs/{id}", get(get_job_status))
         .route("/formats", get(supported_formats))
         .with_state(state)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn make_job(id: &str, status: JobStatus, error: Option<&str>) -> ConversionJob {
+        ConversionJob {
+            id: id.to_string(),
+            input_format: "docx".to_string(),
+            output_format: "pdf".to_string(),
+            status,
+            created_at: "2026-01-01T00:00:00+00:00".to_string(),
+            completed_at: "2026-01-01T00:00:01+00:00".to_string(),
+            error: error.map(String::from),
+            output_data: None,
+            output_size: Some(1024),
+            duration_ms: None,
+        }
+    }
+
+    #[test]
+    fn test_insert_and_get() {
+        let mut repo = JobRepository::new_in_memory().unwrap();
+        let job = make_job("job-1", JobStatus::Completed, None);
+        repo.insert(&job, 2048).unwrap();
+
+        let fetched = repo.get("job-1").unwrap().expect("job should exist");
+        assert_eq!(fetched.id, "job-1");
+        assert_eq!(fetched.input_format, "docx");
+        assert_eq!(fetched.output_format, "pdf");
+        assert_eq!(fetched.status, JobStatus::Completed);
+        assert_eq!(fetched.output_size, Some(1024));
+        assert!(fetched.output_data.is_none());
+        assert!(fetched.duration_ms.is_none());
+    }
+
+    #[test]
+    fn test_insert_failed_job() {
+        let mut repo = JobRepository::new_in_memory().unwrap();
+        let job = make_job("job-2", JobStatus::Failed, Some("unsupported format"));
+        repo.insert(&job, 512).unwrap();
+
+        let fetched = repo.get("job-2").unwrap().expect("job should exist");
+        assert_eq!(fetched.status, JobStatus::Failed);
+        assert_eq!(fetched.error, Some("unsupported format".to_string()));
+    }
+
+    #[test]
+    fn test_get_nonexistent() {
+        let repo = JobRepository::new_in_memory().unwrap();
+        assert!(repo.get("no-such-job").unwrap().is_none());
+    }
+
+    #[test]
+    fn test_list_jobs() {
+        let mut repo = JobRepository::new_in_memory().unwrap();
+        repo.insert(&make_job("a", JobStatus::Completed, None), 100)
+            .unwrap();
+        repo.insert(&make_job("b", JobStatus::Failed, Some("err")), 200)
+            .unwrap();
+        repo.insert(&make_job("c", JobStatus::Completed, None), 300)
+            .unwrap();
+
+        let jobs = repo.list().unwrap();
+        assert_eq!(jobs.len(), 3);
+        assert!(jobs.iter().any(|j| j.id == "a"));
+        assert!(jobs.iter().any(|j| j.id == "b"));
+        assert!(jobs.iter().any(|j| j.id == "c"));
+    }
+
+    #[test]
+    fn test_delete_job() {
+        let mut repo = JobRepository::new_in_memory().unwrap();
+        repo.insert(&make_job("del-me", JobStatus::Completed, None), 100)
+            .unwrap();
+
+        assert!(repo.delete("del-me").unwrap());
+        assert!(!repo.delete("del-me").unwrap()); // already deleted
+        assert!(repo.get("del-me").unwrap().is_none());
+    }
+
+    #[test]
+    fn test_persistence_across_restart() {
+        let tmp = tempfile::NamedTempFile::new().unwrap();
+        let path = tmp.path().to_str().unwrap().to_string();
+
+        // "Session 1": insert a job
+        {
+            let mut repo = JobRepository::new(&path).unwrap();
+            let job = make_job("persist-1", JobStatus::Completed, None);
+            repo.insert(&job, 4096).unwrap();
+        }
+
+        // "Session 2": drop connection, reopen, read
+        {
+            let repo = JobRepository::new(&path).unwrap();
+            let fetched = repo.get("persist-1").unwrap().expect("job should persist");
+            assert_eq!(fetched.id, "persist-1");
+            assert_eq!(fetched.input_format, "docx");
+            assert_eq!(fetched.status, JobStatus::Completed);
+        }
+    }
+
+    #[test]
+    fn test_empty_list() {
+        let repo = JobRepository::new_in_memory().unwrap();
+        assert!(repo.list().unwrap().is_empty());
+    }
 }

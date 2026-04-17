@@ -11,8 +11,8 @@ use axum::{
 };
 use chrono::Utc;
 use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
+use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
@@ -27,8 +27,29 @@ enum SessionState {
     Revoked,
 }
 
+impl SessionState {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SessionState::Active => "active",
+            SessionState::Idle => "idle",
+            SessionState::Expired => "expired",
+            SessionState::Revoked => "revoked",
+        }
+    }
+
+    fn from_str(s: &str) -> Option<Self> {
+        match s {
+            "active" => Some(SessionState::Active),
+            "idle" => Some(SessionState::Idle),
+            "expired" => Some(SessionState::Expired),
+            "revoked" => Some(SessionState::Revoked),
+            _ => None,
+        }
+    }
+}
+
 /// A user session.
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct Session {
     id: String,
     user_id: String,
@@ -37,13 +58,152 @@ struct Session {
     created_at: String,
     last_activity: String,
     expires_at: String,
-    metadata: HashMap<String, String>,
+    metadata: serde_json::Value,
+}
+
+/// SQLite-backed session repository.
+struct SessionRepository {
+    conn: Connection,
+}
+
+impl SessionRepository {
+    /// Create a new repository backed by an in-memory database.
+    fn new_in_memory() -> Result<Self, rusqlite::Error> {
+        let conn = Connection::open_in_memory()?;
+        let repo = Self { conn };
+        repo.init_table()?;
+        Ok(repo)
+    }
+
+    /// Create a new repository backed by a file database.
+    fn new_file(path: &str) -> Result<Self, rusqlite::Error> {
+        let conn = Connection::open(path)?;
+        let repo = Self { conn };
+        repo.init_table()?;
+        Ok(repo)
+    }
+
+    /// Create the sessions table if it does not exist.
+    fn init_table(&self) -> Result<(), rusqlite::Error> {
+        self.conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS sessions (
+                id              TEXT PRIMARY KEY,
+                user_id         TEXT NOT NULL,
+                username        TEXT NOT NULL,
+                state           TEXT NOT NULL DEFAULT 'active',
+                created_at      TEXT NOT NULL,
+                last_activity   TEXT NOT NULL,
+                expires_at      TEXT NOT NULL,
+                access_token    TEXT DEFAULT '',
+                refresh_token   TEXT DEFAULT '',
+                revoked         INTEGER DEFAULT 0,
+                metadata        TEXT DEFAULT '{}'
+            );",
+        )?;
+        Ok(())
+    }
+
+    /// Insert a session into the database.
+    fn insert(
+        &self,
+        session: &Session,
+        access_token: &str,
+        refresh_token: &str,
+    ) -> Result<(), rusqlite::Error> {
+        let revoked = if session.state == SessionState::Revoked { 1 } else { 0 };
+        self.conn.execute(
+            "INSERT INTO sessions (id, user_id, username, state, created_at, last_activity, expires_at, access_token, refresh_token, revoked, metadata)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+            params![
+                session.id,
+                session.user_id,
+                session.username,
+                session.state.as_str(),
+                session.created_at,
+                session.last_activity,
+                session.expires_at,
+                access_token,
+                refresh_token,
+                revoked,
+                session.metadata.to_string(),
+            ],
+        )?;
+        Ok(())
+    }
+
+    /// Get a session by ID.
+    fn get(&self, id: &str) -> Result<Option<Session>, rusqlite::Error> {
+        let mut stmt = self.conn.prepare(
+            "SELECT id, user_id, username, state, created_at, last_activity, expires_at, metadata
+             FROM sessions WHERE id = ?1",
+        )?;
+        let mut rows = stmt.query(params![id])?;
+        match rows.next()? {
+            Some(row) => Ok(Some(Self::row_to_session(row)?)),
+            None => Ok(None),
+        }
+    }
+
+    /// List all sessions.
+    fn get_all(&self) -> Result<Vec<Session>, rusqlite::Error> {
+        let mut stmt = self.conn.prepare(
+            "SELECT id, user_id, username, state, created_at, last_activity, expires_at, metadata
+             FROM sessions",
+        )?;
+        let rows = stmt.query_map([], |row| {
+            Ok(Self::row_to_session(row).expect("failed to read session row"))
+        })?;
+        let mut sessions = Vec::new();
+        for row in rows {
+            sessions.push(row?);
+        }
+        Ok(sessions)
+    }
+
+    /// Update session state (e.g., revoke).
+    fn update_state(
+        &self,
+        id: &str,
+        state: &SessionState,
+        last_activity: &str,
+    ) -> Result<bool, rusqlite::Error> {
+        let revoked = if *state == SessionState::Revoked { 1 } else { 0 };
+        let count = self.conn.execute(
+            "UPDATE sessions SET state = ?1, last_activity = ?2, revoked = ?3 WHERE id = ?4",
+            params![state.as_str(), last_activity, revoked, id],
+        )?;
+        Ok(count > 0)
+    }
+
+    /// Delete a session by ID.
+    fn delete(&self, id: &str) -> Result<bool, rusqlite::Error> {
+        let count = self.conn.execute("DELETE FROM sessions WHERE id = ?1", params![id])?;
+        Ok(count > 0)
+    }
+
+    fn row_to_session(row: &rusqlite::Row<'_>) -> Result<Session, rusqlite::Error> {
+        let state_str: String = row.get(3)?;
+        let state = SessionState::from_str(&state_str).unwrap_or(SessionState::Active);
+        let metadata_str: String = row.get(7)?;
+        let metadata: serde_json::Value =
+            serde_json::from_str(&metadata_str).unwrap_or(serde_json::json!({}));
+        Ok(Session {
+            id: row.get(0)?,
+            user_id: row.get(1)?,
+            username: row.get(2)?,
+            state,
+            created_at: row.get(4)?,
+            last_activity: row.get(5)?,
+            expires_at: row.get(6)?,
+            metadata,
+        })
+    }
 }
 
 /// Application state.
 #[derive(Clone)]
 struct AppState {
-    sessions: Arc<Mutex<HashMap<String, Session>>>,
+    sessions: Arc<Mutex<SessionRepository>>,
     jwt_secret: String,
     session_ttl_seconds: i64,
 }
@@ -137,7 +297,7 @@ async fn create_session(
         created_at: now.to_rfc3339(),
         last_activity: now.to_rfc3339(),
         expires_at: (now + chrono::Duration::seconds(ttl)).to_rfc3339(),
-        metadata: HashMap::new(),
+        metadata: serde_json::json!({}),
     };
 
     // Issue access token (short-lived: 15 minutes)
@@ -175,8 +335,18 @@ async fn create_session(
     .unwrap_or_default();
 
     {
-        let mut sessions = state.sessions.lock().await;
-        sessions.insert(session_id.clone(), session);
+        let repo = state.sessions.lock().await;
+        repo.insert(&session, &access_token, &refresh_token)
+            .map_err(|e| {
+                tracing::error!(error = %e, "failed to insert session");
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(ErrorResponse {
+                        error: "Failed to create session".into(),
+                        code: 500,
+                    }),
+                )
+            })?;
     }
 
     tracing::info!(
@@ -227,10 +397,10 @@ async fn refresh_session(
 
     // Verify session still exists and is active
     {
-        let sessions = state.sessions.lock().await;
-        match sessions.get(&claims.session_id) {
-            Some(session) if session.state == SessionState::Active => {}
-            Some(_) => {
+        let repo = state.sessions.lock().await;
+        match repo.get(&claims.session_id) {
+            Ok(Some(session)) if session.state == SessionState::Active => {}
+            Ok(Some(_)) => {
                 return Err((
                     StatusCode::UNAUTHORIZED,
                     Json(ErrorResponse {
@@ -239,12 +409,22 @@ async fn refresh_session(
                     }),
                 ));
             }
-            None => {
+            Ok(None) => {
                 return Err((
                     StatusCode::NOT_FOUND,
                     Json(ErrorResponse {
                         error: "Session not found".into(),
                         code: 404,
+                    }),
+                ));
+            }
+            Err(e) => {
+                tracing::error!(error = %e, "database error checking session");
+                return Err((
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(ErrorResponse {
+                        error: "Internal server error".into(),
+                        code: 500,
                     }),
                 ));
             }
@@ -288,17 +468,27 @@ async fn get_session(
     State(state): State<Arc<AppState>>,
     Path(session_id): Path<String>,
 ) -> Result<Json<SessionInfoResponse>, (StatusCode, Json<ErrorResponse>)> {
-    let sessions = state.sessions.lock().await;
+    let repo = state.sessions.lock().await;
 
-    match sessions.get(&session_id) {
-        Some(session) => Ok(Json(SessionInfoResponse { session: session.clone() })),
-        None => Err((
+    match repo.get(&session_id) {
+        Ok(Some(session)) => Ok(Json(SessionInfoResponse { session })),
+        Ok(None) => Err((
             StatusCode::NOT_FOUND,
             Json(ErrorResponse {
                 error: format!("Session {} not found", session_id),
                 code: 404,
             }),
         )),
+        Err(e) => {
+            tracing::error!(error = %e, "database error getting session");
+            Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: "Internal server error".into(),
+                    code: 500,
+                }),
+            ))
+        }
     }
 }
 
@@ -307,35 +497,56 @@ async fn revoke_session(
     State(state): State<Arc<AppState>>,
     Path(session_id): Path<String>,
 ) -> Result<Json<serde_json::Value>, (StatusCode, Json<ErrorResponse>)> {
-    let mut sessions = state.sessions.lock().await;
+    let repo = state.sessions.lock().await;
+    let now = Utc::now().to_rfc3339();
 
-    match sessions.get_mut(&session_id) {
-        Some(session) => {
-            session.state = SessionState::Revoked;
-            session.last_activity = Utc::now().to_rfc3339();
+    match repo.update_state(&session_id, &SessionState::Revoked, &now) {
+        Ok(true) => {
             tracing::info!(session_id = %session_id, "session revoked");
             Ok(Json(serde_json::json!({
                 "session_id": session_id,
                 "status": "revoked"
             })))
         }
-        None => Err((
+        Ok(false) => Err((
             StatusCode::NOT_FOUND,
             Json(ErrorResponse {
                 error: format!("Session {} not found", session_id),
                 code: 404,
             }),
         )),
+        Err(e) => {
+            tracing::error!(error = %e, "database error revoking session");
+            Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: "Internal server error".into(),
+                    code: 500,
+                }),
+            ))
+        }
     }
 }
 
 /// GET /sessions — list all sessions.
 async fn list_sessions(
     State(state): State<Arc<AppState>>,
-) -> Json<Vec<Session>> {
-    let sessions = state.sessions.lock().await;
-    let all: Vec<Session> = sessions.values().cloned().collect();
-    Json(all)
+) -> Result<Json<Vec<Session>>, (StatusCode, Json<ErrorResponse>)> {
+    let repo = state.sessions.lock().await;
+
+    match repo.get_all() {
+        Ok(sessions) => Ok(Json(sessions)),
+        Err(e) => {
+            tracing::error!(error = %e, "database error listing sessions");
+            Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: "Internal server error".into(),
+                    code: 500,
+                }),
+            ))
+        }
+    }
 }
 
 /// GET /health — liveness check.
@@ -366,8 +577,12 @@ async fn main() {
         .parse()
         .unwrap_or(86400);
 
+    let db_path = std::env::var("DATABASE_PATH").unwrap_or_else(|_| "sessions.db".into());
+    let repo = SessionRepository::new_file(&db_path)
+        .expect("failed to open session database");
+
     let state = Arc::new(AppState {
-        sessions: Arc::new(Mutex::new(HashMap::new())),
+        sessions: Arc::new(Mutex::new(repo)),
         jwt_secret,
         session_ttl_seconds: session_ttl,
     });
@@ -385,4 +600,141 @@ async fn main() {
         .await
         .expect("failed to bind");
     axum::serve(listener, app).await.expect("server error");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Helper: create a fresh in-memory repository.
+    fn fresh_repo() -> SessionRepository {
+        SessionRepository::new_in_memory().expect("in-memory db")
+    }
+
+    /// Helper: create a sample session.
+    fn sample_session(id: &str) -> Session {
+        Session {
+            id: id.to_string(),
+            user_id: "user-42".to_string(),
+            username: "alice".to_string(),
+            state: SessionState::Active,
+            created_at: "2026-04-17T00:00:00+00:00".to_string(),
+            last_activity: "2026-04-17T00:00:00+00:00".to_string(),
+            expires_at: "2026-04-18T00:00:00+00:00".to_string(),
+            metadata: serde_json::json!({"theme": "dark"}),
+        }
+    }
+
+    #[test]
+    fn test_insert_and_get() {
+        let repo = fresh_repo();
+        let session = sample_session("sess-1");
+
+        repo.insert(&session, "access-tok", "refresh-tok")
+            .expect("insert");
+
+        let fetched = repo.get("sess-1").expect("get").expect("found");
+        assert_eq!(fetched.id, "sess-1");
+        assert_eq!(fetched.user_id, "user-42");
+        assert_eq!(fetched.username, "alice");
+        assert_eq!(fetched.state, SessionState::Active);
+        assert_eq!(fetched.metadata["theme"], "dark");
+    }
+
+    #[test]
+    fn test_get_nonexistent() {
+        let repo = fresh_repo();
+        let result = repo.get("nope").expect("get");
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_list_sessions() {
+        let repo = fresh_repo();
+        repo.insert(&sample_session("s1"), "a1", "r1").unwrap();
+        repo.insert(&sample_session("s2"), "a2", "r2").unwrap();
+
+        let all = repo.get_all().unwrap();
+        assert_eq!(all.len(), 2);
+    }
+
+    #[test]
+    fn test_delete_session() {
+        let repo = fresh_repo();
+        repo.insert(&sample_session("s1"), "a", "r").unwrap();
+
+        let deleted = repo.delete("s1").unwrap();
+        assert!(deleted);
+
+        let remaining = repo.get_all().unwrap();
+        assert!(remaining.is_empty());
+
+        let deleted_again = repo.delete("s1").unwrap();
+        assert!(!deleted_again);
+    }
+
+    #[test]
+    fn test_update_state_revoke() {
+        let repo = fresh_repo();
+        repo.insert(&sample_session("s1"), "a", "r").unwrap();
+
+        let updated = repo
+            .update_state("s1", &SessionState::Revoked, "2026-04-17T01:00:00+00:00")
+            .unwrap();
+        assert!(updated);
+
+        let fetched = repo.get("s1").unwrap().unwrap();
+        assert_eq!(fetched.state, SessionState::Revoked);
+        assert_eq!(fetched.last_activity, "2026-04-17T01:00:00+00:00");
+    }
+
+    #[test]
+    fn test_persistence_across_restarts() {
+        // Insert data
+        let repo = fresh_repo();
+        repo.insert(&sample_session("persist-1"), "atk", "rtk").unwrap();
+
+        // Simulate restart: create a new in-memory repo — data won't persist in :memory:
+        // but we verify the table schema works by re-initializing on same connection.
+        // For file-backed, persistence is automatic. We test table re-init is idempotent.
+        repo.init_table().expect("re-init should be idempotent");
+
+        // Verify data still there
+        let fetched = repo.get("persist-1").unwrap().expect("should still exist");
+        assert_eq!(fetched.user_id, "user-42");
+    }
+
+    #[test]
+    fn test_file_persistence_across_connections() {
+        let dir = tempfile::tempdir().unwrap();
+        let db_path = dir.path().join("test.db");
+        let path_str = db_path.to_str().unwrap();
+
+        // First connection: insert
+        {
+            let repo = SessionRepository::new_file(path_str).unwrap();
+            repo.insert(&sample_session("file-sess"), "atk", "rtk").unwrap();
+        }
+
+        // Second connection (simulating restart): read
+        {
+            let repo = SessionRepository::new_file(path_str).unwrap();
+            let fetched = repo.get("file-sess").unwrap().expect("found after restart");
+            assert_eq!(fetched.id, "file-sess");
+            assert_eq!(fetched.user_id, "user-42");
+            assert_eq!(fetched.username, "alice");
+            assert_eq!(fetched.state, SessionState::Active);
+        }
+    }
+
+    #[test]
+    fn test_insert_duplicate_id_fails() {
+        let repo = fresh_repo();
+        let session = sample_session("dup-1");
+
+        repo.insert(&session, "a", "r").unwrap();
+        // Inserting same ID again should fail (PRIMARY KEY constraint)
+        let result = repo.insert(&session, "a2", "r2");
+        assert!(result.is_err());
+    }
 }

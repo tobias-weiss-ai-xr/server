@@ -1,7 +1,7 @@
 //! JavaScript-callable conversion functions.
 
 use wasm_bindgen::prelude::*;
-use wo_x2t::ConversionRouter;
+use wo_x2t::{model::ConversionStatus, ConversionRouter};
 
 /// Convert a document from one format to another.
 ///
@@ -46,11 +46,19 @@ pub fn convert(input: &[u8], source_format: &str, target_format: &str) -> Result
         ));
     }
 
-    // TODO: Implement actual format conversion
-    // For now, return the input data as-is (identity transformation)
-    // This is a stub that will be replaced with real conversion logic
-    // once the format-specific parsers/converters are implemented.
-    Ok(input.to_vec())
+    let result = router.convert(source_format, target_format, input);
+    match result.status {
+        ConversionStatus::Success => {
+            if let Some(output) = result.output {
+                Ok(output.data)
+            } else {
+                Err("Conversion produced no output".to_string())
+            }
+        }
+        _ => Err(result
+            .error
+            .unwrap_or_else(|| "Conversion failed".to_string())),
+    }
 }
 
 /// Check if a conversion between two formats is supported.
@@ -115,24 +123,25 @@ mod tests {
 
     #[test]
     fn test_convert_supported() {
-        let input = vec![1, 2, 3, 4, 5];
-        let result = convert(&input, "docx", "pdf");
+        let input = b"Hello World";
+        let result = convert(input, "txt", "html");
         assert!(result.is_ok());
-        // For now, returns input as-is
-        assert_eq!(result.unwrap(), input);
+        let output = result.unwrap();
+        let html = String::from_utf8(output).unwrap();
+        assert!(html.contains("Hello World"));
     }
 
     #[test]
     fn test_is_supported() {
-        assert!(is_supported("docx", "pdf"));
-        assert!(is_supported("xlsx", "pdf"));
-        assert!(is_supported("odt", "pdf"));
+        assert!(is_supported("rtf", "txt"));
+        assert!(is_supported("html", "rtf"));
+        assert!(is_supported("docx", "txt"));
         assert!(!is_supported("pdf", "docx"));
     }
 
     #[test]
     fn test_conversion_path() {
-        let path = conversion_path("docx", "pdf");
-        assert_eq!(path, vec!["docx", "pdf"]);
+        let path = conversion_path("rtf", "txt");
+        assert_eq!(path, vec!["rtf", "txt"]);
     }
 }

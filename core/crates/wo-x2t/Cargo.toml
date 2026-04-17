@@ -10,4 +10,17 @@ thiserror = { workspace = true }
 serde = { workspace = true }
 wo-common = { path = "../wo-common" }
 serde_json = { workspace = true }
+wo-rtf = { path = "../wo-rtf" }
+wo-html = { path = "../wo-html" }
+wo-txt = { path = "../wo-txt" }
+wo-ooxml = { path = "../wo-ooxml" }
+wo-odf = { path = "../wo-odf" }
+wo-epub = { path = "../wo-epub" }
+wo-fb2 = { path = "../wo-fb2" }
+wo-hwp = { path = "../wo-hwp" }
+wo-xps = { path = "../wo-xps" }
+wo-ofd = { path = "../wo-ofd" }
+wo-djvu = { path = "../wo-djvu" }
 
+[dev-dependencies]
+zip = { workspace = true }

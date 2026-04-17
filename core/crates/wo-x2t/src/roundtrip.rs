@@ -4,7 +4,7 @@
 //! Since wo-x2t is a router/orchestrator rather than a format parser,
 //! the roundtrip stores the input conversion data and returns it via serialization.
 
-use crate::model::{ConversionInput, ConversionResult, ConversionStatus};
+use crate::model::{ConversionInput, ConversionResult};
 use crate::router::ConversionRouter;
 use std::cell::RefCell;
 use wo_common::test_harness::FormatRoundtrip;
@@ -107,28 +107,9 @@ impl FormatRoundtrip for X2tRoundtrip {
             "No conversion context set. Use with_formats() or set_source_format()/set_target_format().".to_string()
         })?;
 
-        // For roundtrip testing, we store the bytes and simulate a successful conversion
-        // In a real implementation, this would route to the appropriate format crate
-        let result = if self
+        let result = self
             .router
-            .is_supported(&input.source_format, &input.target_format)
-        {
-            // Simulate a successful conversion by returning the input bytes
-            ConversionResult {
-                status: ConversionStatus::Success,
-                output: Some(crate::model::ConversionOutput {
-                    data: data.to_vec(),
-                    format: input.target_format.clone(),
-                    page_count: None,
-                    warnings: Vec::new(),
-                }),
-                error: None,
-                duration_ms: 0,
-            }
-        } else {
-            // Return unsupported format error
-            ConversionRouter::unsupported_result(&input.source_format, &input.target_format)
-        };
+            .convert(&input.source_format, &input.target_format, data);
 
         // Store the result using interior mutability
         *self.result.borrow_mut() = Some(result);
@@ -215,13 +196,13 @@ mod tests {
 
     #[test]
     fn test_roundtrip_preserves_data() {
+        // odt → pdf has no registered converter, so serialize should fail
         let roundtrip = X2tRoundtrip::with_formats("odt", "pdf");
         let input_data = b"OpenDocument text content";
 
         roundtrip.parse(input_data).expect("Parse should succeed");
-        let output_data = roundtrip.serialize().expect("Serialize should succeed");
-
-        assert_eq!(output_data, input_data);
+        let result = roundtrip.serialize();
+        assert!(result.is_err(), "odt→pdf has no converter, should fail");
     }
 
     #[test]
@@ -229,7 +210,7 @@ mod tests {
         let roundtrip = X2tRoundtrip::new();
         assert!(roundtrip.input().is_none());
         assert!(roundtrip.result().is_none());
-        assert_eq!(roundtrip.router().is_supported("docx", "pdf"), true);
+        assert_eq!(roundtrip.router().is_supported("rtf", "txt"), true);
     }
 
     #[test]

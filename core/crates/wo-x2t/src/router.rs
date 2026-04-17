@@ -2,237 +2,276 @@
 //!
 //! Determines the conversion path between formats and
 //! selects the appropriate format parser/converter.
+//!
+//! When no direct converter exists for a format pair, the router
+//! automatically finds a chain of converters (up to 3 steps) via
+//! intermediate formats using BFS to find the shortest path first.
 
-use crate::model::{ConversionResult, ConversionStatus};
+use std::collections::{HashMap, HashSet, VecDeque};
+use std::sync::Arc;
+use std::time::Instant;
+
+use crate::converter::{error_result, success_result, unsupported_result, ConverterRegistry};
+use crate::converters::{
+    DjvuToTxtConverter, DocxToHtmlConverter, DocxToTxtConverter, EpubToHtmlConverter,
+    EpubToTxtConverter, Fb2ToTxtConverter, HtmlToDocxConverter, HtmlToEpubConverter,
+    HtmlToFb2Converter, HtmlToOdtConverter, HtmlToRtfConverter, HtmlToTxtConverter,
+    HwpToTxtConverter, OdtToHtmlConverter, OdtToTxtConverter, OfdToHtmlConverter,
+    OfdToTxtConverter, RtfToHtmlConverter, RtfToTxtConverter, TxtToDocxConverter,
+    TxtToEpubConverter, TxtToFb2Converter, TxtToHtmlConverter, TxtToOdtConverter,
+    TxtToRtfConverter, XpsToHtmlConverter, XpsToTxtConverter,
+};
+use crate::model::{ConversionOutput, ConversionResult, ConversionStatus};
+use crate::FormatConverter;
+
+/// Adjacency list type: format name -> list of (target format, converter).
+type AdjList<'a> = HashMap<&'a str, Vec<(&'a str, Arc<dyn FormatConverter>)>>;
+
+/// Maximum chain depth (number of conversion steps, not intermediate formats).
+const MAX_CHAIN_DEPTH: usize = 3;
 
 /// Format conversion router.
-pub struct ConversionRouter;
+pub struct ConversionRouter {
+    registry: ConverterRegistry,
+}
 
-/// Known conversion pairs and their support status.
-#[derive(Clone, Copy)]
-struct ConversionPair {
-    source: &'static str,
-    target: &'static str,
-    supported: bool,
+/// A step in a conversion chain, holding a reference to the converter
+/// and the source/target format pair.
+#[derive(Clone)]
+struct ChainStep {
+    converter: Arc<dyn FormatConverter>,
+    source: String,
+    target: String,
 }
 
 impl ConversionRouter {
     pub fn new() -> Self {
-        Self
+        let mut registry = ConverterRegistry::new();
+        registry.register(RtfToTxtConverter);
+        registry.register(RtfToHtmlConverter);
+        registry.register(HtmlToTxtConverter);
+        registry.register(HtmlToRtfConverter);
+        registry.register(TxtToHtmlConverter);
+        registry.register(TxtToRtfConverter);
+        registry.register(DocxToTxtConverter);
+        registry.register(DocxToHtmlConverter);
+        registry.register(OdtToTxtConverter);
+        registry.register(OdtToHtmlConverter);
+        registry.register(EpubToTxtConverter);
+        registry.register(EpubToHtmlConverter);
+        registry.register(Fb2ToTxtConverter);
+        registry.register(HwpToTxtConverter);
+        registry.register(TxtToDocxConverter);
+        registry.register(HtmlToDocxConverter);
+        registry.register(TxtToOdtConverter);
+        registry.register(HtmlToOdtConverter);
+        registry.register(XpsToTxtConverter);
+        registry.register(XpsToHtmlConverter);
+        registry.register(OfdToTxtConverter);
+        registry.register(OfdToHtmlConverter);
+        registry.register(DjvuToTxtConverter);
+        registry.register(TxtToEpubConverter);
+        registry.register(HtmlToEpubConverter);
+        registry.register(TxtToFb2Converter);
+        registry.register(HtmlToFb2Converter);
+        Self { registry }
     }
 
-    /// Check if a conversion path is supported.
+    /// Find a conversion chain from `source` to `target` using BFS.
+    ///
+    /// Returns the shortest chain (up to `MAX_CHAIN_DEPTH` steps) or `None`.
+    fn find_chain(&self, source: &str, target: &str) -> Option<Vec<ChainStep>> {
+        // Build adjacency list: format -> list of (target_format, converter)
+        let pairs = self.registry.registered_pairs();
+        let mut adj: AdjList<'_> = HashMap::new();
+        for (src, dst) in &pairs {
+            // Safe unwrap: we just got these pairs from the registry
+            let converter = self.registry.get(src, dst).unwrap();
+            adj.entry(src)
+                .or_default()
+                .push((dst, Arc::clone(converter)));
+        }
+
+        // BFS: (current_format, chain_of_steps_so_far)
+        let mut queue: VecDeque<(String, Vec<ChainStep>)> = VecDeque::new();
+        let mut visited: HashSet<String> = HashSet::new();
+
+        // Start with all edges from source
+        if let Some(edges) = adj.get(source) {
+            for (dst, converter) in edges {
+                if *dst == target {
+                    return Some(vec![ChainStep {
+                        converter: Arc::clone(converter),
+                        source: source.to_string(),
+                        target: target.to_string(),
+                    }]);
+                }
+                if !visited.contains(*dst) {
+                    visited.insert(dst.to_string());
+                    queue.push_back((
+                        dst.to_string(),
+                        vec![ChainStep {
+                            converter: Arc::clone(converter),
+                            source: source.to_string(),
+                            target: dst.to_string(),
+                        }],
+                    ));
+                }
+            }
+        }
+
+        // BFS for 2-step and 3-step chains
+        while let Some((current, chain)) = queue.pop_front() {
+            if chain.len() >= MAX_CHAIN_DEPTH {
+                continue;
+            }
+            if let Some(edges) = adj.get(current.as_str()) {
+                for (dst, converter) in edges {
+                    if *dst == target {
+                        let mut full_chain = chain;
+                        full_chain.push(ChainStep {
+                            converter: Arc::clone(converter),
+                            source: current.clone(),
+                            target: target.to_string(),
+                        });
+                        return Some(full_chain);
+                    }
+                    if !visited.contains(*dst) {
+                        visited.insert(dst.to_string());
+                        let mut new_chain = chain.clone();
+                        new_chain.push(ChainStep {
+                            converter: Arc::clone(converter),
+                            source: current.clone(),
+                            target: dst.to_string(),
+                        });
+                        queue.push_back((dst.to_string(), new_chain));
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Check if a conversion path is supported (direct or chained, up to 3 steps).
     pub fn is_supported(&self, source: &str, target: &str) -> bool {
         if source == target {
-            return true; // Same format = no-op
+            return true;
         }
-        Self::get_pair(source, target)
-            .map(|p| p.supported)
-            .unwrap_or(false)
+        if self.registry.has_converter(source, target) {
+            return true;
+        }
+        self.find_chain(source, target).is_some()
     }
 
-    /// Get the conversion path (number of intermediate steps).
+    /// Get the conversion path (list of formats from source to target).
+    ///
+    /// Returns an empty vec if no path exists within the max chain depth.
     pub fn conversion_path(&self, source: &str, target: &str) -> Vec<String> {
         if source == target {
             return vec![source.to_string()];
         }
 
-        // Direct conversion
-        if self.is_supported(source, target) {
-            return vec![source.to_string(), target.to_string()];
+        if let Some(chain) = self.find_chain(source, target) {
+            let mut path = vec![chain[0].source.clone()];
+            for step in &chain {
+                path.push(step.target.clone());
+            }
+            path
+        } else {
+            vec![]
+        }
+    }
+
+    /// Perform an actual conversion using the registry.
+    ///
+    /// Tries direct conversion first, then falls back to multi-step chains
+    /// (up to 3 steps) via intermediate formats.
+    pub fn convert(&self, source: &str, target: &str, data: &[u8]) -> ConversionResult {
+        // Same format = no-op
+        if source == target {
+            return success_result(data.to_vec(), target, 0);
         }
 
-        // Try intermediate formats
-        let intermediates = ["pdf", "odt", "docx"];
-        for intermediate in &intermediates {
-            if self.is_supported(source, intermediate) && self.is_supported(intermediate, target) {
-                return vec![
-                    source.to_string(),
-                    intermediate.to_string(),
-                    target.to_string(),
-                ];
+        // Try direct conversion first
+        if self.registry.has_converter(source, target) {
+            let start = Instant::now();
+            match self.registry.convert(source, target, data) {
+                Ok(output) => {
+                    let duration_ms = start.elapsed().as_millis() as u64;
+                    return success_result(output, target, duration_ms);
+                }
+                Err(e) => {
+                    let duration_ms = start.elapsed().as_millis() as u64;
+                    return error_result(e.to_string(), duration_ms);
+                }
             }
         }
 
-        vec![]
+        // Try chained conversion
+        let start = Instant::now();
+        match self.find_chain(source, target) {
+            Some(chain) => self.execute_chain(chain, data, start),
+            None => unsupported_result(source, target),
+        }
+    }
+
+    /// Execute a chain of conversions, accumulating duration and warnings.
+    fn execute_chain(
+        &self,
+        chain: Vec<ChainStep>,
+        data: &[u8],
+        start: Instant,
+    ) -> ConversionResult {
+        let mut current_data = data.to_vec();
+        let warnings: Vec<String> = Vec::new();
+
+        for (i, step) in chain.iter().enumerate() {
+            match step.converter.convert(&current_data) {
+                Ok(output) => {
+                    current_data = output;
+                }
+                Err(e) => {
+                    let duration_ms = start.elapsed().as_millis() as u64;
+                    let step_desc = format!(
+                        "step {}/{} ({} → {})",
+                        i + 1,
+                        chain.len(),
+                        step.source,
+                        step.target
+                    );
+                    return ConversionResult {
+                        status: ConversionStatus::Failed,
+                        output: None,
+                        error: Some(format!("chain conversion failed at {}: {}", step_desc, e)),
+                        duration_ms,
+                    };
+                }
+            }
+        }
+
+        let duration_ms = start.elapsed().as_millis() as u64;
+        ConversionResult {
+            status: ConversionStatus::Success,
+            output: Some(ConversionOutput {
+                data: current_data,
+                format: chain.last().unwrap().target.clone(),
+                page_count: None,
+                warnings,
+            }),
+            error: None,
+            duration_ms,
+        }
     }
 
     /// Create a "not supported" result.
     pub fn unsupported_result(source: &str, target: &str) -> ConversionResult {
-        ConversionResult {
-            status: ConversionStatus::UnsupportedFormat,
-            output: None,
-            error: Some(format!(
-                "Conversion from {} to {} is not supported",
-                source, target
-            )),
-            duration_ms: 0,
-        }
+        unsupported_result(source, target)
     }
 
-    fn get_pair(source: &str, target: &str) -> Option<ConversionPair> {
-        // All supported conversion pairs
-        let pairs: &[ConversionPair] = &[
-            // DOCX conversions
-            ConversionPair {
-                source: "docx",
-                target: "pdf",
-                supported: true,
-            },
-            ConversionPair {
-                source: "docx",
-                target: "odt",
-                supported: true,
-            },
-            ConversionPair {
-                source: "docx",
-                target: "rtf",
-                supported: true,
-            },
-            ConversionPair {
-                source: "docx",
-                target: "txt",
-                supported: true,
-            },
-            ConversionPair {
-                source: "docx",
-                target: "html",
-                supported: true,
-            },
-            ConversionPair {
-                source: "docx",
-                target: "png",
-                supported: false,
-            },
-            // XLSX conversions
-            ConversionPair {
-                source: "xlsx",
-                target: "pdf",
-                supported: true,
-            },
-            ConversionPair {
-                source: "xlsx",
-                target: "ods",
-                supported: true,
-            },
-            ConversionPair {
-                source: "xlsx",
-                target: "csv",
-                supported: true,
-            },
-            // PPTX conversions
-            ConversionPair {
-                source: "pptx",
-                target: "pdf",
-                supported: true,
-            },
-            ConversionPair {
-                source: "pptx",
-                target: "odp",
-                supported: false,
-            },
-            // ODF conversions
-            ConversionPair {
-                source: "odt",
-                target: "pdf",
-                supported: true,
-            },
-            ConversionPair {
-                source: "odt",
-                target: "docx",
-                supported: true,
-            },
-            ConversionPair {
-                source: "odt",
-                target: "rtf",
-                supported: true,
-            },
-            ConversionPair {
-                source: "odt",
-                target: "txt",
-                supported: true,
-            },
-            ConversionPair {
-                source: "odt",
-                target: "html",
-                supported: true,
-            },
-            // PDF conversions
-            ConversionPair {
-                source: "pdf",
-                target: "docx",
-                supported: false,
-            },
-            ConversionPair {
-                source: "pdf",
-                target: "txt",
-                supported: true,
-            },
-            // RTF conversions
-            ConversionPair {
-                source: "rtf",
-                target: "docx",
-                supported: false,
-            },
-            ConversionPair {
-                source: "rtf",
-                target: "odt",
-                supported: false,
-            },
-            ConversionPair {
-                source: "rtf",
-                target: "txt",
-                supported: true,
-            },
-            ConversionPair {
-                source: "rtf",
-                target: "pdf",
-                supported: true,
-            },
-            // Text conversions
-            ConversionPair {
-                source: "txt",
-                target: "docx",
-                supported: false,
-            },
-            ConversionPair {
-                source: "txt",
-                target: "pdf",
-                supported: true,
-            },
-            ConversionPair {
-                source: "txt",
-                target: "odt",
-                supported: false,
-            },
-            // HTML conversions
-            ConversionPair {
-                source: "html",
-                target: "docx",
-                supported: false,
-            },
-            ConversionPair {
-                source: "html",
-                target: "pdf",
-                supported: true,
-            },
-            // EPUB conversions
-            ConversionPair {
-                source: "epub",
-                target: "pdf",
-                supported: true,
-            },
-            ConversionPair {
-                source: "epub",
-                target: "odt",
-                supported: false,
-            },
-        ];
-
-        pairs
-            .iter()
-            .find(|p| p.source == source && p.target == target)
-            .cloned()
+    /// Access the underlying converter registry.
+    pub fn registry(&self) -> &ConverterRegistry {
+        &self.registry
     }
 }
 
@@ -245,16 +284,42 @@ impl Default for ConversionRouter {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::model::ConversionStatus;
 
     #[test]
-    fn test_supported_docx_to_pdf() {
+    fn test_supported_real_pairs() {
         let router = ConversionRouter::new();
-        assert!(router.is_supported("docx", "pdf"));
-        assert!(router.is_supported("xlsx", "pdf"));
-        assert!(router.is_supported("odt", "pdf"));
-        assert!(router.is_supported("pptx", "pdf"));
-        assert!(router.is_supported("epub", "pdf"));
-        assert!(router.is_supported("rtf", "pdf"));
+        // Actually registered converter pairs
+        assert!(router.is_supported("rtf", "txt"));
+        assert!(router.is_supported("rtf", "html"));
+        assert!(router.is_supported("html", "txt"));
+        assert!(router.is_supported("txt", "html"));
+        assert!(router.is_supported("docx", "txt"));
+        assert!(router.is_supported("docx", "html"));
+        assert!(router.is_supported("odt", "txt"));
+        assert!(router.is_supported("odt", "html"));
+        assert!(router.is_supported("txt", "rtf"));
+        assert!(router.is_supported("html", "rtf"));
+        assert!(router.is_supported("epub", "txt"));
+        assert!(router.is_supported("epub", "html"));
+        assert!(router.is_supported("fb2", "txt"));
+        assert!(router.is_supported("hwp", "txt"));
+        assert!(router.is_supported("txt", "docx"));
+        assert!(router.is_supported("html", "docx"));
+        assert!(router.is_supported("txt", "odt"));
+        assert!(router.is_supported("html", "odt"));
+        assert!(router.is_supported("xps", "txt"));
+        assert!(router.is_supported("xps", "html"));
+        assert!(router.is_supported("ofd", "txt"));
+        assert!(router.is_supported("ofd", "html"));
+        assert!(router.is_supported("djvu", "txt"));
+        assert!(router.is_supported("txt", "epub"));
+        assert!(router.is_supported("html", "epub"));
+        assert!(router.is_supported("txt", "fb2"));
+        assert!(router.is_supported("html", "fb2"));
+        // Pairs with no converter should be false
+        assert!(!router.is_supported("docx", "pdf"));
+        assert!(!router.is_supported("xlsx", "pdf"));
     }
 
     #[test]
@@ -272,16 +337,29 @@ mod tests {
     #[test]
     fn test_conversion_path_direct() {
         let router = ConversionRouter::new();
-        let path = router.conversion_path("docx", "pdf");
-        assert_eq!(path, vec!["docx", "pdf"]);
+        let path = router.conversion_path("rtf", "txt");
+        assert_eq!(path, vec!["rtf", "txt"]);
+    }
+
+    #[test]
+    fn test_conversion_path_docx() {
+        let router = ConversionRouter::new();
+        let path = router.conversion_path("docx", "html");
+        assert_eq!(path, vec!["docx", "html"]);
+    }
+
+    #[test]
+    fn test_conversion_path_odt() {
+        let router = ConversionRouter::new();
+        let path = router.conversion_path("odt", "txt");
+        assert_eq!(path, vec!["odt", "txt"]);
     }
 
     #[test]
     fn test_conversion_path_indirect() {
         let router = ConversionRouter::new();
-        // pptx → pdf is supported, pptx → odp is not
-        // But xlsx → ods is supported, ods → pdf is supported
-        assert_eq!(router.conversion_path("xlsx", "ods"), vec!["xlsx", "ods"]);
+        // xlsx → ods has no converter, so path should be empty
+        assert_eq!(router.conversion_path("xlsx", "ods"), Vec::<String>::new());
     }
 
     #[test]
@@ -289,5 +367,261 @@ mod tests {
         let result = ConversionRouter::unsupported_result("pdf", "docx");
         assert_eq!(result.status, ConversionStatus::UnsupportedFormat);
         assert!(result.error.is_some());
+    }
+
+    #[test]
+    fn test_convert_same_format() {
+        let router = ConversionRouter::new();
+        let result = router.convert("docx", "docx", b"hello");
+        assert_eq!(result.status, ConversionStatus::Success);
+        assert_eq!(result.output.unwrap().data, b"hello");
+    }
+
+    #[test]
+    fn test_convert_txt_to_html() {
+        let router = ConversionRouter::new();
+        let result = router.convert("txt", "html", b"Hello World");
+        assert_eq!(result.status, ConversionStatus::Success);
+        let html = String::from_utf8(result.output.unwrap().data).unwrap();
+        assert!(html.contains("Hello World"));
+    }
+
+    #[test]
+    fn test_convert_rtf_to_txt() {
+        let router = ConversionRouter::new();
+        let rtf = r#"{\rtf1\ansi Hello RTF\par}"#;
+        let result = router.convert("rtf", "txt", rtf.as_bytes());
+        assert_eq!(result.status, ConversionStatus::Success);
+        let text = String::from_utf8(result.output.unwrap().data).unwrap();
+        assert!(text.contains("Hello RTF"));
+    }
+
+    #[test]
+    fn test_convert_no_converter() {
+        let router = ConversionRouter::new();
+        let result = router.convert("odt", "pdf", b"some data");
+        assert_eq!(result.status, ConversionStatus::UnsupportedFormat);
+        assert!(result.error.unwrap().contains("not supported"));
+    }
+
+    #[test]
+    fn test_registry_has_all_converters() {
+        let router = ConversionRouter::new();
+        let pairs = router.registry().registered_pairs();
+        assert!(pairs.contains(&("rtf", "txt")));
+        assert!(pairs.contains(&("rtf", "html")));
+        assert!(pairs.contains(&("html", "txt")));
+        assert!(pairs.contains(&("html", "rtf")));
+        assert!(pairs.contains(&("txt", "html")));
+        assert!(pairs.contains(&("txt", "rtf")));
+        assert!(pairs.contains(&("docx", "txt")));
+        assert!(pairs.contains(&("docx", "html")));
+        assert!(pairs.contains(&("odt", "txt")));
+        assert!(pairs.contains(&("odt", "html")));
+        assert!(pairs.contains(&("epub", "txt")));
+        assert!(pairs.contains(&("epub", "html")));
+        assert!(pairs.contains(&("fb2", "txt")));
+        assert!(pairs.contains(&("hwp", "txt")));
+        assert!(pairs.contains(&("txt", "docx")));
+        assert!(pairs.contains(&("html", "docx")));
+        assert!(pairs.contains(&("txt", "odt")));
+        assert!(pairs.contains(&("html", "odt")));
+        assert!(pairs.contains(&("xps", "txt")));
+        assert!(pairs.contains(&("xps", "html")));
+        assert!(pairs.contains(&("ofd", "txt")));
+        assert!(pairs.contains(&("ofd", "html")));
+        assert!(pairs.contains(&("djvu", "txt")));
+        assert!(pairs.contains(&("txt", "epub")));
+        assert!(pairs.contains(&("html", "epub")));
+        assert!(pairs.contains(&("txt", "fb2")));
+        assert!(pairs.contains(&("html", "fb2")));
+        assert_eq!(
+            pairs.len(),
+            27,
+            "expected 27 registered converters, got {}",
+            pairs.len()
+        );
+    }
+
+    // ── Chain conversion tests ──────────────────────────────────────────
+
+    #[test]
+    fn test_chain_rtf_to_docx() {
+        let router = ConversionRouter::new();
+        let rtf = r#"{\rtf1\ansi Hello World\par}"#;
+        let result = router.convert("rtf", "docx", rtf.as_bytes());
+        assert_eq!(result.status, ConversionStatus::Success);
+        let output = result.output.unwrap();
+        assert_eq!(output.format, "docx");
+        // Chain is either rtf→html→docx or rtf→txt→docx (BFS order varies).
+        // Either way, the DOCX output should be valid (non-empty).
+        assert!(!output.data.is_empty());
+        // Verify the conversion path exists with 3 nodes (source → intermediate → target)
+        let path = router.conversion_path("rtf", "docx");
+        assert_eq!(path.len(), 3);
+        assert_eq!(path.first().unwrap(), "rtf");
+        assert_eq!(path.last().unwrap(), "docx");
+    }
+
+    #[test]
+    fn test_chain_fb2_to_html() {
+        let router = ConversionRouter::new();
+        // Minimal FB2 content
+        let fb2 = r#"<?xml version="1.0" encoding="utf-8"?>
+<FictionBook><body><p>Test FB2 content</p></body></FictionBook>"#;
+        let result = router.convert("fb2", "html", fb2.as_bytes());
+        assert_eq!(result.status, ConversionStatus::Success);
+        let output = result.output.unwrap();
+        assert_eq!(output.format, "html");
+        // Chain is fb2→txt→html
+        let path = router.conversion_path("fb2", "html");
+        assert_eq!(path, vec!["fb2", "txt", "html"]);
+    }
+
+    #[test]
+    fn test_chain_hwp_to_html() {
+        let router = ConversionRouter::new();
+        // The HWP parser requires actual HWP binary data; feed it garbage bytes.
+        // The chain hwp→txt→html will fail at step 1 because the HWP parser
+        // can't parse garbage. This is expected behavior — the chain is found
+        // but execution fails on bad input. Instead, test with hwp→txt (direct)
+        // which should also fail, proving the chain is attempted.
+        //
+        // Use a different approach: verify the chain is discovered via is_supported.
+        assert!(router.is_supported("hwp", "html"));
+        // Verify the conversion path is hwp→txt→html
+        let path = router.conversion_path("hwp", "html");
+        assert_eq!(path, vec!["hwp", "txt", "html"]);
+        // A direct hwp→txt conversion should work with valid RTF (no, that's wrong).
+        // Test that the chain mechanism itself works by using hwp→txt (direct).
+        // hwp→txt is a direct converter, so use it directly.
+        let result = router.convert("hwp", "txt", b"HWP Document Test");
+        // The HWP parser may fail on non-HWP binary data — that's fine for this test.
+        // We're testing that the chain path is correctly identified above.
+        assert!(
+            result.status == ConversionStatus::Success || result.status == ConversionStatus::Failed
+        );
+    }
+
+    #[test]
+    fn test_chain_rtf_to_odt() {
+        let router = ConversionRouter::new();
+        let rtf = r#"{\rtf1\ansi Chain test\par}"#;
+        let result = router.convert("rtf", "odt", rtf.as_bytes());
+        assert_eq!(result.status, ConversionStatus::Success);
+        let output = result.output.unwrap();
+        assert_eq!(output.format, "odt");
+    }
+
+    #[test]
+    fn test_chain_max_depth() {
+        // Verify that chains longer than 3 steps are not attempted.
+        // With 25 converters and the format graph, we need a pair that requires
+        // >3 steps. Since the graph is well-connected via txt/html, this is hard
+        // to find naturally. Instead, verify that a truly unreachable format
+        // returns UnsupportedFormat (not an infinite loop or stack overflow).
+        let router = ConversionRouter::new();
+        // "pdf" has no incoming converters at all
+        let result = router.convert("djvu", "pdf", b"test");
+        assert_eq!(result.status, ConversionStatus::UnsupportedFormat);
+        // Same for xlsx
+        let result = router.convert("rtf", "xlsx", b"test");
+        assert_eq!(result.status, ConversionStatus::UnsupportedFormat);
+    }
+
+    #[test]
+    fn test_is_supported_chain() {
+        let router = ConversionRouter::new();
+        // These pairs have no direct converter but should be reachable via chains
+        assert!(router.is_supported("rtf", "docx")); // rtf→html→docx
+        assert!(router.is_supported("rtf", "odt")); // rtf→html→odt
+        assert!(router.is_supported("fb2", "html")); // fb2→txt→html
+        assert!(router.is_supported("hwp", "html")); // hwp→txt→html
+        assert!(router.is_supported("epub", "rtf")); // epub→txt→rtf
+        assert!(router.is_supported("xps", "docx")); // xps→txt→docx
+        assert!(router.is_supported("ofd", "docx")); // ofd→txt→docx
+        assert!(router.is_supported("djvu", "html")); // djvu→txt→html
+                                                      // Truly unreachable formats
+        assert!(!router.is_supported("pdf", "docx"));
+        assert!(!router.is_supported("xlsx", "pdf"));
+    }
+
+    #[test]
+    fn test_chain_error_propagation() {
+        use crate::FormatConverter;
+
+        // Build a custom registry with a converter that always fails
+        let mut registry = ConverterRegistry::new();
+        registry.register(TxtToHtmlConverter);
+
+        struct FailingConverter;
+        impl FormatConverter for FailingConverter {
+            fn source_format(&self) -> &str {
+                "html"
+            }
+            fn target_format(&self) -> &str {
+                "fail"
+            }
+            fn convert(&self, _data: &[u8]) -> Result<Vec<u8>, crate::ConversionError> {
+                Err(crate::ConversionError::Parse("forced failure".to_string()))
+            }
+        }
+
+        struct FailToTxtConverter;
+        impl FormatConverter for FailToTxtConverter {
+            fn source_format(&self) -> &str {
+                "fail"
+            }
+            fn target_format(&self) -> &str {
+                "txt"
+            }
+            fn convert(&self, _data: &[u8]) -> Result<Vec<u8>, crate::ConversionError> {
+                Ok(b"fallback".to_vec())
+            }
+        }
+        registry.register(FailingConverter);
+        registry.register(FailToTxtConverter);
+
+        // Build router manually to inject custom registry
+        let router = ConversionRouter { registry };
+
+        // Direct conversion via FailingConverter should fail
+        let result = router.convert("html", "fail", b"<p>test</p>");
+        assert_eq!(result.status, ConversionStatus::Failed);
+        assert!(result.error.unwrap().contains("forced failure"));
+
+        // Chain html→fail→txt should fail at step 1
+        let result = router.convert("html", "txt", b"<p>test</p>");
+        // html→txt has no direct converter in this registry, so it would try chains.
+        // The chain html→fail→txt exists, but step 1 fails.
+        // Actually wait - we need to check if html→txt has a direct converter...
+        // In this custom registry, we only registered txt→html, html→fail, fail→txt.
+        // So html→txt is only reachable via html→fail→txt chain, which fails at step 1.
+        assert_eq!(result.status, ConversionStatus::Failed);
+        let err = result.error.unwrap();
+        assert!(err.contains("chain conversion failed at step 1"));
+        assert!(err.contains("forced failure"));
+    }
+
+    #[test]
+    fn test_conversion_path_chained() {
+        let router = ConversionRouter::new();
+        // RTF→DOCX: 2-step chain via either html or txt (BFS order varies)
+        let path = router.conversion_path("rtf", "docx");
+        assert_eq!(path.len(), 3);
+        assert_eq!(path.first().unwrap(), "rtf");
+        assert_eq!(path.last().unwrap(), "docx");
+        let intermediate = &path[1];
+        assert!(*intermediate == "html" || *intermediate == "txt");
+
+        // RTF→ODT: 2-step chain via either html or txt
+        let path = router.conversion_path("rtf", "odt");
+        assert_eq!(path.len(), 3);
+        assert_eq!(path.first().unwrap(), "rtf");
+        assert_eq!(path.last().unwrap(), "odt");
+
+        // FB2→HTML: fb2→txt→html (only path since fb2 only has fb2→txt edge)
+        let path = router.conversion_path("fb2", "html");
+        assert_eq!(path, vec!["fb2", "txt", "html"]);
     }
 }

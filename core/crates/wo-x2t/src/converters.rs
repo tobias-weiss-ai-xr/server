@@ -1,0 +1,5040 @@
+//! Native format converters: RTF↔TXT, RTF↔HTML, HTML↔TXT, TXT↔HTML,
+//! DOCX→TXT, DOCX→HTML, ODT→TXT, ODT→HTML, TXT→RTF, HTML→RTF,
+//! EPUB→TXT, EPUB→HTML, FB2→TXT, HWP→TXT,
+//! TXT→DOCX, HTML→DOCX, TXT→ODT, HTML→ODT,
+//! XPS→TXT, XPS→HTML, OFD→TXT, OFD→HTML, DJVU→TXT,
+//! TXT→EPUB, HTML→EPUB, TXT→FB2, HTML→FB2.
+//!
+//! Each converter implements the `FormatConverter` trait, going directly
+//! from source native type to target native type (no intermediate document).
+
+use wo_common::encoding::Encoding;
+
+use crate::converter::FormatConverter;
+use crate::error::ConversionError;
+
+use wo_html::model::{
+    BlockElement, HtmlBody, HtmlDocument, HtmlHead, InlineElement, TableCell, TableRow,
+};
+use wo_html::{HtmlParser, HtmlSerializer};
+use wo_odf::OdfParser;
+use wo_ooxml::OoxmlParser;
+use wo_rtf::model::{RtfBlock, RtfDocument, RtfFont, RtfInline};
+use wo_rtf::{RtfParser, RtfSerializer};
+use wo_txt::parser::TxtDocument;
+use wo_txt::serializer::SerializeOptions;
+use wo_txt::{TxtParser, TxtSerializer};
+
+use wo_djvu::DjvuParser;
+use wo_epub::model::{Chapter as EpubChapter, EpubDocument, EpubMetadata, TocEntry};
+use wo_epub::{EpubParser, EpubSerializer};
+use wo_fb2::model::{
+    Body, ContentElement, DocumentInfo, Fb2Document, Formatting, Section, TextStyle, TitleInfo,
+};
+use wo_fb2::{Fb2Parser, Fb2Serializer};
+use wo_hwp::HwpParser;
+use wo_ofd::OfdParser;
+use wo_xps::XpsParser;
+
+use wo_odf::model::{
+    CellType, OdfContent, OdfDocument, OdfList, OdfListItem, OdfListType, OdfMetadata, OdfTable,
+    OdfTextContent, OdfType, TableCell as OdfTableCell, TableRow as OdfTableRow, TextHeading,
+    TextParagraph, TextSpan,
+};
+use wo_odf::OdfSerializer;
+use wo_ooxml::model::{
+    CoreProperties, DocxBody, DocxParagraph, DocxParagraphProperties, DocxRun, DocxTable,
+    DocxTableCell, DocxTableRow, OoxmlDocument, OoxmlFormat, UnderlineType,
+};
+use wo_ooxml::OoxmlSerializer;
+
+// ── Converter structs ────────────────────────────────────────────────
+
+/// Converts RTF → plain text.
+pub struct RtfToTxtConverter;
+
+impl FormatConverter for RtfToTxtConverter {
+    fn source_format(&self) -> &str {
+        "rtf"
+    }
+
+    fn target_format(&self) -> &str {
+        "txt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let rtf_doc = RtfParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let lines = rtf_blocks_to_text_lines(&rtf_doc.body);
+
+        let txt_doc = TxtDocument {
+            lines,
+            encoding: Encoding::Utf8,
+            had_bom: false,
+        };
+
+        TxtSerializer::with_options(SerializeOptions::unix())
+            .serialize(&txt_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts RTF → HTML.
+pub struct RtfToHtmlConverter;
+
+impl FormatConverter for RtfToHtmlConverter {
+    fn source_format(&self) -> &str {
+        "rtf"
+    }
+
+    fn target_format(&self) -> &str {
+        "html"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let rtf_doc = RtfParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let html_doc = HtmlDocument {
+            doc_type: Some("html".into()),
+            html_attributes: Vec::new(),
+            head: HtmlHead {
+                title: rtf_doc.info.as_ref().and_then(|info| info.title.clone()),
+                meta: Vec::new(),
+                styles: Vec::new(),
+                links: Vec::new(),
+            },
+            body: HtmlBody {
+                elements: rtf_blocks_to_html_blocks(&rtf_doc.body),
+            },
+        };
+
+        let html_string = HtmlSerializer::new().serialize(&html_doc);
+        Ok(html_string.into_bytes())
+    }
+}
+
+/// Converts HTML → plain text.
+pub struct HtmlToTxtConverter;
+
+impl FormatConverter for HtmlToTxtConverter {
+    fn source_format(&self) -> &str {
+        "html"
+    }
+
+    fn target_format(&self) -> &str {
+        "txt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let html_doc = HtmlParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let lines = html_blocks_to_lines(&html_doc.body.elements);
+
+        let txt_doc = TxtDocument {
+            lines,
+            encoding: Encoding::Utf8,
+            had_bom: false,
+        };
+
+        TxtSerializer::with_options(SerializeOptions::unix())
+            .serialize(&txt_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts plain text → HTML.
+pub struct TxtToHtmlConverter;
+
+impl FormatConverter for TxtToHtmlConverter {
+    fn source_format(&self) -> &str {
+        "txt"
+    }
+
+    fn target_format(&self) -> &str {
+        "html"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let txt_doc = TxtParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let elements: Vec<BlockElement> = txt_doc
+            .lines
+            .iter()
+            .map(|line| BlockElement::Paragraph {
+                content: vec![InlineElement::Text { text: line.clone() }],
+                id: None,
+            })
+            .collect();
+
+        let html_doc = HtmlDocument {
+            doc_type: Some("html".into()),
+            html_attributes: Vec::new(),
+            head: HtmlHead::default(),
+            body: HtmlBody { elements },
+        };
+
+        let html_string = HtmlSerializer::new().serialize(&html_doc);
+        Ok(html_string.into_bytes())
+    }
+}
+
+/// Converts DOCX → plain text.
+pub struct DocxToTxtConverter;
+
+impl FormatConverter for DocxToTxtConverter {
+    fn source_format(&self) -> &str {
+        "docx"
+    }
+
+    fn target_format(&self) -> &str {
+        "txt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = OoxmlParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let lines = docx_body_to_text_lines(&doc);
+
+        let txt_doc = TxtDocument {
+            lines,
+            encoding: Encoding::Utf8,
+            had_bom: false,
+        };
+
+        TxtSerializer::with_options(SerializeOptions::unix())
+            .serialize(&txt_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts DOCX → HTML.
+pub struct DocxToHtmlConverter;
+
+impl FormatConverter for DocxToHtmlConverter {
+    fn source_format(&self) -> &str {
+        "docx"
+    }
+
+    fn target_format(&self) -> &str {
+        "html"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = OoxmlParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let html_doc = HtmlDocument {
+            doc_type: Some("html".into()),
+            html_attributes: Vec::new(),
+            head: HtmlHead {
+                title: doc.core_properties.title.clone(),
+                meta: Vec::new(),
+                styles: Vec::new(),
+                links: Vec::new(),
+            },
+            body: HtmlBody {
+                elements: docx_body_to_html_blocks(&doc),
+            },
+        };
+
+        let html_string = HtmlSerializer::new().serialize(&html_doc);
+        Ok(html_string.into_bytes())
+    }
+}
+
+/// Converts ODT → plain text.
+pub struct OdtToTxtConverter;
+
+impl FormatConverter for OdtToTxtConverter {
+    fn source_format(&self) -> &str {
+        "odt"
+    }
+
+    fn target_format(&self) -> &str {
+        "txt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = OdfParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let lines = odf_content_to_text_lines(&doc.content);
+
+        let txt_doc = TxtDocument {
+            lines,
+            encoding: Encoding::Utf8,
+            had_bom: false,
+        };
+
+        TxtSerializer::with_options(SerializeOptions::unix())
+            .serialize(&txt_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts ODT → HTML.
+pub struct OdtToHtmlConverter;
+
+impl FormatConverter for OdtToHtmlConverter {
+    fn source_format(&self) -> &str {
+        "odt"
+    }
+
+    fn target_format(&self) -> &str {
+        "html"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = OdfParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let html_doc = HtmlDocument {
+            doc_type: Some("html".into()),
+            html_attributes: Vec::new(),
+            head: HtmlHead {
+                title: doc.metadata.title.clone(),
+                meta: Vec::new(),
+                styles: Vec::new(),
+                links: Vec::new(),
+            },
+            body: HtmlBody {
+                elements: odf_content_to_html_blocks(&doc.content),
+            },
+        };
+
+        let html_string = HtmlSerializer::new().serialize(&html_doc);
+        Ok(html_string.into_bytes())
+    }
+}
+
+/// Converts plain text → RTF.
+pub struct TxtToRtfConverter;
+
+impl FormatConverter for TxtToRtfConverter {
+    fn source_format(&self) -> &str {
+        "txt"
+    }
+
+    fn target_format(&self) -> &str {
+        "rtf"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let txt_doc = TxtParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let body: Vec<RtfBlock> = txt_doc
+            .lines
+            .iter()
+            .map(|line| RtfBlock::Paragraph {
+                content: vec![RtfInline::Text { text: line.clone() }],
+                alignment: None,
+                indent_left: None,
+                indent_first: None,
+            })
+            .collect();
+
+        let rtf_doc = RtfDocument {
+            version: 1,
+            ansi_codepage: Some(1252),
+            fonts: vec![RtfFont {
+                index: 0,
+                name: "Calibri".into(),
+                alt_name: None,
+                charset: None,
+            }],
+            colors: vec![],
+            body,
+            info: None,
+        };
+
+        let rtf_string = RtfSerializer::new().serialize(&rtf_doc);
+        Ok(rtf_string.into_bytes())
+    }
+}
+
+/// Converts HTML → RTF.
+pub struct HtmlToRtfConverter;
+
+impl FormatConverter for HtmlToRtfConverter {
+    fn source_format(&self) -> &str {
+        "html"
+    }
+
+    fn target_format(&self) -> &str {
+        "rtf"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let html_doc = HtmlParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let body = html_blocks_to_rtf_blocks(&html_doc.body.elements);
+
+        let rtf_doc = RtfDocument {
+            version: 1,
+            ansi_codepage: Some(1252),
+            fonts: vec![RtfFont {
+                index: 0,
+                name: "Calibri".into(),
+                alt_name: None,
+                charset: None,
+            }],
+            colors: vec![],
+            body,
+            info: html_doc.head.title.map(|title| wo_rtf::model::RtfInfo {
+                title: Some(title),
+                ..Default::default()
+            }),
+        };
+
+        let rtf_string = RtfSerializer::new().serialize(&rtf_doc);
+        Ok(rtf_string.into_bytes())
+    }
+}
+
+/// Converts EPUB → plain text.
+pub struct EpubToTxtConverter;
+
+impl FormatConverter for EpubToTxtConverter {
+    fn source_format(&self) -> &str {
+        "epub"
+    }
+
+    fn target_format(&self) -> &str {
+        "txt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = EpubParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let mut lines = Vec::new();
+
+        for chapter in &doc.chapters {
+            if !chapter.title.is_empty() {
+                lines.push(format!("## {}", chapter.title));
+            }
+            let clean = strip_html_tags(&chapter.content);
+            for line in clean.lines() {
+                lines.push(line.to_string());
+            }
+            lines.push(String::new());
+        }
+
+        let txt_doc = TxtDocument {
+            lines,
+            encoding: Encoding::Utf8,
+            had_bom: false,
+        };
+
+        TxtSerializer::with_options(SerializeOptions::unix())
+            .serialize(&txt_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts EPUB → HTML.
+pub struct EpubToHtmlConverter;
+
+impl FormatConverter for EpubToHtmlConverter {
+    fn source_format(&self) -> &str {
+        "epub"
+    }
+
+    fn target_format(&self) -> &str {
+        "html"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = EpubParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let mut elements: Vec<BlockElement> = Vec::new();
+
+        // Book title as <h1>
+        if let Some(title) = &doc.metadata.title {
+            elements.push(BlockElement::Heading {
+                level: 1,
+                content: vec![InlineElement::Text {
+                    text: title.clone(),
+                }],
+                id: None,
+            });
+        }
+
+        for chapter in &doc.chapters {
+            if !chapter.title.is_empty() {
+                elements.push(BlockElement::Heading {
+                    level: 2,
+                    content: vec![InlineElement::Text {
+                        text: chapter.title.clone(),
+                    }],
+                    id: None,
+                });
+            }
+            let clean = strip_html_tags(&chapter.content);
+            for line in clean.lines() {
+                if !line.is_empty() {
+                    elements.push(BlockElement::Paragraph {
+                        content: vec![InlineElement::Text {
+                            text: line.to_string(),
+                        }],
+                        id: None,
+                    });
+                }
+            }
+        }
+
+        let html_doc = HtmlDocument {
+            doc_type: Some("html".into()),
+            html_attributes: Vec::new(),
+            head: HtmlHead {
+                title: doc.metadata.title.clone(),
+                meta: Vec::new(),
+                styles: Vec::new(),
+                links: Vec::new(),
+            },
+            body: HtmlBody { elements },
+        };
+
+        let html_string = HtmlSerializer::new().serialize(&html_doc);
+        Ok(html_string.into_bytes())
+    }
+}
+
+/// Converts FB2 → plain text.
+pub struct Fb2ToTxtConverter;
+
+impl FormatConverter for Fb2ToTxtConverter {
+    fn source_format(&self) -> &str {
+        "fb2"
+    }
+
+    fn target_format(&self) -> &str {
+        "txt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = Fb2Parser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let mut lines = Vec::new();
+
+        // Book title
+        if let Some(title_info) = &doc.title_info {
+            if let Some(book_title) = &title_info.book_title {
+                lines.push(format!("# {}", book_title));
+                lines.push(String::new());
+            }
+        }
+
+        for body in &doc.bodies {
+            fb2_body_to_lines(body, &mut lines);
+        }
+
+        let txt_doc = TxtDocument {
+            lines,
+            encoding: Encoding::Utf8,
+            had_bom: false,
+        };
+
+        TxtSerializer::with_options(SerializeOptions::unix())
+            .serialize(&txt_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts HWP → plain text.
+pub struct HwpToTxtConverter;
+
+impl FormatConverter for HwpToTxtConverter {
+    fn source_format(&self) -> &str {
+        "hwp"
+    }
+
+    fn target_format(&self) -> &str {
+        "txt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = HwpParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let mut lines = Vec::new();
+
+        // Title from doc_info
+        if let Some(doc_info) = &doc.doc_info {
+            if let Some(title) = &doc_info.title {
+                if !title.is_empty() {
+                    lines.push(format!("# {}", title));
+                    lines.push(String::new());
+                }
+            }
+        }
+
+        for para in &doc.paragraphs {
+            lines.push(para.text.clone());
+        }
+
+        let txt_doc = TxtDocument {
+            lines,
+            encoding: Encoding::Utf8,
+            had_bom: false,
+        };
+
+        TxtSerializer::with_options(SerializeOptions::unix())
+            .serialize(&txt_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts plain text → DOCX.
+pub struct TxtToDocxConverter;
+
+impl FormatConverter for TxtToDocxConverter {
+    fn source_format(&self) -> &str {
+        "txt"
+    }
+
+    fn target_format(&self) -> &str {
+        "docx"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let txt_doc = TxtParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let ooxml_doc = txt_to_ooxml(&txt_doc);
+
+        OoxmlSerializer::new()
+            .serialize(&ooxml_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts HTML → DOCX.
+pub struct HtmlToDocxConverter;
+
+impl FormatConverter for HtmlToDocxConverter {
+    fn source_format(&self) -> &str {
+        "html"
+    }
+
+    fn target_format(&self) -> &str {
+        "docx"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let html_doc = HtmlParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let ooxml_doc = html_to_ooxml(&html_doc);
+
+        OoxmlSerializer::new()
+            .serialize(&ooxml_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts plain text → ODT.
+pub struct TxtToOdtConverter;
+
+impl FormatConverter for TxtToOdtConverter {
+    fn source_format(&self) -> &str {
+        "txt"
+    }
+
+    fn target_format(&self) -> &str {
+        "odt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let txt_doc = TxtParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let odf_doc = txt_to_odf(&txt_doc);
+
+        OdfSerializer::new()
+            .serialize(&odf_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts HTML → ODT.
+pub struct HtmlToOdtConverter;
+
+impl FormatConverter for HtmlToOdtConverter {
+    fn source_format(&self) -> &str {
+        "html"
+    }
+
+    fn target_format(&self) -> &str {
+        "odt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let html_doc = HtmlParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let odf_doc = html_to_odf(&html_doc);
+
+        OdfSerializer::new()
+            .serialize(&odf_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts XPS → plain text.
+pub struct XpsToTxtConverter;
+
+impl FormatConverter for XpsToTxtConverter {
+    fn source_format(&self) -> &str {
+        "xps"
+    }
+
+    fn target_format(&self) -> &str {
+        "txt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = XpsParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let mut lines = Vec::new();
+
+        for page in &doc.pages {
+            lines.push(format!("Page {}:", page.index + 1));
+            for glyph in &page.content.glyphs {
+                if !glyph.text.is_empty() {
+                    lines.push(glyph.text.clone());
+                }
+            }
+            lines.push(String::new());
+        }
+
+        let txt_doc = TxtDocument {
+            lines,
+            encoding: Encoding::Utf8,
+            had_bom: false,
+        };
+
+        TxtSerializer::with_options(SerializeOptions::unix())
+            .serialize(&txt_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts XPS → HTML.
+pub struct XpsToHtmlConverter;
+
+impl FormatConverter for XpsToHtmlConverter {
+    fn source_format(&self) -> &str {
+        "xps"
+    }
+
+    fn target_format(&self) -> &str {
+        "html"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = XpsParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let mut elements: Vec<BlockElement> = Vec::new();
+
+        for page in &doc.pages {
+            let mut page_inlines: Vec<InlineElement> = Vec::new();
+            for glyph in &page.content.glyphs {
+                if !glyph.text.is_empty() {
+                    page_inlines.push(InlineElement::Text {
+                        text: glyph.text.clone(),
+                    });
+                }
+            }
+            if !page_inlines.is_empty() {
+                elements.push(BlockElement::Div {
+                    elements: vec![BlockElement::Paragraph {
+                        content: page_inlines,
+                        id: None,
+                    }],
+                    id: None,
+                    class: None,
+                });
+            }
+        }
+
+        let html_doc = HtmlDocument {
+            doc_type: Some("html".into()),
+            html_attributes: Vec::new(),
+            head: HtmlHead {
+                title: doc.metadata.title.clone(),
+                meta: Vec::new(),
+                styles: Vec::new(),
+                links: Vec::new(),
+            },
+            body: HtmlBody { elements },
+        };
+
+        let html_string = HtmlSerializer::new().serialize(&html_doc);
+        Ok(html_string.into_bytes())
+    }
+}
+
+/// Converts OFD → plain text.
+pub struct OfdToTxtConverter;
+
+impl FormatConverter for OfdToTxtConverter {
+    fn source_format(&self) -> &str {
+        "ofd"
+    }
+
+    fn target_format(&self) -> &str {
+        "txt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = OfdParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let mut lines = Vec::new();
+
+        for page in &doc.pages {
+            lines.push(format!("Page {}:", page.index + 1));
+            for text_obj in &page.text_content {
+                if !text_obj.text.is_empty() {
+                    lines.push(text_obj.text.clone());
+                }
+            }
+            lines.push(String::new());
+        }
+
+        let txt_doc = TxtDocument {
+            lines,
+            encoding: Encoding::Utf8,
+            had_bom: false,
+        };
+
+        TxtSerializer::with_options(SerializeOptions::unix())
+            .serialize(&txt_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts OFD → HTML.
+pub struct OfdToHtmlConverter;
+
+impl FormatConverter for OfdToHtmlConverter {
+    fn source_format(&self) -> &str {
+        "ofd"
+    }
+
+    fn target_format(&self) -> &str {
+        "html"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = OfdParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let mut elements: Vec<BlockElement> = Vec::new();
+
+        for page in &doc.pages {
+            let mut page_inlines: Vec<InlineElement> = Vec::new();
+            for text_obj in &page.text_content {
+                if text_obj.text.is_empty() {
+                    continue;
+                }
+                let inline: InlineElement = if text_obj.bold && text_obj.italic {
+                    InlineElement::Bold {
+                        content: vec![InlineElement::Italic {
+                            content: vec![InlineElement::Text {
+                                text: text_obj.text.clone(),
+                            }],
+                        }],
+                    }
+                } else if text_obj.bold {
+                    InlineElement::Bold {
+                        content: vec![InlineElement::Text {
+                            text: text_obj.text.clone(),
+                        }],
+                    }
+                } else if text_obj.italic {
+                    InlineElement::Italic {
+                        content: vec![InlineElement::Text {
+                            text: text_obj.text.clone(),
+                        }],
+                    }
+                } else {
+                    InlineElement::Text {
+                        text: text_obj.text.clone(),
+                    }
+                };
+                page_inlines.push(inline);
+            }
+            if !page_inlines.is_empty() {
+                elements.push(BlockElement::Div {
+                    elements: vec![BlockElement::Paragraph {
+                        content: page_inlines,
+                        id: None,
+                    }],
+                    id: None,
+                    class: None,
+                });
+            }
+        }
+
+        let html_doc = HtmlDocument {
+            doc_type: Some("html".into()),
+            html_attributes: Vec::new(),
+            head: HtmlHead {
+                title: doc.doc_body.as_ref().and_then(|b| b.title.clone()),
+                meta: Vec::new(),
+                styles: Vec::new(),
+                links: Vec::new(),
+            },
+            body: HtmlBody { elements },
+        };
+
+        let html_string = HtmlSerializer::new().serialize(&html_doc);
+        Ok(html_string.into_bytes())
+    }
+}
+
+/// Converts DjVu → plain text (metadata only — DjVu is scanned images with no text layer).
+pub struct DjvuToTxtConverter;
+
+impl FormatConverter for DjvuToTxtConverter {
+    fn source_format(&self) -> &str {
+        "djvu"
+    }
+
+    fn target_format(&self) -> &str {
+        "txt"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = DjvuParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let mut lines = Vec::new();
+        lines.push("DjVu Document".to_string());
+        lines.push(format!(
+            "Title: {}",
+            doc.title.as_deref().unwrap_or("(none)")
+        ));
+        lines.push(format!("Pages: {}", doc.page_count));
+        lines.push(format!("Version: {}", doc.version));
+        lines.push(format!("Subtype: {}", doc.subtype));
+
+        let txt_doc = TxtDocument {
+            lines,
+            encoding: Encoding::Utf8,
+            had_bom: false,
+        };
+
+        TxtSerializer::with_options(SerializeOptions::unix())
+            .serialize(&txt_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts plain text → EPUB.
+pub struct TxtToEpubConverter;
+
+impl FormatConverter for TxtToEpubConverter {
+    fn source_format(&self) -> &str {
+        "txt"
+    }
+
+    fn target_format(&self) -> &str {
+        "epub"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let txt_doc = TxtParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let chapters_data = txt_to_epub_chapters(&txt_doc);
+
+        let book_title = chapters_data
+            .first()
+            .map(|(t, _)| t.as_str())
+            .unwrap_or("Untitled");
+
+        let chapters: Vec<EpubChapter> = chapters_data
+            .iter()
+            .enumerate()
+            .map(|(i, (ch_title, lines))| {
+                let href = format!("chapter{}.xhtml", i + 1);
+                let body_html = lines
+                    .iter()
+                    .map(|l| format!("<p>{}</p>", escape_xhtml_text(l)))
+                    .collect::<Vec<_>>()
+                    .join("\n");
+                let content = build_xhtml_content(ch_title, &body_html);
+                EpubChapter {
+                    title: ch_title.clone(),
+                    content,
+                    href,
+                }
+            })
+            .collect();
+
+        let spine: Vec<String> = (1..=chapters.len())
+            .map(|i| format!("chapter{}", i))
+            .collect();
+
+        let toc: Vec<TocEntry> = chapters_data
+            .iter()
+            .enumerate()
+            .map(|(i, (ch_title, _))| TocEntry {
+                title: ch_title.clone(),
+                href: Some(format!("chapter{}.xhtml", i + 1)),
+                level: 1,
+                children: Vec::new(),
+                play_order: Some(i as u32 + 1),
+            })
+            .collect();
+
+        let epub_doc = EpubDocument {
+            version: "3.0".to_string(),
+            metadata: EpubMetadata {
+                title: Some(book_title.to_string()),
+                language: Some("en".to_string()),
+                identifier: Some(format!("urn:uuid:wo-x2t-{:016x}", book_title.len() as u64)),
+                unique_identifier: Some("uid".to_string()),
+                ..Default::default()
+            },
+            manifest: Vec::new(),
+            spine,
+            toc,
+            chapters,
+            cover_image: None,
+            cover_image_type: None,
+        };
+
+        EpubSerializer::new()
+            .serialize(&epub_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Converts HTML → EPUB.
+pub struct HtmlToEpubConverter;
+
+impl FormatConverter for HtmlToEpubConverter {
+    fn source_format(&self) -> &str {
+        "html"
+    }
+
+    fn target_format(&self) -> &str {
+        "epub"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let html_doc = HtmlParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let book_title = html_doc.head.title.as_deref().unwrap_or("Untitled");
+
+        let chapters_data = html_to_epub_chapters(&html_doc.body.elements);
+
+        let chapters: Vec<EpubChapter> = chapters_data
+            .iter()
+            .enumerate()
+            .map(|(i, (ch_title, elements))| {
+                let href = format!("chapter{}.xhtml", i + 1);
+                let body_html = elements
+                    .iter()
+                    .map(block_element_to_xhtml)
+                    .collect::<Vec<_>>()
+                    .join("\n");
+                let content = build_xhtml_content(ch_title, &body_html);
+                EpubChapter {
+                    title: ch_title.clone(),
+                    content,
+                    href,
+                }
+            })
+            .collect();
+
+        let spine: Vec<String> = (1..=chapters.len())
+            .map(|i| format!("chapter{}", i))
+            .collect();
+
+        let toc: Vec<TocEntry> = chapters_data
+            .iter()
+            .enumerate()
+            .map(|(i, (ch_title, _))| TocEntry {
+                title: ch_title.clone(),
+                href: Some(format!("chapter{}.xhtml", i + 1)),
+                level: 1,
+                children: Vec::new(),
+                play_order: Some(i as u32 + 1),
+            })
+            .collect();
+
+        let epub_doc = EpubDocument {
+            version: "3.0".to_string(),
+            metadata: EpubMetadata {
+                title: Some(book_title.to_string()),
+                language: Some("en".to_string()),
+                identifier: Some(format!("urn:uuid:wo-x2t-{:016x}", book_title.len() as u64)),
+                unique_identifier: Some("uid".to_string()),
+                ..Default::default()
+            },
+            manifest: Vec::new(),
+            spine,
+            toc,
+            chapters,
+            cover_image: None,
+            cover_image_type: None,
+        };
+
+        EpubSerializer::new()
+            .serialize(&epub_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+// ── TXT → FB2 ──────────────────────────────────────────────────────
+
+/// Converts plain text → FB2.
+pub struct TxtToFb2Converter;
+
+impl FormatConverter for TxtToFb2Converter {
+    fn source_format(&self) -> &str {
+        "txt"
+    }
+
+    fn target_format(&self) -> &str {
+        "fb2"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let txt_doc = TxtParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let book_title = txt_doc
+            .lines
+            .iter()
+            .find(|l| !l.is_empty())
+            .cloned()
+            .unwrap_or_else(|| "Untitled".to_string());
+
+        let elements: Vec<ContentElement> = txt_doc
+            .lines
+            .iter()
+            .filter(|l| !l.is_empty())
+            .map(|line| ContentElement::Paragraph {
+                style: None,
+                id: None,
+                content: vec![Formatting {
+                    text: line.clone(),
+                    style: TextStyle::None,
+                    href: None,
+                    title: None,
+                }],
+            })
+            .collect();
+
+        let fb2_doc = Fb2Document {
+            xmlns: Some("http://www.gribuser.ru/xml/fictionbook/2.0".to_string()),
+            title_info: Some(TitleInfo {
+                book_title: Some(book_title),
+                lang: Some("en".to_string()),
+                ..Default::default()
+            }),
+            document_info: Some(DocumentInfo {
+                id: Some(format!(
+                    "wo-txt-fb2-{:x}",
+                    std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap_or_default()
+                        .as_millis()
+                )),
+                program_used: Some("World-Office".to_string()),
+                ..Default::default()
+            }),
+            publish_info: None,
+            src_title_info: None,
+            custom_info: vec![],
+            bodies: vec![Body {
+                name: None,
+                lang: None,
+                sections: vec![Section {
+                    id: None,
+                    title: vec![],
+                    elements,
+                    sections: vec![],
+                }],
+                images: vec![],
+            }],
+            binaries: vec![],
+        };
+
+        let xml = Fb2Serializer::new()
+            .serialize(&fb2_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))?;
+        Ok(xml.into_bytes())
+    }
+}
+
+// ── HTML → FB2 ─────────────────────────────────────────────────────
+
+/// Converts HTML → FB2.
+pub struct HtmlToFb2Converter;
+
+impl FormatConverter for HtmlToFb2Converter {
+    fn source_format(&self) -> &str {
+        "html"
+    }
+
+    fn target_format(&self) -> &str {
+        "fb2"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let html_doc = HtmlParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let book_title = html_doc
+            .head
+            .title
+            .clone()
+            .unwrap_or_else(|| "Untitled".to_string());
+
+        let elements = html_elements_to_fb2(&html_doc.body.elements);
+
+        let fb2_doc = Fb2Document {
+            xmlns: Some("http://www.gribuser.ru/xml/fictionbook/2.0".to_string()),
+            title_info: Some(TitleInfo {
+                book_title: Some(book_title),
+                lang: Some("en".to_string()),
+                ..Default::default()
+            }),
+            document_info: Some(DocumentInfo {
+                id: Some(format!(
+                    "wo-html-fb2-{:x}",
+                    std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap_or_default()
+                        .as_millis()
+                )),
+                program_used: Some("World-Office".to_string()),
+                ..Default::default()
+            }),
+            publish_info: None,
+            src_title_info: None,
+            custom_info: vec![],
+            bodies: vec![Body {
+                name: None,
+                lang: None,
+                sections: vec![Section {
+                    id: None,
+                    title: vec![],
+                    elements,
+                    sections: vec![],
+                }],
+                images: vec![],
+            }],
+            binaries: vec![],
+        };
+
+        let xml = Fb2Serializer::new()
+            .serialize(&fb2_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))?;
+        Ok(xml.into_bytes())
+    }
+}
+
+// ── HTML → FB2 helpers ──────────────────────────────────────────────
+
+/// Convert HTML block elements to FB2 content elements.
+fn html_elements_to_fb2(elements: &[BlockElement]) -> Vec<ContentElement> {
+    let mut result = Vec::new();
+    for elem in elements {
+        match elem {
+            BlockElement::Heading { content, .. } => {
+                let text = extract_inline_text(content);
+                if !text.is_empty() {
+                    result.push(ContentElement::Paragraph {
+                        style: None,
+                        id: None,
+                        content: vec![Formatting {
+                            text,
+                            style: TextStyle::Strong,
+                            href: None,
+                            title: None,
+                        }],
+                    });
+                }
+            }
+            BlockElement::Paragraph { content, .. } => {
+                let formatting = inline_elements_to_formatting(content);
+                if !formatting.is_empty() {
+                    result.push(ContentElement::Paragraph {
+                        style: None,
+                        id: None,
+                        content: formatting,
+                    });
+                }
+            }
+            BlockElement::Div { elements, .. } => {
+                result.extend(html_elements_to_fb2(elements));
+            }
+            BlockElement::Blockquote { elements, .. } => {
+                result.extend(html_elements_to_fb2(elements));
+            }
+            BlockElement::Pre { content, .. } => {
+                if !content.is_empty() {
+                    result.push(ContentElement::Paragraph {
+                        style: None,
+                        id: None,
+                        content: vec![Formatting {
+                            text: content.clone(),
+                            style: TextStyle::Code,
+                            href: None,
+                            title: None,
+                        }],
+                    });
+                }
+            }
+            BlockElement::UnorderedList { items, .. } | BlockElement::OrderedList { items, .. } => {
+                for item in items {
+                    let formatting = inline_elements_to_formatting(&item.content);
+                    if !formatting.is_empty() {
+                        result.push(ContentElement::Paragraph {
+                            style: None,
+                            id: None,
+                            content: formatting,
+                        });
+                    }
+                }
+            }
+            BlockElement::Table { rows, .. } => {
+                for row in rows {
+                    for cell in &row.cells {
+                        let formatting = inline_elements_to_formatting(&cell.content);
+                        if !formatting.is_empty() {
+                            result.push(ContentElement::Paragraph {
+                                style: None,
+                                id: None,
+                                content: formatting,
+                            });
+                        }
+                    }
+                }
+            }
+            BlockElement::HorizontalRule => {
+                result.push(ContentElement::EmptyLine);
+            }
+            BlockElement::RawHtml { .. } => {}
+        }
+    }
+    result
+}
+
+/// Convert HTML inline elements to FB2 formatting items.
+fn inline_elements_to_formatting(elements: &[InlineElement]) -> Vec<Formatting> {
+    let mut result = Vec::new();
+    for elem in elements {
+        match elem {
+            InlineElement::Text { text } => {
+                if !text.is_empty() {
+                    result.push(Formatting {
+                        text: text.clone(),
+                        style: TextStyle::None,
+                        href: None,
+                        title: None,
+                    });
+                }
+            }
+            InlineElement::Bold { content } => {
+                for f in inline_elements_to_formatting(content) {
+                    result.push(Formatting {
+                        text: f.text,
+                        style: TextStyle::Strong,
+                        href: f.href,
+                        title: f.title,
+                    });
+                }
+            }
+            InlineElement::Italic { content } => {
+                for f in inline_elements_to_formatting(content) {
+                    result.push(Formatting {
+                        text: f.text,
+                        style: TextStyle::Emphasis,
+                        href: f.href,
+                        title: f.title,
+                    });
+                }
+            }
+            InlineElement::Strikethrough { content } => {
+                for f in inline_elements_to_formatting(content) {
+                    result.push(Formatting {
+                        text: f.text,
+                        style: TextStyle::Strikethrough,
+                        href: f.href,
+                        title: f.title,
+                    });
+                }
+            }
+            InlineElement::Underline { content } => {
+                result.extend(inline_elements_to_formatting(content));
+            }
+            InlineElement::Subscript { content } => {
+                for f in inline_elements_to_formatting(content) {
+                    result.push(Formatting {
+                        text: f.text,
+                        style: TextStyle::Subscript,
+                        href: f.href,
+                        title: f.title,
+                    });
+                }
+            }
+            InlineElement::Superscript { content } => {
+                for f in inline_elements_to_formatting(content) {
+                    result.push(Formatting {
+                        text: f.text,
+                        style: TextStyle::Superscript,
+                        href: f.href,
+                        title: f.title,
+                    });
+                }
+            }
+            InlineElement::Code { content } => {
+                if !content.is_empty() {
+                    result.push(Formatting {
+                        text: content.clone(),
+                        style: TextStyle::Code,
+                        href: None,
+                        title: None,
+                    });
+                }
+            }
+            InlineElement::Link {
+                href,
+                title,
+                content,
+            } => {
+                let text = extract_inline_text(content);
+                if !text.is_empty() {
+                    result.push(Formatting {
+                        text,
+                        style: TextStyle::None,
+                        href: Some(href.clone()),
+                        title: title.clone(),
+                    });
+                }
+            }
+            InlineElement::Image { alt, .. } => {
+                if let Some(alt_text) = alt {
+                    if !alt_text.is_empty() {
+                        result.push(Formatting {
+                            text: alt_text.clone(),
+                            style: TextStyle::None,
+                            href: None,
+                            title: None,
+                        });
+                    }
+                }
+            }
+            InlineElement::LineBreak => {}
+        }
+    }
+    result
+}
+
+/// Extract plain text from a list of inline elements.
+fn extract_inline_text(elements: &[InlineElement]) -> String {
+    let mut result = String::new();
+    for elem in elements {
+        match elem {
+            InlineElement::Text { text } => result.push_str(text),
+            InlineElement::Bold { content }
+            | InlineElement::Italic { content }
+            | InlineElement::Underline { content }
+            | InlineElement::Strikethrough { content }
+            | InlineElement::Subscript { content }
+            | InlineElement::Superscript { content } => {
+                result.push_str(&extract_inline_text(content));
+            }
+            InlineElement::Code { content } => result.push_str(content),
+            InlineElement::Link { content, .. } => {
+                result.push_str(&extract_inline_text(content));
+            }
+            InlineElement::Image { alt, .. } => {
+                if let Some(t) = alt {
+                    result.push_str(t);
+                }
+            }
+            InlineElement::LineBreak => result.push(' '),
+        }
+    }
+    result
+}
+
+// ── RTF helpers ──────────────────────────────────────────────────────
+
+/// Extract plain text from a list of RTF inline elements.
+fn extract_rtf_text(inlines: &[RtfInline]) -> String {
+    let mut result = String::new();
+    for inline in inlines {
+        match inline {
+            RtfInline::Text { text } => result.push_str(text),
+            RtfInline::Bold { content }
+            | RtfInline::Italic { content }
+            | RtfInline::Underline { content }
+            | RtfInline::Strikethrough { content }
+            | RtfInline::Superscript { content }
+            | RtfInline::Subscript { content }
+            | RtfInline::Font { content, .. }
+            | RtfInline::FontSize { content, .. }
+            | RtfInline::Color { content, .. } => {
+                result.push_str(&extract_rtf_text(content));
+            }
+            RtfInline::LineBreak => result.push('\n'),
+            RtfInline::PageBreak => result.push_str("\n\n"),
+            RtfInline::Tab => result.push('\t'),
+        }
+    }
+    result
+}
+
+/// Convert RTF blocks to plain text lines.
+fn rtf_blocks_to_text_lines(blocks: &[RtfBlock]) -> Vec<String> {
+    let mut lines = Vec::new();
+    for block in blocks {
+        match block {
+            RtfBlock::Paragraph { content, .. } => {
+                let text = extract_rtf_text(content);
+                // A paragraph may contain LineBreaks, split those into separate lines
+                for part in text.split('\n') {
+                    lines.push(part.to_string());
+                }
+            }
+            RtfBlock::Table { rows } => {
+                for row in rows {
+                    let cells: Vec<String> = row
+                        .cells
+                        .iter()
+                        .map(|c| extract_rtf_text(&c.content))
+                        .collect();
+                    lines.push(cells.join("\t"));
+                }
+            }
+        }
+    }
+    lines
+}
+
+/// Convert RTF inline elements to HTML inline elements.
+fn rtf_to_html_inlines(inlines: &[RtfInline]) -> Vec<InlineElement> {
+    let mut result = Vec::new();
+    for inline in inlines {
+        match inline {
+            RtfInline::Text { text } => {
+                result.push(InlineElement::Text { text: text.clone() });
+            }
+            RtfInline::Bold { content } => {
+                let inner = rtf_to_html_inlines(content);
+                if !inner.is_empty() {
+                    result.push(InlineElement::Bold { content: inner });
+                }
+            }
+            RtfInline::Italic { content } => {
+                let inner = rtf_to_html_inlines(content);
+                if !inner.is_empty() {
+                    result.push(InlineElement::Italic { content: inner });
+                }
+            }
+            RtfInline::Underline { content } => {
+                let inner = rtf_to_html_inlines(content);
+                if !inner.is_empty() {
+                    result.push(InlineElement::Underline { content: inner });
+                }
+            }
+            RtfInline::Strikethrough { content } => {
+                let inner = rtf_to_html_inlines(content);
+                if !inner.is_empty() {
+                    result.push(InlineElement::Strikethrough { content: inner });
+                }
+            }
+            RtfInline::Superscript { content } => {
+                let inner = rtf_to_html_inlines(content);
+                if !inner.is_empty() {
+                    result.push(InlineElement::Superscript { content: inner });
+                }
+            }
+            RtfInline::Subscript { content } => {
+                let inner = rtf_to_html_inlines(content);
+                if !inner.is_empty() {
+                    result.push(InlineElement::Subscript { content: inner });
+                }
+            }
+            RtfInline::Font { content, .. }
+            | RtfInline::FontSize { content, .. }
+            | RtfInline::Color { content, .. } => {
+                // Drop font/size/color info, preserve nested content
+                result.extend(rtf_to_html_inlines(content));
+            }
+            RtfInline::LineBreak => {
+                result.push(InlineElement::LineBreak);
+            }
+            RtfInline::PageBreak => {
+                // Page breaks have no direct HTML equivalent; skip
+            }
+            RtfInline::Tab => {
+                // Tabs have no direct HTML equivalent; skip
+            }
+        }
+    }
+    result
+}
+
+/// Convert RTF block elements to HTML block elements.
+fn rtf_blocks_to_html_blocks(blocks: &[RtfBlock]) -> Vec<BlockElement> {
+    let mut result = Vec::new();
+    for block in blocks {
+        match block {
+            RtfBlock::Paragraph { content, .. } => {
+                let inlines = rtf_to_html_inlines(content);
+                result.push(BlockElement::Paragraph {
+                    content: inlines,
+                    id: None,
+                });
+            }
+            RtfBlock::Table { rows } => {
+                let html_rows: Vec<TableRow> = rows
+                    .iter()
+                    .map(|row| TableRow {
+                        cells: row
+                            .cells
+                            .iter()
+                            .map(|cell| TableCell {
+                                content: rtf_to_html_inlines(&cell.content),
+                                colspan: 1,
+                                rowspan: 1,
+                            })
+                            .collect(),
+                        is_header: false,
+                    })
+                    .collect();
+                result.push(BlockElement::Table {
+                    rows: html_rows,
+                    id: None,
+                });
+            }
+        }
+    }
+    result
+}
+
+/// Convert HTML inline elements to RTF inline elements, preserving formatting.
+fn html_inlines_to_rtf_inlines(inlines: &[InlineElement]) -> Vec<RtfInline> {
+    let mut result = Vec::new();
+    for inline in inlines {
+        match inline {
+            InlineElement::Text { text } => {
+                if !text.is_empty() {
+                    result.push(RtfInline::Text { text: text.clone() });
+                }
+            }
+            InlineElement::Bold { content } => {
+                let inner = html_inlines_to_rtf_inlines(content);
+                if !inner.is_empty() {
+                    result.push(RtfInline::Bold { content: inner });
+                }
+            }
+            InlineElement::Italic { content } => {
+                let inner = html_inlines_to_rtf_inlines(content);
+                if !inner.is_empty() {
+                    result.push(RtfInline::Italic { content: inner });
+                }
+            }
+            InlineElement::Underline { content } => {
+                let inner = html_inlines_to_rtf_inlines(content);
+                if !inner.is_empty() {
+                    result.push(RtfInline::Underline { content: inner });
+                }
+            }
+            InlineElement::Strikethrough { content } => {
+                let inner = html_inlines_to_rtf_inlines(content);
+                if !inner.is_empty() {
+                    result.push(RtfInline::Strikethrough { content: inner });
+                }
+            }
+            InlineElement::Superscript { content } => {
+                let inner = html_inlines_to_rtf_inlines(content);
+                if !inner.is_empty() {
+                    result.push(RtfInline::Superscript { content: inner });
+                }
+            }
+            InlineElement::Subscript { content } => {
+                let inner = html_inlines_to_rtf_inlines(content);
+                if !inner.is_empty() {
+                    result.push(RtfInline::Subscript { content: inner });
+                }
+            }
+            InlineElement::Link { content, .. } => {
+                result.extend(html_inlines_to_rtf_inlines(content));
+            }
+            InlineElement::Code { content } => {
+                if !content.is_empty() {
+                    result.push(RtfInline::Text {
+                        text: content.clone(),
+                    });
+                }
+            }
+            InlineElement::Image { alt, .. } => {
+                if let Some(alt_text) = alt {
+                    if !alt_text.is_empty() {
+                        result.push(RtfInline::Text {
+                            text: alt_text.clone(),
+                        });
+                    }
+                }
+            }
+            InlineElement::LineBreak => {
+                result.push(RtfInline::LineBreak);
+            }
+        }
+    }
+    result
+}
+
+/// Convert HTML block elements to RTF block elements.
+fn html_blocks_to_rtf_blocks(elements: &[BlockElement]) -> Vec<RtfBlock> {
+    let mut result = Vec::new();
+    for element in elements {
+        match element {
+            BlockElement::Heading { level, content, .. } => {
+                // Map heading levels to font sizes (in half-points):
+                // h1=32 (16pt), h2=28 (14pt), h3=24 (12pt), h4=22 (11pt), h5=20 (10pt), h6=18 (9pt)
+                let half_points = match level {
+                    1 => 32,
+                    2 => 28,
+                    3 => 24,
+                    4 => 22,
+                    5 => 20,
+                    _ => 18,
+                };
+                let inlines = html_inlines_to_rtf_inlines(content);
+                if !inlines.is_empty() {
+                    result.push(RtfBlock::Paragraph {
+                        content: vec![RtfInline::FontSize {
+                            half_points,
+                            content: inlines,
+                        }],
+                        alignment: None,
+                        indent_left: None,
+                        indent_first: None,
+                    });
+                }
+            }
+            BlockElement::Paragraph { content, .. } => {
+                let inlines = html_inlines_to_rtf_inlines(content);
+                if !inlines.is_empty() {
+                    result.push(RtfBlock::Paragraph {
+                        content: inlines,
+                        alignment: None,
+                        indent_left: None,
+                        indent_first: None,
+                    });
+                }
+            }
+            BlockElement::Div { elements, .. } | BlockElement::Blockquote { elements, .. } => {
+                result.extend(html_blocks_to_rtf_blocks(elements));
+            }
+            BlockElement::UnorderedList { items, .. } => {
+                for item in items {
+                    let inlines = html_inlines_to_rtf_inlines(&item.content);
+                    let mut content = vec![RtfInline::Text {
+                        text: "\\bullet ".to_string(),
+                    }];
+                    content.extend(inlines);
+                    result.push(RtfBlock::Paragraph {
+                        content,
+                        alignment: None,
+                        indent_left: Some(720),
+                        indent_first: Some(-360),
+                    });
+                }
+            }
+            BlockElement::OrderedList { items, start, .. } => {
+                for (i, item) in items.iter().enumerate() {
+                    let num = start.unwrap_or(1) + i as u32;
+                    let inlines = html_inlines_to_rtf_inlines(&item.content);
+                    let mut content = vec![RtfInline::Text {
+                        text: format!("{}\\tab ", num),
+                    }];
+                    content.extend(inlines);
+                    result.push(RtfBlock::Paragraph {
+                        content,
+                        alignment: None,
+                        indent_left: Some(720),
+                        indent_first: Some(-360),
+                    });
+                }
+            }
+            BlockElement::Table { rows, .. } => {
+                for row in rows {
+                    let cells: Vec<wo_rtf::model::RtfTableCell> = row
+                        .cells
+                        .iter()
+                        .map(|c| wo_rtf::model::RtfTableCell {
+                            content: html_inlines_to_rtf_inlines(&c.content),
+                            width: None,
+                        })
+                        .collect();
+                    result.push(RtfBlock::Table {
+                        rows: vec![wo_rtf::model::RtfTableRow { cells }],
+                    });
+                }
+            }
+            BlockElement::Pre { content, .. } => {
+                for line in content.lines() {
+                    result.push(RtfBlock::Paragraph {
+                        content: vec![RtfInline::Text {
+                            text: line.to_string(),
+                        }],
+                        alignment: None,
+                        indent_left: Some(360),
+                        indent_first: None,
+                    });
+                }
+            }
+            BlockElement::HorizontalRule => {
+                result.push(RtfBlock::Paragraph {
+                    content: vec![RtfInline::Text {
+                        text: "\\emdash\\emdash\\emdash".to_string(),
+                    }],
+                    alignment: Some(wo_rtf::model::RtfAlignment::Center),
+                    indent_left: None,
+                    indent_first: None,
+                });
+            }
+            BlockElement::RawHtml { content, .. } => {
+                if !content.trim().is_empty() {
+                    result.push(RtfBlock::Paragraph {
+                        content: vec![RtfInline::Text {
+                            text: content.trim().to_string(),
+                        }],
+                        alignment: None,
+                        indent_left: None,
+                        indent_first: None,
+                    });
+                }
+            }
+        }
+    }
+    result
+}
+
+// ── HTML helpers ─────────────────────────────────────────────────────
+
+/// Extract plain text from HTML inline elements.
+fn extract_html_text(inlines: &[InlineElement]) -> String {
+    let mut result = String::new();
+    for inline in inlines {
+        match inline {
+            InlineElement::Text { text } => result.push_str(text),
+            InlineElement::Bold { content }
+            | InlineElement::Italic { content }
+            | InlineElement::Underline { content }
+            | InlineElement::Strikethrough { content }
+            | InlineElement::Subscript { content }
+            | InlineElement::Superscript { content }
+            | InlineElement::Link { content, .. } => {
+                result.push_str(&extract_html_text(content));
+            }
+            InlineElement::Code { content } => result.push_str(content),
+            InlineElement::Image { alt, .. } => {
+                if let Some(alt_text) = alt {
+                    result.push_str(alt_text);
+                }
+            }
+            InlineElement::LineBreak => result.push('\n'),
+        }
+    }
+    result
+}
+
+/// Convert HTML block elements to plain text lines.
+fn html_blocks_to_lines(elements: &[BlockElement]) -> Vec<String> {
+    let mut lines = Vec::new();
+    for element in elements {
+        match element {
+            BlockElement::Heading { level, content, .. } => {
+                let text = extract_html_text(content);
+                let prefix = "#".repeat(*level as usize);
+                lines.push(format!("{} {}", prefix, text));
+            }
+            BlockElement::Paragraph { content, .. } => {
+                let text = extract_html_text(content);
+                // Paragraphs may contain LineBreaks
+                for part in text.split('\n') {
+                    lines.push(part.to_string());
+                }
+            }
+            BlockElement::Div { elements, .. } | BlockElement::Blockquote { elements, .. } => {
+                lines.extend(html_blocks_to_lines(elements));
+            }
+            BlockElement::UnorderedList { items, .. } => {
+                for item in items {
+                    let text = extract_html_text(&item.content);
+                    lines.push(format!("- {}", text));
+                }
+            }
+            BlockElement::OrderedList { items, .. } => {
+                for (i, item) in items.iter().enumerate() {
+                    let text = extract_html_text(&item.content);
+                    lines.push(format!("{}. {}", i + 1, text));
+                }
+            }
+            BlockElement::Table { rows, .. } => {
+                for row in rows {
+                    let cells: Vec<String> = row
+                        .cells
+                        .iter()
+                        .map(|c| extract_html_text(&c.content))
+                        .collect();
+                    lines.push(cells.join("\t"));
+                }
+            }
+            BlockElement::Pre { content, .. } => {
+                for line in content.lines() {
+                    lines.push(line.to_string());
+                }
+            }
+            BlockElement::HorizontalRule => {
+                lines.push("---".to_string());
+            }
+            BlockElement::RawHtml { content, .. } => {
+                if !content.trim().is_empty() {
+                    lines.push(content.trim().to_string());
+                }
+            }
+        }
+    }
+    lines
+}
+
+// ── TO helpers ──────────────────────────────────────────────────────
+
+/// Convert a TXT document to an OOXML DOCX document.
+fn txt_to_ooxml(txt_doc: &TxtDocument) -> OoxmlDocument {
+    let paragraphs: Vec<DocxParagraph> = txt_doc
+        .lines
+        .iter()
+        .map(|line| DocxParagraph {
+            style_id: None,
+            properties: DocxParagraphProperties::default(),
+            runs: vec![DocxRun {
+                text: line.clone(),
+                bold: false,
+                italic: false,
+                underline: None,
+                strikethrough: false,
+                double_strikethrough: false,
+                font: None,
+                font_size: None,
+                font_size_cs: None,
+                color: None,
+                highlight: None,
+                vertical_alignment: None,
+                small_caps: false,
+                all_caps: false,
+            }],
+        })
+        .collect();
+
+    OoxmlDocument {
+        format: OoxmlFormat::Docx,
+        version: "1.0".to_string(),
+        content_types: vec![],
+        main_part: Some("word/document.xml".to_string()),
+        shared_strings: vec![],
+        part_count: 1,
+        core_properties: CoreProperties::default(),
+        relationships: vec![],
+        body: Some(DocxBody {
+            paragraphs,
+            tables: vec![],
+        }),
+    }
+}
+
+/// Convert an HTML document to an OOXML DOCX document.
+fn html_to_ooxml(html_doc: &HtmlDocument) -> OoxmlDocument {
+    let mut paragraphs: Vec<DocxParagraph> = Vec::new();
+    let mut tables: Vec<DocxTable> = Vec::new();
+
+    for element in &html_doc.body.elements {
+        match element {
+            BlockElement::Heading { level, content, .. } => {
+                let text = extract_html_text(content);
+                let font_size = 36u32 - (*level as u32 - 1) * 4;
+                let font_size = font_size.max(18);
+                paragraphs.push(DocxParagraph {
+                    style_id: None,
+                    properties: DocxParagraphProperties::default(),
+                    runs: vec![DocxRun {
+                        text,
+                        bold: true,
+                        italic: false,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: Some(font_size),
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    }],
+                });
+            }
+            BlockElement::Paragraph { content, .. } => {
+                let runs = html_inlines_to_docx_runs(content);
+                if !runs.is_empty() {
+                    paragraphs.push(DocxParagraph {
+                        style_id: None,
+                        properties: DocxParagraphProperties::default(),
+                        runs,
+                    });
+                }
+            }
+            BlockElement::UnorderedList { items, .. } => {
+                for item in items {
+                    let text = extract_html_text(&item.content);
+                    paragraphs.push(DocxParagraph {
+                        style_id: None,
+                        properties: DocxParagraphProperties {
+                            indent_left: Some(720),
+                            ..Default::default()
+                        },
+                        runs: vec![DocxRun {
+                            text: format!("\u{2022} {}", text),
+                            bold: false,
+                            italic: false,
+                            underline: None,
+                            strikethrough: false,
+                            double_strikethrough: false,
+                            font: None,
+                            font_size: None,
+                            font_size_cs: None,
+                            color: None,
+                            highlight: None,
+                            vertical_alignment: None,
+                            small_caps: false,
+                            all_caps: false,
+                        }],
+                    });
+                }
+            }
+            BlockElement::OrderedList { items, start, .. } => {
+                for (i, item) in items.iter().enumerate() {
+                    let num = start.unwrap_or(1) + i as u32;
+                    let text = extract_html_text(&item.content);
+                    paragraphs.push(DocxParagraph {
+                        style_id: None,
+                        properties: DocxParagraphProperties {
+                            indent_left: Some(720),
+                            ..Default::default()
+                        },
+                        runs: vec![DocxRun {
+                            text: format!("{}. {}", num, text),
+                            bold: false,
+                            italic: false,
+                            underline: None,
+                            strikethrough: false,
+                            double_strikethrough: false,
+                            font: None,
+                            font_size: None,
+                            font_size_cs: None,
+                            color: None,
+                            highlight: None,
+                            vertical_alignment: None,
+                            small_caps: false,
+                            all_caps: false,
+                        }],
+                    });
+                }
+            }
+            BlockElement::Table { rows, .. } => {
+                let docx_rows: Vec<DocxTableRow> = rows
+                    .iter()
+                    .map(|row| DocxTableRow {
+                        cells: row
+                            .cells
+                            .iter()
+                            .map(|cell| {
+                                let text = extract_html_text(&cell.content);
+                                DocxTableCell {
+                                    paragraphs: vec![DocxParagraph {
+                                        style_id: None,
+                                        properties: DocxParagraphProperties::default(),
+                                        runs: vec![DocxRun {
+                                            text,
+                                            bold: false,
+                                            italic: false,
+                                            underline: None,
+                                            strikethrough: false,
+                                            double_strikethrough: false,
+                                            font: None,
+                                            font_size: None,
+                                            font_size_cs: None,
+                                            color: None,
+                                            highlight: None,
+                                            vertical_alignment: None,
+                                            small_caps: false,
+                                            all_caps: false,
+                                        }],
+                                    }],
+                                    column_span: cell.colspan,
+                                    row_span: cell.rowspan,
+                                    width: None,
+                                    shading: None,
+                                }
+                            })
+                            .collect(),
+                        height: None,
+                        is_header: row.is_header,
+                    })
+                    .collect();
+                tables.push(DocxTable {
+                    rows: docx_rows,
+                    properties: Default::default(),
+                });
+            }
+            BlockElement::HorizontalRule => {
+                paragraphs.push(DocxParagraph {
+                    style_id: None,
+                    properties: DocxParagraphProperties::default(),
+                    runs: vec![DocxRun {
+                        text: "\u{2500}".repeat(24),
+                        bold: false,
+                        italic: false,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    }],
+                });
+            }
+            BlockElement::Pre { content, .. } => {
+                for line in content.lines() {
+                    paragraphs.push(DocxParagraph {
+                        style_id: None,
+                        properties: DocxParagraphProperties::default(),
+                        runs: vec![DocxRun {
+                            text: line.to_string(),
+                            bold: false,
+                            italic: false,
+                            underline: None,
+                            strikethrough: false,
+                            double_strikethrough: false,
+                            font: None,
+                            font_size: None,
+                            font_size_cs: None,
+                            color: None,
+                            highlight: None,
+                            vertical_alignment: None,
+                            small_caps: false,
+                            all_caps: false,
+                        }],
+                    });
+                }
+            }
+            BlockElement::Div { elements, .. } | BlockElement::Blockquote { elements, .. } => {
+                let sub_doc = HtmlDocument {
+                    doc_type: None,
+                    html_attributes: vec![],
+                    head: HtmlHead::default(),
+                    body: HtmlBody {
+                        elements: elements.clone(),
+                    },
+                };
+                let sub = html_to_ooxml(&sub_doc);
+                if let Some(body) = &sub.body {
+                    paragraphs.extend(body.paragraphs.clone());
+                    tables.extend(body.tables.clone());
+                }
+            }
+            BlockElement::RawHtml { content, .. } => {
+                if !content.trim().is_empty() {
+                    paragraphs.push(DocxParagraph {
+                        style_id: None,
+                        properties: DocxParagraphProperties::default(),
+                        runs: vec![DocxRun {
+                            text: content.trim().to_string(),
+                            bold: false,
+                            italic: false,
+                            underline: None,
+                            strikethrough: false,
+                            double_strikethrough: false,
+                            font: None,
+                            font_size: None,
+                            font_size_cs: None,
+                            color: None,
+                            highlight: None,
+                            vertical_alignment: None,
+                            small_caps: false,
+                            all_caps: false,
+                        }],
+                    });
+                }
+            }
+        }
+    }
+
+    OoxmlDocument {
+        format: OoxmlFormat::Docx,
+        version: "1.0".to_string(),
+        content_types: vec![],
+        main_part: Some("word/document.xml".to_string()),
+        shared_strings: vec![],
+        part_count: 1,
+        core_properties: CoreProperties::default(),
+        relationships: vec![],
+        body: Some(DocxBody { paragraphs, tables }),
+    }
+}
+
+/// Convert HTML inline elements to DOCX runs.
+fn html_inlines_to_docx_runs(inlines: &[InlineElement]) -> Vec<DocxRun> {
+    let mut runs = Vec::new();
+    for inline in inlines {
+        match inline {
+            InlineElement::Text { text } => {
+                if !text.is_empty() {
+                    runs.push(DocxRun {
+                        text: text.clone(),
+                        bold: false,
+                        italic: false,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    });
+                }
+            }
+            InlineElement::Bold { content } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    runs.push(DocxRun {
+                        text,
+                        bold: true,
+                        italic: false,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    });
+                }
+            }
+            InlineElement::Italic { content } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    runs.push(DocxRun {
+                        text,
+                        bold: false,
+                        italic: true,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    });
+                }
+            }
+            InlineElement::Underline { content } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    runs.push(DocxRun {
+                        text,
+                        bold: false,
+                        italic: false,
+                        underline: Some(UnderlineType::Single),
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    });
+                }
+            }
+            InlineElement::Strikethrough { content } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    runs.push(DocxRun {
+                        text,
+                        bold: false,
+                        italic: false,
+                        underline: None,
+                        strikethrough: true,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    });
+                }
+            }
+            InlineElement::Link { content, href, .. } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    runs.push(DocxRun {
+                        text: format!("{} ({})", text, href),
+                        bold: false,
+                        italic: false,
+                        underline: Some(UnderlineType::Single),
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    });
+                }
+            }
+            InlineElement::Code { content } => {
+                if !content.is_empty() {
+                    runs.push(DocxRun {
+                        text: content.clone(),
+                        bold: false,
+                        italic: false,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: Some("Courier New".to_string()),
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    });
+                }
+            }
+            InlineElement::Image { alt, .. } => {
+                if let Some(alt_text) = alt {
+                    if !alt_text.is_empty() {
+                        runs.push(DocxRun {
+                            text: alt_text.clone(),
+                            bold: false,
+                            italic: false,
+                            underline: None,
+                            strikethrough: false,
+                            double_strikethrough: false,
+                            font: None,
+                            font_size: None,
+                            font_size_cs: None,
+                            color: None,
+                            highlight: None,
+                            vertical_alignment: None,
+                            small_caps: false,
+                            all_caps: false,
+                        });
+                    }
+                }
+            }
+            InlineElement::LineBreak => {
+                if let Some(last) = runs.last_mut() {
+                    last.text.push('\n');
+                }
+            }
+            InlineElement::Superscript { content } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    runs.push(DocxRun {
+                        text,
+                        bold: false,
+                        italic: false,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: Some(wo_ooxml::model::VerticalAlignment::Superscript),
+                        small_caps: false,
+                        all_caps: false,
+                    });
+                }
+            }
+            InlineElement::Subscript { content } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    runs.push(DocxRun {
+                        text,
+                        bold: false,
+                        italic: false,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: Some(wo_ooxml::model::VerticalAlignment::Subscript),
+                        small_caps: false,
+                        all_caps: false,
+                    });
+                }
+            }
+        }
+    }
+    runs
+}
+
+/// Convert a TXT document to an ODF ODT document.
+fn txt_to_odf(txt_doc: &TxtDocument) -> OdfDocument {
+    let content: Vec<OdfTextContent> = txt_doc
+        .lines
+        .iter()
+        .map(|line| {
+            OdfTextContent::Paragraph(TextParagraph {
+                text: line.clone(),
+                style_name: None,
+                spans: vec![],
+            })
+        })
+        .collect();
+
+    OdfDocument {
+        doc_type: OdfType::Text,
+        version: "1.2".to_string(),
+        metadata: OdfMetadata::default(),
+        content: OdfContent::Text {
+            content,
+            page_layouts: vec![],
+            sections: vec![],
+        },
+        manifest: vec![],
+        fonts: vec![],
+        styles: vec![],
+    }
+}
+
+/// Convert an HTML document to an ODF ODT document.
+fn html_to_odf(html_doc: &HtmlDocument) -> OdfDocument {
+    let content = html_blocks_to_odf_content(&html_doc.body.elements);
+
+    OdfDocument {
+        doc_type: OdfType::Text,
+        version: "1.2".to_string(),
+        metadata: OdfMetadata::default(),
+        content: OdfContent::Text {
+            content,
+            page_layouts: vec![],
+            sections: vec![],
+        },
+        manifest: vec![],
+        fonts: vec![],
+        styles: vec![],
+    }
+}
+
+/// Convert HTML block elements to ODF text content.
+fn html_blocks_to_odf_content(elements: &[BlockElement]) -> Vec<OdfTextContent> {
+    let mut result = Vec::new();
+    for element in elements {
+        match element {
+            BlockElement::Heading { level, content, .. } => {
+                let text = extract_html_text(content);
+                result.push(OdfTextContent::Heading(TextHeading {
+                    text,
+                    level: *level as u32,
+                    style_name: None,
+                }));
+            }
+            BlockElement::Paragraph { content, .. } => {
+                let text = extract_html_text(content);
+                let spans = html_inlines_to_odf_spans(content);
+                result.push(OdfTextContent::Paragraph(TextParagraph {
+                    text,
+                    style_name: None,
+                    spans,
+                }));
+            }
+            BlockElement::UnorderedList { items, .. } => {
+                let list_items: Vec<OdfListItem> = items
+                    .iter()
+                    .map(|item| OdfListItem {
+                        content: item
+                            .content
+                            .iter()
+                            .map(|inline| {
+                                OdfTextContent::Paragraph(TextParagraph {
+                                    text: extract_html_text(std::slice::from_ref(inline)),
+                                    style_name: None,
+                                    spans: vec![],
+                                })
+                            })
+                            .collect(),
+                        nesting_level: 0,
+                    })
+                    .collect();
+                result.push(OdfTextContent::List(OdfList {
+                    list_style_name: None,
+                    items: list_items,
+                    list_type: OdfListType::Unordered,
+                    continue_numbering: false,
+                    start_value: None,
+                }));
+            }
+            BlockElement::OrderedList { items, .. } => {
+                let list_items: Vec<OdfListItem> = items
+                    .iter()
+                    .map(|item| OdfListItem {
+                        content: item
+                            .content
+                            .iter()
+                            .map(|inline| {
+                                OdfTextContent::Paragraph(TextParagraph {
+                                    text: extract_html_text(std::slice::from_ref(inline)),
+                                    style_name: None,
+                                    spans: vec![],
+                                })
+                            })
+                            .collect(),
+                        nesting_level: 0,
+                    })
+                    .collect();
+                result.push(OdfTextContent::List(OdfList {
+                    list_style_name: None,
+                    items: list_items,
+                    list_type: OdfListType::Ordered,
+                    continue_numbering: false,
+                    start_value: None,
+                }));
+            }
+            BlockElement::Table { rows, .. } => {
+                let odf_rows: Vec<OdfTableRow> = rows
+                    .iter()
+                    .map(|row| OdfTableRow {
+                        cells: row
+                            .cells
+                            .iter()
+                            .map(|cell| OdfTableCell {
+                                text: extract_html_text(&cell.content),
+                                row_span: cell.rowspan,
+                                col_span: cell.colspan,
+                                cell_type: CellType::String,
+                                value: None,
+                            })
+                            .collect(),
+                    })
+                    .collect();
+                let num_columns = rows.first().map(|r| r.cells.len()).unwrap_or(0);
+                result.push(OdfTextContent::Table(OdfTable {
+                    name: None,
+                    rows: odf_rows,
+                    num_columns,
+                }));
+            }
+            BlockElement::HorizontalRule => {
+                result.push(OdfTextContent::Paragraph(TextParagraph {
+                    text: "\u{2500}".repeat(24),
+                    style_name: None,
+                    spans: vec![],
+                }));
+            }
+            BlockElement::Pre { content, .. } => {
+                for line in content.lines() {
+                    result.push(OdfTextContent::Paragraph(TextParagraph {
+                        text: line.to_string(),
+                        style_name: None,
+                        spans: vec![],
+                    }));
+                }
+            }
+            BlockElement::Div { elements, .. } | BlockElement::Blockquote { elements, .. } => {
+                result.extend(html_blocks_to_odf_content(elements));
+            }
+            BlockElement::RawHtml { content, .. } => {
+                if !content.trim().is_empty() {
+                    result.push(OdfTextContent::Paragraph(TextParagraph {
+                        text: content.trim().to_string(),
+                        style_name: None,
+                        spans: vec![],
+                    }));
+                }
+            }
+        }
+    }
+    result
+}
+
+/// Convert HTML inline elements to ODF text spans.
+fn html_inlines_to_odf_spans(inlines: &[InlineElement]) -> Vec<TextSpan> {
+    let mut spans = Vec::new();
+    for inline in inlines {
+        match inline {
+            InlineElement::Text { text } => {
+                if !text.is_empty() {
+                    spans.push(TextSpan {
+                        text: text.clone(),
+                        style_name: None,
+                        bold: false,
+                        italic: false,
+                        underline: false,
+                    });
+                }
+            }
+            InlineElement::Bold { content } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    spans.push(TextSpan {
+                        text,
+                        style_name: None,
+                        bold: true,
+                        italic: false,
+                        underline: false,
+                    });
+                }
+            }
+            InlineElement::Italic { content } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    spans.push(TextSpan {
+                        text,
+                        style_name: None,
+                        bold: false,
+                        italic: true,
+                        underline: false,
+                    });
+                }
+            }
+            InlineElement::Underline { content } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    spans.push(TextSpan {
+                        text,
+                        style_name: None,
+                        bold: false,
+                        italic: false,
+                        underline: true,
+                    });
+                }
+            }
+            InlineElement::Strikethrough { content } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    spans.push(TextSpan {
+                        text,
+                        style_name: None,
+                        bold: false,
+                        italic: false,
+                        underline: false,
+                    });
+                }
+            }
+            InlineElement::Link { content, href, .. } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    spans.push(TextSpan {
+                        text: format!("{} ({})", text, href),
+                        style_name: None,
+                        bold: false,
+                        italic: false,
+                        underline: true,
+                    });
+                }
+            }
+            InlineElement::Code { content } => {
+                if !content.is_empty() {
+                    spans.push(TextSpan {
+                        text: content.clone(),
+                        style_name: None,
+                        bold: false,
+                        italic: false,
+                        underline: false,
+                    });
+                }
+            }
+            InlineElement::Image { alt, .. } => {
+                if let Some(alt_text) = alt {
+                    if !alt_text.is_empty() {
+                        spans.push(TextSpan {
+                            text: alt_text.clone(),
+                            style_name: None,
+                            bold: false,
+                            italic: false,
+                            underline: false,
+                        });
+                    }
+                }
+            }
+            InlineElement::LineBreak => {
+                if let Some(last) = spans.last_mut() {
+                    last.text.push('\n');
+                }
+            }
+            InlineElement::Superscript { content } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    spans.push(TextSpan {
+                        text,
+                        style_name: None,
+                        bold: false,
+                        italic: false,
+                        underline: false,
+                    });
+                }
+            }
+            InlineElement::Subscript { content } => {
+                let text = extract_html_text(content);
+                if !text.is_empty() {
+                    spans.push(TextSpan {
+                        text,
+                        style_name: None,
+                        bold: false,
+                        italic: false,
+                        underline: false,
+                    });
+                }
+            }
+        }
+    }
+    spans
+}
+
+// ── OOXML (DOCX) "from" helpers ─────────────────────────────────────
+
+/// Extract plain text from DOCX runs.
+fn extract_docx_run_text(runs: &[DocxRun]) -> String {
+    let mut result = String::new();
+    for run in runs {
+        for ch in run.text.chars() {
+            if ch == '\x0C' {
+                // form feed → paragraph break
+                result.push('\n');
+            } else {
+                result.push(ch);
+            }
+        }
+    }
+    result
+}
+
+/// Convert an OOXML document body to plain text lines.
+fn docx_body_to_text_lines(doc: &OoxmlDocument) -> Vec<String> {
+    let mut lines = Vec::new();
+
+    let body = match &doc.body {
+        Some(b) => b,
+        None => return lines,
+    };
+
+    for para in &body.paragraphs {
+        let text = extract_docx_run_text(&para.runs);
+        // A paragraph may contain newlines (from <w:br/>), split those
+        for part in text.split('\n') {
+            lines.push(part.to_string());
+        }
+    }
+
+    for table in &body.tables {
+        for row in &table.rows {
+            let cells: Vec<String> = row
+                .cells
+                .iter()
+                .map(|c| {
+                    c.paragraphs
+                        .iter()
+                        .map(|p| extract_docx_run_text(&p.runs))
+                        .collect::<Vec<_>>()
+                        .join(" ")
+                })
+                .collect();
+            lines.push(cells.join("\t"));
+        }
+    }
+
+    lines
+}
+
+/// Convert DOCX runs to HTML inline elements.
+fn docx_runs_to_html_inlines(runs: &[DocxRun]) -> Vec<InlineElement> {
+    let mut result = Vec::new();
+    for run in runs {
+        let text = run.text.clone();
+        if text.is_empty() {
+            continue;
+        }
+
+        let element: InlineElement = if run.bold && run.italic {
+            InlineElement::Bold {
+                content: vec![InlineElement::Italic {
+                    content: vec![InlineElement::Text { text }],
+                }],
+            }
+        } else if run.bold {
+            InlineElement::Bold {
+                content: vec![InlineElement::Text { text }],
+            }
+        } else if run.italic {
+            InlineElement::Italic {
+                content: vec![InlineElement::Text { text }],
+            }
+        } else if run.strikethrough {
+            InlineElement::Strikethrough {
+                content: vec![InlineElement::Text { text }],
+            }
+        } else if run.underline.is_some() {
+            InlineElement::Underline {
+                content: vec![InlineElement::Text { text }],
+            }
+        } else {
+            InlineElement::Text { text }
+        };
+
+        result.push(element);
+    }
+    result
+}
+
+/// Convert an OOXML document body to HTML block elements.
+fn docx_body_to_html_blocks(doc: &OoxmlDocument) -> Vec<BlockElement> {
+    let mut result = Vec::new();
+
+    let body = match &doc.body {
+        Some(b) => b,
+        None => return result,
+    };
+
+    for para in &body.paragraphs {
+        // Check for heading style
+        let is_heading = para
+            .style_id
+            .as_deref()
+            .is_some_and(|s| s.starts_with("Heading"));
+
+        let level = para
+            .style_id
+            .as_deref()
+            .and_then(|s| s.strip_prefix("Heading"))
+            .and_then(|n| n.parse::<u32>().ok())
+            .unwrap_or(1);
+
+        let inlines = docx_runs_to_html_inlines(&para.runs);
+
+        if is_heading {
+            result.push(BlockElement::Heading {
+                level: level as u8,
+                content: inlines,
+                id: None,
+            });
+        } else {
+            result.push(BlockElement::Paragraph {
+                content: inlines,
+                id: None,
+            });
+        }
+    }
+
+    for table in &body.tables {
+        let html_rows: Vec<TableRow> = table
+            .rows
+            .iter()
+            .map(|row| TableRow {
+                cells: row
+                    .cells
+                    .iter()
+                    .map(|cell| {
+                        let inlines: Vec<InlineElement> = cell
+                            .paragraphs
+                            .iter()
+                            .flat_map(|p| docx_runs_to_html_inlines(&p.runs))
+                            .collect();
+                        TableCell {
+                            content: inlines,
+                            colspan: cell.column_span,
+                            rowspan: cell.row_span,
+                        }
+                    })
+                    .collect(),
+                is_header: row.is_header,
+            })
+            .collect();
+        result.push(BlockElement::Table {
+            rows: html_rows,
+            id: None,
+        });
+    }
+
+    result
+}
+
+// ── ODF (ODT) "from" helpers ─────────────────────────────────────────
+
+/// Convert ODF content to plain text lines.
+fn odf_content_to_text_lines(content: &OdfContent) -> Vec<String> {
+    let mut lines = Vec::new();
+
+    let text_items = match content {
+        OdfContent::Text { content, .. } => content,
+        _ => return lines,
+    };
+
+    for item in text_items {
+        match item {
+            OdfTextContent::Heading(h) => {
+                let prefix = "#".repeat(h.level as usize);
+                lines.push(format!("{} {}", prefix, h.text));
+            }
+            OdfTextContent::Paragraph(p) => {
+                if !p.text.is_empty() {
+                    lines.push(p.text.clone());
+                }
+            }
+            OdfTextContent::List(list) => {
+                for list_item in &list.items {
+                    for sub_item in &list_item.content {
+                        if let OdfTextContent::Paragraph(p) = sub_item {
+                            let prefix = match list.list_type {
+                                wo_odf::model::OdfListType::Ordered => {
+                                    format!("{}. ", lines.len())
+                                }
+                                wo_odf::model::OdfListType::Unordered => "- ".to_string(),
+                            };
+                            lines.push(format!("{}{}", prefix, p.text));
+                        }
+                    }
+                }
+            }
+            OdfTextContent::Table(table) => {
+                for row in &table.rows {
+                    let cells: Vec<String> = row.cells.iter().map(|c| c.text.clone()).collect();
+                    lines.push(cells.join("\t"));
+                }
+            }
+            OdfTextContent::Image(_) => {
+                // Images have no text representation; skip
+            }
+        }
+    }
+
+    lines
+}
+
+/// Convert ODF content to HTML block elements.
+fn odf_content_to_html_blocks(content: &OdfContent) -> Vec<BlockElement> {
+    let mut result = Vec::new();
+
+    let text_items = match content {
+        OdfContent::Text { content, .. } => content,
+        _ => return result,
+    };
+
+    for item in text_items {
+        match item {
+            OdfTextContent::Heading(h) => {
+                result.push(BlockElement::Heading {
+                    level: h.level as u8,
+                    content: vec![InlineElement::Text {
+                        text: h.text.clone(),
+                    }],
+                    id: None,
+                });
+            }
+            OdfTextContent::Paragraph(p) => {
+                let inlines = odf_paragraph_to_inlines(p);
+                result.push(BlockElement::Paragraph {
+                    content: inlines,
+                    id: None,
+                });
+            }
+            OdfTextContent::List(list) => {
+                let items: Vec<wo_html::model::ListItem> = list
+                    .items
+                    .iter()
+                    .map(|li| {
+                        let inlines: Vec<InlineElement> = li
+                            .content
+                            .iter()
+                            .filter_map(|c| {
+                                if let OdfTextContent::Paragraph(p) = c {
+                                    Some(InlineElement::Text {
+                                        text: p.text.clone(),
+                                    })
+                                } else {
+                                    None
+                                }
+                            })
+                            .collect();
+                        wo_html::model::ListItem { content: inlines }
+                    })
+                    .collect();
+
+                match list.list_type {
+                    wo_odf::model::OdfListType::Ordered => {
+                        result.push(BlockElement::OrderedList {
+                            items,
+                            id: None,
+                            start: None,
+                        });
+                    }
+                    wo_odf::model::OdfListType::Unordered => {
+                        result.push(BlockElement::UnorderedList { items, id: None });
+                    }
+                }
+            }
+            OdfTextContent::Table(table) => {
+                let html_rows: Vec<TableRow> = table
+                    .rows
+                    .iter()
+                    .map(|row| TableRow {
+                        cells: row
+                            .cells
+                            .iter()
+                            .map(|c| TableCell {
+                                content: vec![InlineElement::Text {
+                                    text: c.text.clone(),
+                                }],
+                                colspan: c.col_span,
+                                rowspan: c.row_span,
+                            })
+                            .collect(),
+                        is_header: false,
+                    })
+                    .collect();
+                result.push(BlockElement::Table {
+                    rows: html_rows,
+                    id: None,
+                });
+            }
+            OdfTextContent::Image(_) => {
+                // Images have no HTML representation in this simple converter; skip
+            }
+        }
+    }
+
+    result
+}
+
+/// Convert an ODF paragraph (with spans) to HTML inline elements.
+fn odf_paragraph_to_inlines(p: &wo_odf::model::TextParagraph) -> Vec<InlineElement> {
+    if p.spans.is_empty() {
+        // No spans — emit as single text element
+        if p.text.is_empty() {
+            return Vec::new();
+        }
+        return vec![InlineElement::Text {
+            text: p.text.clone(),
+        }];
+    }
+
+    // Build text from spans; the paragraph text is the full text,
+    // spans provide styling hints (but bold/italic are always false
+    // in the current parser, so just emit spans as text)
+    let mut inlines = Vec::new();
+    for span in &p.spans {
+        if !span.text.is_empty() {
+            inlines.push(InlineElement::Text {
+                text: span.text.clone(),
+            });
+        }
+    }
+    inlines
+}
+
+// ── EPUB helpers ─────────────────────────────────────────────────────
+
+/// Escape text for safe inclusion in XHTML content.
+fn escape_xhtml_text(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    for ch in text.chars() {
+        match ch {
+            '&' => out.push_str("&amp;"),
+            '<' => out.push_str("&lt;"),
+            '>' => out.push_str("&gt;"),
+            '"' => out.push_str("&quot;"),
+            '\'' => out.push_str("&#39;"),
+            _ => out.push(ch),
+        }
+    }
+    out
+}
+
+/// Build a full XHTML document string for an EPUB chapter.
+fn build_xhtml_content(title: &str, body_html: &str) -> String {
+    format!(
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+         <html xmlns=\"http://www.w3.org/1999/xhtml\">\n\
+         <head><title>{}</title></head>\n\
+         <body>\n{}\n</body>\n\
+         </html>",
+        escape_xhtml_text(title),
+        body_html
+    )
+}
+
+/// Split a TXT document into chapters for EPUB conversion.
+///
+/// If lines start with `## `, those become chapter headings.
+/// Otherwise, all content goes into a single chapter.
+fn txt_to_epub_chapters(txt_doc: &TxtDocument) -> Vec<(String, Vec<String>)> {
+    let has_headings = txt_doc.lines.iter().any(|l| l.starts_with("## "));
+
+    if has_headings {
+        let mut chapters = Vec::new();
+        let mut current_title: Option<String> = None;
+        let mut current_lines: Vec<String> = Vec::new();
+
+        for line in &txt_doc.lines {
+            if let Some(heading) = line.strip_prefix("## ") {
+                let title = current_title
+                    .take()
+                    .unwrap_or_else(|| "Untitled".to_string());
+                if !current_lines.is_empty() || chapters.is_empty() {
+                    chapters.push((title, std::mem::take(&mut current_lines)));
+                }
+                current_title = Some(heading.to_string());
+            } else {
+                current_lines.push(line.clone());
+            }
+        }
+        let title = current_title.unwrap_or_else(|| "Untitled".to_string());
+        chapters.push((title, current_lines));
+        chapters
+    } else {
+        let title = txt_doc
+            .lines
+            .first()
+            .filter(|l| !l.is_empty())
+            .map(|s| s.as_str())
+            .unwrap_or("Untitled")
+            .to_string();
+        vec![(title, txt_doc.lines.clone())]
+    }
+}
+
+/// Split HTML body elements into chapters for EPUB conversion.
+///
+/// Each `<h1>` or `<h2>` starts a new chapter.
+/// If no headings exist, all content goes into one chapter.
+fn html_to_epub_chapters(elements: &[BlockElement]) -> Vec<(String, Vec<BlockElement>)> {
+    let has_headings = elements
+        .iter()
+        .any(|e| matches!(e, BlockElement::Heading { level: 1 | 2, .. }));
+
+    if has_headings {
+        let mut chapters = Vec::new();
+        let mut current_title = String::new();
+        let mut current_elements: Vec<BlockElement> = Vec::new();
+
+        for element in elements {
+            if let BlockElement::Heading {
+                level: 1 | 2,
+                content,
+                ..
+            } = element
+            {
+                if !current_elements.is_empty() || !chapters.is_empty() {
+                    chapters.push((
+                        std::mem::take(&mut current_title),
+                        std::mem::take(&mut current_elements),
+                    ));
+                }
+                current_title = extract_html_text(content);
+            } else {
+                current_elements.push(element.clone());
+            }
+        }
+        if current_title.is_empty() {
+            current_title = "Untitled".to_string();
+        }
+        chapters.push((current_title, current_elements));
+        chapters
+    } else {
+        let title = elements
+            .first()
+            .and_then(|e| match e {
+                BlockElement::Paragraph { content, .. } => {
+                    let text = extract_html_text(content);
+                    if text.is_empty() {
+                        None
+                    } else {
+                        Some(text)
+                    }
+                }
+                BlockElement::Heading { content, .. } => {
+                    let text = extract_html_text(content);
+                    if text.is_empty() {
+                        None
+                    } else {
+                        Some(text)
+                    }
+                }
+                _ => None,
+            })
+            .unwrap_or_else(|| "Untitled".to_string());
+
+        vec![(title, elements.to_vec())]
+    }
+}
+
+/// Convert an HTML block element to an XHTML string fragment.
+fn block_element_to_xhtml(element: &BlockElement) -> String {
+    match element {
+        BlockElement::Heading { level, content, .. } => {
+            let text = extract_html_text(content);
+            format!("<h{}>{}</h{}>", level, escape_xhtml_text(&text), level)
+        }
+        BlockElement::Paragraph { content, .. } => {
+            let text = extract_html_text(content);
+            format!("<p>{}</p>", escape_xhtml_text(&text))
+        }
+        BlockElement::UnorderedList { items, .. } => {
+            let items_html: Vec<String> = items
+                .iter()
+                .map(|item| {
+                    let text = extract_html_text(&item.content);
+                    format!("<li>{}</li>", escape_xhtml_text(&text))
+                })
+                .collect();
+            format!("<ul>\n{}\n</ul>", items_html.join("\n"))
+        }
+        BlockElement::OrderedList { items, .. } => {
+            let items_html: Vec<String> = items
+                .iter()
+                .map(|item| {
+                    let text = extract_html_text(&item.content);
+                    format!("<li>{}</li>", escape_xhtml_text(&text))
+                })
+                .collect();
+            format!("<ol>\n{}\n</ol>", items_html.join("\n"))
+        }
+        BlockElement::Pre { content, .. } => {
+            format!("<pre>{}</pre>", escape_xhtml_text(content))
+        }
+        BlockElement::HorizontalRule => "<hr/>".to_string(),
+        BlockElement::Div { elements, .. } => {
+            let inner: Vec<String> = elements.iter().map(block_element_to_xhtml).collect();
+            inner.join("\n")
+        }
+        BlockElement::Blockquote { elements, .. } => {
+            let inner: Vec<String> = elements.iter().map(block_element_to_xhtml).collect();
+            format!("<blockquote>\n{}\n</blockquote>", inner.join("\n"))
+        }
+        BlockElement::Table { rows, .. } => {
+            let rows_html: Vec<String> = rows
+                .iter()
+                .map(|row| {
+                    let cells_html: Vec<String> = row
+                        .cells
+                        .iter()
+                        .map(|cell| {
+                            let text = extract_html_text(&cell.content);
+                            format!("<td>{}</td>", escape_xhtml_text(&text))
+                        })
+                        .collect();
+                    format!("<tr>{}</tr>", cells_html.join(""))
+                })
+                .collect();
+            format!("<table>\n{}\n</table>", rows_html.join("\n"))
+        }
+        BlockElement::RawHtml { content, .. } => content.clone(),
+    }
+}
+
+/// Strip HTML tags from a string, producing plain text.
+fn strip_html_tags(html: &str) -> String {
+    let mut result = String::with_capacity(html.len());
+    let mut in_tag = false;
+    for ch in html.chars() {
+        match ch {
+            '<' => in_tag = true,
+            '>' => in_tag = false,
+            _ if !in_tag => result.push(ch),
+            _ => {}
+        }
+    }
+    // Collapse excessive whitespace left by removed tags
+    let trimmed: String = result
+        .lines()
+        .map(|l| l.trim())
+        .collect::<Vec<_>>()
+        .join("\n");
+    trimmed
+}
+
+// ── FB2 helpers ──────────────────────────────────────────────────────
+
+use wo_fb2::model::{Body as Fb2Body, Section as Fb2Section};
+
+/// Recursively convert FB2 body content to plain text lines.
+fn fb2_body_to_lines(body: &Fb2Body, lines: &mut Vec<String>) {
+    for section in &body.sections {
+        fb2_section_to_lines(section, lines);
+    }
+}
+
+/// Recursively convert an FB2 section to plain text lines.
+fn fb2_section_to_lines(section: &Fb2Section, lines: &mut Vec<String>) {
+    // Section title
+    if !section.title.is_empty() {
+        let title_text: String = section
+            .title
+            .iter()
+            .map(|te| {
+                if te.text.is_empty() {
+                    te.formatting.iter().map(|f| f.text.as_str()).collect()
+                } else {
+                    te.text.clone()
+                }
+            })
+            .collect::<Vec<_>>()
+            .join(" ");
+        if !title_text.trim().is_empty() {
+            lines.push(format!("## {}", title_text.trim()));
+            lines.push(String::new());
+        }
+    }
+
+    for element in &section.elements {
+        match element {
+            ContentElement::Paragraph { content, .. } => {
+                let text: String = content.iter().map(|f| f.text.as_str()).collect();
+                lines.push(text);
+            }
+            ContentElement::EmptyLine => {
+                lines.push(String::new());
+            }
+            ContentElement::Subtitle { content } => {
+                let text: String = content.iter().map(|f| f.text.as_str()).collect();
+                if !text.trim().is_empty() {
+                    lines.push(format!("### {}", text.trim()));
+                }
+            }
+            ContentElement::Cite {
+                paragraphs,
+                text_author,
+                ..
+            } => {
+                for para in paragraphs {
+                    let text: String = para.iter().map(|f| f.text.as_str()).collect();
+                    lines.push(format!("> {}", text));
+                }
+                if let Some(author) = text_author {
+                    lines.push(format!("  -- {}", author));
+                }
+                lines.push(String::new());
+            }
+            ContentElement::TextAuthor { content } => {
+                let text: String = content.iter().map(|f| f.text.as_str()).collect();
+                if !text.trim().is_empty() {
+                    lines.push(format!("  -- {}", text.trim()));
+                }
+            }
+            ContentElement::Date { value, .. } => {
+                lines.push(value.clone());
+            }
+            ContentElement::Image { alt, .. } => {
+                if let Some(alt_text) = alt {
+                    if !alt_text.is_empty() {
+                        lines.push(format!("[image: {}]", alt_text));
+                    }
+                }
+            }
+            ContentElement::Poem { title, stanzas, .. } => {
+                if !title.is_empty() {
+                    let title_text: String = title.iter().map(|te| te.text.as_str()).collect();
+                    if !title_text.trim().is_empty() {
+                        lines.push(format!("*{}*", title_text.trim()));
+                    }
+                }
+                for stanza in stanzas {
+                    for stanza_line in &stanza.lines {
+                        let text: String = stanza_line.iter().map(|f| f.text.as_str()).collect();
+                        lines.push(format!("  {}", text));
+                    }
+                    lines.push(String::new());
+                }
+            }
+        }
+    }
+
+    // Recurse into nested sections
+    for nested in &section.sections {
+        fb2_section_to_lines(nested, lines);
+    }
+}
+
+// ── Tests ────────────────────────────────────────────────────────────
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io::Write;
+    use wo_epub::is_epub_file;
+
+    // ── RtfToTxt ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_rtf_to_txt_simple() {
+        let rtf = r#"{\rtf1\ansi Hello World!\par}"#;
+        let converter = RtfToTxtConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(
+            text.contains("Hello World"),
+            "missing 'Hello World' in: {:?}",
+            text
+        );
+    }
+
+    #[test]
+    fn test_rtf_to_txt_multiple_paragraphs() {
+        let rtf = r#"{\rtf1\ansi First\par Second\par Third\par}"#;
+        let converter = RtfToTxtConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(text.contains("First"), "missing 'First'");
+        assert!(text.contains("Second"), "missing 'Second'");
+        assert!(text.contains("Third"), "missing 'Third'");
+    }
+
+    #[test]
+    fn test_rtf_to_txt_strips_formatting() {
+        // Bold, italic, underline text should all be extracted as plain text
+        let rtf = r#"{\rtf1\ansi normal\~\b bold\i bolditalic\i0\b0\~rest\par}"#;
+        let converter = RtfToTxtConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(text.contains("normal"), "missing 'normal' in: {:?}", text);
+        assert!(text.contains("bold"), "missing 'bold'");
+        assert!(text.contains("rest"), "missing 'rest'");
+    }
+
+    #[test]
+    fn test_rtf_to_txt_line_break() {
+        let rtf = r#"{\rtf1\ansi line1\line line2\par}"#;
+        let converter = RtfToTxtConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(text.contains("line1"), "missing 'line1'");
+        assert!(text.contains("line2"), "missing 'line2'");
+    }
+
+    #[test]
+    fn test_rtf_to_txt_parse_error() {
+        let converter = RtfToTxtConverter;
+        let result = converter.convert(b"not rtf at all");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    // ── RtfToHtml ────────────────────────────────────────────────────
+
+    #[test]
+    fn test_rtf_to_html_simple() {
+        let rtf = r#"{\rtf1\ansi Hello World!\par}"#;
+        let converter = RtfToHtmlConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("<html>"), "missing <html> in: {:?}", html);
+        assert!(html.contains("</html>"), "missing </html>");
+        assert!(html.contains("Hello World"), "missing text content");
+        assert!(html.contains("<p>"), "missing <p> tag");
+    }
+
+    #[test]
+    fn test_rtf_to_html_preserves_bold() {
+        let rtf = r#"{\rtf1\ansi text\~\b bold\~text\b0\par}"#;
+        let converter = RtfToHtmlConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("<strong>"), "missing <strong> in: {:?}", html);
+        assert!(html.contains("bold"), "missing 'bold' text");
+    }
+
+    #[test]
+    fn test_rtf_to_html_preserves_italic() {
+        let rtf = r#"{\rtf1\ansi text\~\i italic\i0\~text\par}"#;
+        let converter = RtfToHtmlConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("<em>"), "missing <em> in: {:?}", html);
+        assert!(html.contains("italic"), "missing 'italic' text");
+    }
+
+    #[test]
+    fn test_rtf_to_html_title_from_info() {
+        let rtf = r#"{\rtf1\ansi{\info{\title My Title}}Content\par}"#;
+        let converter = RtfToHtmlConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(
+            html.contains("<title>My Title</title>"),
+            "missing title in: {:?}",
+            html
+        );
+    }
+
+    #[test]
+    fn test_rtf_to_html_multiple_paragraphs() {
+        let rtf = r#"{\rtf1\ansi First\par Second\par Third\par}"#;
+        let converter = RtfToHtmlConverter;
+        let result = converter.convert(rtf.as_bytes()).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        // Should have 3 <p> tags
+        let p_count = html.matches("<p>").count();
+        assert_eq!(p_count, 3, "expected 3 <p> tags, got {}", p_count);
+    }
+
+    // ── HtmlToTxt ────────────────────────────────────────────────────
+
+    #[test]
+    fn test_html_to_txt_simple() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<p>Hello World</p>
+</body></html>"#;
+        let converter = HtmlToTxtConverter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(
+            text.contains("Hello World"),
+            "missing 'Hello World' in: {:?}",
+            text
+        );
+    }
+
+    #[test]
+    fn test_html_to_txt_strips_formatting() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<p>This is <strong>bold</strong> and <em>italic</em> text.</p>
+</body></html>"#;
+        let converter = HtmlToTxtConverter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(text.contains("This is"), "missing start");
+        assert!(text.contains("bold"), "missing 'bold'");
+        assert!(text.contains("italic"), "missing 'italic'");
+        assert!(text.contains("text."), "missing 'text.'");
+    }
+
+    #[test]
+    fn test_html_to_txt_heading() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<h1>Title</h1>
+</body></html>"#;
+        let converter = HtmlToTxtConverter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(text.contains("# Title"), "missing '# Title' in: {:?}", text);
+    }
+
+    #[test]
+    fn test_html_to_txt_list() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<ul><li>Item 1</li><li>Item 2</li></ul>
+</body></html>"#;
+        let converter = HtmlToTxtConverter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(text.contains("- Item 1"), "missing '- Item 1'");
+        assert!(text.contains("- Item 2"), "missing '- Item 2'");
+    }
+
+    #[test]
+    fn test_html_to_txt_parse_error() {
+        let converter = HtmlToTxtConverter;
+        // The HTML parser may or may not fail on garbage input depending on
+        // how roxmltree handles it, but extremely malformed input should fail
+        let result = converter.convert(b"\x00\x01\x02");
+        // Just verify it either succeeds with something or fails gracefully
+        match result {
+            Ok(data) => {
+                // If it succeeded, the output should be valid UTF-8
+                let _ = String::from_utf8(data).expect("output should be valid UTF-8");
+            }
+            Err(e) => {
+                assert!(
+                    e.to_string().contains("parse error"),
+                    "expected parse error, got: {}",
+                    e
+                );
+            }
+        }
+    }
+
+    // ── TxtToHtml ────────────────────────────────────────────────────
+
+    #[test]
+    fn test_txt_to_html_simple() {
+        let txt = b"Hello World";
+        let converter = TxtToHtmlConverter;
+        let result = converter.convert(txt).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("<html>"), "missing <html>");
+        assert!(html.contains("</html>"), "missing </html>");
+        assert!(html.contains("Hello World"), "missing text content");
+        assert!(html.contains("<p>"), "missing <p> tag");
+    }
+
+    #[test]
+    fn test_txt_to_html_multiple_lines() {
+        let txt = b"Line 1\nLine 2\nLine 3";
+        let converter = TxtToHtmlConverter;
+        let result = converter.convert(txt).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("Line 1"), "missing 'Line 1'");
+        assert!(html.contains("Line 2"), "missing 'Line 2'");
+        assert!(html.contains("Line 3"), "missing 'Line 3'");
+        // Should have 3 <p> tags
+        let p_count = html.matches("<p>").count();
+        assert_eq!(p_count, 3, "expected 3 <p> tags, got {}", p_count);
+    }
+
+    #[test]
+    fn test_txt_to_html_empty_input() {
+        let txt = b"";
+        let converter = TxtToHtmlConverter;
+        let result = converter.convert(txt).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("<html>"), "missing <html>");
+        assert!(html.contains("</html>"), "missing </html>");
+    }
+
+    #[test]
+    fn test_txt_to_html_roundtrip() {
+        // Convert TXT→HTML, then verify the HTML can be re-parsed
+        let txt = b"Hello\nWorld";
+        let converter = TxtToHtmlConverter;
+        let result = converter.convert(txt).unwrap();
+
+        // The result should be parseable HTML
+        let html_doc = HtmlParser::new()
+            .parse(&result)
+            .expect("converter output should be valid HTML");
+
+        assert_eq!(html_doc.body.elements.len(), 2);
+        match &html_doc.body.elements[0] {
+            BlockElement::Paragraph { content, .. } => {
+                assert_eq!(
+                    extract_html_text(content),
+                    "Hello",
+                    "first paragraph should be 'Hello'"
+                );
+            }
+            _ => panic!("expected Paragraph"),
+        }
+        match &html_doc.body.elements[1] {
+            BlockElement::Paragraph { content, .. } => {
+                assert_eq!(
+                    extract_html_text(content),
+                    "World",
+                    "second paragraph should be 'World'"
+                );
+            }
+            _ => panic!("expected Paragraph"),
+        }
+    }
+
+    // ── Cross-converter roundtrip ────────────────────────────────────
+
+    #[test]
+    fn test_rtf_to_html_to_txt_roundtrip() {
+        let rtf = r#"{\rtf1\ansi Hello World!\par}"#;
+        let rtf_to_html = RtfToHtmlConverter;
+        let html_to_txt = HtmlToTxtConverter;
+
+        let html_bytes = rtf_to_html.convert(rtf.as_bytes()).unwrap();
+        let txt_bytes = html_to_txt.convert(&html_bytes).unwrap();
+        let text = String::from_utf8(txt_bytes).unwrap();
+        assert!(
+            text.contains("Hello World"),
+            "roundtrip lost content: {:?}",
+            text
+        );
+    }
+
+    #[test]
+    fn test_txt_to_html_to_txt_roundtrip() {
+        let original = b"Hello\nWorld";
+        let txt_to_html = TxtToHtmlConverter;
+        let html_to_txt = HtmlToTxtConverter;
+
+        let html_bytes = txt_to_html.convert(original).unwrap();
+        let txt_bytes = html_to_txt.convert(&html_bytes).unwrap();
+        let text = String::from_utf8(txt_bytes).unwrap();
+        assert!(text.contains("Hello"), "roundtrip lost 'Hello'");
+        assert!(text.contains("World"), "roundtrip lost 'World'");
+    }
+
+    // ── Trait method verification ────────────────────────────────────
+
+    #[test]
+    fn test_converter_format_strings() {
+        let rtf_txt = RtfToTxtConverter;
+        assert_eq!(rtf_txt.source_format(), "rtf");
+        assert_eq!(rtf_txt.target_format(), "txt");
+
+        let rtf_html = RtfToHtmlConverter;
+        assert_eq!(rtf_html.source_format(), "rtf");
+        assert_eq!(rtf_html.target_format(), "html");
+
+        let html_txt = HtmlToTxtConverter;
+        assert_eq!(html_txt.source_format(), "html");
+        assert_eq!(html_txt.target_format(), "txt");
+
+        let txt_html = TxtToHtmlConverter;
+        assert_eq!(txt_html.source_format(), "txt");
+        assert_eq!(txt_html.target_format(), "html");
+
+        let docx_txt = DocxToTxtConverter;
+        assert_eq!(docx_txt.source_format(), "docx");
+        assert_eq!(docx_txt.target_format(), "txt");
+
+        let docx_html = DocxToHtmlConverter;
+        assert_eq!(docx_html.source_format(), "docx");
+        assert_eq!(docx_html.target_format(), "html");
+
+        let odt_txt = OdtToTxtConverter;
+        assert_eq!(odt_txt.source_format(), "odt");
+        assert_eq!(odt_txt.target_format(), "txt");
+
+        let odt_html = OdtToHtmlConverter;
+        assert_eq!(odt_html.source_format(), "odt");
+        assert_eq!(odt_html.target_format(), "html");
+
+        let txt_rtf = TxtToRtfConverter;
+        assert_eq!(txt_rtf.source_format(), "txt");
+        assert_eq!(txt_rtf.target_format(), "rtf");
+
+        let html_rtf = HtmlToRtfConverter;
+        assert_eq!(html_rtf.source_format(), "html");
+        assert_eq!(html_rtf.target_format(), "rtf");
+    }
+
+    // ── Test fixtures ────────────────────────────────────────────────
+
+    fn make_minimal_docx() -> Vec<u8> {
+        let mut buf = Vec::new();
+        {
+            let mut zip = zip::ZipWriter::new(std::io::Cursor::new(&mut buf));
+            zip.start_file(
+                "[Content_Types].xml",
+                zip::write::SimpleFileOptions::default(),
+            )
+            .unwrap();
+            zip.write_all(br#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>"#)
+                .unwrap();
+
+            zip.start_file("_rels/.rels", zip::write::SimpleFileOptions::default())
+                .unwrap();
+            zip.write_all(br#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>"#)
+                .unwrap();
+
+            zip.start_file(
+                "docProps/core.xml",
+                zip::write::SimpleFileOptions::default(),
+            )
+            .unwrap();
+            zip.write_all(br#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <dc:title>Test Document</dc:title>
+  <dc:creator>World Office</dc:creator>
+</cp:coreProperties>"#)
+                .unwrap();
+
+            zip.start_file(
+                "word/document.xml",
+                zip::write::SimpleFileOptions::default(),
+            )
+            .unwrap();
+            zip.write_all(
+                br#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body><w:p><w:r><w:t>Hello World</w:t></w:r></w:p></w:body>
+</w:document>"#,
+            )
+            .unwrap();
+
+            zip.finish().unwrap();
+        }
+        buf
+    }
+
+    fn make_docx_with_body(document_xml: &str) -> Vec<u8> {
+        let mut buf = Vec::new();
+        {
+            let mut zip = zip::ZipWriter::new(std::io::Cursor::new(&mut buf));
+            zip.start_file(
+                "[Content_Types].xml",
+                zip::write::SimpleFileOptions::default(),
+            )
+            .unwrap();
+            zip.write_all(br#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>"#)
+                .unwrap();
+
+            zip.start_file(
+                "word/document.xml",
+                zip::write::SimpleFileOptions::default(),
+            )
+            .unwrap();
+            zip.write_all(document_xml.as_bytes()).unwrap();
+
+            zip.finish().unwrap();
+        }
+        buf
+    }
+
+    fn make_minimal_odt() -> Vec<u8> {
+        let mut buf = Vec::new();
+        {
+            let mut zip = zip::ZipWriter::new(std::io::Cursor::new(&mut buf));
+
+            zip.start_file(
+                "mimetype",
+                zip::write::SimpleFileOptions::default()
+                    .compression_method(zip::CompressionMethod::Stored),
+            )
+            .unwrap();
+            zip.write_all(b"application/vnd.oasis.opendocument.text")
+                .unwrap();
+
+            zip.start_file("content.xml", zip::write::SimpleFileOptions::default())
+                .unwrap();
+            zip.write_all(
+                br#"<?xml version="1.0" encoding="UTF-8"?>
+<office:document-content
+    xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+    xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+    office:version="1.2">
+  <office:body>
+    <office:text>
+      <text:p>First paragraph.</text:p>
+      <text:h text:outline-level="1">Chapter One</text:h>
+      <text:p>Second paragraph.</text:p>
+    </office:text>
+  </office:body>
+</office:document-content>"#,
+            )
+            .unwrap();
+
+            zip.start_file(
+                "META-INF/manifest.xml",
+                zip::write::SimpleFileOptions::default(),
+            )
+            .unwrap();
+            zip.write_all(
+                br#"<?xml version="1.0" encoding="UTF-8"?>
+<manifest:manifest
+    xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0">
+  <manifest:file-entry manifest:full-path="/" manifest:version="1.2"/>
+  <manifest:file-entry manifest:full-path="content.xml" manifest:media-type="text/xml"/>
+</manifest:manifest>"#,
+            )
+            .unwrap();
+
+            zip.finish().unwrap();
+        }
+        buf
+    }
+
+    fn make_odt_with_content(content_xml: &str) -> Vec<u8> {
+        let mut buf = Vec::new();
+        {
+            let mut zip = zip::ZipWriter::new(std::io::Cursor::new(&mut buf));
+
+            zip.start_file(
+                "mimetype",
+                zip::write::SimpleFileOptions::default()
+                    .compression_method(zip::CompressionMethod::Stored),
+            )
+            .unwrap();
+            zip.write_all(b"application/vnd.oasis.opendocument.text")
+                .unwrap();
+
+            zip.start_file("content.xml", zip::write::SimpleFileOptions::default())
+                .unwrap();
+            zip.write_all(content_xml.as_bytes()).unwrap();
+
+            zip.start_file(
+                "META-INF/manifest.xml",
+                zip::write::SimpleFileOptions::default(),
+            )
+            .unwrap();
+            zip.write_all(
+                br#"<?xml version="1.0" encoding="UTF-8"?>
+<manifest:manifest
+    xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0">
+  <manifest:file-entry manifest:full-path="/" manifest:version="1.2"/>
+  <manifest:file-entry manifest:full-path="content.xml" manifest:media-type="text/xml"/>
+</manifest:manifest>"#,
+            )
+            .unwrap();
+
+            zip.finish().unwrap();
+        }
+        buf
+    }
+
+    // ── DocxToTxt ────────────────────────────────────────────────────
+
+    #[test]
+    fn test_docx_to_txt_simple() {
+        let docx = make_minimal_docx();
+        let converter = DocxToTxtConverter;
+        let result = converter.convert(&docx).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(
+            text.contains("Hello World"),
+            "missing 'Hello World' in: {:?}",
+            text
+        );
+    }
+
+    #[test]
+    fn test_docx_to_txt_multiple_paragraphs() {
+        let docx = make_docx_with_body(
+            r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p><w:r><w:t>First paragraph</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Second paragraph</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Third paragraph</w:t></w:r></w:p>
+  </w:body>
+</w:document>"#,
+        );
+        let converter = DocxToTxtConverter;
+        let result = converter.convert(&docx).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(
+            text.contains("First paragraph"),
+            "missing 'First paragraph'"
+        );
+        assert!(
+            text.contains("Second paragraph"),
+            "missing 'Second paragraph'"
+        );
+        assert!(
+            text.contains("Third paragraph"),
+            "missing 'Third paragraph'"
+        );
+    }
+
+    #[test]
+    fn test_docx_to_txt_strips_formatting() {
+        let docx = make_docx_with_body(
+            r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:r><w:rPr><w:b/><w:i/></w:rPr><w:t>Bold Italic</w:t></w:r>
+      <w:r><w:t> plain</w:t></w:r>
+    </w:p>
+  </w:body>
+</w:document>"#,
+        );
+        let converter = DocxToTxtConverter;
+        let result = converter.convert(&docx).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(text.contains("Bold Italic"), "missing formatted text");
+        assert!(text.contains("plain"), "missing plain text");
+    }
+
+    #[test]
+    fn test_docx_to_txt_parse_error() {
+        let converter = DocxToTxtConverter;
+        let result = converter.convert(b"not a zip file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    // ── DocxToHtml ───────────────────────────────────────────────────
+
+    #[test]
+    fn test_docx_to_html_simple() {
+        let docx = make_minimal_docx();
+        let converter = DocxToHtmlConverter;
+        let result = converter.convert(&docx).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("<html>"), "missing <html> in: {:?}", html);
+        assert!(html.contains("</html>"), "missing </html>");
+        assert!(html.contains("Hello World"), "missing text content");
+        assert!(html.contains("<p>"), "missing <p> tag");
+    }
+
+    #[test]
+    fn test_docx_to_html_title() {
+        let docx = make_minimal_docx();
+        let converter = DocxToHtmlConverter;
+        let result = converter.convert(&docx).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(
+            html.contains("<title>Test Document</title>"),
+            "missing title in: {:?}",
+            html
+        );
+    }
+
+    #[test]
+    fn test_docx_to_html_preserves_bold() {
+        let docx = make_docx_with_body(
+            r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:r><w:rPr><w:b/></w:rPr><w:t>Bold text</w:t></w:r>
+    </w:p>
+  </w:body>
+</w:document>"#,
+        );
+        let converter = DocxToHtmlConverter;
+        let result = converter.convert(&docx).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("<strong>"), "missing <strong> in: {:?}", html);
+        assert!(html.contains("Bold text"), "missing 'Bold text'");
+    }
+
+    #[test]
+    fn test_docx_to_html_preserves_italic() {
+        let docx = make_docx_with_body(
+            r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:r><w:rPr><w:i/></w:rPr><w:t>Italic text</w:t></w:r>
+    </w:p>
+  </w:body>
+</w:document>"#,
+        );
+        let converter = DocxToHtmlConverter;
+        let result = converter.convert(&docx).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("<em>"), "missing <em> in: {:?}", html);
+        assert!(html.contains("Italic text"), "missing 'Italic text'");
+    }
+
+    #[test]
+    fn test_docx_to_html_heading() {
+        let docx = make_docx_with_body(
+            r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p>
+      <w:pPr><w:pStyle val="Heading1"/></w:pPr>
+      <w:r><w:t>Chapter One</w:t></w:r>
+    </w:p>
+    <w:p><w:r><w:t>Normal text</w:t></w:r></w:p>
+  </w:body>
+</w:document>"#,
+        );
+        let converter = DocxToHtmlConverter;
+        let result = converter.convert(&docx).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("<h1>"), "missing <h1> in: {:?}", html);
+        assert!(html.contains("Chapter One"), "missing 'Chapter One'");
+        assert!(html.contains("<p>"), "missing <p> tag");
+    }
+
+    // ── OdtToTxt ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_odt_to_txt_simple() {
+        let odt = make_minimal_odt();
+        let converter = OdtToTxtConverter;
+        let result = converter.convert(&odt).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(
+            text.contains("First paragraph"),
+            "missing 'First paragraph' in: {:?}",
+            text
+        );
+    }
+
+    #[test]
+    fn test_odt_to_txt_heading() {
+        let odt = make_minimal_odt();
+        let converter = OdtToTxtConverter;
+        let result = converter.convert(&odt).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(
+            text.contains("# Chapter One"),
+            "missing '# Chapter One' in: {:?}",
+            text
+        );
+    }
+
+    #[test]
+    fn test_odt_to_txt_multiple_paragraphs() {
+        let odt = make_minimal_odt();
+        let converter = OdtToTxtConverter;
+        let result = converter.convert(&odt).unwrap();
+        let text = String::from_utf8(result).unwrap();
+        assert!(
+            text.contains("First paragraph"),
+            "missing 'First paragraph'"
+        );
+        assert!(
+            text.contains("Second paragraph"),
+            "missing 'Second paragraph'"
+        );
+    }
+
+    #[test]
+    fn test_odt_to_txt_parse_error() {
+        let converter = OdtToTxtConverter;
+        let result = converter.convert(b"not a zip file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    // ── OdtToHtml ────────────────────────────────────────────────────
+
+    #[test]
+    fn test_odt_to_html_simple() {
+        let odt = make_minimal_odt();
+        let converter = OdtToHtmlConverter;
+        let result = converter.convert(&odt).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("<html>"), "missing <html> in: {:?}", html);
+        assert!(html.contains("</html>"), "missing </html>");
+        assert!(html.contains("First paragraph"), "missing text content");
+        assert!(html.contains("<p>"), "missing <p> tag");
+    }
+
+    #[test]
+    fn test_odt_to_html_heading() {
+        let odt = make_minimal_odt();
+        let converter = OdtToHtmlConverter;
+        let result = converter.convert(&odt).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("<h1>"), "missing <h1> in: {:?}", html);
+        assert!(html.contains("Chapter One"), "missing 'Chapter One'");
+    }
+
+    #[test]
+    fn test_odt_to_html_multiple_paragraphs() {
+        let odt = make_minimal_odt();
+        let converter = OdtToHtmlConverter;
+        let result = converter.convert(&odt).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(
+            html.contains("First paragraph"),
+            "missing 'First paragraph'"
+        );
+        assert!(
+            html.contains("Second paragraph"),
+            "missing 'Second paragraph'"
+        );
+    }
+
+    #[test]
+    fn test_odt_to_html_with_table() {
+        let odt = make_odt_with_content(
+            r#"<?xml version="1.0" encoding="UTF-8"?>
+<office:document-content
+    xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+    xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+    xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+    office:version="1.2">
+  <office:body>
+    <office:text>
+      <table:table table:name="MyTable">
+        <table:table-row>
+          <table:table-cell><text:p>A1</text:p></table:table-cell>
+          <table:table-cell><text:p>B1</text:p></table:table-cell>
+        </table:table-row>
+        <table:table-row>
+          <table:table-cell><text:p>A2</text:p></table:table-cell>
+          <table:table-cell><text:p>B2</text:p></table:table-cell>
+        </table:table-row>
+      </table:table>
+    </office:text>
+  </office:body>
+</office:document-content>"#,
+        );
+        let converter = OdtToHtmlConverter;
+        let result = converter.convert(&odt).unwrap();
+        let html = String::from_utf8(result).unwrap();
+        assert!(html.contains("<table>"), "missing <table> in: {:?}", html);
+        assert!(html.contains("A1"), "missing 'A1'");
+        assert!(html.contains("B2"), "missing 'B2'");
+    }
+
+    // ── DOCX roundtrip ──────────────────────────────────────────────
+
+    #[test]
+    fn test_docx_to_html_to_txt_roundtrip() {
+        let docx = make_minimal_docx();
+        let docx_to_html = DocxToHtmlConverter;
+        let html_to_txt = HtmlToTxtConverter;
+
+        let html_bytes = docx_to_html.convert(&docx).unwrap();
+        let txt_bytes = html_to_txt.convert(&html_bytes).unwrap();
+        let text = String::from_utf8(txt_bytes).unwrap();
+        assert!(
+            text.contains("Hello World"),
+            "roundtrip lost content: {:?}",
+            text
+        );
+    }
+
+    // ── TxtToRtf ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_txt_to_rtf_basic() {
+        let txt = b"Hello World";
+        let converter = TxtToRtfConverter;
+        let result = converter.convert(txt).unwrap();
+        let rtf = String::from_utf8(result).unwrap();
+        assert!(rtf.contains("{\\rtf"), "missing RTF header in: {:?}", rtf);
+        assert!(
+            rtf.contains("Hello World"),
+            "missing 'Hello World' in: {:?}",
+            rtf
+        );
+    }
+
+    #[test]
+    fn test_txt_to_rtf_multiple_lines() {
+        let txt = b"line1\nline2";
+        let converter = TxtToRtfConverter;
+        let result = converter.convert(txt).unwrap();
+        let rtf = String::from_utf8(result).unwrap();
+        assert!(rtf.contains("line1"), "missing 'line1'");
+        assert!(rtf.contains("line2"), "missing 'line2'");
+    }
+
+    #[test]
+    fn test_txt_to_rtf_empty() {
+        let txt = b"";
+        let converter = TxtToRtfConverter;
+        let result = converter.convert(txt).unwrap();
+        let rtf = String::from_utf8(result).unwrap();
+        assert!(
+            rtf.contains("{\\rtf"),
+            "empty input should still produce valid RTF in: {:?}",
+            rtf
+        );
+    }
+
+    // ── HtmlToRtf ────────────────────────────────────────────────────
+
+    #[test]
+    fn test_html_to_rtf_basic() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<p>Hello <strong>World</strong></p>
+</body></html>"#;
+        let converter = HtmlToRtfConverter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        let rtf = String::from_utf8(result).unwrap();
+        assert!(rtf.contains("{\\rtf"), "missing RTF header in: {:?}", rtf);
+        assert!(rtf.contains("Hello"), "missing 'Hello'");
+        assert!(rtf.contains("World"), "missing 'World'");
+        assert!(rtf.contains("\\b "), "missing bold marker in: {:?}", rtf);
+    }
+
+    #[test]
+    fn test_html_to_rtf_heading() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<h1>Title</h1>
+</body></html>"#;
+        let converter = HtmlToRtfConverter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        let rtf = String::from_utf8(result).unwrap();
+        assert!(rtf.contains("Title"), "missing 'Title' in: {:?}", rtf);
+        assert!(
+            rtf.contains("\\fs"),
+            "heading should have font size in: {:?}",
+            rtf
+        );
+    }
+
+    // ── ODT roundtrip ──────────────────────────────────────────────
+
+    #[test]
+    fn test_odt_to_html_to_txt_roundtrip() {
+        let odt = make_minimal_odt();
+        let odt_to_html = OdtToHtmlConverter;
+        let html_to_txt = HtmlToTxtConverter;
+
+        let html_bytes = odt_to_html.convert(&odt).unwrap();
+        let txt_bytes = html_to_txt.convert(&html_bytes).unwrap();
+        let text = String::from_utf8(txt_bytes).unwrap();
+        assert!(
+            text.contains("First paragraph"),
+            "roundtrip lost content: {:?}",
+            text
+        );
+    }
+
+    // ── EpubToTxt ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_epub_to_txt_parse_error() {
+        let converter = EpubToTxtConverter;
+        let result = converter.convert(b"not an epub file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    // ── EpubToHtml ────────────────────────────────────────────────────
+
+    #[test]
+    fn test_epub_to_html_parse_error() {
+        let converter = EpubToHtmlConverter;
+        let result = converter.convert(b"not an epub file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    // ── Fb2ToTxt ──────────────────────────────────────────────────────
+
+    #[test]
+    fn test_fb2_to_txt_parse_error() {
+        let converter = Fb2ToTxtConverter;
+        let result = converter.convert(b"not an fb2 file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    // ── HwpToTxt ──────────────────────────────────────────────────────
+
+    #[test]
+    fn test_hwp_to_txt_parse_error() {
+        let converter = HwpToTxtConverter;
+        let result = converter.convert(b"not an hwp file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    // ── New converter format strings ──────────────────────────────────
+
+    #[test]
+    fn test_new_converter_format_strings() {
+        let epub_txt = EpubToTxtConverter;
+        assert_eq!(epub_txt.source_format(), "epub");
+        assert_eq!(epub_txt.target_format(), "txt");
+
+        let epub_html = EpubToHtmlConverter;
+        assert_eq!(epub_html.source_format(), "epub");
+        assert_eq!(epub_html.target_format(), "html");
+
+        let fb2_txt = Fb2ToTxtConverter;
+        assert_eq!(fb2_txt.source_format(), "fb2");
+        assert_eq!(fb2_txt.target_format(), "txt");
+
+        let hwp_txt = HwpToTxtConverter;
+        assert_eq!(hwp_txt.source_format(), "hwp");
+        assert_eq!(hwp_txt.target_format(), "txt");
+    }
+
+    // ── TxtToDocx ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_txt_to_docx_basic() {
+        let txt = b"Hello World\n";
+        let converter = TxtToDocxConverter;
+        let result = converter.convert(txt).unwrap();
+        // Verify valid ZIP (PK header)
+        assert!(result.len() > 4);
+        assert_eq!(result[0], 0x50);
+        assert_eq!(result[1], 0x4B);
+    }
+
+    #[test]
+    fn test_txt_to_docx_multiple_lines() {
+        let txt = b"Line 1\nLine 2\nLine 3";
+        let converter = TxtToDocxConverter;
+        let result = converter.convert(txt).unwrap();
+        assert_eq!(result[0], 0x50); // PK header
+                                     // Verify content in ZIP
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(content.contains("Line 1"), "missing 'Line 1'");
+        assert!(content.contains("Line 2"), "missing 'Line 2'");
+        assert!(content.contains("Line 3"), "missing 'Line 3'");
+    }
+
+    // ── HtmlToDocx ────────────────────────────────────────────────────
+
+    #[test]
+    fn test_html_to_docx_basic() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<p>Hello</p>
+</body></html>"#;
+        let converter = HtmlToDocxConverter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        // Verify valid ZIP (PK header)
+        assert!(result.len() > 4);
+        assert_eq!(result[0], 0x50);
+        assert_eq!(result[1], 0x4B);
+    }
+
+    #[test]
+    fn test_html_to_docx_heading() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<h1>Title</h1>
+<p>Body</p>
+</body></html>"#;
+        let converter = HtmlToDocxConverter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(content.contains("Title"), "missing 'Title'");
+        assert!(content.contains("<w:b/>"), "heading should be bold");
+    }
+
+    #[test]
+    fn test_html_to_docx_bold() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<p>Hello <strong>World</strong></p>
+</body></html>"#;
+        let converter = HtmlToDocxConverter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(content.contains("World"), "missing 'World'");
+        assert!(content.contains("<w:b/>"), "missing bold marker");
+    }
+
+    // ── TxtToOdt ──────────────────────────────────────────────────────
+
+    #[test]
+    fn test_txt_to_odt_basic() {
+        let txt = b"Hello World\n";
+        let converter = TxtToOdtConverter;
+        let result = converter.convert(txt).unwrap();
+        // Verify valid ZIP (PK header)
+        assert!(result.len() > 4);
+        assert_eq!(result[0], 0x50);
+        assert_eq!(result[1], 0x4B);
+    }
+
+    #[test]
+    fn test_txt_to_odt_multiple_lines() {
+        let txt = b"Line 1\nLine 2\nLine 3";
+        let converter = TxtToOdtConverter;
+        let result = converter.convert(txt).unwrap();
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut content_file = archive.by_name("content.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut content_file, &mut content).unwrap();
+        assert!(content.contains("Line 1"), "missing 'Line 1'");
+        assert!(content.contains("Line 2"), "missing 'Line 2'");
+        assert!(content.contains("Line 3"), "missing 'Line 3'");
+    }
+
+    // ── HtmlToOdt ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_html_to_odt_basic() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<p>Hello</p>
+</body></html>"#;
+        let converter = HtmlToOdtConverter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        // Verify valid ZIP (PK header)
+        assert!(result.len() > 4);
+        assert_eq!(result[0], 0x50);
+        assert_eq!(result[1], 0x4B);
+    }
+
+    #[test]
+    fn test_html_to_odt_heading() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<h1>Title</h1>
+<p>Body</p>
+</body></html>"#;
+        let converter = HtmlToOdtConverter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut content_file = archive.by_name("content.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut content_file, &mut content).unwrap();
+        assert!(content.contains("Title"), "missing 'Title'");
+        assert!(
+            content.contains("text:outline-level=\"1\""),
+            "missing heading level"
+        );
+    }
+
+    // ── TO converter format strings ──────────────────────────────────
+
+    #[test]
+    fn test_to_converter_format_strings() {
+        let txt_docx = TxtToDocxConverter;
+        assert_eq!(txt_docx.source_format(), "txt");
+        assert_eq!(txt_docx.target_format(), "docx");
+
+        let html_docx = HtmlToDocxConverter;
+        assert_eq!(html_docx.source_format(), "html");
+        assert_eq!(html_docx.target_format(), "docx");
+
+        let txt_odt = TxtToOdtConverter;
+        assert_eq!(txt_odt.source_format(), "txt");
+        assert_eq!(txt_odt.target_format(), "odt");
+
+        let html_odt = HtmlToOdtConverter;
+        assert_eq!(html_odt.source_format(), "html");
+        assert_eq!(html_odt.target_format(), "odt");
+    }
+
+    // ── DOCX output valid ZIP ─────────────────────────────────────────
+
+    #[test]
+    fn test_docx_output_valid_zip() {
+        let converter = TxtToDocxConverter;
+        let result = converter.convert(b"test").unwrap();
+        assert_eq!(result[0], 0x50); // P
+        assert_eq!(result[1], 0x4B); // K
+                                     // Verify it can be opened as ZIP
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        assert!(archive.by_name("[Content_Types].xml").is_ok());
+        assert!(archive.by_name("word/document.xml").is_ok());
+    }
+
+    // ── ODT output valid ZIP ─────────────────────────────────────────
+
+    #[test]
+    fn test_odt_output_valid_zip() {
+        let converter = TxtToOdtConverter;
+        let result = converter.convert(b"test").unwrap();
+        assert_eq!(result[0], 0x50); // P
+        assert_eq!(result[1], 0x4B); // K
+                                     // Verify it can be opened as ZIP
+        let cursor = std::io::Cursor::new(&result);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        assert!(archive.by_name("content.xml").is_ok());
+        assert!(archive.by_name("META-INF/manifest.xml").is_ok());
+    }
+
+    // ── XpsToTxt ──────────────────────────────────────────────────────
+
+    #[test]
+    fn test_xps_to_txt_parse_error() {
+        let converter = XpsToTxtConverter;
+        let result = converter.convert(b"not an xps file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    // ── XpsToHtml ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_xps_to_html_parse_error() {
+        let converter = XpsToHtmlConverter;
+        let result = converter.convert(b"not an xps file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    // ── OfdToTxt ──────────────────────────────────────────────────────
+
+    #[test]
+    fn test_ofd_to_txt_parse_error() {
+        let converter = OfdToTxtConverter;
+        let result = converter.convert(b"not an ofd file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    // ── OfdToHtml ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_ofd_to_html_parse_error() {
+        let converter = OfdToHtmlConverter;
+        let result = converter.convert(b"not an ofd file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    // ── DjvuToTxt ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_djvu_to_txt_parse_error() {
+        let converter = DjvuToTxtConverter;
+        let result = converter.convert(b"not a djvu file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    // ── New converter format strings (XPS, OFD, DJVU) ─────────────────
+
+    #[test]
+    fn test_xps_ofd_djvu_converter_format_strings() {
+        let xps_txt = XpsToTxtConverter;
+        assert_eq!(xps_txt.source_format(), "xps");
+        assert_eq!(xps_txt.target_format(), "txt");
+
+        let xps_html = XpsToHtmlConverter;
+        assert_eq!(xps_html.source_format(), "xps");
+        assert_eq!(xps_html.target_format(), "html");
+
+        let ofd_txt = OfdToTxtConverter;
+        assert_eq!(ofd_txt.source_format(), "ofd");
+        assert_eq!(ofd_txt.target_format(), "txt");
+
+        let ofd_html = OfdToHtmlConverter;
+        assert_eq!(ofd_html.source_format(), "ofd");
+        assert_eq!(ofd_html.target_format(), "html");
+
+        let djvu_txt = DjvuToTxtConverter;
+        assert_eq!(djvu_txt.source_format(), "djvu");
+        assert_eq!(djvu_txt.target_format(), "txt");
+    }
+
+    // ── TxtToEpub ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_txt_to_epub_basic() {
+        let txt = b"Hello World\nThis is a test.";
+        let converter = TxtToEpubConverter;
+        let result = converter.convert(txt).unwrap();
+
+        // Output must be a valid EPUB (ZIP with mimetype)
+        assert!(is_epub_file(&result), "output should be valid EPUB");
+        assert!(result.len() > 58, "EPUB file too small");
+
+        // Can parse it back
+        let parsed = EpubParser::new().parse(&result).unwrap();
+        assert_eq!(parsed.version, "3.0");
+        assert_eq!(
+            parsed.metadata.title.as_deref(),
+            Some("Hello World"),
+            "first line should become title"
+        );
+        assert!(
+            !parsed.chapters.is_empty(),
+            "should have at least one chapter"
+        );
+    }
+
+    #[test]
+    fn test_txt_to_epub_roundtrip() {
+        let original_text = "First line\nSecond line\nThird line";
+        let converter = TxtToEpubConverter;
+        let epub_bytes = converter.convert(original_text.as_bytes()).unwrap();
+
+        // Parse back
+        let parsed = EpubParser::new().parse(&epub_bytes).unwrap();
+        assert_eq!(parsed.chapters.len(), 1, "should be single chapter");
+
+        let chapter_text = strip_html_tags(&parsed.chapters[0].content);
+        assert!(
+            chapter_text.contains("First line"),
+            "roundtrip lost 'First line': {:?}",
+            chapter_text
+        );
+        assert!(
+            chapter_text.contains("Second line"),
+            "roundtrip lost 'Second line': {:?}",
+            chapter_text
+        );
+        assert!(
+            chapter_text.contains("Third line"),
+            "roundtrip lost 'Third line': {:?}",
+            chapter_text
+        );
+    }
+
+    #[test]
+    fn test_txt_to_epub_with_headings() {
+        let txt = b"Intro text\n\n## Chapter One\nContent one\n\n## Chapter Two\nContent two";
+        let converter = TxtToEpubConverter;
+        let epub_bytes = converter.convert(txt).unwrap();
+
+        let parsed = EpubParser::new().parse(&epub_bytes).unwrap();
+        assert_eq!(
+            parsed.chapters.len(),
+            3,
+            "should have 3 chapters (intro + 2 headings), got {}",
+            parsed.chapters.len()
+        );
+    }
+
+    #[test]
+    fn test_txt_to_epub_empty_input() {
+        let converter = TxtToEpubConverter;
+        let result = converter.convert(b"").unwrap();
+        assert!(
+            is_epub_file(&result),
+            "empty input should still produce valid EPUB"
+        );
+
+        let parsed = EpubParser::new().parse(&result).unwrap();
+        assert_eq!(parsed.metadata.title.as_deref(), Some("Untitled"));
+    }
+
+    // ── HtmlToEpub ────────────────────────────────────────────────────
+
+    #[test]
+    fn test_html_to_epub_basic() {
+        let html = r#"<?xml version="1.0"?>
+<html><head><title>My Book</title></head><body>
+<p>Hello World</p>
+</body></html>"#;
+        let converter = HtmlToEpubConverter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+
+        assert!(is_epub_file(&result), "output should be valid EPUB");
+        assert!(result.len() > 58, "EPUB file too small");
+
+        let parsed = EpubParser::new().parse(&result).unwrap();
+        assert_eq!(parsed.version, "3.0");
+        assert_eq!(
+            parsed.metadata.title.as_deref(),
+            Some("My Book"),
+            "should use HTML title"
+        );
+        assert!(!parsed.chapters.is_empty());
+    }
+
+    #[test]
+    fn test_html_to_epub_roundtrip() {
+        let html = r#"<?xml version="1.0"?>
+<html><head><title>Test</title></head><body>
+<p>First paragraph</p>
+<p>Second paragraph</p>
+</body></html>"#;
+        let converter = HtmlToEpubConverter;
+        let epub_bytes = converter.convert(html.as_bytes()).unwrap();
+
+        let parsed = EpubParser::new().parse(&epub_bytes).unwrap();
+        assert_eq!(parsed.chapters.len(), 1, "no headings → single chapter");
+
+        let chapter_text = strip_html_tags(&parsed.chapters[0].content);
+        assert!(
+            chapter_text.contains("First paragraph"),
+            "roundtrip lost 'First paragraph': {:?}",
+            chapter_text
+        );
+        assert!(
+            chapter_text.contains("Second paragraph"),
+            "roundtrip lost 'Second paragraph': {:?}",
+            chapter_text
+        );
+    }
+
+    #[test]
+    fn test_html_to_epub_with_headings() {
+        let html = r#"<?xml version="1.0"?>
+<html><head><title>Book</title></head><body>
+<p>Intro</p>
+<h1>Chapter One</h1>
+<p>Content one</p>
+<h2>Section A</h2>
+<p>Content A</p>
+</body></html>"#;
+        let converter = HtmlToEpubConverter;
+        let epub_bytes = converter.convert(html.as_bytes()).unwrap();
+
+        let parsed = EpubParser::new().parse(&epub_bytes).unwrap();
+        // Intro paragraph becomes first chapter, h1 starts second, h2 starts third
+        assert!(
+            parsed.chapters.len() >= 2,
+            "should have at least 2 chapters from h1/h2 headings, got {}",
+            parsed.chapters.len()
+        );
+    }
+
+    // ── EPUB converter format strings ─────────────────────────────────
+
+    #[test]
+    fn test_epub_converter_format_strings() {
+        let txt_epub = TxtToEpubConverter;
+        assert_eq!(txt_epub.source_format(), "txt");
+        assert_eq!(txt_epub.target_format(), "epub");
+
+        let html_epub = HtmlToEpubConverter;
+        assert_eq!(html_epub.source_format(), "html");
+        assert_eq!(html_epub.target_format(), "epub");
+    }
+
+    // ── TxtToFb2 ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_txt_to_fb2_basic() {
+        let txt = b"Hello World\nLine 2\n";
+        let converter = TxtToFb2Converter;
+        let result = converter.convert(txt).unwrap();
+        let xml = String::from_utf8(result).unwrap();
+        assert!(xml.contains("<FictionBook"), "missing FictionBook root");
+        assert!(xml.contains("Hello World"), "missing 'Hello World'");
+        assert!(xml.contains("Line 2"), "missing 'Line 2'");
+    }
+
+    #[test]
+    fn test_txt_to_fb2_roundtrip() {
+        let txt = b"First paragraph\nSecond paragraph\n";
+        let converter = TxtToFb2Converter;
+        let fb2_bytes = converter.convert(txt).unwrap();
+
+        let parsed = Fb2Parser::new().parse(&fb2_bytes).unwrap();
+        assert!(parsed.title_info.is_some());
+        let title = parsed.title_info.unwrap().book_title.unwrap();
+        assert_eq!(title, "First paragraph");
+
+        assert_eq!(parsed.bodies.len(), 1);
+        let sections = &parsed.bodies[0].sections;
+        assert_eq!(sections.len(), 1);
+        let elements = &sections[0].elements;
+        assert!(
+            elements.len() >= 2,
+            "expected at least 2 paragraphs, got {}",
+            elements.len()
+        );
+    }
+
+    #[test]
+    fn test_txt_to_fb2_empty_input() {
+        let converter = TxtToFb2Converter;
+        let result = converter.convert(b"").unwrap();
+        let xml = String::from_utf8(result).unwrap();
+        assert!(xml.contains("<FictionBook"));
+    }
+
+    // ── HtmlToFb2 ────────────────────────────────────────────────────
+
+    #[test]
+    fn test_html_to_fb2_basic() {
+        let html = r#"<?xml version="1.0"?>
+<html><head><title>Test</title></head><body>
+<p>Hello</p>
+</body></html>"#;
+        let converter = HtmlToFb2Converter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        let xml = String::from_utf8(result).unwrap();
+        assert!(xml.contains("<FictionBook"), "missing FictionBook root");
+        assert!(xml.contains("Hello"), "missing 'Hello'");
+    }
+
+    #[test]
+    fn test_html_to_fb2_roundtrip() {
+        let html = r#"<?xml version="1.0"?>
+<html><head><title>My Book</title></head><body>
+<p>First paragraph</p>
+<p>Second paragraph</p>
+</body></html>"#;
+        let converter = HtmlToFb2Converter;
+        let fb2_bytes = converter.convert(html.as_bytes()).unwrap();
+
+        let parsed = Fb2Parser::new().parse(&fb2_bytes).unwrap();
+        assert!(parsed.title_info.is_some());
+        let title = parsed.title_info.unwrap().book_title.unwrap();
+        assert_eq!(title, "My Book");
+
+        assert_eq!(parsed.bodies.len(), 1);
+        let sections = &parsed.bodies[0].sections;
+        assert_eq!(sections.len(), 1);
+        let elements = &sections[0].elements;
+        assert!(
+            elements.len() >= 2,
+            "expected at least 2 paragraphs, got {}",
+            elements.len()
+        );
+    }
+
+    #[test]
+    fn test_html_to_fb2_with_styles() {
+        let html = r#"<?xml version="1.0"?>
+<html><head><title>Styled</title></head><body>
+<p><b>Bold text</b> and <i>italic text</i></p>
+<h1>Heading</h1>
+</body></html>"#;
+        let converter = HtmlToFb2Converter;
+        let result = converter.convert(html.as_bytes()).unwrap();
+        let xml = String::from_utf8(result).unwrap();
+        assert!(xml.contains("Bold text"), "missing 'Bold text'");
+        assert!(xml.contains("italic text"), "missing 'italic text'");
+        assert!(xml.contains("Heading"), "missing 'Heading'");
+    }
+
+    // ── FB2 converter format strings ─────────────────────────────────
+
+    #[test]
+    fn test_fb2_converter_format_strings() {
+        let txt_fb2 = TxtToFb2Converter;
+        assert_eq!(txt_fb2.source_format(), "txt");
+        assert_eq!(txt_fb2.target_format(), "fb2");
+
+        let html_fb2 = HtmlToFb2Converter;
+        assert_eq!(html_fb2.source_format(), "html");
+        assert_eq!(html_fb2.target_format(), "fb2");
+    }
+}

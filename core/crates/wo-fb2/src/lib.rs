@@ -8,9 +8,11 @@
 pub mod model;
 pub mod parser;
 pub mod roundtrip;
+pub mod serializer;
 
 pub use model::Fb2Document;
 pub use parser::Fb2Parser;
+pub use serializer::Fb2Serializer;
 
 /// The format identifier for this crate.
 pub const FORMAT_NAME: &str = "fb2";

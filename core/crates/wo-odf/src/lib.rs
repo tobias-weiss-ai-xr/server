@@ -7,10 +7,12 @@
 pub mod model;
 pub mod parser;
 pub mod roundtrip;
+pub mod serializer;
 
 pub use model::OdfDocument;
 pub use parser::OdfParser;
 pub use roundtrip::OdfRoundtrip;
+pub use serializer::OdfSerializer;
 
 pub const FORMAT_NAME: &str = "odf";
 

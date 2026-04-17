@@ -7,9 +7,11 @@
 pub mod model;
 pub mod parser;
 pub mod roundtrip;
+pub mod serializer;
 
 pub use model::EpubDocument;
 pub use parser::EpubParser;
+pub use serializer::EpubSerializer;
 
 pub const FORMAT_NAME: &str = "epub";
 

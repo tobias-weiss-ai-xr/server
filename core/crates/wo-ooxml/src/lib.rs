@@ -8,10 +8,12 @@ pub mod detector;
 pub mod model;
 pub mod parser;
 pub mod roundtrip;
+pub mod serializer;
 
 pub use model::{OoxmlDocument, OoxmlFormat};
 pub use parser::OoxmlParser;
 pub use roundtrip::OoxmlRoundtrip;
+pub use serializer::OoxmlSerializer;
 
 pub const FORMAT_NAME: &str = "ooxml";
 

@@ -195,13 +195,15 @@ impl Fb2Parser {
     }
 
     fn parse_author(&self, node: &roxmltree::Node) -> Author {
-        let mut author = Author::default();
-        author.first_name = child(node, "first-name").map(|n| node_text(&n));
-        author.middle_name = child(node, "middle-name").map(|n| node_text(&n));
-        author.last_name = child(node, "last-name").map(|n| node_text(&n));
-        author.nickname = child(node, "nickname").map(|n| node_text(&n));
-        author.home_page = child(node, "home-page").map(|n| node_text(&n));
-        author.email = child(node, "email").map(|n| node_text(&n));
+        let mut author = Author {
+            first_name: child(node, "first-name").map(|n| node_text(&n)),
+            middle_name: child(node, "middle-name").map(|n| node_text(&n)),
+            last_name: child(node, "last-name").map(|n| node_text(&n)),
+            nickname: child(node, "nickname").map(|n| node_text(&n)),
+            home_page: child(node, "home-page").map(|n| node_text(&n)),
+            email: child(node, "email").map(|n| node_text(&n)),
+            ..Default::default()
+        };
         // If no structured fields, use direct text
         if author.first_name.is_none() && author.last_name.is_none() && author.nickname.is_none() {
             let text = direct_text(node);
@@ -213,12 +215,14 @@ impl Fb2Parser {
     }
 
     fn parse_document_info(&self, node: &roxmltree::Node) -> DocumentInfo {
-        let mut di = DocumentInfo::default();
-        di.program_used = child(node, "program-used").map(|n| node_text(&n));
-        di.date = child(node, "date").map(|n| node_text(&n));
-        di.id = child(node, "id").map(|n| node_text(&n));
-        di.version = child(node, "version").map(|n| node_text(&n));
-        di.history = child(node, "history").map(|n| node_text(&n));
+        let mut di = DocumentInfo {
+            program_used: child(node, "program-used").map(|n| node_text(&n)),
+            date: child(node, "date").map(|n| node_text(&n)),
+            id: child(node, "id").map(|n| node_text(&n)),
+            version: child(node, "version").map(|n| node_text(&n)),
+            history: child(node, "history").map(|n| node_text(&n)),
+            ..Default::default()
+        };
 
         for a in children_with_tag(node, "author") {
             di.authors.push(self.parse_author(&a));
@@ -339,43 +343,43 @@ impl Fb2Parser {
                 "strong" | "b" => {
                     let start = out.len();
                     self.collect_text_with_formatting(&child, out);
-                    for f in start..out.len() {
-                        out[f].style = TextStyle::Strong;
+                    for fmt in &mut out[start..] {
+                        fmt.style = TextStyle::Strong;
                     }
                 }
                 "emphasis" | "i" => {
                     let start = out.len();
                     self.collect_text_with_formatting(&child, out);
-                    for f in start..out.len() {
-                        out[f].style = TextStyle::Emphasis;
+                    for fmt in &mut out[start..] {
+                        fmt.style = TextStyle::Emphasis;
                     }
                 }
                 "strikethrough" | "s" => {
                     let start = out.len();
                     self.collect_text_with_formatting(&child, out);
-                    for f in start..out.len() {
-                        out[f].style = TextStyle::Strikethrough;
+                    for fmt in &mut out[start..] {
+                        fmt.style = TextStyle::Strikethrough;
                     }
                 }
                 "sub" => {
                     let start = out.len();
                     self.collect_text_with_formatting(&child, out);
-                    for f in start..out.len() {
-                        out[f].style = TextStyle::Subscript;
+                    for fmt in &mut out[start..] {
+                        fmt.style = TextStyle::Subscript;
                     }
                 }
                 "sup" => {
                     let start = out.len();
                     self.collect_text_with_formatting(&child, out);
-                    for f in start..out.len() {
-                        out[f].style = TextStyle::Superscript;
+                    for fmt in &mut out[start..] {
+                        fmt.style = TextStyle::Superscript;
                     }
                 }
                 "code" => {
                     let start = out.len();
                     self.collect_text_with_formatting(&child, out);
-                    for f in start..out.len() {
-                        out[f].style = TextStyle::Code;
+                    for fmt in &mut out[start..] {
+                        fmt.style = TextStyle::Code;
                     }
                 }
                 "a" => {
@@ -384,9 +388,9 @@ impl Fb2Parser {
                     let title = attr(&child, "title");
                     let start = out.len();
                     self.collect_text_with_formatting(&child, out);
-                    for f in start..out.len() {
-                        out[f].href = href.clone();
-                        out[f].title = title.clone();
+                    for fmt in &mut out[start..] {
+                        fmt.href = href.clone();
+                        fmt.title = title.clone();
                     }
                 }
                 _ => {

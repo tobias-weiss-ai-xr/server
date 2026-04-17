@@ -5,6 +5,14 @@ use wo_office_utils::ArchiveReader;
 
 use crate::model::*;
 
+type OpfParseResult = Result<(
+    EpubMetadata,
+    Vec<EpubManifestItem>,
+    Vec<String>,
+    String,
+    Option<String>,
+)>;
+
 fn node_text(node: &roxmltree::Node) -> String {
     let mut result = String::new();
     for descendant in node.descendants() {
@@ -130,17 +138,7 @@ impl EpubParser {
         })
     }
 
-    fn parse_opf(
-        &self,
-        data: &[u8],
-        _opf_path: &str,
-    ) -> Result<(
-        EpubMetadata,
-        Vec<EpubManifestItem>,
-        Vec<String>,
-        String,
-        Option<String>,
-    )> {
+    fn parse_opf(&self, data: &[u8], _opf_path: &str) -> OpfParseResult {
         let text = std::str::from_utf8(data).map_err(|e| CoreError::Parse {
             format: "epub".into(),
             message: format!("Invalid UTF-8 in OPF: {}", e),
@@ -155,11 +153,13 @@ impl EpubParser {
 
         let unique_identifier = attr(&root, "unique-identifier");
 
-        let mut metadata = EpubMetadata::default();
-        metadata.unique_identifier = unique_identifier.clone();
+        let mut metadata = EpubMetadata {
+            unique_identifier: unique_identifier.clone(),
+            ..Default::default()
+        };
 
         if let Some(meta_node) = child(&root, "metadata") {
-            self.parse_metadata_node(&meta_node, &mut metadata, &unique_identifier);
+            self.parse_metadata_node(&meta_node, &mut metadata);
         }
 
         let mut manifest = Vec::new();
@@ -190,82 +190,60 @@ impl EpubParser {
         Ok((metadata, manifest, spine, version, toc_href))
     }
 
-    fn parse_metadata_node(
-        &self,
-        node: &roxmltree::Node,
-        metadata: &mut EpubMetadata,
-        unique_identifier: &Option<String>,
-    ) {
+    fn parse_metadata_node(&self, node: &roxmltree::Node, metadata: &mut EpubMetadata) {
         for child_node in node.children() {
             let tag = child_node.tag_name().name();
             let ns = child_node.tag_name().namespace();
 
             match tag {
-                "title" => {
-                    if ns.is_none() || ns == Some("http://purl.org/dc/elements/1.1/") {
-                        metadata.title = Some(node_text(&child_node));
-                    }
-                }
-                "creator" => {
-                    if ns.is_none() || ns == Some("http://purl.org/dc/elements/1.1/") {
-                        let text = node_text(&child_node);
-                        if !text.is_empty() {
-                            metadata.creator.push(text);
+                "title" | "creator" | "language" | "identifier" | "publisher" | "date"
+                | "description" | "subject" | "rights"
+                    if ns.is_none() || ns == Some("http://purl.org/dc/elements/1.1/") =>
+                {
+                    match tag {
+                        "title" => {
+                            metadata.title = Some(node_text(&child_node));
                         }
-                    }
-                }
-                "language" => {
-                    if ns.is_none() || ns == Some("http://purl.org/dc/elements/1.1/") {
-                        metadata.language = Some(node_text(&child_node));
-                    }
-                }
-                "identifier" => {
-                    if ns.is_none() || ns == Some("http://purl.org/dc/elements/1.1/") {
-                        let id = attr(&child_node, "id");
-                        if id.is_some() && id.as_deref() == unique_identifier.as_deref() {
-                            metadata.identifier = Some(node_text(&child_node));
-                        } else if metadata.identifier.is_none() {
-                            metadata.identifier = Some(node_text(&child_node));
-                        }
-                    }
-                }
-                "publisher" => {
-                    if ns.is_none() || ns == Some("http://purl.org/dc/elements/1.1/") {
-                        metadata.publisher = Some(node_text(&child_node));
-                    }
-                }
-                "date" => {
-                    if ns.is_none() || ns == Some("http://purl.org/dc/elements/1.1/") {
-                        metadata.date = Some(node_text(&child_node));
-                    }
-                }
-                "description" => {
-                    if ns.is_none() || ns == Some("http://purl.org/dc/elements/1.1/") {
-                        metadata.description = Some(node_text(&child_node));
-                    }
-                }
-                "subject" => {
-                    if ns.is_none() || ns == Some("http://purl.org/dc/elements/1.1/") {
-                        let text = node_text(&child_node);
-                        if !text.is_empty() {
-                            metadata.subject.push(text);
-                        }
-                    }
-                }
-                "rights" => {
-                    if ns.is_none() || ns == Some("http://purl.org/dc/elements/1.1/") {
-                        metadata.rights = Some(node_text(&child_node));
-                    }
-                }
-                "meta" => {
-                    if ns == Some("http://www.idpf.org/2007/opf") {
-                        let name = attr(&child_node, "name").unwrap_or_default();
-                        let content = attr(&child_node, "content").unwrap_or_default();
-                        if name == "cover" && !content.is_empty() {
-                            if metadata.title.is_none() {
-                                metadata.title = Some(content.clone());
+                        "creator" => {
+                            let text = node_text(&child_node);
+                            if !text.is_empty() {
+                                metadata.creator.push(text);
                             }
                         }
+                        "language" => {
+                            metadata.language = Some(node_text(&child_node));
+                        }
+                        "identifier" => {
+                            if metadata.identifier.is_none() {
+                                metadata.identifier = Some(node_text(&child_node));
+                            }
+                        }
+                        "publisher" => {
+                            metadata.publisher = Some(node_text(&child_node));
+                        }
+                        "date" => {
+                            metadata.date = Some(node_text(&child_node));
+                        }
+                        "description" => {
+                            metadata.description = Some(node_text(&child_node));
+                        }
+                        "subject" => {
+                            let text = node_text(&child_node);
+                            if !text.is_empty() {
+                                metadata.subject.push(text);
+                            }
+                        }
+                        "rights" => {
+                            metadata.rights = Some(node_text(&child_node));
+                        }
+                        _ => unreachable!(),
+                    }
+                }
+                "meta" if ns == Some("http://www.idpf.org/2007/opf") => {
+                    let name = attr(&child_node, "name").unwrap_or_default();
+                    let content = attr(&child_node, "content").unwrap_or_default();
+                    if name == "cover" && !content.is_empty() && metadata.title.is_none() {
+                        metadata.title = Some(content.clone());
                     }
                 }
                 _ => {}
@@ -350,7 +328,7 @@ impl EpubParser {
         let content = child(node, "content")?;
         let href = attr(&content, "src").map(|h| h.split('#').next().unwrap_or(&h).to_string());
 
-        let play_order = attr(&node, "playOrder").and_then(|po| po.parse().ok());
+        let play_order = attr(node, "playOrder").and_then(|po| po.parse().ok());
 
         let children: Vec<TocEntry> = children_with_tag(node, "navPoint")
             .into_iter()

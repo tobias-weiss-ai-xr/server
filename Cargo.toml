@@ -41,6 +41,7 @@ members = [
     "core/crates/wo-webdav",
     "core/crates/wo-x2t-wasm",
     "core/crates/wo-renderer-wasm",
+    "core/crates/wo-docserver",
 ]
 
 [workspace.package]
@@ -96,3 +97,9 @@ wasm-bindgen = "0.2"
 js-sys = "0.3"
 web-sys = { version = "0.3", features = ["console", "HtmlCanvasElement", "CanvasRenderingContext2d", "ImageData", "Window", "Document"] }
 console_error_panic_hook = "0.1"
+fontdb = { version = "0.16", default-features = false }
+swash = "0.2"
+rustybuzz = "0.20"
+pdf-writer = "0.12"
+rusqlite = { version = "0.32", features = ["bundled"] }
+diamond-types = "1"

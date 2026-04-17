@@ -12,7 +12,7 @@ pub mod canvas_bridge;
 use wasm_bindgen::prelude::*;
 
 // Re-export canvas functions
-pub use canvas_bridge::{create_canvas, get_pixel_data};
+pub use canvas_bridge::{create_canvas, flush_to_canvas, get_pixel_data};
 
 /// Initialize the WASM module.
 ///
@@ -144,19 +144,4 @@ pub fn render_page(
     let _ = canvas_bridge::render_rect(handle, 240.0, 150.0, 100.0, 100.0, "#0000FF");
 
     Ok(handle)
-}
-
-/// Flush a canvas to a Web Canvas element.
-///
-/// This is a convenience wrapper around canvas_bridge::flush_to_canvas.
-///
-/// # Arguments
-/// * `handle` - Canvas handle from create_canvas() or render_page()
-/// * `canvas_id` - ID of the HTML canvas element to render to
-///
-/// # Returns
-/// * `Result<(), String>` - Ok(()) on success, error message on failure
-#[wasm_bindgen]
-pub fn flush_to_canvas(handle: u32, canvas_id: &str) -> Result<(), String> {
-    canvas_bridge::flush_to_canvas(handle, canvas_id)
 }

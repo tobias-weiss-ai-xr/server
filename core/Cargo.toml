@@ -26,6 +26,7 @@ members = [
     "crates/wo-renderer-wasm",
     "crates/wo-wopi",
     "crates/wo-webdav",
+    "crates/wo-docserver",
 ]
 
 [workspace.dependencies]
@@ -58,3 +59,7 @@ tower = "0.5"
 tower-http = "0.6"
 tracing = "0.1"
 tempfile = "3"
+fontdb = { version = "0.16", default-features = false }
+swash = "0.2"
+rustybuzz = "0.20"
+pdf-writer = "0.12"

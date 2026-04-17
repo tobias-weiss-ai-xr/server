@@ -21,3 +21,5 @@ tower-http = { workspace = true }
 futures-util = { workspace = true }
 uuid = { workspace = true }
 chrono = { workspace = true }
+rusqlite = { workspace = true }
+diamond-types = { workspace = true }

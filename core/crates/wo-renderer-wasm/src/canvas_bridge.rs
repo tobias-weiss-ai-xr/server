@@ -481,7 +481,7 @@ mod tests {
         assert_eq!(color.b, 0.0);
 
         let color = parse_color("#FF000080").unwrap();
-        assert_eq!(color.a, 0.5);
+        assert!((color.a - 128.0 / 255.0).abs() < 0.001);
     }
 
     #[test]

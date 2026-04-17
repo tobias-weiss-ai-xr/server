@@ -12,3 +12,4 @@ wo-ooxml = { path = "../wo-ooxml" }
 wo-renderer = { path = "../wo-renderer" }
 serde = { workspace = true }
 zip = { workspace = true }
+pdf-writer = { workspace = true }

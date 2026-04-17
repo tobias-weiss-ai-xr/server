@@ -21,3 +21,4 @@ tower-http = { workspace = true }
 uuid = { workspace = true }
 chrono = { workspace = true }
 jsonwebtoken = { workspace = true }
+rusqlite = { workspace = true }

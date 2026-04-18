@@ -125,7 +125,7 @@ packages/collaboration-react/            # NEW — React integration
 - Create: `packages/collaboration-client/vitest.config.ts`
 - Create: `packages/collaboration-client/src/index.ts`
 
-- [ ] **Step 1: Create package.json**
+- [x] **Step 1: Create package.json**
 
 ```json
 {
@@ -160,7 +160,7 @@ packages/collaboration-react/            # NEW — React integration
 }
 ```
 
-- [ ] **Step 2: Create tsconfig.json**
+- [x] **Step 2: Create tsconfig.json**
 
 ```json
 {
@@ -185,7 +185,7 @@ packages/collaboration-react/            # NEW — React integration
 }
 ```
 
-- [ ] **Step 3: Create vitest.config.ts**
+- [x] **Step 3: Create vitest.config.ts**
 
 ```typescript
 import { defineConfig } from "vitest/config"
@@ -199,24 +199,24 @@ export default defineConfig({
 })
 ```
 
-- [ ] **Step 4: Create placeholder index.ts**
+- [x] **Step 4: Create placeholder index.ts**
 
 ```typescript
 // @world-office/collaboration-client — WebSocket collaboration client
 export {}
 ```
 
-- [ ] **Step 5: Install dependencies and verify**
+- [x] **Step 5: Install dependencies and verify**
 
 Run: `pnpm install`
 Expected: No errors. Package appears in `node_modules/@world-office/collaboration-client`
 
-- [ ] **Step 6: Verify typecheck passes**
+- [x] **Step 6: Verify typecheck passes**
 
 Run: `pnpm --filter @world-office/collaboration-client typecheck`
 Expected: No errors
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/collaboration-client/
@@ -231,7 +231,7 @@ git commit -m "feat: scaffold @world-office/collaboration-client package"
 - Create: `packages/collaboration-client/src/protocol.ts`
 - Create: `packages/collaboration-client/__tests__/protocol.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `packages/collaboration-client/__tests__/protocol.test.ts`:
 
@@ -448,12 +448,12 @@ describe("Server response types", () => {
 })
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm --filter @world-office/collaboration-client test`
 Expected: FAIL — cannot find module `../src/protocol`
 
-- [ ] **Step 3: Implement protocol.ts**
+- [x] **Step 3: Implement protocol.ts**
 
 Create `packages/collaboration-client/src/protocol.ts`:
 
@@ -600,12 +600,12 @@ export function isRemoteMessage(op: EditOperation, currentUserId: string): boole
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pnpm --filter @world-office/collaboration-client test`
 Expected: All tests PASS
 
-- [ ] **Step 5: Update index.ts**
+- [x] **Step 5: Update index.ts**
 
 Replace `packages/collaboration-client/src/index.ts`:
 
@@ -626,7 +626,7 @@ export {
 } from "./protocol"
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/collaboration-client/src/protocol.ts packages/collaboration-client/__tests__/protocol.test.ts packages/collaboration-client/src/index.ts
@@ -641,7 +641,7 @@ git commit -m "feat(collaboration-client): add protocol types matching server Ed
 - Create: `packages/collaboration-client/src/reconnection.ts`
 - Create: `packages/collaboration-client/__tests__/reconnection.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `packages/collaboration-client/__tests__/reconnection.test.ts`:
 
@@ -724,12 +724,12 @@ describe("createBackoffStrategy", () => {
 })
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm --filter @world-office/collaboration-client test`
 Expected: FAIL — cannot find module `../src/reconnection`
 
-- [ ] **Step 3: Implement reconnection.ts**
+- [x] **Step 3: Implement reconnection.ts**
 
 Create `packages/collaboration-client/src/reconnection.ts`:
 
@@ -798,12 +798,12 @@ export function createBackoffStrategy(options?: BackoffOptions): BackoffStrategy
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pnpm --filter @world-office/collaboration-client test`
 Expected: All tests PASS
 
-- [ ] **Step 5: Update index.ts exports**
+- [x] **Step 5: Update index.ts exports**
 
 Add to `packages/collaboration-client/src/index.ts`:
 
@@ -812,7 +812,7 @@ export { BackoffStrategy, createBackoffStrategy } from "./reconnection"
 export type { BackoffOptions } from "./reconnection"
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/collaboration-client/src/reconnection.ts packages/collaboration-client/__tests__/reconnection.test.ts packages/collaboration-client/src/index.ts
@@ -827,7 +827,7 @@ git commit -m "feat(collaboration-client): add exponential backoff reconnection 
 - Create: `packages/collaboration-client/src/auth.ts`
 - Create: `packages/collaboration-client/__tests__/auth.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `packages/collaboration-client/__tests__/auth.test.ts`:
 
@@ -948,12 +948,12 @@ describe("AuthClient", () => {
 })
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm --filter @world-office/collaboration-client test`
 Expected: FAIL — cannot find module `../src/auth`
 
-- [ ] **Step 3: Implement auth.ts**
+- [x] **Step 3: Implement auth.ts**
 
 Create `packages/collaboration-client/src/auth.ts`:
 
@@ -1093,12 +1093,12 @@ export class AuthClient {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pnpm --filter @world-office/collaboration-client test`
 Expected: All tests PASS
 
-- [ ] **Step 5: Update index.ts exports**
+- [x] **Step 5: Update index.ts exports**
 
 Add to `packages/collaboration-client/src/index.ts`:
 
@@ -1107,7 +1107,7 @@ export { AuthClient } from "./auth"
 export type { AuthClientOptions, CreateSessionParams, AuthTokens, SessionInfo, RefreshResult } from "./auth"
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/collaboration-client/src/auth.ts packages/collaboration-client/__tests__/auth.test.ts packages/collaboration-client/src/index.ts

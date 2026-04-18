@@ -153,7 +153,7 @@ export class SdkBridge {
   /** Check if a selection object is locked */
   isLocked(obj: SdkSelectionObject): boolean {
     const val = obj.get_ObjectValue()
-    return val?.get_Locked()
+    return val?.get_Locked() ?? false
   }
 
   /** Get chart properties from a selection object (if chart) */

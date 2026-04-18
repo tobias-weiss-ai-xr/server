@@ -54,4 +54,20 @@ mod tests {
     fn test_is_txt_not_null() {
         assert!(!is_txt_file(b"\x00\x00\xFF\xFE"));
     }
+
+    #[test]
+    fn test_is_txt_empty() {
+        assert!(is_txt_file(b""));
+    }
+
+    #[test]
+    fn test_is_txt_null_in_middle() {
+        assert!(!is_txt_file(b"hello\x00world"));
+    }
+
+    #[test]
+    fn test_is_txt_long_plain_text() {
+        let data = "a".repeat(2000);
+        assert!(is_txt_file(data.as_bytes()));
+    }
 }

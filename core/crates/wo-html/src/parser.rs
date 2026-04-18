@@ -948,4 +948,139 @@ mod tests {
             _ => panic!("Expected div"),
         }
     }
+
+    #[test]
+    fn test_parse_html_with_link_tags() {
+        let html = r#"<?xml version="1.0"?>
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css"/>
+<link rel="icon" href="favicon.ico"/>
+</head><body></body></html>"#;
+        let parser = HtmlParser::new();
+        let doc = parser.parse(html.as_bytes()).unwrap();
+        assert_eq!(doc.head.links.len(), 2);
+        assert_eq!(doc.head.links[0].rel.as_deref(), Some("stylesheet"));
+        assert_eq!(doc.head.links[0].href.as_deref(), Some("style.css"));
+        assert_eq!(doc.head.links[1].rel.as_deref(), Some("icon"));
+    }
+
+    #[test]
+    fn test_parse_nested_divs() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<div class="outer"><div class="inner"><p>Deep</p></div></div>
+</body></html>"#;
+        let parser = HtmlParser::new();
+        let doc = parser.parse(html.as_bytes()).unwrap();
+        match &doc.body.elements[0] {
+            BlockElement::Div { elements, .. } => match &elements[0] {
+                BlockElement::Div { elements, .. } => {
+                    assert!(matches!(&elements[0], BlockElement::Paragraph { .. }));
+                }
+                _ => panic!("Expected inner div"),
+            },
+            _ => panic!("Expected outer div"),
+        }
+    }
+
+    #[test]
+    fn test_parse_strikethrough_and_subscript_superscript() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<p><s>strikethrough</s> <sub>sub</sub> <sup>sup</sup></p>
+</body></html>"#;
+        let parser = HtmlParser::new();
+        let doc = parser.parse(html.as_bytes()).unwrap();
+        match &doc.body.elements[0] {
+            BlockElement::Paragraph { content, .. } => {
+                assert!(content
+                    .iter()
+                    .any(|e| matches!(e, InlineElement::Strikethrough { .. })));
+                assert!(content
+                    .iter()
+                    .any(|e| matches!(e, InlineElement::Subscript { .. })));
+                assert!(content
+                    .iter()
+                    .any(|e| matches!(e, InlineElement::Superscript { .. })));
+            }
+            _ => panic!("Expected paragraph"),
+        }
+    }
+
+    #[test]
+    fn test_parse_code_inline() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<p>Use <code>var x = 1;</code> to declare.</p>
+</body></html>"#;
+        let parser = HtmlParser::new();
+        let doc = parser.parse(html.as_bytes()).unwrap();
+        match &doc.body.elements[0] {
+            BlockElement::Paragraph { content, .. } => {
+                let code = content
+                    .iter()
+                    .find(|e| matches!(e, InlineElement::Code { .. }));
+                assert!(code.is_some());
+                if let Some(InlineElement::Code { content }) = code {
+                    assert_eq!(content, "var x = 1;");
+                }
+            }
+            _ => panic!("Expected paragraph"),
+        }
+    }
+
+    #[test]
+    fn test_parse_table_with_colspan_rowspan() {
+        let html = r#"<?xml version="1.0"?>
+<html><head></head><body>
+<table>
+<tr><td colspan="2">wide</td></tr>
+<tr><td rowspan="2">tall</td><td>normal</td></tr>
+<tr><td>normal2</td></tr>
+</table>
+</body></html>"#;
+        let parser = HtmlParser::new();
+        let doc = parser.parse(html.as_bytes()).unwrap();
+        match &doc.body.elements[0] {
+            BlockElement::Table { rows, .. } => {
+                assert_eq!(rows[0].cells[0].colspan, 2);
+                assert_eq!(rows[1].cells[0].rowspan, 2);
+                assert_eq!(rows[0].cells[0].rowspan, 1);
+            }
+            _ => panic!("Expected table"),
+        }
+    }
+
+    #[test]
+    fn test_parse_html_without_doctype() {
+        let html =
+            r#"<html><head><title>No Doctype</title></head><body><p>Content</p></body></html>"#;
+        let parser = HtmlParser::new();
+        let doc = parser.parse(html.as_bytes()).unwrap();
+        assert_eq!(doc.head.title.as_deref(), Some("No Doctype"));
+        assert!(doc.doc_type.is_none());
+    }
+
+    #[test]
+    fn test_parse_empty_body() {
+        let html = r#"<?xml version="1.0"?>
+<html><head><title>Empty</title></head><body></body></html>"#;
+        let parser = HtmlParser::new();
+        let doc = parser.parse(html.as_bytes()).unwrap();
+        assert!(doc.body.elements.is_empty());
+    }
+
+    #[test]
+    fn test_parse_html_with_attributes() {
+        let html = r#"<?xml version="1.0"?>
+<html lang="en" dir="ltr"><head></head><body></body></html>"#;
+        let parser = HtmlParser::new();
+        let doc = parser.parse(html.as_bytes()).unwrap();
+        assert!(!doc.html_attributes.is_empty());
+        let has_lang = doc
+            .html_attributes
+            .iter()
+            .any(|(k, v)| k == "lang" && v == "en");
+        assert!(has_lang);
+    }
 }

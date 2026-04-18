@@ -1399,4 +1399,62 @@ mod tests {
             doc2.body
         );
     }
+
+    // ── Additional edge case tests ──────────────────────────────────
+
+    #[test]
+    fn test_parse_empty_font_table() {
+        let rtf = r#"{\rtf1\ansi{\fonttbl}}"#;
+        let parser = RtfParser::new();
+        let doc = parser.parse(rtf.as_bytes()).unwrap();
+        assert!(doc.fonts.is_empty());
+    }
+
+    #[test]
+    fn test_parse_ansicpg() {
+        let rtf = r#"{\rtf1\ansicpg1252 Hello\par}"#;
+        let parser = RtfParser::new();
+        let doc = parser.parse(rtf.as_bytes()).unwrap();
+        assert_eq!(doc.ansi_codepage, Some(1252));
+    }
+
+    #[test]
+    fn test_plain_resets_formatting() {
+        let blocks = parse_body(r#"{\rtf1\ansi\b\~bold\plain\~normal\par}"#);
+        assert_eq!(blocks.len(), 1);
+        if let RtfBlock::Paragraph { content, .. } = &blocks[0] {
+            let full = extract_text(content);
+            assert!(full.contains("bold"));
+            assert!(full.contains("normal"));
+            // After \plain, no more Bold nodes should appear
+            let mut after_plain = content
+                .iter()
+                .skip_while(|i| !matches!(i, RtfInline::Text { text } if text == "normal"));
+            let has_bold_after = after_plain.any(|i| matches!(i, RtfInline::Bold { .. }));
+            assert!(!has_bold_after, "no Bold after \\plain");
+        }
+    }
+
+    #[test]
+    fn test_parse_rtf_version_default() {
+        // \rtf without a version number defaults to 1
+        let parser = RtfParser::new();
+        let doc = parser.parse(b"{\\rtf\\ansi}").unwrap();
+        assert_eq!(doc.version, 1);
+    }
+
+    #[test]
+    fn test_superscript_subscript() {
+        let blocks = parse_body(
+            r#"{\rtf1\ansi normal\~\super text1\nosupersub\~normal2\sub text3\nosupersub\~normal3\par}"#,
+        );
+        assert_eq!(blocks.len(), 1);
+        if let RtfBlock::Paragraph { content, .. } = &blocks[0] {
+            assert!(count_variant(content, "super") >= 1);
+            assert!(count_variant(content, "sub") >= 1);
+            let full = extract_text(content);
+            assert!(full.contains("text1"));
+            assert!(full.contains("text3"));
+        }
+    }
 }

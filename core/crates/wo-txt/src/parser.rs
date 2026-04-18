@@ -239,4 +239,56 @@ mod tests {
         assert_eq!(doc.lines.len(), 1);
         assert!(doc.lines[0].contains('é'));
     }
+
+    #[test]
+    fn test_parse_utf8_multibyte_characters() {
+        let parser = TxtParser::new();
+        let data = "日本語テスト\n中文测试\n한국어";
+        let doc = parser.parse(data.as_bytes()).unwrap();
+        assert_eq!(doc.lines.len(), 3);
+        assert_eq!(doc.lines[0], "日本語テスト");
+        assert_eq!(doc.lines[1], "中文测试");
+        assert_eq!(doc.lines[2], "한국어");
+    }
+
+    #[test]
+    fn test_parse_whitespace_lines() {
+        let parser = TxtParser::new();
+        let doc = parser.parse(b"   \n\t\n  \t  \n").unwrap();
+        assert_eq!(doc.lines.len(), 3);
+        assert_eq!(doc.lines[0], "   ");
+        assert_eq!(doc.lines[1], "\t");
+    }
+
+    #[test]
+    fn test_parse_with_encoding_forces_encoding() {
+        let parser = TxtParser::with_encoding(Encoding::Utf8);
+        let doc = parser.parse(b"hello\nworld").unwrap();
+        assert_eq!(doc.encoding, Encoding::Utf8);
+    }
+
+    #[test]
+    fn test_parse_bom_not_stripped() {
+        let mut parser = TxtParser::new();
+        parser.strip_bom = false;
+        let data = [0xEF, 0xBB, 0xBF, 0x68, 0x69]; // BOM + "hi"
+        let doc = parser.parse(&data).unwrap();
+        // The BOM bytes would be invalid UTF-8 start, so the line starts with the replacement char or similar
+        assert!(doc.had_bom);
+    }
+
+    #[test]
+    fn test_parse_to_document_word_count() {
+        let parser = TxtParser::new();
+        let doc = parser.parse_to_document(b"a b c d e\nf g h").unwrap();
+        assert_eq!(doc.metadata.word_count, Some(8));
+    }
+
+    #[test]
+    fn test_parse_to_document_empty() {
+        let parser = TxtParser::new();
+        let doc = parser.parse_to_document(b"").unwrap();
+        assert_eq!(doc.metadata.line_count, Some(0));
+        assert_eq!(doc.metadata.word_count, Some(0));
+    }
 }

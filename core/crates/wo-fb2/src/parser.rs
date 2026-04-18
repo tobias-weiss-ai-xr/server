@@ -829,4 +829,187 @@ mod tests {
         assert!(doc.bodies[0].name.is_none());
         assert_eq!(doc.bodies[1].name.as_deref(), Some("notes"));
     }
+
+    #[test]
+    fn test_parse_multiple_genres() {
+        let fb2 = r#"<?xml version="1.0"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0">
+  <description>
+    <title-info>
+      <genre>science_fiction</genre>
+      <genre>adventure</genre>
+      <genre>humor</genre>
+      <author><first-name>A</first-name><last-name>B</last-name></author>
+      <book-title>Multi Genre</book-title>
+      <lang>en</lang>
+    </title-info>
+  </description>
+  <body>
+    <section><p>Content</p></section>
+  </body>
+</FictionBook>"#;
+        let parser = Fb2Parser::new();
+        let doc = parser.parse(fb2.as_bytes()).unwrap();
+        assert_eq!(doc.title_info.as_ref().unwrap().genres.len(), 3);
+        assert!(doc
+            .title_info
+            .as_ref()
+            .unwrap()
+            .genres
+            .contains(&"science_fiction".to_string()));
+        assert!(doc
+            .title_info
+            .as_ref()
+            .unwrap()
+            .genres
+            .contains(&"adventure".to_string()));
+        assert!(doc
+            .title_info
+            .as_ref()
+            .unwrap()
+            .genres
+            .contains(&"humor".to_string()));
+    }
+
+    #[test]
+    fn test_parse_author_with_all_fields() {
+        let fb2 = r#"<?xml version="1.0"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0">
+  <description>
+    <title-info>
+      <genre>fiction</genre>
+      <author>
+        <first-name>Leo</first-name>
+        <middle-name>Nikolayevich</middle-name>
+        <last-name>Tolstoy</last-name>
+        <nickname>Count</nickname>
+        <home-page>https://tolstoy.example.com</home-page>
+        <email>leo@example.com</email>
+      </author>
+      <book-title>Author Fields</book-title>
+      <lang>en</lang>
+    </title-info>
+  </description>
+  <body>
+    <section><p>Content</p></section>
+  </body>
+</FictionBook>"#;
+        let parser = Fb2Parser::new();
+        let doc = parser.parse(fb2.as_bytes()).unwrap();
+        let author = &doc.title_info.as_ref().unwrap().authors[0];
+        assert_eq!(author.first_name.as_deref(), Some("Leo"));
+        assert_eq!(author.middle_name.as_deref(), Some("Nikolayevich"));
+        assert_eq!(author.last_name.as_deref(), Some("Tolstoy"));
+        assert_eq!(author.nickname.as_deref(), Some("Count"));
+        assert_eq!(
+            author.home_page.as_deref(),
+            Some("https://tolstoy.example.com")
+        );
+        assert_eq!(author.email.as_deref(), Some("leo@example.com"));
+    }
+
+    #[test]
+    fn test_parse_binary_images() {
+        let fb2 = r##"<?xml version="1.0"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink">
+  <description>
+    <title-info>
+      <genre>computers</genre>
+      <author><first-name>A</first-name><last-name>B</last-name></author>
+      <book-title>Images</book-title>
+      <lang>en</lang>
+    </title-info>
+  </description>
+  <body>
+    <section>
+      <p>Text</p>
+      <image l:href="#cover.jpg"/>
+    </section>
+  </body>
+  <binary id="cover.jpg" content-type="image/jpeg">SGVsbG8=</binary>
+</FictionBook>"##;
+        let parser = Fb2Parser::new();
+        let doc = parser.parse(fb2.as_bytes()).unwrap();
+        assert_eq!(doc.binaries.len(), 1);
+        assert_eq!(doc.binaries[0].id, "cover.jpg");
+        assert_eq!(doc.binaries[0].content_type, "image/jpeg");
+        assert!(!doc.binaries[0].data.is_empty());
+    }
+
+    #[test]
+    fn test_parse_keywords_and_date() {
+        let fb2 = r#"<?xml version="1.0"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0">
+  <description>
+    <title-info>
+      <genre>fiction</genre>
+      <author><first-name>A</first-name><last-name>B</last-name></author>
+      <book-title>Keywords</book-title>
+      <keywords>war, peace, love</keywords>
+      <date>2024-01-01</date>
+      <lang>en</lang>
+    </title-info>
+  </description>
+  <body>
+    <section><p>Content</p></section>
+  </body>
+</FictionBook>"#;
+        let parser = Fb2Parser::new();
+        let doc = parser.parse(fb2.as_bytes()).unwrap();
+        let ti = doc.title_info.as_ref().unwrap();
+        assert_eq!(ti.keywords.as_deref(), Some("war, peace, love"));
+        assert_eq!(ti.date.as_deref(), Some("2024-01-01"));
+    }
+
+    #[test]
+    fn test_parse_invalid_utf8_rejected() {
+        let parser = Fb2Parser::new();
+        let invalid = &[0xFF, 0xFE, 0xFD]; // invalid UTF-8
+        let result = parser.parse(invalid);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_parse_wrong_root_element() {
+        let fb2 = r#"<?xml version="1.0"?>
+<NotFictionBook><body><p>Wrong root</p></body></NotFictionBook>"#;
+        let parser = Fb2Parser::new();
+        let result = parser.parse(fb2.as_bytes());
+        assert!(result.is_err());
+        let err = format!("{}", result.unwrap_err());
+        assert!(err.contains("expected 'FictionBook'"));
+    }
+
+    #[test]
+    fn test_parse_document_info() {
+        let fb2 = r#"<?xml version="1.0"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0">
+  <description>
+    <title-info>
+      <genre>fiction</genre>
+      <author><first-name>A</first-name><last-name>B</last-name></author>
+      <book-title>Doc Info</book-title>
+      <lang>en</lang>
+    </title-info>
+    <document-info>
+      <author><first-name>Editor</first-name><last-name>Smith</last-name></author>
+      <program-used>FB2 Editor v2.0</program-used>
+      <date value="2024-06-15">15 June 2024</date>
+      <id>uuid-1234</id>
+      <version>1.1</version>
+    </document-info>
+  </description>
+  <body>
+    <section><p>Content</p></section>
+  </body>
+</FictionBook>"#;
+        let parser = Fb2Parser::new();
+        let doc = parser.parse(fb2.as_bytes()).unwrap();
+        let di = doc.document_info.as_ref().unwrap();
+        assert_eq!(di.program_used.as_deref(), Some("FB2 Editor v2.0"));
+        assert_eq!(di.id.as_deref(), Some("uuid-1234"));
+        assert_eq!(di.version.as_deref(), Some("1.1"));
+        assert_eq!(di.authors.len(), 1);
+        assert_eq!(di.authors[0].last_name.as_deref(), Some("Smith"));
+    }
 }

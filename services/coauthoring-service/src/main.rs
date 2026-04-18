@@ -14,9 +14,11 @@ use axum::{
     Json, Router,
 };
 use chrono::Utc;
+use diamond_types::list::{encoding::EncodeOptions, ListCRDT};
 use futures_util::{SinkExt, StreamExt};
 use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::{broadcast, Mutex};
 
@@ -48,7 +50,6 @@ struct CursorPos {
 }
 
 /// An operational transform edit.
-#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct EditOperation {
     session_id: String,
@@ -60,6 +61,90 @@ struct EditOperation {
     length: u64,
     content: Option<String>,
     timestamp: String,
+}
+
+/// A collaborative document backed by diamond-types CRDT.
+///
+/// Each session has one `Document`. Multiple clients (agents) can insert
+/// and delete text concurrently; diamond-types resolves conflicts
+/// automatically so all replicas converge to the same content.
+struct Document {
+    crdt: ListCRDT,
+    /// Tracks the next agent ID index for new participants.
+    agent_counter: u32,
+    /// Maps user_id -> diamond-types AgentId.
+    agent_map: HashMap<String, u32>,
+}
+
+impl Document {
+    /// Create a new empty collaborative document.
+    fn new() -> Self {
+        Self {
+            crdt: ListCRDT::new(),
+            agent_counter: 0,
+            agent_map: HashMap::new(),
+        }
+    }
+
+    /// Register a user as an agent in this document.
+    /// Returns the diamond-types `AgentId` assigned to this user.
+    fn register_agent(&mut self, user_id: &str) -> u32 {
+        if let Some(&id) = self.agent_map.get(user_id) {
+            return id;
+        }
+        let id = self.crdt.get_or_create_agent_id(user_id);
+        self.agent_map.insert(user_id.to_string(), id);
+        self.agent_counter = self.agent_counter.max(id + 1);
+        id
+    }
+
+    /// Apply an `EditOperation` to this document.
+    ///
+    /// - `"insert"`: inserts `content` at `position`
+    /// - `"delete"`: deletes `length` characters starting at `position`
+    /// - `"format"`: ignored in plain-text v1 (no-op)
+    ///
+    /// Returns `Ok(())` on success, or an error description on failure.
+    fn apply_edit(&mut self, op: &EditOperation) -> Result<(), String> {
+        let agent = self.register_agent(&op.user_id);
+
+        match op.op_type.as_str() {
+            "insert" => {
+                let content = op.content.as_deref().unwrap_or("");
+                let pos = op.position as usize;
+                self.crdt.insert(agent, pos, content);
+                Ok(())
+            }
+            "delete" => {
+                let start = op.position as usize;
+                let end = start + op.length as usize;
+                self.crdt.delete(agent, start..end);
+                Ok(())
+            }
+            "format" => {
+                // Plain text v1 — formatting ops are no-ops
+                Ok(())
+            }
+            other => Err(format!("unknown op_type: {other}")),
+        }
+    }
+
+    /// Get the current text content of the document.
+    fn text(&self) -> String {
+        self.crdt.branch.content().to_string()
+    }
+
+    /// Merge another document's history into this one (replication).
+    ///
+    /// Uses binary encoding to properly transfer operations between
+    /// independent CRDT replicas with different local time spaces.
+    fn merge_from(&mut self, other: &Document) {
+        let encoded = other.crdt.oplog.encode(EncodeOptions::default());
+        self.crdt.oplog.decode_and_add(&encoded).unwrap();
+        // Update the branch to include the newly merged operations
+        let version = self.crdt.oplog.local_version_ref().to_vec();
+        self.crdt.branch.merge(&self.crdt.oplog, &version);
+    }
 }
 
 /// SQLite-backed session repository for co-authoring sessions.
@@ -184,7 +269,9 @@ impl SessionRepository {
 struct AppState {
     sessions: Arc<Mutex<SessionRepository>>,
     /// Broadcast channels per session for real-time edits (ephemeral, not persisted).
-    edit_channels: Arc<Mutex<std::collections::HashMap<String, broadcast::Sender<String>>>>,
+    edit_channels: Arc<Mutex<HashMap<String, broadcast::Sender<String>>>>,
+    /// Collaborative documents per session, backed by diamond-types CRDT.
+    documents: Arc<Mutex<HashMap<String, Document>>>,
 }
 
 /// Health check response.
@@ -282,6 +369,12 @@ async fn create_session(
     {
         let mut channels = state.edit_channels.lock().await;
         channels.insert(session_id.clone(), tx);
+    }
+
+    // Create collaborative document for this session
+    {
+        let mut docs = state.documents.lock().await;
+        docs.insert(session_id.clone(), Document::new());
     }
 
     tracing::info!(
@@ -460,10 +553,30 @@ async fn handle_ws(mut socket: WebSocket, state: Arc<AppState>, session_id: Stri
         }
     });
 
-    // Read edits from this client and broadcast
+    // Read edits from this client, apply through diamond-types, and broadcast
     while let Some(Ok(msg)) = ws_receiver.next().await {
         if let Message::Text(text) = msg {
-            // TODO: validate and apply OT
+            // Try to parse as an EditOperation and apply through diamond-types
+            if let Ok(edit_op) = serde_json::from_str::<EditOperation>(&text) {
+                let applied = {
+                    let mut docs = state.documents.lock().await;
+                    if let Some(doc) = docs.get_mut(&session_id) {
+                        match doc.apply_edit(&edit_op) {
+                            Ok(()) => true,
+                            Err(e) => {
+                                tracing::warn!(error = %e, "failed to apply edit");
+                                false
+                            }
+                        }
+                    } else {
+                        false
+                    }
+                };
+                if !applied {
+                    continue;
+                }
+            }
+            // Broadcast to other participants regardless (they may not be EditOperations)
             let channels = state.edit_channels.lock().await;
             if let Some(tx) = channels.get(&session_id) {
                 let _ = tx.send(text.to_string());
@@ -505,7 +618,8 @@ async fn main() {
 
     let state = Arc::new(AppState {
         sessions: Arc::new(Mutex::new(repo)),
-        edit_channels: Arc::new(Mutex::new(std::collections::HashMap::new())),
+        edit_channels: Arc::new(Mutex::new(HashMap::new())),
+        documents: Arc::new(Mutex::new(HashMap::new())),
     });
     let app = app(state);
 
@@ -683,5 +797,210 @@ mod tests {
         repo.insert(&session).unwrap();
         let fetched = repo.get("empty-part").unwrap().unwrap();
         assert!(fetched.participants.is_empty());
+    }
+
+    // --- diamond-types integration tests ---
+
+    /// Helper: create a sample EditOperation.
+    fn sample_edit(user_id: &str, op_type: &str, position: u64, length: u64, content: Option<&str>) -> EditOperation {
+        EditOperation {
+            session_id: "sess-1".to_string(),
+            user_id: user_id.to_string(),
+            revision: 0,
+            op_type: op_type.to_string(),
+            position,
+            length,
+            content: content.map(|s| s.to_string()),
+            timestamp: "2026-04-17T00:00:00+00:00".to_string(),
+        }
+    }
+
+    #[test]
+    fn test_document_insert() {
+        let mut doc = Document::new();
+        let op = sample_edit("alice", "insert", 0, 0, Some("Hello"));
+        doc.apply_edit(&op).unwrap();
+        assert_eq!(doc.text(), "Hello");
+    }
+
+    #[test]
+    fn test_document_multiple_inserts() {
+        let mut doc = Document::new();
+        doc.apply_edit(&sample_edit("alice", "insert", 0, 0, Some("Hello"))).unwrap();
+        doc.apply_edit(&sample_edit("alice", "insert", 5, 0, Some(" world"))).unwrap();
+        assert_eq!(doc.text(), "Hello world");
+    }
+
+    #[test]
+    fn test_document_delete() {
+        let mut doc = Document::new();
+        doc.apply_edit(&sample_edit("alice", "insert", 0, 0, Some("Hello world"))).unwrap();
+        doc.apply_edit(&sample_edit("alice", "delete", 5, 6, None)).unwrap();
+        assert_eq!(doc.text(), "Hello");
+    }
+
+    #[test]
+    fn test_document_delete_middle() {
+        let mut doc = Document::new();
+        doc.apply_edit(&sample_edit("alice", "insert", 0, 0, Some("abcdef"))).unwrap();
+        // Delete "bc" (position 1, length 2)
+        doc.apply_edit(&sample_edit("alice", "delete", 1, 2, None)).unwrap();
+        assert_eq!(doc.text(), "adef");
+    }
+
+    #[test]
+    fn test_document_format_is_noop() {
+        let mut doc = Document::new();
+        doc.apply_edit(&sample_edit("alice", "insert", 0, 0, Some("Hello"))).unwrap();
+        // Format ops should be no-ops in plain text v1
+        let fmt_op = EditOperation {
+            op_type: "format".to_string(),
+            position: 0,
+            length: 5,
+            content: Some("bold".to_string()),
+            ..sample_edit("alice", "format", 0, 5, None)
+        };
+        doc.apply_edit(&fmt_op).unwrap();
+        assert_eq!(doc.text(), "Hello");
+    }
+
+    #[test]
+    fn test_document_unknown_op_type_fails() {
+        let mut doc = Document::new();
+        let bad_op = EditOperation {
+            op_type: "transpose".to_string(),
+            ..sample_edit("alice", "transpose", 0, 0, None)
+        };
+        let result = doc.apply_edit(&bad_op);
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("unknown op_type"));
+    }
+
+    #[test]
+    fn test_register_agent_returns_same_id() {
+        let mut doc = Document::new();
+        let id1 = doc.register_agent("alice");
+        let id2 = doc.register_agent("alice");
+        assert_eq!(id1, id2);
+    }
+
+    #[test]
+    fn test_register_different_agents() {
+        let mut doc = Document::new();
+        let alice = doc.register_agent("alice");
+        let bob = doc.register_agent("bob");
+        assert_ne!(alice, bob);
+    }
+
+    /// Concurrent edit test: two simulated clients insert at the same position.
+    /// Both inserts must be preserved after merge (diamond-types handles this).
+    #[test]
+    fn test_concurrent_inserts_both_preserved() {
+        // Simulate two clients editing the same document concurrently
+        let mut doc1 = Document::new();
+        let mut doc2 = Document::new();
+
+        // Both start from the same initial state
+        doc1.apply_edit(&sample_edit("alice", "insert", 0, 0, Some("S"))).unwrap();
+        doc1.merge_from(&doc2);
+        doc2.merge_from(&doc1);
+
+        // Verify both have "S"
+        assert_eq!(doc1.text(), "S");
+        assert_eq!(doc2.text(), "S");
+
+        // Concurrent edits: both insert at position 1 (after "S")
+        doc1.apply_edit(&sample_edit("alice", "insert", 1, 0, Some("aaa"))).unwrap();
+        doc2.apply_edit(&sample_edit("bob", "insert", 1, 0, Some("bbb"))).unwrap();
+
+        // Before merge, each has its own content
+        assert_eq!(doc1.text(), "Saaa");
+        assert_eq!(doc2.text(), "Sbbb");
+
+        // Merge: both inserts at position 1 should be preserved
+        doc1.merge_from(&doc2);
+
+        // The merged document must contain both "aaa" and "bbb"
+        let merged = doc1.text();
+        assert!(
+            merged.contains("aaa"),
+            "merged text '{merged}' must contain 'aaa'"
+        );
+        assert!(
+            merged.contains("bbb"),
+            "merged text '{merged}' must contain 'bbb'"
+        );
+        assert_eq!(merged.len(), 7, "merged text should be 7 chars: S + aaa + bbb");
+        assert!(
+            merged.starts_with('S'),
+            "merged text should start with 'S'"
+        );
+    }
+
+    /// Three-way concurrent edit: three clients each insert at the same position.
+    #[test]
+    fn test_three_way_concurrent_inserts() {
+        let mut doc1 = Document::new();
+        let mut doc2 = Document::new();
+        let mut doc3 = Document::new();
+
+        // Shared initial content
+        doc1.apply_edit(&sample_edit("alice", "insert", 0, 0, Some("X"))).unwrap();
+        doc2.merge_from(&doc1);
+        doc3.merge_from(&doc1);
+
+        assert_eq!(doc1.text(), "X");
+        assert_eq!(doc2.text(), "X");
+        assert_eq!(doc3.text(), "X");
+
+        // All three insert at position 1 (after "X") concurrently
+        doc1.apply_edit(&sample_edit("alice", "insert", 1, 0, Some("A"))).unwrap();
+        doc2.apply_edit(&sample_edit("bob", "insert", 1, 0, Some("B"))).unwrap();
+        doc3.apply_edit(&sample_edit("carol", "insert", 1, 0, Some("C"))).unwrap();
+
+        // Merge all three together
+        doc1.merge_from(&doc2);
+        doc1.merge_from(&doc3);
+
+        let merged = doc1.text();
+        assert_eq!(merged.len(), 4, "merged text should be 4 chars: X + A + B + C");
+        assert!(merged.contains('X'));
+        assert!(merged.contains('A'));
+        assert!(merged.contains('B'));
+        assert!(merged.contains('C'));
+    }
+
+    /// Concurrent insert and delete: one client inserts while another deletes.
+    #[test]
+    fn test_concurrent_insert_and_delete() {
+        let mut doc1 = Document::new();
+        let mut doc2 = Document::new();
+
+        // Shared initial: "abcde"
+        doc1.apply_edit(&sample_edit("alice", "insert", 0, 0, Some("abcde"))).unwrap();
+        doc2.merge_from(&doc1);
+
+        assert_eq!(doc1.text(), "abcde");
+        assert_eq!(doc2.text(), "abcde");
+
+        // Client 1 inserts "X" at position 2 -> "abXcde"
+        doc1.apply_edit(&sample_edit("alice", "insert", 2, 0, Some("X"))).unwrap();
+
+        // Client 2 deletes "bcd" (positions 1..4) -> "ae"
+        doc2.apply_edit(&sample_edit("bob", "delete", 1, 3, None)).unwrap();
+
+        // Merge
+        doc1.merge_from(&doc2);
+
+        // Both operations should be reflected: "aXe" (insert preserved, delete preserved)
+        let merged = doc1.text();
+        assert!(
+            merged.contains('X'),
+            "merged text '{merged}' must contain inserted 'X'"
+        );
+        assert!(
+            merged.starts_with('a') && merged.ends_with('e'),
+            "merged text '{merged}' should start with 'a' and end with 'e'"
+        );
     }
 }

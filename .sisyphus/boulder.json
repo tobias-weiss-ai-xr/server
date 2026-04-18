@@ -24,7 +24,22 @@
     "ses_2620e67c8ffe40fllcZGsfbKoW",
     "ses_2620e681bffewIZbuKx98ZGKlp",
     "ses_2620e67f0ffeHX3gV2nnyl2hGc",
-    "ses_2620e6815ffeg4snM3yCCEjwTq"
+    "ses_2620e6815ffeg4snM3yCCEjwTq",
+    "ses_261ffccdfffe5SBGCc7JWLFM09",
+    "ses_260fe5f96ffeU1B85ppiY1BCi0",
+    "ses_260f3e9baffeaH1JSzALDaaysW",
+    "ses_260f3e9c5ffegN5UBhPRG6QSB5",
+    "ses_260f3e9abffejZH5R21lBkHhnD",
+    "ses_260f0a23dffeai288Bx0sO1R5r",
+    "ses_260e8918fffexGCHAtp2r1kiEB",
+    "ses_260e89183ffeK8oDLgZ3zO3OHb",
+    "ses_2602b5dc6ffeBdVOng2yDP6Xl3",
+    "ses_2601cf353ffeyFN6QEnOyQPOOH",
+    "ses_25fac2d40ffetJT7toGqFOvToq",
+    "ses_25fa58630ffeG8tvB9olsoERrG",
+    "ses_25fa4328effexrEJ5f4U583vki",
+    "ses_25f94a89fffeIF4j3n7qhZBcNr",
+    "ses_25ef08509ffeg8058VKgER61Ny"
   ],
   "plan_name": "next-steps-roadmap",
   "task_sessions": {
@@ -103,10 +118,9 @@
       "task_key": "final-wave:f1",
       "task_label": "F1",
       "task_title": "**Plan Compliance Audit** — `oracle`",
-      "session_id": "ses_2620e67c8ffe40fllcZGsfbKoW",
-      "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-04-18T00:28:28.874Z"
+      "session_id": "ses_260e89183ffeK8oDLgZ3zO3OHb",
+      "agent": "explore",
+      "updated_at": "2026-04-18T05:38:53.550Z"
     }
   },
   "agent": "atlas"

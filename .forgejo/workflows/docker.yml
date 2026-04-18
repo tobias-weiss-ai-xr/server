@@ -1,0 +1,73 @@
+# .forgejo/workflows/docker.yml
+name: Docker Build
+
+on:
+  push:
+    branches: [main]
+
+env:
+  REGISTRY: codeberg.org
+  IMAGE_NAME: ${{ forgejo.repository }}
+
+jobs:
+  build-services:
+    name: Build ${{ matrix.service }}
+    runs-on: docker://node:20-bookworm
+    strategy:
+      matrix:
+        include:
+          - service: identity-service
+            dockerfile: services.Dockerfile
+          - service: storage-service
+            dockerfile: services.Dockerfile
+          - service: conversion-service
+            dockerfile: services.Dockerfile
+          - service: coauthoring-service
+            dockerfile: services.Dockerfile
+          - service: session-service
+            dockerfile: services.Dockerfile
+          - service: api-gateway
+            dockerfile: services.Dockerfile
+          - service: wo-docserver
+            dockerfile: core/crates/wo-docserver/Dockerfile
+    steps:
+      - name: Checkout
+        uses: https://data.forgejo.org/actions/checkout@v4
+        timeout-minutes: 5
+
+      - name: Set up Docker Buildx
+        uses: https://github.com/docker/setup-buildx-action@v3
+        timeout-minutes: 5
+
+      - name: Login to Codeberg Container Registry
+        uses: https://github.com/docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ forgejo.actor }}
+          password: ${{ secrets.FORGEJO_TOKEN }}
+        timeout-minutes: 5
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: https://github.com/docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service }}
+          tags: |
+            type=sha,prefix=
+            type=ref,event=branch
+            type=raw,value=latest,enable={{is_default_branch}}
+        timeout-minutes: 5
+
+      - name: Build and push Docker image
+        uses: https://github.com/docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            SERVICE_NAME=${{ matrix.service }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+        timeout-minutes: 30

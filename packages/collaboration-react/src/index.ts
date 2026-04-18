@@ -1,4 +1,12 @@
-// @world-office/collaboration-react
-// React hooks and components for World Office collaboration.
-// Will be populated in Tasks 9-12.
-export {}
+export { useCollaboration } from "./hooks/useCollaboration"
+export type { UseCollaborationOptions, UseCollaborationResult } from "./hooks/useCollaboration"
+export { useConnectionStatus } from "./hooks/useConnectionStatus"
+export type { ConnectionStatusInfo } from "./hooks/useConnectionStatus"
+export { useCollaboratorPresence } from "./hooks/useCollaboratorPresence"
+export type { PresenceInfo } from "./hooks/useCollaboratorPresence"
+export { CollaborationStatus } from "./components/CollaborationStatus"
+export type { CollaborationStatusProps } from "./components/CollaborationStatus"
+export { CollaboratorList } from "./components/CollaboratorList"
+export type { CollaboratorListProps } from "./components/CollaboratorList"
+export { CollaboratorCursors } from "./components/CollaboratorCursors"
+export type { CollaboratorCursorsProps } from "./components/CollaboratorCursors"

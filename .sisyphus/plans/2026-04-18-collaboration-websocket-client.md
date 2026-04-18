@@ -1122,7 +1122,7 @@ git commit -m "feat(collaboration-client): add AuthClient for session-service JW
 - Create: `packages/collaboration-client/src/client.ts`
 - Create: `packages/collaboration-client/__tests__/client.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `packages/collaboration-client/__tests__/client.test.ts`:
 
@@ -1345,12 +1345,12 @@ describe("WebSocketManager", () => {
 })
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm --filter @world-office/collaboration-client test`
 Expected: FAIL — cannot find module `../src/client`
 
-- [ ] **Step 3: Implement client.ts**
+- [x] **Step 3: Implement client.ts**
 
 Create `packages/collaboration-client/src/client.ts`:
 
@@ -1586,12 +1586,12 @@ export class WebSocketManager {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pnpm --filter @world-office/collaboration-client test`
 Expected: All tests PASS
 
-- [ ] **Step 5: Update index.ts exports**
+- [x] **Step 5: Update index.ts exports**
 
 Add to `packages/collaboration-client/src/index.ts`:
 
@@ -1600,7 +1600,7 @@ export { WebSocketManager } from "./client"
 export type { WebSocketManagerOptions, WebSocketManagerEvents, ConnectionState } from "./client"
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/collaboration-client/src/client.ts packages/collaboration-client/__tests__/client.test.ts packages/collaboration-client/src/index.ts
@@ -1614,7 +1614,7 @@ git commit -m "feat(collaboration-client): add WebSocketManager with send/receiv
 **Files:**
 - Create: `packages/collaboration-client/__tests__/integration.test.ts`
 
-- [ ] **Step 1: Write the integration test**
+- [x] **Step 1: Write the integration test**
 
 Create `packages/collaboration-client/__tests__/integration.test.ts`:
 
@@ -1743,12 +1743,12 @@ describe("Integration: full collaboration lifecycle", () => {
 })
 ```
 
-- [ ] **Step 2: Run the integration test**
+- [x] **Step 2: Run the integration test**
 
 Run: `pnpm --filter @world-office/collaboration-client test`
 Expected: All tests PASS (including integration)
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/collaboration-client/__tests__/integration.test.ts

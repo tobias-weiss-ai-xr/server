@@ -16,6 +16,7 @@ js-sys = { workspace = true }
 web-sys = { workspace = true }
 wo-renderer = { path = "../wo-renderer" }
 wo-common = { path = "../wo-common" }
+wo-ooxml = { path = "../wo-ooxml" }
 console_error_panic_hook = { workspace = true, optional = true }
 serde_json = { workspace = true }
 

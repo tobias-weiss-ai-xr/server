@@ -9,7 +9,7 @@ use std::sync::Mutex;
 use std::sync::OnceLock;
 use wasm_bindgen::prelude::*;
 use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, ImageData};
-use wo_renderer::{Canvas, Color};
+use wo_renderer::{Canvas, Color, FontLibrary};
 
 /// Global canvas instance store.
 ///
@@ -51,7 +51,8 @@ pub fn create_canvas(width: u32, height: u32) -> u32 {
         return 0; // Invalid dimensions
     }
 
-    let canvas = Canvas::new(width, height);
+    let mut canvas = Canvas::new(width, height);
+    canvas.set_font_library(FontLibrary::new());
     let handle = unsafe { next_handle() };
 
     let store = CANVAS_STORE.get_or_init(|| Mutex::new(HashMap::new()));
@@ -137,15 +138,14 @@ pub fn render_text(
 
     let font_size = size.unwrap_or(12.0);
 
-    use wo_renderer::color::Paint;
-    canvas.set_fill(Paint::Color(parsed_color));
-
-    // Simple text rendering - draw rectangles as placeholder
-    // TODO: Integrate proper text layout engine when available
-    for (i, _ch) in text.chars().enumerate() {
-        let char_x = x + (i as f32) * (font_size * 0.6);
-        canvas.fill_rect(char_x, y - font_size, font_size * 0.5, font_size);
-    }
+    canvas.draw_text(
+        text,
+        x as f64,
+        y as f64,
+        font_size as f64,
+        "sans-serif",
+        parsed_color,
+    );
 
     Ok(())
 }

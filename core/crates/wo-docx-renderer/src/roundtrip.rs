@@ -132,9 +132,14 @@ mod tests {
         // Serialize (return PDF bytes)
         let output = rt.serialize().expect("serialize should succeed");
 
-        // Verify output is non-empty
-        assert!(!output.is_empty(), "PDF output should not be empty");
-        assert!(output.len() > 100, "PDF should have some content");
+        // Verify output is a valid PDF
+        assert!(
+            output.starts_with(b"%PDF-"),
+            "PDF output must start with %PDF- header"
+        );
+        assert!(output.len() > 100, "PDF should have substantial content");
+        let s = String::from_utf8_lossy(&output);
+        assert!(s.contains("%%EOF"), "PDF must have %%EOF trailer");
     }
 
     #[test]

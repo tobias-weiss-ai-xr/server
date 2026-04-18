@@ -94,13 +94,19 @@ pub fn split_lines(data: &[u8]) -> Vec<&[u8]> {
         }
     }
 
+    // If the last element pushed was an empty line caused by a trailing newline, remove it.
+    // This ensures split_lines(b"\n") -> [] instead of [b""]
+    if !lines.is_empty() && start == data.len() && lines.last().is_some_and(|l| l.is_empty()) {
+        lines.pop();
+    }
+
     // Trailing content without a line ending
     if start < data.len() {
         lines.push(&data[start..]);
     }
 
-    // If data is empty, return one empty line
-    if lines.is_empty() && !data.is_empty() {
+    // If data is non-empty but nothing was pushed (no newlines, no content), return data as-is
+    if lines.is_empty() && !data.is_empty() && start < data.len() {
         lines.push(data);
     }
 
@@ -168,5 +174,61 @@ mod tests {
         assert_eq!(Encoding::from_bom(&[0xEF, 0xBB, 0xBF]), Encoding::Utf8);
         assert_eq!(Encoding::from_bom(&[0xFF, 0xFE]), Encoding::Utf16Le);
         assert_eq!(Encoding::from_bom(&[0x48]), Encoding::Auto);
+    }
+
+    #[test]
+    fn test_split_lines_single_line_no_ending() {
+        let lines = split_lines(b"hello");
+        assert_eq!(lines.len(), 1);
+        assert_eq!(lines[0], b"hello");
+    }
+
+    #[test]
+    fn test_split_lines_only_crlf() {
+        let lines = split_lines(b"\r\n");
+        assert!(lines.is_empty());
+    }
+
+    #[test]
+    fn test_split_lines_only_lf() {
+        let lines = split_lines(b"\n");
+        assert!(lines.is_empty());
+    }
+
+    #[test]
+    fn test_split_lines_consecutive_endlines() {
+        let lines = split_lines(b"a\n\nb");
+        assert_eq!(lines.len(), 3);
+        assert_eq!(lines[0], b"a");
+        assert_eq!(lines[1], b"");
+        assert_eq!(lines[2], b"b");
+    }
+
+    #[test]
+    fn test_split_lines_utf8_multibyte() {
+        // "café" in UTF-8 with LF
+        let data = "caf\u{e9}\nhello".as_bytes();
+        let lines = split_lines(data);
+        assert_eq!(lines.len(), 2);
+        assert_eq!(lines[0], "caf\u{e9}".as_bytes());
+        assert_eq!(lines[1], b"hello");
+    }
+
+    #[test]
+    fn test_bom_detect_utf16le_minimum() {
+        assert_eq!(Bom::detect(&[0xFF, 0xFE]), (Bom::Utf16Le, 2));
+    }
+
+    #[test]
+    fn test_bom_detect_single_byte() {
+        // Only one byte — can't match any BOM
+        assert_eq!(Bom::detect(&[0xFF]), (Bom::None, 0));
+        assert_eq!(Bom::detect(&[0xEF]), (Bom::None, 0));
+    }
+
+    #[test]
+    fn test_bom_detect_partial_utf8() {
+        // Only first 2 bytes of UTF-8 BOM
+        assert_eq!(Bom::detect(&[0xEF, 0xBB]), (Bom::None, 0));
     }
 }

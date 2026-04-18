@@ -192,7 +192,7 @@ pub enum LineJoin {
 }
 
 /// Paint — describes how a shape is filled or stroked.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum Paint {
     /// Solid color fill.
     Color(Color),
@@ -266,5 +266,58 @@ mod tests {
         assert!((ss.line_width - 1.0).abs() < 0.001);
         assert_eq!(ss.line_cap, LineCap::Butt);
         assert!(ss.dash_array.is_empty());
+    }
+
+    #[test]
+    fn test_color_constants() {
+        assert_eq!(Color::BLACK, Color::new(0.0, 0.0, 0.0, 1.0));
+        assert_eq!(Color::WHITE, Color::new(1.0, 1.0, 1.0, 1.0));
+        assert_eq!(Color::RED, Color::new(1.0, 0.0, 0.0, 1.0));
+        assert_eq!(Color::GREEN, Color::new(0.0, 1.0, 0.0, 1.0));
+        assert_eq!(Color::BLUE, Color::new(0.0, 0.0, 1.0, 1.0));
+        assert_eq!(Color::TRANSPARENT, Color::new(0.0, 0.0, 0.0, 0.0));
+    }
+
+    #[test]
+    fn test_color_blend_fully_transparent() {
+        let bg = Color::rgb(0.5, 0.5, 0.5);
+        let fg = Color::new(1.0, 0.0, 0.0, 0.0);
+        let blended = fg.blend_over(&bg);
+        assert_eq!(blended, bg);
+    }
+
+    #[test]
+    fn test_color_blend_fully_opaque() {
+        let bg = Color::rgb(0.5, 0.5, 0.5);
+        let fg = Color::rgb(1.0, 0.0, 0.0);
+        let blended = fg.blend_over(&bg);
+        assert_eq!(blended, fg);
+    }
+
+    #[test]
+    fn test_color_from_hex_invalid_lengths() {
+        assert_eq!(Color::from_hex("#12"), None); // 2 chars
+        assert_eq!(Color::from_hex("#12345"), None); // 5 chars
+        assert_eq!(Color::from_hex("#1234567"), None); // 7 chars
+        assert_eq!(Color::from_hex("#123456789"), None); // 9 chars
+    }
+
+    #[test]
+    fn test_color_u8_clamping() {
+        // Values out of 0-255 range are clamped
+        let c = Color::from_u8(255, 255, 255, 255);
+        assert_eq!(c.to_u8(), (255, 255, 255, 255));
+    }
+
+    #[test]
+    fn test_paint_default() {
+        let paint = Paint::default();
+        assert_eq!(paint, Paint::Color(Color::BLACK));
+    }
+
+    #[test]
+    fn test_paint_from_color() {
+        let paint = Paint::from(Color::RED);
+        assert_eq!(paint, Paint::Color(Color::RED));
     }
 }

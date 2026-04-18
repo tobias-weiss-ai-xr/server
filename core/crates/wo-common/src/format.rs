@@ -326,4 +326,172 @@ mod tests {
         assert!(DocumentFormat::Epub.is_zip_based());
         assert!(!DocumentFormat::Txt.is_zip_based());
     }
+
+    #[test]
+    fn test_from_extension_case_insensitive() {
+        assert_eq!(
+            DocumentFormat::from_extension("DOCX"),
+            Some(DocumentFormat::Docx)
+        );
+        assert_eq!(
+            DocumentFormat::from_extension("PdF"),
+            Some(DocumentFormat::Pdf)
+        );
+        assert_eq!(
+            DocumentFormat::from_extension("HtM"),
+            Some(DocumentFormat::Html)
+        );
+        assert_eq!(
+            DocumentFormat::from_extension("DjV"),
+            Some(DocumentFormat::Djvu)
+        );
+    }
+
+    #[test]
+    fn test_from_extension_unknown() {
+        assert_eq!(DocumentFormat::from_extension("xyz"), None);
+        assert_eq!(DocumentFormat::from_extension(""), None);
+        assert_eq!(DocumentFormat::from_extension("exe"), None);
+    }
+
+    #[test]
+    fn test_mime_type_all_formats() {
+        // Verify every format returns a non-empty MIME type
+        for format in &[
+            DocumentFormat::Txt,
+            DocumentFormat::Fb2,
+            DocumentFormat::Epub,
+            DocumentFormat::Html,
+            DocumentFormat::Odt,
+            DocumentFormat::Ods,
+            DocumentFormat::Odp,
+            DocumentFormat::Docx,
+            DocumentFormat::Xlsx,
+            DocumentFormat::Pptx,
+            DocumentFormat::Rtf,
+            DocumentFormat::Pdf,
+            DocumentFormat::Xps,
+            DocumentFormat::Ofd,
+            DocumentFormat::Djvu,
+            DocumentFormat::Hwp,
+            DocumentFormat::Csv,
+            DocumentFormat::Doc,
+            DocumentFormat::Xls,
+            DocumentFormat::Ppt,
+        ] {
+            assert!(
+                !format.mime_type().is_empty(),
+                "MIME type empty for {:?}",
+                format
+            );
+        }
+    }
+
+    #[test]
+    fn test_is_phase2() {
+        assert!(DocumentFormat::Txt.is_phase2());
+        assert!(DocumentFormat::Fb2.is_phase2());
+        assert!(DocumentFormat::Epub.is_phase2());
+        assert!(DocumentFormat::Html.is_phase2());
+        assert!(!DocumentFormat::Docx.is_phase2());
+        assert!(!DocumentFormat::Pdf.is_phase2());
+    }
+
+    #[test]
+    fn test_display_format() {
+        assert_eq!(format!("{}", DocumentFormat::Docx), "docx");
+        assert_eq!(format!("{}", DocumentFormat::Pdf), "pdf");
+        assert_eq!(format!("{}", DocumentFormat::Html), "html");
+    }
+
+    #[test]
+    fn test_from_str_text_alias() {
+        let fmt: DocumentFormat = "text".parse().unwrap();
+        assert_eq!(fmt, DocumentFormat::Txt);
+    }
+
+    #[test]
+    fn test_from_str_unknown() {
+        let result = DocumentFormat::from_str("nonexistent");
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("Unknown format"));
+    }
+
+    #[test]
+    fn test_magic_zip_docx_detection() {
+        // Minimal ZIP-like data with Content_Types marker
+        let data = b"PK\x03\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[Content_Types].xml";
+        assert_eq!(
+            DocumentFormat::from_magic_bytes(data),
+            Some(DocumentFormat::Docx)
+        );
+    }
+
+    #[test]
+    fn test_magic_zip_odt_detection() {
+        let data = b"PK\x03\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00META-INF/manifest.xml";
+        assert_eq!(
+            DocumentFormat::from_magic_bytes(data),
+            Some(DocumentFormat::Odt)
+        );
+    }
+
+    #[test]
+    fn test_magic_zip_epub_detection() {
+        let data = b"PK\x03\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00mimetype";
+        assert_eq!(
+            DocumentFormat::from_magic_bytes(data),
+            Some(DocumentFormat::Epub)
+        );
+    }
+
+    #[test]
+    fn test_magic_zip_no_marker() {
+        let data = b"PK\x03\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00unknown_content";
+        assert_eq!(DocumentFormat::from_magic_bytes(data), None);
+    }
+
+    #[test]
+    fn test_magic_rtf_uppercase() {
+        assert_eq!(
+            DocumentFormat::from_magic_bytes(b"{\\RTF1\\ansi"),
+            Some(DocumentFormat::Rtf)
+        );
+    }
+
+    #[test]
+    fn test_magic_html_lowercase() {
+        let html = b"<html><body>test</body></html>";
+        assert_eq!(
+            DocumentFormat::from_magic_bytes(html),
+            Some(DocumentFormat::Html)
+        );
+    }
+
+    #[test]
+    fn test_from_path_complex() {
+        use std::path::Path;
+        assert_eq!(
+            DocumentFormat::from_path(Path::new("/some/deep/path/to/file.EPUB")),
+            Some(DocumentFormat::Epub)
+        );
+        assert_eq!(
+            DocumentFormat::from_path(Path::new("document.pptx")),
+            Some(DocumentFormat::Pptx)
+        );
+    }
+
+    #[test]
+    fn test_extension_all_variants() {
+        // HTM variant of HTML
+        assert_eq!(
+            DocumentFormat::from_extension("htm"),
+            Some(DocumentFormat::Html)
+        );
+        // DJV variant of DJVU
+        assert_eq!(
+            DocumentFormat::from_extension("djv"),
+            Some(DocumentFormat::Djvu)
+        );
+    }
 }

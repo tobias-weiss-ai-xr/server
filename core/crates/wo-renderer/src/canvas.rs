@@ -1201,7 +1201,7 @@ mod tests {
 
     #[test]
     fn test_draw_text_with_system_fonts() {
-        let mut lib = FontLibrary::new();
+        let lib = FontLibrary::new();
         if lib.face_count() == 0 {
             // Skip if no system fonts available (CI environments)
             return;
@@ -1231,7 +1231,7 @@ mod tests {
 
     #[test]
     fn test_draw_text_respects_position() {
-        let mut lib = FontLibrary::new();
+        let lib = FontLibrary::new();
         if lib.face_count() == 0 {
             return;
         }
@@ -1249,7 +1249,7 @@ mod tests {
 
     #[test]
     fn test_draw_text_color() {
-        let mut lib = FontLibrary::new();
+        let lib = FontLibrary::new();
         if lib.face_count() == 0 {
             return;
         }
@@ -1271,5 +1271,73 @@ mod tests {
             }
         }
         assert!(found_red, "draw_text with RED should produce red pixels");
+    }
+
+    #[test]
+    fn test_fill_ellipse() {
+        let mut c = Canvas::new(100, 100);
+        c.set_fill(Paint::Color(Color::GREEN));
+        c.begin_path();
+        c.ellipse(50.0, 50.0, 40.0, 20.0);
+        c.fill();
+
+        // Center pixel should be green (inside ellipse)
+        let (_, g, _, _) = c.get_pixel(50, 50);
+        assert!(g > 200, "ellipse center should be green");
+
+        // Corner should still be white
+        let (r, g, b, _) = c.get_pixel(0, 0);
+        assert_eq!((r, g, b), (255, 255, 255));
+    }
+
+    #[test]
+    fn test_scale_transform() {
+        let mut c = Canvas::new(100, 100);
+        c.scale(2.0, 3.0);
+        c.fill_rect(0.0, 0.0, 5.0, 5.0);
+        // With scale(2,3), a 5x5 rect becomes 10x15 on screen
+        let (r, _, _, _) = c.get_pixel(12, 12);
+        assert_eq!(r, 255); // black fill on white
+    }
+
+    #[test]
+    fn test_global_alpha_clamped() {
+        let mut c = Canvas::new(10, 10);
+        c.set_global_alpha(-0.5);
+        assert!((c.global_alpha() - 0.0).abs() < 0.001);
+        c.set_global_alpha(2.0);
+        assert!((c.global_alpha() - 1.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_nested_save_restore() {
+        let mut c = Canvas::new(100, 100);
+        c.set_global_alpha(0.8);
+        c.save();
+        c.set_global_alpha(0.4);
+        c.save();
+        c.set_global_alpha(0.1);
+        c.restore();
+        assert!((c.global_alpha() - 0.4).abs() < 0.001);
+        c.restore();
+        assert!((c.global_alpha() - 0.8).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_restore_with_empty_stack() {
+        let mut c = Canvas::new(10, 10);
+        // Should not panic when stack is empty
+        c.restore();
+        assert!((c.global_alpha() - 1.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_set_fill_rule() {
+        use crate::path::FillRule;
+        let mut c = Canvas::new(10, 10);
+        c.set_fill_rule(FillRule::EvenOdd);
+        assert_eq!(c.fill_rule(), FillRule::EvenOdd);
+        c.set_fill_rule(FillRule::NonZero);
+        assert_eq!(c.fill_rule(), FillRule::NonZero);
     }
 }

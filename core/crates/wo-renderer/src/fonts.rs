@@ -32,6 +32,12 @@ impl fmt::Debug for FontLibrary {
     }
 }
 
+impl Default for FontLibrary {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl FontLibrary {
     /// Create a new font library with system fonts loaded.
     ///

@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "tauri dev",
+    "build:web": "node scripts/build-web.mjs",
+    "prebuild": "npm run build:web",
     "build": "tauri build"
   },
   "devDependencies": {

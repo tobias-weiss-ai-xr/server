@@ -26,9 +26,37 @@ export class CollaborationStore {
   @observable isCommentMode = false
   @observable currentUser: CollabUser | null = null
 
+  // ── Connection state (Phase A) ──
+  @observable connectionStatus: "disconnected" | "connecting" | "connected" | "reconnecting" = "disconnected"
+  @observable sessionId: string | null = null
+  @observable remoteCursors: Map<string, { page: number; x: number; y: number }> = new Map()
+
   @action
   setConnected(connected: boolean): void {
     this.isConnected = connected
+  }
+
+  // ── Connection actions (Phase A) ──
+
+  @action
+  setConnectionStatus(status: "disconnected" | "connecting" | "connected" | "reconnecting"): void {
+    this.connectionStatus = status
+    this.isConnected = status === "connected"
+  }
+
+  @action
+  setSessionId(id: string | null): void {
+    this.sessionId = id
+  }
+
+  @action
+  updateRemoteCursor(userId: string, cursor: { page: number; x: number; y: number }): void {
+    this.remoteCursors.set(userId, cursor)
+  }
+
+  @action
+  removeRemoteCursor(userId: string): void {
+    this.remoteCursors.delete(userId)
   }
 
   @action
@@ -83,5 +111,8 @@ export class CollaborationStore {
     this.comments = []
     this.isCommentMode = false
     this.currentUser = null
+    this.connectionStatus = "disconnected"
+    this.sessionId = null
+    this.remoteCursors.clear()
   }
 }

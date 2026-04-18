@@ -5,6 +5,7 @@
 //! Modeled after the HTML5 Canvas API.
 
 use crate::color::{Color, Paint, StrokeStyle};
+use crate::fonts::FontLibrary;
 use crate::gradient::Gradient;
 use crate::model::{BlendMode, Page};
 use crate::path::{FillRule, PathBuilder};
@@ -265,6 +266,8 @@ pub struct Canvas {
     clip_path: Option<PathBuilder>,
     /// Pixel buffer.
     buffer: PixelBuffer,
+    /// Font library for text rendering (optional).
+    font_library: Option<FontLibrary>,
 }
 
 impl Canvas {
@@ -280,6 +283,7 @@ impl Canvas {
             current_path: PathBuilder::new(),
             clip_path: None,
             buffer,
+            font_library: None,
         }
     }
 
@@ -307,6 +311,7 @@ impl Canvas {
             current_path: PathBuilder::new(),
             clip_path: None,
             buffer,
+            font_library: None,
         }
     }
 
@@ -599,6 +604,132 @@ impl Canvas {
         self.begin_path();
         self.rect(x, y, w, h);
         self.stroke();
+    }
+
+    /// Set the font library for text rendering.
+    ///
+    /// Must be called before [`draw_text`](Canvas::draw_text) to enable
+    /// glyph rasterization. Without a font library, `draw_text` is a no-op.
+    pub fn set_font_library(&mut self, lib: FontLibrary) {
+        self.font_library = Some(lib);
+    }
+
+    /// Draw text at the specified position using the given font size and color.
+    ///
+    /// Uses rustybuzz for text shaping and swash for glyph rasterization.
+    /// Latin-only for v1 — no kerning, ligatures, OpenType features, bidi, or
+    /// complex script support.
+    ///
+    /// Requires a font library to be set via [`set_font_library`](Canvas::set_font_library).
+    /// If no font library is available, or no font face can be found, the call
+    /// returns silently without modifying the canvas.
+    ///
+    /// # Arguments
+    /// * `text` - The text string to draw (Latin characters only for v1)
+    /// * `x` - X coordinate of the text origin (left edge of first glyph)
+    /// * `y` - Y coordinate of the baseline
+    /// * `font_size` - Font size in pixels
+    /// * `_font` - Font family name (ignored in v1; best available face is used)
+    /// * `color` - Text color
+    pub fn draw_text(
+        &mut self,
+        text: &str,
+        x: f64,
+        y: f64,
+        font_size: f64,
+        _font: &str,
+        color: Color,
+    ) {
+        let font_library = match &self.font_library {
+            Some(lib) => lib,
+            None => return,
+        };
+
+        // Get font data from library
+        let (font_data, face_index) = match font_library.query_face() {
+            Some(data) => data,
+            None => return,
+        };
+
+        // Create rustybuzz face for shaping
+        let rb_face = match rustybuzz::Face::from_slice(&font_data, face_index) {
+            Some(face) => face,
+            None => return,
+        };
+
+        // Shape text with rustybuzz (Latin v1: no features)
+        let mut buffer = rustybuzz::UnicodeBuffer::new();
+        buffer.push_str(text);
+        buffer.guess_segment_properties();
+        let glyph_buffer = rustybuzz::shape(&rb_face, &[], buffer);
+
+        // Compute scale factor: font design units → pixels
+        let upem = rb_face.units_per_em();
+        let upem = if upem > 0 { upem as f32 } else { 1000.0 };
+        let font_size_f32 = font_size as f32;
+        let unit_scale = font_size_f32 / upem;
+
+        // Create swash font reference and scale context
+        let swash_font = match swash::FontRef::from_index(&font_data, face_index as usize) {
+            Some(font) => font,
+            None => return,
+        };
+
+        let mut scale_context = swash::scale::ScaleContext::new();
+        let mut scaler = scale_context
+            .builder(swash_font)
+            .size(font_size_f32)
+            .build();
+
+        let alpha = self.state.global_alpha;
+        let x_start = x as f32;
+        let y_baseline = y as f32;
+
+        let infos = glyph_buffer.glyph_infos();
+        let positions = glyph_buffer.glyph_positions();
+
+        let mut cursor_x = x_start;
+
+        for (info, pos) in infos.iter().zip(positions.iter()) {
+            let glyph_id = info.glyph_id as u16;
+
+            // Rasterize glyph with swash
+            if let Some(image) = swash::scale::Render::new(&[swash::scale::Source::Outline])
+                .format(swash::zeno::Format::Alpha)
+                .render(&mut scaler, glyph_id)
+            {
+                let placement = &image.placement;
+                if placement.width > 0 && placement.height > 0 {
+                    // Glyph position in canvas coordinates
+                    let gx0 = cursor_x + pos.x_offset as f32 * unit_scale + placement.left as f32;
+                    let gy0 = y_baseline + pos.y_offset as f32 * unit_scale - placement.top as f32;
+
+                    // Composite glyph bitmap onto pixel buffer
+                    for row in 0..placement.height {
+                        for col in 0..placement.width {
+                            let px = (gx0 + col as f32).round() as i32;
+                            let py = (gy0 + row as f32).round() as i32;
+                            if px < 0 || py < 0 {
+                                continue;
+                            }
+                            let px_u = px as u32;
+                            let py_u = py as u32;
+                            if px_u >= self.width || py_u >= self.height {
+                                continue;
+                            }
+                            let idx = row as usize * placement.width as usize + col as usize;
+                            if idx < image.data.len() {
+                                let glyph_alpha = image.data[idx] as f32 / 255.0;
+                                self.buffer.blend(px_u, py_u, &color, glyph_alpha * alpha);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Advance cursor to next glyph origin
+            cursor_x += pos.x_advance as f32 * unit_scale;
+        }
     }
 
     /// Clear the entire canvas to transparent.
@@ -1029,5 +1160,116 @@ mod tests {
         // Far away should still be white
         let (r, g, b, _) = c.get_pixel(50, 0);
         assert_eq!((r, g, b), (255, 255, 255));
+    }
+
+    // --- draw_text tests ---
+
+    #[test]
+    fn test_draw_text_no_font_library() {
+        let mut c = Canvas::new(100, 100);
+        // No font library set → should not panic, canvas unchanged
+        c.draw_text("Hello", 10.0, 50.0, 16.0, "sans-serif", Color::BLACK);
+        let (r, g, b, _) = c.get_pixel(10, 50);
+        assert_eq!((r, g, b), (255, 255, 255));
+    }
+
+    #[test]
+    fn test_draw_text_empty_font_library() {
+        let mut c = Canvas::new(100, 100);
+        c.set_font_library(FontLibrary::empty());
+        // Empty library → no faces, draw_text is a no-op
+        c.draw_text("Hello", 10.0, 50.0, 16.0, "sans-serif", Color::BLACK);
+        let (r, g, b, _) = c.get_pixel(10, 50);
+        assert_eq!((r, g, b), (255, 255, 255));
+    }
+
+    #[test]
+    fn test_draw_text_empty_string() {
+        let mut c = Canvas::new(100, 100);
+        c.set_font_library(FontLibrary::new());
+        // Empty string → no crash, no changes
+        c.draw_text("", 10.0, 50.0, 16.0, "sans-serif", Color::BLACK);
+    }
+
+    #[test]
+    fn test_set_font_library() {
+        let mut c = Canvas::new(100, 100);
+        let lib = FontLibrary::empty();
+        c.set_font_library(lib);
+        // Should not panic; field is set
+    }
+
+    #[test]
+    fn test_draw_text_with_system_fonts() {
+        let mut lib = FontLibrary::new();
+        if lib.face_count() == 0 {
+            // Skip if no system fonts available (CI environments)
+            return;
+        }
+        let mut c = Canvas::new(200, 100);
+        c.set_font_library(lib);
+        c.draw_text("A", 10.0, 50.0, 24.0, "sans-serif", Color::BLACK);
+        // Some pixels near the glyph should differ from white
+        let mut found_non_white = false;
+        for py in 30..70u32 {
+            for px in 5..50u32 {
+                let (r, g, b, _) = c.get_pixel(px, py);
+                if (r, g, b) != (255, 255, 255) {
+                    found_non_white = true;
+                    break;
+                }
+            }
+            if found_non_white {
+                break;
+            }
+        }
+        assert!(
+            found_non_white,
+            "draw_text with system fonts should produce non-white pixels"
+        );
+    }
+
+    #[test]
+    fn test_draw_text_respects_position() {
+        let mut lib = FontLibrary::new();
+        if lib.face_count() == 0 {
+            return;
+        }
+        let mut c = Canvas::new(200, 100);
+        c.set_font_library(lib);
+        c.draw_text("A", 100.0, 50.0, 24.0, "sans-serif", Color::BLACK);
+        // Top-left corner far from glyph should remain white
+        let (r, g, b, _) = c.get_pixel(0, 0);
+        assert_eq!(
+            (r, g, b),
+            (255, 255, 255),
+            "pixels far from drawn text should be unchanged"
+        );
+    }
+
+    #[test]
+    fn test_draw_text_color() {
+        let mut lib = FontLibrary::new();
+        if lib.face_count() == 0 {
+            return;
+        }
+        let mut c = Canvas::new(200, 100);
+        c.set_font_library(lib);
+        c.draw_text("A", 10.0, 50.0, 24.0, "sans-serif", Color::RED);
+        // Some pixels should have red channel > 200 and green/blue < 100
+        let mut found_red = false;
+        for py in 30..70u32 {
+            for px in 5..50u32 {
+                let (r, g, b, _) = c.get_pixel(px, py);
+                if (r, g, b) != (255, 255, 255) && r > 200 && g < 100 && b < 100 {
+                    found_red = true;
+                    break;
+                }
+            }
+            if found_red {
+                break;
+            }
+        }
+        assert!(found_red, "draw_text with RED should produce red pixels");
     }
 }

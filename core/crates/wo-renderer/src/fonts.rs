@@ -154,6 +154,15 @@ impl FontLibrary {
     pub fn space_advance(&self, font_size: f32) -> f32 {
         self.char_advance(' ', font_size)
     }
+
+    /// Get the raw font data and face index for the best available face.
+    ///
+    /// Returns a cloned copy of the font data and the face index within
+    /// the font file (for TrueType collections). Returns `None` if no
+    /// face is available.
+    pub fn query_face(&self) -> Option<(Vec<u8>, u32)> {
+        self.with_best_face_data(|data, index| (data.to_vec(), index))
+    }
 }
 
 #[cfg(test)]

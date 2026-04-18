@@ -1,0 +1,202 @@
+# .forgejo/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  lint-rust:
+    name: Rust Lint
+    runs-on: docker://node:20-bookworm
+    steps:
+      - name: Checkout
+        uses: https://data.forgejo.org/actions/checkout@v4
+        timeout-minutes: 5
+
+      - name: Install Rust toolchain
+        uses: https://github.com/dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt, clippy
+        timeout-minutes: 10
+
+      - name: Install system dependencies
+        run: apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev
+        timeout-minutes: 5
+
+      - name: Cache Cargo registry and build
+        uses: https://data.forgejo.org/actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: rust-lint-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: rust-lint-
+        timeout-minutes: 5
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+        timeout-minutes: 10
+
+      - name: Check workspace
+        run: cargo check --workspace --exclude wo-pdf --exclude wo-webdav
+        timeout-minutes: 30
+
+      - name: Clippy
+        run: cargo clippy --all-targets --exclude wo-pdf --exclude wo-webdav -- -D warnings
+        timeout-minutes: 30
+
+  test-rust:
+    name: Rust Test (nightly)
+    runs-on: docker://node:20-bookworm
+    steps:
+      - name: Checkout
+        uses: https://data.forgejo.org/actions/checkout@v4
+        timeout-minutes: 5
+
+      - name: Install Rust toolchain
+        uses: https://github.com/dtolnay/rust-toolchain@nightly
+        timeout-minutes: 10
+
+      - name: Install system dependencies
+        run: apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev
+        timeout-minutes: 5
+
+      - name: Cache Cargo registry and build
+        uses: https://data.forgejo.org/actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: rust-test-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: rust-test-
+        timeout-minutes: 5
+
+      - name: Run tests
+        run: cargo test --workspace --lib --exclude wo-pdf --exclude wo-webdav -- --test-threads=1
+        timeout-minutes: 60
+
+  lint-ts:
+    name: TypeScript Lint
+    runs-on: docker://node:20-bookworm
+    steps:
+      - name: Checkout
+        uses: https://data.forgejo.org/actions/checkout@v4
+        timeout-minutes: 5
+
+      - name: Setup pnpm
+        uses: https://github.com/pnpm/action-setup@v4
+        with:
+          version: 10
+        timeout-minutes: 5
+
+      - name: Setup Node.js
+        uses: https://data.forgejo.org/actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+        timeout-minutes: 5
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        timeout-minutes: 10
+
+      - name: Run lint
+        run: pnpm lint
+        timeout-minutes: 10
+
+  typecheck-ts:
+    name: TypeScript Typecheck
+    runs-on: docker://node:20-bookworm
+    steps:
+      - name: Checkout
+        uses: https://data.forgejo.org/actions/checkout@v4
+        timeout-minutes: 5
+
+      - name: Setup pnpm
+        uses: https://github.com/pnpm/action-setup@v4
+        with:
+          version: 10
+        timeout-minutes: 5
+
+      - name: Setup Node.js
+        uses: https://data.forgejo.org/actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+        timeout-minutes: 5
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        timeout-minutes: 10
+
+      - name: Run typecheck
+        run: pnpm typecheck
+        timeout-minutes: 10
+
+  build-ts:
+    name: TypeScript Build
+    runs-on: docker://node:20-bookworm
+    steps:
+      - name: Checkout
+        uses: https://data.forgejo.org/actions/checkout@v4
+        timeout-minutes: 5
+
+      - name: Setup pnpm
+        uses: https://github.com/pnpm/action-setup@v4
+        with:
+          version: 10
+        timeout-minutes: 5
+
+      - name: Setup Node.js
+        uses: https://data.forgejo.org/actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+        timeout-minutes: 5
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        timeout-minutes: 10
+
+      - name: Run build
+        run: pnpm build
+        timeout-minutes: 15
+
+  build-rust:
+    name: Rust Build Check
+    runs-on: docker://node:20-bookworm
+    steps:
+      - name: Checkout
+        uses: https://data.forgejo.org/actions/checkout@v4
+        timeout-minutes: 5
+
+      - name: Install Rust toolchain
+        uses: https://github.com/dtolnay/rust-toolchain@nightly
+        timeout-minutes: 10
+
+      - name: Install system dependencies
+        run: apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev
+        timeout-minutes: 5
+
+      - name: Cache Cargo registry and build
+        uses: https://data.forgejo.org/actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: rust-build-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: rust-build-
+        timeout-minutes: 5
+
+      - name: Check all targets
+        run: cargo check --all-targets --exclude wo-pdf --exclude wo-webdav
+        timeout-minutes: 30

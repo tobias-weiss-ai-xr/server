@@ -13,15 +13,16 @@ use std::time::Instant;
 
 use crate::converter::{error_result, success_result, unsupported_result, ConverterRegistry};
 use crate::converters::{
-    DjvuToTxtConverter, DocxToEpubConverter, DocxToHtmlConverter, DocxToOdtConverter,
-    DocxToTxtConverter, EpubToDocxConverter, EpubToHtmlConverter, EpubToTxtConverter,
-    Fb2ToDocxConverter, Fb2ToTxtConverter, HtmlToDocxConverter, HtmlToEpubConverter,
-    HtmlToFb2Converter, HtmlToOdtConverter, HtmlToRtfConverter, HtmlToTxtConverter,
-    HwpToTxtConverter, OdtToDocxConverter, OdtToHtmlConverter, OdtToTxtConverter,
+    DjvuToDocxConverter, DjvuToTxtConverter, DocxToEpubConverter, DocxToHtmlConverter,
+    DocxToOdtConverter, DocxToTxtConverter, DocxToXpsConverter, EpubToDocxConverter,
+    EpubToHtmlConverter, EpubToTxtConverter, Fb2ToDocxConverter, Fb2ToTxtConverter,
+    HtmlToDocxConverter, HtmlToEpubConverter, HtmlToFb2Converter, HtmlToOdtConverter,
+    HtmlToRtfConverter, HtmlToTxtConverter, HwpToDocxConverter, HwpToTxtConverter,
+    OdtToDocxConverter, OdtToHtmlConverter, OdtToTxtConverter, OfdToDocxConverter,
     OfdToHtmlConverter, OfdToTxtConverter, RtfToDocxConverter, RtfToHtmlConverter,
     RtfToTxtConverter, TxtToDocxConverter, TxtToEpubConverter, TxtToFb2Converter,
-    TxtToHtmlConverter, TxtToOdtConverter, TxtToRtfConverter, XpsToHtmlConverter,
-    XpsToTxtConverter,
+    TxtToHtmlConverter, TxtToOdtConverter, TxtToRtfConverter, XpsToDocxConverter,
+    XpsToHtmlConverter, XpsToTxtConverter,
 };
 use crate::model::{ConversionOutput, ConversionResult, ConversionStatus};
 use crate::FormatConverter;
@@ -82,6 +83,11 @@ impl ConversionRouter {
         registry.register(EpubToDocxConverter);
         registry.register(Fb2ToDocxConverter);
         registry.register(DocxToEpubConverter);
+        registry.register(XpsToDocxConverter);
+        registry.register(OfdToDocxConverter);
+        registry.register(HwpToDocxConverter);
+        registry.register(DjvuToDocxConverter);
+        registry.register(DocxToXpsConverter);
         Self { registry }
     }
 
@@ -333,6 +339,12 @@ mod tests {
         assert!(router.is_supported("epub", "docx"));
         assert!(router.is_supported("fb2", "docx"));
         assert!(router.is_supported("docx", "epub"));
+        // Niche format converters (batch 3)
+        assert!(router.is_supported("xps", "docx"));
+        assert!(router.is_supported("ofd", "docx"));
+        assert!(router.is_supported("hwp", "docx"));
+        assert!(router.is_supported("djvu", "docx"));
+        assert!(router.is_supported("docx", "xps"));
         // Pairs with no converter should be false
         assert!(!router.is_supported("docx", "pdf"));
         assert!(!router.is_supported("xlsx", "pdf"));
@@ -457,10 +469,15 @@ mod tests {
         assert!(pairs.contains(&("epub", "docx")));
         assert!(pairs.contains(&("fb2", "docx")));
         assert!(pairs.contains(&("docx", "epub")));
+        assert!(pairs.contains(&("xps", "docx")));
+        assert!(pairs.contains(&("ofd", "docx")));
+        assert!(pairs.contains(&("hwp", "docx")));
+        assert!(pairs.contains(&("djvu", "docx")));
+        assert!(pairs.contains(&("docx", "xps")));
         assert_eq!(
             pairs.len(),
-            33,
-            "expected 33 registered converters, got {}",
+            38,
+            "expected 38 registered converters, got {}",
             pairs.len()
         );
     }
@@ -509,11 +526,18 @@ mod tests {
         // but execution fails on bad input. Instead, test with hwp→txt (direct)
         // which should also fail, proving the chain is attempted.
         //
-        // Use a different approach: verify the chain is discovered via is_supported.
+        // A direct hwp→docx converter exists now, so the chain may go hwp→docx→html
+        // or hwp→txt→html (both are 2-step). Verify the chain is discovered via is_supported.
         assert!(router.is_supported("hwp", "html"));
-        // Verify the conversion path is hwp→txt→html
+        // Verify the conversion path is at most 3 steps
         let path = router.conversion_path("hwp", "html");
-        assert_eq!(path, vec!["hwp", "txt", "html"]);
+        assert_eq!(path.first().unwrap(), "hwp");
+        assert_eq!(path.last().unwrap(), "html");
+        assert!(
+            path.len() <= 4,
+            "path should be at most 3 steps: {:?}",
+            path
+        );
         // A direct hwp→txt conversion should work with valid RTF (no, that's wrong).
         // Test that the chain mechanism itself works by using hwp→txt (direct).
         // hwp→txt is a direct converter, so use it directly.
@@ -563,8 +587,8 @@ mod tests {
         assert!(router.is_supported("fb2", "html")); // fb2→txt→html
         assert!(router.is_supported("hwp", "html")); // hwp→txt→html
         assert!(router.is_supported("epub", "rtf")); // epub→txt→rtf
-        assert!(router.is_supported("xps", "docx")); // xps→txt→docx
-        assert!(router.is_supported("ofd", "docx")); // ofd→txt→docx
+        assert!(router.is_supported("xps", "docx")); // direct: xps→docx
+        assert!(router.is_supported("ofd", "docx")); // direct: ofd→docx
         assert!(router.is_supported("djvu", "html")); // djvu→txt→html
                                                       // Truly unreachable formats
         assert!(!router.is_supported("pdf", "docx"));

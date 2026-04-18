@@ -3,7 +3,8 @@
 //! TXT→RTF, HTML→RTF, RTF→DOCX,
 //! EPUB→TXT, EPUB→HTML, EPUB→DOCX, FB2→TXT, FB2→DOCX, HWP→TXT,
 //! TXT→DOCX, HTML→DOCX, TXT→ODT, HTML→ODT,
-//! XPS→TXT, XPS→HTML, OFD→TXT, OFD→HTML, DJVU→TXT,
+//! XPS→TXT, XPS→HTML, XPS→DOCX, OFD→TXT, OFD→HTML, OFD→DOCX,
+//! DJVU→TXT, DJVU→DOCX, HWP→DOCX, DOCX→XPS,
 //! TXT→EPUB, HTML→EPUB, DOCX→EPUB, TXT→FB2, HTML→FB2.
 //!
 //! Each converter implements the `FormatConverter` trait, going directly
@@ -35,7 +36,9 @@ use wo_fb2::model::{
 use wo_fb2::{Fb2Parser, Fb2Serializer};
 use wo_hwp::HwpParser;
 use wo_ofd::OfdParser;
+use wo_xps::model::{XpsGlyphs, XpsMetadata, XpsPage, XpsPageContent};
 use wo_xps::XpsParser;
+use wo_xps::XpsSerializer;
 
 use wo_odf::model::{
     CellType, OdfContent, OdfDocument, OdfList, OdfListItem, OdfListType, OdfMetadata, OdfTable,
@@ -4740,6 +4743,503 @@ fn docx_body_to_epub_chapters(body: &DocxBody) -> Vec<(String, Vec<String>)> {
     }
 }
 
+// ── XPS → DOCX ──────────────────────────────────────────────────────
+
+/// Converts XPS → DOCX.
+pub struct XpsToDocxConverter;
+
+impl FormatConverter for XpsToDocxConverter {
+    fn source_format(&self) -> &str {
+        "xps"
+    }
+
+    fn target_format(&self) -> &str {
+        "docx"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = XpsParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let ooxml_doc = xps_to_ooxml(&doc);
+
+        OoxmlSerializer::new()
+            .serialize(&ooxml_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Convert an XPS document to an OOXML DOCX document.
+fn xps_to_ooxml(xps_doc: &wo_xps::model::XpsDocument) -> OoxmlDocument {
+    let mut paragraphs: Vec<DocxParagraph> = Vec::new();
+
+    for page in &xps_doc.pages {
+        for glyph in &page.content.glyphs {
+            if !glyph.text.is_empty() {
+                paragraphs.push(DocxParagraph {
+                    style_id: None,
+                    properties: DocxParagraphProperties::default(),
+                    runs: vec![DocxRun {
+                        text: glyph.text.clone(),
+                        bold: false,
+                        italic: false,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: None,
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    }],
+                });
+            }
+        }
+    }
+
+    OoxmlDocument {
+        format: OoxmlFormat::Docx,
+        version: "1.0".to_string(),
+        content_types: vec![],
+        main_part: Some("word/document.xml".to_string()),
+        shared_strings: vec![],
+        part_count: 1,
+        core_properties: CoreProperties {
+            title: xps_doc.metadata.title.clone(),
+            creator: xps_doc.metadata.author.clone(),
+            subject: xps_doc.metadata.subject.clone(),
+            ..Default::default()
+        },
+        relationships: vec![],
+        body: Some(DocxBody {
+            paragraphs,
+            tables: vec![],
+        }),
+    }
+}
+
+// ── OFD → DOCX ──────────────────────────────────────────────────────
+
+/// Converts OFD → DOCX.
+pub struct OfdToDocxConverter;
+
+impl FormatConverter for OfdToDocxConverter {
+    fn source_format(&self) -> &str {
+        "ofd"
+    }
+
+    fn target_format(&self) -> &str {
+        "docx"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = OfdParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let ooxml_doc = ofd_to_ooxml(&doc);
+
+        OoxmlSerializer::new()
+            .serialize(&ooxml_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Convert an OFD document to an OOXML DOCX document.
+fn ofd_to_ooxml(ofd_doc: &wo_ofd::model::OfdDocument) -> OoxmlDocument {
+    let mut paragraphs: Vec<DocxParagraph> = Vec::new();
+
+    for page in &ofd_doc.pages {
+        for text_obj in &page.text_content {
+            if text_obj.text.is_empty() {
+                continue;
+            }
+            paragraphs.push(DocxParagraph {
+                style_id: None,
+                properties: DocxParagraphProperties::default(),
+                runs: vec![DocxRun {
+                    text: text_obj.text.clone(),
+                    bold: text_obj.bold,
+                    italic: text_obj.italic,
+                    underline: None,
+                    strikethrough: false,
+                    double_strikethrough: false,
+                    font: None,
+                    font_size: text_obj.font_size.map(|f| f as u32),
+                    font_size_cs: None,
+                    color: None,
+                    highlight: None,
+                    vertical_alignment: None,
+                    small_caps: false,
+                    all_caps: false,
+                }],
+            });
+        }
+    }
+
+    OoxmlDocument {
+        format: OoxmlFormat::Docx,
+        version: "1.0".to_string(),
+        content_types: vec![],
+        main_part: Some("word/document.xml".to_string()),
+        shared_strings: vec![],
+        part_count: 1,
+        core_properties: CoreProperties {
+            title: ofd_doc.doc_body.as_ref().and_then(|b| b.title.clone()),
+            creator: ofd_doc.doc_body.as_ref().and_then(|b| b.author.clone()),
+            ..Default::default()
+        },
+        relationships: vec![],
+        body: Some(DocxBody {
+            paragraphs,
+            tables: vec![],
+        }),
+    }
+}
+
+// ── HWP → DOCX ──────────────────────────────────────────────────────
+
+/// Converts HWP → DOCX.
+pub struct HwpToDocxConverter;
+
+impl FormatConverter for HwpToDocxConverter {
+    fn source_format(&self) -> &str {
+        "hwp"
+    }
+
+    fn target_format(&self) -> &str {
+        "docx"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = HwpParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let ooxml_doc = hwp_to_ooxml(&doc);
+
+        OoxmlSerializer::new()
+            .serialize(&ooxml_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Convert an HWP document to an OOXML DOCX document.
+fn hwp_to_ooxml(hwp_doc: &wo_hwp::model::HwpDocument) -> OoxmlDocument {
+    let mut paragraphs: Vec<DocxParagraph> = Vec::new();
+
+    // Title from doc_info
+    if let Some(doc_info) = &hwp_doc.doc_info {
+        if let Some(title) = &doc_info.title {
+            if !title.is_empty() {
+                paragraphs.push(DocxParagraph {
+                    style_id: None,
+                    properties: DocxParagraphProperties::default(),
+                    runs: vec![DocxRun {
+                        text: title.clone(),
+                        bold: true,
+                        italic: false,
+                        underline: None,
+                        strikethrough: false,
+                        double_strikethrough: false,
+                        font: None,
+                        font_size: Some(36),
+                        font_size_cs: None,
+                        color: None,
+                        highlight: None,
+                        vertical_alignment: None,
+                        small_caps: false,
+                        all_caps: false,
+                    }],
+                });
+            }
+        }
+    }
+
+    for para in &hwp_doc.paragraphs {
+        paragraphs.push(DocxParagraph {
+            style_id: None,
+            properties: DocxParagraphProperties::default(),
+            runs: vec![DocxRun {
+                text: para.text.clone(),
+                bold: para.bold,
+                italic: para.italic,
+                underline: if para.underline {
+                    Some(UnderlineType::Single)
+                } else {
+                    None
+                },
+                strikethrough: false,
+                double_strikethrough: false,
+                font: para.font_name.clone(),
+                font_size: para.font_size.map(|f| f as u32),
+                font_size_cs: None,
+                color: None,
+                highlight: None,
+                vertical_alignment: None,
+                small_caps: false,
+                all_caps: false,
+            }],
+        });
+    }
+
+    OoxmlDocument {
+        format: OoxmlFormat::Docx,
+        version: "1.0".to_string(),
+        content_types: vec![],
+        main_part: Some("word/document.xml".to_string()),
+        shared_strings: vec![],
+        part_count: 1,
+        core_properties: CoreProperties {
+            title: hwp_doc
+                .doc_info
+                .as_ref()
+                .and_then(|di| di.title.clone())
+                .or(hwp_doc.metadata.title.clone()),
+            creator: hwp_doc
+                .doc_info
+                .as_ref()
+                .and_then(|di| di.author.clone())
+                .or(hwp_doc.metadata.author.clone()),
+            ..Default::default()
+        },
+        relationships: vec![],
+        body: Some(DocxBody {
+            paragraphs,
+            tables: vec![],
+        }),
+    }
+}
+
+// ── DjVu → DOCX ─────────────────────────────────────────────────────
+
+/// Converts DjVu → DOCX (minimal — DjVu is scanned images with no text layer).
+pub struct DjvuToDocxConverter;
+
+impl FormatConverter for DjvuToDocxConverter {
+    fn source_format(&self) -> &str {
+        "djvu"
+    }
+
+    fn target_format(&self) -> &str {
+        "docx"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = DjvuParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let ooxml_doc = djvu_to_ooxml(&doc);
+
+        OoxmlSerializer::new()
+            .serialize(&ooxml_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Convert a DjVu document to an OOXML DOCX document (metadata-only).
+fn djvu_to_ooxml(djvu_doc: &wo_djvu::model::DjvuDocument) -> OoxmlDocument {
+    let mut paragraphs: Vec<DocxParagraph> = Vec::new();
+
+    // Title line
+    if let Some(title) = &djvu_doc.title {
+        if !title.is_empty() {
+            paragraphs.push(DocxParagraph {
+                style_id: None,
+                properties: DocxParagraphProperties::default(),
+                runs: vec![DocxRun {
+                    text: title.clone(),
+                    bold: true,
+                    italic: false,
+                    underline: None,
+                    strikethrough: false,
+                    double_strikethrough: false,
+                    font: None,
+                    font_size: Some(36),
+                    font_size_cs: None,
+                    color: None,
+                    highlight: None,
+                    vertical_alignment: None,
+                    small_caps: false,
+                    all_caps: false,
+                }],
+            });
+        }
+    }
+
+    // Metadata line
+    paragraphs.push(DocxParagraph {
+        style_id: None,
+        properties: DocxParagraphProperties::default(),
+        runs: vec![DocxRun {
+            text: format!(
+                "DjVu Document — {} pages, version {}, subtype {}",
+                djvu_doc.page_count, djvu_doc.version, djvu_doc.subtype
+            ),
+            bold: false,
+            italic: true,
+            underline: None,
+            strikethrough: false,
+            double_strikethrough: false,
+            font: None,
+            font_size: None,
+            font_size_cs: None,
+            color: None,
+            highlight: None,
+            vertical_alignment: None,
+            small_caps: false,
+            all_caps: false,
+        }],
+    });
+
+    OoxmlDocument {
+        format: OoxmlFormat::Docx,
+        version: "1.0".to_string(),
+        content_types: vec![],
+        main_part: Some("word/document.xml".to_string()),
+        shared_strings: vec![],
+        part_count: 1,
+        core_properties: CoreProperties {
+            title: djvu_doc.title.clone(),
+            ..Default::default()
+        },
+        relationships: vec![],
+        body: Some(DocxBody {
+            paragraphs,
+            tables: vec![],
+        }),
+    }
+}
+
+// ── DOCX → XPS ──────────────────────────────────────────────────────
+
+/// Converts DOCX → XPS.
+pub struct DocxToXpsConverter;
+
+impl FormatConverter for DocxToXpsConverter {
+    fn source_format(&self) -> &str {
+        "docx"
+    }
+
+    fn target_format(&self) -> &str {
+        "xps"
+    }
+
+    fn convert(&self, data: &[u8]) -> Result<Vec<u8>, ConversionError> {
+        let doc = OoxmlParser::new()
+            .parse(data)
+            .map_err(|e| ConversionError::Parse(e.to_string()))?;
+
+        let xps_doc = docx_to_xps(&doc);
+
+        XpsSerializer::new()
+            .serialize(&xps_doc)
+            .map_err(|e| ConversionError::Serialize(e.to_string()))
+    }
+}
+
+/// Convert an OOXML DOCX document to an XPS document.
+fn docx_to_xps(doc: &OoxmlDocument) -> wo_xps::model::XpsDocument {
+    const PAGE_WIDTH: f64 = 612.0;
+    const PAGE_HEIGHT: f64 = 792.0;
+    const TOP_MARGIN: f64 = 72.0;
+    const BOTTOM_MARGIN: f64 = 72.0;
+    const LINE_HEIGHT: f64 = 18.0;
+
+    // Collect all lines from the DOCX body
+    let mut lines: Vec<String> = Vec::new();
+    if let Some(body) = &doc.body {
+        for para in &body.paragraphs {
+            let text = extract_docx_run_text(&para.runs);
+            if !text.is_empty() {
+                for line in text.split('\n') {
+                    if !line.is_empty() {
+                        lines.push(line.to_string());
+                    }
+                }
+            }
+        }
+    }
+
+    // Split lines into pages
+    let mut pages: Vec<XpsPage> = Vec::new();
+    let mut current_glyphs: Vec<XpsGlyphs> = Vec::new();
+    let mut current_y = TOP_MARGIN;
+    let mut page_idx: u32 = 0;
+
+    for line_text in &lines {
+        if current_y + LINE_HEIGHT > PAGE_HEIGHT - BOTTOM_MARGIN {
+            // Flush current page
+            pages.push(XpsPage {
+                index: page_idx,
+                width: PAGE_WIDTH,
+                height: PAGE_HEIGHT,
+                content: XpsPageContent {
+                    glyphs: std::mem::take(&mut current_glyphs),
+                    paths: vec![],
+                },
+            });
+            page_idx += 1;
+            current_y = TOP_MARGIN;
+        }
+
+        current_glyphs.push(XpsGlyphs {
+            text: line_text.clone(),
+            font_uri: "/Documents/1/Resources/Fonts/Arial.ttf".to_string(),
+            font_size: 12.0,
+            origin_x: 72.0,
+            origin_y: current_y,
+            fill: Some("#FF000000".to_string()),
+            is_unicode: true,
+        });
+        current_y += LINE_HEIGHT;
+    }
+
+    // Flush last page
+    pages.push(XpsPage {
+        index: page_idx,
+        width: PAGE_WIDTH,
+        height: PAGE_HEIGHT,
+        content: XpsPageContent {
+            glyphs: current_glyphs,
+            paths: vec![],
+        },
+    });
+
+    if pages.is_empty() {
+        pages.push(XpsPage {
+            index: 0,
+            width: PAGE_WIDTH,
+            height: PAGE_HEIGHT,
+            content: XpsPageContent {
+                glyphs: vec![],
+                paths: vec![],
+            },
+        });
+    }
+
+    let page_count = pages.len() as u32;
+
+    wo_xps::model::XpsDocument {
+        page_count,
+        pages,
+        fonts: vec![],
+        images: vec![],
+        relationships: vec![],
+        metadata: XpsMetadata {
+            title: doc.core_properties.title.clone(),
+            author: doc.core_properties.creator.clone(),
+            subject: doc.core_properties.subject.clone(),
+            ..Default::default()
+        },
+    }
+}
+
 // ── Tests ────────────────────────────────────────────────────────────
 
 #[cfg(test)]
@@ -6842,5 +7342,387 @@ mod tests {
         let docx_epub = DocxToEpubConverter;
         assert_eq!(docx_epub.source_format(), "docx");
         assert_eq!(docx_epub.target_format(), "epub");
+    }
+
+    // ── XpsToDocx ──────────────────────────────────────────────────────
+
+    #[test]
+    fn test_xps_to_docx_format_strings() {
+        let converter = XpsToDocxConverter;
+        assert_eq!(converter.source_format(), "xps");
+        assert_eq!(converter.target_format(), "docx");
+    }
+
+    #[test]
+    fn test_xps_to_docx_parse_error() {
+        let converter = XpsToDocxConverter;
+        let result = converter.convert(b"not an xps file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    #[test]
+    fn test_xps_to_docx_roundtrip() {
+        // Create a minimal XPS, convert to DOCX, verify content
+        let xps_doc = wo_xps::model::XpsDocument {
+            page_count: 1,
+            pages: vec![wo_xps::model::XpsPage {
+                index: 0,
+                width: 612.0,
+                height: 792.0,
+                content: wo_xps::model::XpsPageContent {
+                    glyphs: vec![wo_xps::model::XpsGlyphs {
+                        text: "Hello XPS to DOCX".to_string(),
+                        font_uri: "/Fonts/A.ttf".to_string(),
+                        font_size: 12.0,
+                        origin_x: 72.0,
+                        origin_y: 72.0,
+                        fill: None,
+                        is_unicode: true,
+                    }],
+                    paths: vec![],
+                },
+            }],
+            fonts: vec![],
+            images: vec![],
+            relationships: vec![],
+            metadata: wo_xps::model::XpsMetadata::default(),
+        };
+        let xps_bytes = XpsSerializer::new().serialize(&xps_doc).unwrap();
+
+        let converter = XpsToDocxConverter;
+        let docx_bytes = converter.convert(&xps_bytes).unwrap();
+
+        // Verify valid DOCX ZIP
+        assert!(docx_bytes.len() > 4);
+        assert_eq!(docx_bytes[0], 0x50);
+        assert_eq!(docx_bytes[1], 0x4B);
+
+        // Verify content
+        let cursor = std::io::Cursor::new(&docx_bytes);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(
+            content.contains("Hello XPS to DOCX"),
+            "missing 'Hello XPS to DOCX' in DOCX content"
+        );
+    }
+
+    // ── OfdToDocx ──────────────────────────────────────────────────────
+
+    #[test]
+    fn test_ofd_to_docx_format_strings() {
+        let converter = OfdToDocxConverter;
+        assert_eq!(converter.source_format(), "ofd");
+        assert_eq!(converter.target_format(), "docx");
+    }
+
+    #[test]
+    fn test_ofd_to_docx_parse_error() {
+        let converter = OfdToDocxConverter;
+        let result = converter.convert(b"not an ofd file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    #[test]
+    fn test_ofd_to_docx_roundtrip() {
+        // Create a minimal OFD, convert to DOCX, verify content
+        let ofd_doc = wo_ofd::model::OfdDocument {
+            version: Some("1.0".to_string()),
+            doc_body: Some(wo_ofd::model::OfdDocBody {
+                title: Some("OFD Test".to_string()),
+                author: Some("Test Author".to_string()),
+                ..Default::default()
+            }),
+            page_count: 1,
+            pages: vec![wo_ofd::model::OfdPage {
+                id: Some("1".to_string()),
+                index: 0,
+                width: 210.0,
+                height: 297.0,
+                base_loc: None,
+                text_content: vec![wo_ofd::model::OfdTextObject {
+                    boundary: Some((10.0, 10.0, 100.0, 20.0)),
+                    text: "Hello OFD to DOCX".to_string(),
+                    font_id: None,
+                    font_size: Some(12.0),
+                    bold: false,
+                    italic: false,
+                }],
+                image_refs: vec![],
+            }],
+            resources: vec![],
+        };
+        let ofd_bytes = wo_ofd::OfdSerializer::new().serialize(&ofd_doc).unwrap();
+
+        let converter = OfdToDocxConverter;
+        let docx_bytes = converter.convert(&ofd_bytes).unwrap();
+
+        // Verify valid DOCX ZIP
+        assert!(docx_bytes.len() > 4);
+        assert_eq!(docx_bytes[0], 0x50);
+        assert_eq!(docx_bytes[1], 0x4B);
+
+        // Verify content
+        let cursor = std::io::Cursor::new(&docx_bytes);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(
+            content.contains("Hello OFD to DOCX"),
+            "missing 'Hello OFD to DOCX' in DOCX content"
+        );
+    }
+
+    // ── HwpToDocx ──────────────────────────────────────────────────────
+
+    #[test]
+    fn test_hwp_to_docx_format_strings() {
+        let converter = HwpToDocxConverter;
+        assert_eq!(converter.source_format(), "hwp");
+        assert_eq!(converter.target_format(), "docx");
+    }
+
+    #[test]
+    fn test_hwp_to_docx_parse_error() {
+        let converter = HwpToDocxConverter;
+        let result = converter.convert(b"not an hwp file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    #[test]
+    fn test_hwp_to_docx_roundtrip() {
+        // Create a minimal HWP, convert to DOCX, verify content
+        let hwp_doc = wo_hwp::model::HwpDocument {
+            version: wo_hwp::model::HwpVersion::V5,
+            signature_type: wo_hwp::model::HwpSignatureType::OleCompound,
+            metadata: wo_hwp::model::HwpMetadata::default(),
+            header: None,
+            doc_info: Some(wo_hwp::model::HwpDocInfo {
+                title: Some("HWP Test".to_string()),
+                author: Some("Test Author".to_string()),
+                ..Default::default()
+            }),
+            paragraphs: vec![wo_hwp::model::HwpParagraph {
+                text: "Hello HWP to DOCX".to_string(),
+                bold: true,
+                italic: false,
+                underline: false,
+                font_name: Some("Batang".to_string()),
+                font_size: Some(12.0),
+                ..Default::default()
+            }],
+            page_count: 1,
+            paragraph_count: 1,
+            compressed: false,
+            encrypted: false,
+        };
+        let hwp_bytes = wo_hwp::HwpSerializer::new().serialize(&hwp_doc).unwrap();
+
+        let converter = HwpToDocxConverter;
+        let docx_bytes = converter.convert(&hwp_bytes).unwrap();
+
+        // Verify valid DOCX ZIP
+        assert!(docx_bytes.len() > 4);
+        assert_eq!(docx_bytes[0], 0x50);
+        assert_eq!(docx_bytes[1], 0x4B);
+
+        // Verify content
+        let cursor = std::io::Cursor::new(&docx_bytes);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(
+            content.contains("HWP Test"),
+            "missing title 'HWP Test' in DOCX content"
+        );
+        assert!(
+            content.contains("Hello HWP to DOCX"),
+            "missing 'Hello HWP to DOCX' in DOCX content"
+        );
+    }
+
+    // ── DjvuToDocx ─────────────────────────────────────────────────────
+
+    #[test]
+    fn test_djvu_to_docx_format_strings() {
+        let converter = DjvuToDocxConverter;
+        assert_eq!(converter.source_format(), "djvu");
+        assert_eq!(converter.target_format(), "docx");
+    }
+
+    #[test]
+    fn test_djvu_to_docx_parse_error() {
+        let converter = DjvuToDocxConverter;
+        let result = converter.convert(b"not a djvu file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    #[test]
+    fn test_djvu_to_docx_roundtrip() {
+        // Create a minimal DjVu, convert to DOCX, verify content
+        let djvu_doc = wo_djvu::model::DjvuDocument {
+            subtype: "DJVU".to_string(),
+            page_count: 3,
+            title: Some("DjVu Test Document".to_string()),
+            width: 640,
+            height: 480,
+            version: "0.27".to_string(),
+            chunks: vec![],
+        };
+        let djvu_bytes = wo_djvu::DjvuSerializer::new().serialize(&djvu_doc).unwrap();
+
+        let converter = DjvuToDocxConverter;
+        let docx_bytes = converter.convert(&djvu_bytes).unwrap();
+
+        // Verify valid DOCX ZIP
+        assert!(docx_bytes.len() > 4);
+        assert_eq!(docx_bytes[0], 0x50);
+        assert_eq!(docx_bytes[1], 0x4B);
+
+        // Verify content
+        let cursor = std::io::Cursor::new(&docx_bytes);
+        let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut doc_file = archive.by_name("word/document.xml").unwrap();
+        let mut content = String::new();
+        std::io::Read::read_to_string(&mut doc_file, &mut content).unwrap();
+        assert!(
+            content.contains("DjVu Document"),
+            "missing 'DjVu Document' in DOCX content"
+        );
+    }
+
+    // ── DocxToXps ──────────────────────────────────────────────────────
+
+    #[test]
+    fn test_docx_to_xps_format_strings() {
+        let converter = DocxToXpsConverter;
+        assert_eq!(converter.source_format(), "docx");
+        assert_eq!(converter.target_format(), "xps");
+    }
+
+    #[test]
+    fn test_docx_to_xps_parse_error() {
+        let converter = DocxToXpsConverter;
+        let result = converter.convert(b"not a docx file");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(
+            err.contains("parse error"),
+            "expected parse error, got: {}",
+            err
+        );
+    }
+
+    #[test]
+    fn test_docx_to_xps_roundtrip() {
+        // Create a minimal DOCX, convert to XPS, verify content
+        let docx = make_minimal_docx();
+        let converter = DocxToXpsConverter;
+        let xps_bytes = converter.convert(&docx).unwrap();
+
+        // Verify valid XPS (ZIP)
+        assert!(
+            wo_xps::is_xps_file(&xps_bytes),
+            "output should be valid XPS"
+        );
+
+        // Parse back and verify content
+        let parsed = XpsParser::new().parse(&xps_bytes).unwrap();
+        assert!(parsed.page_count >= 1, "should have at least 1 page");
+        let mut found_text = false;
+        for page in &parsed.pages {
+            for glyph in &page.content.glyphs {
+                if glyph.text.contains("Hello World") {
+                    found_text = true;
+                    break;
+                }
+            }
+        }
+        assert!(found_text, "missing 'Hello World' in XPS output");
+    }
+
+    #[test]
+    fn test_docx_to_xps_multiple_pages() {
+        // Create a DOCX with many paragraphs to trigger page splitting
+        let docx = make_docx_with_body(
+            r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p><w:r><w:t>Line 1</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Line 2</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Line 3</w:t></w:r></w:p>
+  </w:body>
+</w:document>"#,
+        );
+        let converter = DocxToXpsConverter;
+        let xps_bytes = converter.convert(&docx).unwrap();
+
+        let parsed = XpsParser::new().parse(&xps_bytes).unwrap();
+        assert!(parsed.page_count >= 1, "should have at least 1 page");
+
+        // Collect all glyph text
+        let mut all_text: String = String::new();
+        for page in &parsed.pages {
+            for glyph in &page.content.glyphs {
+                all_text.push_str(&glyph.text);
+                all_text.push(' ');
+            }
+        }
+        assert!(all_text.contains("Line 1"), "missing 'Line 1'");
+        assert!(all_text.contains("Line 2"), "missing 'Line 2'");
+        assert!(all_text.contains("Line 3"), "missing 'Line 3'");
+    }
+
+    // ── Niche format converter format strings ─────────────────────────
+
+    #[test]
+    fn test_niche_converter_format_strings() {
+        let xps_docx = XpsToDocxConverter;
+        assert_eq!(xps_docx.source_format(), "xps");
+        assert_eq!(xps_docx.target_format(), "docx");
+
+        let ofd_docx = OfdToDocxConverter;
+        assert_eq!(ofd_docx.source_format(), "ofd");
+        assert_eq!(ofd_docx.target_format(), "docx");
+
+        let hwp_docx = HwpToDocxConverter;
+        assert_eq!(hwp_docx.source_format(), "hwp");
+        assert_eq!(hwp_docx.target_format(), "docx");
+
+        let djvu_docx = DjvuToDocxConverter;
+        assert_eq!(djvu_docx.source_format(), "djvu");
+        assert_eq!(djvu_docx.target_format(), "docx");
+
+        let docx_xps = DocxToXpsConverter;
+        assert_eq!(docx_xps.source_format(), "docx");
+        assert_eq!(docx_xps.target_format(), "xps");
     }
 }

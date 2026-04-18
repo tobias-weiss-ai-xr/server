@@ -1,0 +1,20 @@
+test tests::test_insert_and_get ... ok
+test tests::test_insert_failed_job ... ok
+test tests::test_list_jobs ... ok
+test tests::test_persistence_across_restart ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running unittests src/lib.rs (target/debug/deps/storage_service-13711342f113140e)
+
+running 7 tests
+test repository::tests::delete_existing ... ok
+test repository::tests::delete_missing_returns_false ... ok
+test repository::tests::get_missing_returns_none ... ok
+test repository::tests::insert_and_get ... ok
+test repository::tests::list_empty ... ok
+test repository::tests::list_multiple ... ok
+test repository::tests::persistence_across_restarts ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+

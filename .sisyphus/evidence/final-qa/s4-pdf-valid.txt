@@ -1,0 +1,10 @@
+test pipeline::tests::test_render_table ... ok
+test pipeline::tests::test_render_text_wrapping ... ok
+test pipeline::tests::test_set_config ... ok
+test roundtrip::tests::test_roundtrip_default ... ok
+test roundtrip::tests::test_roundtrip_minimal ... ok
+test roundtrip::tests::test_roundtrip_serialize_before_parse ... ok
+test roundtrip::tests::test_roundtrip_with_config ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+

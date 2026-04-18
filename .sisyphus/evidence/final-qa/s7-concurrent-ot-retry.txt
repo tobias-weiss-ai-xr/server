@@ -1,0 +1,10 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.46s
+     Running unittests src/main.rs (target/debug/deps/coauthoring_service-a63c968064fbb242)
+
+running 3 tests
+test tests::test_concurrent_insert_and_delete ... ok
+test tests::test_concurrent_inserts_both_preserved ... ok
+test tests::test_three_way_concurrent_inserts ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 17 filtered out; finished in 0.01s
+

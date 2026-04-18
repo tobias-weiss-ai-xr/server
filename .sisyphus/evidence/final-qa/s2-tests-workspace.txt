@@ -1,0 +1,1106 @@
+    Blocking waiting for file lock on build directory
+warning: unused variable: `docx_rows`
+    --> core/crates/wo-x2t/src/converters.rs:3367:21
+     |
+3367 | ...et docx_rows: V...
+     |       ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_docx_rows`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `wo-x2t` (lib) generated 1 warning (run `cargo fix --lib -p wo-x2t` to apply 1 suggestion)
+warning: variable does not need to be mutable
+    --> core/crates/wo-renderer/src/canvas.rs:1204:13
+     |
+1204 | ...et mut lib = ...
+     |       ----^^^
+     |       |
+     |       help: remove this `mut`
+     |
+     = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+    --> core/crates/wo-renderer/src/canvas.rs:1234:13
+     |
+1234 | ...et mut lib = ...
+     |       ----^^^
+     |       |
+     |       help: remove this `mut`
+
+warning: variable does not need to be mutable
+    --> core/crates/wo-renderer/src/canvas.rs:1252:13
+     |
+1252 | ...et mut lib = ...
+     |       ----^^^
+     |       |
+     |       help: remove this `mut`
+
+warning: `wo-renderer` (lib test) generated 3 warnings (run `cargo fix --lib -p wo-renderer --tests` to apply 3 suggestions)
+warning: `wo-x2t` (lib test) generated 1 warning (1 duplicate)
+warning: unused imports: `copy_handler`, `head_handler`, `lock_handler`, `mkcol_handler`, `move_handler`, `propfind_handler`, and `unlock_handler`
+ --> core/crates/wo-webdav/src/server.rs:7:5
+  |
+7 |     copy_handler, delete_handler, get_handler, head_handler, lock_handler,
+  |     ^^^^^^^^^^^^                               ^^^^^^^^^^^^  ^^^^^^^^^^^^
+8 |     mkcol_handler, move_handler, propf...ndler, put_handler, unlock_h...er, W...
+  |     ^^^^^^^^^^^^^  ^^^^^^^^^^^^  ^^^^^...^^^^^               ^^^^^^^^...^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `std::path::PathBuf`
+  --> core/crates/wo-webdav/src/server.rs:14:5
+   |
+14 | use std::...thBuf;
+   |     ^^^^^...^^^^^
+
+warning: unused import: `super::*`
+   --> core/crates/wo-webdav/src/server.rs:163:9
+    |
+163 | ...se super::*;
+    |       ^^^^^^^^
+
+warning: unused import: `quick_xml::se::to_string`
+ --> core/crates/wo-webdav/src/models.rs:8:5
+  |
+8 | use quick...tring;
+  |     ^^^^^...^^^^^
+
+warning: unused imports: `DavResource` and `FileSystem`
+ --> core/crates/wo-webdav/src/storage.rs:7:17
+  |
+7 | ...::{DavResource, FileSystem};
+  |       ^^^^^^^^^^^  ^^^^^^^^^^
+
+warning: unused imports: `LockManager`, `LockScope as LockManagerScope`, and `LockType`
+ --> core/crates/wo-webdav/src/storage.rs:8:19
+  |
+8 | ...::{LockManager, LockS...Scope, LockType};
+  |       ^^^^^^^^^^^  ^^^^^...^^^^^  ^^^^^^^^
+
+warning: unused import: `std::path::PathBuf`
+  --> core/crates/wo-webdav/src/storage.rs:11:5
+   |
+11 | use std::...thBuf;
+   |     ^^^^^...^^^^^
+
+warning: unused import: `std::sync::Arc`
+  --> core/crates/wo-webdav/src/storage.rs:12:5
+   |
+12 | use std::...::Arc;
+   |     ^^^^^...^^^^^
+
+warning: `wo-webdav` (lib test) generated 8 warnings (run `cargo fix --lib -p wo-webdav --tests` to apply 8 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.92s
+     Running unittests src/lib.rs (target/debug/deps/conversion_service-768e457d8679c278)
+
+running 7 tests
+test tests::test_delete_job ... ok
+test tests::test_empty_list ... ok
+test tests::test_get_nonexistent ... ok
+test tests::test_insert_and_get ... ok
+test tests::test_insert_failed_job ... ok
+test tests::test_list_jobs ... ok
+test tests::test_persistence_across_restart ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running unittests src/lib.rs (target/debug/deps/storage_service-767ac3ebd80b5d4a)
+
+running 7 tests
+test repository::tests::delete_existing ... ok
+test repository::tests::delete_missing_returns_false ... ok
+test repository::tests::get_missing_returns_none ... ok
+test repository::tests::insert_and_get ... ok
+test repository::tests::list_empty ... ok
+test repository::tests::list_multiple ... ok
+test repository::tests::persistence_across_restarts ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_common-30300000ab978e97)
+
+running 17 tests
+test encoding::tests::test_bom_detection ... ok
+test encoding::tests::test_encoding_from_bom ... ok
+test encoding::tests::test_split_lines_cr ... ok
+test encoding::tests::test_split_lines_crlf ... ok
+test encoding::tests::test_split_lines_empty ... ok
+test encoding::tests::test_split_lines_lf ... ok
+test encoding::tests::test_split_lines_mixed ... ok
+test encoding::tests::test_split_lines_trailing ... ok
+test format::tests::test_extension_roundtrip ... ok
+test format::tests::test_from_path ... ok
+test format::tests::test_is_text ... ok
+test format::tests::test_is_zip_based ... ok
+test format::tests::test_magic_html ... ok
+test format::tests::test_magic_pdf ... ok
+test format::tests::test_magic_rtf ... ok
+test format::tests::test_magic_too_short ... ok
+test test_harness::tests::test_discover_tests_skips_readme ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_comparison-a2e85aff78a15ff7)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_converter_pro-4350d7344128cfd0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_digital_signature-199742c20098e131)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_djvu-dfff134cffa010ef)
+
+running 29 tests
+test parser::tests::test_is_djvu_file ... ok
+test parser::tests::test_parse_djvu_chunks ... ok
+test parser::tests::test_parse_djvu_no_title ... ok
+test parser::tests::test_parse_minimal_djvu ... ok
+test parser::tests::test_parse_to_document ... ok
+test parser::tests::test_rejects_non_djvu ... ok
+test parser::tests::test_rejects_too_small ... ok
+test parser::tests::test_unicode_title ... ok
+test roundtrip::tests::test_roundtrip_minimal ... ok
+test roundtrip::tests::test_roundtrip_no_title ... ok
+test roundtrip::tests::test_roundtrip_unicode_title ... ok
+test serializer::tests::test_default_trait ... ok
+test serializer::tests::test_info_chunk_present ... ok
+test serializer::tests::test_info_chunk_size ... ok
+test serializer::tests::test_is_djvu_file ... ok
+test serializer::tests::test_large_dimensions ... ok
+test serializer::tests::test_no_title ... ok
+test serializer::tests::test_non_info_chunks_preserved ... ok
+test serializer::tests::test_pad_to_4 ... ok
+test serializer::tests::test_parse_version ... ok
+test serializer::tests::test_roundtrip_serialize_parse ... ok
+test serializer::tests::test_serialize_minimal_document ... ok
+test serializer::tests::test_serialize_parse_to_document ... ok
+test serializer::tests::test_subtype ... ok
+test serializer::tests::test_title ... ok
+test serializer::tests::test_unicode_title ... ok
+test serializer::tests::test_version ... ok
+test serializer::tests::test_width_height ... ok
+test serializer::tests::test_zero_dimensions ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_docserver-fb7b878e7d59e015)
+
+running 12 tests
+test config::tests::test_config_custom_port ... ok
+test config::tests::test_config_from_env_defaults ... ok
+test config::tests::test_config_missing_jwt_secret - should panic ... ok
+test tests::test_conversion_convert_txt_to_html ... ok
+test tests::test_conversion_convert_unsupported ... ok
+test tests::test_conversion_formats_endpoint ... ok
+test tests::test_health_endpoint ... ok
+test tests::test_landing_page_when_no_editor_ui ... ok
+test tests::test_wopi_check_file_info_rejects_missing_token ... ok
+test wopi::tests::test_jwt_expired_token_rejected ... ok
+test wopi::tests::test_jwt_invalid_secret_rejected ... ok
+test wopi::tests::test_jwt_roundtrip ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.76s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_docx_renderer-73a5dd2c9ddb8256)
+
+running 28 tests
+test layout::tests::test_layout_empty_body ... ok
+test layout::tests::test_layout_engine_new ... ok
+test layout::tests::test_layout_page_breaks ... ok
+test layout::tests::test_layout_single_paragraph ... ok
+test layout::tests::test_layout_table ... ok
+test layout::tests::test_layout_text_wrapping ... ok
+test pipeline::tests::test_config_getter ... ok
+test pipeline::tests::test_default_config ... ok
+test pipeline::tests::test_default_margins ... ok
+test pipeline::tests::test_parse_hex_color ... ok
+test pipeline::tests::test_pdf_multi_page_structure ... ok
+test pipeline::tests::test_pdf_output_starts_with_header ... ok
+test pipeline::tests::test_pdf_structure_is_valid ... ok
+test pipeline::tests::test_pipeline_accepts_zip ... ok
+test pipeline::tests::test_pipeline_rejects_non_zip ... ok
+test pipeline::tests::test_render_minimal_docx ... ok
+test pipeline::tests::test_render_multiple_paragraphs ... ok
+test pipeline::tests::test_render_page_breaks ... ok
+test pipeline::tests::test_render_page_out_of_range ... ok
+test pipeline::tests::test_render_page_zero ... ok
+test pipeline::tests::test_render_single_page_pdf ... ok
+test pipeline::tests::test_render_table ... ok
+test pipeline::tests::test_render_text_wrapping ... ok
+test pipeline::tests::test_set_config ... ok
+test roundtrip::tests::test_roundtrip_default ... ok
+test roundtrip::tests::test_roundtrip_minimal ... ok
+test roundtrip::tests::test_roundtrip_serialize_before_parse ... ok
+test roundtrip::tests::test_roundtrip_with_config ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_drm-4425e47ad40231bb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_epub-5a25dbc606518d1c)
+
+running 23 tests
+test parser::tests::test_is_epub_file ... ok
+test parser::tests::test_parse_epub_cover_image ... ok
+test parser::tests::test_parse_epub_manifest_and_spine ... ok
+test parser::tests::test_parse_epub_metadata ... ok
+test parser::tests::test_parse_epub_missing_container ... ok
+test parser::tests::test_parse_epub_toc_ncx ... ok
+test parser::tests::test_parse_epub_with_nav_toc ... ok
+test parser::tests::test_parse_minimal_epub ... ok
+test parser::tests::test_parse_to_document ... ok
+test parser::tests::test_rejects_non_zip ... ok
+test roundtrip::tests::test_roundtrip_minimal ... ok
+test serializer::tests::test_container_xml_content ... ok
+test serializer::tests::test_escape_xml ... ok
+test serializer::tests::test_opf_structure ... ok
+test serializer::tests::test_serialize_cover_image_png ... ok
+test serializer::tests::test_serialize_empty_chapters ... ok
+test serializer::tests::test_serialize_epub_mimetype_first ... ok
+test serializer::tests::test_serialize_epub_multiple_chapters ... ok
+test serializer::tests::test_serialize_epub_with_cover_image ... ok
+test serializer::tests::test_serialize_epub_with_metadata ... ok
+test serializer::tests::test_serialize_epub_with_toc ... ok
+test serializer::tests::test_serialize_minimal_epub ... ok
+test serializer::tests::test_serialize_roundtrip ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_fb2-2d52b94c5378f314)
+
+running 27 tests
+test parser::tests::test_is_fb2_file ... ok
+test parser::tests::test_parse_binary_image ... ok
+test parser::tests::test_parse_empty_body ... ok
+test parser::tests::test_parse_minimal_fb2 ... ok
+test parser::tests::test_parse_multiple_authors_and_genres ... ok
+test parser::tests::test_parse_multiple_bodies ... ok
+test parser::tests::test_parse_nested_sections ... ok
+test parser::tests::test_parse_publish_info ... ok
+test parser::tests::test_parse_rejects_invalid_utf8 ... ok
+test parser::tests::test_parse_rejects_non_fb2 ... ok
+test parser::tests::test_parse_strikethrough_and_code ... ok
+test parser::tests::test_parse_to_document ... ok
+test roundtrip::tests::test_roundtrip_minimal ... ok
+test serializer::tests::test_escape_xml ... ok
+test serializer::tests::test_roundtrip ... ok
+test serializer::tests::test_serialize_all_formatting_styles ... ok
+test serializer::tests::test_serialize_fb2_with_authors ... ok
+test serializer::tests::test_serialize_fb2_with_binary ... ok
+test serializer::tests::test_serialize_fb2_with_body ... ok
+test serializer::tests::test_serialize_fb2_with_cite ... ok
+test serializer::tests::test_serialize_fb2_with_empty_line ... ok
+test serializer::tests::test_serialize_fb2_with_image ... ok
+test serializer::tests::test_serialize_fb2_with_metadata ... ok
+test serializer::tests::test_serialize_fb2_with_poem ... ok
+test serializer::tests::test_serialize_minimal_fb2 ... ok
+test serializer::tests::test_serialize_multiple_bodies ... ok
+test serializer::tests::test_serialize_with_coverpage ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_fonts-08bbe9c6daf12e37)
+
+running 36 tests
+test cache::tests::test_cache_clone ... ok
+test cache::tests::test_cache_font_count ... ok
+test cache::tests::test_cache_get_font_data ... ok
+test cache::tests::test_cache_get_font_found ... ok
+test cache::tests::test_cache_get_font_not_found ... ok
+test cache::tests::test_cache_list_families ... ok
+test cache::tests::test_cache_new_empty ... ok
+test cache::tests::test_cache_register_font ... ok
+test cache::tests::test_cache_register_invalid_font ... ok
+test cache::tests::test_cache_register_multiple_fonts ... ok
+test cache::tests::test_find_closest_weight ... ok
+test cache::tests::test_matcher_empty_cache ... ok
+test cache::tests::test_matcher_exact_match ... ok
+test cache::tests::test_matcher_fallback_family ... ok
+test cache::tests::test_matcher_fallback_weight ... ok
+test cache::tests::test_matcher_style_fallback ... ok
+test cache::tests::test_query_builder_defaults ... ok
+test cache::tests::test_query_builder_with_options ... ok
+test loader::tests::test_codepoint_to_glyph_invalid ... ok
+test loader::tests::test_detect_format ... ok
+test loader::tests::test_is_font_file_ttf ... ok
+test loader::tests::test_load_font_invalid ... ok
+test loader::tests::test_rejects_too_small ... ok
+test metrics::tests::test_css_to_weight ... ok
+test metrics::tests::test_estimate_text_width ... ok
+test metrics::tests::test_font_units_to_pixels ... ok
+test metrics::tests::test_metrics_from_font_info ... ok
+test metrics::tests::test_monospace_metrics ... ok
+test metrics::tests::test_style_to_css ... ok
+test metrics::tests::test_underline_metrics ... ok
+test metrics::tests::test_weight_to_css ... ok
+test model::tests::test_font_info_creation ... ok
+test model::tests::test_font_style_default ... ok
+test model::tests::test_font_weight_defaults ... ok
+test model::tests::test_font_weight_display ... ok
+test model::tests::test_glyph_metrics ... ok
+
+test result: ok. 36 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_html-b75ce2d8fbbd6f01)
+
+running 18 tests
+test parser::tests::test_is_html_file ... ok
+test parser::tests::test_parse_blockquote ... ok
+test parser::tests::test_parse_div_with_class ... ok
+test parser::tests::test_parse_headings ... ok
+test parser::tests::test_parse_links_and_images ... ok
+test parser::tests::test_parse_list ... ok
+test parser::tests::test_parse_malformed_html ... ok
+test parser::tests::test_parse_meta_charset ... ok
+test parser::tests::test_parse_nested_formatting ... ok
+test parser::tests::test_parse_pre_code ... ok
+test parser::tests::test_parse_simple_html ... ok
+test parser::tests::test_parse_table ... ok
+test parser::tests::test_parse_to_document ... ok
+test parser::tests::test_parse_void_elements ... ok
+test parser::tests::test_serialize_roundtrip ... ok
+test roundtrip::tests::test_roundtrip_simple ... ok
+test roundtrip::tests::test_roundtrip_with_formatting ... ok
+test roundtrip::tests::test_roundtrip_with_table ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.29s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_hwp-74e7fe8da177070a)
+
+running 32 tests
+test parser::tests::test_compression_flag ... ok
+test parser::tests::test_doc_info_extraction ... ok
+test parser::tests::test_encryption_flag ... ok
+test parser::tests::test_is_hwp_file ... ok
+test parser::tests::test_ole_detection ... ok
+test parser::tests::test_parse_header_v5 ... ok
+test parser::tests::test_parse_hwp3x ... ok
+test parser::tests::test_parse_hwp5x ... ok
+test parser::tests::test_parse_to_document ... ok
+test parser::tests::test_rejects_non_hwp ... ok
+test parser::tests::test_rejects_too_small ... ok
+test roundtrip::tests::test_roundtrip_minimal ... ok
+test serializer::tests::test_compression_flag ... ok
+test serializer::tests::test_default_trait ... ok
+test serializer::tests::test_doc_info_priority_over_metadata ... ok
+test serializer::tests::test_empty_metadata_no_record_data ... ok
+test serializer::tests::test_encryption_flag ... ok
+test serializer::tests::test_header_size ... ok
+test serializer::tests::test_keywords_serialized ... ok
+test serializer::tests::test_roundtrip_compression_flag ... ok
+test serializer::tests::test_roundtrip_serialize_parse ... ok
+test serializer::tests::test_serialize_minimal_document ... ok
+test serializer::tests::test_serialize_signature ... ok
+test serializer::tests::test_serialize_with_doc_info ... ok
+test serializer::tests::test_serialize_with_explicit_header ... ok
+test serializer::tests::test_serialize_with_metadata ... ok
+test serializer::tests::test_serialize_with_paragraphs ... ok
+test serializer::tests::test_tagged_string_encoding ... ok
+test serializer::tests::test_unicode_metadata ... ok
+test serializer::tests::test_v3_version_bytes ... ok
+test serializer::tests::test_version_bytes ... ok
+test serializer::tests::test_version_flags_default ... ok
+
+test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_msbinary-845bafcf96287242)
+
+running 29 tests
+test detector::tests::test_detect_format_unknown ... ok
+test detector::tests::test_detect_ole_magic ... ok
+test detector::tests::test_parse_metadata_ole ... ok
+test detector::tests::test_rejects_too_small ... ok
+test ole::tests::test_difat_chain_extended ... ok
+test ole::tests::test_difat_chain_single ... ok
+test ole::tests::test_directory_entries_count ... ok
+test ole::tests::test_directory_entry_parse_internals ... ok
+test ole::tests::test_directory_tree_navigation ... ok
+test ole::tests::test_empty_stream_size ... ok
+test ole::tests::test_fat_chain_following ... ok
+test ole::tests::test_get_entry ... ok
+test ole::tests::test_header_byte_order ... ok
+test ole::tests::test_header_difat_entries_count ... ok
+test ole::tests::test_list_streams ... ok
+test ole::tests::test_mini_sector_size_power ... ok
+test ole::tests::test_mini_stream_reading ... ok
+test ole::tests::test_parse_minimal_valid_ole ... ok
+test ole::tests::test_property_set_stream_extraction ... ok
+test ole::tests::test_read_stream_by_name ... ok
+test ole::tests::test_read_stream_not_found ... ok
+test ole::tests::test_reject_too_small ... ok
+test ole::tests::test_reject_wrong_magic ... ok
+test ole::tests::test_root_entry_is_root_storage ... ok
+test ole::tests::test_special_sector_constants ... ok
+test roundtrip::tests::test_roundtrip_non_ole ... ok
+test roundtrip::tests::test_roundtrip_ole_detection ... ok
+test roundtrip::tests::test_roundtrip_simple ... ok
+test roundtrip::tests::test_serialize_without_parse ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_odf-05445c1ac7f19a87)
+
+running 26 tests
+test parser::tests::test_is_odf_file ... ok
+test parser::tests::test_odf_type_display ... ok
+test parser::tests::test_parse_manifest ... ok
+test parser::tests::test_parse_ods_cell_values ... ok
+test parser::tests::test_parse_ods_sheets ... ok
+test parser::tests::test_parse_ods_type ... ok
+test parser::tests::test_parse_odt_headings ... ok
+test parser::tests::test_parse_odt_paragraphs ... ok
+test parser::tests::test_parse_odt_spans ... ok
+test parser::tests::test_parse_odt_type ... ok
+test parser::tests::test_parse_odt_version ... ok
+test parser::tests::test_parse_to_document ... ok
+test parser::tests::test_rejects_non_odf ... ok
+test roundtrip::tests::test_roundtrip_simple ... ok
+test roundtrip::tests::test_roundtrip_with_content ... ok
+test serializer::tests::test_escape_xml ... ok
+test serializer::tests::test_manifest_present ... ok
+test serializer::tests::test_meta_xml ... ok
+test serializer::tests::test_mimetype_first_uncompressed ... ok
+test serializer::tests::test_roundtrip_serialize_parse ... ok
+test serializer::tests::test_serialize_empty_document ... ok
+test serializer::tests::test_serialize_minimal_document ... ok
+test serializer::tests::test_serialize_with_heading ... ok
+test serializer::tests::test_serialize_with_list ... ok
+test serializer::tests::test_serialize_with_spans ... ok
+test serializer::tests::test_serialize_with_table ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_ofd-fb19dbcc52db295c)
+
+running 25 tests
+test parser::tests::test_is_ofd_file ... ok
+test parser::tests::test_parse_minimal_ofd ... ok
+test parser::tests::test_parse_ofd_metadata ... ok
+test parser::tests::test_parse_ofd_pages ... ok
+test parser::tests::test_parse_to_document ... ok
+test parser::tests::test_rejects_missing_ofd_xml ... ok
+test parser::tests::test_rejects_non_zip ... ok
+test roundtrip::tests::test_roundtrip_minimal ... ok
+test roundtrip::tests::test_roundtrip_with_metadata ... ok
+test roundtrip::tests::test_roundtrip_with_pages ... ok
+test serializer::tests::test_default_version ... ok
+test serializer::tests::test_document_xml_doc_info ... ok
+test serializer::tests::test_document_xml_pages ... ok
+test serializer::tests::test_escape_xml ... ok
+test serializer::tests::test_ofd_xml_doc_body ... ok
+test serializer::tests::test_ofd_xml_first_uncompressed ... ok
+test serializer::tests::test_ofd_xml_version ... ok
+test serializer::tests::test_page_area ... ok
+test serializer::tests::test_page_xml_with_formatted_text ... ok
+test serializer::tests::test_page_xml_with_images ... ok
+test serializer::tests::test_page_xml_with_text ... ok
+test serializer::tests::test_roundtrip_serialize_parse ... ok
+test serializer::tests::test_serialize_empty_document ... ok
+test serializer::tests::test_serialize_minimal_document ... ok
+test serializer::tests::test_serialize_multiple_pages ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_office_utils-be5c9b3cb8a03ce8)
+
+running 18 tests
+test archive::tests::test_create_and_read_zip ... ok
+test archive::tests::test_detect_epub ... ok
+test archive::tests::test_detect_odf ... ok
+test archive::tests::test_detect_ooxml ... ok
+test archive::tests::test_directory_entry ... ok
+test archive::tests::test_empty_archive ... ok
+test archive::tests::test_entry_sizes ... ok
+test archive::tests::test_find_by_prefix ... ok
+test archive::tests::test_from_bytes_invalid ... ok
+test archive::tests::test_get_case_insensitive ... ok
+test archive::tests::test_multiple_entries ... ok
+test detect::tests::test_detect_epub ... ok
+test detect::tests::test_detect_odf ... ok
+test detect::tests::test_detect_ooxml ... ok
+test detect::tests::test_detect_unknown ... ok
+test detect::tests::test_detect_unknown_invalid_zip ... ok
+test detect::tests::test_detect_xps ... ok
+test detect::tests::test_detect_xps_with_content_types ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_ooxml-f5b5571f4c614ecd)
+
+running 29 tests
+test parser::tests::test_detect_format ... ok
+test parser::tests::test_format_display ... ok
+test parser::tests::test_is_ooxml_file ... ok
+test parser::tests::test_parse_body_paragraphs ... ok
+test parser::tests::test_parse_docx ... ok
+test parser::tests::test_parse_empty_paragraphs ... ok
+test parser::tests::test_parse_paragraph_properties ... ok
+test parser::tests::test_parse_run_formatting ... ok
+test parser::tests::test_parse_style_id ... ok
+test parser::tests::test_parse_superscript_subscript ... ok
+test parser::tests::test_parse_table ... ok
+test parser::tests::test_parse_to_document ... ok
+test parser::tests::test_rejects_non_ooxml ... ok
+test roundtrip::tests::test_roundtrip_invalid_input ... ok
+test roundtrip::tests::test_roundtrip_simple ... ok
+test roundtrip::tests::test_roundtrip_with_content ... ok
+test roundtrip::tests::test_roundtrip_with_formatting ... ok
+test roundtrip::tests::test_roundtrip_without_parse_fails ... ok
+test serializer::tests::test_content_types_present ... ok
+test serializer::tests::test_escape_xml ... ok
+test serializer::tests::test_rels_present ... ok
+test serializer::tests::test_roundtrip_through_zip ... ok
+test serializer::tests::test_serialize_empty_body ... ok
+test serializer::tests::test_serialize_empty_document ... ok
+test serializer::tests::test_serialize_formatted_paragraph ... ok
+test serializer::tests::test_serialize_minimal_document ... ok
+test serializer::tests::test_serialize_multiple_paragraphs ... ok
+test serializer::tests::test_serialize_with_core_properties ... ok
+test serializer::tests::test_serialize_with_table ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_raster-0d83e72863e7ad48)
+
+running 22 tests
+test decoder::tests::test_decode_png ... ok
+test decoder::tests::test_dimensions ... ok
+test decoder::tests::test_is_supported ... ok
+test decoder::tests::test_read_info ... ok
+test decoder::tests::test_rejects_invalid ... ok
+test encoder::tests::test_encode_bmp ... ok
+test encoder::tests::test_encode_decode_roundtrip ... ok
+test encoder::tests::test_encode_empty ... ok
+test encoder::tests::test_encode_png ... ok
+test model::tests::test_image_format_display ... ok
+test model::tests::test_image_format_from_extension ... ok
+test model::tests::test_image_format_from_magic ... ok
+test model::tests::test_image_format_mime ... ok
+test model::tests::test_is_empty ... ok
+test model::tests::test_pixel_blend ... ok
+test model::tests::test_pixel_constants ... ok
+test model::tests::test_pixel_luminance ... ok
+test model::tests::test_pixel_to_u32 ... ok
+test model::tests::test_raster_image_new ... ok
+test model::tests::test_raster_image_out_of_bounds ... ok
+test model::tests::test_raster_image_rgba_roundtrip ... ok
+test model::tests::test_raster_image_set_get ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_redaction-5871ffa88014e8a7)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_renderer-dff981b00ae50d42)
+
+running 100 tests
+test canvas::tests::test_canvas_from_page ... ok
+test canvas::tests::test_canvas_new ... ok
+test canvas::tests::test_clear_canvas ... ok
+test canvas::tests::test_clear_rect ... ok
+test canvas::tests::test_clip ... ok
+test canvas::tests::test_default_white_background ... ok
+test canvas::tests::test_draw_text_color ... ok
+test canvas::tests::test_draw_text_empty_font_library ... ok
+test canvas::tests::test_draw_text_empty_string ... ok
+test canvas::tests::test_draw_text_no_font_library ... ok
+test canvas::tests::test_draw_text_respects_position ... ok
+test canvas::tests::test_draw_text_with_system_fonts ... ok
+test canvas::tests::test_fill_circle ... ok
+test canvas::tests::test_fill_clears_path ... ok
+test canvas::tests::test_fill_rect ... ok
+test canvas::tests::test_fill_rect_pixels ... ok
+test canvas::tests::test_fill_rect_with_alpha ... ok
+test canvas::tests::test_fill_rect_with_transform ... ok
+test canvas::tests::test_fill_triangle ... ok
+test canvas::tests::test_multiple_fills_overlap ... ok
+test canvas::tests::test_out_of_bounds ... ok
+test canvas::tests::test_path_building ... ok
+test canvas::tests::test_reset_transform ... ok
+test canvas::tests::test_save_restore ... ok
+test canvas::tests::test_set_fill_stroke ... ok
+test canvas::tests::test_set_font_library ... ok
+test canvas::tests::test_stroke_line ... ok
+test canvas::tests::test_stroke_rect ... ok
+test canvas::tests::test_to_rgba_bytes ... ok
+test canvas::tests::test_transform ... ok
+test canvas::tests::test_with_background ... ok
+test color::tests::test_color_blend ... ok
+test color::tests::test_color_display ... ok
+test color::tests::test_color_from_hex ... ok
+test color::tests::test_color_luminance ... ok
+test color::tests::test_color_u8_roundtrip ... ok
+test color::tests::test_stroke_style_default ... ok
+test fonts::tests::test_empty_library_debug ... ok
+test fonts::tests::test_empty_library_fallbacks ... ok
+test fonts::tests::test_empty_library_glyph_id_fallback ... ok
+test fonts::tests::test_fallback_scales_with_font_size ... ok
+test fonts::tests::test_load_invalid_font_data ... ok
+test gradient::tests::test_color_at_exact_stop_position ... ok
+test gradient::tests::test_color_at_multiple_stops ... ok
+test gradient::tests::test_color_at_out_of_range_clamps ... ok
+test gradient::tests::test_color_at_single_stop ... ok
+test gradient::tests::test_color_at_two_stops ... ok
+test gradient::tests::test_empty_gradient ... ok
+test gradient::tests::test_gradient_equality ... ok
+test gradient::tests::test_gradient_linear_creation ... ok
+test gradient::tests::test_gradient_radial_creation ... ok
+test gradient::tests::test_gradient_stop_creation ... ok
+test gradient::tests::test_linear_gradient_type ... ok
+test gradient::tests::test_radial_gradient_type ... ok
+test model::tests::test_page_a4 ... ok
+test model::tests::test_page_letter ... ok
+test model::tests::test_page_pixel_size ... ok
+test model::tests::test_render_result_fail ... ok
+test model::tests::test_render_result_ok ... ok
+test path::tests::test_circle ... ok
+test path::tests::test_clear ... ok
+test path::tests::test_ellipse ... ok
+test path::tests::test_empty_bounds ... ok
+test path::tests::test_flatten_circle ... ok
+test path::tests::test_flatten_line ... ok
+test path::tests::test_flatten_quad_curve ... ok
+test path::tests::test_implicit_move ... ok
+test path::tests::test_move_line_close ... ok
+test path::tests::test_quad_to ... ok
+test path::tests::test_rect ... ok
+test text::tests::test_glyph_run_width ... ok
+test text::tests::test_layout_empty_lines ... ok
+test text::tests::test_layout_empty_string ... ok
+test text::tests::test_layout_engine_new ... ok
+test text::tests::test_layout_leading_trailing_spaces ... ok
+test text::tests::test_layout_long_word_no_wrap ... ok
+test text::tests::test_layout_metrics ... ok
+test text::tests::test_layout_multiple_lines ... ok
+test text::tests::test_layout_multiple_words ... ok
+test text::tests::test_layout_newline_handling ... ok
+test text::tests::test_layout_paragraph_line_height ... ok
+test text::tests::test_layout_single_word ... ok
+test text::tests::test_layout_unicode_text ... ok
+test text::tests::test_layout_very_narrow_width ... ok
+test text::tests::test_layout_wide_width_no_wrap ... ok
+test text::tests::test_layout_word_wrapping ... ok
+test text::tests::test_layout_zero_width ... ok
+test text::tests::test_text_layout_empty ... ok
+test text::tests::test_text_layout_multiple_lines_width ... ok
+test text::tests::test_text_layout_single_line ... ok
+test text::tests::test_text_line_height ... ok
+test transform::tests::test_determinant ... ok
+test transform::tests::test_identity ... ok
+test transform::tests::test_invert ... ok
+test transform::tests::test_invert_singular ... ok
+test transform::tests::test_rotate_90 ... ok
+test transform::tests::test_scale ... ok
+test transform::tests::test_then ... ok
+test transform::tests::test_transform_stack ... ok
+test transform::tests::test_translate ... ok
+
+test result: ok. 100 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.77s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_renderer_wasm-8fd894f27326ae37)
+
+running 13 tests
+test canvas_bridge::tests::test_clear_canvas ... ok
+test canvas_bridge::tests::test_create_canvas ... ok
+test canvas_bridge::tests::test_create_canvas_zero_dimensions ... ok
+test canvas_bridge::tests::test_get_canvas_size ... ok
+test canvas_bridge::tests::test_get_pixel_data ... ok
+test canvas_bridge::tests::test_parse_color_hex ... ok
+test canvas_bridge::tests::test_parse_color_invalid ... ok
+test canvas_bridge::tests::test_parse_color_named ... ok
+test canvas_bridge::tests::test_parse_color_rgb ... ok
+test canvas_bridge::tests::test_release_canvas ... ok
+test canvas_bridge::tests::test_render_rect ... ok
+test canvas_bridge::tests::test_render_rect_invalid_handle ... ok
+test canvas_bridge::tests::test_render_text ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.29s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_rtf-4a02bf7ac9cfa3dc)
+
+running 41 tests
+test parser::tests::test_alignment_center ... ok
+test parser::tests::test_alignment_justify ... ok
+test parser::tests::test_alignment_right ... ok
+test parser::tests::test_bold_italic_combination ... ok
+test parser::tests::test_bold_text ... ok
+test parser::tests::test_color_change ... ok
+test parser::tests::test_font_family ... ok
+test parser::tests::test_font_size ... ok
+test parser::tests::test_group_scoped_formatting ... ok
+test parser::tests::test_hex_escape ... ok
+test parser::tests::test_is_rtf_file ... ok
+test parser::tests::test_italic_text ... ok
+test parser::tests::test_line_break ... ok
+test parser::tests::test_mixed_bold_italic ... ok
+test parser::tests::test_multiple_paragraphs_with_different_formatting ... ok
+test parser::tests::test_nested_formatting_font_color_size ... ok
+test parser::tests::test_page_break ... ok
+test parser::tests::test_paragraph_indentation ... ok
+test parser::tests::test_pard_resets_paragraph ... ok
+test parser::tests::test_parse_color_table ... ok
+test parser::tests::test_parse_document_info ... ok
+test parser::tests::test_parse_font_table ... ok
+test parser::tests::test_parse_rtf_version ... ok
+test parser::tests::test_parse_simple_rtf ... ok
+test parser::tests::test_parse_to_document ... ok
+test parser::tests::test_rejects_non_rtf ... ok
+test parser::tests::test_roundtrip_alignment_and_indent ... ok
+test parser::tests::test_roundtrip_font_size_color ... ok
+test parser::tests::test_roundtrip_special_elements ... ok
+test parser::tests::test_strikethrough ... ok
+test parser::tests::test_tab ... ok
+test parser::tests::test_tokenizer_control_symbols ... ok
+test parser::tests::test_tokenizer_control_words ... ok
+test parser::tests::test_underline_text ... ok
+test parser::tests::test_underline_with_ul0 ... ok
+test roundtrip::tests::test_roundtrip_simple ... ok
+test roundtrip::tests::test_roundtrip_with_formatting ... ok
+test roundtrip::tests::test_roundtrip_with_italic ... ok
+test serializer::tests::test_escape_rtf_text ... ok
+test serializer::tests::test_serialize_roundtrip ... ok
+test serializer::tests::test_serialize_simple ... ok
+
+test result: ok. 41 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_txt-67fe038b9e2590dc)
+
+running 23 tests
+test parser::tests::test_parse_cr_only ... ok
+test parser::tests::test_parse_crlf ... ok
+test parser::tests::test_parse_empty ... ok
+test parser::tests::test_parse_latin1 ... ok
+test parser::tests::test_parse_single_line_no_newline ... ok
+test parser::tests::test_parse_to_document ... ok
+test parser::tests::test_parse_utf16be_bom ... ok
+test parser::tests::test_parse_utf16le_bom ... ok
+test parser::tests::test_parse_utf8 ... ok
+test parser::tests::test_parse_utf8_bom ... ok
+test roundtrip::tests::test_roundtrip_ascii ... ok
+test roundtrip::tests::test_roundtrip_crlf ... ok
+test roundtrip::tests::test_roundtrip_utf8_bom ... ok
+test serializer::tests::test_roundtrip_utf16le ... ok
+test serializer::tests::test_roundtrip_utf8 ... ok
+test serializer::tests::test_roundtrip_utf8_bom ... ok
+test serializer::tests::test_serialize_crlf ... ok
+test serializer::tests::test_serialize_empty ... ok
+test serializer::tests::test_serialize_lf ... ok
+test tests::test_is_txt_not_null ... ok
+test tests::test_is_txt_not_pdf ... ok
+test tests::test_is_txt_not_rtf ... ok
+test tests::test_is_txt_simple ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_unicode-3d5eafc2d52ae2f2)
+
+running 32 tests
+test converter::tests::test_code_page_lookup ... ok
+test converter::tests::test_detect_bom_utf16le ... ok
+test converter::tests::test_detect_bom_utf8 ... ok
+test converter::tests::test_detect_encoding_no_bom ... ok
+test converter::tests::test_encoding_name ... ok
+test converter::tests::test_invalid_code_page ... ok
+test converter::tests::test_is_ascii_compatible ... ok
+test converter::tests::test_to_utf16 ... ok
+test converter::tests::test_utf8_roundtrip ... ok
+test converter::tests::test_utf8_to_windows1252 ... ok
+test converter::tests::test_windows1252_to_utf8 ... ok
+test normalizer::tests::test_nfc_nfd_roundtrip ... ok
+test normalizer::tests::test_normalize_line_endings_crlf ... ok
+test normalizer::tests::test_normalize_line_endings_lf ... ok
+test normalizer::tests::test_normalize_nfc_combining ... ok
+test normalizer::tests::test_normalize_nfc_passthrough ... ok
+test normalizer::tests::test_normalize_nfd_decompose ... ok
+test normalizer::tests::test_normalize_nfkc ... ok
+test normalizer::tests::test_normalize_nfkd ... ok
+test normalizer::tests::test_normalize_whitespace ... ok
+test normalizer::tests::test_to_lowercase ... ok
+test normalizer::tests::test_to_uppercase ... ok
+test normalizer::tests::test_trim_normalize ... ok
+test roundtrip::tests::test_auto_detect_encoding ... ok
+test roundtrip::tests::test_multiple_roundtrips ... ok
+test roundtrip::tests::test_roundtrip_iso8859_1 ... ok
+test roundtrip::tests::test_roundtrip_shift_jis ... ok
+test roundtrip::tests::test_roundtrip_utf8 ... ok
+test roundtrip::tests::test_roundtrip_windows1252 ... ok
+test roundtrip::tests::test_serialize_without_parse_fails ... ok
+test roundtrip::tests::test_unsupported_encoding ... ok
+test roundtrip::tests::test_with_explicit_encoding ... ok
+
+test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_watermark-bbee787d999964f9)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_webdav-e487d9244ef5f497)
+
+running 11 tests
+test fs::tests::test_filesystem_operations ... ok
+test handlers::tests::test_decode_path ... ok
+test handlers::tests::test_depth_from_header ... ok
+test handlers::tests::test_format_size ... ok
+test lock::tests::test_acquire_lock ... ok
+test lock::tests::test_expiration ... ok
+test lock::tests::test_lock_conflict ... ok
+test lock::tests::test_release_lock ... ok
+test models::tests::test_multistatus_xml ... ok
+test models::tests::test_prop_for_collection ... ok
+test models::tests::test_prop_for_file ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.13s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_wopi-a251532c6fd81ef7)
+
+running 9 tests
+test handlers::tests::test_check_file_info ... ok
+test models::tests::test_check_file_info_response ... ok
+test models::tests::test_lock_info ... ok
+test models::tests::test_wopi_override_from_str ... ok
+test server::tests::test_wopi_server_creation ... ok
+test server::tests::test_wopi_server_state_access ... ok
+test server::tests::test_wopi_server_with_config ... ok
+test storage::tests::test_file_not_found ... ok
+test storage::tests::test_file_system_storage ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_x2t-d71a7ed7f6d2c3fb)
+
+running 166 tests
+test converter::tests::test_convert_no_converter ... ok
+test converter::tests::test_convert_success ... ok
+test converter::tests::test_error_result ... ok
+test converter::tests::test_get_nonexistent_pair ... ok
+test converter::tests::test_has_converter ... ok
+test converter::tests::test_register_and_get ... ok
+test converter::tests::test_success_result ... ok
+test converter::tests::test_unsupported_result ... ok
+test converters::tests::test_converter_format_strings ... ok
+test converters::tests::test_cross_format_converter_format_strings ... ok
+test converters::tests::test_djvu_to_docx_format_strings ... ok
+test converters::tests::test_djvu_to_docx_parse_error ... ok
+test converters::tests::test_djvu_to_docx_roundtrip ... ok
+test converters::tests::test_djvu_to_txt_parse_error ... ok
+test converters::tests::test_docx_output_valid_zip ... ok
+test converters::tests::test_docx_to_epub_basic ... ok
+test converters::tests::test_docx_to_epub_format_strings ... ok
+test converters::tests::test_docx_to_epub_parse_error ... ok
+test converters::tests::test_docx_to_epub_preserves_content ... ok
+test converters::tests::test_docx_to_epub_with_headings ... ok
+test converters::tests::test_docx_to_html_heading ... ok
+test converters::tests::test_docx_to_html_preserves_bold ... ok
+test converters::tests::test_docx_to_html_preserves_italic ... ok
+test converters::tests::test_docx_to_html_simple ... ok
+test converters::tests::test_docx_to_html_title ... ok
+test converters::tests::test_docx_to_html_to_txt_roundtrip ... ok
+test converters::tests::test_docx_to_odt_basic ... ok
+test converters::tests::test_docx_to_odt_multiple_paragraphs ... ok
+test converters::tests::test_docx_to_odt_parse_error ... ok
+test converters::tests::test_docx_to_odt_preserves_heading ... ok
+test converters::tests::test_docx_to_odt_roundtrip ... ok
+test converters::tests::test_docx_to_txt_multiple_paragraphs ... ok
+test converters::tests::test_docx_to_txt_parse_error ... ok
+test converters::tests::test_docx_to_txt_simple ... ok
+test converters::tests::test_docx_to_txt_strips_formatting ... ok
+test converters::tests::test_docx_to_xps_format_strings ... ok
+test converters::tests::test_docx_to_xps_multiple_pages ... ok
+test converters::tests::test_docx_to_xps_parse_error ... ok
+test converters::tests::test_docx_to_xps_roundtrip ... ok
+test converters::tests::test_epub_converter_format_strings ... ok
+test converters::tests::test_epub_to_docx_basic ... ok
+test converters::tests::test_epub_to_docx_format_strings ... ok
+test converters::tests::test_epub_to_docx_parse_error ... ok
+test converters::tests::test_epub_to_html_parse_error ... ok
+test converters::tests::test_epub_to_txt_parse_error ... ok
+test converters::tests::test_fb2_converter_format_strings ... ok
+test converters::tests::test_fb2_to_docx_basic ... ok
+test converters::tests::test_fb2_to_docx_format_strings ... ok
+test converters::tests::test_fb2_to_docx_parse_error ... ok
+test converters::tests::test_fb2_to_txt_parse_error ... ok
+test converters::tests::test_html_to_docx_basic ... ok
+test converters::tests::test_html_to_docx_bold ... ok
+test converters::tests::test_html_to_docx_heading ... ok
+test converters::tests::test_html_to_epub_basic ... ok
+test converters::tests::test_html_to_epub_roundtrip ... ok
+test converters::tests::test_html_to_epub_with_headings ... ok
+test converters::tests::test_html_to_fb2_basic ... ok
+test converters::tests::test_html_to_fb2_roundtrip ... ok
+test converters::tests::test_html_to_fb2_with_styles ... ok
+test converters::tests::test_html_to_odt_basic ... ok
+test converters::tests::test_html_to_odt_heading ... ok
+test converters::tests::test_html_to_rtf_basic ... ok
+test converters::tests::test_html_to_rtf_heading ... ok
+test converters::tests::test_html_to_txt_heading ... ok
+test converters::tests::test_html_to_txt_list ... ok
+test converters::tests::test_html_to_txt_parse_error ... ok
+test converters::tests::test_html_to_txt_simple ... ok
+test converters::tests::test_html_to_txt_strips_formatting ... ok
+test converters::tests::test_hwp_to_docx_format_strings ... ok
+test converters::tests::test_hwp_to_docx_parse_error ... ok
+test converters::tests::test_hwp_to_docx_roundtrip ... ok
+test converters::tests::test_hwp_to_txt_parse_error ... ok
+test converters::tests::test_new_converter_format_strings ... ok
+test converters::tests::test_new_cross_format_converter_format_strings ... ok
+test converters::tests::test_niche_converter_format_strings ... ok
+test converters::tests::test_odt_output_valid_zip ... ok
+test converters::tests::test_odt_to_docx_basic ... ok
+test converters::tests::test_odt_to_docx_multiple_paragraphs ... ok
+test converters::tests::test_odt_to_docx_parse_error ... ok
+test converters::tests::test_odt_to_docx_preserves_heading ... ok
+test converters::tests::test_odt_to_docx_roundtrip ... ok
+test converters::tests::test_odt_to_html_heading ... ok
+test converters::tests::test_odt_to_html_multiple_paragraphs ... ok
+test converters::tests::test_odt_to_html_simple ... ok
+test converters::tests::test_odt_to_html_to_txt_roundtrip ... ok
+test converters::tests::test_odt_to_html_with_table ... ok
+test converters::tests::test_odt_to_txt_heading ... ok
+test converters::tests::test_odt_to_txt_multiple_paragraphs ... ok
+test converters::tests::test_odt_to_txt_parse_error ... ok
+test converters::tests::test_odt_to_txt_simple ... ok
+test converters::tests::test_ofd_to_docx_format_strings ... ok
+test converters::tests::test_ofd_to_docx_parse_error ... ok
+test converters::tests::test_ofd_to_docx_roundtrip ... ok
+test converters::tests::test_ofd_to_html_parse_error ... ok
+test converters::tests::test_ofd_to_txt_parse_error ... ok
+test converters::tests::test_rtf_to_docx_basic ... ok
+test converters::tests::test_rtf_to_docx_multiple_paragraphs ... ok
+test converters::tests::test_rtf_to_docx_parse_error ... ok
+test converters::tests::test_rtf_to_docx_preserves_bold ... ok
+test converters::tests::test_rtf_to_docx_preserves_italic ... ok
+test converters::tests::test_rtf_to_docx_roundtrip ... ok
+test converters::tests::test_rtf_to_html_multiple_paragraphs ... ok
+test converters::tests::test_rtf_to_html_preserves_bold ... ok
+test converters::tests::test_rtf_to_html_preserves_italic ... ok
+test converters::tests::test_rtf_to_html_simple ... ok
+test converters::tests::test_rtf_to_html_title_from_info ... ok
+test converters::tests::test_rtf_to_html_to_txt_roundtrip ... ok
+test converters::tests::test_rtf_to_txt_line_break ... ok
+test converters::tests::test_rtf_to_txt_multiple_paragraphs ... ok
+test converters::tests::test_rtf_to_txt_parse_error ... ok
+test converters::tests::test_rtf_to_txt_simple ... ok
+test converters::tests::test_rtf_to_txt_strips_formatting ... ok
+test converters::tests::test_to_converter_format_strings ... ok
+test converters::tests::test_txt_to_docx_basic ... ok
+test converters::tests::test_txt_to_docx_multiple_lines ... ok
+test converters::tests::test_txt_to_epub_basic ... ok
+test converters::tests::test_txt_to_epub_empty_input ... ok
+test converters::tests::test_txt_to_epub_roundtrip ... ok
+test converters::tests::test_txt_to_epub_with_headings ... ok
+test converters::tests::test_txt_to_fb2_basic ... ok
+test converters::tests::test_txt_to_fb2_empty_input ... ok
+test converters::tests::test_txt_to_fb2_roundtrip ... ok
+test converters::tests::test_txt_to_html_empty_input ... ok
+test converters::tests::test_txt_to_html_multiple_lines ... ok
+test converters::tests::test_txt_to_html_roundtrip ... ok
+test converters::tests::test_txt_to_html_simple ... ok
+test converters::tests::test_txt_to_html_to_txt_roundtrip ... ok
+test converters::tests::test_txt_to_odt_basic ... ok
+test converters::tests::test_txt_to_odt_multiple_lines ... ok
+test converters::tests::test_txt_to_rtf_basic ... ok
+test converters::tests::test_txt_to_rtf_empty ... ok
+test converters::tests::test_txt_to_rtf_multiple_lines ... ok
+test converters::tests::test_xps_ofd_djvu_converter_format_strings ... ok
+test converters::tests::test_xps_to_docx_format_strings ... ok
+test converters::tests::test_xps_to_docx_parse_error ... ok
+test converters::tests::test_xps_to_docx_roundtrip ... ok
+test converters::tests::test_xps_to_html_parse_error ... ok
+test converters::tests::test_xps_to_txt_parse_error ... ok
+test roundtrip::tests::test_new_with_default ... ok
+test roundtrip::tests::test_roundtrip_preserves_data ... ok
+test roundtrip::tests::test_roundtrip_requires_formats ... ok
+test roundtrip::tests::test_roundtrip_unsupported_conversion ... ok
+test roundtrip::tests::test_roundtrip_with_identity_conversion ... ok
+test roundtrip::tests::test_set_source_and_target ... ok
+test roundtrip::tests::test_with_formats_creates_context ... ok
+test router::tests::test_chain_error_propagation ... ok
+test router::tests::test_chain_fb2_to_html ... ok
+test router::tests::test_chain_hwp_to_html ... ok
+test router::tests::test_chain_max_depth ... ok
+test router::tests::test_chain_rtf_to_docx ... ok
+test router::tests::test_chain_rtf_to_odt ... ok
+test router::tests::test_conversion_path_chained ... ok
+test router::tests::test_conversion_path_direct ... ok
+test router::tests::test_conversion_path_docx ... ok
+test router::tests::test_conversion_path_indirect ... ok
+test router::tests::test_conversion_path_odt ... ok
+test router::tests::test_convert_no_converter ... ok
+test router::tests::test_convert_rtf_to_txt ... ok
+test router::tests::test_convert_same_format ... ok
+test router::tests::test_convert_txt_to_html ... ok
+test router::tests::test_is_supported_chain ... ok
+test router::tests::test_registry_has_all_converters ... ok
+test router::tests::test_same_format ... ok
+test router::tests::test_supported_real_pairs ... ok
+test router::tests::test_unsupported ... ok
+test router::tests::test_unsupported_result ... ok
+
+test result: ok. 166 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.12s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_x2t_wasm-0c37f57551ff8c3f)
+
+running 7 tests
+test converter::tests::test_conversion_path ... ok
+test converter::tests::test_convert_empty_input ... ok
+test converter::tests::test_convert_empty_source_format ... ok
+test converter::tests::test_convert_empty_target_format ... ok
+test converter::tests::test_convert_supported ... ok
+test converter::tests::test_convert_unsupported ... ok
+test converter::tests::test_is_supported ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/lib.rs (target/debug/deps/wo_xps-81abfad8616ed7df)
+
+running 29 tests
+test parser::tests::test_is_xps_file ... ok
+test parser::tests::test_page_default_dimensions ... ok
+test parser::tests::test_parse_empty_xps ... ok
+test parser::tests::test_parse_metadata ... ok
+test parser::tests::test_parse_minimal_xps ... ok
+test parser::tests::test_parse_relationships ... ok
+test parser::tests::test_parse_to_document ... ok
+test parser::tests::test_parse_xps_resources ... ok
+test parser::tests::test_parse_xps_with_glyphs ... ok
+test parser::tests::test_parse_xps_with_paths ... ok
+test parser::tests::test_rejects_non_zip ... ok
+test roundtrip::tests::test_roundtrip_minimal ... ok
+test roundtrip::tests::test_roundtrip_with_glyphs ... ok
+test roundtrip::tests::test_roundtrip_with_metadata ... ok
+test serializer::tests::test_content_types_valid ... ok
+test serializer::tests::test_escape_xml ... ok
+test serializer::tests::test_no_metadata_when_empty ... ok
+test serializer::tests::test_rels_valid ... ok
+test serializer::tests::test_roundtrip_serialize_parse ... ok
+test serializer::tests::test_serialize_core_metadata ... ok
+test serializer::tests::test_serialize_empty_document ... ok
+test serializer::tests::test_serialize_font_resources ... ok
+test serializer::tests::test_serialize_image_resources ... ok
+test serializer::tests::test_serialize_minimal_document ... ok
+test serializer::tests::test_serialize_multiple_pages ... ok
+test serializer::tests::test_serialize_page_with_glyphs ... ok
+test serializer::tests::test_serialize_page_with_paths ... ok
+test serializer::tests::test_serialize_path_with_transform ... ok
+test serializer::tests::test_serialize_relationships ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+

@@ -1,0 +1,430 @@
+    Blocking waiting for file lock on build directory
+warning: manual implementation of `.is_multiple_of()`
+   --> core/crates/wo-djvu/src/serializer.rs:128:8
+    |
+128 | ...if (chun... != 0 {
+    |       ^^^^^...^^^^^ help: replace with: `!(chunk.size as usize).is_multiple_of(2)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#manual_is_multiple_of
+    = note: `#[warn(clippy::manual_is_multiple_of)]` on by default
+
+warning: `wo-djvu` (lib) generated 1 warning (run `cargo clippy --fix --lib -p wo-djvu -- ` to apply 1 suggestion)
+warning: unused variable: `docx_rows`
+    --> core/crates/wo-x2t/src/converters.rs:3367:21
+     |
+3367 | ...et docx_rows: V...
+     |       ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_docx_rows`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `wo-x2t` (lib) generated 1 warning (run `cargo clippy --fix --lib -p wo-x2t -- ` to apply 1 suggestion)
+warning: needlessly taken reference of both operands
+  --> core/crates/wo-msbinary/src/roundtrip.rs:40:31
+   |
+40 | ...&& &data...0xE1] {
+   |       ^^^^^...^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#op_ref
+   = note: `#[warn(clippy::op_ref)]` on by default
+help: use the values directly
+   |
+40 -         if data.len() >= 8 && &data[..8] == &[0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1] {
+40 +         if data.len() >= 8 && data[..8] == [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1] {
+   |
+
+warning: `wo-msbinary` (lib) generated 1 warning (run `cargo clippy --fix --lib -p wo-msbinary -- ` to apply 1 suggestion)
+warning: you should consider adding a `Default` implementation for `FontLibrary`
+  --> core/crates/wo-renderer/src/fonts.rs:40:5
+   |
+40 | /     pub ...
+41 | |         ...
+42 | |         ...
+43 | |         ...
+44 | |     }
+   | |_____^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#new_without_default
+   = note: `#[warn(clippy::new_without_default)]` on by default
+help: try adding this
+   |
+35 + impl Default for FontLibrary {
+36 +     fn default() -> Self {
+37 +         Self::new()
+38 +     }
+39 + }
+   |
+
+warning: float has excessive precision
+   --> core/crates/wo-renderer/src/path.rs:142:17
+    |
+142 | ... = 0.5522847498; /...
+    |       ^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#excessive_precision
+    = note: `#[warn(clippy::excessive_precision)]` on by default
+help: consider changing the type or truncating it to
+    |
+142 -         let k = 0.5522847498; // 4*(sqrt(2)-1)/3
+142 +         let k = 0.552_284_8; // 4*(sqrt(2)-1)/3
+    |
+
+warning: deref on an immutable reference
+   --> core/crates/wo-unicode/src/converter.rs:142:25
+    |
+142 | ... = &*input;
+    |       ^^^^^^^ help: if you would like to reborrow, try removing `&*`: `input`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#borrow_deref_ref
+    = note: `#[warn(clippy::borrow_deref_ref)]` on by default
+
+warning: returning the result of a `let` binding from a block
+  --> core/crates/wo-unicode/src/normalizer.rs:74:5
+   |
+66 | /     let normalize...
+67 | |         LineEndin...
+68 | |         LineEndin...
+69 | |             .repl...
+...  |
+72 | |         LineEndin...
+73 | |     };
+   | |______- unnecessary `let` binding
+74 |       normalized
+   |       ^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#let_and_return
+   = note: `#[warn(clippy::let_and_return)]` on by default
+help: return the expression directly
+   |
+66 ~     
+67 ~     match to {
+68 +         LineEnding::Lf => text.replace("\r\n", "\n").replace('\r', "\n"),
+69 +         LineEnding::Crlf => text
+70 +             .replace("\r\n", "\n")
+71 +             .replace('\r', "\n")
+72 +             .replace("\n", "\r\n"),
+73 +         LineEnding::Cr => text.replace("\r\n", "\r").replace("\n", "\r"),
+74 +     }
+   |
+
+warning: unused imports: `copy_handler`, `head_handler`, `lock_handler`, `mkcol_handler`, `move_handler`, `propfind_handler`, and `unlock_handler`
+ --> core/crates/wo-webdav/src/server.rs:7:5
+  |
+7 |     copy_handler, delete_handler, get_handler, head_handler, lock_handler,
+  |     ^^^^^^^^^^^^                               ^^^^^^^^^^^^  ^^^^^^^^^^^^
+8 |     mkcol_handler, move_handler, propf...ndler, put_handler, unlock_h...er, W...
+  |     ^^^^^^^^^^^^^  ^^^^^^^^^^^^  ^^^^^...^^^^^               ^^^^^^^^...^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `std::path::PathBuf`
+  --> core/crates/wo-webdav/src/server.rs:14:5
+   |
+14 | use std::...thBuf;
+   |     ^^^^^...^^^^^
+
+warning: unused import: `quick_xml::se::to_string`
+ --> core/crates/wo-webdav/src/models.rs:8:5
+  |
+8 | use quick...tring;
+  |     ^^^^^...^^^^^
+
+warning: unused imports: `DavResource` and `FileSystem`
+ --> core/crates/wo-webdav/src/storage.rs:7:17
+  |
+7 | ...::{DavResource, FileSystem};
+  |       ^^^^^^^^^^^  ^^^^^^^^^^
+
+warning: unused imports: `LockManager`, `LockScope as LockManagerScope`, and `LockType`
+ --> core/crates/wo-webdav/src/storage.rs:8:19
+  |
+8 | ...::{LockManager, LockS...Scope, LockType};
+  |       ^^^^^^^^^^^  ^^^^^...^^^^^  ^^^^^^^^
+
+warning: unused import: `std::path::PathBuf`
+  --> core/crates/wo-webdav/src/storage.rs:11:5
+   |
+11 | use std::...thBuf;
+   |     ^^^^^...^^^^^
+
+warning: unused import: `std::sync::Arc`
+  --> core/crates/wo-webdav/src/storage.rs:12:5
+   |
+12 | use std::...::Arc;
+   |     ^^^^^...^^^^^
+
+warning: called `skip(..).next()` on an iterator
+   --> core/crates/wo-webdav/src/handlers.rs:212:39
+    |
+212 | .../').skip...ext()
+    |       ^^^^^...^^^^^ help: use `nth` instead: `.nth(1)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#iter_skip_next
+    = note: `#[warn(clippy::iter_skip_next)]` on by default
+
+warning: called `skip(..).next()` on an iterator
+   --> core/crates/wo-webdav/src/handlers.rs:584:25
+    |
+584 | .../').skip...ext()
+    |       ^^^^^...^^^^^ help: use `nth` instead: `.nth(1)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#iter_skip_next
+
+warning: called `Iterator::last` on a `DoubleEndedIterator`; this will needlessly iterate the entire iterator
+   --> core/crates/wo-webdav/src/handlers.rs:612:13
+    |
+612 | ...   child...ast().un...
+    |       ^^^^^...^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#double_ended_iterator_last
+    = note: `#[warn(clippy::double_ended_iterator_last)]` on by default
+help: try
+    |
+612 -             child.path.split('/').last().unwrap_or(&child.path),
+612 +             child.path.split('/').next_back().unwrap_or(&child.path),
+    |
+
+warning: `wo-renderer` (lib) generated 2 warnings (run `cargo clippy --fix --lib -p wo-renderer -- ` to apply 1 suggestion)
+warning: `wo-unicode` (lib) generated 2 warnings (run `cargo clippy --fix --lib -p wo-unicode -- ` to apply 2 suggestions)
+warning: `wo-webdav` (lib) generated 10 warnings (run `cargo clippy --fix --lib -p wo-webdav -- ` to apply 10 suggestions)
+warning: unneeded `return` statement
+   --> core/crates/wo-renderer-wasm/src/canvas_bridge.rs:370:18
+    |
+370 | ...=> retur...:RED),
+    |       ^^^^^...^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+    = note: `#[warn(clippy::needless_return)]` on by default
+help: remove `return`
+    |
+370 -         "red" => return Ok(Color::RED),
+370 +         "red" => Ok(Color::RED),
+    |
+
+warning: unneeded `return` statement
+   --> core/crates/wo-renderer-wasm/src/canvas_bridge.rs:371:20
+    |
+371 | ...=> retur...REEN),
+    |       ^^^^^...^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+help: remove `return`
+    |
+371 -         "green" => return Ok(Color::GREEN),
+371 +         "green" => Ok(Color::GREEN),
+    |
+
+warning: unneeded `return` statement
+   --> core/crates/wo-renderer-wasm/src/canvas_bridge.rs:372:19
+    |
+372 | ...=> retur...BLUE),
+    |       ^^^^^...^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+help: remove `return`
+    |
+372 -         "blue" => return Ok(Color::BLUE),
+372 +         "blue" => Ok(Color::BLUE),
+    |
+
+warning: unneeded `return` statement
+   --> core/crates/wo-renderer-wasm/src/canvas_bridge.rs:373:20
+    |
+373 | ...=> retur...LACK),
+    |       ^^^^^...^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+help: remove `return`
+    |
+373 -         "black" => return Ok(Color::BLACK),
+373 +         "black" => Ok(Color::BLACK),
+    |
+
+warning: unneeded `return` statement
+   --> core/crates/wo-renderer-wasm/src/canvas_bridge.rs:374:20
+    |
+374 | ...=> retur...HITE),
+    |       ^^^^^...^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+help: remove `return`
+    |
+374 -         "white" => return Ok(Color::WHITE),
+374 +         "white" => Ok(Color::WHITE),
+    |
+
+warning: unneeded `return` statement
+   --> core/crates/wo-renderer-wasm/src/canvas_bridge.rs:375:21
+    |
+375 | ...=> retur...0.0)),
+    |       ^^^^^...^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+help: remove `return`
+    |
+375 -         "yellow" => return Ok(Color::rgb(1.0, 1.0, 0.0)),
+375 +         "yellow" => Ok(Color::rgb(1.0, 1.0, 0.0)),
+    |
+
+warning: unneeded `return` statement
+   --> core/crates/wo-renderer-wasm/src/canvas_bridge.rs:376:19
+    |
+376 | ...=> retur...1.0)),
+    |       ^^^^^...^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+help: remove `return`
+    |
+376 -         "cyan" => return Ok(Color::rgb(0.0, 1.0, 1.0)),
+376 +         "cyan" => Ok(Color::rgb(0.0, 1.0, 1.0)),
+    |
+
+warning: unneeded `return` statement
+   --> core/crates/wo-renderer-wasm/src/canvas_bridge.rs:377:22
+    |
+377 | ...=> retur...1.0)),
+    |       ^^^^^...^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+help: remove `return`
+    |
+377 -         "magenta" => return Ok(Color::rgb(1.0, 0.0, 1.0)),
+377 +         "magenta" => Ok(Color::rgb(1.0, 0.0, 1.0)),
+    |
+
+warning: unneeded `return` statement
+   --> core/crates/wo-renderer-wasm/src/canvas_bridge.rs:378:26
+    |
+378 | ...=> retur...0.0)),
+    |       ^^^^^...^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+help: remove `return`
+    |
+378 -         "transparent" => return Ok(Color::new(0.0, 0.0, 0.0, 0.0)),
+378 +         "transparent" => Ok(Color::new(0.0, 0.0, 0.0, 0.0)),
+    |
+
+warning: unneeded `return` statement
+   --> core/crates/wo-renderer-wasm/src/canvas_bridge.rs:379:14
+    |
+379 | ...=> retur...lor)),
+    |       ^^^^^...^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#needless_return
+help: remove `return`
+    |
+379 -         _ => return Err(format!("Unknown color: {}", color)),
+379 +         _ => Err(format!("Unknown color: {}", color)),
+    |
+
+warning: manual implementation of `Option::map`
+   --> core/crates/wo-renderer-wasm/src/lib.rs:134:16
+    |
+134 |           } else if l...
+    |  ________________^
+135 | |             Some(-(...
+136 | |         } else {
+137 | |             None
+138 | |         };
+    | |_________^ help: try: `{ para.properties.indent_hanging.map(|hanging| -(hanging as f32 / 20.0)) }`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#manual_map
+    = note: `#[warn(clippy::manual_map)]` on by default
+
+warning: this function has too many arguments (8/7)
+   --> core/crates/wo-docx-renderer/src/layout.rs:251:5
+    |
+251 | /     fn wrap_paragraph_into_...
+252 | |         &self,
+253 | |         para: &DocxParagraph,
+254 | |         available_width: f32,
+...   |
+259 | |         alignment: TextAlig...
+260 | |     ) -> Vec<LayoutLine> {
+    | |________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: this function has too many arguments (9/7)
+   --> core/crates/wo-docx-renderer/src/layout.rs:445:5
+    |
+445 | /     fn f...
+446 | |         ...
+447 | |         ...
+448 | |         ...
+...   |
+454 | |         ...
+455 | |     ) {
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#too_many_arguments
+
+warning: accessing first element with `table.rows.get(0)`
+   --> core/crates/wo-docx-renderer/src/layout.rs:506:24
+    |
+506 | ... = table...et(0).ma...
+    |       ^^^^^...^^^^^ help: try: `table.rows.first()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#get_first
+    = note: `#[warn(clippy::get_first)]` on by default
+
+warning: you seem to use `.enumerate()` and immediately discard the index
+   --> core/crates/wo-docx-renderer/src/layout.rs:563:53
+    |
+563 | ...r().enumerate() {
+    |       ^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unused_enumerate_index
+    = note: `#[warn(clippy::unused_enumerate_index)]` on by default
+help: remove the `.enumerate()` call
+    |
+563 -             for (_col_idx, cell) in row.cells.iter().enumerate() {
+563 +             for cell in row.cells.iter() {
+    |
+
+warning: associated items `new_in_memory` and `delete` are never used
+   --> services/session-service/src/main.rs:71:8
+    |
+ 69 | impl ...itory {
+    | -----...----- associated items in this implementation
+ 70 |     /// Create a new repo...
+ 71 |     fn new_in_memory() ->...
+    |        ^^^^^^^^^^^^^
+...
+179 |     fn delete(&self, id: ...
+    |        ^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `wo-renderer-wasm` (lib) generated 11 warnings (run `cargo clippy --fix --lib -p wo-renderer-wasm -- ` to apply 11 suggestions)
+warning: `wo-docx-renderer` (lib) generated 4 warnings (run `cargo clippy --fix --lib -p wo-docx-renderer -- ` to apply 2 suggestions)
+warning: `session-service` (bin "session-service") generated 1 warning
+warning: methods `text` and `merge_from` are never used
+   --> services/coauthoring-service/src/main.rs:133:8
+    |
+ 79 | impl Document {
+    | ------------- methods in this implementation
+...
+133 |     fn text(&self) -...
+    |        ^^^^
+...
+141 |     fn merge_from(&m...
+    |        ^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated items `new_in_memory` and `delete` are never used
+   --> services/coauthoring-service/src/main.rs:157:8
+    |
+155 | impl ...itory {
+    | -----...----- associated items in this implementation
+156 |     /// Create a new repo...
+157 |     fn new_in_memory() ->...
+    |        ^^^^^^^^^^^^^
+...
+245 |     fn delete(&self, id: ...
+    |        ^^^^^^
+
+warning: `coauthoring-service` (bin "coauthoring-service") generated 2 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 43.13s

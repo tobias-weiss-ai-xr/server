@@ -209,7 +209,7 @@ pub async fn put_handler<S: WebDavStorage>(
     }
 
     // Check if parent exists
-    let parent_path = path.rsplit('/').skip(1).next()
+    let parent_path = path.rsplit('/').nth(1)
         .map(|p| format!("/{}", p))
         .unwrap_or_else(|| "/".to_string());
 
@@ -581,7 +581,7 @@ fn generate_directory_listing(path: &str, children: &[crate::storage::ResourceIn
     let _parent_path = if path == "/" {
         String::new()
     } else {
-        path.rsplit('/').skip(1).next()
+        path.rsplit('/').nth(1)
             .map(|p| format!("/{}", p))
             .unwrap_or_else(|| "/".to_string())
     };
@@ -609,7 +609,7 @@ fn generate_directory_listing(path: &str, children: &[crate::storage::ResourceIn
         </tr>"#,
             icon,
             href,
-            child.path.split('/').last().unwrap_or(&child.path),
+            child.path.split('/').next_back().unwrap_or(&child.path),
             modified,
             size
         )

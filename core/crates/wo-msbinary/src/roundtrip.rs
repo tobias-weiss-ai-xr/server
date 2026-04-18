@@ -37,7 +37,7 @@ impl Default for MsbinaryRoundtrip {
 impl FormatRoundtrip for MsbinaryRoundtrip {
     fn parse(&self, data: &[u8]) -> Result<(), String> {
         // Parse as OLE compound document if it has the OLE magic bytes
-        if data.len() >= 8 && &data[..8] == &[0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1] {
+        if data.len() >= 8 && data[..8] == [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1] {
             // Parse as OLE to extract structure information
             let _ole_doc = OleCompoundDoc::parse(data)
                 .map_err(|e| format!("Failed to parse OLE document: {}", e))?;

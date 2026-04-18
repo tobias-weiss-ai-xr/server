@@ -4,14 +4,12 @@
 //! supporting WebDAV protocol methods.
 
 use crate::handlers::{
-    copy_handler, delete_handler, get_handler, head_handler, lock_handler,
-    mkcol_handler, move_handler, propfind_handler, put_handler, unlock_handler, WebDavState,
+    delete_handler, get_handler, put_handler, WebDavState,
 };
 use crate::storage::WebDavStorage;
 use anyhow::Result;
 use axum::{Router, routing::get};
 use std::net::SocketAddr;
-use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::net::TcpListener;
 

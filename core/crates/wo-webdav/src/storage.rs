@@ -4,12 +4,8 @@
 //! for WebDAV resources. The LocalStorage implementation provides a filesystem-based
 //! storage backend using the FileSystem and LockManager modules.
 
-use crate::fs::{DavResource, FileSystem};
-use crate::lock::{LockManager, LockScope as LockManagerScope, LockType};
 use anyhow::Result;
 use chrono::{DateTime, Utc};
-use std::path::PathBuf;
-use std::sync::Arc;
 
 /// Information about a WebDAV resource
 #[derive(Debug, Clone)]

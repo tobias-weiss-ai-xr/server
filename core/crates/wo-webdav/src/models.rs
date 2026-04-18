@@ -5,7 +5,6 @@
 //! PROPPATCH, and multistatus responses.
 
 use chrono::{DateTime, Utc};
-use quick_xml::se::to_string;
 use serde::{Deserialize, Serialize};
 use std::fmt;
 

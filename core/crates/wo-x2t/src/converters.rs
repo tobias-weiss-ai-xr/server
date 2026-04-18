@@ -3364,7 +3364,7 @@ fn rtf_to_ooxml(rtf_doc: &RtfDocument) -> OoxmlDocument {
                 }
             }
             RtfBlock::Table { rows } => {
-                let docx_rows: Vec<DocxTableRow> = rows
+                let _docx_rows: Vec<DocxTableRow> = rows
                     .iter()
                     .map(|row| DocxTableRow {
                         cells: row

@@ -11,6 +11,9 @@ use wasm_bindgen::prelude::*;
 use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, ImageData};
 use wo_renderer::{Canvas, Color, FontLibrary};
 
+#[cfg(target_arch = "wasm32")]
+static FALLBACK_FONT_BYTES: &[u8] = include_bytes!("../fonts/LiberationSans-Regular.ttf");
+
 /// Global canvas instance store.
 ///
 /// Maps canvas handles to Canvas instances. Uses OnceLock for lazy initialization
@@ -52,7 +55,16 @@ pub fn create_canvas(width: u32, height: u32) -> u32 {
     }
 
     let mut canvas = Canvas::new(width, height);
-    canvas.set_font_library(FontLibrary::new());
+    #[cfg(target_arch = "wasm32")]
+    {
+        let mut font_lib = FontLibrary::new();
+        font_lib.load_font(FALLBACK_FONT_BYTES);
+        canvas.set_font_library(font_lib);
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        canvas.set_font_library(FontLibrary::new());
+    }
     let handle = unsafe { next_handle() };
 
     let store = CANVAS_STORE.get_or_init(|| Mutex::new(HashMap::new()));
@@ -367,16 +379,16 @@ fn parse_color(color: &str) -> Result<Color, String> {
 
     // Named colors (basic set)
     match color.to_lowercase().as_str() {
-        "red" => return Ok(Color::RED),
-        "green" => return Ok(Color::GREEN),
-        "blue" => return Ok(Color::BLUE),
-        "black" => return Ok(Color::BLACK),
-        "white" => return Ok(Color::WHITE),
-        "yellow" => return Ok(Color::rgb(1.0, 1.0, 0.0)),
-        "cyan" => return Ok(Color::rgb(0.0, 1.0, 1.0)),
-        "magenta" => return Ok(Color::rgb(1.0, 0.0, 1.0)),
-        "transparent" => return Ok(Color::new(0.0, 0.0, 0.0, 0.0)),
-        _ => return Err(format!("Unknown color: {}", color)),
+        "red" => Ok(Color::RED),
+        "green" => Ok(Color::GREEN),
+        "blue" => Ok(Color::BLUE),
+        "black" => Ok(Color::BLACK),
+        "white" => Ok(Color::WHITE),
+        "yellow" => Ok(Color::rgb(1.0, 1.0, 0.0)),
+        "cyan" => Ok(Color::rgb(0.0, 1.0, 1.0)),
+        "magenta" => Ok(Color::rgb(1.0, 0.0, 1.0)),
+        "transparent" => Ok(Color::new(0.0, 0.0, 0.0, 0.0)),
+        _ => Err(format!("Unknown color: {}", color)),
     }
 }
 

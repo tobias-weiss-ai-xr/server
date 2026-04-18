@@ -125,7 +125,7 @@ fn write_placeholder_chunk(out: &mut Vec<u8>, chunk: &DjvuChunk) {
     out.extend_from_slice(&vec![0u8; chunk.size as usize]);
 
     // IFF padding to even boundary
-    if (chunk.size as usize) % 2 != 0 {
+    if !(chunk.size as usize).is_multiple_of(2) {
         out.push(0);
     }
 }

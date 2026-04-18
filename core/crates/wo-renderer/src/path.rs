@@ -139,7 +139,7 @@ impl PathBuilder {
 
     /// Add an ellipse to the path (approximated with 4 cubic Bézier curves).
     pub fn ellipse(&mut self, cx: f32, cy: f32, rx: f32, ry: f32) -> &mut Self {
-        let k = 0.5522847498; // 4*(sqrt(2)-1)/3
+        let k = 0.552_284_8; // 4*(sqrt(2)-1)/3
         self.move_to(cx + rx, cy);
         self.cubic_to(cx + rx, cy + ry * k, cx + rx * k, cy + ry, cx, cy + ry);
         self.cubic_to(cx - rx * k, cy + ry, cx - rx, cy + ry * k, cx - rx, cy);

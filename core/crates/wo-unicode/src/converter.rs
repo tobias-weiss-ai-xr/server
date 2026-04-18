@@ -139,7 +139,7 @@ impl UnicodeConverter {
         let mut total_read = 0;
         let mut total_written = 0;
         let mut had_replacements = false;
-        let remaining = &*input;
+        let remaining = input;
 
         loop {
             let (result, bytes_read, bytes_written, replaced) =

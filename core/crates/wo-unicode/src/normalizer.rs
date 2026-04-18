@@ -63,15 +63,15 @@ pub fn trim_normalize(text: &str) -> String {
 
 /// Normalize line endings to a consistent format.
 pub fn normalize_line_endings(text: &str, to: LineEnding) -> String {
-    let normalized = match to {
+    
+    match to {
         LineEnding::Lf => text.replace("\r\n", "\n").replace('\r', "\n"),
         LineEnding::Crlf => text
             .replace("\r\n", "\n")
             .replace('\r', "\n")
             .replace("\n", "\r\n"),
         LineEnding::Cr => text.replace("\r\n", "\r").replace("\n", "\r"),
-    };
-    normalized
+    }
 }
 
 /// Line ending type.

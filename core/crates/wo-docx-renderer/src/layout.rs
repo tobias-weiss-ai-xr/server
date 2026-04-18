@@ -247,6 +247,7 @@ impl LayoutEngine {
         pages
     }
 
+    #[allow(clippy::too_many_arguments)]
     /// Wrap paragraph text into lines using character-level width estimation.
     fn wrap_paragraph_into_lines(
         &self,
@@ -442,6 +443,7 @@ impl LayoutEngine {
         lines
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn flush_line(
         &self,
         lines: &mut Vec<LayoutLine>,
@@ -503,7 +505,7 @@ impl LayoutEngine {
         }
 
         // Determine column count from the first row
-        let num_cols = table.rows.get(0).map(|r| r.cells.len()).unwrap_or(0);
+        let num_cols = table.rows.first().map(|r| r.cells.len()).unwrap_or(0);
 
         if num_cols == 0 {
             return LayoutTable {
@@ -560,7 +562,7 @@ impl LayoutEngine {
         for (row_idx, row) in table.rows.iter().enumerate() {
             let mut x = self.margin_left;
             let row_h = row_heights[row_idx];
-            for (_col_idx, cell) in row.cells.iter().enumerate() {
+            for cell in row.cells.iter() {
                 let cell_w = cell.width.map(|w| w as f32 / 20.0).unwrap_or(col_width);
                 cells.push(LayoutCell {
                     paragraphs: cell.paragraphs.clone(),

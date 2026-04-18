@@ -8,6 +8,7 @@ import { InsertTab } from "./InsertTab"
 import { LayoutTab } from "./LayoutTab"
 import { ReferencesTab } from "./ReferencesTab"
 import { ViewTab } from "./ViewTab"
+import { CollaborationStatus } from "@world-office/collaboration-react"
 
 const ObservedToolbar = observer(function ObservedToolbar() {
   const isEditMode = documentStore.isEditMode
@@ -24,7 +25,9 @@ const ObservedToolbar = observer(function ObservedToolbar() {
         <ViewTab />
         {isEditMode && <FormsTab />}
         {isEditMode && <HeaderFooterTab />}
-        <div className="de-toolbar-extra-right" />
+        <div className="de-toolbar-extra-right">
+          <CollaborationStatus state="disconnected" userCount={0} />
+        </div>
       </div>
       <section className="de-toolbar-controls" role="tabpanel">
         <section className="de-toolbar-static" />

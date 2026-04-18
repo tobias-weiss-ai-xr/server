@@ -1,6 +1,6 @@
 # Codeberg CI/CD Migration — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Migrate all CI/CD pipelines from GitHub Actions to Forgejo Actions on Codeberg, adding WASM build verification, Docker CI, and security scanning.
 
@@ -62,13 +62,13 @@ https://data.forgejo.org/actions/cache@v4
 **Files:**
 - Create: `.forgejo/workflows/` (directory)
 
-- [ ] **Step 1: Create the directory structure**
+- [x] **Step 1: Create the directory structure**
 
 ```bash
 mkdir -p .forgejo/workflows
 ```
 
-- [ ] **Step 2: Verify directory was created**
+- [x] **Step 2: Verify directory was created**
 
 ```bash
 ls -la .forgejo/workflows/
@@ -76,7 +76,7 @@ ls -la .forgejo/workflows/
 
 Expected: empty directory listing
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add .forgejo/workflows/
@@ -100,7 +100,7 @@ This workflow migrates all 6 GitHub CI jobs to Forgejo. Key changes:
 - `wo-pdf` and `wo-webdav` are excluded (known ICE)
 - `services-enterprise/*` members are excluded (may not be public)
 
-- [ ] **Step 1: Write the complete CI workflow file**
+- [x] **Step 1: Write the complete CI workflow file**
 
 ```yaml
 # .forgejo/workflows/ci.yml
@@ -307,7 +307,7 @@ jobs:
         timeout-minutes: 30
 ```
 
-- [ ] **Step 2: Validate YAML syntax**
+- [x] **Step 2: Validate YAML syntax**
 
 ```bash
 python3 -c "import yaml; yaml.safe_load(open('.forgejo/workflows/ci.yml'))"
@@ -315,7 +315,7 @@ python3 -c "import yaml; yaml.safe_load(open('.forgejo/workflows/ci.yml'))"
 
 Expected: no errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add .forgejo/workflows/ci.yml
@@ -330,7 +330,7 @@ git commit -m "ci(forgejo): add main CI workflow with Rust and TypeScript jobs"
 - Create: `.forgejo/workflows/security.yml`
 - Reference: `.github/workflows/security.yml` (current source of truth)
 
-- [ ] **Step 1: Write the complete security workflow file**
+- [x] **Step 1: Write the complete security workflow file**
 
 ```yaml
 # .forgejo/workflows/security.yml
@@ -405,7 +405,7 @@ jobs:
         timeout-minutes: 10
 ```
 
-- [ ] **Step 2: Validate YAML syntax**
+- [x] **Step 2: Validate YAML syntax**
 
 ```bash
 python3 -c "import yaml; yaml.safe_load(open('.forgejo/workflows/security.yml'))"
@@ -413,7 +413,7 @@ python3 -c "import yaml; yaml.safe_load(open('.forgejo/workflows/security.yml'))
 
 Expected: no errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add .forgejo/workflows/security.yml
@@ -428,7 +428,7 @@ git commit -m "ci(forgejo): add weekly security audit workflow"
 - Create: `.forgejo/workflows/release.yml`
 - Reference: `.github/workflows/release.yml` (current source of truth)
 
-- [ ] **Step 1: Write the complete release workflow file**
+- [x] **Step 1: Write the complete release workflow file**
 
 ```yaml
 # .forgejo/workflows/release.yml
@@ -552,7 +552,7 @@ jobs:
         timeout-minutes: 10
 ```
 
-- [ ] **Step 2: Validate YAML syntax**
+- [x] **Step 2: Validate YAML syntax**
 
 ```bash
 python3 -c "import yaml; yaml.safe_load(open('.forgejo/workflows/release.yml'))"
@@ -560,7 +560,7 @@ python3 -c "import yaml; yaml.safe_load(open('.forgejo/workflows/release.yml'))"
 
 Expected: no errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add .forgejo/workflows/release.yml
@@ -576,7 +576,7 @@ git commit -m "ci(forgejo): add tag-triggered release workflow"
 
 This is a NEW workflow — no GitHub equivalent exists. It verifies that the two WASM crates compile to `wasm32-unknown-unknown` without errors. These crates cannot be tested with `cargo test` (they need wasm-pack or a browser runtime).
 
-- [ ] **Step 1: Write the complete WASM workflow file**
+- [x] **Step 1: Write the complete WASM workflow file**
 
 ```yaml
 # .forgejo/workflows/wasm.yml
@@ -658,7 +658,7 @@ jobs:
         timeout-minutes: 30
 ```
 
-- [ ] **Step 2: Validate YAML syntax**
+- [x] **Step 2: Validate YAML syntax**
 
 ```bash
 python3 -c "import yaml; yaml.safe_load(open('.forgejo/workflows/wasm.yml'))"
@@ -666,7 +666,7 @@ python3 -c "import yaml; yaml.safe_load(open('.forgejo/workflows/wasm.yml'))"
 
 Expected: no errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add .forgejo/workflows/wasm.yml
@@ -685,7 +685,7 @@ This is a NEW workflow — no GitHub equivalent exists. It builds Docker images 
 
 This workflow only runs on push to `main` (not on PRs) to avoid wasting CI resources on Docker builds for every PR.
 
-- [ ] **Step 1: Write the complete Docker workflow file**
+- [x] **Step 1: Write the complete Docker workflow file**
 
 ```yaml
 # .forgejo/workflows/docker.yml
@@ -763,7 +763,7 @@ jobs:
         timeout-minutes: 30
 ```
 
-- [ ] **Step 2: Validate YAML syntax**
+- [x] **Step 2: Validate YAML syntax**
 
 ```bash
 python3 -c "import yaml; yaml.safe_load(open('.forgejo/workflows/docker.yml'))"
@@ -771,7 +771,7 @@ python3 -c "import yaml; yaml.safe_load(open('.forgejo/workflows/docker.yml'))"
 
 Expected: no errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add .forgejo/workflows/docker.yml
@@ -789,7 +789,7 @@ git commit -m "ci(forgejo): add Docker build workflow for microservices"
 - Read: `.forgejo/workflows/wasm.yml`
 - Read: `.forgejo/workflows/docker.yml`
 
-- [ ] **Step 1: Validate all YAML files parse correctly**
+- [x] **Step 1: Validate all YAML files parse correctly**
 
 ```bash
 python3 -c "
@@ -810,7 +810,7 @@ if errors:
 
 Expected: all 5 files print `OK`
 
-- [ ] **Step 2: Verify all action URLs are fully-qualified (no short URLs)**
+- [x] **Step 2: Verify all action URLs are fully-qualified (no short URLs)**
 
 ```bash
 grep -rn "uses:.*actions/checkout\|uses:.*actions/setup-node\|uses:.*actions/setup-go\|uses:.*actions/upload-artifact\|uses:.*actions/download-artifact\|uses:.*actions/cache" .forgejo/workflows/ | grep -v "https://" || echo "All action URLs are fully-qualified"
@@ -818,7 +818,7 @@ grep -rn "uses:.*actions/checkout\|uses:.*actions/setup-node\|uses:.*actions/set
 
 Expected: "All action URLs are fully-qualified" (no short URLs found)
 
-- [ ] **Step 3: Verify no job-level timeout-minutes (Forgejo ignores them)**
+- [x] **Step 3: Verify no job-level timeout-minutes (Forgejo ignores them)**
 
 ```bash
 grep -n "timeout-minutes" .forgejo/workflows/*.yml | grep -v "^.forgejo/workflows/.*:[0-9]*: *- name:" || echo "No job-level timeouts found"
@@ -835,7 +835,7 @@ Expected: "No job-level timeouts found" — all timeouts are under step names
 - Compare: `.github/workflows/security.yml` vs `.forgejo/workflows/security.yml`
 - Compare: `.github/workflows/release.yml` vs `.forgejo/workflows/release.yml`
 
-- [ ] **Step 1: Verify all GitHub CI jobs have Forgejo equivalents**
+- [x] **Step 1: Verify all GitHub CI jobs have Forgejo equivalents**
 
 ```bash
 echo "=== GitHub CI jobs ==="
@@ -847,7 +847,7 @@ grep "^  [a-z].*:$" .forgejo/workflows/ci.yml
 
 Expected: Both list `lint-rust`, `test-rust`, `lint-ts`, `typecheck-ts`, `build-ts`, `build-rust`
 
-- [ ] **Step 2: Verify security workflow parity**
+- [x] **Step 2: Verify security workflow parity**
 
 ```bash
 echo "=== GitHub security jobs ==="
@@ -859,7 +859,7 @@ grep "^  [a-z].*:$" .forgejo/workflows/security.yml
 
 Expected: Both list `cargo-audit`, `npm-audit`
 
-- [ ] **Step 3: Verify release workflow parity**
+- [x] **Step 3: Verify release workflow parity**
 
 ```bash
 echo "=== GitHub release jobs ==="
@@ -878,7 +878,7 @@ Expected: GitHub has `build-core`, `build-web`. Forgejo has `build-core`, `build
 **Files:**
 - Grep: `.forgejo/workflows/*.yml` for `wo-pdf` and `wo-webdav`
 
-- [ ] **Step 1: Check all Rust cargo commands exclude problematic crates**
+- [x] **Step 1: Check all Rust cargo commands exclude problematic crates**
 
 ```bash
 echo "=== Cargo commands that SHOULD exclude wo-pdf and wo-webdav ==="
@@ -887,7 +887,7 @@ grep -n "cargo " .forgejo/workflows/ci.yml .forgejo/workflows/release.yml .forge
 
 Expected: All `cargo check`, `cargo clippy`, `cargo test`, `cargo build` commands include `--exclude wo-pdf --exclude wo-webdav`. The only exception is `cargo audit` in security.yml (audit checks the whole workspace by design and won't trigger the ICE).
 
-- [ ] **Step 2: Confirm no cargo command is missing the exclusions**
+- [x] **Step 2: Confirm no cargo command is missing the exclusions**
 
 ```bash
 # Find cargo commands that are NOT cargo audit and do NOT have --exclude
@@ -903,7 +903,7 @@ Expected: "All cargo commands properly exclude wo-pdf"
 **Files:**
 - Grep: `.forgejo/workflows/*.yml`
 
-- [ ] **Step 1: Check for job-level permissions**
+- [x] **Step 1: Check for job-level permissions**
 
 ```bash
 grep -n "^  permissions:" .forgejo/workflows/*.yml || echo "No job-level permissions (correct)"
@@ -911,7 +911,7 @@ grep -n "^  permissions:" .forgejo/workflows/*.yml || echo "No job-level permiss
 
 Expected: "No job-level permissions (correct)"
 
-- [ ] **Step 2: Check for job-level continue-on-error**
+- [x] **Step 2: Check for job-level continue-on-error**
 
 ```bash
 grep -n "^  continue-on-error:" .forgejo/workflows/*.yml || echo "No job-level continue-on-error (correct)"
@@ -919,7 +919,7 @@ grep -n "^  continue-on-error:" .forgejo/workflows/*.yml || echo "No job-level c
 
 Expected: "No job-level continue-on-error (correct)"
 
-- [ ] **Step 3: Check that no runner uses `ubuntu-latest`**
+- [x] **Step 3: Check that no runner uses `ubuntu-latest`**
 
 ```bash
 grep -n "ubuntu-latest" .forgejo/workflows/*.yml || echo "No ubuntu-latest references (correct)"
@@ -934,7 +934,7 @@ Expected: "No ubuntu-latest references (correct)" — all runners use `docker://
 **Files:**
 - Compare: `docker-compose.services.yml` service names vs `.forgejo/workflows/docker.yml` matrix
 
-- [ ] **Step 1: Extract service names from docker-compose.services.yml**
+- [x] **Step 1: Extract service names from docker-compose.services.yml**
 
 ```bash
 grep "^  [a-z].*:$" docker-compose.services.yml | grep -v "^  #"
@@ -942,7 +942,7 @@ grep "^  [a-z].*:$" docker-compose.services.yml | grep -v "^  #"
 
 Expected: `identity-service`, `storage-service`, `conversion-service`, `coauthoring-service`, `session-service`, `api-gateway`, `docserver`
 
-- [ ] **Step 2: Extract service names from Docker workflow matrix**
+- [x] **Step 2: Extract service names from Docker workflow matrix**
 
 ```bash
 grep "service:" .forgejo/workflows/docker.yml | grep -v "IMAGE_NAME"
@@ -959,7 +959,7 @@ Note: The docker-compose uses `docserver` while the Docker workflow uses `wo-doc
 **Files:**
 - Grep: `.forgejo/workflows/*.yml` for `forgejo.*` and `github.*` context usage
 
-- [ ] **Step 1: List all context variable usages**
+- [x] **Step 1: List all context variable usages**
 
 ```bash
 grep -rn "forgejo\.\|github\." .forgejo/workflows/*.yml | grep -v "# " | grep -v "codeberg.org/forgejo"
@@ -967,7 +967,7 @@ grep -rn "forgejo\.\|github\." .forgejo/workflows/*.yml | grep -v "# " | grep -v
 
 Expected: Uses `forgejo.ref_name`, `forgejo.repository`, `forgejo.actor` — all valid Forgejo context variables.
 
-- [ ] **Step 2: Verify FORGEJO_TOKEN is used (not GITHUB_TOKEN) for Codeberg-specific actions**
+- [x] **Step 2: Verify FORGEJO_TOKEN is used (not GITHUB_TOKEN) for Codeberg-specific actions**
 
 ```bash
 grep -n "secrets\." .forgejo/workflows/*.yml
@@ -983,7 +983,7 @@ This is the comprehensive final check before considering the migration complete.
 
 ### F1: Structural verification
 
-- [ ] **Step 1: Verify all 5 workflow files exist**
+- [x] **Step 1: Verify all 5 workflow files exist**
 
 ```bash
 ls -1 .forgejo/workflows/
@@ -998,7 +998,7 @@ security.yml
 wasm.yml
 ```
 
-- [ ] **Step 2: Verify GitHub workflows are untouched**
+- [x] **Step 2: Verify GitHub workflows are untouched**
 
 ```bash
 git diff .github/workflows/
@@ -1008,7 +1008,7 @@ Expected: no output (no changes to GitHub workflows)
 
 ### F2: Content verification
 
-- [ ] **Step 3: Verify total line count is reasonable**
+- [x] **Step 3: Verify total line count is reasonable**
 
 ```bash
 wc -l .forgejo/workflows/*.yml
@@ -1016,7 +1016,7 @@ wc -l .forgejo/workflows/*.yml
 
 Expected: each file between 30-120 lines, total ~350-500 lines
 
-- [ ] **Step 4: Verify all files have proper `name:` and `on:` triggers**
+- [x] **Step 4: Verify all files have proper `name:` and `on:` triggers**
 
 ```bash
 for f in .forgejo/workflows/*.yml; do echo "--- $f ---"; head -10 "$f" | grep -E "^name:|^on:"; done
@@ -1026,7 +1026,7 @@ Expected: every file has a `name:` and `on:` trigger
 
 ### F3: Security verification
 
-- [ ] **Step 5: Verify no secrets are hardcoded**
+- [x] **Step 5: Verify no secrets are hardcoded**
 
 ```bash
 grep -rn "password:\|secret:\|token:" .forgejo/workflows/*.yml | grep -v "secrets\.\|FORGEJO_TOKEN\|JWT_SECRET\|# " | grep -v "password:" | grep -v "CARGO_TERM" || echo "No hardcoded secrets found"
@@ -1036,7 +1036,7 @@ Expected: "No hardcoded secrets found"
 
 ### F4: Git verification
 
-- [ ] **Step 6: Verify all new files are tracked**
+- [x] **Step 6: Verify all new files are tracked**
 
 ```bash
 git status .forgejo/workflows/
@@ -1048,16 +1048,16 @@ Expected: all 5 `.yml` files show as new or modified (staged)
 
 ## Definition of Done
 
-- [ ] `.forgejo/workflows/` contains exactly 5 workflow files: `ci.yml`, `security.yml`, `release.yml`, `wasm.yml`, `docker.yml`
-- [ ] All YAML files parse without errors
-- [ ] All action URLs are fully-qualified (no short `actions/checkout@v4` forms)
-- [ ] No job-level `timeout-minutes`, `permissions`, or `continue-on-error` (all step-level)
-- [ ] No `ubuntu-latest` runner references (all use `docker://node:20-bookworm`)
-- [ ] All Rust cargo commands exclude `wo-pdf` and `wo-webdav` (except `cargo audit`)
-- [ ] CI workflow covers all 6 jobs from the GitHub equivalent (lint-rust, test-rust, lint-ts, typecheck-ts, build-ts, build-rust)
-- [ ] Security workflow covers both cargo-audit and npm-audit
-- [ ] Release workflow adds a Forgejo release creation step (not in GitHub version)
-- [ ] WASM workflow builds both `wo-x2t-wasm` and `wo-renderer-wasm` for `wasm32-unknown-unknown`
-- [ ] Docker workflow builds all 7 service images matching `docker-compose.services.yml`
-- [ ] GitHub workflows in `.github/workflows/` are completely untouched
-- [ ] All commits use conventional commit format (`ci(forgejo):` prefix)
+- [x] `.forgejo/workflows/` contains exactly 5 workflow files: `ci.yml`, `security.yml`, `release.yml`, `wasm.yml`, `docker.yml`
+- [x] All YAML files parse without errors
+- [x] All action URLs are fully-qualified (no short `actions/checkout@v4` forms)
+- [x] No job-level `timeout-minutes`, `permissions`, or `continue-on-error` (all step-level)
+- [x] No `ubuntu-latest` runner references (all use `docker://node:20-bookworm`)
+- [x] All Rust cargo commands exclude `wo-pdf` and `wo-webdav` (except `cargo audit`)
+- [x] CI workflow covers all 6 jobs from the GitHub equivalent (lint-rust, test-rust, lint-ts, typecheck-ts, build-ts, build-rust)
+- [x] Security workflow covers both cargo-audit and npm-audit
+- [x] Release workflow adds a Forgejo release creation step (not in GitHub version)
+- [x] WASM workflow builds both `wo-x2t-wasm` and `wo-renderer-wasm` for `wasm32-unknown-unknown`
+- [x] Docker workflow builds all 7 service images matching `docker-compose.services.yml`
+- [x] GitHub workflows in `.github/workflows/` are completely untouched
+- [x] All commits use conventional commit format (`ci(forgejo):` prefix)

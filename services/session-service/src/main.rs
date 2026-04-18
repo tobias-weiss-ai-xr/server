@@ -66,6 +66,7 @@ struct SessionRepository {
     conn: Connection,
 }
 
+#[allow(dead_code)]
 impl SessionRepository {
     /// Create a new repository backed by an in-memory database.
     fn new_in_memory() -> Result<Self, rusqlite::Error> {

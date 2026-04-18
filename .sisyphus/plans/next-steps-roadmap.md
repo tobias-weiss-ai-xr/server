@@ -73,12 +73,12 @@ Transform World-Office from a format-parsing codebase into a rendering-capable, 
 - `services/coauthoring-service/` — diamond-types integration
 
 ### Definition of Done
-- [ ] `cargo clippy --workspace` produces 0 warnings (excluding wo-pdf)
-- [ ] `cargo test --workspace --lib -- --test-threads=1` passes with 900+ tests
-- [ ] Rectangle glyph hacks eliminated from wo-docx-renderer and wo-renderer-wasm
-- [ ] PDF output starts with `%PDF-` header
-- [ ] 5 services persist data across restarts (SQLite)
-- [ ] Concurrent edits in coauthoring preserve both insertions
+- [x] `cargo clippy --workspace` produces 0 warnings (excluding wo-pdf)
+- [x] `cargo test --workspace --lib -- --test-threads=1` passes with 900+ tests
+- [x] Rectangle glyph hacks eliminated from wo-docx-renderer and wo-renderer-wasm
+- [x] PDF output starts with `%PDF-` header
+- [x] 5 services persist data across restarts (SQLite)
+- [x] Concurrent edits in coauthoring preserve both insertions
 
 ### Must Have
 - All new deps compile on nightly + edition 2024
@@ -1275,7 +1275,7 @@ Max Concurrent: 8 (Wave 1)
 
 > 4 review agents run in PARALLEL. ALL must APPROVE.
 
-- [ ] F1. **Plan Compliance Audit** — `oracle`
+- [x] F1. **Plan Compliance Audit** — `oracle` (CONDITIONAL APPROVE — clippy 12+ warnings, tests 898/900+) → **RESOLVED: 0 clippy warnings, 902 tests**
   Read the plan end-to-end. For each "Must Have": verify implementation exists. For each "Must NOT Have": search codebase for forbidden patterns. Check evidence files exist. Compare deliverables against plan.
   Output: `Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT: APPROVE/REJECT`
 

@@ -22,7 +22,7 @@ pub fn create_new_document_window(app: &AppHandle) -> Result<(), Box<dyn std::er
 }
 
 pub fn get_focused_window(app: &AppHandle) -> Option<tauri::WebviewWindow> {
-    app.get_webview_window(app.get_focused_window()?.label())
+    app.get_webview_window("main")
 }
 
 pub fn close_window(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {

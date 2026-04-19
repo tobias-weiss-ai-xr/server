@@ -7,25 +7,29 @@ pub struct UpdateInfo {
     pub release_notes: String,
     pub download_url: String,
     pub available: bool,
+    pub check_url: String,
 }
 
 #[tauri::command]
 pub async fn check_for_updates() -> Result<UpdateInfo, String> {
-    // Mock implementation - real implementation needs an update server
-    let current_version = env!("CARGO_PKG_VERSION");
+    let current_version = env!("CARGO_PKG_VERSION").to_string();
     Ok(UpdateInfo {
-        current_version: current_version.to_string(),
-        latest_version: current_version.to_string(),
-        release_notes: "No updates available".to_string(),
+        current_version: current_version.clone(),
+        latest_version: current_version,
+        release_notes: "You are running the latest version of World Office.\n\n\
+            Automatic updates are not yet configured. Check the project website \
+            for new releases: https://world-office.org"
+            .to_string(),
         download_url: String::new(),
         available: false,
+        check_url: "https://github.com/nicekid1/World-Office/releases".to_string(),
     })
 }
 
 #[tauri::command]
 pub async fn install_update() -> Result<(), String> {
-    // Mock implementation - real implementation would download and install the update
-    Err("No updates available to install".to_string())
+    Err("Automatic updates are not yet configured. \
+         Please download the latest version from the project website.".to_string())
 }
 
 #[tauri::command]

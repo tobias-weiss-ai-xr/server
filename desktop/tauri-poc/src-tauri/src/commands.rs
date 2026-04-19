@@ -48,11 +48,19 @@ pub fn close_doc(app: AppHandle, state: State<'_, AppState>) -> Result<(), Strin
 }
 
 #[tauri::command]
-pub fn about(app: AppHandle) -> Result<(), String> {
-    // In a real app, you would show an about dialog
-    // For now, we'll use the built-in message dialog if available
-    #[cfg(debug_assertions)]
-    println!("World Office Desktop v0.1.0 - About Dialog");
+pub async fn about(app: tauri::AppHandle) -> Result<(), String> {
+    use tauri_plugin_dialog::DialogExt;
+    let version = env!("CARGO_PKG_VERSION");
+    app.dialog()
+        .message(format!(
+            "World Office Desktop\nVersion {version}\n\n\
+             An independent, open-source document editing suite.\n\
+             Built with Rust + React + Tauri.\n\n\
+             License: MIT\nhttps://world-office.org"
+        ))
+        .title("About World Office")
+        .kind(tauri_plugin_dialog::MessageDialogKind::Info)
+        .show(|_| {});
     Ok(())
 }
 
@@ -69,9 +77,8 @@ pub fn greet(name: &str) -> String {
 #[tauri::command]
 pub fn zoom_in(app: AppHandle) -> Result<(), String> {
     if let Some(window) = window::get_focused_window(&app) {
-        // Implement zoom in logic
         window
-            .set_zoom(window.zoom().unwrap_or(1.0) + 0.1)
+            .set_zoom(1.1)
             .map_err(|e| e.to_string())?;
     }
     Ok(())
@@ -80,13 +87,9 @@ pub fn zoom_in(app: AppHandle) -> Result<(), String> {
 #[tauri::command]
 pub fn zoom_out(app: AppHandle) -> Result<(), String> {
     if let Some(window) = window::get_focused_window(&app) {
-        // Implement zoom out logic
-        let current_zoom = window.zoom().unwrap_or(1.0);
-        if current_zoom > 0.2 {
-            window
-                .set_zoom(current_zoom - 0.1)
-                .map_err(|e| e.to_string())?;
-        }
+        window
+            .set_zoom(0.9)
+            .map_err(|e| e.to_string())?;
     }
     Ok(())
 }
@@ -105,6 +108,14 @@ pub fn toggle_fullscreen(app: AppHandle) -> Result<(), String> {
         window
             .set_fullscreen(!window.is_fullscreen().unwrap_or(false))
             .map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
+#[tauri::command]
+pub fn update_window_title(app: AppHandle, title: String) -> Result<(), String> {
+    if let Some(window) = window::get_focused_window(&app) {
+        window.set_title(&title).map_err(|e| e.to_string())?;
     }
     Ok(())
 }

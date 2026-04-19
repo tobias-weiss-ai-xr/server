@@ -1,3 +1,4 @@
+mod bridge;
 mod commands;
 mod filesystem;
 mod keychain;
@@ -23,6 +24,7 @@ pub fn run() {
             commands::close_doc,
             commands::about,
             commands::get_recent_files,
+            commands::update_window_title,
             commands::greet,
             commands::zoom_in,
             commands::zoom_out,
@@ -56,7 +58,7 @@ pub fn run() {
         .manage(AppState::new())
         .setup(|app| {
             // Set application menu
-            let menu = create_app_menu(app.handle())?;
+            let menu = create_app_menu(app)?;
             app.set_menu(menu)?;
 
             // Create system tray
@@ -68,7 +70,7 @@ pub fn run() {
 
             // Register menu event handler
             app.on_menu_event(move |app, event| {
-                handle_menu_event(app, event.id().as_ref());
+                handle_menu_event(app, event.id.as_ref());
             });
 
             Ok(())
@@ -80,25 +82,19 @@ pub fn run() {
 fn handle_menu_event(app: &tauri::AppHandle, id: &str) {
     match id {
         "new" => {
-            let _ = window::create_new_document_window(app);
+            bridge::emit_menu_event(app, "new");
         }
         "open" => {
-            // In a real app, you would open a file dialog here
-            #[cfg(debug_assertions)]
-            println!("Open menu item clicked");
+            bridge::emit_menu_event(app, "open");
         }
         "save" => {
-            // In a real app, you would save the current document here
-            #[cfg(debug_assertions)]
-            println!("Save menu item clicked");
+            bridge::emit_menu_event(app, "save");
         }
         "save-as" => {
-            // In a real app, you would open a save-as dialog here
-            #[cfg(debug_assertions)]
-            println!("Save As menu item clicked");
+            bridge::emit_menu_event(app, "save-as");
         }
         "close" => {
-            let _ = window::close_window(app);
+            bridge::emit_menu_event(app, "close");
         }
         "exit" => {
             app.exit(0);
@@ -114,9 +110,31 @@ fn handle_menu_event(app: &tauri::AppHandle, id: &str) {
         }
         "fullscreen" => {
             let _ = commands::toggle_fullscreen(app.clone());
+            bridge::emit_menu_event(app, "fullscreen");
         }
         "about" => {
-            let _ = commands::about(app.clone());
+            bridge::emit_menu_event(app, "about");
+        }
+        "toggle-sidebar" => {
+            bridge::emit_menu_event(app, "toggle-sidebar");
+        }
+        "check-updates" => {
+            bridge::emit_menu_event(app, "check-updates");
+        }
+        "documentation" => {
+            bridge::emit_menu_event(app, "documentation");
+        }
+        _ if id.starts_with("recent-") => {
+            let state = app.state::<AppState>();
+            let recent = state.get_recent_files();
+            if let Some(index_str) = id.strip_prefix("recent-") {
+                if let Ok(index) = index_str.parse::<usize>() {
+                    if let Some(path) = recent.get(index) {
+                        bridge::emit_menu_event(app, "open-recent");
+                        let _ = commands::open_doc(app.clone(), state, path.clone());
+                    }
+                }
+            }
         }
         _ => {
             #[cfg(debug_assertions)]

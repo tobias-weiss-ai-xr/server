@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { documentStore } from "../stores/DocumentStore"
+import { saveFileToPath, openFile } from "../bridge/file-operations"
 
 export function useKeyboardShortcuts(): void {
   useEffect(() => {
@@ -14,9 +15,45 @@ export function useKeyboardShortcuts(): void {
         } else if (e.key === "0") {
           e.preventDefault()
           documentStore.setZoomLevel(100)
+        } else if (e.key === "s") {
+          e.preventDefault()
+          handleSave()
+        } else if (e.key === "o") {
+          e.preventDefault()
+          handleOpen()
+        } else if (e.key === "p") {
+          e.preventDefault()
+          handlePrint()
         }
       }
     }
+
+    async function handleSave(): Promise<void> {
+      if (!documentStore.isDesktop) return
+      if (documentStore.filePath) {
+        const content = ""
+        await saveFileToPath(documentStore.filePath, content)
+        documentStore.markSaved()
+      } else {
+        documentStore.setActiveTab("file")
+        documentStore.setActiveFileMenuPanel("saveas")
+      }
+    }
+
+    async function handleOpen(): Promise<void> {
+      if (!documentStore.isDesktop) return
+      const result = await openFile()
+      if (result) {
+        documentStore.setFilePath(result.path)
+        documentStore.setDirty(false)
+      }
+    }
+
+    function handlePrint(): void {
+      if (!documentStore.isDesktop) return
+      window.print()
+    }
+
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
   }, [])

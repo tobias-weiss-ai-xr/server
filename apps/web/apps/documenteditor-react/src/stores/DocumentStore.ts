@@ -65,6 +65,12 @@ export class DocumentStore {
   /* Spelling */
   spellingEnabled = true
 
+  /* Desktop integration */
+  isDesktop = false
+  filePath: string | null = null
+  fileName = "Untitled Document"
+  isDirty = false
+
   constructor() {
     makeAutoObservable(this)
   }
@@ -210,6 +216,23 @@ export class DocumentStore {
   setCompactStatusbar(compact: boolean): void {
     this.isCompactStatusbar = compact
     setStorageItem("compact-statusbar", compact ? "true" : "")
+  }
+
+  setIsDesktop(value: boolean): void {
+    this.isDesktop = value
+  }
+
+  setFilePath(path: string | null): void {
+    this.filePath = path
+    this.fileName = path ? path.split(/[/\\]/).pop() ?? "Untitled Document" : "Untitled Document"
+  }
+
+  setDirty(dirty: boolean): void {
+    this.isDirty = dirty
+  }
+
+  markSaved(): void {
+    this.isDirty = false
   }
 }
 

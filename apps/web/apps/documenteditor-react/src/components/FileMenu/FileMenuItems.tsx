@@ -1,4 +1,5 @@
 import { documentStore } from "../../stores/DocumentStore"
+import { openFile } from "../../bridge/file-operations"
 import type { FileMenuAction } from "../../types/document"
 
 interface FileMenuItemsProps {
@@ -41,6 +42,35 @@ export function FileMenuItems({ onMenuClick, onBack }: FileMenuItemsProps) {
     onBack()
   }
 
+  async function handleDesktopAction(action: string): Promise<void> {
+    if (!documentStore.isDesktop) {
+      onMenuClick(action, false)
+      return
+    }
+    switch (action) {
+      case "save-desktop": {
+        if (documentStore.filePath) {
+          onMenuClick(action, false)
+        } else {
+          onMenuClick("saveas", true)
+        }
+        break
+      }
+      case "open-recent": {
+        const result = await openFile()
+        if (result) {
+          documentStore.setFilePath(result.path)
+          documentStore.setDirty(false)
+          documentStore.setFileMenuOpen(false)
+          documentStore.setActiveFileMenuPanel(null)
+        }
+        break
+      }
+      default:
+        onMenuClick(action, false)
+    }
+  }
+
   return (
     <ul className="de-file-menu-items">
       <div
@@ -49,10 +79,7 @@ export function FileMenuItems({ onMenuClick, onBack }: FileMenuItemsProps) {
         tabIndex={0}
         onClick={handleBack}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault()
-            handleBack()
-          }
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleBack() }
         }}
       >
         <span className="de-file-menu-item-icon">←</span>
@@ -65,11 +92,11 @@ export function FileMenuItems({ onMenuClick, onBack }: FileMenuItemsProps) {
           className={`de-file-menu-item${activePanel === item.action ? " active" : ""}`}
           role="menuitem"
           tabIndex={0}
-          onClick={() => onMenuClick(item.action, item.hasPanel)}
+          onClick={() => handleDesktopAction(item.action)}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault()
-              onMenuClick(item.action, item.hasPanel)
+              handleDesktopAction(item.action)
             }
           }}
         >

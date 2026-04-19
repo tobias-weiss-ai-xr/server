@@ -1,101 +1,172 @@
 # World-Office WORKSPACE
 
-**Updated:** 2026-04-17
+**Updated:** 2026-04-19
 **Source:** codeberg.org/World-Office/server (independent project)
-**License:** MIT
-**Crate count:** 25 Rust crates + services + integrations
+**License:** AGPL-3.0-or-later (enterprise extensions under separate commercial license)
+**Crate count:** 26 core + 5 enterprise Rust crates, 8 + 3 enterprise services
 
 ## OVERVIEW
 
-World-Office — an independent, open-source document editing suite built from scratch in Rust + TypeScript. MIT licensed. The Rust core implements format parsing, rendering, conversion, WOPI/WebDAV protocols, desktop (Tauri), and WASM/browser targets.
+World-Office is an independent, open-source document editing suite built in Rust + TypeScript. The Rust core implements format parsing, rendering, conversion, WOPI/WebDAV protocols, desktop (Tauri), and WASM/browser targets. The TypeScript monorepo (pnpm) provides React-based document, spreadsheet, presentation, PDF, and Visio editors.
 
 ## STRUCTURE
 
 ```
-World-Office/
-├── core/                          # Rust workspace root
-│   └── crates/                    # 25 Rust crates (see below)
-├── desktop/                       # Desktop applications
-│   └── tauri-poc/                 # Tauri 2.0 desktop shell (10 modules)
-├── services/                      # Rust microservices (8 services)
-│   ├── api-gateway/               # Request routing
-│   ├── coauthoring-service/       # Real-time collaboration
-│   ├── conversion-service/        # Format conversion
-│   ├── identity-service/          # Auth (JWT, OAuth2)
-│   ├── session-service/           # Session management
-│   ├── storage-service/           # File storage backend
-│   ├── server/                    # Main document server
-│   └── admin-panel/              # Admin dashboard
-├── integrations/                  # Third-party integrations
-│   ├── opencloud/                 # OpenCloud deployment (Node.js, EJS, Docker)
-│   ├── nextcloud/                 # Nextcloud app (PHP, OCA\WorldOffice namespace)
-│   └── document-server-integration/ # Multi-language examples (C#, Go, Java, Node.js, PHP, Python, Ruby)
-├── apps/                          # React 19 web applications
-├── packages/                      # Shared TypeScript packages
-├── .github/                       # CI workflows (Rust lint/test, TS lint/typecheck/build)
-└── .sisyphus/plans/               # Implementation plans
+server/
++-- core/crates/                     26 Rust crates (format parsers, renderer, WASM, protocols)
++-- core-enterprise/crates/          5 enterprise Rust crates (signatures, DRM, redaction, watermark, comparison)
++-- desktop/tauri-poc/               Tauri 2.0 desktop shell (10 modules)
++-- services/                        8 Rust microservices
++-- services-enterprise/             3 enterprise services (audit, SCIM, webhooks)
++-- apps/web/                        Web editor frontend (editors, themes, translations)
++-- apps/web/apps/                   Individual editor apps (documenteditor-react, spreadsheeteditor-react, etc.)
++-- apps-web-enterprise/             Enterprise web apps
++-- packages/                        Shared TypeScript packages (design-system, editor-common, etc.)
++-- integrations/                    Third-party integrations
++-- tests/                           E2E test suite (Jest + Playwright + Docker Compose)
++-- observability/                   Grafana, Prometheus, Loki, Tempo
++-- ci/                              Docker base images for CI
++-- .forgejo/workflows/              CI/CD (ci, docker, release, security, wasm)
++-- .sisyphus/plans/                 Implementation plans
 ```
 
 ## RUST CRATES (core/crates/)
 
 ### Format Parsers (16 crates with FormatRoundtrip trait)
-| Crate | Description | Tests |
-|-------|-------------|-------|
-| wo-common | Shared types, errors, test harness | — |
-| wo-txt | Plain text parser | ~5 |
-| wo-unicode | Encoding conversion (ICU wrapper) | 32 |
-| wo-fb2 | FictionBook 2.0 parser + serializer | 27 |
-| wo-html | HTML import/export | 3 |
-| wo-rtf | Rich Text Format parser + serializer | 41 |
-| wo-epub | EPUB parser + serializer (ZIP-based) | 23 |
-| wo-hwp | Korean HWP format parser | 12 |
-| wo-djvu | DjVu document parser | 8 |
-| wo-xps | XPS document parser | 14 |
-| wo-ofd | Chinese OFD document parser | 10 |
-| wo-odf | OpenDocument format parser + serializer (ZIP+XML) | 26 |
-| wo-pdf | PDF reading/writing | ~8 |
-| wo-msbinary | OLE compound document parser → JSON | 29 |
-| wo-ooxml | OOXML (DOCX/XLSX/PPTX) parser + serializer | 29 |
-| wo-x2t | Format conversion orchestrator (27 native converters, chain support) | 120 |
+| Crate | Description |
+|-------|-------------|
+| wo-common | Shared types, errors, test harness |
+| wo-txt | Plain text parser |
+| wo-unicode | Encoding conversion (ICU-backed) |
+| wo-fb2 | FictionBook 2.0 parser + serializer |
+| wo-html | HTML import/export |
+| wo-rtf | Rich Text Format parser + serializer |
+| wo-epub | EPUB parser + serializer (ZIP-based) |
+| wo-hwp | Korean HWP format parser |
+| wo-djvu | DjVu document parser |
+| wo-xps | XPS document parser |
+| wo-ofd | Chinese OFD document parser |
+| wo-odf | OpenDocument format parser + serializer (ZIP + XML) |
+| wo-pdf | PDF reading/writing |
+| wo-msbinary | OLE compound document parser to JSON |
+| wo-ooxml | OOXML (DOCX/XLSX/PPTX) parser + serializer |
+| wo-x2t | Format conversion orchestrator (27 native converters, chain support) |
 
-### Rendering & Fonts (3 crates)
-| Crate | Description | Tests |
-|-------|-------------|-------|
-| wo-renderer | Canvas rendering engine (text layout, gradients, transforms) | 125 |
-| wo-fonts | Font loading, caching, CSS-compliant matching | 36 |
-| wo-raster | Image encode/decode (PNG, BMP) | 22 |
+### Rendering and Fonts (3 crates)
+| Crate | Description |
+|-------|-------------|
+| wo-renderer | Canvas rendering engine (text layout, gradients, transforms) |
+| wo-fonts | Font loading, caching, CSS-compliant matching |
+| wo-raster | Image encode/decode (PNG, BMP) |
 
-### WASM & Web (2 crates)
+### WASM Targets (2 crates)
 | Crate | Description |
 |-------|-------------|
 | wo-x2t-wasm | Format conversion compiled to WASM (wasm-bindgen) |
 | wo-renderer-wasm | Canvas rendering compiled to WASM (Web Canvas bridge) |
 
-### Desktop (1 crate)
-| Crate | Description |
-|-------|-------------|
-| wo-docx-renderer | DOCX → PDF rendering pipeline |
-
-### Infrastructure (3 crates)
+### Protocol and Infrastructure (5 crates)
 | Crate | Description |
 |-------|-------------|
 | wo-office-utils | ZIP/archive manipulation, ArchiveWriter |
+| wo-docx-renderer | DOCX to PDF rendering pipeline |
 | wo-wopi | WOPI protocol server (axum, CheckFileInfo/GetFile/PutFile) |
 | wo-webdav | WebDAV server (axum, PROPFIND/MKCOL/PUT/DELETE/LOCK) |
+| wo-docserver | Document server: serves editor UI, proxies WOPI requests to OCIS |
+
+## ENTERPRISE CRATES (core-enterprise/crates/)
+
+| Crate | Description |
+|-------|-------------|
+| wo-digital-signature | Digital signature support |
+| wo-redaction | Document redaction |
+| wo-drm | Digital rights management |
+| wo-watermark | Document watermarking |
+| wo-comparison | Document comparison |
+| wo-converter-pro | Advanced format conversion |
+
+These crates are available under a separate commercial license (LICENSE-COMMERCIAL).
+
+## SERVICES (services/)
+
+| Service | Description |
+|---------|-------------|
+| api-gateway | Request routing |
+| storage-service | File storage backend (CRUD endpoints, SQLite-backed metadata, disk blob storage) |
+| conversion-service | Format conversion |
+| coauthoring-service | Real-time collaboration |
+| identity-service | Auth (JWT, OAuth2) |
+| session-service | Session management |
+| server | Main document server |
+| admin-panel | Admin dashboard |
+
+### Storage Service Details
+
+`storage-service` has real CRUD implementation:
+- SQLite-backed metadata persistence (files table: id, name, content_type, size, path, timestamps)
+- Disk-based blob storage
+- REST endpoints: POST /files (upload), GET /files (list), GET /files/{id} (metadata), GET /files/{id}/content (raw bytes), DELETE /files/{id}
+- 7 repository unit tests covering insert, get, list, delete, and persistence across restarts
+
+## ENTERPRISE SERVICES (services-enterprise/)
+
+| Service | Description |
+|---------|-------------|
+| audit-service | Audit logging |
+| scim-service | SCIM user provisioning |
+| webhook-service | Webhook delivery |
 
 ## TAURI DESKTOP (desktop/tauri-poc/)
 
 10 Rust modules providing native desktop functionality:
-- commands.rs — Document operations (new, open, save, zoom, fullscreen)
-- menu.rs — Application menus (File/Edit/View/Help) using Tauri 2.0
-- tray.rs — System tray with context menu
-- window.rs — Multi-window management
-- state.rs — AppState with recent files, window count
-- filesystem.rs — 13 native filesystem commands (Rust ↔ JS bridge)
-- print.rs — Print support (render, preview, page sizes)
-- updater.rs — Auto-updater (Tauri updater plugin)
-- keychain.rs — Credential storage (keyring crate)
-- window.rs — Window helpers
+- commands.rs -- Document operations (new, open, save, zoom, fullscreen)
+- menu.rs -- Application menus (File/Edit/View/Help) using Tauri 2.0
+- tray.rs -- System tray with context menu
+- window.rs -- Multi-window management
+- state.rs -- AppState with recent files, window count
+- filesystem.rs -- 13 native filesystem commands (Rust to JS bridge)
+- print.rs -- Print support (render, preview, page sizes)
+- updater.rs -- Auto-updater (Tauri updater plugin)
+- keychain.rs -- Credential storage (keyring crate)
+
+## WEB EDITORS (apps/web/)
+
+Editor apps in `apps/web/apps/`:
+- documenteditor, documenteditor-react
+- spreadsheeteditor, spreadsheeteditor-react
+- presentationeditor, presentationeditor-react
+- pdfeditor, pdfeditor-react
+- visioeditor, visioeditor-react
+- api, common, editor-shell
+
+Shared packages in `packages/` under `@world-office` namespace:
+- editor-common -- Shared React components and utilities for editors
+- editor-stores -- Editor state management
+- design-system -- Tokens, theme, and primitive components
+- collaboration-client -- Collaboration protocol client
+- collaboration-react -- React bindings for collaboration
+- sdk-bridge -- SDK bridge layer
+- i18n -- Internationalization
+- eslint-config -- Shared ESLint configuration
+- tsconfig -- Shared TypeScript configuration
+
+## INTEGRATIONS
+
+| Integration | Path | Stack |
+|-------------|------|-------|
+| OpenCloud | integrations/opencloud/ | Node.js, EJS, Docker |
+| Nextcloud | integrations/nextcloud/ | PHP (OCA\WorldOffice namespace) |
+| Android | integrations/android/ | Android document editor app |
+| Document Server | integrations/document-server-integration/ | Examples in C#, Go, Java, Node.js, PHP, Python, Ruby |
+
+## E2E TEST SUITE (tests/)
+
+Located in `tests/`. Tests the full document editing stack:
+- Document Server (WOPI client)
+- OCIS (ownCloud Infinite Scale, WOPI host)
+- Companion (deployment dashboard)
+
+Stack: Jest, Playwright, Docker Compose. Run with `npm test` or `npm run test:e2e`.
 
 ## BUILD SYSTEMS
 
@@ -106,11 +177,12 @@ World-Office/
 | Rust lint | Clippy | `cargo clippy --workspace` |
 | Tauri desktop | Cargo + npm | `cd desktop/tauri-poc && cargo tauri dev` |
 | Web frontend | pnpm | `pnpm install && pnpm dev` |
-| CI | GitHub Actions/Forgejo | `.github/workflows/ci.yml` |
+| E2E tests | npm | `cd tests && npm test` |
+| CI | Forgejo Actions | `.forgejo/workflows/` (ci, docker, release, security, wasm) |
 
 ## CODE STYLE
 
-- **Rust**: `cargo fmt` + `cargo clippy` — follow existing patterns
+- **Rust**: `cargo fmt` + `cargo clippy` -- follow existing patterns
 - **TypeScript**: ESLint 9 + Prettier
 - **Commits**: Conventional commits (feat:, fix:, docs:, test:, refactor:)
 - Tests required for all code changes
@@ -133,12 +205,13 @@ wsl bash -c "cd /mnt/c/Users/Tobias/git/World-Office && ~/.cargo/bin/cargo test 
 
 ### Known Issue: wo-pdf ICE
 
-The wo-pdf crate triggers a Rust compiler ICE (Internal Compiler Error) in rustc 1.94.1. Skip wo-pdf tests until fixed upstream.
+The wo-pdf crate triggers a Rust compiler ICE (Internal Compiler Error) in some rustc versions. Skip wo-pdf tests until fixed upstream. The CI workflow excludes wo-pdf and wo-webdav from clippy and check steps.
 
 ## ANTI-PATTERNS
 
 - NEVER push to main without running `cargo test` on changed crates
 - NEVER add new Rust dependencies without checking they compile on Windows (wasm-bindgen crates can be tricky)
-- NEVER modify web-apps/deploy/ without running `pnpm build`
-- The WOPI server (wo-wopi) requires access tokens — don't expose endpoints without auth
-- WASM crates (wo-x2t-wasm, wo-renderer-wasm) cannot be tested with standard `cargo test` — they need wasm-pack or a browser runtime
+- The WOPI server (wo-wopi) requires access tokens -- do not expose endpoints without auth
+- WASM crates (wo-x2t-wasm, wo-renderer-wasm) cannot be tested with standard `cargo test` -- they need wasm-pack or a browser runtime
+- The Cargo workspace includes enterprise crates (`core-enterprise/`, `services-enterprise/`) -- changes to workspace Cargo.toml affect both open-source and enterprise builds
+- pnpm workspace includes `apps/web/apps/*` -- editor changes propagate across all editor shells

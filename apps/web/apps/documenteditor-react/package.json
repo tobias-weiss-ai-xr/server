@@ -21,7 +21,9 @@
     "@world-office/editor-stores": "workspace:*",
     "@world-office/sdk-bridge": "workspace:*",
     "@world-office/i18n": "workspace:*",
-    "@world-office/collaboration-react": "workspace:*"
+    "@world-office/collaboration-react": "workspace:*",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

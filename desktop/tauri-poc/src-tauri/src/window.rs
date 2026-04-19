@@ -22,7 +22,7 @@ pub fn create_new_document_window(app: &AppHandle) -> Result<(), Box<dyn std::er
 }
 
 pub fn get_focused_window(app: &AppHandle) -> Option<tauri::WebviewWindow> {
-    app.get_webview_window(app.focused_window()?.label())
+    app.get_webview_window(app.get_focused_window()?.label())
 }
 
 pub fn close_window(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
@@ -34,7 +34,9 @@ pub fn close_window(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
 
 pub fn get_document_title(app: &AppHandle, label: &str) -> String {
     if let Some(window) = app.get_webview_window(label) {
-        window.title().unwrap_or_else(|| "World Office".to_string())
+        window
+            .title()
+            .unwrap_or_else(|_| "World Office".to_string())
     } else {
         "World Office".to_string()
     }

@@ -16,9 +16,9 @@ pub struct PageSize {
 
 #[tauri::command]
 pub async fn print_document(
-    html_content: String,
+    _html_content: String,
     printer_name: Option<String>,
-    app: tauri::AppHandle,
+    _app: tauri::AppHandle,
 ) -> Result<(), String> {
     // This is a bridge command - actual printing happens in the webview via window.print()
     // The frontend should handle calling window.print() with the HTML content

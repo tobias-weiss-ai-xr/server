@@ -15,6 +15,7 @@ use tray::create_system_tray;
 
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             commands::new_doc,
             commands::open_doc,
@@ -67,7 +68,7 @@ pub fn run() {
 
             // Register menu event handler
             app.on_menu_event(move |app, event| {
-                handle_menu_event(app, &event.id);
+                handle_menu_event(app, event.id().as_ref());
             });
 
             Ok(())

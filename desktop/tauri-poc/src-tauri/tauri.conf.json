@@ -65,16 +65,7 @@
         "languages": ["English", "German", "French", "Spanish"],
         "displayLanguageSelector": true,
         "installMode": "currentUser",
-        "allowDowngrades": true,
-        "createDesktopShortcut": true,
-        "createStartMenuShortcut": true,
-        "shortcutFolder": "World Office",
-        "perMachine": false,
-        "template": null,
-        "installerIcon": "icons/icon.ico",
-        "headerImage": null,
-        "sidebarImage": null,
-        "bitmap": null
+        "installerIcon": "icons/icon.ico"
       },
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",

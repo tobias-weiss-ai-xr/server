@@ -3,9 +3,7 @@ use tauri::{
     AppHandle, Manager,
 };
 
-pub fn create_app_menu(
-    app: &AppHandle,
-) -> Result<tauri::menu::Menu<tauri::AppHandle>, Box<dyn std::error::Error>> {
+pub fn create_app_menu(app: &AppHandle) -> Result<tauri::menu::Menu, Box<dyn std::error::Error>> {
     // File menu: New, Open, Save, Save As, Close, separator, Recent Files (submenu), separator, Exit
     let file_menu = SubmenuBuilder::new(app, "File")
         .text("new", "New")
@@ -14,7 +12,7 @@ pub fn create_app_menu(
         .text("save-as", "Save As...")
         .text("close", "Close")
         .separator()
-        .submenu(
+        .item(
             &SubmenuBuilder::new(app, "Recent Files")
                 .text("recent-1", "No recent files")
                 .text("recent-2", "")

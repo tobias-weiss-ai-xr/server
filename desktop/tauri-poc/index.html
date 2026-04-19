@@ -1,47 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>World Office</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #fafafa; }
-    #canvas { width: 100%; height: 100%; display: block; }
-    .title { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; opacity: 0.15; }
-    .title h1 { font-size: 72px; font-weight: 300; letter-spacing: 8px; margin-bottom: 8px; }
-    .title p { font-size: 13px; letter-spacing: 6px; color: #00d4ff; text-transform: uppercase; }
-  </style>
-</head>
-<body>
-  <canvas id="canvas"></canvas>
-  <div class="title">
-    <h1>World Office</h1>
-    <p>Independent Document Suite</p>
-  </div>
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-
-    function drawGrid() {
-      const w = canvas.width = window.innerWidth;
-      const h = canvas.height = window.innerHeight;
-      ctx.clearRect(0, 0, w, h);
-
-      // Subtle grid
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
-      ctx.lineWidth = 0.5;
-      const step = 40;
-      for (let x = 0; x <= w; x += step) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
-      }
-      for (let y = 0; y <= h; y += step) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-      }
-    }
-
-    drawGrid();
-    window.addEventListener('resize', drawGrid);
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>World Office</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

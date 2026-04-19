@@ -8,14 +8,14 @@ const root = resolve(__dirname, "../..")
 const webDist = resolve(root, "apps/web/apps/documenteditor-react/dist")
 const target = resolve(__dirname, "../dist")
 
-console.log("📦 Building React document editor...")
+console.log("Building React document editor...")
 execSync("pnpm --filter @world-office/documenteditor build", {
   cwd: root,
   stdio: "inherit",
 })
 
 if (!existsSync(webDist)) {
-  console.error("❌ Build output not found at", webDist)
+  console.error("Build output not found at", webDist)
   process.exit(1)
 }
 
@@ -25,4 +25,4 @@ if (existsSync(target)) {
 mkdirSync(target, { recursive: true })
 
 cpSync(webDist, target, { recursive: true })
-console.log("✅ Copied build output to", target)
+console.log("Copied build output to", target)

@@ -65,7 +65,10 @@
         "languages": ["English", "German", "French", "Spanish"],
         "displayLanguageSelector": true,
         "installMode": "currentUser",
-        "installerIcon": "icons/icon.ico"
+        "template": null,
+        "installerIcon": "icons/icon.ico",
+        "headerImage": null,
+        "sidebarImage": null
       },
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",

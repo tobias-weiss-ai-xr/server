@@ -108,6 +108,15 @@ const ObservedStatusBar = observer(function ObservedStatusBar(): JSX.Element {
         <span className="de-statusbar-label">Words: {wordCount}</span>
       </div>
 
+      {/* Desktop file info */}
+      {documentStore.isDesktop && (
+        <div className="de-statusbar-tools">
+          <span className="de-statusbar-label" title={documentStore.filePath ?? undefined}>
+            {documentStore.fileName}{documentStore.isDirty ? " \u2022" : ""}
+          </span>
+        </div>
+      )}
+
       <div className="de-statusbar-separator" />
 
       {/* Track changes */}

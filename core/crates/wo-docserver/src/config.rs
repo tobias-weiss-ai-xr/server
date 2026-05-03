@@ -32,7 +32,9 @@ impl DocServerConfig {
                 .unwrap_or(80),
             jwt_secret: env::var("JWT_SECRET")
                 .expect("JWT_SECRET environment variable is required"),
-            wopi_host_url: env::var("WOPI_HOST_URL").unwrap_or_else(|_| "http://ocis:9200".into()),
+            wopi_host_url: env::var("WOPI_HOST")
+                .or_else(|_| env::var("WOPI_HOST_URL"))
+                .unwrap_or_else(|_| "http://ocis:9200".into()),
             editor_ui_dir: env::var("EDITOR_UI_DIR").unwrap_or_else(|_| "./editor-ui".into()),
             data_dir: env::var("DOCSERVER_DATA_DIR").unwrap_or_else(|_| "./data".into()),
         }

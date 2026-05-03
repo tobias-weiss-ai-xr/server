@@ -117,6 +117,35 @@ async fn health_handler() -> &'static str {
     "ok"
 }
 
+/// GET /hosting/discovery — proxy to the WOPI host's discovery endpoint.
+///
+/// The OCIS WOPI host provides this endpoint which lists all supported WOPI
+/// actions and URL templates. We proxy through the docserver so that E2E
+/// health checks (which target the docserver) still pass when OCIS is available.
+async fn discovery_handler(
+    State(state): State<AppState>,
+) -> Result<String, AppError> {
+    let discovery = state
+        .wopi_client
+        .get_discovery()
+        .await
+        .map_err(AppError::Wopi)?;
+    Ok(discovery)
+}
+
+async fn hosting_wopi_handler(State(state): State<AppState>) -> axum::response::Response {
+    let stub = format!(
+        r#"<!DOCTYPE html><html><head><title>World Office Editor</title></head>
+<body><h1>World Office Document Server</h1>
+<p>Editor UI dir: <code>{}</code></p>
+<p>WOPI host: <code>{}</code></p>
+</body></html>"#,
+        state.config.editor_ui_dir,
+        state.config.wopi_host_url
+    );
+    axum::response::Html(stub).into_response()
+}
+
 /// GET /wopi/files/:file_id  →  proxy CheckFileInfo to OCIS
 async fn wopi_check_file_info(
     State(state): State<AppState>,
@@ -238,6 +267,11 @@ pub fn create_app(config: DocServerConfig) -> Router {
 
     let mut app = Router::new()
         .route("/health", get(health_handler))
+        .route("/hosting/discovery", get(discovery_handler))
+        .route(
+            "/hosting/wopi",
+            get(hosting_wopi_handler),
+        )
         .route(
             "/wopi/files/{file_id}",
             get(wopi_check_file_info),

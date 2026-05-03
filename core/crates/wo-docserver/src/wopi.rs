@@ -96,6 +96,16 @@ impl WopiClient {
         let token = encode(&Header::default(), claims, &key)?;
         Ok(token)
     }
+
+    /// GET WOPI discovery XML from the upstream WOPI host.
+    ///
+    /// The discovery endpoint lists all supported WOPI actions and URL templates.
+    pub async fn get_discovery(&self) -> Result<String> {
+        let url = format!("{}/hosting/discovery", self.wopi_host_url);
+        let resp = self.http.get(&url).send().await?;
+        let body = resp.error_for_status()?.text().await?;
+        Ok(body)
+    }
 }
 
 #[cfg(test)]

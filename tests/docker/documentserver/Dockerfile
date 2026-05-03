@@ -1,86 +1,63 @@
-# Document Server Dockerfile - Built from World-Office/core/
-# 
-# This Dockerfile builds Document Server from our fork at:
-# https://codeberg.org/World-Office/core
+# Document Server Dockerfile — Built from World-Office/server (Rust)
 #
-# Build time: ~2-4 hours (C++ compilation)
-# 
+# This Dockerfile builds the World-Office Document Server from the Rust
+# monorepo at https://codeberg.org/World-Office/server
+#
+# Build time: ~5-10 minutes (Rust + Node.js)
+#
 # Usage:
-#   docker build -t worldoffice-documentserver:latest .
-#   docker run -e JWT_SECRET=your_secret -p 8080:80 worldoffice-documentserver
+#   docker build -t worldoffice-documentserver:latest -f ../docker/documentserver/Dockerfile ../..
+#   docker run -e JWT_SECRET=your_secret -e WOPI_HOST=http://ocis:9200 -p 8080:80 \
+#     worldoffice-documentserver:latest
 
 # =============================================================================
-# Stage 1: Builder - Compile C++ core and Node.js services
+# Stage 1: Builder — Compile Rust binary and Node.js editor UI
 # =============================================================================
-FROM ubuntu:24.04 AS builder
+FROM rust:1.85-bookworm AS builder
 
-# Avoid interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
-    cmake \
     git \
     curl \
     wget \
     ca-certificates \
     pkg-config \
     libssl-dev \
-    libcurl4-openssl-dev \
-    libboost-all-dev \
-    qtbase5-dev \
-    libqt5webkit5-dev \
-    libpocofoundation80 \
-    libpocoutil80 \
-    libpqxx-dev \
-    postgresql-server-dev-all \
-    python3 \
-    nodejs \
-    npm \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /build
 
-# Clone World-Office/core fork (NOT from local workspace - it has empty submodules)
-RUN git clone --depth=1 https://codeberg.org/World-Office/core.git
+# Clone the Rust monorepo (NOT from local workspace — ensures clean build context)
+RUN git clone --depth=1 https://codeberg.org/World-Office/server.git
 
-# Initialize submodules - CRITICAL: sdkjs is a submodule that must be fetched
-WORKDIR /build/core
-RUN git submodule update --init --recursive || \
-    (echo "Submodule init failed, cloning sdkjs directly..." && \
-     git clone --depth=1 https://codeberg.org/World-Office/sdkjs.git sdkjs)
+WORKDIR /build/server
 
-# Build core with CMake (Release mode for production)
-RUN cmake -B build \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCONFIG_NODE=/etc/world-office/documentserver/default.json \
-    && cmake --build build -j$(nproc)
+# Build the Rust docserver binary
+RUN cargo build -p wo-docserver --release
 
-# Build Node.js services (sdkjs)
-WORKDIR /build/core/sdkjs
-RUN npm install --production || npm install --legacy-peer-deps
+# Build the React editor UI (apps/web must be built for full integration)
+# Uses corepack for pnpm management
+WORKDIR /build/server/apps/web
+RUN corepack enable && pnpm install --frozen-lockfile && pnpm build
 
 # =============================================================================
-# Stage 2: Runtime - Minimal image with only necessary components
+# Stage 2: Runtime — Minimal image with only necessary components
 # =============================================================================
-FROM ubuntu:24.04
+FROM debian:bookworm-slim
 
-# Avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install runtime dependencies only
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    nginx \
-    nodejs \
-    postgresql \
-    rabbitmq-server \
-    redis-server \
-    supervisor \
-    curl \
+    ca-certificates \
     fontconfig \
     fonts-dejavu \
     fonts-liberation \
+    libssl3 \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Create necessary directories
@@ -89,51 +66,38 @@ RUN mkdir -p /var/log/world-office \
     /var/www/world-office/documentserver/Data \
     /etc/world-office/documentserver
 
-# Copy built artifacts from builder stage
-COPY --from=builder /build/core/build /var/www/world-office/documentserver
-COPY --from=builder /build/core/sdkjs /var/www/world-office/documentserver/sdkjs
+WORKDIR /app
 
-# Create default configuration
-RUN echo '{ \
-    "services": { \
-        "CoAuthoring": { \
-            "server": { \
-                "port": 8000 \
-            }, \
-            "sql": { \
-                "type": "postgres", \
-                "dbHost": "localhost", \
-                "dbPort": 5432, \
-                "dbName": "world-office", \
-                "dbUser": "world-office", \
-                "dbPass": "world-office" \
-            } \
-        } \
-    } \
-}' > /etc/world-office/documentserver/default.json
+# Copy the compiled Rust binary
+COPY --from=builder /build/server/target/release/wo-docserver /app/wo-docserver
 
-# Create supervisor configuration
-RUN mkdir -p /etc/world-office/documentserver/supervisor && \
-    echo '[supervisord]' > /etc/world-office/documentserver/supervisor/supervisord.conf && \
-    echo 'nodaemon=true' >> /etc/world-office/documentserver/supervisor/supervisord.conf && \
-    echo 'logfile=/var/log/world-office/supervisord.log' >> /etc/world-office/documentserver/supervisor/supervisord.conf && \
-    echo 'pidfile=/var/run/supervisord.pid' >> /etc/world-office/documentserver/supervisor/supervisord.conf
+# Copy the built React editor UI (if available)
+COPY --from=builder /build/server/apps/web/apps /app/editor-ui/apps
 
-# JWT configuration - injected at runtime via -e JWT_SECRET=xxx
+# Copy a minimal landing page as fallback (when no editor UI is built)
+RUN echo '<!DOCTYPE html><html><head><title>World-Office Document Server</title></head><body style="font-family:system-ui;display:flex;justify-content:center;align-items:center;height:100vh;margin:0"><div style="text-align:center"><h1>World-Office Document Server</h1><p>Rust-based document server is running.</p></div></body></html>' > /app/index.html
+
+# JWT configuration — injected at runtime via -e JWT_SECRET=xxx
 ARG JWT_SECRET=change_me
 ENV JWT_SECRET=${JWT_SECRET}
 ENV JWT_HEADER=Authorization
 ENV JWT_IN_BODY=true
 
+# WOPI host URL (OCIS endpoint)
+ARG WOPI_HOST=http://ocis:9200
+ENV WOPI_HOST=${WOPI_HOST}
+
+# Editor UI directory (served as static files)
+ENV EDITOR_UI_DIR=/app/editor-ui
+ENV DOCSERVER_HOST=0.0.0.0
+ENV DOCSERVER_PORT=80
+
 # Expose HTTP port (mapped to 8080 in docker-compose)
 EXPOSE 80
 
-# Health check - verify WOPI discovery endpoint is responding
-HEALTHCHECK --interval=10s --timeout=5s --start-period=120s --retries=30 \
+# Health check — verify /hosting/discovery is reachable
+HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=30 \
     CMD curl -f http://localhost/hosting/discovery || exit 1
 
-# Set working directory
-WORKDIR /var/www/world-office/documentserver
-
-# Start services via supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/world-office/documentserver/supervisor/supervisord.conf"]
+# Start the Rust document server
+CMD ["/app/wo-docserver"]

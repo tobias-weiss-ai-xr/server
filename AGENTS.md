@@ -4,6 +4,7 @@
 **Source:** codeberg.org/World-Office/server (independent project)
 **License:** AGPL-3.0-or-later (enterprise extensions under separate commercial license)
 **Crate count:** 26 core + 5 enterprise Rust crates, 8 + 3 enterprise services
+**Rust edition:** 2024 (nightly in CI, stable for releases)
 
 ## OVERVIEW
 
@@ -179,11 +180,12 @@ Stack: Jest, Playwright, Docker Compose. Run with `npm test` or `npm run test:e2
 | Web frontend | pnpm | `pnpm install && pnpm dev` |
 | E2E tests | npm | `cd tests && npm test` |
 | CI | Forgejo Actions | `.forgejo/workflows/` (ci, docker, release, security, wasm) |
+| Security audit | Weekly (Monday 06:00 UTC) | `cargo audit` + `pnpm audit --audit-level=high` |
 
 ## CODE STYLE
 
 - **Rust**: `cargo fmt` + `cargo clippy` -- follow existing patterns
-- **TypeScript**: ESLint 9 + Prettier
+- **TypeScript**: Biome (via `pnpm format` = `biome check --write .`), pnpm lint/typecheck via Turbo
 - **Commits**: Conventional commits (feat:, fix:, docs:, test:, refactor:)
 - Tests required for all code changes
 

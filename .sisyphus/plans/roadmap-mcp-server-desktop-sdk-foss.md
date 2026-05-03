@@ -1,27 +1,27 @@
-# MCP Server + Version Snapshots Implementation Plan
+# World-Office Roadmap: MCP Server + Desktop SDK FOSS Rewrite
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add an MCP server (stdio transport) and version snapshots to storage-service, enabling AI agents to read/write World Office documents with automatic versioning.
+**Goal:** Add MCP server (stdio transport) with version snapshots for AI agent document access, and complete desktop-sdk FOSS rewrite by replacing proprietary CEF with Qt WebEngine backend.
 
-**Architecture:** New `wo-mcp-server` Rust crate uses `rmcp` SDK for stdio transport. It calls storage-service HTTP API for file CRUD. Version snapshots are stored in a new `snapshots` table in storage-service's existing SQLite database. Every MCP write auto-snapshots the previous content.
+**Architecture:**
+- **Track 1 (MCP Server)**: New `wo-mcp-server` crate using `rmcp` SDK for stdio transport. Auto-snapshots via storage-service REST API (new `snapshots` table).
+- **Track 2 (Desktop SDK)**: Replace CEF dependency with FOSS-compliant Qt WebEngine backend. Phase 1 (license cleanup) complete, phases 2-7 pending.
 
-**Tech Stack:** Rust, rmcp (MCP SDK), reqwest, axum, rusqlite, sha2
+**Tech Stack:** Rust, rmcp, reqwest, axum, rusqlite, sha2, Qt 5.15, C++ (existing)
 
 ---
 
-## File Structure
+# Track 1: MCP Server + Version Snapshots
 
-| File | Action | Responsibility |
-|------|--------|---------------|
-| `services/storage-service/src/repository.rs` | MODIFY | Add `snapshots` table + CRUD methods |
-| `services/storage-service/src/lib.rs` | MODIFY | Add 3 snapshot REST endpoints + Snapshot struct |
-| `services/mcp-server/Cargo.toml` | CREATE | Crate definition |
-| `services/mcp-server/src/main.rs` | CREATE | MCP server entry point (stdio transport) |
-| `services/mcp-server/src/client.rs` | CREATE | HTTP client for storage-service API |
-| `services/mcp-server/src/tools.rs` | CREATE | 7 MCP tool implementations |
-| `services/mcp-server/src/snapshots.rs` | CREATE | Snapshot orchestration (hash, dedup, prune) |
-| `Cargo.toml` (workspace root) | MODIFY | Add `wo-mcp-server` member |
+## Overview
+
+Add an MCP (Model Context Protocol) server that enables AI agents to read/write World Office documents via stdio transport. All writes automatically create version snapshots before overwriting content, enabling AI agents to work with documents while preserving full version history.
+
+## Dependencies
+
+- storage-service must have snapshot REST endpoints (GET/POST /files/{id}/snapshots, POST /files/{id}/snapshots/{id}/restore)
+- storage-service must have `snapshots` table with content_hash dedup index
 
 ---
 
@@ -32,7 +32,7 @@
 
 - [ ] **Step 1: Add Snapshot struct and table init**
 
-After the existing `init_table` method, add a `Snapshot` struct and extend `init_table` to also create the `snapshots` table.
+After existing `init_table` method, add a `Snapshot` struct and extend `init_table` to also create a `snapshots` table.
 
 ```rust
 /// Version snapshot record.
@@ -96,7 +96,7 @@ pub fn insert_snapshot(
     let created_at = chrono::Utc::now().to_rfc3339();
     self.conn.execute(
         "INSERT INTO snapshots (id, file_id, content_hash, content_blob, agent_name, summary, created_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
         rusqlite::params![id, file_id, content_hash, content_blob, agent_name, summary, created_at],
     )?;
     Ok(id)
@@ -117,7 +117,7 @@ pub fn list_snapshots(&self, file_id: &str, limit: usize) -> Result<Vec<Snapshot
     let limit = if limit == 0 { 20 } else { limit };
     let mut stmt = self.conn.prepare(
         "SELECT id, file_id, content_hash, agent_name, summary, created_at
-         FROM snapshots WHERE file_id = ?1 ORDER BY created_at DESC LIMIT ?2",
+             FROM snapshots WHERE file_id = ?1 ORDER BY created_at DESC LIMIT ?2",
     )?;
     let rows = stmt.query_map(rusqlite::params![file_id, limit as i64], |row| {
         Ok(Snapshot {
@@ -137,7 +137,7 @@ pub fn list_snapshots(&self, file_id: &str, limit: usize) -> Result<Vec<Snapshot
 pub fn get_snapshot(&self, id: &str) -> Result<Option<Snapshot>, rusqlite::Error> {
     let mut stmt = self.conn.prepare(
         "SELECT id, file_id, content_hash, content_blob, agent_name, summary, created_at
-         FROM snapshots WHERE id = ?1",
+             FROM snapshots WHERE id = ?1",
     )?;
     let mut rows = stmt.query(rusqlite::params![id])?;
     match rows.next()? {
@@ -190,7 +190,7 @@ pub fn touch(&mut self, id: &str) -> Result<(), rusqlite::Error> {
     Ok(())
 }
 
-/// Update the file size.
+/// Update file size.
 pub fn update_size(&mut self, id: &str, size: usize) -> Result<(), rusqlite::Error> {
     self.conn.execute(
         "UPDATE files SET size = ?1 WHERE id = ?2",
@@ -265,7 +265,7 @@ fn touch_updates_timestamp() {
 }
 ```
 
-- [x] **Step 4: Run tests**
+- [ ] **Step 4: Run tests**
 
 ```bash
 cargo test -p storage-service
@@ -273,7 +273,7 @@ cargo test -p storage-service
 
 Expected: All tests pass (existing + new snapshot tests).
 
-- [x] **Step 5: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
 git add services/storage-service/src/repository.rs
@@ -591,7 +591,7 @@ Add to `[dependencies]` in `services/storage-service/Cargo.toml`:
 sha2 = "0.10"
 ```
 
-- [x] **Step 5: Build and verify**
+- [ ] **Step 5: Build and verify**
 
 ```bash
 cargo check -p storage-service
@@ -599,7 +599,7 @@ cargo check -p storage-service
 
 Expected: Clean compile.
 
-- [x] **Step 6: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add services/storage-service/src/lib.rs services/storage-service/Cargo.toml
@@ -712,7 +712,7 @@ Create empty files for now (will be implemented in later tasks):
 //! Snapshot orchestration logic.
 ```
 
-- [x] **Step 5: Build and verify**
+- [ ] **Step 5: Build and verify**
 
 ```bash
 cargo check -p wo-mcp-server
@@ -720,7 +720,7 @@ cargo check -p wo-mcp-server
 
 Expected: Compiles (may have unused warnings for placeholder modules).
 
-- [x] **Step 6: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add services/mcp-server/ Cargo.toml
@@ -929,7 +929,7 @@ Add to `services/mcp-server/Cargo.toml`:
 base64 = "0.22"
 ```
 
-- [x] **Step 3: Build and verify**
+- [ ] **Step 3: Build and verify**
 
 ```bash
 cargo check -p wo-mcp-server
@@ -937,7 +937,7 @@ cargo check -p wo-mcp-server
 
 Expected: Compiles (client has no runtime usage yet).
 
-- [x] **Step 4: Commit**
+- [ ] **Step 4: Commit**
 
 ```bash
 git add services/mcp-server/src/client.rs services/mcp-server/Cargo.toml
@@ -966,11 +966,11 @@ pub fn content_hash(content: &[u8]) -> String {
     format!("{:x}", sha2::Sha256::digest(content))
 }
 
-/// Create a snapshot of the current file content before a write.
+/// Create a snapshot of current file content before a write.
 /// This reads the current content, hashes it, and creates a snapshot
 /// via the storage-service REST API.
 ///
-/// Returns the snapshot ID, or None if the content hasn't changed
+/// Returns the snapshot ID, or None if content hasn't changed
 /// (dedup: same hash already exists).
 pub async fn auto_snapshot(
     client: &StorageClient,
@@ -1015,13 +1015,13 @@ pub async fn auto_snapshot(
 }
 ```
 
-- [x] **Step 2: Build and verify**
+- [ ] **Step 2: Build and verify**
 
 ```bash
 cargo check -p wo-mcp-server
 ```
 
-- [x] **Step 3: Commit**
+- [ ] **Step 3: Commit**
 
 ```bash
 git add services/mcp-server/src/snapshots.rs
@@ -1214,7 +1214,7 @@ impl McpTools {
 }
 ```
 
-- [x] **Step 2: Build and verify**
+- [ ] **Step 2: Build and verify**
 
 ```bash
 cargo check -p wo-mcp-server
@@ -1222,7 +1222,7 @@ cargo check -p wo-mcp-server
 
 Note: The exact rmcp API may differ from the above. The implementer should consult the rmcp docs and adjust the ServerHandler trait implementation accordingly. The tool definitions and business logic remain the same.
 
-- [x] **Step 3: Commit**
+- [ ] **Step 3: Commit**
 
 ```bash
 git add services/mcp-server/src/tools.rs
@@ -1303,15 +1303,16 @@ pub async fn put_file_content(
 ```
 
 Register in `app()`:
+
 ```rust
 .route("/files/{id}/content", get(get_file_content).put(put_file_content))
 ```
 
-- [x] **Step 2: Wire auto-snapshot in write_document tool**
+- [ ] **Step 2: Wire auto-snapshot in write_document tool**
 
-Update `write_document` in `tools.rs` to auto-snapshot before writing. Fix the `snapshots.rs` `auto_snapshot` to use the client\'s base URL instead of hardcoded string.
+Update `write_document` in `tools.rs` to auto-snapshot before writing. Fix the `snapshots.rs` `auto_snapshot` to use the client's base URL instead of hardcoded string.
 
-- [x] **Step 3: Build, test, commit**
+- [ ] **Step 3: Build, test, commit**
 
 ```bash
 cargo check -p storage-service -p wo-mcp-server
@@ -1328,9 +1329,9 @@ write_document tool now auto-snapshots previous content."
 
 ---
 
-## Task 8: Final Verification
+## Task 8: Final Verification (Track 1)
 
-- [x] **Step 1: Full workspace build**
+- [ ] **Step 1: Full workspace build**
 
 ```bash
 cargo check --workspace
@@ -1338,7 +1339,7 @@ cargo check --workspace
 
 Expected: 0 errors.
 
-- [x] **Step 2: Run storage-service tests**
+- [ ] **Step 2: Run storage-service tests**
 
 ```bash
 cargo test -p storage-service
@@ -1346,7 +1347,7 @@ cargo test -p storage-service
 
 Expected: All tests pass (existing file tests + new snapshot tests).
 
-- [x] **Step 3: Verify no old branding**
+- [ ] **Step 3: Verify no old branding**
 
 ```bash
 grep -rl -i 'eurooffice\|onlyoffice' services/mcp-server/ services/storage-service/
@@ -1354,27 +1355,548 @@ grep -rl -i 'eurooffice\|onlyoffice' services/mcp-server/ services/storage-servi
 
 Expected: 0 matches.
 
-- [x] **Step 4: Commit (if any fixes needed)**
+- [ ] **Step 4: Commit (if any fixes needed)**
 
 ---
 
-## ✅ Track 1 Complete: MCP Server + Version Snapshots
+# Track 2: Desktop SDK FOSS Rewrite
 
-**All 8 tasks completed and verified:**
-1. ✅ Snapshot Table + Repository Methods
-2. ✅ Snapshot REST Endpoints
-3. ✅ MCP Server Crate Scaffolding
-4. ✅ Storage-Service HTTP Client
-5. ✅ Snapshot Orchestration Module
-6. ✅ MCP Tool Implementations (7 tools)
-7. ✅ PUT Endpoint + Wire Auto-Snapshot
-8. ✅ Final Verification
+## Overview
 
-**Verification Evidence:**
-- Build: `cargo check --workspace` → 0 errors
-- Tests: `cargo test -p storage-service` → 15/15 passed
-- Branding: `grep -rl -i 'eurooffice\|onlyoffice'` → 0 matches
-- Evidence files: `.sisyphus/evidence/final-qa/track-1-verification-2026-04-24.md`
-- ULTRAWORK state: `verification_pending: false`
+Complete Phase 1 (license cleanup) already done. Remaining work: Phase 2-7 to replace proprietary CEF (Chromium Embedded Framework) with FOSS-compliant Qt WebEngine backend. This enables Debian packaging and removes binary-only dependency.
 
-**Ready for Track 2: Desktop SDK implementation**
+## Current Status
+
+- **Phase 1** ✅ COMPLETE: License headers cleaned from 57 files (2026-04-02)
+- **Phase 2-7**: Pending start
+
+## Phase 2: Dependency Audit (Week 1-2)
+
+### Status
+
+**Completed**: Third-party dependency audit (`.sisyphus/notepads/desktop-sdk-rewrite/3DPARTY-FOSS-AUDIT.md`)
+
+**Findings:**
+- ✅ 17 FOSS-compliant dependencies (Boost, Crypto++, cURL, GLEW, HarfBuzz, HEIF, Hunspell, Hyphen, ICU, ixwebsocket, Socket.IO, SocketRocket, V8/brotli/googletest)
+- ⚠️ 1 dependency needs attention: CEF (Chromium Embedded Framework) — BSD license but binary-only distribution problematic for Debian
+- ❓ 4 unclear/missing licenses: `pdf_file`, `djvu`, `xps` directories appear empty
+- ❓ 3 no license files: `apple`, `misc`, `md` directories
+
+### Next Steps
+
+Based on FOSS audit, next steps are:
+
+- [ ] Contact upstream for unclear licenses (apple, misc, md, pdf_file, djvu, xps)
+- [ ] Clarify CEF distribution: source build or Debian-acceptable binary package
+- [ ] Document all third-party dependencies in LICENSE file
+
+## Phase 3: CEF Replacement Architecture (Week 3-8)
+
+### Status
+
+**Completed**: Architecture decisions documented (`.sisyphus/notepads/desktop-sdk-rewrite/issues.md`)
+
+**Key Decisions Made:**
+1. **Abstraction layer pattern**: Use `IWebEngine` interface with factory pattern
+2. **Qt WebEngine as primary FOSS backend**: LGPL-3.0, cross-platform, Chromium-based
+3. **Preserve existing CEF backend**: Wrap in `CEFWebEngine` class for backward compatibility
+4. **Factory function pattern**: `CreateWebEngine()` / `DestroyWebEngine()`
+5. **Async script execution by default**: Matches Qt WebEngine API (`runJavaScript`)
+6. **DOM manipulation via JavaScript bridge**: Backend-agnostic approach
+7. **Window embedding via native handle**: Standard cross-platform pattern
+8. **Build-time backend selection**: `BUILD_BACKEND` qmake variable
+9. **Minimal Phase 1 feature set**: Core functionality only (navigation, basic script, simple DOM)
+
+### Remaining Tasks
+
+- [ ] **Step 1: Design abstraction layer interface**
+
+Create `desktop-sdk/ChromiumBasedEditors/desktop-sdk/include/IWebEngine.h`:
+
+```cpp
+// Abstract interface for web engine backends.
+class IWebEngine {
+public:
+    virtual ~IWebEngine() = default;
+    virtual bool Initialize() = 0;
+    virtual void Shutdown() = 0;
+    virtual void LoadURL(const std::string& url) = 0;
+    virtual void ExecuteScript(const std::string& script) = 0;
+    // ... other essential methods
+};
+```
+
+- [ ] **Step 2: Implement CEF backend wrapper**
+
+Create `desktop-sdk/ChromiumBasedEditors/desktop-sdk/src/cef_backend/CefWebEngine.h`:
+
+```cpp
+// CEF implementation of IWebEngine interface.
+class CEFWebEngine : public IWebEngine {
+public:
+    explicit CEFWebEngine(CefRefPtr<CefClient>);
+    bool Initialize() override;
+    void Shutdown() override;
+    void LoadURL(const std::string& url) override;
+    void ExecuteScript(const std::string& script) override;
+    // ... wrap existing CEF APIs
+private:
+    CefRefPtr<CefClient> client_;
+};
+```
+
+- [ ] **Step 3: Implement Qt WebEngine backend**
+
+Create `desktop-sdk/ChromiumBasedEditors/desktop-sdk/src/qt_backend/QtWebEngine.h`:
+
+```cpp
+// Qt WebEngine implementation of IWebEngine interface.
+class QtWebEngine : public IWebEngine {
+public:
+    QtWebEngine(QObject* parent = nullptr);
+    bool Initialize() override;
+    void Shutdown() override;
+    void LoadURL(const std::string& url) override;
+    void ExecuteScript(const std::string& script) override;
+private:
+    QWebEngineView* view_;
+};
+```
+
+- [ ] **Step 4: Implement factory pattern**
+
+Create `desktop-sdk/ChromiumBasedEditors/desktop-sdk/src/WebEngineFactory.cpp`:
+
+```cpp
+#include "IWebEngine.h"
+#include "cef_backend/CefWebEngine.h"
+#include "qt_backend/QtWebEngine.h"
+
+class WebEngineFactory {
+public:
+    enum class Backend {
+        CEF,
+        Qt
+    };
+
+    static std::unique_ptr<IWebEngine> Create(Backend backend);
+
+private:
+    static Backend DetectPlatform();
+};
+```
+
+- [ ] **Step 5: Update build system for backend selection**
+
+Modify `desktop-sdk/ChromiumBasedEditors/desktop-apps/common/common.pri`:
+
+```qmake
+# Build-time backend selection
+BUILD_BACKEND = cef  # or qt
+
+contains(BUILD_BACKEND, cef) {
+    include(../desktop-sdk/src/cef_backend/cef_backend.pri)
+} else:contains(BUILD_BACKEND, qt) {
+    include(../desktop-sdk/src/qt_backend/qt_backend.pri)
+} else {
+    error("BUILD_BACKEND must be 'cef' or 'qt'")
+}
+```
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add desktop-sdk/ChromiumBasedEditors/desktop-sdk/include/
+git add desktop-sdk/ChromiumBasedEditors/desktop-sdk/src/cef_backend/
+git add desktop-sdk/ChromiumBasedEditors/desktop-sdk/src/qt_backend/
+git add desktop-sdk/ChromiumBasedEditors/desktop-sdk/src/WebEngineFactory.cpp
+git add desktop-sdk/ChromiumBasedEditors/desktop-apps/common/common.pri
+git commit -m "feat(desktop): design and implement web engine abstraction layer
+
+Create IWebEngine interface, implement CEF and Qt WebEngine backends,
+add factory pattern with BUILD_BACKEND qmake variable."
+```
+
+## Phase 4: Build System Updates (Week 9-12)
+
+- [ ] **Step 1: Add CEF source build support**
+
+Document CEF build process from Chromium source in `desktop-sdk/ChromiumBasedEditors/build/cef-build-guide.md`:
+
+```markdown
+# CEF Source Build Guide
+
+## Prerequisites
+- Python 3.8+
+- CMake 3.15+
+- Git
+
+## Build Steps
+
+1. Clone CEF repository:
+   ```bash
+   git clone https://bitbucket.org/chromiumembedded/cef.git
+   cd cef
+   git checkout <branch-version>
+   ```
+
+2. Create build directory:
+   ```bash
+   mkdir build && cd build
+   ```
+
+3. Generate CMake project:
+   ```bash
+   cmake -G Ninja -DCMAKE_BUILD_TYPE=Release \
+           -DCMAKE_C_COMPILER=clang \
+           -DCMAKE_CXX_COMPILER=clang++ \
+           ..
+   ```
+
+4. Build:
+   ```bash
+   ninja
+   ```
+
+5. Copy artifacts to expected location
+```
+
+- [ ] **Step 2: Add CMake integration**
+
+Modify `desktop-sdk/ChromiumBasedEditors/CMakeLists.txt` to support CEF source builds:
+
+```cmake
+if(BUILD_BACKEND STREQUAL "cef_source")
+    # CEF source build configuration
+    add_subdirectory(third_party/cef)
+endif()
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add desktop-sdk/ChromiumBasedEditors/build/
+git add desktop-sdk/ChromiumBasedEditors/CMakeLists.txt
+git commit -m "build(desktop): add CEF source build support
+
+Document CEF build process, add CMake integration for source builds."
+```
+
+## Phase 5: Testing & Validation (Week 13-16)
+
+- [ ] **Step 1: Create feature parity test matrix**
+
+Create `desktop-sdk/ChromiumBasedEditors/tests/feature-parity.csv`:
+
+```csv
+Feature,CEF Backend,Qt Backend,Status,Notes
+Load local HTML,✅,,Test and document
+Load remote URL,✅,,Test and document
+Execute JavaScript,✅,,Test and document
+DOM manipulation,✅,,Test and document
+CSS rendering,✅,,Test and document
+PDF display,✅,,Test and document
+Video playback,✅,,Test and document
+Print support,✅,,Test and document
+```
+
+- [ ] **Step 2: Implement automated test suite**
+
+Create `desktop-sdk/ChromiumBasedEditors/tests/test_main.cpp` with basic smoke tests:
+
+```cpp
+#include <gtest/gtest.h>
+
+TEST(WebEngineTest, LoadURL) {
+    auto engine = WebEngineFactory::Create(WebEngineFactory::Backend::Qt);
+    ASSERT_TRUE(engine->Initialize());
+    engine->LoadURL("http://localhost:8080/test.html");
+    // ... verify load success
+}
+
+TEST(WebEngineTest, ExecuteScript) {
+    auto engine = WebEngineFactory::Create(WebEngineFactory::Backend::Qt);
+    ASSERT_TRUE(engine->Initialize());
+    engine->ExecuteScript("document.title = 'test'");
+    // ... verify script result
+}
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add desktop-sdk/ChromiumBasedEditors/tests/
+git commit -m "test(desktop): add feature parity matrix and automated test suite
+
+Create feature-parity.csv documenting 10 core features.
+Add gtest-based smoke tests for LoadURL and ExecuteScript."
+```
+
+## Phase 6: Debian Packaging (Week 17-24)
+
+- [ ] **Step 1: Create Debian packaging files**
+
+Create `debian/` directory structure:
+
+```
+debian/
+├── control
+├── copyright
+├── changelog
+├── rules
+├── desktop-sdk.install
+├── desktop-sdk-dev.install
+├── source/
+│   └── format
+└── patches/
+```
+
+- [ ] **Step 2: Create control file**
+
+Create `debian/control`:
+
+```debian
+Source: world-office-desktop-sdk
+Section: base
+Priority: optional
+Maintainer: World Office Contributors <team@graphwiz.ai>
+Build-Depends: debhelper-compat (>= 12), cmake (>= 3.15), libqt5webengine5-dev, qtbase5-dev, qtdeclarative5-dev
+Standards-Version: 4.5.0
+Homepage: https://codeberg.org/World-Office/server
+Vcs-Git: https://codeberg.org/World-Office/server.git
+Vcs-Browser: https://codeberg.org/World-Office/server
+
+Package: world-office-desktop-sdk
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: World Office Desktop SDK — FOSS-compliant document editing framework
+ Includes web engine abstraction layer supporting Qt WebEngine and CEF backends.
+ Built for integration into desktop document editors.
+```
+
+- [ ] **Step 3: Create rules file**
+
+Create `debian/rules`:
+
+```makefile
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	dh_auto_configure -- 'CMAKE_FLAGS= -DCMAKE_INSTALL_PREFIX=/usr'
+
+override_dh_auto_build:
+	dh_auto_build -- 'CMAKE_FLAGS= -DCMAKE_INSTALL_PREFIX=/usr'
+
+override_dh_auto_test:
+	dh_auto_test -- 'CMAKE_FLAGS= -DCMAKE_INSTALL_PREFIX=/usr'
+```
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add debian/
+git commit -m "pkg(debian): create Debian packaging files
+
+Add debian/ directory with control, rules, install files.
+Build system configured for dh_auto_configure with CMAKE_FLAGS."
+```
+
+## Phase 7: Documentation & Community (Week 25-28)
+
+- [ ] **Step 1: Write migration guide**
+
+Create `desktop-sdk/ChromiumBasedEditors/docs/MIGRATION.md`:
+
+```markdown
+# CEF to Qt WebEngine Migration Guide
+
+## Overview
+
+This guide helps developers migrate from CEF to Qt WebEngine backend.
+
+## Architecture
+
+### Abstraction Layer
+
+The `IWebEngine` interface decouples desktop-sdk from web engine implementation:
+
+```cpp
+class IWebEngine {
+public:
+    virtual bool Initialize() = 0;
+    virtual void LoadURL(const std::string& url) = 0;
+    virtual void ExecuteScript(const std::string& script) = 0;
+    virtual void Shutdown() = 0;
+};
+```
+
+### Backends
+
+- **CEFWebEngine**: Existing CEF implementation
+- **QtWebEngine**: New Qt WebEngine implementation
+
+## Migration Steps
+
+1. Update code to use `IWebEngine` interface instead of CEF APIs directly
+2. Use `WebEngineFactory::Create()` to instantiate backends
+3. Set `BUILD_BACKEND=qt` in qmake to use Qt backend
+4. Test feature parity with CEF backend
+
+## API Differences
+
+| Feature | CEF | Qt WebEngine |
+|----------|-----|--------------|
+| LoadURL | LoadURL | setUrl |
+| ExecuteScript | ExecuteJavaScript | runJavaScript |
+| GetMainFrame | GetMainFrame | page() |
+| SendProcessMessage | SendProcessMessage | QWebChannel |
+
+## Common Pitfalls
+
+- Qt signals/slots vs CEF callbacks
+- Different threading model (Qt main thread vs CEF multi-threaded)
+- Memory management (Qt parent-child vs CEF smart pointers)
+
+## Performance Tips
+
+- Qt WebEngine uses Chromium under the hood
+- Lazy loading reduces initial memory footprint
+- QWebEngineProfile for isolated browsing contexts
+```
+
+- [ ] **Step 2: Create developer guide**
+
+Create `desktop-sdk/ChromiumBasedEditors/docs/DEVELOPMENT.md`:
+
+```markdown
+# Desktop SDK Developer Guide
+
+## Prerequisites
+
+- Qt 5.15 (LGPL) - Qt WebEngine module
+- CMake 3.15+
+- C++17 compiler
+
+## Build Instructions
+
+### CEF Backend
+
+```bash
+cd desktop-sdk/ChromiumBasedEditors/desktop-apps
+qmake CONFIG+=release CONFIG+=cef_backend
+make
+```
+
+### Qt Backend
+
+```bash
+cd desktop-sdk/ChromiumBasedEditors/desktop-apps
+qmake CONFIG+=release CONFIG+=qt_backend
+make
+```
+
+### Both Backends
+
+```bash
+cd desktop-sdk/ChromiumBasedEditors/desktop-apps
+qmake CONFIG+=release
+make
+# Then set BUILD_BACKEND=cef or BUILD_BACKEND=qt
+```
+
+## Testing
+
+Run automated tests:
+
+```bash
+cd desktop-sdk/ChromiumBasedEditors/tests
+./test_webengine
+```
+
+## Contribution Guidelines
+
+- Follow existing code style
+- Add tests for new features
+- Update this guide when adding new backends
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add desktop-sdk/ChromiumBasedEditors/docs/
+git commit -m "docs(desktop): add migration and developer guides
+
+Add MIGRATION.md for CEF to Qt WebEngine migration.
+Add DEVELOPMENT.md with build instructions for both backends."
+```
+
+## Final Verification
+
+### MCP Server (Track 1)
+
+- [ ] Build all crates: `cargo check --workspace`
+- [ ] Run storage-service tests: `cargo test -p storage-service`
+- [ ] Verify MCP server compiles: `cargo check -p wo-mcp-server`
+- [ ] Run MCP server locally with stdio transport
+- [ ] Test all 7 MCP tools with AI agent client
+
+### Desktop SDK (Track 2)
+
+- [ ] Build CEF backend: `qmake CONFIG+=cef_backend && make`
+- [ ] Build Qt backend: `qmake CONFIG+=qt_backend && make`
+- [ ] Run automated test suite: `./desktop-sdk/ChromiumBasedEditors/tests/test_webengine`
+- [ ] Verify feature parity against CEF backend using test matrix
+- [ ] Build Debian package: `dpkg-buildpackage -us -uc`
+- [ ] Test Debian package installation
+- [ ] Update LICENSE file with legal justification
+
+---
+
+## Commit Strategy
+
+After each major task group completion:
+
+```bash
+git add <relevant files>
+git commit -m "track1/task-N: <description>"
+```
+
+After each major track phase completion:
+
+```bash
+git add <track files>
+git commit -m "track1/phase-N: <phase> complete"
+```
+
+---
+
+## Success Criteria
+
+### Track 1: MCP Server
+
+- [ ] All 7 MCP tools implemented and tested
+- [ ] Auto-snapshot working on write_document
+- [ ] Storage service has snapshots table with dedup
+- [ ] MCP server communicates with storage-service via HTTP
+- [ ] Zero CEF/onlyoffice branding remains
+
+### Track 2: Desktop SDK FOSS Rewrite
+
+- [ ] Abstraction layer (`IWebEngine`) implemented
+- [ ] Qt WebEngine backend functional
+- [ ] Feature parity ≥ 95% with CEF backend
+- [ ] Debian package builds successfully
+- [ ] All DFSG compliance issues resolved
+- [ ] Documentation complete (migration guide + developer guide)
+- [ ] Zero proprietary terms remain in source files
+- [ ] CEF source build documented
+
+### Overall
+
+- [ ] Both tracks complete
+- [ ] Workspace builds with zero errors
+- [ ] All tests pass
+- [ ] Ready for production deployment

@@ -1,128 +1,23 @@
 {
-  "active_plan": "C:\\Users\\Tobias\\git\\World-Office\\.sisyphus\\plans\\next-steps-roadmap.md",
-  "started_at": "2026-04-17T06:10:58Z",
+  "active_plan": "/home/weiss/git/World-Office/server/.sisyphus/plans/legacy-editor-removal.md",
+  "started_at": "2026-04-25T05:42:39.276Z",
   "session_ids": [
-    "ses_27d5545acffeWXQyRWu4GlojX5",
-    "ses_265e9c4e8ffemh0YLDMHLd7ybC",
-    "ses_26583eaf2ffeE1MCrovD7nxDOW",
-    "ses_26583eae0ffe6Xv7okGEBsy9tQ",
-    "ses_264ed830effeCpcYrr4Ou6Mhgg",
-    "ses_264ed8312ffet93qPuf5CZRCBk",
-    "ses_264c9c545ffeYQldfJa2ALF0eA",
-    "ses_264ca1fb1ffe280uGttmJLOvUm",
-    "ses_264c9c549ffeRzrye0dGXmliyw",
-    "ses_2649ddf14ffeqyfG6ahJbo3oPu",
-    "ses_2649f1d84ffegjJhw50ODP4XEq",
-    "ses_2649f1d7dffeV9CwwcvQus0Wn4",
-    "ses_263b06f48ffeheU5KEXN6gm6VO",
-    "ses_26255d607ffemYtU3qUHqkGmuX",
-    "ses_26248bcbeffeoEonOF1imRg1Px",
-    "ses_26248bcc0ffeTelKMN2aeGm3VL",
-    "ses_262318a0affe4cYuJxbBYrRqBs",
-    "ses_2621ef21effeDGiGMHmivjlbgB",
-    "ses_2621ef21bffebG0et20N4c6nQY",
-    "ses_2620e67c8ffe40fllcZGsfbKoW",
-    "ses_2620e681bffewIZbuKx98ZGKlp",
-    "ses_2620e67f0ffeHX3gV2nnyl2hGc",
-    "ses_2620e6815ffeg4snM3yCCEjwTq",
-    "ses_261ffccdfffe5SBGCc7JWLFM09",
-    "ses_260fe5f96ffeU1B85ppiY1BCi0",
-    "ses_260f3e9baffeaH1JSzALDaaysW",
-    "ses_260f3e9c5ffegN5UBhPRG6QSB5",
-    "ses_260f3e9abffejZH5R21lBkHhnD",
-    "ses_260f0a23dffeai288Bx0sO1R5r",
-    "ses_260e8918fffexGCHAtp2r1kiEB",
-    "ses_260e89183ffeK8oDLgZ3zO3OHb",
-    "ses_2602b5dc6ffeBdVOng2yDP6Xl3",
-    "ses_2601cf353ffeyFN6QEnOyQPOOH",
-    "ses_25fac2d40ffetJT7toGqFOvToq",
-    "ses_25fa58630ffeG8tvB9olsoERrG",
-    "ses_25fa4328effexrEJ5f4U583vki",
-    "ses_25f94a89fffeIF4j3n7qhZBcNr",
-    "ses_25ef08509ffeg8058VKgER61Ny",
-    "ses_25ebb3665ffeA6SQoLD7JcKQIx"
+    "ses_23fcaa2c6ffeTSD5Tsxl2sM25S",
+    "ses_23cd4bfa6ffeAgdyNlH1BSib9L",
+    "ses_23cd4bfa4ffen37skpuM45k08f",
+    "ses_23cd4bfa3ffeySuRCOcY8OlxRP"
   ],
-  "plan_name": "next-steps-roadmap",
+  "plan_name": "legacy-editor-removal",
+  "agent": "atlas",
   "task_sessions": {
     "todo:1": {
       "task_key": "todo:1",
       "task_label": "1",
-      "task_title": "Fix clippy warnings across workspace",
-      "session_id": "ses_265e9c4e8ffemh0YLDMHLd7ybC",
+      "task_title": "Delete Legacy Document Editor",
+      "session_id": "ses_23cd4bfa6ffeAgdyNlH1BSib9L",
       "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-04-17T06:29:32.251Z"
-    },
-    "todo:2": {
-      "task_key": "todo:2",
-      "task_label": "2",
-      "task_title": "Validate new dependencies",
-      "session_id": "ses_265d73ccaffeyn7vted3Xb64Pw",
-      "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-04-17T07:07:37.139Z"
-    },
-    "todo:7": {
-      "task_key": "todo:7",
-      "task_label": "7",
-      "task_title": "Wire wo-fonts into wo-renderer",
-      "session_id": "ses_264ed8312ffet93qPuf5CZRCBk",
-      "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-04-17T11:18:22.300Z"
-    },
-    "todo:9": {
-      "task_key": "todo:9",
-      "task_label": "9",
-      "task_title": "Add Canvas::draw_text() with swash glyph rasterization",
-      "session_id": "ses_263b06f48ffeheU5KEXN6gm6VO",
-      "agent": "oracle",
-      "updated_at": "2026-04-17T16:50:01.926Z"
-    },
-    "todo:10": {
-      "task_key": "todo:10",
-      "task_label": "10",
-      "task_title": "Replace rectangle glyph hacks in wo-docx-renderer and wo-renderer-wasm",
-      "session_id": "ses_26255d607ffemYtU3qUHqkGmuX",
-      "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-04-17T23:08:48.451Z"
-    },
-    "todo:16": {
-      "task_key": "todo:16",
-      "task_label": "16",
-      "task_title": "Real PDF output via pdf-writer crate",
-      "session_id": "ses_26248bcc0ffeTelKMN2aeGm3VL",
-      "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-04-17T23:29:56.903Z"
-    },
-    "todo:18": {
-      "task_key": "todo:18",
-      "task_label": "18",
-      "task_title": "Add converters for new niche format serializers",
-      "session_id": "ses_262318a0affe4cYuJxbBYrRqBs",
-      "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-04-17T23:52:35.137Z"
-    },
-    "todo:19": {
-      "task_key": "todo:19",
-      "task_label": "19",
-      "task_title": "Wire documenteditor-react Viewport to wo-renderer-wasm",
-      "session_id": "ses_2621ef21effeDGiGMHmivjlbgB",
-      "agent": "Sisyphus-Junior",
-      "category": "unspecified-high",
-      "updated_at": "2026-04-18T00:09:15.770Z"
-    },
-    "final-wave:f1": {
-      "task_key": "final-wave:f1",
-      "task_label": "F1",
-      "task_title": "**Plan Compliance Audit** — `oracle`",
-      "session_id": "ses_260e89183ffeK8oDLgZ3zO3OHb",
-      "agent": "explore",
-      "updated_at": "2026-04-18T05:38:53.550Z"
+      "category": "quick",
+      "updated_at": "2026-04-25T06:14:48.515Z"
     }
-  },
-  "agent": "atlas"
+  }
 }

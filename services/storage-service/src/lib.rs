@@ -335,12 +335,402 @@ pub async fn delete_file(
     })))
 }
 
+/// PUT /files/{id} — update an existing file's content.
+pub async fn update_file(
+    State(state): State<Arc<AppState>>,
+    Path(file_id): Path<String>,
+    Json(payload): Json<serde_json::Value>,
+) -> Result<Json<serde_json::Value>, (StatusCode, Json<ErrorResponse>)> {
+    // Verify file exists
+    let file = {
+        let repo = state.repo.lock().await;
+        match repo.get(&file_id) {
+            Ok(Some(f)) => f,
+            Ok(None) => {
+                return Err((
+                    StatusCode::NOT_FOUND,
+                    Json(ErrorResponse {
+                        error: format!("File {} not found", file_id),
+                        code: 404,
+                    }),
+                ));
+            }
+            Err(e) => {
+                return Err((
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(ErrorResponse {
+                        error: format!("Failed to get file: {}", e),
+                        code: 500,
+                    }),
+                ));
+            }
+        }
+    };
+
+    // Extract and decode content
+    let content = match payload.get("content").and_then(|v| v.as_str()) {
+        Some(content) => content,
+        None => {
+            return Err((
+                StatusCode::BAD_REQUEST,
+                Json(ErrorResponse {
+                    error: "content field is required".to_string(),
+                    code: 400,
+                }),
+            ));
+        }
+    };
+
+    let new_data = match base64::Engine::decode(
+        &base64::engine::general_purpose::STANDARD,
+        content,
+    ) {
+        Ok(data) => data,
+        Err(e) => {
+            return Err((
+                StatusCode::BAD_REQUEST,
+                Json(ErrorResponse {
+                    error: format!("Invalid base64 data: {}", e),
+                    code: 400,
+                }),
+            ));
+        }
+    };
+
+    // Write to disk
+    if let Err(e) = fs::write(&file.storage_path, &new_data).await {
+        return Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(ErrorResponse {
+                error: format!("Failed to write file to disk: {}", e),
+                code: 500,
+            }),
+        ));
+    }
+
+    // Update repository metadata (size)
+    let mut repo = state.repo.lock().await;
+    if let Err(e) = repo.update_size(&file_id, new_data.len()) {
+        tracing::warn!(error = %e, file_id = %file_id, "Failed to update file size metadata");
+    }
+    if let Err(e) = repo.touch(&file_id) {
+        tracing::warn!(error = %e, file_id = %file_id, "Failed to update file timestamp");
+    }
+
+    tracing::info!(file_id = %file_id, size = new_data.len(), "file updated");
+
+    Ok(Json(serde_json::json!({
+        "updated": true,
+        "id": file_id,
+        "size": new_data.len(),
+    })))
+}
+
+/// Snapshot response for metadata queries (without content_blob).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SnapshotMetadataResponse {
+    pub id: String,
+    pub file_id: String,
+    pub content_hash: String,
+    pub agent_name: String,
+    pub summary: String,
+    pub created_at: String,
+}
+
+/// Snapshot list response.
+#[derive(Debug, Clone, Serialize)]
+pub struct SnapshotListResponse {
+    pub snapshots: Vec<SnapshotMetadataResponse>,
+    pub count: usize,
+}
+
+/// Create snapshot request from MCP server.
+#[derive(Debug, Deserialize)]
+pub struct CreateSnapshotRequest {
+    pub file_id: String,
+    pub content_hash: String,
+    pub content_blob: String,  // base64-encoded content
+    pub agent_name: String,
+    pub summary: String,
+}
+
+/// Snapshot creation response.
+#[derive(Debug, Serialize)]
+pub struct CreateSnapshotResponse {
+    pub id: String,
+    pub file_id: String,
+}
+
+/// POST /snapshots — create a snapshot (called by MCP server).
+pub async fn create_snapshot(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<CreateSnapshotRequest>,
+) -> Result<(StatusCode, Json<CreateSnapshotResponse>), (StatusCode, Json<ErrorResponse>)> {
+    // Decode base64 content
+    let content_blob = match base64::Engine::decode(
+        &base64::engine::general_purpose::STANDARD,
+        &req.content_blob,
+    ) {
+        Ok(data) => data,
+        Err(e) => {
+            return Err((
+                StatusCode::BAD_REQUEST,
+                Json(ErrorResponse {
+                    error: format!("Invalid base64 data: {}", e),
+                    code: 400,
+                }),
+            ));
+        }
+    };
+
+    let mut repo = state.repo.lock().await;
+
+    // Check if file exists
+    match repo.get(&req.file_id) {
+        Ok(Some(_)) => {}
+        Ok(None) => {
+            return Err((
+                StatusCode::NOT_FOUND,
+                Json(ErrorResponse {
+                    error: format!("File {} not found", req.file_id),
+                    code: 404,
+                }),
+            ));
+        }
+        Err(e) => {
+            return Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: format!("Failed to check file: {}", e),
+                    code: 500,
+                }),
+            ));
+        }
+    }
+
+    // Check dedup: does a snapshot with this content hash already exist?
+    match repo.snapshot_hash_exists(&req.file_id, &req.content_hash) {
+        Ok(true) => {
+            tracing::info!(
+                file_id = %req.file_id,
+                hash = %req.content_hash,
+                "skip snapshot creation (dedup)"
+            );
+            // Return the existing snapshot ID (need to query for it)
+            let snapshots = repo.list_snapshots(&req.file_id, 100).unwrap();
+            if let Some(existing) = snapshots.iter().find(|s| s.content_hash == req.content_hash) {
+                return Ok((
+                    StatusCode::OK,
+                    Json(CreateSnapshotResponse {
+                        id: existing.id.clone(),
+                        file_id: req.file_id,
+                    }),
+                ));
+            }
+        }
+        Ok(false) => {}
+        Err(e) => {
+            return Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: format!("Failed to check snapshot hash: {}", e),
+                    code: 500,
+                }),
+            ));
+        }
+    }
+
+    // Insert the snapshot
+    match repo.insert_snapshot(
+        &req.file_id,
+        &req.content_hash,
+        &content_blob,
+        &req.agent_name,
+        &req.summary,
+    ) {
+        Ok(snapshot_id) => {
+            // Prune old snapshots (keep last 50)
+            if let Err(e) = repo.prune_snapshots(&req.file_id, 50) {
+                tracing::warn!(error = %e, file_id = %req.file_id, "Failed to prune old snapshots");
+            }
+
+            tracing::info!(
+                snapshot_id = %snapshot_id,
+                file_id = %req.file_id,
+                "snapshot created"
+            );
+            Ok((
+                StatusCode::CREATED,
+                Json(CreateSnapshotResponse {
+                    id: snapshot_id,
+                    file_id: req.file_id,
+                }),
+            ))
+        }
+        Err(e) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(ErrorResponse {
+                error: format!("Failed to create snapshot: {}", e),
+                code: 500,
+            }),
+        )),
+    }
+}
+
+/// GET /snapshots/file/{file_id} — list snapshots for a file (called by MCP server).
+pub async fn list_snapshots_for_file(
+    State(state): State<Arc<AppState>>,
+    Path(file_id): Path<String>,
+) -> Result<Json<SnapshotListResponse>, (StatusCode, Json<ErrorResponse>)> {
+    let repo = state.repo.lock().await;
+
+    // Check if file exists
+    match repo.get(&file_id) {
+        Ok(Some(_)) => {}
+        Ok(None) => {
+            return Err((
+                StatusCode::NOT_FOUND,
+                Json(ErrorResponse {
+                    error: format!("File {} not found", file_id),
+                    code: 404,
+                }),
+            ));
+        }
+        Err(e) => {
+            return Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    error: format!("Failed to check file: {}", e),
+                    code: 500,
+                }),
+            ));
+        }
+    }
+
+    match repo.list_snapshots(&file_id, 50) {
+        Ok(snapshots) => {
+            let count = snapshots.len();
+            let response_snapshots = snapshots
+                .into_iter()
+                .map(|s| SnapshotMetadataResponse {
+                    id: s.id,
+                    file_id: s.file_id,
+                    content_hash: s.content_hash,
+                    agent_name: s.agent_name,
+                    summary: s.summary,
+                    created_at: s.created_at,
+                })
+                .collect();
+
+            Ok(Json(SnapshotListResponse {
+                snapshots: response_snapshots,
+                count,
+            }))
+        }
+        Err(e) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(ErrorResponse {
+                error: format!("Failed to list snapshots: {}", e),
+                code: 500,
+            }),
+        )),
+    }
+}
+
+/// GET /snapshots/{id} — get a snapshot by ID (called by MCP server).
+pub async fn get_snapshot_by_id(
+    State(state): State<Arc<AppState>>,
+    Path(id): Path<String>,
+) -> Result<Json<serde_json::Value>, (StatusCode, Json<ErrorResponse>)> {
+    let repo = state.repo.lock().await;
+
+    match repo.get_snapshot(&id) {
+        Ok(Some(snapshot)) => {
+            // Response includes base64-encoded content_blob for consistency with MCP client
+            let response = serde_json::json!({
+                "id": snapshot.id,
+                "file_id": snapshot.file_id,
+                "content_hash": snapshot.content_hash,
+                "content_blob": base64::Engine::encode(
+                    &base64::engine::general_purpose::STANDARD,
+                    &snapshot.content_blob
+                ),
+                "agent_name": snapshot.agent_name,
+                "summary": snapshot.summary,
+                "created_at": snapshot.created_at,
+            });
+            Ok(Json(response))
+        }
+        Ok(None) => Err((
+            StatusCode::NOT_FOUND,
+            Json(ErrorResponse {
+                error: format!("Snapshot {} not found", id),
+                code: 404,
+            }),
+        )),
+        Err(e) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(ErrorResponse {
+                error: format!("Failed to get snapshot: {}", e),
+                code: 500,
+            }),
+        )),
+    }
+}
+
+/// DELETE /snapshots/{id} — delete a snapshot (called by MCP server).
+pub async fn delete_snapshot_by_id(
+    State(state): State<Arc<AppState>>,
+    Path(id): Path<String>,
+) -> Result<Json<serde_json::Value>, (StatusCode, Json<ErrorResponse>)> {
+    let mut repo = state.repo.lock().await;
+
+    // Verify snapshot exists
+    match repo.get_snapshot(&id) {
+        Ok(Some(_)) => {
+            repo.delete_snapshot(&id).map_err(|e| {
+                tracing::error!(error = %e, snapshot_id = %id, "Failed to delete snapshot");
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(ErrorResponse {
+                        error: format!("Failed to delete snapshot: {}", e),
+                        code: 500,
+                    }),
+                )
+            })?;
+
+            tracing::info!(snapshot_id = %id, "snapshot deleted");
+            Ok(Json(serde_json::json!({
+                "deleted": true,
+                "id": id,
+            })))
+        }
+        Ok(None) => Err((
+            StatusCode::NOT_FOUND,
+            Json(ErrorResponse {
+                error: format!("Snapshot {} not found", id),
+                code: 404,
+            }),
+        )),
+        Err(e) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(ErrorResponse {
+                error: format!("Failed to get snapshot: {}", e),
+                code: 500,
+            }),
+        )),
+    }
+}
+
 /// Build the full application router.
 pub fn app(state: Arc<AppState>) -> Router {
     Router::new()
         .route("/health", get(health))
         .route("/files", post(upload_file).get(list_files))
-        .route("/files/{id}", get(get_file).delete(delete_file))
+        .route("/files/{id}", get(get_file).put(update_file).delete(delete_file))
         .route("/files/{id}/content", get(get_file_content))
+        .route("/snapshots", post(create_snapshot))
+        .route("/snapshots/file/{file_id}", get(list_snapshots_for_file))
+        .route("/snapshots/{id}", get(get_snapshot_by_id).delete(delete_snapshot_by_id))
         .with_state(state)
 }

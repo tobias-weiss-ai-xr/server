@@ -7,12 +7,7 @@ export interface CollaborationStatusProps {
   className?: string
 }
 
-const STATUS_CONFIG: Record<ConnectionState, { label: string; color: string }> = {
-  connected: { label: "Connected", color: "#2ECC71" },
-  connecting: { label: "Connecting...", color: "#F39C12" },
-  reconnecting: { label: "Reconnecting...", color: "#E67E22" },
-  disconnected: { label: "Disconnected", color: "#E74C3C" },
-}
+
 
 export function CollaborationStatus({ state, userCount, className }: CollaborationStatusProps) {
   const status = useConnectionStatus(state)

@@ -41,7 +41,7 @@ export interface WebSocketManagerOptions {
 /** WebSocket readyState constants (avoid reliance on browser-only WebSocket global). */
 const WS_CONNECTING = 0
 const WS_OPEN = 1
-const WS_CLOSED = 3
+
 
 type EventCallback = (...args: unknown[]) => void
 

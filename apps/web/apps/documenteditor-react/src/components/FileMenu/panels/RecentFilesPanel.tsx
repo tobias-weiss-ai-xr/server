@@ -25,9 +25,11 @@ export function RecentFilesPanel({ visible }: { visible: boolean }) {
     const binaryExtensions = new Set(["docx", "odt", "doc", "pdf", "xlsx", "pptx", "epub", "fb2", "rtf"])
     const ext = path.split(".").pop()?.toLowerCase() ?? ""
     const isBinary = binaryExtensions.has(ext)
-    const _content = isBinary
-      ? await invoke<string>("read_file_binary", { path })
-      : await invoke<string>("read_file", { path })
+    if (isBinary) {
+      await invoke<string>("read_file_binary", { path })
+    } else {
+      await invoke<string>("read_file", { path })
+    }
     documentStore.setFilePath(path)
     documentStore.setDirty(false)
     documentStore.setActiveFileMenuPanel(null)

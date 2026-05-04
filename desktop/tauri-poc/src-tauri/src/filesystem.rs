@@ -1,8 +1,8 @@
 use base64::{engine::general_purpose::STANDARD, Engine};
 use mime_guess::Mime;
 use serde::{Deserialize, Serialize};
-use std::fs;
 use std::path::Path;
+use walkdir::WalkDir;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct FileEntry {
@@ -26,49 +26,57 @@ pub struct FileInfo {
 }
 
 #[tauri::command]
-pub fn read_file(path: String) -> Result<String, String> {
+pub async fn read_file(path: String) -> Result<String, String> {
     let path = Path::new(&path);
     if !path.exists() {
         return Err(format!("File not found: {}", path.display()));
     }
 
-    fs::read_to_string(path).map_err(|e| format!("Failed to read file: {}", e))
+    tokio::fs::read_to_string(path)
+        .await
+        .map_err(|e| format!("Failed to read file: {}", e))
 }
 
 #[tauri::command]
-pub fn read_file_binary(path: String) -> Result<String, String> {
+pub async fn read_file_binary(path: String) -> Result<String, String> {
     let path = Path::new(&path);
     if !path.exists() {
         return Err(format!("File not found: {}", path.display()));
     }
 
-    let bytes = fs::read(path).map_err(|e| format!("Failed to read binary file: {}", e))?;
+    let bytes = tokio::fs::read(path)
+        .await
+        .map_err(|e| format!("Failed to read binary file: {}", e))?;
     Ok(STANDARD.encode(&bytes))
 }
 
 #[tauri::command]
-pub fn write_file(path: String, content: String) -> Result<(), String> {
+pub async fn write_file(path: String, content: String) -> Result<(), String> {
     let path = Path::new(&path);
 
     // Create parent directories if they don't exist
     if let Some(parent) = path.parent() {
         if !parent.exists() {
-            fs::create_dir_all(parent)
+            tokio::fs::create_dir_all(parent)
+                .await
                 .map_err(|e| format!("Failed to create directories: {}", e))?;
         }
     }
 
-    fs::write(path, content).map_err(|e| format!("Failed to write file: {}", e))
+    tokio::fs::write(path, content)
+        .await
+        .map_err(|e| format!("Failed to write file: {}", e))
 }
 
 #[tauri::command]
-pub fn write_file_binary(path: String, content_base64: String) -> Result<(), String> {
+pub async fn write_file_binary(path: String, content_base64: String) -> Result<(), String> {
     let path = Path::new(&path);
 
     // Create parent directories if they don't exist
     if let Some(parent) = path.parent() {
         if !parent.exists() {
-            fs::create_dir_all(parent)
+            tokio::fs::create_dir_all(parent)
+                .await
                 .map_err(|e| format!("Failed to create directories: {}", e))?;
         }
     }
@@ -77,25 +85,31 @@ pub fn write_file_binary(path: String, content_base64: String) -> Result<(), Str
         .decode(&content_base64)
         .map_err(|e| format!("Failed to decode base64: {}", e))?;
 
-    fs::write(path, bytes).map_err(|e| format!("Failed to write binary file: {}", e))
+    tokio::fs::write(path, bytes)
+        .await
+        .map_err(|e| format!("Failed to write binary file: {}", e))
 }
 
 #[tauri::command]
-pub fn delete_file(path: String) -> Result<(), String> {
+pub async fn delete_file(path: String) -> Result<(), String> {
     let path = Path::new(&path);
     if !path.exists() {
         return Err(format!("File not found: {}", path.display()));
     }
 
     if path.is_dir() {
-        fs::remove_dir_all(path).map_err(|e| format!("Failed to delete directory: {}", e))
+        tokio::fs::remove_dir_all(path)
+            .await
+            .map_err(|e| format!("Failed to delete directory: {}", e))
     } else {
-        fs::remove_file(path).map_err(|e| format!("Failed to delete file: {}", e))
+        tokio::fs::remove_file(path)
+            .await
+            .map_err(|e| format!("Failed to delete file: {}", e))
     }
 }
 
 #[tauri::command]
-pub fn rename_file(old_path: String, new_path: String) -> Result<(), String> {
+pub async fn rename_file(old_path: String, new_path: String) -> Result<(), String> {
     let old_path = Path::new(&old_path);
     let new_path = Path::new(&new_path);
 
@@ -106,16 +120,19 @@ pub fn rename_file(old_path: String, new_path: String) -> Result<(), String> {
     // Create parent directories if they don't exist
     if let Some(parent) = new_path.parent() {
         if !parent.exists() {
-            fs::create_dir_all(parent)
+            tokio::fs::create_dir_all(parent)
+                .await
                 .map_err(|e| format!("Failed to create directories: {}", e))?;
         }
     }
 
-    fs::rename(old_path, new_path).map_err(|e| format!("Failed to rename file: {}", e))
+    tokio::fs::rename(old_path, new_path)
+        .await
+        .map_err(|e| format!("Failed to rename file: {}", e))
 }
 
 #[tauri::command]
-pub fn copy_file(src: String, dst: String) -> Result<(), String> {
+pub async fn copy_file(src: String, dst: String) -> Result<(), String> {
     let src_path = Path::new(&src);
     let dst_path = Path::new(&dst);
 
@@ -126,38 +143,37 @@ pub fn copy_file(src: String, dst: String) -> Result<(), String> {
     // Create parent directories if they don't exist
     if let Some(parent) = dst_path.parent() {
         if !parent.exists() {
-            fs::create_dir_all(parent)
+            tokio::fs::create_dir_all(parent)
+                .await
                 .map_err(|e| format!("Failed to create directories: {}", e))?;
         }
     }
 
     if src_path.is_dir() {
         // For directories, we need to recursively copy
-        copy_dir_recursive(src_path, dst_path)
+        copy_dir_recursive(src_path, dst_path).await
     } else {
-        fs::copy(src_path, dst_path).map_err(|e| format!("Failed to copy file: {}", e))?;
+        tokio::fs::copy(src_path, dst_path)
+            .await
+            .map_err(|e| format!("Failed to copy file: {}", e))?;
         Ok(())
     }
 }
 
-fn copy_dir_recursive(src: &Path, dst: &Path) -> Result<(), String> {
-    if !dst.exists() {
-        fs::create_dir_all(dst).map_err(|e| format!("Failed to create directory: {}", e))?;
-    }
+async fn copy_dir_recursive(src: &Path, dst: &Path) -> Result<(), String> {
+    for entry in WalkDir::new(src).min_depth(1) {
+        let entry = entry.map_err(|e| format!("WalkDir error: {}", e))?;
+        let src_path = entry.path();
+        let dst_path = dst.join(src_path.strip_prefix(src).unwrap());
 
-    for entry in fs::read_dir(src).map_err(|e| format!("Failed to read directory: {}", e))? {
-        let entry = entry.map_err(|e| format!("Failed to read entry: {}", e))?;
-        let file_type = entry
-            .file_type()
-            .map_err(|e| format!("Failed to get file type: {}", e))?;
-
-        let src_child = entry.path();
-        let dst_child = dst.join(entry.file_name());
-
-        if file_type.is_dir() {
-            copy_dir_recursive(&src_child, &dst_child)?;
+        if entry.file_type().is_dir() {
+            tokio::fs::create_dir_all(&dst_path)
+                .await
+                .map_err(|e| format!("Failed to create directory {}: {}", dst_path.display(), e))?;
         } else {
-            fs::copy(&src_child, &dst_child).map_err(|e| format!("Failed to copy file: {}", e))?;
+            tokio::fs::copy(src_path, &dst_path)
+                .await
+                .map_err(|e| format!("Failed to copy {}: {}", dst_path.display(), e))?;
         }
     }
 
@@ -165,7 +181,7 @@ fn copy_dir_recursive(src: &Path, dst: &Path) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub fn list_directory(path: String) -> Result<Vec<FileEntry>, String> {
+pub async fn list_directory(path: String) -> Result<Vec<FileEntry>, String> {
     let path = Path::new(&path);
     if !path.exists() {
         return Err(format!("Directory not found: {}", path.display()));
@@ -177,10 +193,18 @@ pub fn list_directory(path: String) -> Result<Vec<FileEntry>, String> {
 
     let mut entries = Vec::new();
 
-    for entry in fs::read_dir(path).map_err(|e| format!("Failed to read directory: {}", e))? {
-        let entry = entry.map_err(|e| format!("Failed to read entry: {}", e))?;
+    let mut dir_entries = tokio::fs::read_dir(path)
+        .await
+        .map_err(|e| format!("Failed to read directory: {}", e))?;
+
+    while let Some(entry) = dir_entries
+        .next_entry()
+        .await
+        .map_err(|e| format!("Failed to read entry: {}", e))?
+    {
         let metadata = entry
             .metadata()
+            .await
             .map_err(|e| format!("Failed to get metadata: {}", e))?;
 
         let modified = metadata
@@ -209,35 +233,37 @@ pub fn list_directory(path: String) -> Result<Vec<FileEntry>, String> {
 }
 
 #[tauri::command]
-pub fn create_directory(path: String) -> Result<(), String> {
+pub async fn create_directory(path: String) -> Result<(), String> {
     let path = Path::new(&path);
     if path.exists() {
         return Err(format!("Path already exists: {}", path.display()));
     }
 
-    fs::create_dir_all(path).map_err(|e| format!("Failed to create directory: {}", e))
+    tokio::fs::create_dir_all(path)
+        .await
+        .map_err(|e| format!("Failed to create directory: {}", e))
 }
 
 #[tauri::command]
-pub fn get_file_info(path: String) -> Result<FileInfo, String> {
+pub async fn get_file_info(path: String) -> Result<FileInfo, String> {
     let path = Path::new(&path);
     if !path.exists() {
         return Err(format!("File not found: {}", path.display()));
     }
 
-    let metadata = fs::metadata(path).map_err(|e| format!("Failed to get metadata: {}", e))?;
+    let metadata = tokio::fs::metadata(path)
+        .await
+        .map_err(|e| format!("Failed to get metadata: {}", e))?;
 
     let modified = metadata
         .modified()
         .map_err(|e| format!("Failed to get modified time: {}", e))?;
 
-    let created = metadata
-        .created()
-        .map_err(|e| format!("Failed to get created time: {}", e));
+    let created = metadata.created().ok();
 
     let created_str = match created {
-        Ok(time) => format!("{:?}", time),
-        Err(_) => String::from("Unknown"),
+        Some(time) => format!("{:?}", time),
+        None => String::from("Unknown"),
     };
 
     let name = path

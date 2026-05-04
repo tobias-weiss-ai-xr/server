@@ -34,7 +34,7 @@ impl AppState {
     }
 
     fn get_storage_path() -> Option<PathBuf> {
-        dirs::data_local_dir().map(|dir| dir.join("World Office").join(RECENT_FILES_KEY))
+        dirs::data_local_dir().map(|dir| dir.join("WorldOffice").join(RECENT_FILES_KEY))
     }
 
     fn load_recent_files(&self) {

@@ -25,7 +25,6 @@ pub fn run() {
             commands::about,
             commands::get_recent_files,
             commands::update_window_title,
-            commands::greet,
             commands::zoom_in,
             commands::zoom_out,
             commands::reset_zoom,

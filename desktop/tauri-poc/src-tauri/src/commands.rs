@@ -70,11 +70,6 @@ pub fn get_recent_files(state: State<'_, AppState>) -> Vec<String> {
 }
 
 #[tauri::command]
-pub fn greet(name: &str) -> String {
-    format!("Hello, {}! Welcome to World Office.", name)
-}
-
-#[tauri::command]
 pub fn zoom_in(app: AppHandle) -> Result<(), String> {
     if let Some(window) = window::get_focused_window(&app) {
         window

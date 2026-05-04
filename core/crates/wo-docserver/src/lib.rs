@@ -284,12 +284,12 @@ pub fn create_app(config: DocServerConfig) -> Router {
         .route("/api/conversion/formats", get(conversion_formats))
         .with_state(state);
 
-    // Serve editor UI if the directory exists, otherwise fall back to landing page
-    if let Some(serve_dir) = static_files::editor_ui_service(&config.editor_ui_dir) {
-        app = app.nest_service("/", serve_dir);
-    } else {
-        app = app.route("/", get(static_files::landing_page_handler));
-    }
+// Serve editor UI if the directory exists, otherwise fall back to landing page
+        if let Some(serve_dir) = static_files::editor_ui_service(&config.editor_ui_dir) {
+            app = app.fallback_service(serve_dir);
+        } else {
+            app = app.route("/", get(static_files::landing_page_handler));
+        }
 
     app
 }

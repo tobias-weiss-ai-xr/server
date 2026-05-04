@@ -41,7 +41,6 @@ RUN cargo build -p wo-docserver --release
 # Build the React editor UI (apps/web must be built for full integration)
 # Uses corepack for pnpm management
 WORKDIR /build/server/apps/web
-RUN corepack enable && pnpm install --frozen-lockfile && pnpm build
 
 # =============================================================================
 # Stage 2: Runtime — Minimal image with only necessary components

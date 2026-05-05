@@ -6,7 +6,7 @@ End-to-end test suite for World Office integration components.
 
 This repository contains automated E2E tests for the World Office document editing stack:
 
-- **Document Server** - WOPI client (editor) built from [World-Office/core](https://codeberg.org/World-Office/core)
+- **Document Server** - WOPI client (editor) built from [World-Office/server](https://codeberg.org/World-Office/server)
 - **OCIS** - ownCloud Infinite Scale (WOPI host) for file storage
 - **Companion** - Deployment dashboard and orchestration layer
 
@@ -299,7 +299,7 @@ testsuite/
 ## Related Projects
 
 - [worldoffice-opencloud](https://codeberg.org/World-Office/server) - Companion app
-- [core](https://codeberg.org/World-Office/core) - Document Server core (C++)
+
 - [OCIS](https://github.com/owncloud/ocis) - ownCloud Infinite Scale
 
 ---

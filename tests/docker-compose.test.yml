@@ -3,7 +3,7 @@
 # =============================================================================
 #
 # This Docker Compose file spins up the full integration stack for E2E testing:
-#   1. Document Server (built from World-Office/core/)
+#   1. Document Server (built from World-Office/server/)
 #   2. OCIS (ownCloud Infinite Scale)
 #   3. worldoffice-opencloud Companion
 #

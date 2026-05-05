@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# Build Document Server from World-Office/core/
+# Build Document Server (Rust)
 # =============================================================================
 #
 # Usage: ./build.sh [tag]
@@ -27,11 +27,11 @@ echo "=============================================="
 echo "World Office Document Server Build"
 echo "=============================================="
 echo ""
-echo "Building from: https://codeberg.org/World-Office/core"
+echo "Building from: World-Office/server (Rust)"
 echo "Image tag:     worldoffice-documentserver:${TAG}"
 echo "Context:       ${CONTEXT_DIR}"
 echo ""
-echo "⚠️  WARNING: This will take 2-4 hours for the C++ build!"
+echo "NOTE: Build time is ~5-10 minutes (Rust)"
 echo ""
 read -p "Continue? (y/N) " -n 1 -r
 echo

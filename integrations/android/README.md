@@ -78,7 +78,7 @@ World-Office Documents for Android is released under the [GNU AGPLv3 license](ht
 
 ## Related Projects
 
-- [World-Office/core](https://codeberg.org/World-Office/core) — C++ rendering and conversion engine
+
 - [World-Office/web-apps](https://codeberg.org/World-Office/web-apps) — Web editor interface
 - [World-Office/DocumentServer](https://codeberg.org/World-Office/DocumentServer) — Document server deployment
 - [World-Office/worldoffice-opencloud](https://codeberg.org/World-Office/server) — OCIS deployment companion

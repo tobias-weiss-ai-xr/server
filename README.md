@@ -57,6 +57,42 @@ The Document Server (`wo-docserver`) is a Rust-based WOPI client that replaces t
 - **Editor UI**: React-based editors from monorepo instead of compiled JavaScript
 - **Deploy**: Single binary or Docker container
 
+### Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Client Browser                         │
+│  (React Document/Spreadsheet/Presentation Editors)          │
+└─────────────────────┬───────────────────────────────────────┘
+                      │ HTTP/HTTPS
+                      │
+┌─────────────────────▼───────────────────────────────────────┐
+│              wo-docserver (Rust)                            │
+│  ┌──────────────────┬────────────────────────────────────┐ │
+│  │  WOPI Client      │  Editor UI Hosting                │ │
+│  │  - CheckFileInfo │  - /hosting/wopi/*                 │ │
+│  │  - GetFile       │  - /hosting/discovery (proxy)     │ │
+│  │  - PutFile       │  - Serves React apps from apps/    │ │
+│  └────────┬─────────┴────────┬───────────────────────────┘ │
+│           │                  │                              │
+│           │ WOPI protocol    │                              │
+└───────────┼──────────────────┼──────────────────────────────┘
+            │                  │
+        ┌───▼──────────────────▼────┐
+        │   WOPI Host (OCIS)        │
+        │   - File storage           │
+        │   - WOPI discovery         │
+        │   - Auth (built-in IDP)    │
+        └────────────────────────────┘
+```
+
+**Request Flow:**
+1. Browser requests `http://docserver:8080/hosting/wopi/word/edit?wopisrc=...`
+2. wo-docserver serves React editor UI with embedded `WOPISrc` parameter
+3. Editor loads and makes WOPI requests to `/wopi/files/{id}/`, `/wopi/files/{id}/contents/`
+4. wo-docserver proxies these to OCIS (WOPI host) with JWT authentication
+5. OCIS returns file metadata/content, wo-docserver forwards to editor
+
 ## Rust Core (26 Crates)
 
 ### Format Parsers (16 crates)

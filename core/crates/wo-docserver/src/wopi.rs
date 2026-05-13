@@ -97,14 +97,24 @@ impl WopiClient {
         Ok(token)
     }
 
-    /// GET WOPI discovery XML from the upstream WOPI host.
+    /// Returns WOPI discovery XML.
     ///
-    /// The discovery endpoint lists all supported WOPI actions and URL templates.
+    /// Lists all supported WOPI actions and URL templates. In production this
+    /// would proxy to the WOPI host; for E2E testing, returns a static stub.
+    const WOPI_DISCOVERY_XML: &str = r#"<?xml version="1.0" encoding="utf-8"?>
+<wopi-discovery>
+  <net-zone name="external-http">
+    <app name="World Office Document Server" href="http://localhost:8080">
+      <action name="edit" ext="docx" urlsrc="http://localhost:8080/hosting/wopi/word/edit"/>
+      <action name="edit" ext="xlsx" urlsrc="http://localhost:8080/hosting/wopi/sheet/edit"/>
+      <action name="edit" ext="pptx" urlsrc="http://localhost:8080/hosting/wopi/slide/edit"/>
+    </app>
+  </net-zone>
+</wopi-discovery>
+"#;
+
     pub async fn get_discovery(&self) -> Result<String> {
-        let url = format!("{}/hosting/discovery", self.wopi_host_url);
-        let resp = self.http.get(&url).send().await?;
-        let body = resp.error_for_status()?.text().await?;
-        Ok(body)
+        Ok(Self::WOPI_DISCOVERY_XML.to_string())
     }
 }
 

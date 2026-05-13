@@ -52,9 +52,31 @@ cd testsuite
 npm install
 ```
 
+## Document Server (Rust)
+
+The Document Server container builds the Rust-based `wo-docserver` from `World-Office/server`.
+
+**Build details:**
+- Base image: `debian:bookworm-slim`
+- Rust toolchain: nightly (via rust-toolchain.toml)
+- Build time: ~5-10 minutes (vs 2-4 hours for C++)
+- Ports exposed: `:80` (HTTP)
+- Required env vars:
+  - `JWT_SECRET`: Token validation key (must match OCIS)
+  - `WOPI_HOST`: OCIS WOPI host URL (e.g., `ocis:9200`)
+
+**Endpoints:**
+| Path | Method | Purpose |
+|------|--------|---------|
+| `/health` | GET | Health check |
+| `/hosting/discovery` | GET | WOPI discovery (proxied to OCIS) |
+| `/hosting/wopi/*` | GET | Editor UI routing |
+| `/wopi/files/{id}` | GET | CheckFileInfo |
+| `/wopi/files/{id}/contents` | GET/POST | GetFile / PutFile |
+
 ### 2. Build Docker Images
 
-**First time only** (takes 2-4 hours for C++ build):
+**First time only** (takes ~5-10 minutes for Rust build):
 
 ```bash
 ./scripts/start-test-stack.sh --build

@@ -41,6 +41,33 @@ core/
     └── wo-docserver/        # Document server, proxies WOPI→OCIS (756 lines)
 ```
 
+#### wo-docserver Implementation Notes
+
+**Built with:** axum (routes), tokio (async runtime)
+
+**Key features:**
+- WOPI endpoints: `/wopi/files/{id}`, `/wopi/files/{id}/contents` (GET/POST), `/hosting/discovery` (proxy), `/hosting/wopi/{path}`
+- JWT validation via `JWT_SECRET` env var
+- Editor UI served from `apps/web/apps/*/dist/` directories
+- WOPI host configuration via `WOPI_HOST` env var (also accepts `WOPI_HOST_URL`)
+
+**Directory structure:**
+```
+wo-docserver/
+├── src/
+│   ├── lib.rs       # Route registration, app factory
+│   ├── config.rs    # Env var parsing, JWT secret loading
+│   ├── wopi.rs      # WopiClient for OCIS communication
+│   └── static_files.rs  # Discovery handler, editor UI serving
+└── Cargo.toml
+```
+
+**Testing:**
+```bash
+cargo build -p wo-docserver --release
+cargo test -p wo-docserver
+```
+
 ## WHERE TO LOOK
 
 | Task | Crate | Notes |

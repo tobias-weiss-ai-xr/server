@@ -41,6 +41,22 @@ server/
 +-- .forgejo/workflows/           CI/CD (ci, docker, release, security, wasm)
 ```
 
+## Document Server Architecture
+
+The Document Server (`wo-docserver`) is a Rust-based WOPI client that replaces the former C++ Document Server.
+
+### Responsibilities:
+- **WOPI Client**: Implements CheckFileInfo, GetFile, PutFile WOPI endpoints
+- **Editor UI Hosting**: Serves React-based editors from `apps/web/apps/`
+- **WOPI Discovery Proxies**: Proxies `/hosting/discovery` and `/hosting/wopi/*` to WOPI host
+- **Format Conversion**: Backend for `wo-x2t` format conversion orchestration
+
+### Key Differences from C++ Document Server:
+- **Language**: Rust (axum/tokio) instead of C++
+- **Build Time**: ~5-10 minutes instead of 2-4 hours
+- **Editor UI**: React-based editors from monorepo instead of compiled JavaScript
+- **Deploy**: Single binary or Docker container
+
 ## Rust Core (26 Crates)
 
 ### Format Parsers (16 crates)

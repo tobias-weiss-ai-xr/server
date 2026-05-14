@@ -620,6 +620,23 @@ async fn handle_ws(
         channels.get(&session_id).cloned()
     };
 
+    let _initial_state = {
+        let docs = state.documents.lock().await;
+        if let Some(doc) = docs.get(&session_id) {
+            let doc_bytes = doc.crdt.oplog.encode(EncodeOptions::default());
+            let repo = state.sessions.lock().await;
+            if let Ok(Some(session)) = repo.get(&session_id) {
+                let initial = InitialState {
+                    crdt_bytes: doc_bytes,
+                    participants: session.participants.clone(),
+                };
+                if let Ok(json) = serde_json::to_string(&initial) {
+                    let _ = out_tx.blocking_send(json);
+                }
+            }
+        }
+    };
+
     let joined = ParticipantUpdate {
         event: ParticipantEvent::Joined,
         user_id: user_id.clone(),

@@ -15,7 +15,6 @@ import {
   type InitialState,
   createInsertOp,
   createDeleteOp,
-  parseMessage,
   parseServerMessage,
   isRemoteMessage,
 } from "./protocol"
@@ -37,7 +36,6 @@ export interface WebSocketManagerOptions {
   url: string
   userId: string
   sessionId?: string
-  token?: string
   /** Auto-reconnect on disconnect. Default: true */
   autoReconnect?: boolean
   /** Backoff options for reconnection. */
@@ -55,7 +53,6 @@ export class WebSocketManager {
   private readonly url: string
   private readonly userId: string
   private readonly sessionId: string
-  private readonly token: string | undefined
   private autoReconnect: boolean
   private backoff: BackoffStrategy
 
@@ -69,7 +66,6 @@ export class WebSocketManager {
     this.url = options.url
     this.userId = options.userId
     this.sessionId = options.sessionId ?? this.extractSessionId(options.url)
-    this.token = options.token
     this.autoReconnect = options.autoReconnect ?? true
     this.backoff = new BackoffStrategy(options.backoff)
   }
@@ -120,7 +116,7 @@ export class WebSocketManager {
 
   // ── Connection ──
 
-  connect(sessionId?: string, token?: string): void {
+  connect(token?: string): void {
     if (this.ws && (this.ws.readyState === WS_OPEN || this.ws.readyState === WS_CONNECTING)) {
       return
     }

@@ -58,7 +58,6 @@ export function useCollaboration(options: UseCollaborationOptions): UseCollabora
         const manager = new WebSocketManager({
           url,
           userId,
-          token,
           autoReconnect: true,
         })
 
@@ -139,7 +138,7 @@ export function useCollaboration(options: UseCollaborationOptions): UseCollabora
       })
 
       const manager = getOrCreateManager(resolvedSessionId, accessToken)
-      manager.connect(resolvedSessionId, accessToken)
+      manager.connect(accessToken)
     } catch (err) {
       console.error("[useCollaboration] connect failed:", err)
     }

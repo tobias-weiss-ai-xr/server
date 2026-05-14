@@ -632,7 +632,7 @@ async fn handle_ws(
     }
 
     // Forward all outgoing messages to the WebSocket
-    let send_task = tokio::spawn(async move {
+    let _send_task = tokio::spawn(async move {
         while let Some(msg) = out_rx.recv().await {
             if ws_sender.send(Message::Text(msg.into())).await.is_err() {
                 break;

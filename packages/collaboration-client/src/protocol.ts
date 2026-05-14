@@ -51,6 +51,40 @@ export interface DeleteOperation extends BaseEditOperation {
   content: null
 }
 
+// ── Participant Update ──
+
+/** Participant update event types. */
+export type ParticipantEvent = "joined" | "left" | "cursor_moved"
+
+/**
+ * A presence update sent over WebSocket when a participant joins, leaves,
+ * or moves their cursor.
+ */
+export interface ParticipantUpdate {
+  event: ParticipantEvent
+  user_id: string
+  username: string
+  color: string
+  cursor_position?: CursorPosition
+}
+
+/**
+ * Initial state sent to a new WebSocket client upon connect, containing
+ * the current CRDT document bytes and all current participants.
+ */
+export interface InitialState {
+  crdt_bytes: Uint8Array
+  participants: Participant[]
+}
+
+/**
+ * Discriminated union for all messages received from the server over WebSocket.
+ */
+export type ServerMessage =
+  | { type: "edit"; operation: EditOperation }
+  | { type: "participant_update"; update: ParticipantUpdate }
+  | { type: "initial_state"; state: InitialState }
+
 // ── Server REST Responses ──
 
 export interface CreateSessionResponse {
@@ -112,6 +146,48 @@ export function createDeleteOp(params: {
     length: params.length,
     content: null,
     timestamp: new Date().toISOString(),
+  }
+}
+
+/** Parse a JSON string into a ServerMessage, or return null if invalid. */
+export function parseServerMessage(json: string): ServerMessage | null {
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(json)
+  } catch {
+    return null
+  }
+
+  if (typeof parsed !== "object" || parsed === null) return null
+  const obj = parsed as Record<string, unknown>
+
+  if (obj.type === "edit" && typeof obj.operation === "object") {
+    return { type: "edit", operation: obj.operation as EditOperation }
+  }
+  if (obj.type === "participant_update" && typeof obj.update === "object") {
+    return { type: "participant_update", update: obj.update as ParticipantUpdate }
+  }
+  if (obj.type === "initial_state" && typeof obj.state === "object") {
+    return { type: "initial_state", state: obj.state as InitialState }
+  }
+
+  return null
+}
+
+/** Create a participant update for cursor movement. */
+export function createCursorUpdate(params: {
+  session_id: string
+  user_id: string
+  username: string
+  color: string
+  cursor_position: CursorPosition
+}): ParticipantUpdate {
+  return {
+    event: "cursor_moved",
+    user_id: params.user_id,
+    username: params.username,
+    color: params.color,
+    cursor_position: params.cursor_position,
   }
 }
 

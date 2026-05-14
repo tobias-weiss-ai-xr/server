@@ -11,9 +11,12 @@
 
 import {
   type EditOperation,
+  type ParticipantUpdate,
+  type InitialState,
   createInsertOp,
   createDeleteOp,
   parseMessage,
+  parseServerMessage,
   isRemoteMessage,
 } from "./protocol"
 import { BackoffStrategy } from "./reconnection"
@@ -25,6 +28,8 @@ export interface WebSocketManagerEvents {
   close: (event: { code: number; reason: string; wasClean: boolean }) => void
   error: (event: Event) => void
   operation: (op: EditOperation) => void
+  participantUpdate: (update: ParticipantUpdate) => void
+  initialState: (state: InitialState) => void
   stateChange: (state: ConnectionState) => void
 }
 
@@ -32,6 +37,7 @@ export interface WebSocketManagerOptions {
   url: string
   userId: string
   sessionId?: string
+  token?: string
   /** Auto-reconnect on disconnect. Default: true */
   autoReconnect?: boolean
   /** Backoff options for reconnection. */
@@ -49,6 +55,7 @@ export class WebSocketManager {
   private readonly url: string
   private readonly userId: string
   private readonly sessionId: string
+  private readonly token: string | undefined
   private autoReconnect: boolean
   private backoff: BackoffStrategy
 
@@ -62,6 +69,7 @@ export class WebSocketManager {
     this.url = options.url
     this.userId = options.userId
     this.sessionId = options.sessionId ?? this.extractSessionId(options.url)
+    this.token = options.token
     this.autoReconnect = options.autoReconnect ?? true
     this.backoff = new BackoffStrategy(options.backoff)
   }
@@ -112,14 +120,17 @@ export class WebSocketManager {
 
   // ── Connection ──
 
-  connect(): void {
+  connect(sessionId?: string, token?: string): void {
     if (this.ws && (this.ws.readyState === WS_OPEN || this.ws.readyState === WS_CONNECTING)) {
       return
     }
 
     this.setState("connecting")
 
-    this.ws = new WebSocket(this.url)
+    const actualUrl = token
+      ? `${this.url}${this.url.includes("?") ? "&" : "?"}token=${encodeURIComponent(token)}`
+      : this.url
+    this.ws = new WebSocket(actualUrl)
 
     this.ws.addEventListener("open", () => {
       this.setState("connected")
@@ -195,10 +206,17 @@ export class WebSocketManager {
   // ── Receive ──
 
   private handleMessage(data: string): void {
-    const op = parseMessage(data)
-    if (!op) return
-    if (!isRemoteMessage(op, this.userId)) return
-    this.emit("operation", op)
+    const serverMsg = parseServerMessage(data)
+    if (!serverMsg) return
+
+    if (serverMsg.type === "edit") {
+      if (!isRemoteMessage(serverMsg.operation, this.userId)) return
+      this.emit("operation", serverMsg.operation)
+    } else if (serverMsg.type === "participant_update") {
+      this.emit("participantUpdate", serverMsg.update)
+    } else if (serverMsg.type === "initial_state") {
+      this.emit("initialState", serverMsg.state)
+    }
   }
 
   // ── Reconnection ──

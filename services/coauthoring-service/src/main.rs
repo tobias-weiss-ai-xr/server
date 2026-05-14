@@ -63,6 +63,41 @@ struct EditOperation {
     timestamp: String,
 }
 
+/// A participant update event sent over WebSocket.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct ParticipantUpdate {
+    #[serde(rename = "type")]
+    event: ParticipantEvent,
+    user_id: String,
+    username: String,
+    color: String,
+    cursor_position: Option<CursorPos>,
+}
+
+/// The event type for a participant update.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+enum ParticipantEvent {
+    Joined,
+    Left,
+    CursorMoved,
+}
+
+/// Initial state sent to a new WebSocket client upon connect.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct InitialState {
+    crdt_bytes: Vec<u8>,
+    participants: Vec<Participant>,
+}
+
+/// The top-level WebSocket message enum.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+enum WsMessage {
+    Edit { operation: EditOperation },
+    ParticipantUpdate { update: ParticipantUpdate },
+}
+
 /// A collaborative document backed by diamond-types CRDT.
 ///
 /// Each session has one `Document`. Multiple clients (agents) can insert
@@ -272,6 +307,8 @@ struct AppState {
     sessions: Arc<Mutex<SessionRepository>>,
     /// Broadcast channels per session for real-time edits (ephemeral, not persisted).
     edit_channels: Arc<Mutex<HashMap<String, broadcast::Sender<String>>>>,
+    /// Broadcast channels per session for presence updates (joined/left/cursor).
+    presence_channels: Arc<Mutex<HashMap<String, broadcast::Sender<ParticipantUpdate>>>>,
     /// Collaborative documents per session, backed by diamond-types CRDT.
     documents: Arc<Mutex<HashMap<String, Document>>>,
 }
@@ -371,6 +408,13 @@ async fn create_session(
     {
         let mut channels = state.edit_channels.lock().await;
         channels.insert(session_id.clone(), tx);
+    }
+
+    // Create ephemeral presence broadcast channel for this session
+    let (presence_tx, _) = broadcast::channel::<ParticipantUpdate>(256);
+    {
+        let mut presence = state.presence_channels.lock().await;
+        presence.insert(session_id.clone(), presence_tx);
     }
 
     // Create collaborative document for this session
@@ -514,80 +558,167 @@ async fn list_sessions(
 async fn ws_upgrade(
     State(state): State<Arc<AppState>>,
     Path(session_id): Path<String>,
+    axum::extract::Query(params): axum::extract::Query<std::collections::HashMap<String, String>>,
     ws: WebSocketUpgrade,
 ) -> impl axum::response::IntoResponse {
-    ws.on_upgrade(move |socket| handle_ws(socket, state, session_id))
+    let user_id = params.get("user_id").cloned().unwrap_or_else(|| "anonymous".to_string());
+    let username = params.get("username").cloned().unwrap_or_else(|| "Anonymous".to_string());
+    ws.on_upgrade(move |socket| handle_ws(socket, state, session_id, user_id, username))
 }
 
 /// Handle an individual WebSocket connection.
-async fn handle_ws(mut socket: WebSocket, state: Arc<AppState>, session_id: String) {
-    // Subscribe to the session's ephemeral broadcast channel
-    let rx = {
-        let channels = state.edit_channels.lock().await;
-        channels
-            .get(&session_id)
-            .map(|tx| tx.subscribe())
+async fn handle_ws(
+    mut socket: WebSocket,
+    state: Arc<AppState>,
+    session_id: String,
+    user_id: String,
+    username: String,
+) {
+    let presence_rx = {
+        let channels = state.presence_channels.lock().await;
+        channels.get(&session_id).map(|tx| tx.subscribe())
     };
 
-    let mut rx = match rx {
+    let mut presence_rx = match presence_rx {
         Some(rx) => rx,
         None => {
             let _ = socket
                 .send(Message::Text(
-                    format!("{{\"error\":\"Session {} not found\"}}", session_id).into(),
+                    format!(r#"{{"error":"Session {} not found"}}"#, session_id).into(),
                 ))
                 .await;
             return;
         }
     };
 
-    tracing::info!(session_id = %session_id, "WebSocket connected");
+    let edit_rx = {
+        let channels = state.edit_channels.lock().await;
+        channels.get(&session_id).map(|tx| tx.subscribe())
+    };
 
-    // Split the WebSocket into sender and receiver
+    let mut edit_rx = match edit_rx {
+        Some(rx) => rx,
+        None => {
+            let _ = socket
+                .send(Message::Text(
+                    format!(r#"{{"error":"Session {} not found"}}"#, session_id).into(),
+                ))
+                .await;
+            return;
+        }
+    };
+
+    tracing::info!(session_id = %session_id, user_id = %user_id, "WebSocket connected");
+
     let (mut ws_sender, mut ws_receiver) = socket.split();
 
-    // Forward edits from other participants to this client
-    let recv_task = tokio::spawn(async move {
-        while let Ok(msg) = rx.recv().await {
+    // Single mpsc channel for all outgoing WS messages
+    let (out_tx, mut out_rx) = tokio::sync::mpsc::channel::<String>(256);
+
+    let presence_tx = {
+        let channels = state.presence_channels.lock().await;
+        channels.get(&session_id).cloned()
+    };
+
+    let joined = ParticipantUpdate {
+        event: ParticipantEvent::Joined,
+        user_id: user_id.clone(),
+        username: username.clone(),
+        color: "#E74C3C".to_string(),
+        cursor_position: None,
+    };
+    if let Some(ref tx) = presence_tx {
+        let _ = tx.send(joined);
+    }
+
+    // Forward all outgoing messages to the WebSocket
+    let send_task = tokio::spawn(async move {
+        while let Some(msg) = out_rx.recv().await {
             if ws_sender.send(Message::Text(msg.into())).await.is_err() {
                 break;
             }
         }
     });
 
-    // Read edits from this client, apply through diamond-types, and broadcast
+    // Forward presence updates to the shared outgoing channel
+    let out_tx_presence = out_tx.clone();
+    let recv_presence = tokio::spawn(async move {
+        while let Ok(_) = presence_rx.recv().await {
+            if let Ok(presence) = presence_rx.try_recv() {
+                if let Ok(json) = serde_json::to_string(&presence) {
+                    let _ = out_tx_presence.send(json).await;
+                }
+            }
+        }
+    });
+
+    // Forward edit broadcasts to the shared outgoing channel
+    let recv_edit = tokio::spawn(async move {
+        while let Ok(_) = edit_rx.recv().await {
+            if let Ok(text) = edit_rx.try_recv() {
+                let _ = out_tx.send(text).await;
+            }
+        }
+    });
+
     while let Some(Ok(msg)) = ws_receiver.next().await {
         if let Message::Text(text) = msg {
-            // Try to parse as an EditOperation and apply through diamond-types
-            if let Ok(edit_op) = serde_json::from_str::<EditOperation>(&text) {
+            if let Ok(ws_msg) = serde_json::from_str::<WsMessage>(&text) {
+                match ws_msg {
+                    WsMessage::Edit { operation } => {
+                        let applied = {
+                            let mut docs = state.documents.lock().await;
+                            if let Some(doc) = docs.get_mut(&session_id) {
+                                doc.apply_edit(&operation).is_ok()
+                            } else {
+                                false
+                            }
+                        };
+                        if !applied { continue; }
+                        let channels = state.edit_channels.lock().await;
+                        if let Some(tx) = channels.get(&session_id) {
+                            let _ = tx.send(text.to_string());
+                        }
+                    }
+                    WsMessage::ParticipantUpdate { update } => {
+                        if let Some(ref tx) = presence_tx {
+                            let _ = tx.send(update);
+                        }
+                    }
+                }
+            } else if let Ok(edit_op) = serde_json::from_str::<EditOperation>(&text) {
                 let applied = {
                     let mut docs = state.documents.lock().await;
                     if let Some(doc) = docs.get_mut(&session_id) {
-                        match doc.apply_edit(&edit_op) {
-                            Ok(()) => true,
-                            Err(e) => {
-                                tracing::warn!(error = %e, "failed to apply edit");
-                                false
-                            }
-                        }
+                        doc.apply_edit(&edit_op).is_ok()
                     } else {
                         false
                     }
                 };
-                if !applied {
-                    continue;
+                if !applied { continue; }
+                let channels = state.edit_channels.lock().await;
+                if let Some(tx) = channels.get(&session_id) {
+                    let _ = tx.send(text.to_string());
                 }
-            }
-            // Broadcast to other participants regardless (they may not be EditOperations)
-            let channels = state.edit_channels.lock().await;
-            if let Some(tx) = channels.get(&session_id) {
-                let _ = tx.send(text.to_string());
             }
         }
     }
 
-    recv_task.abort();
-    tracing::info!(session_id = %session_id, "WebSocket disconnected");
+    recv_presence.abort();
+    recv_edit.abort();
+
+    let left = ParticipantUpdate {
+        event: ParticipantEvent::Left,
+        user_id: user_id.clone(),
+        username: username.clone(),
+        color: "#E74C3C".to_string(),
+        cursor_position: None,
+    };
+    if let Some(ref tx) = presence_tx {
+        let _ = tx.send(left);
+    }
+
+    tracing::info!(session_id = %session_id, user_id = %user_id, "WebSocket disconnected");
 }
 
 /// GET /health — liveness check.
@@ -621,6 +752,7 @@ async fn main() {
     let state = Arc::new(AppState {
         sessions: Arc::new(Mutex::new(repo)),
         edit_channels: Arc::new(Mutex::new(HashMap::new())),
+        presence_channels: Arc::new(Mutex::new(HashMap::new())),
         documents: Arc::new(Mutex::new(HashMap::new())),
     });
     let app = app(state);

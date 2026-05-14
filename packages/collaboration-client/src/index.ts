@@ -4,12 +4,18 @@ export {
   type DeleteOperation,
   type CursorPosition,
   type Participant,
+  type ParticipantUpdate,
+  type ParticipantEvent,
+  type InitialState,
+  type ServerMessage,
   type CreateSessionResponse,
   type JoinSessionResponse,
   type EditorSession,
   parseMessage,
+  parseServerMessage,
   createInsertOp,
   createDeleteOp,
+  createCursorUpdate,
   isRemoteMessage,
 } from "./protocol"
 

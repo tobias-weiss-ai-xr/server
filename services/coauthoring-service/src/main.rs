@@ -659,13 +659,14 @@ async fn handle_ws(
     }
 
     // Forward all outgoing messages to the WebSocket
-    let _send_task = tokio::spawn(async move {
+    let send_task = tokio::spawn(async move {
         while let Some(msg) = out_rx.recv().await {
             if ws_sender.send(Message::Text(msg.into())).await.is_err() {
                 break;
             }
         }
     });
+    let _ = send_task;
 
     // Forward presence updates to the shared outgoing channel
     let out_tx_presence = out_tx.clone();

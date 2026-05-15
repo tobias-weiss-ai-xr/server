@@ -18,6 +18,8 @@ const config = {
   documentServerUrl: process.env.DOCUMENT_SERVER_URL || "http://localhost:8080",
   ocisUrl: process.env.OCIS_URL || "http://localhost:9200",
   companionUrl: process.env.COMPANION_URL || "http://localhost:3000",
+  coauthoringServiceUrl: process.env.COAUTHORING_SERVICE_URL || "http://localhost:8004",
+  coauthoringServiceWs: process.env.COAUTHORING_SERVICE_WS || "ws://localhost:8004",
 
   // Internal URLs (for container-to-container communication)
   documentServerInternalUrl: process.env.DOCUMENT_SERVER_INTERNAL_URL || "http://documentserver:80",

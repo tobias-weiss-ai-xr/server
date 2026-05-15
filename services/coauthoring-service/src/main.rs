@@ -579,7 +579,7 @@ async fn handle_ws(
         channels.get(&session_id).map(|tx| tx.subscribe())
     };
 
-    let mut presence_rx = match presence_rx {
+    let presence_rx = match presence_rx {
         Some(rx) => rx,
         None => {
             let _ = socket
@@ -596,7 +596,7 @@ async fn handle_ws(
         channels.get(&session_id).map(|tx| tx.subscribe())
     };
 
-    let mut edit_rx = match edit_rx {
+    let edit_rx = match edit_rx {
         Some(rx) => rx,
         None => {
             let _ = socket
@@ -620,20 +620,30 @@ async fn handle_ws(
         channels.get(&session_id).cloned()
     };
 
+    let session_color = {
+        let repo = state.sessions.lock().await;
+        repo.get(&session_id)
+            .ok()
+            .flatten()
+            .and_then(|s| s.participants.iter().find(|p| p.user_id == user_id).map(|p| p.color.clone()))
+            .unwrap_or_else(|| "#E74C3C".to_string())
+    };
+
     let _initial_state = {
-        let docs = state.documents.lock().await;
-        if let Some(doc) = docs.get(&session_id) {
-            let doc_bytes = doc.crdt.oplog.encode(EncodeOptions::default());
-            let repo = state.sessions.lock().await;
-            if let Ok(Some(session)) = repo.get(&session_id) {
-                let initial = InitialState {
-                    crdt_bytes: doc_bytes,
-                    participants: session.participants.clone(),
-                };
-                if let Ok(json) = serde_json::to_string(&initial) {
-                    let _ = out_tx.blocking_send(json);
-                }
-            }
+        let doc_bytes = {
+            let docs = state.documents.lock().await;
+            docs.get(&session_id).map(|doc| doc.crdt.oplog.encode(EncodeOptions::default()))
+        };
+        let repo = state.sessions.lock().await;
+        let participants = repo.get(&session_id).ok().flatten()
+            .map(|s| s.participants.clone())
+            .unwrap_or_default();
+        let initial = InitialState {
+            crdt_bytes: doc_bytes.unwrap_or_default(),
+            participants,
+        };
+        if let Ok(json) = serde_json::to_string(&initial) {
+            let _ = out_tx.blocking_send(json);
         }
     };
 
@@ -641,7 +651,7 @@ async fn handle_ws(
         event: ParticipantEvent::Joined,
         user_id: user_id.clone(),
         username: username.clone(),
-        color: "#E74C3C".to_string(),
+        color: session_color.clone(),
         cursor_position: None,
     };
     if let Some(ref tx) = presence_tx {
@@ -660,21 +670,19 @@ async fn handle_ws(
     // Forward presence updates to the shared outgoing channel
     let out_tx_presence = out_tx.clone();
     let recv_presence = tokio::spawn(async move {
-        while let Ok(_) = presence_rx.recv().await {
-            if let Ok(presence) = presence_rx.try_recv() {
-                if let Ok(json) = serde_json::to_string(&presence) {
-                    let _ = out_tx_presence.send(json).await;
-                }
+        let mut presence_rx = presence_rx;
+        while let Ok(presence) = presence_rx.recv().await {
+            if let Ok(json) = serde_json::to_string(&presence) {
+                let _ = out_tx_presence.send(json).await;
             }
         }
     });
 
     // Forward edit broadcasts to the shared outgoing channel
     let recv_edit = tokio::spawn(async move {
-        while let Ok(_) = edit_rx.recv().await {
-            if let Ok(text) = edit_rx.try_recv() {
-                let _ = out_tx.send(text).await;
-            }
+        let mut edit_rx = edit_rx;
+        while let Ok(text) = edit_rx.recv().await {
+            let _ = out_tx.send(text).await;
         }
     });
 
@@ -728,7 +736,7 @@ async fn handle_ws(
         event: ParticipantEvent::Left,
         user_id: user_id.clone(),
         username: username.clone(),
-        color: "#E74C3C".to_string(),
+        color: session_color.clone(),
         cursor_position: None,
     };
     if let Some(ref tx) = presence_tx {

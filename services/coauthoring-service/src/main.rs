@@ -643,7 +643,7 @@ async fn handle_ws(
             participants,
         };
         if let Ok(json) = serde_json::to_string(&initial) {
-            let _ = out_tx.blocking_send(json);
+            let _ = out_tx.try_send(json);
         }
     };
 
@@ -730,9 +730,6 @@ async fn handle_ws(
         }
     }
 
-    recv_presence.abort();
-    recv_edit.abort();
-
     let left = ParticipantUpdate {
         event: ParticipantEvent::Left,
         user_id: user_id.clone(),
@@ -743,6 +740,9 @@ async fn handle_ws(
     if let Some(ref tx) = presence_tx {
         let _ = tx.send(left);
     }
+
+    recv_presence.abort();
+    recv_edit.abort();
 
     tracing::info!(session_id = %session_id, user_id = %user_id, "WebSocket disconnected");
 }

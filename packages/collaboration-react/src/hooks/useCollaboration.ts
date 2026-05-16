@@ -99,6 +99,22 @@ export function useCollaboration(options: UseCollaborationOptions): UseCollabora
         })
 
         manager.on("initialState", (state: InitialState) => {
+          for (const participant of state.participants) {
+            if (participant.user_id === userId) continue
+            collaborationStore?.addUser({
+              id: participant.user_id,
+              name: participant.username,
+              color: participant.color,
+              isCurrentUser: false,
+            })
+            if (participant.cursor_position) {
+              collaborationStore?.updateRemoteCursor(participant.user_id, {
+                page: participant.cursor_position.page,
+                x: participant.cursor_position.x,
+                y: participant.cursor_position.y,
+              })
+            }
+          }
           onInitialState?.(state)
         })
 

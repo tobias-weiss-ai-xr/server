@@ -96,6 +96,7 @@ struct InitialState {
 enum WsMessage {
     Edit { operation: EditOperation },
     ParticipantUpdate { update: ParticipantUpdate },
+    InitialStateMsg { state: InitialState },
 }
 
 /// A collaborative document backed by diamond-types CRDT.
@@ -308,7 +309,7 @@ struct AppState {
     /// Broadcast channels per session for real-time edits (ephemeral, not persisted).
     edit_channels: Arc<Mutex<HashMap<String, broadcast::Sender<String>>>>,
     /// Broadcast channels per session for presence updates (joined/left/cursor).
-    presence_channels: Arc<Mutex<HashMap<String, broadcast::Sender<ParticipantUpdate>>>>,
+    presence_channels: Arc<Mutex<HashMap<String, broadcast::Sender<String>>>>,
     /// Collaborative documents per session, backed by diamond-types CRDT.
     documents: Arc<Mutex<HashMap<String, Document>>>,
 }
@@ -411,7 +412,7 @@ async fn create_session(
     }
 
     // Create ephemeral presence broadcast channel for this session
-    let (presence_tx, _) = broadcast::channel::<ParticipantUpdate>(256);
+    let (presence_tx, _) = broadcast::channel::<String>(256);
     {
         let mut presence = state.presence_channels.lock().await;
         presence.insert(session_id.clone(), presence_tx);
@@ -629,7 +630,7 @@ async fn handle_ws(
             .unwrap_or_else(|| "#E74C3C".to_string())
     };
 
-    let _initial_state = {
+    let initial_state = {
         let doc_bytes = {
             let docs = state.documents.lock().await;
             docs.get(&session_id).map(|doc| doc.crdt.oplog.encode(EncodeOptions::default()))
@@ -638,14 +639,16 @@ async fn handle_ws(
         let participants = repo.get(&session_id).ok().flatten()
             .map(|s| s.participants.clone())
             .unwrap_or_default();
-        let initial = InitialState {
-            crdt_bytes: doc_bytes.unwrap_or_default(),
-            participants,
-        };
-        if let Ok(json) = serde_json::to_string(&initial) {
-            let _ = out_tx.try_send(json);
+        WsMessage::InitialStateMsg {
+            state: InitialState {
+                crdt_bytes: doc_bytes.unwrap_or_default(),
+                participants,
+            },
         }
     };
+    if let Ok(json) = serde_json::to_string(&initial_state) {
+        let _ = out_tx.try_send(json);
+    }
 
     let joined = ParticipantUpdate {
         event: ParticipantEvent::Joined,
@@ -655,7 +658,9 @@ async fn handle_ws(
         cursor_position: None,
     };
     if let Some(ref tx) = presence_tx {
-        let _ = tx.send(joined);
+        if let Ok(json) = serde_json::to_string(&WsMessage::ParticipantUpdate { update: joined }) {
+            let _ = tx.send(json);
+        }
     }
 
     // Forward all outgoing messages to the WebSocket
@@ -673,9 +678,7 @@ async fn handle_ws(
     let recv_presence = tokio::spawn(async move {
         let mut presence_rx = presence_rx;
         while let Ok(presence) = presence_rx.recv().await {
-            if let Ok(json) = serde_json::to_string(&presence) {
-                let _ = out_tx_presence.send(json).await;
-            }
+            let _ = out_tx_presence.send(presence).await;
         }
     });
 
@@ -691,6 +694,7 @@ async fn handle_ws(
         if let Message::Text(text) = msg {
             if let Ok(ws_msg) = serde_json::from_str::<WsMessage>(&text) {
                 match ws_msg {
+                    WsMessage::InitialStateMsg { .. } => { /* clients do not send InitialState */ }
                     WsMessage::Edit { operation } => {
                         let applied = {
                             let mut docs = state.documents.lock().await;
@@ -708,7 +712,9 @@ async fn handle_ws(
                     }
                     WsMessage::ParticipantUpdate { update } => {
                         if let Some(ref tx) = presence_tx {
-                            let _ = tx.send(update);
+                            if let Ok(json) = serde_json::to_string(&WsMessage::ParticipantUpdate { update }) {
+                                let _ = tx.send(json);
+                            }
                         }
                     }
                 }
@@ -738,7 +744,9 @@ async fn handle_ws(
         cursor_position: None,
     };
     if let Some(ref tx) = presence_tx {
-        let _ = tx.send(left);
+        if let Ok(json) = serde_json::to_string(&WsMessage::ParticipantUpdate { update: left }) {
+            let _ = tx.send(json);
+        }
     }
 
     recv_presence.abort();

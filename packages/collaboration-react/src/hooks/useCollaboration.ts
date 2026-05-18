@@ -31,6 +31,7 @@ export interface UseCollaborationResult {
   disconnect: () => void
   sendInsert: (position: number, text: string) => void
   sendDelete: (position: number, length: number) => void
+  sendParticipantUpdate: (update: ParticipantUpdate) => void
 }
 
 export function useCollaboration(options: UseCollaborationOptions): UseCollaborationResult {
@@ -181,6 +182,10 @@ export function useCollaboration(options: UseCollaborationOptions): UseCollabora
     managerRef.current?.sendDelete(position, length)
   }, [])
 
+  const sendParticipantUpdate = useCallback((update: ParticipantUpdate) => {
+    managerRef.current?.sendParticipantUpdate(update)
+  }, [])
+
   useEffect(() => {
     return () => {
       managerRef.current?.disconnect()
@@ -194,5 +199,6 @@ export function useCollaboration(options: UseCollaborationOptions): UseCollabora
     disconnect,
     sendInsert,
     sendDelete,
+    sendParticipantUpdate,
   }
 }

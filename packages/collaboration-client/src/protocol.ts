@@ -57,9 +57,9 @@ export interface DeleteOperation extends BaseEditOperation {
 export type ParticipantEvent = "joined" | "left" | "cursor_moved"
 
 /**
- * A presence update sent over WebSocket when a participant joins, leaves,
- * or moves their cursor.
- */
+  * A presence update sent over WebSocket when a participant joins, leaves,
+  * or moves their cursor.
+  */
 export interface ParticipantUpdate {
   event: ParticipantEvent
   user_id: string
@@ -67,6 +67,14 @@ export interface ParticipantUpdate {
   color: string
   cursor_position?: CursorPosition
 }
+
+/**
+  * Client-to-server WebSocket message envelope.
+  * Matches server WsMessage enum with serde @serde(tag = "type", rename_all = "snake_case").
+  */
+export type WsMessage =
+  | { type: "edit"; operation: EditOperation }
+  | { type: "participant_update"; update: ParticipantUpdate }
 
 /**
  * Initial state sent to a new WebSocket client upon connect, containing

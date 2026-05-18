@@ -13,6 +13,7 @@ import {
   type EditOperation,
   type ParticipantUpdate,
   type InitialState,
+  type WsMessage,
   createInsertOp,
   createDeleteOp,
   parseServerMessage,
@@ -187,6 +188,19 @@ export class WebSocketManager {
       revision,
     })
     this.send(op)
+  }
+
+  sendParticipantUpdate(update: ParticipantUpdate): void {
+    const msg: WsMessage = {
+      type: "participant_update",
+      update,
+    }
+    const json = JSON.stringify(msg)
+    if (this.ws && this.ws.readyState === WS_OPEN) {
+      this.ws.send(json)
+    } else {
+      this.messageQueue.push(json)
+    }
   }
 
   /** Send a raw EditOperation. */

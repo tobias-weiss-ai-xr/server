@@ -62,6 +62,7 @@ export class WebSocketManager {
   private messageQueue: string[] = []
   private listeners = new Map<string, Set<EventCallback>>()
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null
+  private token: string | null = null
 
   constructor(options: WebSocketManagerOptions) {
     this.url = options.url
@@ -122,10 +123,14 @@ export class WebSocketManager {
       return
     }
 
+    if (token !== undefined) {
+      this.token = token
+    }
+
     this.setState("connecting")
 
-    const actualUrl = token
-      ? `${this.url}${this.url.includes("?") ? "&" : "?"}token=${encodeURIComponent(token)}`
+    const actualUrl = this.token
+      ? `${this.url}${this.url.includes("?") ? "&" : "?"}token=${encodeURIComponent(this.token)}`
       : this.url
     this.ws = new WebSocket(actualUrl)
 

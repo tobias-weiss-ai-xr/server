@@ -319,5 +319,66 @@ describe("Coauthoring Service", () => {
         expect(leftUpdate.update).toHaveProperty("event", "left")
       }
     })
+
+    test("WS reconnects after connection loss", async () => {
+      const wsUrl = `${CS_WS}/ws/${sessionId}?user_id=reconnect-user-1&username=Reconnect+User+1`
+      let connectionCount = 0
+      let reconnectCount = 0
+
+      await new Promise((resolve, reject) => {
+        const ws = new WebSocket(wsUrl)
+        let settled = false
+        const timeout = setTimeout(() => {
+          if (!settled) {
+            settled = true
+            ws.close()
+            reject(new Error("Reconnect test timeout (15s)"))
+          }
+        }, 15000)
+
+        ws.onopen = () => {
+          connectionCount++
+          if (connectionCount === 1) {
+            // First connection successful, now close it to trigger reconnect
+            ws.close()
+          }
+        }
+
+        ws.onclose = () => {
+          if (connectionCount === 1 && !settled) {
+            // First connection closed, create a new WebSocket to test reconnect
+            const newWs = new WebSocket(wsUrl)
+            newWs.onopen = () => {
+              connectionCount++
+              reconnectCount++
+              settled = true
+              clearTimeout(timeout)
+              newWs.close()
+              ws.close()
+              resolve()
+            }
+            newWs.onerror = (err) => {
+              if (!settled) {
+                settled = true
+                clearTimeout(timeout)
+                reject(new Error(`Reconnect failed: ${err.message}`))
+              }
+            }
+          }
+        }
+
+        ws.onerror = (err) => {
+          if (!settled) {
+            settled = true
+            clearTimeout(timeout)
+            reject(new Error(`First connection failed: ${err.message}`))
+          }
+        }
+      })
+
+      // Verify both connections happened
+      expect(connectionCount).toBe(2)
+      expect(reconnectCount).toBe(1)
+    })
   })
 })

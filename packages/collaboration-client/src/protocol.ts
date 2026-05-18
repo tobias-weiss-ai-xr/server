@@ -8,12 +8,18 @@
  * is defined in services/coauthoring-service/src/main.rs.
  */
 
-// ── Cursor ──
+// ── Cursor & Selection ──
 
 export interface CursorPosition {
   page: number
   x: number
   y: number
+}
+
+export interface Selection {
+  page: number
+  start: number
+  end: number
 }
 
 // ── Participant ──
@@ -23,6 +29,7 @@ export interface Participant {
   username: string
   color: string
   cursor_position: CursorPosition | null
+  selection: Selection | null
 }
 
 // ── Edit Operation ──
@@ -57,15 +64,16 @@ export interface DeleteOperation extends BaseEditOperation {
 export type ParticipantEvent = "joined" | "left" | "cursor_moved"
 
 /**
-  * A presence update sent over WebSocket when a participant joins, leaves,
-  * or moves their cursor.
-  */
+ * A presence update sent over WebSocket when a participant joins, leaves,
+ * moves their cursor, or changes selection.
+ */
 export interface ParticipantUpdate {
   event: ParticipantEvent
   user_id: string
   username: string
   color: string
   cursor_position?: CursorPosition
+  selection?: Selection
 }
 
 /**
@@ -196,6 +204,23 @@ export function createCursorUpdate(params: {
     username: params.username,
     color: params.color,
     cursor_position: params.cursor_position,
+  }
+}
+
+/** Create a participant update for selection change. */
+export function createSelectionUpdate(params: {
+  session_id: string
+  user_id: string
+  username: string
+  color: string
+  selection: Selection
+}): ParticipantUpdate {
+  return {
+    event: "cursor_moved",
+    user_id: params.user_id,
+    username: params.username,
+    color: params.color,
+    selection: params.selection,
   }
 }
 

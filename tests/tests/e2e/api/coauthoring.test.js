@@ -173,38 +173,108 @@ describe("Coauthoring Service", () => {
     })
 
     test("WS sends cursor update and receives it back via presence channel", async () => {
-      const cursorReceived = []
-      const wsUrl = `${CS_WS}/ws/${sessionId}?user_id=cursor-user-1&username=Cursor+User+1`
+      const secondWsUrl = `${CS_WS}/ws/${sessionId}?user_id=cursor-user-2&username=Cursor+User+2`
+      let cursorUpdateReceived = null
 
-      const ws = await new Promise((resolve) => {
-        const ws = new WebSocket(wsUrl)
-        ws.onopen = () => resolve(ws)
-        ws.onerror = () => resolve(null)
+      // Connect first WS and set up message handler
+      const firstWs = await new Promise((resolve, reject) => {
+        const ws = new WebSocket(`${CS_WS}/ws/${sessionId}?user_id=cursor-user-1&username=Cursor+User+1`)
+        let settled = false
+        const timeout = setTimeout(() => {
+          if (!settled) {
+            settled = true
+            ws.close()
+            reject(new Error("First WS connect timeout (10s)"))
+          }
+        }, 10000)
+
+        ws.onopen = () => {
+          settled = true
+          clearTimeout(timeout)
+          resolve(ws)
+        }
+        ws.onerror = (err) => {
+          settled = true
+          clearTimeout(timeout)
+          reject(new Error(`First WS error: ${err.message}`))
+        }
       })
 
-      if (!ws) {
-        test.skip("WS could not connect")
-        return
-      }
+      // Connect second WS and send cursor update
+      const secondWs = await new Promise((resolve, reject) => {
+        const ws = new WebSocket(secondWsUrl)
+        let settled = false
+        const timeout = setTimeout(() => {
+          if (!settled) {
+            settled = true
+            ws.close()
+            reject(new Error("Second WS connect timeout (10s)"))
+          }
+        }, 10000)
 
-      await new Promise((resolve) => {
-        ws.onmessage = (event) => {
+        ws.onopen = () => {
+          settled = true
+          clearTimeout(timeout)
+          resolve(ws)
+        }
+        ws.onerror = (err) => {
+          settled = true
+          clearTimeout(timeout)
+          reject(new Error(`Second WS error: ${err.message}`))
+        }
+      })
+
+      // Listen on first WS for cursor updates
+      await new Promise((resolve, reject) => {
+        let settled = false
+        const timeout = setTimeout(() => {
+          if (!settled) {
+            settled = true
+            reject(new Error("Cursor update receive timeout (10s)"))
+          }
+        }, 10000)
+
+        firstWs.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data)
-            if (data.type === "participant_update" && data.update?.event === "cursor_moved") {
-              cursorReceived.push(data)
+            if (data.type === "participant_update" && data.update?.event === "cursor_moved" && data.update?.user_id === "cursor-user-2") {
+              if (!settled) {
+                settled = true
+                clearTimeout(timeout)
+                cursorUpdateReceived = data.update
+                resolve()
+              }
             }
-          } catch (e) {}
+          } catch (e) {
+            // Ignore parse errors
+          }
         }
-
-        setTimeout(resolve, 8000)
       })
 
-      ws.close()
+      // Send cursor update from second WS
+      const cursorMoveMessage = JSON.stringify({
+        type: "participant_update",
+        update: {
+          type: "cursor_moved",
+          user_id: "cursor-user-2",
+          username: "Cursor User 2",
+          color: "#E74C3C",
+          cursor_position: { page: 1, x: 100, y: 200 },
+        },
+      })
+      secondWs.send(cursorMoveMessage)
 
-      // We can't guarantee cursor was received back since the client sent it
-      // But we verify the WS connection worked without errors
-      // (real cursor tracking tested in integration context)
+      await new Promise((r) => setTimeout(r, 500))
+
+      // Verify cursor update was propagated
+      expect(cursorUpdateReceived).not.toBeNull()
+      expect(cursorUpdateReceived).toHaveProperty("user_id", "cursor-user-2")
+      expect(cursorUpdateReceived).toHaveProperty("username", "Cursor User 2")
+      expect(cursorUpdateReceived).toHaveProperty("cursor_position")
+      expect(cursorUpdateReceived.cursor_position).toEqual({ page: 1, x: 100, y: 200 })
+
+      firstWs.close()
+      secondWs.close()
     })
 
     test("WS Left event broadcast when client disconnects", async () => {

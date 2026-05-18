@@ -25,6 +25,7 @@ export class CollaborationStore {
   @observable comments: CollabComment[] = []
   @observable isCommentMode = false
   @observable currentUser: CollabUser | null = null
+  @observable remoteSelections: Map<string, { page: number; start: number; end: number }> = new Map()
 
   // ── Connection state (Phase A) ──
   @observable connectionStatus: "disconnected" | "connecting" | "connected" | "reconnecting" = "disconnected"
@@ -57,6 +58,16 @@ export class CollaborationStore {
   @action
   removeRemoteCursor(userId: string): void {
     this.remoteCursors.delete(userId)
+  }
+
+  @action
+  updateRemoteSelection(userId: string, selection: { page: number; start: number; end: number }): void {
+    this.remoteSelections.set(userId, selection)
+  }
+
+  @action
+  removeRemoteSelection(userId: string): void {
+    this.remoteSelections.delete(userId)
   }
 
   @action

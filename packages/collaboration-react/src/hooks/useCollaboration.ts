@@ -5,6 +5,8 @@ import {
   type EditOperation,
   type ParticipantUpdate,
   type InitialState,
+  createSelectionUpdate,
+  type Selection,
 } from "@world-office/collaboration-client"
 import { AuthClient } from "@world-office/collaboration-client"
 import type { CollaborationStore } from "@world-office/editor-stores"
@@ -32,6 +34,7 @@ export interface UseCollaborationResult {
   sendInsert: (position: number, text: string) => void
   sendDelete: (position: number, length: number) => void
   sendParticipantUpdate: (update: ParticipantUpdate) => void
+  sendSelectionUpdate: (selection: Selection) => void
 }
 
 export function useCollaboration(options: UseCollaborationOptions): UseCollaborationResult {
@@ -182,6 +185,20 @@ export function useCollaboration(options: UseCollaborationOptions): UseCollabora
     managerRef.current?.sendDelete(position, length)
   }, [])
 
+  const sendSelectionUpdate = useCallback((selection: Selection) => {
+    const manager = managerRef.current
+    if (!manager) return
+
+    const update = createSelectionUpdate({
+      session_id: "", // Will be derived from session context in future
+      user_id: userId,
+      username: username,
+      color: "", // Will be looked up in future
+      selection,
+    })
+    manager.sendParticipantUpdate(update)
+  }, [userId, username])
+
   const sendParticipantUpdate = useCallback((update: ParticipantUpdate) => {
     managerRef.current?.sendParticipantUpdate(update)
   }, [])
@@ -200,5 +217,6 @@ export function useCollaboration(options: UseCollaborationOptions): UseCollabora
     sendInsert,
     sendDelete,
     sendParticipantUpdate,
+    sendSelectionUpdate,
   }
 }

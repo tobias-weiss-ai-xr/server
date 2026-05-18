@@ -3,6 +3,7 @@ export {
   type InsertOperation,
   type DeleteOperation,
   type CursorPosition,
+  type Selection,
   type Participant,
   type ParticipantUpdate,
   type ParticipantEvent,
@@ -16,6 +17,7 @@ export {
   createInsertOp,
   createDeleteOp,
   createCursorUpdate,
+  createSelectionUpdate,
   isRemoteMessage,
 } from "./protocol"
 

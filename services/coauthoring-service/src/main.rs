@@ -39,6 +39,7 @@ struct Participant {
     username: String,
     color: String,
     cursor_position: Option<CursorPos>,
+    selection: Option<Selection>,
 }
 
 /// Cursor position for visual feedback.
@@ -47,6 +48,14 @@ struct CursorPos {
     page: u32,
     x: f64,
     y: f64,
+}
+
+/// Text selection for visual feedback.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct Selection {
+    page: u32,
+    start: u64,
+    end: u64,
 }
 
 /// An operational transform edit.
@@ -72,6 +81,7 @@ struct ParticipantUpdate {
     username: String,
     color: String,
     cursor_position: Option<CursorPos>,
+    selection: Option<Selection>,
 }
 
 /// The event type for a participant update.
@@ -471,6 +481,7 @@ async fn join_session(
         username: payload.username,
         color: EDITOR_COLORS[color_index].to_string(),
         cursor_position: None,
+        selection: None,
     };
 
     session.participants.push(participant.clone());
@@ -656,6 +667,7 @@ async fn handle_ws(
         username: username.clone(),
         color: session_color.clone(),
         cursor_position: None,
+        selection: None,
     };
     if let Some(ref tx) = presence_tx {
         if let Ok(json) = serde_json::to_string(&WsMessage::ParticipantUpdate { update: joined }) {
@@ -742,6 +754,7 @@ async fn handle_ws(
         username: username.clone(),
         color: session_color.clone(),
         cursor_position: None,
+        selection: None,
     };
     if let Some(ref tx) = presence_tx {
         if let Ok(json) = serde_json::to_string(&WsMessage::ParticipantUpdate { update: left }) {
@@ -827,6 +840,7 @@ mod tests {
                     username: "alice".to_string(),
                     color: "#E74C3C".to_string(),
                     cursor_position: None,
+                    selection: None,
                 },
             ],
         }
@@ -890,6 +904,7 @@ mod tests {
             username: "bob".to_string(),
             color: "#3498DB".to_string(),
             cursor_position: None,
+            selection: None,
         });
         session.last_activity = "2026-04-17T01:00:00+00:00".to_string();
 
